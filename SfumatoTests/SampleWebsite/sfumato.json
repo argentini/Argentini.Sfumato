@@ -1,0 +1,31 @@
+{
+    "cssOutputPath": "wwwroot/css",
+    "projectPaths": [
+        {
+            "path": "wwwroot",
+            "fileSpec": "*.html",
+            "recurse": false
+        }
+    ],
+    "themeMode": "system",
+    "breakpoints":
+        {
+            "zero": 0,
+            "phab": 400,
+            "tabp": 540,
+            "tabl": 800,
+            "note": 1280,
+            "desk": 1440,
+            "elas": 1600
+        },
+    "fontSizeViewportUnits":
+    {
+        "zero": 4.35,
+        "phab": 4,
+        "tabp": 1.6,
+        "tabl": 1,
+        "note": 1,
+        "desk": 1,
+        "elas": 1
+    }
+}

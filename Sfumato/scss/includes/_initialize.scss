@@ -1,0 +1,90 @@
+// Font and other base styles are established in this file.
+// It should be called after the configuration files have been loaded.
+
+$zero-breakpoint: map-get($media-breakpoints, "zero");
+$phab-breakpoint: map-get($media-breakpoints, "phab");
+$tabp-breakpoint: map-get($media-breakpoints, "tabp");
+$tabl-breakpoint: map-get($media-breakpoints, "tabl");
+$note-breakpoint: map-get($media-breakpoints, "note");
+$desk-breakpoint: map-get($media-breakpoints, "desk");
+$elas-breakpoint: map-get($media-breakpoints, "elas");
+
+* {
+    &,
+    &:before,
+    &:after { box-sizing: border-box; }
+
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+
+    -webkit-text-size-adjust: none;
+    -webkit-font-size-adjust: none;
+    -webkit-marquee-increment: 0;
+    
+    word-spacing: initial;
+    letter-spacing: initial;
+    word-break: break-word;
+
+    & > * {
+
+        font-weight: inherit;
+    }
+}
+
+html {
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    font-size: #{zero-vw};
+
+    @include sf-media($from: phab) {
+
+        font-size: #{phab-vw};
+    }
+
+    @include sf-media($from: tabp) {
+
+        font-size: #{tabp-vw};
+    }
+
+    @include sf-media($from: tabl) {
+
+        font-size: #{tabl-vw};
+    }
+
+    @include sf-media($from: note) {
+
+        font-size: #{note-vw};
+    }
+
+    @include sf-media($from: desk) {
+
+        font-size: #{desk-vw};
+    }
+
+    @include sf-media($from: elas) {
+
+        font-size: calc(#{$elas-breakpoint} * (#{sf-strip-unit(#{elas-vw})} / 100));
+    }
+}
+
+html, body {
+
+    overflow: visible;
+    max-width: 100vw;
+}
+
+body {
+
+    // Needed for mobile
+    position: relative;
+    font-size: 1rem;
+
+    main {
+
+        max-width: 100vw;
+
+        // Needed for mobile
+        overflow-x: hidden;
+    }
+}

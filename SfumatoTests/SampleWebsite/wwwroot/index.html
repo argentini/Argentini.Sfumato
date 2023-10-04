@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Website</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/sfumato.css">
+</head>
+<body>
+    <div id="test-element" class="tabp:bg-fuchsia-200 dark:tabp:bg-fuchsia-100 dark:hover:bg-fuchsia-400 hover:bg-fuchsia-500 tabp:dark:bg-fuchsia-900 dark:hover:bg-fuchsia-800 bg-fuchsia-50 bg-slate-50 dark:first:hover:bg-fuchsia-700 first:dark:hover:bg-fuchsia-600 hover:bg-fuchsia-500 dark:bg-fuchsia-300">
+        <p>Placeholder</p>
+    </div>
+    <script>
+    
+        function test() {
+            let el = document.getElementById('test-element');
+            if (el) {
+                el.classList.add($`
+    bg-emerald-900
+                `);
+                el.classList.add(`bg-emerald-950`);
+                el.classList.add(`bg-emerald-100`);
+            }
+        }
+    
+    </script>
+</body>
+</html>
