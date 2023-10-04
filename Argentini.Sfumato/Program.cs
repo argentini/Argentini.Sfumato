@@ -86,7 +86,7 @@ internal class Program
 
 		#endregion
 		
-		Console.WriteLine($"Completed build in {timer.Elapsed.TotalSeconds:N2} seconds at {SfumatoRunner.CliOutputSuffix}");
+		Console.WriteLine($"Completed build in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
 		Console.WriteLine();
 
 		if (runner.DiagnosticMode)

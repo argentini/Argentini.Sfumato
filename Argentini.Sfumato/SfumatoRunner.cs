@@ -61,8 +61,7 @@ public sealed class SfumatoRunner
 		}
 	}
 	
-	public static string CliOutputPrefix => "Sfumato => ";
-	public static string CliOutputSuffix => $"{DateTime.Now:HH:mm:ss.fff}";
+	public static string CliErrorPrefix => "Sfumato => ";
 
 	#endregion
 	
@@ -185,7 +184,7 @@ public sealed class SfumatoRunner
 		
 		if (string.IsNullOrEmpty(AssemblyPath))
 		{
-			Console.WriteLine($"{CliOutputPrefix}Could not identify current runtime location.");
+			Console.WriteLine($"{CliErrorPrefix}Could not identify current runtime location.");
 			Environment.Exit(1);
 		}
 
@@ -202,6 +201,11 @@ public sealed class SfumatoRunner
 		ProcessCliArguments(args);
 		ProcessEmbeddedResources();
 
+		if (DebugMode)
+		{
+			DiagnosticMode = true;
+		}
+		
 		DiagnosticOutput.Append($"Loaded environment in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
 
@@ -369,7 +373,7 @@ public sealed class SfumatoRunner
 		
 		if (string.IsNullOrEmpty(SassCliPath) || File.Exists(SassCliPath) == false)
 		{
-			Console.WriteLine($"{CliOutputPrefix}Embedded Dart Sass cannot be found.");
+			Console.WriteLine($"{CliErrorPrefix}Embedded Dart Sass cannot be found.");
 			Environment.Exit(1);
 		}
 		
@@ -389,7 +393,7 @@ public sealed class SfumatoRunner
 
 		catch
 		{
-			Console.WriteLine($"{CliOutputPrefix}Dart Sass is embedded but cannot be found.");
+			Console.WriteLine($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
 			Environment.Exit(1);
 		}
 		
@@ -404,7 +408,7 @@ public sealed class SfumatoRunner
 		if (string.IsNullOrEmpty(ScssPath) == false && Directory.Exists(ScssPath))
 			return;
 		
-		Console.WriteLine($"{CliOutputPrefix}Embedded SCSS resources cannot be found.");
+		Console.WriteLine($"{CliErrorPrefix}Embedded SCSS resources cannot be found.");
 		Environment.Exit(1);
 
 		#endregion
@@ -419,7 +423,7 @@ public sealed class SfumatoRunner
 		
 		if (DebugMode)
 		{
-			var index = WorkingPath.IndexOf(Path.DirectorySeparatorChar + "Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
+			var index = WorkingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
 
 			if (index > -1)
 			{
@@ -439,7 +443,7 @@ public sealed class SfumatoRunner
 
 		if (File.Exists(ConfigFilePath) == false)
 		{
-			Console.WriteLine($"{CliOutputPrefix}Could not find settings file at path {ConfigFilePath}");
+			Console.WriteLine($"{CliErrorPrefix}Could not find settings file at path {ConfigFilePath}");
 			Environment.Exit(1);
 		}
 		
@@ -480,7 +484,7 @@ public sealed class SfumatoRunner
 
 		if (Directory.Exists(CssOutputPath) == false)
 		{
-			Console.WriteLine($"{CliOutputPrefix}Invalid CSS Output Path (edit the sfumato.json file)");
+			Console.WriteLine($"{CliErrorPrefix}Invalid CSS Output Path (edit the sfumato.json file)");
 			Environment.Exit(1);
 		}
 
@@ -492,7 +496,7 @@ public sealed class SfumatoRunner
 		
 		if (workingProjectPaths.Count == 0)
 		{
-			Console.WriteLine($"{CliOutputPrefix}No Project Paths (edit the sfumato.json file)");
+			Console.WriteLine($"{CliErrorPrefix}No Project Paths (edit the sfumato.json file)");
 			Environment.Exit(1);
 		}
 
@@ -500,14 +504,14 @@ public sealed class SfumatoRunner
 		{
 			if (string.IsNullOrEmpty(projectPath.Path))
 			{
-				Console.WriteLine($"{CliOutputPrefix}Empty Project Path (edit the sfumato.json file)");
+				Console.WriteLine($"{CliErrorPrefix}Empty Project Path (edit the sfumato.json file)");
 				Environment.Exit(1);
 			}
 
 			if (string.IsNullOrEmpty(projectPath.FileSpec) == false && string.IsNullOrEmpty(projectPath.FileSpec.Trim('.')) == false)
 				continue;
 			
-			Console.WriteLine($"{CliOutputPrefix}Invalid Project Path FileSpec '{projectPath.FileSpec}' (edit the sfumato.json file)");
+			Console.WriteLine($"{CliErrorPrefix}Invalid Project Path FileSpec '{projectPath.FileSpec}' (edit the sfumato.json file)");
 			Environment.Exit(1);
 		}
 		
@@ -524,7 +528,7 @@ public sealed class SfumatoRunner
 			if (Directory.Exists(projectPath.Path))
 				continue;
 			
-			Console.WriteLine($"{CliOutputPrefix}Invalid Project Path '{projectPath.Path}' (edit the sfumato.json file)");
+			Console.WriteLine($"{CliErrorPrefix}Invalid Project Path '{projectPath.Path}' (edit the sfumato.json file)");
 			Environment.Exit(1);
 		}
 		
@@ -661,7 +665,7 @@ public sealed class SfumatoRunner
 		var dir = new DirectoryInfo(sourcePath);
 
 		if (dir.Exists == false)
-			throw new DirectoryNotFoundException($"{CliOutputPrefix}Source directory does not exist or could not be found: {sourcePath}");
+			throw new DirectoryNotFoundException($"{CliErrorPrefix}Source directory does not exist or could not be found: {sourcePath}");
 
 		var dirs = dir.GetDirectories();
 		var files = dir.GetFiles();
