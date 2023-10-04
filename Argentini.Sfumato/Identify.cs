@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Sfumato;
+namespace Argentini.Sfumato;
 
 public static class Identify
 {

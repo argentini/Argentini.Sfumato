@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CliWrap;
 
-namespace Sfumato;
+namespace Argentini.Sfumato;
 
 /// <summary>
 /// Various helper methods for using Sass and SCSS files.

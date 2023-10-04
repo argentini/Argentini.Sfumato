@@ -1,5 +1,5 @@
-if (Test-Path ".\Sfumato\nupkg") { Remove-Item ".\Sfumato\nupkg" -Recurse -Force }
+if (Test-Path ".\Argentini.Sfumato\nupkg") { Remove-Item ".\Argentini.Sfumato\nupkg" -Recurse -Force }
 . ./clean.ps1
-Set-Location Sfumato
+Set-Location Argentini.Sfumato
 dotnet pack
 Set-Location ..

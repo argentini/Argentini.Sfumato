@@ -1,1 +1,1 @@
-dotnet run --project Sfumato\Sfumato.csproj --path SfumatoTests\SampleWebsite --diagnostics
+dotnet run --project Argentini.Sfumato\Argentini.Sfumato.csproj --path Argentini.Sfumato.Tests\SampleWebsite --diagnostics

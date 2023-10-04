@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Sfumato;
+namespace Argentini.Sfumato;
 
 /// <summary>
 /// Various tools to make using StringBuilders more like using strings. 

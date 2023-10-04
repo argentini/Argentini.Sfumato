@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sfumato;
+namespace Argentini.Sfumato;
 
 internal class Program
 {

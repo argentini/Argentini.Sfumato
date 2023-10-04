@@ -1,1 +1,1 @@
-dotnet tool uninstall -g sfumato
+dotnet tool uninstall --global argentini.sfumato

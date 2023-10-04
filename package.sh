@@ -1,5 +1,5 @@
-rm -r Sfumato/nupkg
+rm -r Argentini.Sfumato/nupkg
 source clean.sh
-cd Sfumato
+cd Argentini.Sfumato
 dotnet pack
 cd ..

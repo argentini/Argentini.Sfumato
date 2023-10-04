@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Sfumato;
+namespace Argentini.Sfumato;
 
 /// <summary>
 /// Various tools for working with strings. 
@@ -247,7 +247,7 @@ public static class Strings
 	/// <returns></returns>
 	public static string Repeat(this string text, int n)
 	{
-		if (string.IsNullOrEmpty(text))
+		if (string.IsNullOrEmpty(text) || n < 1)
 			return string.Empty;
 		
 		var textAsSpan = text.AsSpan();

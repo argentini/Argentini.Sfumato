@@ -13,7 +13,7 @@ using Mapster;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.ObjectPool;
 
-namespace Sfumato;
+namespace Argentini.Sfumato;
 
 public sealed class SfumatoRunner
 {
@@ -423,15 +423,15 @@ public sealed class SfumatoRunner
 
 			if (index > -1)
 			{
-				WorkingPath = Path.Combine(WorkingPath[..index], "SfumatoTests", "SampleWebsite");
+				WorkingPath = Path.Combine(WorkingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
 			}
 
 			else
 			{
-				index = WorkingPath.IndexOf(Path.DirectorySeparatorChar + "SfumatoTests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
+				index = WorkingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
 
 				if (index > -1)
-					WorkingPath = Path.Combine(WorkingPath[..index], "SfumatoTests", "SampleWebsite");
+					WorkingPath = Path.Combine(WorkingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
 			}
 		}		
 		
@@ -912,7 +912,7 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="config"></param>
 	/// <returns></returns>
-	private async Task<string> GenerateScssAsync()
+	public async Task<string> GenerateScssAsync()
 	{
 		var usedClasses = UsedClasses.OrderBy(c => c.ClassName).ToList().Adapt<List<ScssClass>>();
 		var hierarchy = new ScssNode

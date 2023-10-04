@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sfumato", "Sfumato\Sfumato.csproj", "{5BF01631-3AFB-4BE3-A248-43E29DE0DC03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argentini.Sfumato", "Argentini.Sfumato\Argentini.Sfumato.csproj", "{5BF01631-3AFB-4BE3-A248-43E29DE0DC03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SfumatoTests", "SfumatoTests\SfumatoTests.csproj", "{8F59A9DF-C40F-40B5-AFE7-894564A92C3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argentini.Sfumato.Tests", "Argentini.Sfumato.Tests\Argentini.Sfumato.Tests.csproj", "{8F59A9DF-C40F-40B5-AFE7-894564A92C3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

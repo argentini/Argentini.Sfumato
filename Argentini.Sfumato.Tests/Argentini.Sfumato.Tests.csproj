@@ -24,7 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Sfumato\Sfumato.csproj" />
-      <ProjectReference Include="..\Sfumato\Sfumato.csproj" />
+      <ProjectReference Include="..\Argentini.Sfumato\Argentini.Sfumato.csproj" />
     </ItemGroup>
 
     <ItemGroup>
