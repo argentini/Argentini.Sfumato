@@ -1,3 +1,4 @@
+using System.Reflection;
 using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
@@ -21,15 +22,11 @@ public class ParsingTests
         await runner.InitializeAsync();
         await runner.GatherUsedClassesAsync();
 
-        var scssPath = runner.UsedClasses.FirstOrDefault()?.FilePath ?? string.Empty;
-
-        scssPath = scssPath[..scssPath.LastIndexOf(Path.DirectorySeparatorChar)];
-        
         runner.UsedClasses.Clear();
         runner.UsedClasses.Add(new ScssClass
         {
             ClassName = "dark:tabp:bg-fuchsia-200",
-            FilePath = Path.Combine(scssPath, "bg-color.scss")
+            FilePath = Path.Combine(Assembly.GetExecutingAssembly().Location[..Assembly.GetExecutingAssembly().Location.LastIndexOf(Path.DirectorySeparatorChar)], "scss", "bg-color.scss")
         });
         
         var scssClass = runner.UsedClasses.FirstOrDefault(c => c.ClassName == "dark:tabp:bg-fuchsia-200");
