@@ -27,9 +27,10 @@ public sealed class SfumatoRunner
 	#endregion
 
 	#region State
-	
-	public string WorkingPathOverride { get; set; } = string.Empty;
+
 	public SfumatoSettings Settings { get; } = new();
+	public SfumatoScss Scss { get; } = new();
+	public string WorkingPathOverride { get; set; } = string.Empty;
 	public List<string> CliArgs { get; } = new();
 	private ObjectPool<StringBuilder> StringBuilderPool { get; }
 	public StringBuilder DiagnosticOutput { get; }
@@ -182,39 +183,11 @@ public sealed class SfumatoRunner
 		DiagnosticOutput.Append($"Identified {Classes.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 		
 		timer.Restart();
-		
-		#region Add Includes
-		
-		ScssCore.Append((await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_core.scss"))).Trim() + '\n');
-		ScssCore.Append((await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_browser-reset.scss"))).Trim() + '\n');
 
-		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_media-queries.scss"))).Trim() + '\n';
-
-		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{Settings.Breakpoints?.Zero}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{Settings.Breakpoints?.Phab}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabp-bp}", $"{Settings.Breakpoints?.Tabp}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabl-bp}", $"{Settings.Breakpoints?.Tabl}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{note-bp}", $"{Settings.Breakpoints?.Note}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{desk-bp}", $"{Settings.Breakpoints?.Desk}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{elas-bp}", $"{Settings.Breakpoints?.Elas}px");
-		
-		ScssCore.Append(mediaQueriesScss);
-
-		var initScss = (await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_initialize.scss"))).Trim() + '\n';
-		
-		initScss = initScss.Replace("#{zero-vw}", $"{Settings.FontSizeViewportUnits?.Zero}vw");
-		initScss = initScss.Replace("#{phab-vw}", $"{Settings.FontSizeViewportUnits?.Phab}vw");
-		initScss = initScss.Replace("#{tabp-vw}", $"{Settings.FontSizeViewportUnits?.Tabp}vw");
-		initScss = initScss.Replace("#{tabl-vw}", $"{Settings.FontSizeViewportUnits?.Tabl}vw");
-		initScss = initScss.Replace("#{note-vw}", $"{Settings.FontSizeViewportUnits?.Note}vw");
-		initScss = initScss.Replace("#{desk-vw}", $"{Settings.FontSizeViewportUnits?.Desk}vw");
-		initScss = initScss.Replace("#{elas-vw}", $"{Settings.FontSizeViewportUnits?.Elas}vw");
-		
-		ScssCore.Append(initScss);
+		ScssCore.Clear();
+		ScssCore.Append(await SfumatoScss.GetCoreScssAsync(Settings));
 		
 		DiagnosticOutput.Append($"Loaded core SCSS libraries in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
-
-		#endregion
 	}
 	
 	#endregion
@@ -611,8 +584,13 @@ public sealed class SfumatoRunner
 		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
 
 		DiagnosticOutput.Append($"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+
+		timer.Restart();
+
+		var fileSize = await Scss.TranspileScss(projectScss, Settings, ReleaseMode);
 		
-		await TranspileScss(projectScss);
+		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
+		DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
 		StringBuilderPool.Return(projectScss);
 	}
@@ -764,80 +742,6 @@ public sealed class SfumatoRunner
 		{
 			sb.Append($"{Indent(scssNode.Level - 1)}}}\n");
 		}
-	}
-	
-	#endregion
-	
-	#region SCSS
-	
-	/// <summary>
-	/// Transpile SCSS markup into CSS.
-	/// Calls "sass" CLI to transpile.
-	/// </summary>
-	/// <param name="scss">SCSS markup</param>
-	public async Task TranspileScss(StringBuilder scss)
-	{
-		var timer = new Stopwatch();
-		var sb = StringBuilderPool.Get();
-
-		timer.Start();
-		
-		try
-		{
-			var arguments = new List<string>();
-
-			if (File.Exists(Path.Combine(Settings.CssOutputPath, "sfumato.css.map")))
-				File.Delete(Path.Combine(Settings.CssOutputPath, "sfumato.css.map"));
-
-			if (ReleaseMode == false)
-			{
-				arguments.Add("--style=expanded");
-				arguments.Add("--embed-sources");
-			}
-
-			else
-			{
-				arguments.Add("--style=compressed");
-				arguments.Add("--no-source-map");
-	            
-			}
-
-			arguments.Add("--stdin");
-			arguments.Add(Path.Combine(Settings.CssOutputPath, "sfumato.css"));
-			
-			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(Settings.SassCliPath)
-				.WithArguments(args =>
-				{
-					foreach (var arg in arguments)
-						args.Add(arg);
-
-				})
-				.WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
-				.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
-
-			await cmd.ExecuteAsync();
-
-			var fileInfo = new FileInfo(Path.Combine(Settings.CssOutputPath, "sfumato.css"));
-
-			Console.WriteLine($" saved sfumato.css ({fileInfo.Length.FormatBytes()})");
-			DiagnosticOutput.Append($"Transpiled sfumato.css ({fileInfo.Length.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
-		}
-
-		catch (Exception e)
-		{
-			sb.AppendLine($" ERROR: {e.Message.Trim()}");
-			sb.AppendLine(string.Empty);
-			sb.AppendLine(e.StackTrace?.Trim());
-			sb.AppendLine(string.Empty);
-
-			Console.WriteLine(sb.ToString());
-			
-			DiagnosticOutput.Append(sb.ToString().Trim());
-			
-			throw;
-		}
-
-		StringBuilderPool.Return(sb);
 	}
 	
 	#endregion
