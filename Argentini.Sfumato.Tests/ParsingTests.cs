@@ -20,16 +20,15 @@ public class ParsingTests
         var runner = new SfumatoRunner(Array.Empty<string>());
 
         await runner.InitializeAsync();
-        await runner.GatherUsedClassesAsync();
 
-        runner.UsedClasses.Clear();
-        runner.UsedClasses.Add(new ScssClass
+        runner.AppState.UsedClasses.Clear();
+        runner.AppState.UsedClasses.Add(new ScssClass
         {
             ClassName = "dark:tabp:bg-fuchsia-200",
             FilePath = Path.Combine(Assembly.GetExecutingAssembly().Location[..Assembly.GetExecutingAssembly().Location.LastIndexOf(Path.DirectorySeparatorChar)], "scss", "bg-color.scss")
         });
         
-        var scssClass = runner.UsedClasses.FirstOrDefault(c => c.ClassName == "dark:tabp:bg-fuchsia-200");
+        var scssClass = runner.AppState.UsedClasses.FirstOrDefault(c => c.ClassName == "dark:tabp:bg-fuchsia-200");
 
         Assert.NotNull(scssClass);
         

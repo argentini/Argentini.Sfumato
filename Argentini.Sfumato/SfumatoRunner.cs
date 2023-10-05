@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Mapster;
 
@@ -28,12 +27,9 @@ public sealed class SfumatoRunner
 
 	public SfumatoAppState AppState { get; } = new();
 	public SfumatoScss Scss { get; } = new();
-	public string WorkingPathOverride { get; set; } = string.Empty;
 	public List<string> CliArgs { get; } = new();
-	public StringBuilder DiagnosticOutput { get; }
-	public List<string> AllPrefixes { get; } = new();
-	public List<ScssClass> UsedClasses { get; } = new();
-	public StringBuilder ScssCore { get; }
+	public string WorkingPathOverride { get; set; } = string.Empty;
+	public StringBuilder DiagnosticOutput { get; } = new();
 
 	#endregion
 
@@ -55,62 +51,6 @@ public sealed class SfumatoRunner
 		}
 	}
 	
-	public Dictionary<string, string> MediaQueryPrefixes { get; } = new ()
-	{
-		{ "dark", "@media (prefers-color-scheme: dark) {" },
-		{ "portrait", "@media (orientation: portrait) {" },
-		{ "landscape", "@media (orientation: landscape) {" },
-		{ "print", "@media print {" },
-		{ "zero", "@include sf-media($from: zero) {" },
-		{ "phab", "@include sf-media($from: phab) {" },
-		{ "tabp", "@include sf-media($from: tabp) {" },
-		{ "tabl", "@include sf-media($from: tabl) {" },
-		{ "note", "@include sf-media($from: note) {" },
-		{ "desk", "@include sf-media($from: desk) {" },
-		{ "elas", "@include sf-media($from: elas) {" }
-	};
-	public Dictionary<string, string> PseudoclassPrefixes { get; } = new ()
-	{
-		{ "hover", "&:hover {"},
-		{ "focus", "&:focus {" },
-		{ "focus-within", "&:focus-within {" },
-		{ "focus-visible", "&:focus-visible {" },
-		{ "active", "&:active {" },
-		{ "visited", "&:visited {" },
-		{ "target", "&:target {" },
-		{ "first", "&:first-child {" },
-		{ "last", "&:last-child {" },
-		{ "only", "&:only-child {" },
-		{ "odd", "&:nth-child(odd) {" },
-		{ "even", "&:nth-child(even) {" },
-		{ "first-of-type", "&:first-of-type {" },
-		{ "last-of-type", "&:last-of-type {" },
-		{ "only-of-type", "&:only-of-type {" },
-		{ "empty", "&:empty {" },
-		{ "disabled", "&:disabled {" },
-		{ "enabled", "&:enabled {" },
-		{ "checked", "&:checked {" },
-		{ "indeterminate", "&:indeterminate {" },
-		{ "default", "&:default {" },
-		{ "required", "&:required {" },
-		{ "valid", "&:valid {" },
-		{ "invalid", "&:invalid {" },
-		{ "in-range", "&:in-range {" },
-		{ "out-of-range", "&:out-of-range {" },
-		{ "placeholder-shown", "&:placeholder-shown {" },
-		{ "autofill", "&:autofill {" },
-		{ "read-only", "&:read-only {" },
-		{ "before", "&::before {" },
-		{ "after", "&::after {" },
-		{ "first-letter", "&::first-letter {" },
-		{ "first-line", "&::first-line {" },
-		{ "marker", "&::marker {" },
-		{ "selection", "&::selection {" },
-		{ "file", "&::file-selector-button {" },
-		{ "backdrop", "&::backdrop {" },
-		{ "placeholder", "&::placeholder {" }
-	};
-
 	#endregion
 	
     #region FileSystemWatchers
@@ -129,9 +69,6 @@ public sealed class SfumatoRunner
 
 		timer.Start();
 		
-		DiagnosticOutput = AppState.StringBuilderPool.Get();
-		ScssCore = AppState.StringBuilderPool.Get();
-		
 		TypeAdapterConfig<ScssNode, ScssNode>.NewConfig()
 			.PreserveReference(true)
 			.AfterMapping((src, dest) => 
@@ -140,14 +77,6 @@ public sealed class SfumatoRunner
 				dest.Nodes = src.Nodes.Adapt<List<ScssNode>>();
 			});
 		
-		#region Gather Scss Class Prefixes
-
-		AllPrefixes.Clear();
-		AllPrefixes.AddRange(MediaQueryPrefixes.Select(p => p.Key));
-		AllPrefixes.AddRange(PseudoclassPrefixes.Select(p => p.Key));
-		
-		#endregion
-
 		ProcessCliArguments(args);
 
 #if DEBUG
@@ -158,14 +87,11 @@ public sealed class SfumatoRunner
 	}
 
 	/// <summary>
-	/// Loads settings, creates SCSS manifest, load core SCSS for injection into project build.
+	/// Loads settings and app state.
 	/// </summary>
 	public async Task InitializeAsync()
 	{
 		await AppState.InitializeAsync(WorkingPathOverride, DiagnosticOutput);
-
-		ScssCore.Clear();
-		ScssCore.Append(await SfumatoScss.GetCoreScssAsync(AppState, DiagnosticOutput));
 	}
 	
 	#endregion
@@ -234,7 +160,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	private bool IsMediaQueryPrefix(string prefix)
 	{
-		var mediaQueryPrefix = MediaQueryPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		var mediaQueryPrefix = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(mediaQueryPrefix.Key) == false;
 	}
 
@@ -245,105 +171,8 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	private bool IsPseudoclassPrefix(string prefix)
 	{
-		var pseudoclassPrefix = PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		var pseudoclassPrefix = AppState.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;
-	}
-	
-	/// <summary>
-	/// Identify the used classes in the project.
-	/// </summary>
-	/// <param name="runner"></param>
-	public async Task GatherUsedClassesAsync()
-	{
-		var timer = new Stopwatch();
-
-		timer.Start();
-
-		Console.Write("Identifying used classes...");
-		
-		UsedClasses.Clear();
-
-		if (AppState.Settings.ProjectPaths.Count == 0)
-		{
-			Console.WriteLine(" no project paths specified");
-			return;
-		}
-
-		foreach (var projectPath in AppState.Settings.ProjectPaths)
-			await RecurseProjectPathForUsedClassesAsync(projectPath.Path, projectPath.FileSpec, projectPath.Recurse);
-		
-		if (UsedClasses.Count == 0)
-			Console.WriteLine(" no classes used");
-		else
-			Console.WriteLine($" found {UsedClasses.Count:N0}/{AppState.Classes.Count:N0} classes");
-		
-		DiagnosticOutput.Append($"Identified {UsedClasses.Count:N0} used classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
-	}
-	private async Task RecurseProjectPathForUsedClassesAsync(string? sourcePath, string fileSpec, bool recurse)
-	{
-		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
-			return;
-
-		var dir = new DirectoryInfo(sourcePath);
-
-		if (dir.Exists == false)
-		{
-			Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
-			Environment.Exit(1);
-		}
-
-		var dirs = dir.GetDirectories();
-		var files = dir.GetFiles();
-		var prefixes = string.Join(":|", AllPrefixes) + ":";
-
-		var regex = new Regex($$"""(?<=[\s"'`])(({{prefixes}}){0,9}[a-z]{1,1}[a-z0-9\-]{1,99})(?=[\s"'`])""", RegexOptions.Compiled);
-
-		foreach (var projectFile in files.OrderBy(f => f.Name))
-		{
-			if (projectFile.Name.EndsWith($"{fileSpec.TrimStart('*')}", StringComparison.InvariantCultureIgnoreCase) == false)
-				continue;
-			
-			var markup = await File.ReadAllTextAsync(projectFile.FullName);
-
-			if (string.IsNullOrEmpty(markup))
-				continue;
-
-			var matches = regex.Matches(markup);
-
-			foreach (Match match in matches)
-			{
-				var mv = match.Value.ToLower().TrimEnd(':');
-
-				foreach (var breakpoint in new[] { "zero:", "phab:", "tabp:", "tabl:", "note:", "desk:", "elas:" })
-				{
-					if (mv.Contains(breakpoint, StringComparison.Ordinal))
-						mv = $"{breakpoint}{mv.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
-				}
-				
-				if (mv.Contains("dark:", StringComparison.Ordinal))
-					mv = $"dark:{mv.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
-				
-				var matchValue = mv.Contains(':') ? mv[(mv.LastIndexOf(':') + 1)..] : mv;
-				
-				var matchedClass = AppState.Classes.FirstOrDefault(c => c.ClassName.Equals(matchValue, StringComparison.Ordinal));
-				
-				if (matchedClass is null)
-					continue;
-
-				if (UsedClasses.FirstOrDefault(c => c.ClassName.Equals(mv, StringComparison.Ordinal)) is not null)
-					continue;
-				
-				UsedClasses.Add(new ScssClass
-				{
-					FilePath = matchedClass.FilePath,
-					ClassName = mv
-				});
-			}
-		}
-
-		if (recurse)
-			foreach (var subDir in dirs.OrderBy(d => d.Name))
-				await RecurseProjectPathForUsedClassesAsync(subDir.FullName, fileSpec, recurse);
 	}
 	
 	/// <summary>
@@ -455,7 +284,7 @@ public sealed class SfumatoRunner
 					level++;
 				}
 
-				var pseudoClass = PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+				var pseudoClass = AppState.PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 					
 				scssResult.Append($"{Indent(level)}{pseudoClass.Value}\n");
 				level++;
@@ -494,7 +323,7 @@ public sealed class SfumatoRunner
 	{
 		var timer = new Stopwatch();
 		
-		await GatherUsedClassesAsync();
+		await AppState.GatherUsedClassesAsync();
 
 		timer.Start();
 
@@ -502,7 +331,7 @@ public sealed class SfumatoRunner
 		
 		var projectScss = AppState.StringBuilderPool.Get();
 
-		projectScss.Append(ScssCore);
+		projectScss.Append(AppState.ScssCore);
 		projectScss.Append(await GenerateScssAsync());
 		
 		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
@@ -528,7 +357,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	public async Task<string> GenerateScssAsync()
 	{
-		var usedClasses = UsedClasses.OrderBy(c => c.ClassName).ToList().Adapt<List<ScssClass>>();
+		var usedClasses = AppState.UsedClasses.OrderBy(c => c.ClassName).ToList().Adapt<List<ScssClass>>();
 		var hierarchy = new ScssNode
 		{
 			Prefix = string.Empty,
@@ -621,7 +450,7 @@ public sealed class SfumatoRunner
 			if (prefix.Equals("auto-dark", StringComparison.Ordinal))
 				prefix = "dark";
 			
-			var mediaQueryPrefix = MediaQueryPrefixes.First(p => p.Key.Equals(prefix));
+			var mediaQueryPrefix = AppState.MediaQueryPrefixes.First(p => p.Key.Equals(prefix));
 
 			if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
 			{

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CliWrap;
 using Mapster;
@@ -18,6 +19,68 @@ public sealed class SfumatoAppState
 {
     #region Properties
 
+    #region Constants
+    
+    public static string CliErrorPrefix => "Sfumato => ";
+    
+	public Dictionary<string, string> MediaQueryPrefixes { get; } = new ()
+	{
+		{ "dark", "@media (prefers-color-scheme: dark) {" },
+		{ "portrait", "@media (orientation: portrait) {" },
+		{ "landscape", "@media (orientation: landscape) {" },
+		{ "print", "@media print {" },
+		{ "zero", "@include sf-media($from: zero) {" },
+		{ "phab", "@include sf-media($from: phab) {" },
+		{ "tabp", "@include sf-media($from: tabp) {" },
+		{ "tabl", "@include sf-media($from: tabl) {" },
+		{ "note", "@include sf-media($from: note) {" },
+		{ "desk", "@include sf-media($from: desk) {" },
+		{ "elas", "@include sf-media($from: elas) {" }
+	};
+	public Dictionary<string, string> PseudoclassPrefixes { get; } = new ()
+	{
+		{ "hover", "&:hover {"},
+		{ "focus", "&:focus {" },
+		{ "focus-within", "&:focus-within {" },
+		{ "focus-visible", "&:focus-visible {" },
+		{ "active", "&:active {" },
+		{ "visited", "&:visited {" },
+		{ "target", "&:target {" },
+		{ "first", "&:first-child {" },
+		{ "last", "&:last-child {" },
+		{ "only", "&:only-child {" },
+		{ "odd", "&:nth-child(odd) {" },
+		{ "even", "&:nth-child(even) {" },
+		{ "first-of-type", "&:first-of-type {" },
+		{ "last-of-type", "&:last-of-type {" },
+		{ "only-of-type", "&:only-of-type {" },
+		{ "empty", "&:empty {" },
+		{ "disabled", "&:disabled {" },
+		{ "enabled", "&:enabled {" },
+		{ "checked", "&:checked {" },
+		{ "indeterminate", "&:indeterminate {" },
+		{ "default", "&:default {" },
+		{ "required", "&:required {" },
+		{ "valid", "&:valid {" },
+		{ "invalid", "&:invalid {" },
+		{ "in-range", "&:in-range {" },
+		{ "out-of-range", "&:out-of-range {" },
+		{ "placeholder-shown", "&:placeholder-shown {" },
+		{ "autofill", "&:autofill {" },
+		{ "read-only", "&:read-only {" },
+		{ "before", "&::before {" },
+		{ "after", "&::after {" },
+		{ "first-letter", "&::first-letter {" },
+		{ "first-line", "&::first-line {" },
+		{ "marker", "&::marker {" },
+		{ "selection", "&::selection {" },
+		{ "file", "&::file-selector-button {" },
+		{ "backdrop", "&::backdrop {" },
+		{ "placeholder", "&::placeholder {" }
+	};
+    
+    #endregion
+    
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
     public SfumatoJsonSettings Settings { get; set; } = new();
     public StringBuilder DiagnosticOutput { get; set; } = new();
@@ -27,11 +90,25 @@ public sealed class SfumatoAppState
     public string ScssPath { get; set; } = string.Empty;
     public Dictionary<string, string> ScssFiles { get; } = new();
     public List<ScssClass> Classes { get; } = new();
+    public List<ScssClass> UsedClasses { get; } = new();
+    public List<string> AllPrefixes { get; } = new();
+    public StringBuilder ScssCore { get; } = new();
     
-    public static string CliErrorPrefix => "Sfumato => ";
-
     #endregion
 
+    #region Constructors
+    
+    public SfumatoAppState()
+    {
+	    #region Gather Scss Class Prefixes
+
+	    AllPrefixes.Clear();
+	    AllPrefixes.AddRange(MediaQueryPrefixes.Select(p => p.Key));
+	    AllPrefixes.AddRange(PseudoclassPrefixes.Select(p => p.Key));
+		
+	    #endregion
+    }
+    
     /// <summary>
     /// Initialize the app state. Loads settings JSON file from working path.
     /// Sets up runtime environment for the runner.
@@ -131,6 +208,9 @@ public sealed class SfumatoAppState
         }
 
         DiagnosticOutput.Append($"Initialized settings in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+
+        ScssCore.Clear();
+        ScssCore.Append(await SfumatoScss.GetCoreScssAsync(this, DiagnosticOutput));
         
         timer.Restart();
         
@@ -139,7 +219,9 @@ public sealed class SfumatoAppState
         diagnosticOutput.Append($"Identified {Classes.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
     }
     
-    #region Methods
+    #endregion
+    
+    #region Runner Methods
 
     /// <summary>
     /// Identify the available class names from the embedded SCSS library.
@@ -194,7 +276,108 @@ public sealed class SfumatoAppState
 		    }
 	    }
     }
+
+	/// <summary>
+	/// Identify the used classes in the project.
+	/// </summary>
+	/// <param name="runner"></param>
+	public async Task GatherUsedClassesAsync()
+	{
+		var timer = new Stopwatch();
+
+		timer.Start();
+
+		Console.Write("Identifying used classes...");
+		
+		UsedClasses.Clear();
+
+		if (Settings.ProjectPaths.Count == 0)
+		{
+			Console.WriteLine(" no project paths specified");
+			return;
+		}
+
+		foreach (var projectPath in Settings.ProjectPaths)
+			await RecurseProjectPathForUsedClassesAsync(projectPath.Path, projectPath.FileSpec, projectPath.Recurse);
+		
+		if (UsedClasses.Count == 0)
+			Console.WriteLine(" no classes used");
+		else
+			Console.WriteLine($" found {UsedClasses.Count:N0}/{Classes.Count:N0} classes");
+		
+		DiagnosticOutput.Append($"Identified {UsedClasses.Count:N0} used classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+	}
+	private async Task RecurseProjectPathForUsedClassesAsync(string? sourcePath, string fileSpec, bool recurse)
+	{
+		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
+			return;
+
+		var dir = new DirectoryInfo(sourcePath);
+
+		if (dir.Exists == false)
+		{
+			Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
+			Environment.Exit(1);
+		}
+
+		var dirs = dir.GetDirectories();
+		var files = dir.GetFiles();
+		var prefixes = string.Join(":|", AllPrefixes) + ":";
+
+		var regex = new Regex($$"""(?<=[\s"'`])(({{prefixes}}){0,9}[a-z]{1,1}[a-z0-9\-]{1,99})(?=[\s"'`])""", RegexOptions.Compiled);
+
+		foreach (var projectFile in files.OrderBy(f => f.Name))
+		{
+			if (projectFile.Name.EndsWith($"{fileSpec.TrimStart('*')}", StringComparison.InvariantCultureIgnoreCase) == false)
+				continue;
+			
+			var markup = await File.ReadAllTextAsync(projectFile.FullName);
+
+			if (string.IsNullOrEmpty(markup))
+				continue;
+
+			var matches = regex.Matches(markup);
+
+			foreach (Match match in matches)
+			{
+				var mv = match.Value.ToLower().TrimEnd(':');
+
+				foreach (var breakpoint in new[] { "zero:", "phab:", "tabp:", "tabl:", "note:", "desk:", "elas:" })
+				{
+					if (mv.Contains(breakpoint, StringComparison.Ordinal))
+						mv = $"{breakpoint}{mv.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
+				}
+				
+				if (mv.Contains("dark:", StringComparison.Ordinal))
+					mv = $"dark:{mv.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
+				
+				var matchValue = mv.Contains(':') ? mv[(mv.LastIndexOf(':') + 1)..] : mv;
+				
+				var matchedClass = Classes.FirstOrDefault(c => c.ClassName.Equals(matchValue, StringComparison.Ordinal));
+				
+				if (matchedClass is null)
+					continue;
+
+				if (UsedClasses.FirstOrDefault(c => c.ClassName.Equals(mv, StringComparison.Ordinal)) is not null)
+					continue;
+				
+				UsedClasses.Add(new ScssClass
+				{
+					FilePath = matchedClass.FilePath,
+					ClassName = mv
+				});
+			}
+		}
+
+		if (recurse)
+			foreach (var subDir in dirs.OrderBy(d => d.Name))
+				await RecurseProjectPathForUsedClassesAsync(subDir.FullName, fileSpec, recurse);
+	}
+
+	#endregion
     
+	#region Initialization Methods
+	
     public static string GetWorkingPath()
     {
         var workingPath = Directory.GetCurrentDirectory();

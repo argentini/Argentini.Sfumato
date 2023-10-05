@@ -45,7 +45,7 @@ public sealed class SfumatoScss
 		
 		sb.Append(initScss);
 		
-		diagnosticOutput.Append($"Loaded core SCSS libraries in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		diagnosticOutput.Append($"Prepared SCSS Core for output injection in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");		
 		
 		return sb.ToString();
 	}
