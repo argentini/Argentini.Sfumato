@@ -16,17 +16,22 @@ public sealed class SfumatoRunner
 {
 	#region Properties
 
-	#region State
+	#region Modes
 
 	public bool ReleaseMode { get; set; }
 	public bool WatchMode { get; set; }
 	public bool VersionMode { get; set; }
 	public bool HelpMode { get; set; }
 	public bool DiagnosticMode { get; set; }
+	
+	#endregion
 
+	#region State
+	
 	public string WorkingPathOverride { get; set; } = string.Empty;
-	private ObjectPool<StringBuilder> StringBuilderPool { get; }
+	public SfumatoSettings Settings { get; } = new();
 	public List<string> CliArgs { get; } = new();
+	private ObjectPool<StringBuilder> StringBuilderPool { get; }
 	public StringBuilder DiagnosticOutput { get; }
 	public Dictionary<string, string> ScssFiles { get; } = new();
 	public List<string> AllPrefixes { get; } = new();
@@ -36,13 +41,9 @@ public sealed class SfumatoRunner
 
 	#endregion
 
-	#region JSON Settings
+	#region Constants
 
-	public SfumatoSettings Settings { get; } = new();
-	
-	#endregion
-	
-	#region CLI
+	public static int IndentationSpaces => 4;
 
 	public static int MaxConsoleWidth => GetMaxConsoleWidth();
 	
@@ -58,13 +59,6 @@ public sealed class SfumatoRunner
 		}
 	}
 	
-	public static string CliErrorPrefix => "Sfumato => ";
-
-	#endregion
-	
-	#region Constants
-
-	public static int IndentationSpaces => 4;
 	public Dictionary<string, string> MediaQueryPrefixes { get; } = new ()
 	{
 		{ "dark", "@media (prefers-color-scheme: dark) {" },
@@ -396,7 +390,10 @@ public sealed class SfumatoRunner
 		var dir = new DirectoryInfo(sourcePath);
 
 		if (dir.Exists == false)
-			throw new DirectoryNotFoundException($"{CliErrorPrefix}Source directory does not exist or could not be found: {sourcePath}");
+		{
+			Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
+			Environment.Exit(1);
+		}
 
 		var dirs = dir.GetDirectories();
 		var files = dir.GetFiles();
