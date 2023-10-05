@@ -83,7 +83,7 @@ public sealed class SfumatoRunner
 		DiagnosticMode = true;
 #endif		
 
-		DiagnosticOutput.Append($"Started environment in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		DiagnosticOutput.Append($"Cold start in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
 
 	/// <summary>
@@ -323,7 +323,7 @@ public sealed class SfumatoRunner
 	{
 		var timer = new Stopwatch();
 		
-		await AppState.GatherUsedClassesAsync();
+		await AppState.GatherUsedScssCoreClassesAsync();
 
 		timer.Start();
 
@@ -331,7 +331,7 @@ public sealed class SfumatoRunner
 		
 		var projectScss = AppState.StringBuilderPool.Get();
 
-		projectScss.Append(AppState.ScssCore);
+		projectScss.Append(AppState.ScssInjectableCore);
 		projectScss.Append(await GenerateScssAsync());
 		
 		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
