@@ -53,20 +53,20 @@ internal class Program
 		await runner.InitializeAsync();
 
 		Console.WriteLine($"Build Mode       :  {(runner.ReleaseMode ? "Release" : "Development")}");
-		Console.WriteLine($"Theme Mode       :  {(runner.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "System" : "CSS Class")}");
-		Console.WriteLine($"Project Path     :  {runner.WorkingPath}");
-		Console.WriteLine($"CSS Output Path  :  .{runner.CssOutputPath.TrimStart(runner.WorkingPath)}");
+		Console.WriteLine($"Theme Mode       :  {(runner.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "System" : "CSS Class")}");
+		Console.WriteLine($"Project Path     :  {runner.Settings.WorkingPath}");
+		Console.WriteLine($"CSS Output Path  :  .{runner.Settings.CssOutputPath.TrimStart(runner.Settings.WorkingPath)}");
 
-		if (runner.ProjectPaths.Count > 0)
+		if (runner.Settings.ProjectPaths.Count > 0)
 		{
 			var paths = string.Empty;
 	        
-			foreach (var path in runner.ProjectPaths)
+			foreach (var path in runner.Settings.ProjectPaths)
 			{
 				if (string.IsNullOrEmpty(paths) == false)
 					paths += "                 :  ";
 
-				paths += $".{path.Path.TrimStart(runner.WorkingPath)}/{path.FileSpec}{(path.Recurse ? " (Recurse)" : string.Empty)}{Environment.NewLine}";
+				paths += $".{path.Path.TrimStart(runner.Settings.WorkingPath)}/{path.FileSpec}{(path.Recurse ? " (Recurse)" : string.Empty)}{Environment.NewLine}";
 			}
 	        
 			Console.WriteLine($"Include Path(s)  :  {paths.TrimEnd()}");

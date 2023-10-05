@@ -35,12 +35,14 @@ public class ParsingTests
         
         var result = await runner.GenerateScssAsync();
         
-        Assert.Equal(@"@media (prefers-color-scheme: dark) {
+        Assert.Equal("""
+@media (prefers-color-scheme: dark) {
     @include sf-media($from: tabp) {
         .dark\:tabp\:bg-fuchsia-200 {
             background-color: rgb(245 208 254);
         }
     }
-}", result.Trim());
+}
+""", result.Trim());
     }
 }

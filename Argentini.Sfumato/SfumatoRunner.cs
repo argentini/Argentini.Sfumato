@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CliWrap;
 using Mapster;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato;
@@ -21,22 +18,16 @@ public sealed class SfumatoRunner
 
 	#region State
 
-	public bool DebugMode { get; }
 	public bool ReleaseMode { get; set; }
 	public bool WatchMode { get; set; }
 	public bool VersionMode { get; set; }
 	public bool HelpMode { get; set; }
 	public bool DiagnosticMode { get; set; }
-	public string ThemeMode { get; set; } = "system";
-	public string AssemblyPath { get; }
-	public Architecture ProcessorArchitecture { get; }
-	public OSPlatform OsPlatform { get; }
-	public List<string> CliArgs { get; } = new();
+
+	public string WorkingPathOverride { get; set; } = string.Empty;
 	private ObjectPool<StringBuilder> StringBuilderPool { get; }
+	public List<string> CliArgs { get; } = new();
 	public StringBuilder DiagnosticOutput { get; }
-	public Breakpoints Breakpoints { get; set; } = new();
-	public FontSizeViewportUnits FontSizeViewportUnits { get; set; } = new();
-	
 	public Dictionary<string, string> ScssFiles { get; } = new();
 	public List<string> AllPrefixes { get; } = new();
 	public List<ScssClass> Classes { get; } = new();
@@ -45,6 +36,12 @@ public sealed class SfumatoRunner
 
 	#endregion
 
+	#region JSON Settings
+
+	public SfumatoSettings Settings { get; } = new();
+	
+	#endregion
+	
 	#region CLI
 
 	public static int MaxConsoleWidth => GetMaxConsoleWidth();
@@ -126,22 +123,6 @@ public sealed class SfumatoRunner
 
 	#endregion
 	
-    #region Input Paths
-
-    public string WorkingPath { get; set; }
-    public string SassCliPath { get; set; } = string.Empty;
-    public string ScssPath { get; set; } = string.Empty;
-    public string ConfigFilePath { get; set; }
-    public List<ProjectPath> ProjectPaths { get; } = new();
-    
-    #endregion
-    
-	#region Output Paths
-
-	public string CssOutputPath { get; set; } = string.Empty;
-	
-	#endregion
-
     #region FileSystemWatchers
 
     //public List<FileSystemWatcher> ProjectFileSystemWatchers { get; } = new();
@@ -170,26 +151,6 @@ public sealed class SfumatoRunner
 				dest.Nodes = src.Nodes.Adapt<List<ScssNode>>();
 			});
 		
-		#region Identify Runtime
-
-#if DEBUG
-		DebugMode = true;
-#endif
-		
-		AssemblyPath = Assembly.GetExecutingAssembly().Location;
-		ProcessorArchitecture = Identify.GetProcessorArchitecture();
-		OsPlatform = Identify.GetOsPlatform();
-		WorkingPath = Directory.GetCurrentDirectory();
-		ConfigFilePath = Path.GetFullPath(Path.Combine(WorkingPath, "sfumato.json"));
-		
-		if (string.IsNullOrEmpty(AssemblyPath))
-		{
-			Console.WriteLine($"{CliErrorPrefix}Could not identify current runtime location.");
-			Environment.Exit(1);
-		}
-
-		#endregion
-		
 		#region Gather Scss Class Prefixes
 
 		AllPrefixes.Clear();
@@ -199,14 +160,12 @@ public sealed class SfumatoRunner
 		#endregion
 
 		ProcessCliArguments(args);
-		ProcessEmbeddedResources();
 
-		if (DebugMode)
-		{
-			DiagnosticMode = true;
-		}
-		
-		DiagnosticOutput.Append($"Loaded environment in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+#if DEBUG
+		DiagnosticMode = true;
+#endif		
+
+		DiagnosticOutput.Append($"Started environment in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
 
 	/// <summary>
@@ -218,7 +177,7 @@ public sealed class SfumatoRunner
 
 		timer.Start();
 		
-		await LoadJsonSettingsAsync();
+		await Settings.LoadAsync(WorkingPathOverride);
 		
 		DiagnosticOutput.Append($"Processed settings in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
@@ -232,30 +191,30 @@ public sealed class SfumatoRunner
 		
 		#region Add Includes
 		
-		ScssCore.Append((await File.ReadAllTextAsync(Path.Combine(ScssPath, "includes", "_core.scss"))).Trim() + '\n');
-		ScssCore.Append((await File.ReadAllTextAsync(Path.Combine(ScssPath, "includes", "_browser-reset.scss"))).Trim() + '\n');
+		ScssCore.Append((await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_core.scss"))).Trim() + '\n');
+		ScssCore.Append((await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_browser-reset.scss"))).Trim() + '\n');
 
-		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(ScssPath, "includes", "_media-queries.scss"))).Trim() + '\n';
+		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_media-queries.scss"))).Trim() + '\n';
 
-		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{Breakpoints.Zero}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{Breakpoints.Phab}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabp-bp}", $"{Breakpoints.Tabp}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabl-bp}", $"{Breakpoints.Tabl}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{note-bp}", $"{Breakpoints.Note}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{desk-bp}", $"{Breakpoints.Desk}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{elas-bp}", $"{Breakpoints.Elas}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{Settings.Breakpoints?.Zero}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{Settings.Breakpoints?.Phab}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{tabp-bp}", $"{Settings.Breakpoints?.Tabp}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{tabl-bp}", $"{Settings.Breakpoints?.Tabl}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{note-bp}", $"{Settings.Breakpoints?.Note}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{desk-bp}", $"{Settings.Breakpoints?.Desk}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{elas-bp}", $"{Settings.Breakpoints?.Elas}px");
 		
 		ScssCore.Append(mediaQueriesScss);
 
-		var initScss = (await File.ReadAllTextAsync(Path.Combine(ScssPath, "includes", "_initialize.scss"))).Trim() + '\n';
+		var initScss = (await File.ReadAllTextAsync(Path.Combine(Settings.ScssPath, "includes", "_initialize.scss"))).Trim() + '\n';
 		
-		initScss = initScss.Replace("#{zero-vw}", $"{FontSizeViewportUnits.Zero}vw");
-		initScss = initScss.Replace("#{phab-vw}", $"{FontSizeViewportUnits.Phab}vw");
-		initScss = initScss.Replace("#{tabp-vw}", $"{FontSizeViewportUnits.Tabp}vw");
-		initScss = initScss.Replace("#{tabl-vw}", $"{FontSizeViewportUnits.Tabl}vw");
-		initScss = initScss.Replace("#{note-vw}", $"{FontSizeViewportUnits.Note}vw");
-		initScss = initScss.Replace("#{desk-vw}", $"{FontSizeViewportUnits.Desk}vw");
-		initScss = initScss.Replace("#{elas-vw}", $"{FontSizeViewportUnits.Elas}vw");
+		initScss = initScss.Replace("#{zero-vw}", $"{Settings.FontSizeViewportUnits?.Zero}vw");
+		initScss = initScss.Replace("#{phab-vw}", $"{Settings.FontSizeViewportUnits?.Phab}vw");
+		initScss = initScss.Replace("#{tabp-vw}", $"{Settings.FontSizeViewportUnits?.Tabp}vw");
+		initScss = initScss.Replace("#{tabl-vw}", $"{Settings.FontSizeViewportUnits?.Tabl}vw");
+		initScss = initScss.Replace("#{note-vw}", $"{Settings.FontSizeViewportUnits?.Note}vw");
+		initScss = initScss.Replace("#{desk-vw}", $"{Settings.FontSizeViewportUnits?.Desk}vw");
+		initScss = initScss.Replace("#{elas-vw}", $"{Settings.FontSizeViewportUnits?.Elas}vw");
 		
 		ScssCore.Append(initScss);
 		
@@ -304,237 +263,9 @@ public sealed class SfumatoRunner
 
 					path = Path.GetFullPath(path);
 					
-					ConfigFilePath = Path.Combine(path, "sfumato.json");
-					WorkingPath = path;
+					WorkingPathOverride = path;
 				}
 		}
-	}
-	
-	/// <summary>
-	/// Validate that embedded resources are present and establish paths.
-	/// </summary>
-	public void ProcessEmbeddedResources()
-	{
-		#region Validate Embedded Dart Sass
-		
-		var workingSassPath = AssemblyPath;
-
-		while (workingSassPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
-		{
-			workingSassPath = workingSassPath[..workingSassPath.LastIndexOf(Path.DirectorySeparatorChar)];
-
-			if (DebugMode)
-			{
-				if (Directory.Exists(Path.Combine(workingSassPath, "sass")) == false)
-					continue;
-
-				var tempPath = workingSassPath; 
-				
-				workingSassPath = Path.Combine(tempPath, "sass");
-			}
-
-			else
-			{
-				if (Directory.Exists(Path.Combine(workingSassPath, "contentFiles")) == false)
-					continue;
-			
-				var tempPath = workingSassPath; 
-
-				workingSassPath = Path.Combine(tempPath, "contentFiles", "any", "any", "sass");
-			}
-			
-			if (Directory.Exists(workingSassPath) == false)
-				continue;
-			
-			if (OsPlatform == OSPlatform.Windows)
-			{
-				if (ProcessorArchitecture is Architecture.X64 or Architecture.Arm64)
-					SassCliPath = Path.Combine(workingSassPath, "dart-sass-windows-x64", "sass.bat");
-			}
-				
-			else if (OsPlatform == OSPlatform.OSX)
-			{
-				if (ProcessorArchitecture == Architecture.X64)
-					SassCliPath = Path.Combine(workingSassPath, "dart-sass-macos-x64", "sass");
-				else if (ProcessorArchitecture == Architecture.Arm64)
-					SassCliPath = Path.Combine(workingSassPath, "dart-sass-macos-arm64", "sass");
-			}
-				
-			else if (OsPlatform == OSPlatform.Linux)
-			{
-				if (ProcessorArchitecture == Architecture.X64)
-					SassCliPath = Path.Combine(workingSassPath, "dart-sass-linux-x64", "sass");
-				else if (ProcessorArchitecture == Architecture.Arm64)
-					SassCliPath = Path.Combine(workingSassPath, "dart-sass-linux-arm64", "sass");
-			}
-
-			break;
-		}
-		
-		if (string.IsNullOrEmpty(SassCliPath) || File.Exists(SassCliPath) == false)
-		{
-			Console.WriteLine($"{CliErrorPrefix}Embedded Dart Sass cannot be found.");
-			Environment.Exit(1);
-		}
-		
-		var sb = StringBuilderPool.Get();
-		var cmd = Cli.Wrap(SassCliPath)
-			.WithArguments(arguments =>
-			{
-				arguments.Add("--version");
-			})
-			.WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
-			.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
-
-		try
-		{
-			_ = cmd.ExecuteAsync().GetAwaiter().GetResult();
-		}
-
-		catch
-		{
-			Console.WriteLine($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
-			Environment.Exit(1);
-		}
-		
-		StringBuilderPool.Return(sb);
-		
-		#endregion
-		
-		#region Validate Embedded SCSS
-		
-		ScssPath = $"{workingSassPath.TrimEnd("sass")}scss";
-
-		if (string.IsNullOrEmpty(ScssPath) == false && Directory.Exists(ScssPath))
-			return;
-		
-		Console.WriteLine($"{CliErrorPrefix}Embedded SCSS resources cannot be found.");
-		Environment.Exit(1);
-
-		#endregion
-	}
-
-	/// <summary>
-	/// Find and load the sfumato.json configuration file.
-	/// </summary>
-	public async Task LoadJsonSettingsAsync()
-	{
-		#region Validate Configuration File
-		
-		if (DebugMode)
-		{
-			var index = WorkingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
-
-			if (index > -1)
-			{
-				WorkingPath = Path.Combine(WorkingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
-			}
-
-			else
-			{
-				index = WorkingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
-
-				if (index > -1)
-					WorkingPath = Path.Combine(WorkingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
-			}
-		}		
-		
-		ConfigFilePath = Path.Combine(WorkingPath, "sfumato.json");
-
-		if (File.Exists(ConfigFilePath) == false)
-		{
-			Console.WriteLine($"{CliErrorPrefix}Could not find settings file at path {ConfigFilePath}");
-			Environment.Exit(1);
-		}
-		
-		var builder = new ConfigurationBuilder().AddJsonFile(ConfigFilePath, optional: false);
-		var config = builder.Build();
-		
-		#endregion
-		
-		#region Settings
-		
-		ThemeMode = config.GetValue<string?>("ThemeMode") ?? "system";
-		
-		Breakpoints.Zero = config.GetValue<int?>("breakpoints:zero") ?? Breakpoints.Zero;
-		Breakpoints.Phab = config.GetValue<int?>("breakpoints:phab") ?? Breakpoints.Phab;
-		Breakpoints.Tabp = config.GetValue<int?>("breakpoints:tabp") ?? Breakpoints.Tabp;
-		Breakpoints.Tabl = config.GetValue<int?>("breakpoints:tabl") ?? Breakpoints.Tabl;
-		Breakpoints.Note = config.GetValue<int?>("breakpoints:note") ?? Breakpoints.Note;
-		Breakpoints.Desk = config.GetValue<int?>("breakpoints:desk") ?? Breakpoints.Desk;
-		Breakpoints.Elas = config.GetValue<int?>("breakpoints:elas") ?? Breakpoints.Elas;
-
-		FontSizeViewportUnits.Zero = config.GetValue<double?>("fontSizeViewportUnits:zero") ?? FontSizeViewportUnits.Zero;
-		FontSizeViewportUnits.Phab = config.GetValue<double?>("fontSizeViewportUnits:phab") ?? FontSizeViewportUnits.Phab;
-		FontSizeViewportUnits.Tabp = config.GetValue<double?>("fontSizeViewportUnits:tabp") ?? FontSizeViewportUnits.Tabp;
-		FontSizeViewportUnits.Tabl = config.GetValue<double?>("fontSizeViewportUnits:tabl") ?? FontSizeViewportUnits.Tabl;
-		FontSizeViewportUnits.Note = config.GetValue<double?>("fontSizeViewportUnits:note") ?? FontSizeViewportUnits.Note;
-		FontSizeViewportUnits.Desk = config.GetValue<double?>("fontSizeViewportUnits:desk") ?? FontSizeViewportUnits.Desk;
-		FontSizeViewportUnits.Elas = config.GetValue<double?>("fontSizeViewportUnits:elas") ?? FontSizeViewportUnits.Elas;
-		
-		#endregion
-		
-		#region Output Paths
-		
-		var cssOutputPath = config.GetValue<string>("CssOutputPath") ?? string.Empty;
-
-		cssOutputPath = cssOutputPath.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar);
-		
-		CssOutputPath = Path.Combine(WorkingPath, cssOutputPath);
-
-		if (Directory.Exists(CssOutputPath) == false)
-		{
-			Console.WriteLine($"{CliErrorPrefix}Invalid CSS Output Path (edit the sfumato.json file)");
-			Environment.Exit(1);
-		}
-
-		#endregion
-		
-		#region Project Paths
-		
-		var workingProjectPaths = config.GetSection("ProjectPaths").Get<List<ProjectPath>>() ?? new List<ProjectPath>();
-		
-		if (workingProjectPaths.Count == 0)
-		{
-			Console.WriteLine($"{CliErrorPrefix}No Project Paths (edit the sfumato.json file)");
-			Environment.Exit(1);
-		}
-
-		foreach (var projectPath in workingProjectPaths)
-		{
-			if (string.IsNullOrEmpty(projectPath.Path))
-			{
-				Console.WriteLine($"{CliErrorPrefix}Empty Project Path (edit the sfumato.json file)");
-				Environment.Exit(1);
-			}
-
-			if (string.IsNullOrEmpty(projectPath.FileSpec) == false && string.IsNullOrEmpty(projectPath.FileSpec.Trim('.')) == false)
-				continue;
-			
-			Console.WriteLine($"{CliErrorPrefix}Invalid Project Path FileSpec '{projectPath.FileSpec}' (edit the sfumato.json file)");
-			Environment.Exit(1);
-		}
-		
-		foreach (var projectPath in workingProjectPaths)
-		{
-			projectPath.Path = Path.Combine(WorkingPath, projectPath.Path.Replace('/', Path.DirectorySeparatorChar));
-			projectPath.FileSpec = projectPath.FileSpec.Trim('.'); 
-
-			ProjectPaths.Add(projectPath);
-		}
-
-		foreach (var projectPath in ProjectPaths)
-		{
-			if (Directory.Exists(projectPath.Path))
-				continue;
-			
-			Console.WriteLine($"{CliErrorPrefix}Invalid Project Path '{projectPath.Path}' (edit the sfumato.json file)");
-			Environment.Exit(1);
-		}
-		
-		#endregion
-
-		await Task.CompletedTask;
 	}
 	
 	/// <summary>
@@ -544,7 +275,7 @@ public sealed class SfumatoRunner
 	/// <param name="config"></param>
 	public async Task GatherAvailableClassesAsync()
 	{
-		var dir = new DirectoryInfo(ScssPath);
+		var dir = new DirectoryInfo(Settings.ScssPath);
 
 		ScssFiles.Clear();
 		Classes.Clear();
@@ -641,13 +372,13 @@ public sealed class SfumatoRunner
 		
 		UsedClasses.Clear();
 
-		if (ProjectPaths.Count == 0)
+		if (Settings.ProjectPaths.Count == 0)
 		{
 			Console.WriteLine(" no project paths specified");
 			return;
 		}
 
-		foreach (var projectPath in ProjectPaths)
+		foreach (var projectPath in Settings.ProjectPaths)
 			await RecurseProjectPathForUsedClassesAsync(projectPath.Path, projectPath.FileSpec, projectPath.Recurse);
 		
 		if (UsedClasses.Count == 0)
@@ -834,26 +565,6 @@ public sealed class SfumatoRunner
 					
 				scssResult.Append($"{Indent(level)}{pseudoClass.Value}\n");
 				level++;
-
-				// else
-				// {
-				// 	if (IsMediaQueryPrefix(prefix) == false)
-				// 		continue;
-				//
-				// 	var mediaQuery = MediaQueryPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
-				//
-				// 	if (ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) || prefix != "dark")
-				// 	{
-				// 		scssResult.Append($"{Indent(level)}{mediaQuery.Value}\n");
-				// 		level++;
-				// 	}
-				// 	
-				// 	else if (ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && prefix == "dark")
-				// 	{
-				// 		scssResult.Append($"{Indent(level)}.dark-theme {{\n");
-				// 		level++;
-				// 	}
-				// }
 			}
 		}
 
@@ -974,7 +685,7 @@ public sealed class SfumatoRunner
 		
 		#endregion
 
-		if (ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase))
+		if (Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase))
 		{
 			// Search first level nodes for "dark" prefixes and add additional nodes to support "auto-theme";
 			// Light mode will work without any CSS since removing "dark-theme" and "auto-theme" from the
@@ -1013,12 +724,12 @@ public sealed class SfumatoRunner
 			
 			var mediaQueryPrefix = MediaQueryPrefixes.First(p => p.Key.Equals(prefix));
 
-			if (ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
+			if (Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
 			{
 				sb.Append($"{Indent(scssNode.Level - 1)}html.dark-theme {{\n");
 			}
 
-			else if (ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "auto-dark")
+			else if (Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "auto-dark")
 			{
 				sb.Append($"{Indent(scssNode.Level - 1)}html.auto-theme {{ {mediaQueryPrefix.Value}\n");
 			}
@@ -1078,8 +789,8 @@ public sealed class SfumatoRunner
 		{
 			var arguments = new List<string>();
 
-			if (File.Exists(Path.Combine(CssOutputPath, "sfumato.css.map")))
-				File.Delete(Path.Combine(CssOutputPath, "sfumato.css.map"));
+			if (File.Exists(Path.Combine(Settings.CssOutputPath, "sfumato.css.map")))
+				File.Delete(Path.Combine(Settings.CssOutputPath, "sfumato.css.map"));
 
 			if (ReleaseMode == false)
 			{
@@ -1095,9 +806,9 @@ public sealed class SfumatoRunner
 			}
 
 			arguments.Add("--stdin");
-			arguments.Add(Path.Combine(CssOutputPath, "sfumato.css"));
+			arguments.Add(Path.Combine(Settings.CssOutputPath, "sfumato.css"));
 			
-			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(SassCliPath)
+			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(Settings.SassCliPath)
 				.WithArguments(args =>
 				{
 					foreach (var arg in arguments)
@@ -1109,7 +820,7 @@ public sealed class SfumatoRunner
 
 			await cmd.ExecuteAsync();
 
-			var fileInfo = new FileInfo(Path.Combine(CssOutputPath, "sfumato.css"));
+			var fileInfo = new FileInfo(Path.Combine(Settings.CssOutputPath, "sfumato.css"));
 
 			Console.WriteLine($" saved sfumato.css ({fileInfo.Length.FormatBytes()})");
 			DiagnosticOutput.Append($"Transpiled sfumato.css ({fileInfo.Length.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
@@ -1133,13 +844,6 @@ public sealed class SfumatoRunner
 	}
 	
 	#endregion
-}
-
-public sealed class ProjectPath
-{
-	public string Path { get; set; } = string.Empty;
-	public string FileSpec { get; set; } = string.Empty;
-	public bool Recurse { get; set; } = true;
 }
 
 public sealed class ScssClass
@@ -1212,26 +916,4 @@ public sealed class ScssNode
 	public int Level { get; set; }
 	public List<ScssClass> Classes { get; set; } = new();
 	public List<ScssNode> Nodes { get; set; } = new();
-}
-
-public sealed class Breakpoints
-{
-	public int Zero { get; set; }
-	public int Phab { get; set; } = 400;
-	public int Tabp { get; set; } = 540;
-	public int Tabl { get; set; } = 800;
-	public int Note { get; set; } = 1280;
-	public int Desk { get; set; } = 1440;
-	public int Elas { get; set; } = 1600;
-}
-
-public sealed class FontSizeViewportUnits
-{
-	public double Zero { get; set; } = 4.35;
-	public double Phab { get; set; } = 4;
-	public double Tabp { get; set; } = 1.6;
-	public double Tabl { get; set; } = 1;
-	public double Note { get; set; } = 1;
-	public double Desk { get; set; } = 1;
-	public double Elas { get; set; } = 1;
 }
