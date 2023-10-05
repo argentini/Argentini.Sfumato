@@ -26,7 +26,7 @@ public sealed class SfumatoRunner
 
 	#region State
 
-	public SfumatoSettings Settings { get; } = new();
+	public SfumatoAppState AppState { get; } = new();
 	public SfumatoScss Scss { get; } = new();
 	public string WorkingPathOverride { get; set; } = string.Empty;
 	public List<string> CliArgs { get; } = new();
@@ -131,8 +131,8 @@ public sealed class SfumatoRunner
 
 		timer.Start();
 		
-		DiagnosticOutput = Settings.StringBuilderPool.Get();
-		ScssCore = Settings.StringBuilderPool.Get();
+		DiagnosticOutput = AppState.StringBuilderPool.Get();
+		ScssCore = AppState.StringBuilderPool.Get();
 		
 		TypeAdapterConfig<ScssNode, ScssNode>.NewConfig()
 			.PreserveReference(true)
@@ -168,7 +168,7 @@ public sealed class SfumatoRunner
 
 		timer.Start();
 		
-		await Settings.LoadAsync(WorkingPathOverride);
+		await AppState.LoadAsync(WorkingPathOverride);
 		
 		DiagnosticOutput.Append($"Processed settings in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
@@ -181,7 +181,7 @@ public sealed class SfumatoRunner
 		timer.Restart();
 
 		ScssCore.Clear();
-		ScssCore.Append(await SfumatoScss.GetCoreScssAsync(Settings));
+		ScssCore.Append(await SfumatoScss.GetCoreScssAsync(AppState));
 		
 		DiagnosticOutput.Append($"Loaded core SCSS libraries in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
@@ -238,7 +238,7 @@ public sealed class SfumatoRunner
 	/// <param name="config"></param>
 	public async Task GatherAvailableClassesAsync()
 	{
-		var dir = new DirectoryInfo(Settings.ScssPath);
+		var dir = new DirectoryInfo(AppState.ScssPath);
 
 		ScssFiles.Clear();
 		Classes.Clear();
@@ -335,13 +335,13 @@ public sealed class SfumatoRunner
 		
 		UsedClasses.Clear();
 
-		if (Settings.ProjectPaths.Count == 0)
+		if (AppState.Settings.ProjectPaths.Count == 0)
 		{
 			Console.WriteLine(" no project paths specified");
 			return;
 		}
 
-		foreach (var projectPath in Settings.ProjectPaths)
+		foreach (var projectPath in AppState.Settings.ProjectPaths)
 			await RecurseProjectPathForUsedClassesAsync(projectPath.Path, projectPath.FileSpec, projectPath.Recurse);
 		
 		if (UsedClasses.Count == 0)
@@ -493,7 +493,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	public async Task<string> GenerateScssClassAsync(ScssClass scssClass, string stripPrefix = "")
 	{
-		var scssResult = Settings.StringBuilderPool.Get();
+		var scssResult = AppState.StringBuilderPool.Get();
 		var level = 0;
 		var className = scssClass.ClassName;
 		var scssBody = string.Empty;
@@ -553,7 +553,7 @@ public sealed class SfumatoRunner
 		
 		var result = scssResult.ToString();
 		
-		Settings.StringBuilderPool.Return(scssResult);
+		AppState.StringBuilderPool.Return(scssResult);
 		
 		return await Task.FromResult(result);
 	}
@@ -572,7 +572,7 @@ public sealed class SfumatoRunner
 
 		Console.Write("Generating CSS...");
 		
-		var projectScss = Settings.StringBuilderPool.Get();
+		var projectScss = AppState.StringBuilderPool.Get();
 
 		projectScss.Append(ScssCore);
 		projectScss.Append(await GenerateScssAsync());
@@ -583,12 +583,12 @@ public sealed class SfumatoRunner
 
 		timer.Restart();
 
-		var fileSize = await SfumatoScss.TranspileScss(projectScss, Settings, ReleaseMode);
+		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState, ReleaseMode);
 		
 		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
 		DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
-		Settings.StringBuilderPool.Return(projectScss);
+		AppState.StringBuilderPool.Return(projectScss);
 	}
 	
 	/// <summary>
@@ -656,7 +656,7 @@ public sealed class SfumatoRunner
 		
 		#endregion
 
-		if (Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase))
+		if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase))
 		{
 			// Search first level nodes for "dark" prefixes and add additional nodes to support "auto-theme";
 			// Light mode will work without any CSS since removing "dark-theme" and "auto-theme" from the
@@ -674,13 +674,13 @@ public sealed class SfumatoRunner
 			}
 		} 
 		
-		var sb = Settings.StringBuilderPool.Get();
+		var sb = AppState.StringBuilderPool.Get();
 		
 		await GenerateScssRecurseAsync(hierarchy, sb);
         
 		var scss = sb.ToString();
 		
-		Settings.StringBuilderPool.Return(sb);
+		AppState.StringBuilderPool.Return(sb);
 		
 		return scss;
 	}
@@ -695,12 +695,12 @@ public sealed class SfumatoRunner
 			
 			var mediaQueryPrefix = MediaQueryPrefixes.First(p => p.Key.Equals(prefix));
 
-			if (Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
+			if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
 			{
 				sb.Append($"{Indent(scssNode.Level - 1)}html.dark-theme {{\n");
 			}
 
-			else if (Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "auto-dark")
+			else if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "auto-dark")
 			{
 				sb.Append($"{Indent(scssNode.Level - 1)}html.auto-theme {{ {mediaQueryPrefix.Value}\n");
 			}

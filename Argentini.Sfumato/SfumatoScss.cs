@@ -9,34 +9,34 @@ namespace Argentini.Sfumato;
 
 public sealed class SfumatoScss
 {
-	public static async Task<string> GetCoreScssAsync(SfumatoSettings settings)
+	public static async Task<string> GetCoreScssAsync(SfumatoAppState appState)
 	{
 		var sb = new StringBuilder();
 		
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(settings.ScssPath, "includes", "_core.scss"))).Trim() + '\n');
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(settings.ScssPath, "includes", "_browser-reset.scss"))).Trim() + '\n');
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_core.scss"))).Trim() + '\n');
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_browser-reset.scss"))).Trim() + '\n');
 
-		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(settings.ScssPath, "includes", "_media-queries.scss"))).Trim() + '\n';
+		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_media-queries.scss"))).Trim() + '\n';
 
-		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{settings.Breakpoints?.Zero}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{settings.Breakpoints?.Phab}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabp-bp}", $"{settings.Breakpoints?.Tabp}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabl-bp}", $"{settings.Breakpoints?.Tabl}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{note-bp}", $"{settings.Breakpoints?.Note}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{desk-bp}", $"{settings.Breakpoints?.Desk}px");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{elas-bp}", $"{settings.Breakpoints?.Elas}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{appState.Settings.Breakpoints?.Zero}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{appState.Settings.Breakpoints?.Phab}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{tabp-bp}", $"{appState.Settings.Breakpoints?.Tabp}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{tabl-bp}", $"{appState.Settings.Breakpoints?.Tabl}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{note-bp}", $"{appState.Settings.Breakpoints?.Note}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{desk-bp}", $"{appState.Settings.Breakpoints?.Desk}px");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{elas-bp}", $"{appState.Settings.Breakpoints?.Elas}px");
 		
 		sb.Append(mediaQueriesScss);
 
-		var initScss = (await File.ReadAllTextAsync(Path.Combine(settings.ScssPath, "includes", "_initialize.scss"))).Trim() + '\n';
+		var initScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_initialize.scss"))).Trim() + '\n';
 		
-		initScss = initScss.Replace("#{zero-vw}", $"{settings.FontSizeViewportUnits?.Zero}vw");
-		initScss = initScss.Replace("#{phab-vw}", $"{settings.FontSizeViewportUnits?.Phab}vw");
-		initScss = initScss.Replace("#{tabp-vw}", $"{settings.FontSizeViewportUnits?.Tabp}vw");
-		initScss = initScss.Replace("#{tabl-vw}", $"{settings.FontSizeViewportUnits?.Tabl}vw");
-		initScss = initScss.Replace("#{note-vw}", $"{settings.FontSizeViewportUnits?.Note}vw");
-		initScss = initScss.Replace("#{desk-vw}", $"{settings.FontSizeViewportUnits?.Desk}vw");
-		initScss = initScss.Replace("#{elas-vw}", $"{settings.FontSizeViewportUnits?.Elas}vw");
+		initScss = initScss.Replace("#{zero-vw}", $"{appState.Settings.FontSizeViewportUnits?.Zero}vw");
+		initScss = initScss.Replace("#{phab-vw}", $"{appState.Settings.FontSizeViewportUnits?.Phab}vw");
+		initScss = initScss.Replace("#{tabp-vw}", $"{appState.Settings.FontSizeViewportUnits?.Tabp}vw");
+		initScss = initScss.Replace("#{tabl-vw}", $"{appState.Settings.FontSizeViewportUnits?.Tabl}vw");
+		initScss = initScss.Replace("#{note-vw}", $"{appState.Settings.FontSizeViewportUnits?.Note}vw");
+		initScss = initScss.Replace("#{desk-vw}", $"{appState.Settings.FontSizeViewportUnits?.Desk}vw");
+		initScss = initScss.Replace("#{elas-vw}", $"{appState.Settings.FontSizeViewportUnits?.Elas}vw");
 		
 		sb.Append(initScss);
 		
@@ -49,18 +49,18 @@ public sealed class SfumatoScss
 	/// Returns the byte size of the written file.
 	/// </summary>
 	/// <param name="scss"></param>
-	/// <param name="settings"></param>
+	/// <param name="appState"></param>
 	/// <param name="releaseMode"></param>
-	public static async Task<long> TranspileScss(StringBuilder scss, SfumatoSettings settings, bool releaseMode = false)
+	public static async Task<long> TranspileScss(StringBuilder scss, SfumatoAppState appState, bool releaseMode = false)
 	{
-		var sb = settings.StringBuilderPool.Get();
+		var sb = appState.StringBuilderPool.Get();
 
 		try
 		{
 			var arguments = new List<string>();
 
-			if (File.Exists(Path.Combine(settings.CssOutputPath, "sfumato.css.map")))
-				File.Delete(Path.Combine(settings.CssOutputPath, "sfumato.css.map"));
+			if (File.Exists(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css.map")))
+				File.Delete(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css.map"));
 
 			if (releaseMode == false)
 			{
@@ -76,9 +76,9 @@ public sealed class SfumatoScss
 			}
 
 			arguments.Add("--stdin");
-			arguments.Add(Path.Combine(settings.CssOutputPath, "sfumato.css"));
+			arguments.Add(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css"));
 			
-			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(settings.SassCliPath)
+			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(appState.SassCliPath)
 				.WithArguments(args =>
 				{
 					foreach (var arg in arguments)
@@ -90,7 +90,7 @@ public sealed class SfumatoScss
 
 			await cmd.ExecuteAsync();
 
-			var fileInfo = new FileInfo(Path.Combine(settings.CssOutputPath, "sfumato.css"));
+			var fileInfo = new FileInfo(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css"));
 			
 			return fileInfo.Length;
 		}
@@ -107,7 +107,7 @@ public sealed class SfumatoScss
 			Environment.Exit(1);
 		}
 		
-		settings.StringBuilderPool.Return(sb);
+		appState.StringBuilderPool.Return(sb);
 
 		return 0;
 	}

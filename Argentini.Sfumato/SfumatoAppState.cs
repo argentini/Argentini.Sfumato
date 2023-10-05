@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -12,25 +11,12 @@ using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato;
 
-public sealed class SfumatoSettings
+public sealed class SfumatoAppState
 {
-    #region JSON Properties
-
-    public string CssOutputPath { get; set; } = string.Empty;
-
-    public List<ProjectPath> ProjectPaths { get; set;  } = new();
-
-    public string ThemeMode { get; set; } = "system";
-
-    public Breakpoints? Breakpoints { get; set; } = new();
-    public FontSizeViewportUnits? FontSizeViewportUnits { get; set; } = new();
-    
-    #endregion
-
-    #region Runtime Properties
+    #region Properties
 
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-    
+    public SfumatoJsonSettings Settings { get; set; } = new();
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
@@ -61,7 +47,7 @@ public sealed class SfumatoSettings
             #region Load sfumato.json file
 
             var json = await File.ReadAllTextAsync(SettingsFilePath);
-            var jsonSettings = JsonSerializer.Deserialize<SfumatoSettings>(json, new JsonSerializerOptions
+            var jsonSettings = JsonSerializer.Deserialize<SfumatoJsonSettings>(json, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 AllowTrailingCommas = true,
@@ -78,15 +64,15 @@ public sealed class SfumatoSettings
             
             #region Import settings
             
-            CssOutputPath = Path.Combine(WorkingPath, jsonSettings.CssOutputPath.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar));
+            Settings.CssOutputPath = Path.Combine(WorkingPath, jsonSettings.CssOutputPath.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar));
         
-            if (Directory.Exists(CssOutputPath) == false)
+            if (Directory.Exists(Settings.CssOutputPath) == false)
             {
-                Console.WriteLine($"{CliErrorPrefix}Could not find CSS output path: {CssOutputPath}");
+                Console.WriteLine($"{CliErrorPrefix}Could not find CSS output path: {Settings.CssOutputPath}");
                 Environment.Exit(1);
             }
         
-            ThemeMode = jsonSettings.ThemeMode switch
+            Settings.ThemeMode = jsonSettings.ThemeMode switch
             {
                 "system" => "system",
                 "class" => "class",
@@ -96,7 +82,7 @@ public sealed class SfumatoSettings
             SassCliPath = GetEmbeddedSassPath();
             ScssPath = GetEmbeddedScssPath();
 
-            ProjectPaths.Clear();
+            Settings.ProjectPaths.Clear();
         
             foreach (var projectPath in jsonSettings.ProjectPaths)
             {
@@ -110,11 +96,11 @@ public sealed class SfumatoSettings
                 if (string.IsNullOrEmpty(tempFileSpec) == false)
                     projectPath.FileSpec = $"*.{tempFileSpec}";
             
-                ProjectPaths.Add(projectPath);
+                Settings.ProjectPaths.Add(projectPath);
             }
 
-            jsonSettings.Breakpoints.Adapt(Breakpoints);
-            jsonSettings.FontSizeViewportUnits.Adapt(FontSizeViewportUnits);
+            jsonSettings.Breakpoints.Adapt(Settings.Breakpoints);
+            jsonSettings.FontSizeViewportUnits.Adapt(Settings.FontSizeViewportUnits);
             
             #endregion
         }
@@ -270,201 +256,4 @@ public sealed class SfumatoSettings
 	}
     
     #endregion
-}
-
-public sealed class ProjectPath
-{
-    public string Path { get; set; } = string.Empty;
-    public string FileSpec { get; set; } = "*.html";
-    public bool Recurse { get; set; } = true;
-}
-
-public sealed class Breakpoints
-{
-    private int _zero;
-    public int Zero
-    {
-        get => _zero;
-        set
-        {
-            _zero = value switch
-            {
-                < 0 => 0,
-                _ => value
-            };
-        }
-    }
-    private int _phab = 400;
-    public int Phab
-    {
-        get => _phab;
-        set
-        {
-            _phab = value switch
-            {
-                < 0 => 400,
-                _ => value
-            };
-        }
-    }
-    private int _tabp = 540;
-    public int Tabp
-    {
-        get => _tabp;
-        set
-        {
-            _tabp = value switch
-            {
-                < 0 => 540,
-                _ => value
-            };
-        }
-    }
-    private int _tabl = 800;
-    public int Tabl
-    {
-        get => _tabl;
-        set
-        {
-            _tabl = value switch
-            {
-                < 0 => 800,
-                _ => value
-            };
-        }
-    }
-    private int _note = 1280;
-    public int Note
-    {
-        get => _note;
-        set
-        {
-            _note = value switch
-            {
-                < 0 => 1280,
-                _ => value
-            };
-        }
-    }
-    private int _desk = 1440;
-    public int Desk
-    {
-        get => _desk;
-        set
-        {
-            _desk = value switch
-            {
-                < 0 => 1440,
-                _ => value
-            };
-        }
-    }
-    private int _elas = 1600;
-    public int Elas
-    {
-        get => _elas;
-        set
-        {
-            _elas = value switch
-            {
-                < 0 => 1600,
-                _ => value
-            };
-        }
-    }
-}
-
-public sealed class FontSizeViewportUnits
-{
-    private double _zero = 4.35;
-    public double Zero
-    {
-        get => _zero;
-        set
-        {
-            _zero = value switch
-            {
-                < 0 => 4.35,
-                _ => value
-            };
-        }
-    }
-    private double _phab = 4;
-    public double Phab
-    {
-        get => _phab;
-        set
-        {
-            _phab = value switch
-            {
-                < 0 => 4,
-                _ => value
-            };
-        }
-    }
-    private double _tabp = 1.6;
-    public double Tabp
-    {
-        get => _tabp;
-        set
-        {
-            _tabp = value switch
-            {
-                < 0 => 1.6,
-                _ => value
-            };
-        }
-    }
-    private double _tabl = 1;
-    public double Tabl
-    {
-        get => _tabl;
-        set
-        {
-            _tabl = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
-    private double _note = 1;
-    public double Note
-    {
-        get => _note;
-        set
-        {
-            _note = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
-    private double _desk = 1;
-    public double Desk
-    {
-        get => _desk;
-        set
-        {
-            _desk = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
-    private double _elas = 1;
-    public double Elas
-    {
-        get => _elas;
-        set
-        {
-            _elas = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
 }
