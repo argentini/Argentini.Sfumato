@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,12 @@ namespace Argentini.Sfumato;
 
 public sealed class SfumatoScss
 {
-	public static async Task<string> GetCoreScssAsync(SfumatoAppState appState)
+	public static async Task<string> GetCoreScssAsync(SfumatoAppState appState, StringBuilder diagnosticOutput)
 	{
+		var timer = new Stopwatch();
+
+		timer.Start();
+		
 		var sb = new StringBuilder();
 		
 		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_core.scss"))).Trim() + '\n');
@@ -39,6 +44,8 @@ public sealed class SfumatoScss
 		initScss = initScss.Replace("#{elas-vw}", $"{appState.Settings.FontSizeViewportUnits?.Elas}vw");
 		
 		sb.Append(initScss);
+		
+		diagnosticOutput.Append($"Loaded core SCSS libraries in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 		
 		return sb.ToString();
 	}

@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -17,17 +20,33 @@ public sealed class SfumatoAppState
 
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
     public SfumatoJsonSettings Settings { get; set; } = new();
+    public StringBuilder DiagnosticOutput { get; set; } = new();
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
     public string ScssPath { get; set; } = string.Empty;
+    public Dictionary<string, string> ScssFiles { get; } = new();
+    public List<ScssClass> Classes { get; } = new();
+    
     public static string CliErrorPrefix => "Sfumato => ";
 
     #endregion
 
-    public async Task LoadAsync(string workingPath = "")
+    /// <summary>
+    /// Initialize the app state. Loads settings JSON file from working path.
+    /// Sets up runtime environment for the runner.
+    /// </summary>
+    /// <param name="workingPath">Leave empty to use app working directory or pass a path to override</param>
+    /// <param name="diagnosticOutput">Used to collect diagnostic output</param>
+    public async Task InitializeAsync(string workingPath, StringBuilder diagnosticOutput)
     {
-        #region Find sfumato.json file
+	    var timer = new Stopwatch();
+
+	    timer.Start();
+
+	    DiagnosticOutput = diagnosticOutput;
+	    
+	    #region Find sfumato.json file
 
         if (string.IsNullOrEmpty(workingPath) == false)
             WorkingPath = workingPath;
@@ -110,10 +129,72 @@ public sealed class SfumatoAppState
             Console.WriteLine($"{CliErrorPrefix}Invalid settings file at path {SettingsFilePath}");
             Environment.Exit(1);
         }
+
+        DiagnosticOutput.Append($"Initialized settings in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+        
+        timer.Restart();
+        
+        await GatherAvailableClassesAsync();
+
+        diagnosticOutput.Append($"Identified {Classes.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
     }
     
-    #region Helper Methods
+    #region Methods
 
+    /// <summary>
+    /// Identify the available class names from the embedded SCSS library.
+    /// Also loads all SCSS file content into memory.
+    /// </summary>
+    /// <param name="config"></param>
+    public async Task GatherAvailableClassesAsync()
+    {
+	    var dir = new DirectoryInfo(ScssPath);
+
+	    ScssFiles.Clear();
+	    Classes.Clear();
+		
+	    var files = dir.GetFiles();
+
+	    foreach (var file in files.Where(f => f.Extension.Equals(".scss", StringComparison.InvariantCultureIgnoreCase)).OrderBy(f => f.Name))
+	    {
+		    var scss = (await File.ReadAllTextAsync(file.FullName)).NormalizeLinebreaks();
+
+		    if (scss.Length < 1)
+			    continue;
+
+		    ScssFiles.Add(file.FullName, scss);
+			
+		    var index = 0;
+
+		    while (index > -1)
+		    {
+			    if (scss[index] != '.')
+			    {
+				    index = scss.IndexOf("\n.", index, StringComparison.Ordinal);
+
+				    if (index > -1)
+					    index++;
+			    }
+
+			    if (index < 0)
+				    continue;
+				
+			    var end = scss.IndexOf(' ', index);
+
+			    if (end < 0)
+				    continue;
+					
+			    Classes.Add(new ScssClass
+			    {
+				    FilePath = file.FullName,
+				    ClassName = scss.Substring(index + 1, end - index - 1)
+			    });
+
+			    index = end;
+		    }
+	    }
+    }
+    
     public static string GetWorkingPath()
     {
         var workingPath = Directory.GetCurrentDirectory();

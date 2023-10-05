@@ -31,9 +31,7 @@ public sealed class SfumatoRunner
 	public string WorkingPathOverride { get; set; } = string.Empty;
 	public List<string> CliArgs { get; } = new();
 	public StringBuilder DiagnosticOutput { get; }
-	public Dictionary<string, string> ScssFiles { get; } = new();
 	public List<string> AllPrefixes { get; } = new();
-	public List<ScssClass> Classes { get; } = new();
 	public List<ScssClass> UsedClasses { get; } = new();
 	public StringBuilder ScssCore { get; }
 
@@ -164,26 +162,10 @@ public sealed class SfumatoRunner
 	/// </summary>
 	public async Task InitializeAsync()
 	{
-		var timer = new Stopwatch();
-
-		timer.Start();
-		
-		await AppState.LoadAsync(WorkingPathOverride);
-		
-		DiagnosticOutput.Append($"Processed settings in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
-
-		timer.Restart();
-
-		await GatherAvailableClassesAsync();
-
-		DiagnosticOutput.Append($"Identified {Classes.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
-		
-		timer.Restart();
+		await AppState.InitializeAsync(WorkingPathOverride, DiagnosticOutput);
 
 		ScssCore.Clear();
-		ScssCore.Append(await SfumatoScss.GetCoreScssAsync(AppState));
-		
-		DiagnosticOutput.Append($"Loaded core SCSS libraries in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		ScssCore.Append(await SfumatoScss.GetCoreScssAsync(AppState, DiagnosticOutput));
 	}
 	
 	#endregion
@@ -228,60 +210,6 @@ public sealed class SfumatoRunner
 					
 					WorkingPathOverride = path;
 				}
-		}
-	}
-	
-	/// <summary>
-	/// Identify the available class names from the embedded SCSS library.
-	/// Also loads all SCSS file content into memory.
-	/// </summary>
-	/// <param name="config"></param>
-	public async Task GatherAvailableClassesAsync()
-	{
-		var dir = new DirectoryInfo(AppState.ScssPath);
-
-		ScssFiles.Clear();
-		Classes.Clear();
-		
-		var files = dir.GetFiles();
-
-		foreach (var file in files.Where(f => f.Extension.Equals(".scss", StringComparison.InvariantCultureIgnoreCase)).OrderBy(f => f.Name))
-		{
-			var scss = (await File.ReadAllTextAsync(file.FullName)).NormalizeLinebreaks();
-
-			if (scss.Length < 1)
-				continue;
-
-			ScssFiles.Add(file.FullName, scss);
-			
-			var index = 0;
-
-			while (index > -1)
-			{
-				if (scss[index] != '.')
-				{
-					index = scss.IndexOf("\n.", index, StringComparison.Ordinal);
-
-					if (index > -1)
-						index++;
-				}
-
-				if (index < 0)
-					continue;
-				
-				var end = scss.IndexOf(' ', index);
-
-				if (end < 0)
-					continue;
-					
-				Classes.Add(new ScssClass
-				{
-					FilePath = file.FullName,
-					ClassName = scss.Substring(index + 1, end - index - 1)
-				});
-
-				index = end;
-			}
 		}
 	}
 	
@@ -347,9 +275,9 @@ public sealed class SfumatoRunner
 		if (UsedClasses.Count == 0)
 			Console.WriteLine(" no classes used");
 		else
-			Console.WriteLine($" found {UsedClasses.Count:N0}/{Classes.Count:N0} classes");
+			Console.WriteLine($" found {UsedClasses.Count:N0}/{AppState.Classes.Count:N0} classes");
 		
-		DiagnosticOutput.Append($"Identified {UsedClasses.Count:N0}/{Classes.Count:N0} used classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		DiagnosticOutput.Append($"Identified {UsedClasses.Count:N0} used classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
 	private async Task RecurseProjectPathForUsedClassesAsync(string? sourcePath, string fileSpec, bool recurse)
 	{
@@ -397,7 +325,7 @@ public sealed class SfumatoRunner
 				
 				var matchValue = mv.Contains(':') ? mv[(mv.LastIndexOf(':') + 1)..] : mv;
 				
-				var matchedClass = Classes.FirstOrDefault(c => c.ClassName.Equals(matchValue, StringComparison.Ordinal));
+				var matchedClass = AppState.Classes.FirstOrDefault(c => c.ClassName.Equals(matchValue, StringComparison.Ordinal));
 				
 				if (matchedClass is null)
 					continue;
@@ -426,18 +354,18 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	private string GetScssClassMarkup(ScssClass scssClass, bool excludeDeclaration = false)
 	{
-		var startIndex = ScssFiles[scssClass.FilePath].StartsWith($".{scssClass.RootClassName}", StringComparison.Ordinal) ? 0 : ScssFiles[scssClass.FilePath].IndexOf($"\n.{scssClass.RootClassName}", StringComparison.Ordinal);
+		var startIndex = AppState.ScssFiles[scssClass.FilePath].StartsWith($".{scssClass.RootClassName}", StringComparison.Ordinal) ? 0 : AppState.ScssFiles[scssClass.FilePath].IndexOf($"\n.{scssClass.RootClassName}", StringComparison.Ordinal);
 		var endIndex = -1;
 
 		if (startIndex < 0)
 			return string.Empty;
 
-		endIndex = ScssFiles[scssClass.FilePath].IndexOf("\n.", startIndex + 1, StringComparison.Ordinal);
+		endIndex = AppState.ScssFiles[scssClass.FilePath].IndexOf("\n.", startIndex + 1, StringComparison.Ordinal);
 
 		if (endIndex < 0)
 		{
 			// End of file, no more classes; grab last closing brace
-			endIndex = ScssFiles[scssClass.FilePath].LastIndexOf("}", startIndex + 1, StringComparison.Ordinal);
+			endIndex = AppState.ScssFiles[scssClass.FilePath].LastIndexOf("}", startIndex + 1, StringComparison.Ordinal);
 		}
 
 		else
@@ -445,18 +373,18 @@ public sealed class SfumatoRunner
 			// More classes follow so use the next one as a marker for where the current class ends
 			while (endIndex > startIndex)
 			{
-				if (ScssFiles[scssClass.FilePath][--endIndex] == '}')
+				if (AppState.ScssFiles[scssClass.FilePath][--endIndex] == '}')
 					break;
 			}
 			
-			if (ScssFiles[scssClass.FilePath][endIndex] != '}')
+			if (AppState.ScssFiles[scssClass.FilePath][endIndex] != '}')
 				endIndex = -1;
 		}
 
 		if (excludeDeclaration)
 		{
 			// Repoint start index to the opening brace
-			startIndex = ScssFiles[scssClass.FilePath].IndexOf("{", startIndex, StringComparison.Ordinal);
+			startIndex = AppState.ScssFiles[scssClass.FilePath].IndexOf("{", startIndex, StringComparison.Ordinal);
 			
 			if (startIndex < 0)
 				return string.Empty;
@@ -464,7 +392,7 @@ public sealed class SfumatoRunner
 			startIndex++;
 			
 			// Repoint end index to the closing brace
-			while (ScssFiles[scssClass.FilePath][endIndex] != '}')
+			while (AppState.ScssFiles[scssClass.FilePath][endIndex] != '}')
 			{
 				endIndex--;
 			}
@@ -478,7 +406,7 @@ public sealed class SfumatoRunner
 		if (endIndex < 0 || endIndex <= startIndex)
 			return string.Empty;
 
-		var result = ScssFiles[scssClass.FilePath].Substring(startIndex, endIndex - startIndex + 1);
+		var result = AppState.ScssFiles[scssClass.FilePath].Substring(startIndex, endIndex - startIndex + 1);
 
 		result = result.TrimStart('\n').TrimEnd().TrimEnd('\n');
 		
