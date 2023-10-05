@@ -61,8 +61,6 @@ public sealed class SfumatoRunner
 
 	#endregion
 
-	#region Constructors
-	
 	public SfumatoRunner(IEnumerable<string>? args)
 	{
 		var timer = new Stopwatch();
@@ -86,6 +84,8 @@ public sealed class SfumatoRunner
 		DiagnosticOutput.Append($"Cold start in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
 
+	#region Initialization Methods
+
 	/// <summary>
 	/// Loads settings and app state.
 	/// </summary>
@@ -93,10 +93,6 @@ public sealed class SfumatoRunner
 	{
 		await AppState.InitializeAsync(WorkingPathOverride, DiagnosticOutput);
 	}
-	
-	#endregion
-
-	#region Initialization Methods
 	
 	/// <summary>
 	/// Process CLI arguments and set properties accordingly.
@@ -141,8 +137,8 @@ public sealed class SfumatoRunner
 	
 	#endregion
 	
-	#region Runtime Methods
-
+	#region Helper Methods
+	
 	/// <summary>
 	/// Create space indentation based on level of depth.
 	/// </summary>
@@ -175,13 +171,17 @@ public sealed class SfumatoRunner
 		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;
 	}
 	
+	#endregion
+	
+	#region Generation Methods
+	
 	/// <summary>
 	/// Get the complete SCSS class from the cached file from storage.  
 	/// </summary>
 	/// <param name="scssClass"></param>
 	/// <param name="excludeDeclaration"></param>
 	/// <returns></returns>
-	private string GetScssClassMarkup(ScssClass scssClass, bool excludeDeclaration = false)
+	private string GetScssClassMarkupFromCachedFile(ScssClass scssClass, bool excludeDeclaration = false)
 	{
 		var startIndex = AppState.ScssFiles[scssClass.FilePath].StartsWith($".{scssClass.RootClassName}", StringComparison.Ordinal) ? 0 : AppState.ScssFiles[scssClass.FilePath].IndexOf($"\n.{scssClass.RootClassName}", StringComparison.Ordinal);
 		var endIndex = -1;
@@ -244,11 +244,12 @@ public sealed class SfumatoRunner
 
 	/// <summary>
 	/// Generate SCSS class from prefixed class name, including nesting.
+	/// Only includes pseudoclasses, not media queries.
 	/// </summary>
 	/// <param name="scssClass"></param>
 	/// <param name="stripPrefix"></param>
 	/// <returns></returns>
-	public async Task<string> GenerateScssClassAsync(ScssClass scssClass, string stripPrefix = "")
+	public async Task<string> GenerateScssClassMarkupAsync(ScssClass scssClass, string stripPrefix = "")
 	{
 		var scssResult = AppState.StringBuilderPool.Get();
 		var level = 0;
@@ -270,7 +271,7 @@ public sealed class SfumatoRunner
 
 			Array.Copy(segments, prefixes, segments.Length - 1);
 			
-			scssBody = GetScssClassMarkup(scssClass, true);
+			scssBody = GetScssClassMarkupFromCachedFile(scssClass, true);
 
 			foreach (var prefix in prefixes)
 			{
@@ -293,7 +294,7 @@ public sealed class SfumatoRunner
 
 		else
 		{
-			scssBody = GetScssClassMarkup(scssClass, true);
+			scssBody = GetScssClassMarkupFromCachedFile(scssClass, true);
 			scssResult.Append($"{Indent(level)}.{scssClass.EscapedClassName} {{\n");
 			level++;
 		}
@@ -316,10 +317,10 @@ public sealed class SfumatoRunner
 	}
 	
 	/// <summary>
-	/// After gathering used classes with GatherUsedClassesAsync(), run the SCSS build.
+	/// Build the project's CSS and write to storage.
 	/// </summary>
 	/// <param name="runner"></param>
-	public async Task GenerateProjectScssAsync()
+	public async Task GenerateProjectCssAsync()
 	{
 		var timer = new Stopwatch();
 		
@@ -332,7 +333,7 @@ public sealed class SfumatoRunner
 		var projectScss = AppState.StringBuilderPool.Get();
 
 		projectScss.Append(AppState.ScssInjectableCore);
-		projectScss.Append(await GenerateScssAsync());
+		projectScss.Append(await GenerateScssObjectTreeAsync());
 		
 		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
 
@@ -355,7 +356,7 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="config"></param>
 	/// <returns></returns>
-	public async Task<string> GenerateScssAsync()
+	public async Task<string> GenerateScssObjectTreeAsync()
 	{
 		var usedClasses = AppState.UsedClasses.OrderBy(c => c.ClassName).ToList().Adapt<List<ScssClass>>();
 		var hierarchy = new ScssNode
@@ -433,7 +434,7 @@ public sealed class SfumatoRunner
 		
 		var sb = AppState.StringBuilderPool.Get();
 		
-		await GenerateScssRecurseAsync(hierarchy, sb);
+		await GenerateScssObjectTreeRecurseAsync(hierarchy, sb);
         
 		var scss = sb.ToString();
 		
@@ -441,7 +442,7 @@ public sealed class SfumatoRunner
 		
 		return scss;
 	}
-	private async Task GenerateScssRecurseAsync(ScssNode scssNode, StringBuilder sb)
+	private async Task GenerateScssObjectTreeRecurseAsync(ScssNode scssNode, StringBuilder sb)
 	{
 		if (string.IsNullOrEmpty(scssNode.Prefix) == false)
 		{
@@ -472,7 +473,7 @@ public sealed class SfumatoRunner
 		{
 			foreach (var scssClass in scssNode.Classes)
 			{
-				var markup = await GenerateScssClassAsync(scssClass, scssNode.PrefixPath);
+				var markup = await GenerateScssClassMarkupAsync(scssClass, scssNode.PrefixPath);
 					
 				sb.Append($"{markup.Indent(scssNode.Level * IndentationSpaces - markup.FirstNonSpaceCharacter()).TrimEnd('\n')}\n");
 			}
@@ -482,7 +483,7 @@ public sealed class SfumatoRunner
 		{
 			foreach (var node in scssNode.Nodes)
 			{
-				await GenerateScssRecurseAsync(node, sb);
+				await GenerateScssObjectTreeRecurseAsync(node, sb);
 			}
 		}
 			

@@ -32,7 +32,7 @@ public class ParsingTests
 
         Assert.NotNull(scssClass);
         
-        var result = await runner.GenerateScssAsync();
+        var result = await runner.GenerateScssObjectTreeAsync();
         
         Assert.Equal("""
 @media (prefers-color-scheme: dark) {

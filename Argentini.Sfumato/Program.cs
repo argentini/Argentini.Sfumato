@@ -75,7 +75,7 @@ internal class Program
 		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
 		Console.WriteLine($"{(runner.WatchMode ? "Watching for Changes..." : "Building...")}");
 
-        await runner.GenerateProjectScssAsync();
+        await runner.GenerateProjectCssAsync();
 		
 		#region Watcher Mode
 
