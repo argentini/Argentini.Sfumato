@@ -51,7 +51,7 @@ public sealed class SfumatoScss
 	/// <param name="scss"></param>
 	/// <param name="settings"></param>
 	/// <param name="releaseMode"></param>
-	public async Task<long> TranspileScss(StringBuilder scss, SfumatoSettings settings, bool releaseMode = false)
+	public static async Task<long> TranspileScss(StringBuilder scss, SfumatoSettings settings, bool releaseMode = false)
 	{
 		var sb = settings.StringBuilderPool.Get();
 

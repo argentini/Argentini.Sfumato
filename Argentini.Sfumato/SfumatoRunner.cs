@@ -583,7 +583,7 @@ public sealed class SfumatoRunner
 
 		timer.Restart();
 
-		var fileSize = await Scss.TranspileScss(projectScss, Settings, ReleaseMode);
+		var fileSize = await SfumatoScss.TranspileScss(projectScss, Settings, ReleaseMode);
 		
 		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
 		DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
