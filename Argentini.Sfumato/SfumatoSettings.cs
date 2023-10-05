@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CliWrap;
 using Mapster;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato;
 
@@ -28,6 +29,8 @@ public sealed class SfumatoSettings
 
     #region Runtime Properties
 
+    public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+    
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;

@@ -6,9 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using CliWrap;
 using Mapster;
-using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato;
 
@@ -32,7 +30,6 @@ public sealed class SfumatoRunner
 	public SfumatoScss Scss { get; } = new();
 	public string WorkingPathOverride { get; set; } = string.Empty;
 	public List<string> CliArgs { get; } = new();
-	private ObjectPool<StringBuilder> StringBuilderPool { get; }
 	public StringBuilder DiagnosticOutput { get; }
 	public Dictionary<string, string> ScssFiles { get; } = new();
 	public List<string> AllPrefixes { get; } = new();
@@ -134,9 +131,8 @@ public sealed class SfumatoRunner
 
 		timer.Start();
 		
-		StringBuilderPool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-		DiagnosticOutput = StringBuilderPool.Get();
-		ScssCore = StringBuilderPool.Get();
+		DiagnosticOutput = Settings.StringBuilderPool.Get();
+		ScssCore = Settings.StringBuilderPool.Get();
 		
 		TypeAdapterConfig<ScssNode, ScssNode>.NewConfig()
 			.PreserveReference(true)
@@ -497,7 +493,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	public async Task<string> GenerateScssClassAsync(ScssClass scssClass, string stripPrefix = "")
 	{
-		var scssResult = StringBuilderPool.Get();
+		var scssResult = Settings.StringBuilderPool.Get();
 		var level = 0;
 		var className = scssClass.ClassName;
 		var scssBody = string.Empty;
@@ -557,7 +553,7 @@ public sealed class SfumatoRunner
 		
 		var result = scssResult.ToString();
 		
-		StringBuilderPool.Return(scssResult);
+		Settings.StringBuilderPool.Return(scssResult);
 		
 		return await Task.FromResult(result);
 	}
@@ -576,7 +572,7 @@ public sealed class SfumatoRunner
 
 		Console.Write("Generating CSS...");
 		
-		var projectScss = StringBuilderPool.Get();
+		var projectScss = Settings.StringBuilderPool.Get();
 
 		projectScss.Append(ScssCore);
 		projectScss.Append(await GenerateScssAsync());
@@ -592,7 +588,7 @@ public sealed class SfumatoRunner
 		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
 		DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
-		StringBuilderPool.Return(projectScss);
+		Settings.StringBuilderPool.Return(projectScss);
 	}
 	
 	/// <summary>
@@ -678,13 +674,13 @@ public sealed class SfumatoRunner
 			}
 		} 
 		
-		var sb = StringBuilderPool.Get();
+		var sb = Settings.StringBuilderPool.Get();
 		
 		await GenerateScssRecurseAsync(hierarchy, sb);
         
 		var scss = sb.ToString();
 		
-		StringBuilderPool.Return(sb);
+		Settings.StringBuilderPool.Return(sb);
 		
 		return scss;
 	}

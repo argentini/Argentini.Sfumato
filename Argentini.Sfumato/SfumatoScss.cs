@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using CliWrap;
-using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoScss
 {
-	private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
 	public static async Task<string> GetCoreScssAsync(SfumatoSettings settings)
 	{
 		var sb = new StringBuilder();
@@ -57,7 +53,7 @@ public sealed class SfumatoScss
 	/// <param name="releaseMode"></param>
 	public async Task<long> TranspileScss(StringBuilder scss, SfumatoSettings settings, bool releaseMode = false)
 	{
-		var sb = StringBuilderPool.Get();
+		var sb = settings.StringBuilderPool.Get();
 
 		try
 		{
@@ -111,7 +107,7 @@ public sealed class SfumatoScss
 			Environment.Exit(1);
 		}
 		
-		StringBuilderPool.Return(sb);
+		settings.StringBuilderPool.Return(sb);
 
 		return 0;
 	}
