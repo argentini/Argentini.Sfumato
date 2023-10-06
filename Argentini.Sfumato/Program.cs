@@ -14,25 +14,22 @@ internal class Program
 
 		timer.Start();
 
-		var runner = new SfumatoRunner(args);
+		Console.OutputEncoding = Encoding.UTF8;
+		
+		var runner = new SfumatoRunner();
 
-		if (runner.VersionMode)
+		await runner.InitializeAsync(args);
+
+		Console.WriteLine($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
+		
+		if (runner.AppState.VersionMode)
 		{
-			Console.WriteLine($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
-			Console.WriteLine();
-
 			Environment.Exit(0);
 		}
 		
-		Console.OutputEncoding = Encoding.UTF8;
-
-		var startupTitle = $"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}";
-		
-		Console.WriteLine();
-		Console.WriteLine(startupTitle);
 		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
 		
-		if (runner.HelpMode)
+		if (runner.AppState.HelpMode)
 		{
 			Console.WriteLine();
 			Console.WriteLine("Usage: sfumato [options]");
@@ -50,9 +47,7 @@ internal class Program
 			Environment.Exit(0);
 		}
 		
-		await runner.InitializeAsync();
-
-		Console.WriteLine($"Build Mode       :  {(runner.ReleaseMode ? "Release" : "Development")}");
+		Console.WriteLine($"Build Mode       :  {(runner.AppState.ReleaseMode ? "Release" : "Development")}");
 		Console.WriteLine($"Theme Mode       :  {(runner.AppState.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "System" : "CSS Class")}");
 		Console.WriteLine($"Project Path     :  {runner.AppState.WorkingPath}");
 		Console.WriteLine($"CSS Output Path  :  .{runner.AppState.Settings.CssOutputPath.TrimStart(runner.AppState.WorkingPath)}");
@@ -73,13 +68,13 @@ internal class Program
 		}        
 
 		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
-		Console.WriteLine($"{(runner.WatchMode ? "Watching for Changes..." : "Building...")}");
+		Console.WriteLine($"{(runner.AppState.WatchMode ? "Watching for Changes..." : "Building...")}");
 
         await runner.GenerateProjectCssAsync();
 		
 		#region Watcher Mode
 
-		if (runner.WatchMode)
+		if (runner.AppState.WatchMode)
 		{
 			// WATCH HERE
 		}
@@ -89,10 +84,10 @@ internal class Program
 		Console.WriteLine($"Completed build in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
 		Console.WriteLine();
 
-		if (runner.DiagnosticMode)
+		if (runner.AppState.DiagnosticMode)
 		{
 			Console.WriteLine("DIAGNOSTICS:");
-			Console.WriteLine(runner.DiagnosticOutput.ToString());
+			Console.WriteLine(runner.AppState.DiagnosticOutput.ToString());
 		}
 
 		Environment.Exit(0);

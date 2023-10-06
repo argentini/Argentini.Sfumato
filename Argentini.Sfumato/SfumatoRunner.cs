@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,28 +12,8 @@ namespace Argentini.Sfumato;
 public sealed class SfumatoRunner
 {
 	#region Properties
-
-	#region Modes
-
-	public bool ReleaseMode { get; set; }
-	public bool WatchMode { get; set; }
-	public bool VersionMode { get; set; }
-	public bool HelpMode { get; set; }
-	public bool DiagnosticMode { get; set; }
 	
-	#endregion
-
-	#region State
-
 	public SfumatoAppState AppState { get; } = new();
-	public SfumatoScss Scss { get; } = new();
-	public List<string> CliArgs { get; } = new();
-	public string WorkingPathOverride { get; set; } = string.Empty;
-	public StringBuilder DiagnosticOutput { get; } = new();
-
-	#endregion
-
-	#region Constants
 
 	public static int IndentationSpaces => 4;
 
@@ -51,17 +31,11 @@ public sealed class SfumatoRunner
 		}
 	}
 	
-	#endregion
-	
-    #region FileSystemWatchers
-
     //public List<FileSystemWatcher> ProjectFileSystemWatchers { get; } = new();
 
 	#endregion
 
-	#endregion
-
-	public SfumatoRunner(IEnumerable<string>? args)
+	public SfumatoRunner()
 	{
 		var timer = new Stopwatch();
 
@@ -75,100 +49,54 @@ public sealed class SfumatoRunner
 				dest.Nodes = src.Nodes.Adapt<List<ScssNode>>();
 			});
 		
-		ProcessCliArguments(args);
-
 #if DEBUG
-		DiagnosticMode = true;
+		AppState.DiagnosticMode = true;
 #endif		
 
-		DiagnosticOutput.Append($"Cold start in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		AppState.DiagnosticOutput.Append($"Cold start in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
 
-	#region Initialization Methods
-
+	#region Entry Points
+	
 	/// <summary>
 	/// Loads settings and app state.
 	/// </summary>
-	public async Task InitializeAsync()
+	public async Task InitializeAsync(IEnumerable<string>? args = null)
 	{
-		await AppState.InitializeAsync(WorkingPathOverride, DiagnosticOutput);
+		await AppState.InitializeAsync(args ?? Enumerable.Empty<string>());
 	}
 	
 	/// <summary>
-	/// Process CLI arguments and set properties accordingly.
+	/// Build the project's CSS and write to storage.
 	/// </summary>
-	/// <param name="args"></param>
-	public void ProcessCliArguments(IEnumerable<string>? args)
+	/// <param name="runner"></param>
+	public async Task GenerateProjectCssAsync()
 	{
-		CliArgs.Clear();
-		CliArgs.AddRange(args?.ToList() ?? new List<string>());
-
-		if (CliArgs.Count < 1)
-			return;
+		var timer = new Stopwatch();
 		
-		foreach (var arg in CliArgs)
-		{
-			if (arg.StartsWith("--release", StringComparison.InvariantCultureIgnoreCase))
-				ReleaseMode = true;
-					
-			else if (arg.StartsWith("--watch", StringComparison.InvariantCultureIgnoreCase))
-				WatchMode = true;
+		await AppState.GatherUsedScssCoreClassesAsync();
 
-			else if (arg.StartsWith("--help", StringComparison.InvariantCultureIgnoreCase))
-				HelpMode = true;
+		timer.Start();
 
-			else if (arg.StartsWith("--version", StringComparison.InvariantCultureIgnoreCase))
-				VersionMode = true;
+		Console.Write("Generating CSS...");
+		
+		var projectScss = AppState.StringBuilderPool.Get();
 
-			else if (arg.StartsWith("--diagnostics", StringComparison.InvariantCultureIgnoreCase))
-				DiagnosticMode = true;
-			
-			else if (arg.StartsWith("--path", StringComparison.InvariantCultureIgnoreCase))
-				if (CliArgs.Count - 1 >= CliArgs.IndexOf(arg) + 1)
-				{
-					var path = CliArgs[CliArgs.IndexOf(arg) + 1].TrimEnd("sfumato.json", StringComparison.InvariantCultureIgnoreCase) ?? string.Empty;
+		projectScss.Append(AppState.ScssInjectableCore);
+		projectScss.Append(await GenerateScssObjectTreeAsync());
+		
+		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
 
-					path = Path.GetFullPath(path);
-					
-					WorkingPathOverride = path;
-				}
-		}
-	}
-	
-	#endregion
-	
-	#region Helper Methods
-	
-	/// <summary>
-	/// Create space indentation based on level of depth.
-	/// </summary>
-	/// <param name="level"></param>
-	/// <returns></returns>
-	private static string Indent(int level)
-	{
-		return new string(' ', level * IndentationSpaces);
-	}
+		AppState.DiagnosticOutput.Append($"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
-	/// <summary>
-	/// Determine if a prefix is a media query prefix.
-	/// </summary>
-	/// <param name="prefix"></param>
-	/// <returns></returns>
-	private bool IsMediaQueryPrefix(string prefix)
-	{
-		var mediaQueryPrefix = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
-		return string.IsNullOrEmpty(mediaQueryPrefix.Key) == false;
-	}
+		timer.Restart();
 
-	/// <summary>
-	/// Determine if a prefix is a pseudoclass prefix.
-	/// </summary>
-	/// <param name="prefix"></param>
-	/// <returns></returns>
-	private bool IsPseudoclassPrefix(string prefix)
-	{
-		var pseudoclassPrefix = AppState.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
-		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;
+		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState, AppState.ReleaseMode);
+		
+		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
+		AppState.DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+
+		AppState.StringBuilderPool.Return(projectScss);
 	}
 	
 	#endregion
@@ -314,39 +242,6 @@ public sealed class SfumatoRunner
 		AppState.StringBuilderPool.Return(scssResult);
 		
 		return await Task.FromResult(result);
-	}
-	
-	/// <summary>
-	/// Build the project's CSS and write to storage.
-	/// </summary>
-	/// <param name="runner"></param>
-	public async Task GenerateProjectCssAsync()
-	{
-		var timer = new Stopwatch();
-		
-		await AppState.GatherUsedScssCoreClassesAsync();
-
-		timer.Start();
-
-		Console.Write("Generating CSS...");
-		
-		var projectScss = AppState.StringBuilderPool.Get();
-
-		projectScss.Append(AppState.ScssInjectableCore);
-		projectScss.Append(await GenerateScssObjectTreeAsync());
-		
-		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
-
-		DiagnosticOutput.Append($"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
-
-		timer.Restart();
-
-		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState, ReleaseMode);
-		
-		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
-		DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
-
-		AppState.StringBuilderPool.Return(projectScss);
 	}
 	
 	/// <summary>
@@ -496,6 +391,42 @@ public sealed class SfumatoRunner
 		{
 			sb.Append($"{Indent(scssNode.Level - 1)}}}\n");
 		}
+	}
+	
+	#endregion
+	
+	#region Helper Methods
+	
+	/// <summary>
+	/// Create space indentation based on level of depth.
+	/// </summary>
+	/// <param name="level"></param>
+	/// <returns></returns>
+	private static string Indent(int level)
+	{
+		return new string(' ', level * IndentationSpaces);
+	}
+
+	/// <summary>
+	/// Determine if a prefix is a media query prefix.
+	/// </summary>
+	/// <param name="prefix"></param>
+	/// <returns></returns>
+	private bool IsMediaQueryPrefix(string prefix)
+	{
+		var mediaQueryPrefix = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		return string.IsNullOrEmpty(mediaQueryPrefix.Key) == false;
+	}
+
+	/// <summary>
+	/// Determine if a prefix is a pseudoclass prefix.
+	/// </summary>
+	/// <param name="prefix"></param>
+	/// <returns></returns>
+	private bool IsPseudoclassPrefix(string prefix)
+	{
+		var pseudoclassPrefix = AppState.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;
 	}
 	
 	#endregion

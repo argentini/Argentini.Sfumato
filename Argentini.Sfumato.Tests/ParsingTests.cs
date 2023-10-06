@@ -17,7 +17,7 @@ public class ParsingTests
     {
         _testOutputHelper.WriteLine("ParsingTest");
         
-        var runner = new SfumatoRunner(Array.Empty<string>());
+        var runner = new SfumatoRunner();
 
         await runner.InitializeAsync();
 

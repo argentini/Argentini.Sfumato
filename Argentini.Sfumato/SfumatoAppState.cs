@@ -19,6 +19,16 @@ public sealed class SfumatoAppState
 {
     #region Properties
 
+    #region Modes
+
+    public bool ReleaseMode { get; set; }
+    public bool WatchMode { get; set; }
+    public bool VersionMode { get; set; }
+    public bool HelpMode { get; set; }
+    public bool DiagnosticMode { get; set; }
+	
+    #endregion
+    
     #region Constants
     
     public static string CliErrorPrefix => "Sfumato => ";
@@ -82,8 +92,10 @@ public sealed class SfumatoAppState
     #endregion
     
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+    public List<string> CliArguments { get; } = new();
     public SfumatoJsonSettings Settings { get; set; } = new();
     public StringBuilder DiagnosticOutput { get; set; } = new();
+    public string WorkingPathOverride { get; set; } = string.Empty;
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
@@ -96,37 +108,32 @@ public sealed class SfumatoAppState
     
     #endregion
 
-    #region Constructors
-    
     public SfumatoAppState()
     {
-	    #region Gather Scss Class Prefixes
-
 	    AllPrefixes.Clear();
 	    AllPrefixes.AddRange(MediaQueryPrefixes.Select(p => p.Key));
 	    AllPrefixes.AddRange(PseudoclassPrefixes.Select(p => p.Key));
-		
-	    #endregion
     }
+    
+    #region Entry Points
     
     /// <summary>
     /// Initialize the app state. Loads settings JSON file from working path.
     /// Sets up runtime environment for the runner.
     /// </summary>
-    /// <param name="workingPath">Leave empty to use app working directory or pass a path to override</param>
-    /// <param name="diagnosticOutput">Used to collect diagnostic output</param>
-    public async Task InitializeAsync(string workingPath, StringBuilder diagnosticOutput)
+    /// <param name="args">CLI arguments</param>
+    public async Task InitializeAsync(IEnumerable<string> args)
     {
 	    var timer = new Stopwatch();
 
 	    timer.Start();
 
-	    DiagnosticOutput = diagnosticOutput;
+	    ProcessCliArguments(args);	    
 	    
 	    #region Find sfumato.json file
 
-        if (string.IsNullOrEmpty(workingPath) == false)
-            WorkingPath = workingPath;
+        if (string.IsNullOrEmpty(WorkingPathOverride) == false)
+            WorkingPath = WorkingPathOverride;
         
         SettingsFilePath = Path.Combine(WorkingPath, "sfumato.json");
 
@@ -216,8 +223,198 @@ public sealed class SfumatoAppState
         
         await GatherAvailableScssCoreClassesAsync();
 
-        diagnosticOutput.Append($"Identified {Classes.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+        DiagnosticOutput.Append($"Identified {Classes.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
     }
+    
+    #endregion
+
+	#region Initialization Methods
+	
+	/// <summary>
+	/// Process CLI arguments and set properties accordingly.
+	/// </summary>
+	/// <param name="args"></param>
+	public void ProcessCliArguments(IEnumerable<string>? args)
+	{
+		CliArguments.Clear();
+		CliArguments.AddRange(args?.ToList() ?? new List<string>());
+
+		if (CliArguments.Count < 1)
+			return;
+		
+		foreach (var arg in CliArguments)
+		{
+			if (arg.StartsWith("--release", StringComparison.InvariantCultureIgnoreCase))
+				ReleaseMode = true;
+					
+			else if (arg.StartsWith("--watch", StringComparison.InvariantCultureIgnoreCase))
+				WatchMode = true;
+
+			else if (arg.StartsWith("--help", StringComparison.InvariantCultureIgnoreCase))
+				HelpMode = true;
+
+			else if (arg.StartsWith("--version", StringComparison.InvariantCultureIgnoreCase))
+				VersionMode = true;
+
+			else if (arg.StartsWith("--diagnostics", StringComparison.InvariantCultureIgnoreCase))
+				DiagnosticMode = true;
+			
+			else if (arg.StartsWith("--path", StringComparison.InvariantCultureIgnoreCase))
+				if (CliArguments.Count - 1 >= CliArguments.IndexOf(arg) + 1)
+				{
+					var path = CliArguments[CliArguments.IndexOf(arg) + 1].TrimEnd("sfumato.json", StringComparison.InvariantCultureIgnoreCase) ?? string.Empty;
+
+					if (string.IsNullOrEmpty(path) == false && Directory.Exists(path))
+					{
+						Console.WriteLine($"{CliErrorPrefix}Invalid project path at {path}");
+						Environment.Exit(1);
+					}
+						
+					WorkingPathOverride = Path.GetFullPath(path);
+				}
+		}
+	}
+	
+    public static string GetWorkingPath()
+    {
+        var workingPath = Directory.GetCurrentDirectory();
+        
+#if DEBUG
+        var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
+
+        if (index > -1)
+        {
+            workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
+        }
+
+        else
+        {
+            index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
+
+            if (index > -1)
+                workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
+        }
+#endif
+
+        return workingPath;
+    }
+
+    public static string GetEmbeddedSassPath()
+    {
+        var osPlatform = Identify.GetOsPlatform();
+        var processorArchitecture = Identify.GetProcessorArchitecture();
+        var sassPath = string.Empty;
+		var workingPath = Assembly.GetExecutingAssembly().Location;
+
+		while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
+		{
+			workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
+
+#if DEBUG
+			if (Directory.Exists(Path.Combine(workingPath, "sass")) == false)
+				continue;
+
+			var tempPath = workingPath; 
+			
+			workingPath = Path.Combine(tempPath, "sass");
+#else
+			if (Directory.Exists(Path.Combine(workingPath, "contentFiles")) == false)
+				continue;
+		
+			var tempPath = workingPath; 
+
+			workingPath = Path.Combine(tempPath, "contentFiles", "any", "any", "sass");
+#endif
+			
+			if (osPlatform == OSPlatform.Windows)
+			{
+				if (processorArchitecture is Architecture.X64 or Architecture.Arm64)
+					sassPath = Path.Combine(workingPath, "dart-sass-windows-x64", "sass.bat");
+			}
+				
+			else if (osPlatform == OSPlatform.OSX)
+			{
+				if (processorArchitecture == Architecture.X64)
+					sassPath = Path.Combine(workingPath, "dart-sass-macos-x64", "sass");
+				else if (processorArchitecture == Architecture.Arm64)
+					sassPath = Path.Combine(workingPath, "dart-sass-macos-arm64", "sass");
+			}
+				
+			else if (osPlatform == OSPlatform.Linux)
+			{
+				if (processorArchitecture == Architecture.X64)
+					sassPath = Path.Combine(workingPath, "dart-sass-linux-x64", "sass");
+				else if (processorArchitecture == Architecture.Arm64)
+					sassPath = Path.Combine(workingPath, "dart-sass-linux-arm64", "sass");
+			}
+
+			break;
+		}
+		
+		if (string.IsNullOrEmpty(sassPath) || File.Exists(sassPath) == false)
+		{
+			Console.WriteLine($"{CliErrorPrefix}Embedded Dart Sass cannot be found.");
+			Environment.Exit(1);
+		}
+		
+		var sb = new StringBuilder();
+		var cmd = Cli.Wrap(sassPath)
+			.WithArguments(arguments =>
+			{
+				arguments.Add("--version");
+			})
+			.WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
+			.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
+
+		try
+		{
+			_ = cmd.ExecuteAsync().GetAwaiter().GetResult();
+		}
+
+		catch
+		{
+			Console.WriteLine($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
+			Environment.Exit(1);
+		}
+		
+		return sassPath;
+    }
+
+    public static string GetEmbeddedScssPath()
+    {
+	    var workingPath = Assembly.GetExecutingAssembly().Location;
+
+	    while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
+	    {
+		    workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
+            
+#if DEBUG
+		    if (Directory.Exists(Path.Combine(workingPath, "scss")) == false)
+			    continue;
+
+		    var tempPath = workingPath; 
+			
+		    workingPath = Path.Combine(tempPath, "scss");
+#else
+			if (Directory.Exists(Path.Combine(workingPath, "contentFiles")) == false)
+				continue;
+		
+			var tempPath = workingPath; 
+
+			workingPath = Path.Combine(tempPath, "contentFiles", "any", "any", "scss");
+#endif
+		    break;
+		}
+
+        // ReSharper disable once InvertIf
+        if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
+        {
+            Console.WriteLine($"{CliErrorPrefix}Embedded SCSS resources cannot be found.");
+            Environment.Exit(1);
+        }
+        
+		return workingPath;
+	}
     
     #endregion
     
@@ -375,149 +572,4 @@ public sealed class SfumatoAppState
 	}
 
 	#endregion
-    
-	#region Initialization Methods
-	
-    public static string GetWorkingPath()
-    {
-        var workingPath = Directory.GetCurrentDirectory();
-        
-#if DEBUG
-        var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
-
-        if (index > -1)
-        {
-            workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
-        }
-
-        else
-        {
-            index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
-
-            if (index > -1)
-                workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
-        }
-#endif
-
-        return workingPath;
-    }
-
-    public static string GetEmbeddedSassPath()
-    {
-        var osPlatform = Identify.GetOsPlatform();
-        var processorArchitecture = Identify.GetProcessorArchitecture();
-        var sassPath = string.Empty;
-		var workingPath = Assembly.GetExecutingAssembly().Location;
-
-		while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
-		{
-			workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
-
-#if DEBUG
-			if (Directory.Exists(Path.Combine(workingPath, "sass")) == false)
-				continue;
-
-			var tempPath = workingPath; 
-			
-			workingPath = Path.Combine(tempPath, "sass");
-#else
-			if (Directory.Exists(Path.Combine(workingPath, "contentFiles")) == false)
-				continue;
-		
-			var tempPath = workingPath; 
-
-			workingPath = Path.Combine(tempPath, "contentFiles", "any", "any", "sass");
-#endif
-			
-			if (osPlatform == OSPlatform.Windows)
-			{
-				if (processorArchitecture is Architecture.X64 or Architecture.Arm64)
-					sassPath = Path.Combine(workingPath, "dart-sass-windows-x64", "sass.bat");
-			}
-				
-			else if (osPlatform == OSPlatform.OSX)
-			{
-				if (processorArchitecture == Architecture.X64)
-					sassPath = Path.Combine(workingPath, "dart-sass-macos-x64", "sass");
-				else if (processorArchitecture == Architecture.Arm64)
-					sassPath = Path.Combine(workingPath, "dart-sass-macos-arm64", "sass");
-			}
-				
-			else if (osPlatform == OSPlatform.Linux)
-			{
-				if (processorArchitecture == Architecture.X64)
-					sassPath = Path.Combine(workingPath, "dart-sass-linux-x64", "sass");
-				else if (processorArchitecture == Architecture.Arm64)
-					sassPath = Path.Combine(workingPath, "dart-sass-linux-arm64", "sass");
-			}
-
-			break;
-		}
-		
-		if (string.IsNullOrEmpty(sassPath) || File.Exists(sassPath) == false)
-		{
-			Console.WriteLine($"{CliErrorPrefix}Embedded Dart Sass cannot be found.");
-			Environment.Exit(1);
-		}
-		
-		var sb = new StringBuilder();
-		var cmd = Cli.Wrap(sassPath)
-			.WithArguments(arguments =>
-			{
-				arguments.Add("--version");
-			})
-			.WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
-			.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
-
-		try
-		{
-			_ = cmd.ExecuteAsync().GetAwaiter().GetResult();
-		}
-
-		catch
-		{
-			Console.WriteLine($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
-			Environment.Exit(1);
-		}
-		
-		return sassPath;
-    }
-
-    public static string GetEmbeddedScssPath()
-    {
-	    var workingPath = Assembly.GetExecutingAssembly().Location;
-
-	    while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
-	    {
-		    workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
-            
-#if DEBUG
-		    if (Directory.Exists(Path.Combine(workingPath, "scss")) == false)
-			    continue;
-
-		    var tempPath = workingPath; 
-			
-		    workingPath = Path.Combine(tempPath, "scss");
-#else
-			if (Directory.Exists(Path.Combine(workingPath, "contentFiles")) == false)
-				continue;
-		
-			var tempPath = workingPath; 
-
-			workingPath = Path.Combine(tempPath, "contentFiles", "any", "any", "scss");
-#endif
-		    break;
-		}
-
-        // ReSharper disable once InvertIf
-        if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
-        {
-            Console.WriteLine($"{CliErrorPrefix}Embedded SCSS resources cannot be found.");
-            Environment.Exit(1);
-        }
-        
-		return workingPath;
-	}
-    
-    #endregion
 }
