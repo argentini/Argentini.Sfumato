@@ -128,7 +128,10 @@ public sealed class SfumatoAppState
 
 	    timer.Start();
 
-	    ProcessCliArguments(args);	    
+	    ProcessCliArguments(args);
+
+	    if (VersionMode || HelpMode)
+		    return;
 	    
 	    #region Find sfumato.json file
 
