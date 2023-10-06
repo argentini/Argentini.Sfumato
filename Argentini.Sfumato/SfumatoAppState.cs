@@ -264,13 +264,16 @@ public sealed class SfumatoAppState
 				{
 					var path = CliArguments[CliArguments.IndexOf(arg) + 1].TrimEnd("sfumato.json", StringComparison.InvariantCultureIgnoreCase) ?? string.Empty;
 
-					if (string.IsNullOrEmpty(path) == false && Directory.Exists(path))
+					try
+					{
+						WorkingPathOverride = Path.GetFullPath(path);
+					}
+
+					catch
 					{
 						Console.WriteLine($"{CliErrorPrefix}Invalid project path at {path}");
 						Environment.Exit(1);
 					}
-						
-					WorkingPathOverride = Path.GetFullPath(path);
 				}
 		}
 	}
