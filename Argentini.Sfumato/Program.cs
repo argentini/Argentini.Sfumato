@@ -10,10 +10,10 @@ internal class Program
 {
 	private static async Task Main(string[] args)
 	{
-		var timer = new Stopwatch();
+		var totalTimer = new Stopwatch();
 
-		timer.Start();
-
+		totalTimer.Start();
+		
 		Console.OutputEncoding = Encoding.UTF8;
 		
 		var runner = new SfumatoRunner();
@@ -68,24 +68,40 @@ internal class Program
 		}        
 
 		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
-		Console.WriteLine($"{(runner.AppState.WatchMode ? "Watching for Changes..." : "Building...")}");
+		Console.WriteLine($"Starting {(runner.AppState.WatchMode ? "initial build" : "build")} at {DateTime.Now:HH:mm:ss.fff}");
 
-        await runner.GenerateProjectCssAsync();
+		var timer = new Stopwatch();
+
+		timer.Start();
 		
+        await runner.GenerateProjectCssAsync();
+
+        Console.WriteLine($"=> Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
+        
 		#region Watcher Mode
 
 		if (runner.AppState.WatchMode)
 		{
-			// WATCH HERE
+			Console.WriteLine();
+			Console.WriteLine($"Started Watching at {DateTime.Now:HH:mm:ss.fff}");
+			Console.WriteLine();
+			
+			
+			// todo: set up file watchers
+			
+			
+			// todo: wait cancellation
+			
+			
 		}
 
 		#endregion
-		
-		Console.WriteLine($"Completed build in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
-		Console.WriteLine();
 
+		Console.WriteLine($"Total run time: {totalTimer.Elapsed.TotalSeconds:N2} seconds");
+		
 		if (runner.AppState.DiagnosticMode)
 		{
+			Console.WriteLine();
 			Console.WriteLine("DIAGNOSTICS:");
 			Console.WriteLine(runner.AppState.DiagnosticOutput.ToString());
 		}

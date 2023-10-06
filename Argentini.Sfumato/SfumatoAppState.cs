@@ -490,7 +490,7 @@ public sealed class SfumatoAppState
 
 		timer.Start();
 
-		Console.Write("Identifying used classes...");
+		Console.Write("=> Identifying used classes...");
 		
 		UsedClasses.Clear();
 

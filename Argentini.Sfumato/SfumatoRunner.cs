@@ -36,10 +36,6 @@ public sealed class SfumatoRunner
 
 	public SfumatoRunner()
 	{
-		var timer = new Stopwatch();
-
-		timer.Start();
-		
 		TypeAdapterConfig<ScssNode, ScssNode>.NewConfig()
 			.PreserveReference(true)
 			.AfterMapping((src, dest) => 
@@ -51,8 +47,6 @@ public sealed class SfumatoRunner
 #if DEBUG
 		AppState.DiagnosticMode = true;
 #endif		
-
-		AppState.DiagnosticOutput.Append($"Cold start in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
 
 	#region Entry Points
@@ -77,7 +71,7 @@ public sealed class SfumatoRunner
 
 		timer.Start();
 
-		Console.Write("Generating CSS...");
+		Console.Write("=> Generating CSS...");
 		
 		var projectScss = AppState.StringBuilderPool.Get();
 
