@@ -78,7 +78,7 @@ internal class Program
 		}        
 
 		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
-		Console.WriteLine($"Starting {(runner.AppState.WatchMode ? "initial build" : "build")} at {DateTime.Now:HH:mm:ss.fff}");
+		Console.WriteLine($"Started {(runner.AppState.WatchMode ? "initial build" : "build")} at {DateTime.Now:HH:mm:ss.fff}");
 
 		var timer = new Stopwatch();
 
@@ -86,7 +86,7 @@ internal class Program
 		
         await runner.PerformBuildAsync();
 
-        Console.WriteLine($"=> Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
+        Console.WriteLine($"Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
         
 		#region Watcher Mode
 
@@ -109,6 +109,8 @@ internal class Program
 			#endregion
 
 			#region Watch
+
+			var watchTimer = new Stopwatch();
 			
 			while (Console.KeyAvailable == false && cancellationTokenSource.IsCancellationRequested == false)
 			{
@@ -116,8 +118,12 @@ internal class Program
 
 				await Task.Delay(100, cancellationTokenSource.Token);
 
+				watchTimer.Restart();
+
 				if (rebuildProjectQueue.IsEmpty == false)
 				{
+					Console.WriteLine($"Started rebuild at {DateTime.Now:HH:mm:ss.fff}");
+
 					rebuildProjectQueue.Clear();
 					scssTranspileQueue.Clear();
 
@@ -125,8 +131,10 @@ internal class Program
 					processedFiles = true;
 				}
 
-				if (scssTranspileQueue.IsEmpty == false)
+				else if (scssTranspileQueue.IsEmpty == false)
 				{
+					Console.WriteLine($"Started transpile at {DateTime.Now:HH:mm:ss.fff}");
+
 					foreach (var fileChangeRequest in scssTranspileQueue.OrderBy(f => f.Key))
 					{
 						if (fileChangeRequest.Value.ChangeType.Equals("deleted", StringComparison.OrdinalIgnoreCase))
@@ -141,18 +149,15 @@ internal class Program
 
 						else
 						{
-							Console.WriteLine("=> Generating CSS...");
-
 							var length = await SfumatoScss.TranspileSingleScss(fileChangeRequest.Value.FilePath, runner.AppState);
 							
-							Console.WriteLine($" saved {fileChangeRequest.Value.FilePath} ({length.FormatBytes()})");
+							Console.WriteLine($"=> Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath, runner.AppState)} ({length.FormatBytes()})");
 						}
 						
 						while (scssTranspileQueue.TryRemove(fileChangeRequest.Key, out _) == false)
 						{
 							await Task.Delay(10, cancellationTokenSource.Token);
-						};
-						
+						}
 					}
 
 					processedFiles = true;
@@ -160,6 +165,7 @@ internal class Program
 				
 				if (processedFiles)
 				{
+					Console.WriteLine($"Completed build in {watchTimer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
 					Console.WriteLine();
 					Console.WriteLine("Watching; Press ESC to Exit");
 					Console.WriteLine();

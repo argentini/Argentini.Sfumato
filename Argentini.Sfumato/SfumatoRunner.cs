@@ -74,8 +74,6 @@ public sealed class SfumatoRunner
 
 		timer.Start();
 
-		Console.Write("=> Generating All CSS...");
-		
 		var projectScss = AppState.StringBuilderPool.Get();
 
 		projectScss.Append(AppState.ScssCoreInjectable);
@@ -89,8 +87,8 @@ public sealed class SfumatoRunner
 
 		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState);
 		
-		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
-		AppState.DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		Console.WriteLine($"=> Generated sfumato.css ({fileSize.FormatBytes()})");
+		AppState.DiagnosticOutput.Append($"Generated sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
 		#endregion
 		
@@ -431,11 +429,9 @@ public sealed class SfumatoRunner
 			if (file.Name.ToLower().EndsWith(fileSpec.TrimStart("*") ?? ".scss") == false)
 				continue;
 
-			Console.Write("=> Generating CSS...");
-			
 			var length = await SfumatoScss.TranspileSingleScss(file.FullName, appState);
 
-			Console.WriteLine($" saved {file.FullName} ({length.FormatBytes()})");
+			Console.WriteLine($"=> Generated {ShortenPathForOutput(file.FullName, appState)} ({length.FormatBytes()})");
 		}
 
 		if (recurse)
@@ -446,6 +442,17 @@ public sealed class SfumatoRunner
 	#endregion
 	
 	#region Helper Methods
+
+	/// <summary>
+	/// Trim the working path from the start of a file path, and prefix with "./" to make it relative.
+	/// </summary>
+	/// <param name="path"></param>
+	/// <param name="appState"></param>
+	/// <returns></returns>
+	public static string ShortenPathForOutput(string path, SfumatoAppState appState)
+	{
+		return $".{Path.DirectorySeparatorChar}{path.TrimStart(appState.WorkingPath, StringComparison.OrdinalIgnoreCase)?.TrimStart(Path.DirectorySeparatorChar)}";
+	}
 	
 	/// <summary>
 	/// Create space indentation based on level of depth.

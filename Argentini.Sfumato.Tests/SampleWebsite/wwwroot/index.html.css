@@ -1,8 +1,8 @@
-#test-element {
+#test-home {
   color: white;
 }
 @media screen and (min-width: 540px) {
-  #test-element span {
+  #test-home span {
     color: yellow;
   }
 }
