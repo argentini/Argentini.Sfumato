@@ -537,7 +537,7 @@ public sealed class SfumatoAppState
 		var files = dir.GetFiles();
 		var prefixes = string.Join(":|", AllPrefixes) + ":";
 
-		var regex = new Regex($$"""(?<=[\s"'`])(({{prefixes}}){0,9}[a-z]{1,1}[a-z0-9\-]{1,99}(\[[a-z0-9\-\.]{1,99}\]){0,9})(?=[\s"'`])""", RegexOptions.Compiled);
+		var regex = new Regex($$"""(?<=[\s"'`])(({{prefixes}}){0,9}[a-z]{1,1}[a-z0-9\-]{1,99}(\[[a-z0-9\-\._]{1,99}\]){0,1})(?=[\s"'`])""", RegexOptions.Compiled);
 
 		foreach (var projectFile in files.OrderBy(f => f.Name))
 		{
