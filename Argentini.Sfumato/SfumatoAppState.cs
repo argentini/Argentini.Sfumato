@@ -171,7 +171,7 @@ public sealed class SfumatoAppState
             
             #region Import settings
             
-            Settings.CssOutputPath = Path.Combine(WorkingPath, jsonSettings.CssOutputPath.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar));
+            Settings.CssOutputPath = Path.Combine(WorkingPath, jsonSettings.CssOutputPath.SetNativePathSeparators());
         
             if (Directory.Exists(Settings.CssOutputPath) == false)
             {
@@ -193,7 +193,7 @@ public sealed class SfumatoAppState
         
             foreach (var projectPath in jsonSettings.ProjectPaths)
             {
-                projectPath.Path = Path.Combine(WorkingPath, projectPath.Path.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar));
+                projectPath.Path = Path.Combine(WorkingPath, projectPath.Path.SetNativePathSeparators());
 
                 if (string.IsNullOrEmpty(projectPath.FileSpec))
                     return;

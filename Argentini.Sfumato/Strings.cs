@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 
 namespace Argentini.Sfumato;
@@ -305,6 +306,28 @@ public static class Strings
 		
 		return value;        
 	}
+
+	/// <summary>
+	/// Normalize path separators to those used by the current OS.
+	/// </summary>
+	/// <param name="value"></param>
+	public static string SetNativePathSeparators(this string value)
+	{
+		if (string.IsNullOrEmpty(value))
+			return string.Empty;
+
+		var path = value;
+
+		path = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+		
+		if (Path.DirectorySeparatorChar != '/')
+			path = path.Replace('/', Path.DirectorySeparatorChar);
+
+		if (Path.DirectorySeparatorChar != '\\')
+			path = path.Replace('\\', Path.DirectorySeparatorChar);
+		
+		return path;        
+	}
 	
 	/// <summary>
 	/// Convert bytes into a user-friendly size (e.g. 1024 becomes 1kb).
@@ -317,7 +340,6 @@ public static class Strings
 		var value = Convert.ToDecimal(val);
 		var result = "0 bytes";
 		decimal divisor = 1000;
-		var kb = divisor;
 		var mb = (divisor * divisor);
 		var gb = (mb * divisor);
 		var tb = (gb * divisor);

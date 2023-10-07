@@ -71,7 +71,7 @@ internal class Program
 				if (string.IsNullOrEmpty(paths) == false)
 					paths += "                 :  ";
 
-				paths += $".{path.Path.TrimStart(runner.AppState.WorkingPath)}/{path.FileSpec}{Environment.NewLine}";
+				paths += $".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}{Path.DirectorySeparatorChar}{path.FileSpec}{Environment.NewLine}";
 			}
 	        
 			Console.WriteLine($"Include Path(s)  :  {paths.TrimEnd()}");
