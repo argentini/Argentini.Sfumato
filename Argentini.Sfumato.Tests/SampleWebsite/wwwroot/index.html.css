@@ -1,0 +1,8 @@
+#test-element {
+  color: white;
+}
+@media screen and (min-width: 540px) {
+  #test-element span {
+    color: yellow;
+  }
+}

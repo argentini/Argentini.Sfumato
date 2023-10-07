@@ -1,0 +1,11 @@
+#test-element {
+
+  color: white;
+
+  @include sf-media($from: tabp) {
+
+    span {
+      color: yellow;
+    }
+  }
+}

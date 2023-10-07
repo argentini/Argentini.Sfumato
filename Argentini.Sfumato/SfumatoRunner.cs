@@ -98,7 +98,7 @@ public sealed class SfumatoRunner
 		
 		foreach (var projectPath in AppState.Settings.ProjectPaths)
 			if (projectPath.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-				await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec);
+				await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec, projectPath.Recurse);
 		
 		#endregion
 		
@@ -405,12 +405,12 @@ public sealed class SfumatoRunner
 	/// <param name="appState"></param>
 	/// <param name="sourcePath"></param>
 	/// <param name="fileSpec"></param>
-	/// <param name="foundFiles"></param>
+	/// <param name="recurse"></param>
 	/// <returns></returns>
-	private static async Task<bool> FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, bool foundFiles = false)
+	private static async Task FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
-			return foundFiles;
+			return;
 		
 		var dir = new DirectoryInfo(sourcePath);
 
@@ -436,15 +436,11 @@ public sealed class SfumatoRunner
 			var length = await SfumatoScss.TranspileSingleScss(file.FullName, appState);
 
 			Console.WriteLine($" saved {file.FullName} ({length.FormatBytes()})");
-                    
-			if (length > -1)
-				foundFiles = true;
 		}
 
-		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			foundFiles = await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, foundFiles);
-
-		return foundFiles;
+		if (recurse)
+			foreach (var subDir in dirs.OrderBy(d => d.Name))
+				await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, recurse);
 	}
 	
 	#endregion
