@@ -1,14 +1,6 @@
 // Font and other base styles are established in this file.
 // It should be called after the configuration files have been loaded.
 
-$zero-breakpoint: map-get($media-breakpoints, "zero");
-$phab-breakpoint: map-get($media-breakpoints, "phab");
-$tabp-breakpoint: map-get($media-breakpoints, "tabp");
-$tabl-breakpoint: map-get($media-breakpoints, "tabl");
-$note-breakpoint: map-get($media-breakpoints, "note");
-$desk-breakpoint: map-get($media-breakpoints, "desk");
-$elas-breakpoint: map-get($media-breakpoints, "elas");
-
 * {
     &,
     &:before,

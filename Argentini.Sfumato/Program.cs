@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Argentini.Sfumato;
@@ -10,6 +15,11 @@ internal class Program
 {
 	private static async Task Main(string[] args)
 	{
+		var fileWatchers = new List<FileSystemWatcher>();
+		var rebuildProjectQueue = new ConcurrentDictionary<long, FileChangeRequest>();
+		var scssTranspileQueue = new ConcurrentDictionary<long, FileChangeRequest>();
+		var cancellationTokenSource = new CancellationTokenSource();
+		
 		var totalTimer = new Stopwatch();
 
 		totalTimer.Start();
@@ -61,7 +71,7 @@ internal class Program
 				if (string.IsNullOrEmpty(paths) == false)
 					paths += "                 :  ";
 
-				paths += $".{path.Path.TrimStart(runner.AppState.WorkingPath)}/{path.FileSpec}{(path.Recurse ? " (Recurse)" : string.Empty)}{Environment.NewLine}";
+				paths += $".{path.Path.TrimStart(runner.AppState.WorkingPath)}/{path.FileSpec}{Environment.NewLine}";
 			}
 	        
 			Console.WriteLine($"Include Path(s)  :  {paths.TrimEnd()}");
@@ -74,7 +84,7 @@ internal class Program
 
 		timer.Start();
 		
-        await runner.GenerateProjectCssAsync();
+        await runner.PerformBuildAsync();
 
         Console.WriteLine($"=> Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
         
@@ -86,13 +96,99 @@ internal class Program
 			Console.WriteLine($"Started Watching at {DateTime.Now:HH:mm:ss.fff}");
 			Console.WriteLine();
 			
+			#region Create Watchers
 			
-			// todo: set up file watchers
+			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
+			{
+				if (projectPath.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+					fileWatchers.Add(CreateFileChangeWatcher(scssTranspileQueue, projectPath.Path, projectPath.FileSpec));
+				else
+					fileWatchers.Add(CreateFileChangeWatcher(rebuildProjectQueue, projectPath.Path, projectPath.FileSpec));
+			}
 			
+			#endregion
+
+			#region Watch
 			
-			// todo: wait cancellation
+			while (Console.KeyAvailable == false && cancellationTokenSource.IsCancellationRequested == false)
+			{
+				var processedFiles = false;
+
+				await Task.Delay(100, cancellationTokenSource.Token);
+
+				if (rebuildProjectQueue.IsEmpty == false)
+				{
+					rebuildProjectQueue.Clear();
+					scssTranspileQueue.Clear();
+
+					await runner.PerformBuildAsync();
+					processedFiles = true;
+				}
+
+				if (scssTranspileQueue.IsEmpty == false)
+				{
+					foreach (var fileChangeRequest in scssTranspileQueue.OrderBy(f => f.Key))
+					{
+						if (fileChangeRequest.Value.ChangeType.Equals("deleted", StringComparison.OrdinalIgnoreCase))
+						{
+							var cssFilePath =
+								fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) +
+								".css"; 
+							
+							if (File.Exists(cssFilePath))
+								File.Delete(cssFilePath);
+						}
+
+						else
+						{
+							Console.WriteLine("=> Generating CSS...");
+
+							var length = await SfumatoScss.TranspileSingleScss(fileChangeRequest.Value.FilePath, runner.AppState);
+							
+							Console.WriteLine($" saved {fileChangeRequest.Value.FilePath} ({length.FormatBytes()})");
+						}
+						
+						while (scssTranspileQueue.TryRemove(fileChangeRequest.Key, out _) == false)
+						{
+							await Task.Delay(10, cancellationTokenSource.Token);
+						};
+						
+					}
+
+					processedFiles = true;
+				}
+				
+				if (processedFiles)
+				{
+					Console.WriteLine();
+					Console.WriteLine("Watching; Press ESC to Exit");
+					Console.WriteLine();
+				}
+
+				if (cancellationTokenSource.IsCancellationRequested)
+					break;
+
+				if (Console.KeyAvailable == false)
+					continue;
+				
+				var keyPress = Console.ReadKey(intercept: true);
+
+				if (keyPress.Key != ConsoleKey.Escape)
+					continue;
+				
+				cancellationTokenSource.Cancel();
+				
+				break;
+			}
 			
+			#endregion
+
+			#region Cleanup Watchers
 			
+			foreach (var watcher in fileWatchers)
+				watcher.Dispose();
+
+			#endregion
 		}
 
 		#endregion
@@ -108,6 +204,81 @@ internal class Program
 
 		Environment.Exit(0);
 	}
+	
+    /// <summary>
+    /// Construct a file changes watcher.
+    /// </summary>
+    /// <param name="fileChangeQueue">scss or rebuild</param>
+    /// <param name="path">Path tree to watch for file changes</param>
+    /// <param name="fileSpec">File type to watch (e.g. *.scss)</param>
+    private static FileSystemWatcher CreateFileChangeWatcher(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, string path, string fileSpec)
+    {
+	    if (string.IsNullOrEmpty(path))
+	    {
+		    Console.WriteLine("Fatal Error: No watch path specified");
+		    Environment.Exit(1);
+	    }
+
+	    if (string.IsNullOrEmpty(fileSpec))
+	    {
+		    Console.WriteLine("Fatal Error: No watch filespec specified");
+		    Environment.Exit(1);
+	    }
+
+	    var watcher = new FileSystemWatcher(path)
+        {
+            NotifyFilter = NotifyFilters.Attributes
+                           | NotifyFilters.CreationTime
+                           | NotifyFilters.FileName
+                           | NotifyFilters.LastWrite
+                           | NotifyFilters.Size
+        };
+
+        watcher.Changed += (_, e) => AddChangeToQueue(fileChangeQueue, e, fileSpec);
+        watcher.Created += (_, e) => AddChangeToQueue(fileChangeQueue, e, fileSpec);
+        watcher.Deleted += (_, e) => AddChangeToQueue(fileChangeQueue, e, fileSpec);
+        
+        watcher.Filter = fileSpec;
+        watcher.IncludeSubdirectories = true;
+        watcher.EnableRaisingEvents = true;
+
+        return watcher;
+    }
+
+    /// <summary>
+    /// Add the change event to a queue for ordered processing.
+    /// </summary>
+    /// <param name="fileChangeQueue"></param>
+    /// <param name="e"></param>
+    /// <param name="fileSpec"></param>
+    private static void AddChangeToQueue(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, FileSystemEventArgs e, string fileSpec)
+    {
+	    if (string.IsNullOrEmpty(fileSpec))
+	    {
+		    Console.WriteLine("Fatal Error: No watch filespec specified");
+		    Environment.Exit(1);
+	    }
+	    
+	    var changeType = e.ChangeType == WatcherChangeTypes.Deleted ? "deleted" : "changed";
+
+	    if (fileChangeQueue.Any(q => q.Value.FilePath == e.FullPath && q.Value.ChangeType == changeType))
+		    return;
+
+	    var newKey = DateTimeOffset.UtcNow.UtcTicks;
+
+	    fileChangeQueue.AddOrUpdate(newKey, new FileChangeRequest
+	    {
+		    FilePath = e.FullPath,
+		    ChangeType = changeType,
+		    FileSpec = fileSpec
+
+	    }, (_, oldValue) => new FileChangeRequest
+	    {
+		    FilePath = oldValue.FilePath,
+		    ChangeType = oldValue.ChangeType,
+		    FileSpec = fileSpec
+	    });
+    }
 }
 
 public class FileChangeRequest

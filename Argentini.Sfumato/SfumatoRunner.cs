@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,19 +64,21 @@ public sealed class SfumatoRunner
 	/// Build the project's CSS and write to storage.
 	/// </summary>
 	/// <param name="runner"></param>
-	public async Task GenerateProjectCssAsync()
+	public async Task PerformBuildAsync()
 	{
 		var timer = new Stopwatch();
+		
+		#region Generate Global CSS
 		
 		await AppState.GatherUsedScssCoreClassesAsync();
 
 		timer.Start();
 
-		Console.Write("=> Generating CSS...");
+		Console.Write("=> Generating All CSS...");
 		
 		var projectScss = AppState.StringBuilderPool.Get();
 
-		projectScss.Append(AppState.ScssInjectableCore);
+		projectScss.Append(AppState.ScssCoreInjectable);
 		projectScss.Append(await GenerateScssObjectTreeAsync());
 		
 		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
@@ -84,11 +87,21 @@ public sealed class SfumatoRunner
 
 		timer.Restart();
 
-		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState, AppState.ReleaseMode);
+		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState);
 		
 		Console.WriteLine($" saved sfumato.css ({fileSize.FormatBytes()})");
 		AppState.DiagnosticOutput.Append($"Transpiled sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
+		#endregion
+		
+		#region Compile Project SCSS In-Place
+		
+		foreach (var projectPath in AppState.Settings.ProjectPaths)
+			if (projectPath.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+				await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec);
+		
+		#endregion
+		
 		AppState.StringBuilderPool.Return(projectScss);
 	}
 	
@@ -384,6 +397,54 @@ public sealed class SfumatoRunner
 		{
 			sb.Append($"{Indent(scssNode.Level - 1)}}}\n");
 		}
+	}
+	
+	/// <summary>
+	/// Transpile all configured project SCSS files in-place.
+	/// </summary>
+	/// <param name="appState"></param>
+	/// <param name="sourcePath"></param>
+	/// <param name="fileSpec"></param>
+	/// <param name="foundFiles"></param>
+	/// <returns></returns>
+	private static async Task<bool> FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, bool foundFiles = false)
+	{
+		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
+			return foundFiles;
+		
+		var dir = new DirectoryInfo(sourcePath);
+
+		if (dir.Exists == false)
+		{
+			Console.WriteLine($"Source directory does not exist: {sourcePath}");
+			Environment.Exit(1);
+		}
+
+		var dirs = dir.GetDirectories();
+		var files = dir.GetFiles();
+			
+		foreach (var cssFile in files.Where(f => f.Name.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase)))
+			cssFile.Delete();			
+
+		foreach (var file in files.OrderBy(f => f.Name))
+		{
+			if (file.Name.ToLower().EndsWith(fileSpec.TrimStart("*") ?? ".scss") == false)
+				continue;
+
+			Console.Write("=> Generating CSS...");
+			
+			var length = await SfumatoScss.TranspileSingleScss(file.FullName, appState);
+
+			Console.WriteLine($" saved {file.FullName} ({length.FormatBytes()})");
+                    
+			if (length > -1)
+				foundFiles = true;
+		}
+
+		foreach (var subDir in dirs.OrderBy(d => d.Name))
+			foundFiles = await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, foundFiles);
+
+		return foundFiles;
 	}
 	
 	#endregion

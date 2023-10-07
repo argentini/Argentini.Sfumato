@@ -3,8 +3,11 @@
     "projectPaths": [
         {
             "path": "wwwroot",
-            "fileSpec": "*.html",
-            "recurse": false
+            "fileSpec": "*.html"
+        },
+        {
+            "path": "wwwroot/components",
+            "fileSpec": "*.scss"
         }
     ],
     "themeMode": "system",

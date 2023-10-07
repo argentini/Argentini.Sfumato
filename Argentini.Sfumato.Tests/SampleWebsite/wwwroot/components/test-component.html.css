@@ -1,0 +1,8 @@
+#test-component {
+  color: white;
+}
+@media screen and (min-width: 540px) {
+  #test-component span {
+    color: black;
+  }
+}
