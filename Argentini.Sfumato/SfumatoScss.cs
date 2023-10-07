@@ -155,7 +155,7 @@ public sealed class SfumatoScss
 
 		catch (Exception e)
 		{
-			sb.AppendLine($" ERROR: {e.Message.Trim()}");
+			sb.AppendLine($"=> ERROR: {e.Message.Trim()}");
 			sb.AppendLine(string.Empty);
 			sb.AppendLine(e.StackTrace?.Trim());
 			sb.AppendLine(string.Empty);
@@ -185,8 +185,8 @@ public sealed class SfumatoScss
 	    
 		if (string.IsNullOrEmpty(scssFilePath) || scssFilePath.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false)
 		{
-			Console.WriteLine($"ERROR: invalid SCSS file path: {scssFilePath}");
-			return 0;
+			Console.WriteLine($"=> ERROR: invalid SCSS file path: {scssFilePath}");
+			return -1;
         }
 
         var outputPath = string.Concat(scssFilePath.AsSpan(0, scssFilePath.Length - 4), "css");
@@ -247,7 +247,7 @@ public sealed class SfumatoScss
 
         catch (Exception ex)
         {
-            sb.AppendLine($"ERROR: {ex.Message.Trim()}");
+            sb.AppendLine($"=> ERROR: {ex.Message.Trim()}");
             sb.AppendLine(string.Empty);
             sb.AppendLine(ex.StackTrace?.Trim());
             sb.AppendLine(string.Empty);

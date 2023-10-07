@@ -79,8 +79,6 @@ public sealed class SfumatoRunner
 		projectScss.Append(AppState.ScssCoreInjectable);
 		projectScss.Append(await GenerateScssObjectTreeAsync());
 		
-		//await File.WriteAllTextAsync(Path.Combine(CssOutputPath, "sfumato.scss"), projectScss.ToString());
-
 		AppState.DiagnosticOutput.Append($"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
 		timer.Restart();
@@ -431,7 +429,8 @@ public sealed class SfumatoRunner
 
 			var length = await SfumatoScss.TranspileSingleScss(file.FullName, appState);
 
-			Console.WriteLine($"=> Generated {ShortenPathForOutput(file.FullName, appState)} ({length.FormatBytes()})");
+			if (length > -1)
+				Console.WriteLine($"=> Generated {ShortenPathForOutput(file.FullName, appState)} ({length.FormatBytes()})");
 		}
 
 		if (recurse)
