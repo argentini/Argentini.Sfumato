@@ -106,13 +106,28 @@ public sealed class SfumatoRunner
 	#region Generation Methods
 	
 	/// <summary>
-	/// Get the complete SCSS class from the cached file from storage.  
+	/// Get the complete SCSS class from the cached file from storage
+	/// or dynamically generated (e.g. bracketed selector).
 	/// </summary>
 	/// <param name="scssClass"></param>
 	/// <param name="excludeDeclaration"></param>
 	/// <returns></returns>
-	private string GetScssClassMarkupFromCachedFile(ScssClass scssClass, bool excludeDeclaration = false)
+	private string GetScssClassMarkup(ScssClass scssClass, bool excludeDeclaration = false)
 	{
+		if (string.IsNullOrEmpty(scssClass.FilePath))
+		{
+			// todo: Handle dynamic SCSS generation
+
+			
+			
+
+
+
+			return string.Empty;
+		}
+
+		#region Get static SCSS from cached file
+		
 		var startIndex = AppState.ScssFiles[scssClass.FilePath].StartsWith($".{scssClass.RootClassName}", StringComparison.Ordinal) ? 0 : AppState.ScssFiles[scssClass.FilePath].IndexOf($"\n.{scssClass.RootClassName}", StringComparison.Ordinal);
 		var endIndex = -1;
 
@@ -170,6 +185,8 @@ public sealed class SfumatoRunner
 		result = result.TrimStart('\n').TrimEnd().TrimEnd('\n');
 		
 		return result;
+		
+		#endregion
 	}
 
 	/// <summary>
@@ -201,7 +218,7 @@ public sealed class SfumatoRunner
 
 			Array.Copy(segments, prefixes, segments.Length - 1);
 			
-			scssBody = GetScssClassMarkupFromCachedFile(scssClass, true);
+			scssBody = GetScssClassMarkup(scssClass, true);
 
 			foreach (var prefix in prefixes)
 			{
@@ -224,7 +241,7 @@ public sealed class SfumatoRunner
 
 		else
 		{
-			scssBody = GetScssClassMarkupFromCachedFile(scssClass, true);
+			scssBody = GetScssClassMarkup(scssClass, true);
 			scssResult.Append($"{Indent(level)}.{scssClass.EscapedClassName} {{\n");
 			level++;
 		}
@@ -528,7 +545,7 @@ public sealed class ScssClass
 	}
 
 	public string RootClassName { get; private set; } = string.Empty;
-	public string EscapedClassName => ClassName.Replace(":", "\\:");
+	public string EscapedClassName => ClassName.Replace(":", "\\:").Replace("[", "\\[").Replace("]", "\\]");
 	public string[] Prefixes { get; private set; } = Array.Empty<string>();
 
 }
