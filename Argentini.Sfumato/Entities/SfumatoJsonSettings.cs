@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace Argentini.Sfumato;
+namespace Argentini.Sfumato.Entities;
 
 public class SfumatoJsonSettings
 {

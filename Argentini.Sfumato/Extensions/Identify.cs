@@ -1,9 +1,6 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
+﻿using System.Runtime.Versioning;
 
-namespace Argentini.Sfumato;
+namespace Argentini.Sfumato.Extensions;
 
 public static class Identify
 {

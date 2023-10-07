@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
-
-namespace Argentini.Sfumato;
+﻿namespace Argentini.Sfumato.Extensions;
 
 /// <summary>
 /// Various tools for working with strings. 

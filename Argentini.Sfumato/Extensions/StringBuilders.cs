@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace Argentini.Sfumato;
+﻿namespace Argentini.Sfumato.Extensions;
 
 /// <summary>
 /// Various tools to make using StringBuilders more like using strings. 

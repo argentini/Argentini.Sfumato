@@ -1,18 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using CliWrap;
-using Mapster;
-using Microsoft.Extensions.ObjectPool;
-
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoAppState
