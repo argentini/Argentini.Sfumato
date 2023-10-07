@@ -269,7 +269,13 @@ public sealed class SfumatoAppState
 			else if (arg.StartsWith("--path", StringComparison.InvariantCultureIgnoreCase))
 				if (CliArguments.Count - 1 >= CliArguments.IndexOf(arg) + 1)
 				{
-					var path = CliArguments[CliArguments.IndexOf(arg) + 1].TrimEnd("sfumato.json", StringComparison.InvariantCultureIgnoreCase) ?? string.Empty;
+					var path = CliArguments[CliArguments.IndexOf(arg) + 1].SetNativePathSeparators();
+
+					if (path.Contains(Path.DirectorySeparatorChar) == false && path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+						continue;
+					
+					if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+						path = path[..path.LastIndexOf(Path.DirectorySeparatorChar)];
 
 					try
 					{
