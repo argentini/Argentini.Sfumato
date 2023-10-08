@@ -480,7 +480,7 @@ public sealed class SfumatoAppState
 					// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
 					// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
 					
-					if (string.IsNullOrEmpty(userClassValueType) == false && scssClass.ValueType != userClassValueType)
+					if (string.IsNullOrEmpty(userClassValueType) == false && scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
 						continue;
 					
 					var usedScssClass = scssClass.Adapt<ScssClass>();
@@ -507,7 +507,7 @@ public sealed class SfumatoAppState
 
 				var usedScssClass = new ScssClass
 				{
-					ValueType = string.Empty,
+					ValueTypes = string.Empty,
 					UserClassName = userClassName,
 					Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']'),
 					Template = "{value};"

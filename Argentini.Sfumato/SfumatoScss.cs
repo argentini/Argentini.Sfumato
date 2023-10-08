@@ -6,7 +6,10 @@ public static class SfumatoScss
 
 	public static IEnumerable<string> ArbitraryValueTypes => new[]
 	{
-		"color", "length"
+		"string", "url", "custom-ident", "dashed-ident",
+		"integer", "number", "percentage", "ratio", "flex",
+		"length", "angle", "time", "frequency", "resolution",
+		"color"
 	};
 
 	public static IEnumerable<string> CssUnits => new[]
@@ -15,6 +18,26 @@ public static class SfumatoScss
 		"ch", "em", "ex", "rem", "vw", "vh", "vmin", "vmax", "%"
 	};
 
+	public static IEnumerable<string> CssAngleUnits => new[]
+	{
+		"deg", "grad", "rad", "turn"
+	};
+
+	public static IEnumerable<string> CssTimeUnits => new[]
+	{
+		"s", "ms"
+	};
+
+	public static IEnumerable<string> CssFrequencyUnits => new[]
+	{
+		"Hz", "kHz"
+	};
+
+	public static IEnumerable<string> CssResolutionUnits => new[]
+	{
+		"dpi", "dpcm", "dppx", "x"
+	};
+	
 	public static IEnumerable<string> CssNamedColors => new[]
 	{
 	    "aliceblue",
@@ -876,7 +899,7 @@ public static class SfumatoScss
 		    return string.Empty;
 
 	    var segments = className[className.LastIndexOf('[')..].Trim().TrimStart('[').TrimEnd(']').Split(':', StringSplitOptions.RemoveEmptyEntries);
-	    var value = segments[0];
+	    var rawValue = segments[0];
 
 	    // Passed a value type prefix (e.g. text-[color:red])
 
@@ -888,22 +911,121 @@ public static class SfumatoScss
 		    return string.Empty;
 	    }
 
-	    // No value type prefix included (e.g. text-[red])
+	    // Determine value type based on value (e.g. text-[red])
 
-	    var trimmed = value;
+	    if (rawValue.StartsWith('\'') && rawValue.EndsWith('\''))
+		    return "string";
+
+	    if (rawValue.StartsWith("url(", StringComparison.Ordinal) && rawValue.EndsWith(')'))
+		    return "url";
+	    
+	    if (rawValue.EndsWith('%') && double.TryParse(rawValue.TrimEnd('%'), out _))
+		    return "percentage";
+	    
+	    if (int.TryParse(rawValue, out _))
+		    return "integer";
+
+	    if (double.TryParse(rawValue, out _))
+		    return "number";
+	    
+	    #region length
+	    
+	    var unitless = rawValue;
 
 	    foreach (var unit in CssUnits)
-		    trimmed = trimmed.TrimEnd(unit);
+	    {
+		    unitless = unitless.TrimEnd(unit);
+		    break;
+	    }
 
-	    if (double.TryParse(trimmed, out _))
+	    if (double.TryParse(unitless, out _))
 		    return "length";
-		    
-	    if (value.StartsWith('#') || value.StartsWith("rgb(") || value.StartsWith("rgba("))
+
+	    #endregion
+	    
+	    if (rawValue.EndsWith("fr") && double.TryParse(rawValue.TrimEnd("fr"), out _))
+		    return "flex";
+
+	    if (rawValue.IsValidWebHexColor() || rawValue.StartsWith("rgb(") || rawValue.StartsWith("rgba(") || CssNamedColors.Contains(rawValue))
 		    return "color";
 	    
-	    if (CssNamedColors.Contains(value))
-		    return "color";
+	    #region angle
 
+	    unitless = rawValue;
+
+	    foreach (var unit in CssAngleUnits)
+	    {
+		    unitless = unitless.TrimEnd(unit);
+		    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+		    return "angle";
+
+	    #endregion
+
+	    #region time
+
+	    unitless = rawValue;
+
+	    foreach (var unit in CssTimeUnits)
+	    {
+		    unitless = unitless.TrimEnd(unit);
+		    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+		    return "time";
+
+	    #endregion
+
+	    #region frequency
+
+	    unitless = rawValue;
+
+	    foreach (var unit in CssFrequencyUnits)
+	    {
+		    unitless = unitless.TrimEnd(unit);
+		    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+		    return "frequency";
+
+	    #endregion
+
+	    #region resolution
+
+	    unitless = rawValue;
+
+	    foreach (var unit in CssResolutionUnits)
+	    {
+		    unitless = unitless.TrimEnd(unit);
+		    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+		    return "resolution";
+
+	    #endregion
+	    
+	    #region ratio
+	    
+	    var spacedValue = rawValue.Replace('_', ' ').Replace("\\ ", "\\_");
+
+	    if (spacedValue.Replace(" ", string.Empty).IndexOf('/') <= 0 || spacedValue.EndsWith('/'))
+		    return string.Empty;
+	    
+	    var values = spacedValue.Replace(" ", string.Empty).Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+	    if (values.Length != 2)
+		    return string.Empty;
+
+	    if (double.TryParse(values[0], out _) && double.TryParse(values[1], out _))
+		    return "ratio";
+
+	    #endregion
+	    
 	    return string.Empty;
     }
     

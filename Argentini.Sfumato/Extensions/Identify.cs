@@ -11,24 +11,24 @@ public static class Identify
     /// </summary> 
     /// <returns>OSPlatform object</returns> 
     // ReSharper disable once MemberCanBePrivate.Global
-    public static OSPlatform GetOsPlatform() 
-    { 
+    public static OSPlatform GetOsPlatform()
+    {
         var osPlatform = OSPlatform.Create("Other platform");
 
         // Check if it's windows 
-        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows); 
-        osPlatform = isWindows ? OSPlatform.Windows : osPlatform; 
+        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        osPlatform = isWindows ? OSPlatform.Windows : osPlatform;
 
         // Check if it's osx 
-        var isOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX); 
-        osPlatform = isOsx ? OSPlatform.OSX : osPlatform; 
+        var isOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        osPlatform = isOsx ? OSPlatform.OSX : osPlatform;
 
         // Check if it's Linux 
-        var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux); 
-        osPlatform = isLinux ? OSPlatform.Linux : osPlatform; 
+        var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        osPlatform = isLinux ? OSPlatform.Linux : osPlatform;
 
-        return osPlatform; 
-    } 
+        return osPlatform;
+    }
 
     /// <summary>
     /// Get OS platform name for output to users.
@@ -48,142 +48,177 @@ public static class Identify
         return "Other";
     }
 
-	/// <summary>
-	/// Get the .NET Core runtime version (e.g. "2.2").
-	/// </summary> 
-	/// <returns>String with the .NET Core version number</returns> 
-	public static string GetFrameworkVersion()
-	{
-		var result = Assembly
-			.GetEntryAssembly()?
-			.GetCustomAttribute<TargetFrameworkAttribute>()?
-			.FrameworkName;
+    /// <summary>
+    /// Get the .NET Core runtime version (e.g. "2.2").
+    /// </summary> 
+    /// <returns>String with the .NET Core version number</returns> 
+    public static string GetFrameworkVersion()
+    {
+        var result = Assembly
+            .GetEntryAssembly()?
+            .GetCustomAttribute<TargetFrameworkAttribute>()?
+            .FrameworkName;
 
-		if (result == null || result.IsEmpty()) return string.Empty;
+        if (result == null || result.IsEmpty()) return string.Empty;
 
-		if (result.Contains("Version="))
-			return result.Right("Version=").TrimStart(new [] { 'v' });
+        if (result.Contains("Version="))
+            return result.Right("Version=").TrimStart(new[] { 'v' });
 
-		return result;
-	}
+        return result;
+    }
 
-	/// <summary>
-	/// Get the .NET CLR runtime version (e.g. "4.6.27110.04").
-	/// Only works in 2.2 or later.
-	/// </summary> 
-	/// <returns>String with the .NET CLR runtime version number</returns> 
-	public static string GetRuntimeVersion()
-	{
-		return RuntimeInformation.FrameworkDescription.Right(" ");
-	}
+    /// <summary>
+    /// Get the .NET CLR runtime version (e.g. "4.6.27110.04").
+    /// Only works in 2.2 or later.
+    /// </summary> 
+    /// <returns>String with the .NET CLR runtime version number</returns> 
+    public static string GetRuntimeVersion()
+    {
+        return RuntimeInformation.FrameworkDescription.Right(" ");
+    }
 
-	/// <summary>
-	/// Get the .NET CLR runtime version string.
-	/// Only works in 2.2 or later.
-	/// </summary> 
-	/// <returns>String with the .NET CLR runtime version number</returns> 
-	public static string GetRuntimeVersionFull()
-	{
-		return RuntimeInformation.FrameworkDescription;
-	}
+    /// <summary>
+    /// Get the .NET CLR runtime version string.
+    /// Only works in 2.2 or later.
+    /// </summary> 
+    /// <returns>String with the .NET CLR runtime version number</returns> 
+    public static string GetRuntimeVersionFull()
+    {
+        return RuntimeInformation.FrameworkDescription;
+    }
 
-	/// <summary>
-	/// Get the current processor architecture.
-	/// </summary>
-	/// <returns></returns>
-	public static Architecture GetProcessorArchitecture()
-	{
-		return RuntimeInformation.ProcessArchitecture;
-	}
+    /// <summary>
+    /// Get the current processor architecture.
+    /// </summary>
+    /// <returns></returns>
+    public static Architecture GetProcessorArchitecture()
+    {
+        return RuntimeInformation.ProcessArchitecture;
+    }
 
     #endregion
-    
-	#region App Version Methods
-	
-	public static string AppMajorVersion(Assembly assembly)
-	{
-		var result = string.Empty;
 
-		try
-		{
-			result = assembly.GetName().Version?.Major.ToString();
-		}
+    #region App Version Methods
 
-		catch (Exception e)
-		{
-			Console.WriteLine($"AppMajorVersion Exception: {e.Message}");
-		}
+    public static string AppMajorVersion(Assembly assembly)
+    {
+        var result = string.Empty;
 
-		return result ?? string.Empty;
-	}
-    
-	public static string AppMinorVersion(Assembly assembly)
-	{
-		var result = string.Empty;
+        try
+        {
+            result = assembly.GetName().Version?.Major.ToString();
+        }
 
-		try
-		{
-			result = assembly.GetName().Version?.Minor.ToString();
-		}
+        catch (Exception e)
+        {
+            Console.WriteLine($"AppMajorVersion Exception: {e.Message}");
+        }
 
-		catch (Exception e)
-		{
-			Console.WriteLine($"AppMinorVersion Exception: {e.Message}");
-		}
+        return result ?? string.Empty;
+    }
 
-		return result ?? string.Empty;
-	}
-    
-	public static string AppBuildVersion(Assembly assembly)
-	{
-		var result = string.Empty;
+    public static string AppMinorVersion(Assembly assembly)
+    {
+        var result = string.Empty;
 
-		try
-		{
-			result = assembly.GetName().Version?.Build.ToString();
-		}
+        try
+        {
+            result = assembly.GetName().Version?.Minor.ToString();
+        }
 
-		catch (Exception e)
-		{
-			Console.WriteLine($"AppBuildVersion Exception: {e.Message}");
-		}
+        catch (Exception e)
+        {
+            Console.WriteLine($"AppMinorVersion Exception: {e.Message}");
+        }
 
-		return result ?? string.Empty;
-	}
+        return result ?? string.Empty;
+    }
 
-	public static string AppRevisionVersion(Assembly assembly)
-	{
-		var result = string.Empty;
+    public static string AppBuildVersion(Assembly assembly)
+    {
+        var result = string.Empty;
 
-		try
-		{
-			result = assembly.GetName().Version?.Revision.ToString();
-		}
+        try
+        {
+            result = assembly.GetName().Version?.Build.ToString();
+        }
 
-		catch (Exception e)
-		{
-			Console.WriteLine($"AppRevisionVersion Exception: {e.Message}");
-		}
+        catch (Exception e)
+        {
+            Console.WriteLine($"AppBuildVersion Exception: {e.Message}");
+        }
 
-		return result ?? string.Empty;
-	}
-    
-	public static string Version(Assembly assembly)
-	{
-		var result = string.Empty;
+        return result ?? string.Empty;
+    }
 
-		try
-		{
-			result = AppMajorVersion(assembly) + "." + AppMinorVersion(assembly) + "." + AppBuildVersion(assembly);
-		}
+    public static string AppRevisionVersion(Assembly assembly)
+    {
+        var result = string.Empty;
 
-		catch (Exception e)
-		{
-			Console.WriteLine($"Version Exception: {e.Message}");
-		}
+        try
+        {
+            result = assembly.GetName().Version?.Revision.ToString();
+        }
 
-		return result;
-	}
+        catch (Exception e)
+        {
+            Console.WriteLine($"AppRevisionVersion Exception: {e.Message}");
+        }
 
-	#endregion
+        return result ?? string.Empty;
+    }
+
+    public static string Version(Assembly assembly)
+    {
+        var result = string.Empty;
+
+        try
+        {
+            result = AppMajorVersion(assembly) + "." + AppMinorVersion(assembly) + "." + AppBuildVersion(assembly);
+        }
+
+        catch (Exception e)
+        {
+            Console.WriteLine($"Version Exception: {e.Message}");
+        }
+
+        return result;
+    }
+
+    #endregion
+
+    #region Color
+
+    /// <summary>
+    /// Determine if a string is a valid web hex color (e.g. "#abc", "#abcf", "#abc123", "#112233ff").
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
+    public static bool IsValidWebHexColor(this string color)
+    {
+        if (string.IsNullOrEmpty(color) || color.Length < 4)
+            return false;
+
+        if (color[0] != '#')
+            return false;
+
+        // Get the length excluding the '#'
+        var length = color.Length - 1;
+
+        // Ensure the length is 3, 6, 9, or 12
+        if (length != 3 && length != 4 && length != 6 && length != 8)
+            return false;
+
+        for (var i = 1; i < color.Length; i++)
+        {
+            var c = color[i];
+
+            if (c is >= '0' and <= '9' or >= 'a' and <= 'f' or >= 'A' and <= 'F' == false)
+                return false;
+        }
+
+        return true;
+    }
+
+    #endregion
 }
