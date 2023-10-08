@@ -1,10 +1,55 @@
-using System.Text.RegularExpressions;
 using Argentini.Sfumato.Collections;
 
 namespace Argentini.Sfumato.Tests;
 
 public class ParsingTests
 {
+    [Fact]
+    public void Regex()
+    {
+        var appState = new SfumatoAppState();
+        var markup = @"
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <title>Sample Website</title>
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+    <link rel=""stylesheet"" href=""css/sfumato.css"">
+</head>
+<body>
+    <div id=""test-home"" class=""bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233]"">
+        <p class=""[font-weight:900] tabp:[font-weight:900]"">Placeholder</p>
+        <p class=""[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]"">Invalid Classes</p>
+    </div>
+    <script>
+        function test() {
+            let el = document.getElementById('test-element');
+            if (el) {
+                el.classList.add($`
+    bg-emerald-900
+    [font-weight:700]
+    tabl:[font-weight:700]
+                `);
+                el.classList.add(`bg-emerald-950`);
+                el.classList.add(`[font-weight:600]`);
+                el.classList.add(`note:[font-weight:600]`);
+            }
+        }
+    </script>
+</body>
+</html>
+";
+        var matches = appState.ArbitraryCssRegex.Matches(markup);
+
+        Assert.Equal(6, matches.Count);        
+        
+        matches = appState.CoreClassRegex.Matches(markup);
+
+        Assert.Equal(6, matches.Count);        
+        
+    }
+    
     [Fact]
     public void ScssClassCollection()
     {
@@ -14,27 +59,6 @@ public class ParsingTests
         Assert.Single(scssClassCollection.GetAllByClassName("bg-slate-100"));
         Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100"));
         Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]"));
-    }
-
-    [Fact]
-    public async Task UsedClasses()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-        await appState.GatherUsedScssCoreClassesAsync();
-        
-        Assert.True(appState.UsedClasses.Count > 0);
-
-        var markup = @"
-<div>
-    <p class=""bg-slate-50 tabp:bg-slate-100 [font-weight:800] tabp:[font-weight:900]"">Placeholder</p>
-</div>
-";
-        
-        var matches = appState.UsedClassRegex.Matches(markup);
-
-        Assert.Equal(4, matches.Count);
     }
     
 //     [Fact]

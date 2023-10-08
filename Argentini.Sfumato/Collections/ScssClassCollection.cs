@@ -78,4 +78,36 @@ public sealed class ScssClassCollection
 
         return result;
     }
-}
+    
+    /// <summary>
+    /// Get the first key of all collections; list has only unique prefixes (e.g. "bg-", "text-", etc.).
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<string> GetClassPrefixesForRegex()
+    {
+        var result = new Dictionary<string,string>();
+
+        foreach (var property in typeof(ScssClassCollection).GetProperties())
+        {
+            var classesProperty = property.PropertyType.GetProperty("Classes");
+
+            if (classesProperty == null || classesProperty.PropertyType.GetGenericTypeDefinition() != typeof(Dictionary<,>))
+                continue;
+            
+            var propertyValue = property.GetValue(this);
+
+            if (propertyValue is null)
+                continue;
+            
+            var dictionaryReference = (IDictionary<string,ScssClass>?)classesProperty.GetValue(propertyValue);
+
+            if (dictionaryReference is null || dictionaryReference.Count < 1)
+                continue;
+
+            var key = dictionaryReference.First().Key.Replace("-", "\\-");
+            
+            result.TryAdd(key, string.Empty);
+        }
+
+        return result.Keys;
+    }}

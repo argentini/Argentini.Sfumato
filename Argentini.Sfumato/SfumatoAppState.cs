@@ -5,8 +5,9 @@ public sealed class SfumatoAppState
     #region Properties
 
     #region Constants
-    
-    public Regex UsedClassRegex => new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,9}((\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])|([a-z]{1,1}[a-z0-9\-]{1,99}(\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1})(?=[\s"'`])))""", RegexOptions.Compiled);
+
+    public Regex ArbitraryCssRegex => new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]))(?=[\s"'`])""", RegexOptions.Compiled);
+    public Regex CoreClassRegex => new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}((({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})[a-z0-9\-]{1,100})|(({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])))(?=[\s"'`])""", RegexOptions.Compiled);
     
     public static string CliErrorPrefix => "Sfumato => ";
     
@@ -429,6 +430,27 @@ public sealed class SfumatoAppState
     
     #region Runner Methods
 
+    /// <summary>
+    /// Normalize prefixes to start with theme mode then breakpoint then pseudoclasses.
+    /// </summary>
+    /// <param name="className"></param>
+    /// <returns></returns>
+    private static string ReOrderPrefixes(string userClassName)
+    {
+	    var result = userClassName;
+	    
+	    foreach (var breakpoint in new[] { "zero:", "phab:", "tabp:", "tabl:", "note:", "desk:", "elas:" })
+	    {
+		    if (result.Contains(breakpoint, StringComparison.Ordinal))
+			    result = $"{breakpoint}{result.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
+	    }
+				
+	    if (result.Contains("dark:", StringComparison.Ordinal))
+		    result = $"dark:{userClassName.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
+
+	    return result;
+    }
+    
 	/// <summary>
 	/// Identify the used classes in the project.
 	/// </summary>
@@ -485,102 +507,60 @@ public sealed class SfumatoAppState
 			if (string.IsNullOrEmpty(markup))
 				continue;
 
-			var matches = UsedClassRegex.Matches(markup);
+			var matches = new List<Match>();
+				
+			matches.AddRange(CoreClassRegex.Matches(markup));
 
-			foreach (Match match in matches)
+			foreach (var match in matches)
 			{
-				var userClassName = match.Value;
+				var userClassName = ReOrderPrefixes(match.Value);
 
-				#region Normalize prefixes to start with theme mode then breakpoint then pseudoclasses
-				
-				foreach (var breakpoint in new[] { "zero:", "phab:", "tabp:", "tabl:", "note:", "desk:", "elas:" })
+				if (UsedClasses.ContainsKey(userClassName))
+					continue;
+
+				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
+				var userClassValueType = userClassName.GetUserClassValueType();
+				var userClassValue = userClassName.GetUserClassValue();
+
+				foreach (var scssClass in scssClasses)
 				{
-					if (userClassName.Contains(breakpoint, StringComparison.Ordinal))
-						userClassName = $"{breakpoint}{userClassName.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
+					// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
+					// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
+					
+					if (string.IsNullOrEmpty(userClassValueType) == false && scssClass.ValueType != userClassValueType)
+						continue;
+					
+					var usedScssClass = scssClass.Adapt<ScssClass>();
+
+					usedScssClass.UserClassName = userClassName;
+
+					if (string.IsNullOrEmpty(userClassValue) == false)
+						usedScssClass.Value = userClassValue;
+
+					UsedClasses.Add(userClassName, usedScssClass);
 				}
-				
-				if (userClassName.Contains("dark:", StringComparison.Ordinal))
-					userClassName = $"dark:{userClassName.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
-				
-				#endregion
+			}
+			
+			matches.AddRange(ArbitraryCssRegex.Matches(markup));
+
+			foreach (var match in matches)
+			{
+				var userClassName = ReOrderPrefixes(match.Value);
 				
 				if (UsedClasses.ContainsKey(userClassName))
 					continue;
 
-				// Bracketed raw CSS style (e.g. tabp:[display:none])
-				if (userClassName.EndsWith(']') && (userClassName.StartsWith('[') || userClassName.Contains(":[")))
+				// 1. Arbitrary CSS style (e.g. tabp:[display:none])
+
+				var usedScssClass = new ScssClass
 				{
-					var usedScssClass = new ScssClass
-					{
-						ValueType = string.Empty,
-						UserClassName = userClassName,
-						Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']'),
-						Template = "{value};"
-					};
+					ValueType = string.Empty,
+					UserClassName = userClassName,
+					Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']'),
+					Template = "{value};"
+				};
 
-					UsedClasses.Add(userClassName, usedScssClass);
-				}
-
-				// Standard class syntax
-				else
-				{
-					var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
-					var valueType = userClassName.GetUserClassValueType();
-					var value = userClassName.GetUserClassValue();
-
-					foreach (var scssClass in scssClasses)
-					{
-						// No explicit value type included
-
-						if (string.IsNullOrEmpty(valueType))
-						{
-							var usedScssClass = scssClass.Adapt<ScssClass>();
-
-							usedScssClass.UserClassName = userClassName;
-
-							if (string.IsNullOrEmpty(value) == false)
-								usedScssClass.Value = value;
-
-							UsedClasses.Add(userClassName, usedScssClass);
-
-							break;
-						}
-
-						// Explicit value type specified, is raw CSS property
-
-						if (valueType == "raw")
-						{
-							var usedScssClass = scssClass.Adapt<ScssClass>();
-
-							usedScssClass.UserClassName = userClassName;
-							usedScssClass.Value = value;
-							usedScssClass.Template = "{value};";
-
-							UsedClasses.Add(userClassName, usedScssClass);
-
-							break;
-						}
-
-						// Explicit value type specified, must match source
-
-						else
-						{
-							if (string.IsNullOrEmpty(valueType) || scssClass.ValueType != valueType)
-								continue;
-
-							var usedScssClass = scssClass.Adapt<ScssClass>();
-
-							usedScssClass.UserClassName = userClassName;
-
-							if (string.IsNullOrEmpty(value) == false)
-								usedScssClass.Value = value;
-
-							UsedClasses.Add(userClassName, usedScssClass);
-
-							break;
-						}
-					}
-				}
+				UsedClasses.Add(userClassName, usedScssClass);
 			}
 		}
 
