@@ -6,6 +6,8 @@ public sealed class SfumatoAppState
 
     #region Constants
     
+    public Regex UsedClassRegex => new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,9}((\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])|([a-z]{1,1}[a-z0-9\-]{1,99}(\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1})(?=[\s"'`])))""", RegexOptions.Compiled);
+    
     public static string CliErrorPrefix => "Sfumato => ";
     
 	public Dictionary<string, string> MediaQueryPrefixes { get; } = new ()
@@ -472,9 +474,6 @@ public sealed class SfumatoAppState
 
 		var dirs = dir.GetDirectories();
 		var files = dir.GetFiles();
-		var prefixes = string.Join(":|", AllPrefixes) + ":";
-
-		var regex = new Regex($$"""(?<=[\s"'`])(({{prefixes}}){0,9}[a-z]{1,1}[a-z0-9\-]{1,99}(\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1})(?=[\s"'`])""", RegexOptions.Compiled);
 
 		foreach (var projectFile in files.OrderBy(f => f.Name))
 		{
@@ -486,7 +485,7 @@ public sealed class SfumatoAppState
 			if (string.IsNullOrEmpty(markup))
 				continue;
 
-			var matches = regex.Matches(markup);
+			var matches = UsedClassRegex.Matches(markup);
 
 			foreach (Match match in matches)
 			{

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Argentini.Sfumato.Collections;
 
 namespace Argentini.Sfumato.Tests;
@@ -24,6 +25,16 @@ public class ParsingTests
         await appState.GatherUsedScssCoreClassesAsync();
         
         Assert.True(appState.UsedClasses.Count > 0);
+
+        var markup = @"
+<div>
+    <p class=""bg-slate-50 tabp:bg-slate-100 [font-weight:800] tabp:[font-weight:900]"">Placeholder</p>
+</div>
+";
+        
+        var matches = appState.UsedClassRegex.Matches(markup);
+
+        Assert.Equal(4, matches.Count);
     }
     
 //     [Fact]
