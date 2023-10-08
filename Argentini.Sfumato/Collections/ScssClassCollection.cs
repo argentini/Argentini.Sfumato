@@ -6,6 +6,7 @@ public sealed class ScssClassCollection
     public TextColor TextColor { get; } = new();
     public TextSize TextSize { get; } = new();
     public AspectRatio AspectRatio { get; } = new();
+    public ElasticContainer ElasticContainer { get; } = new();
 
     /// <summary>
     /// Get the total number of items in all SCSS class collections. 
@@ -112,4 +113,37 @@ public sealed class ScssClassCollection
         }
 
         return result.Keys;
-    }}
+    }
+
+    /// <summary>
+    /// Gets a list of unique utility class names.
+    /// Utility classe are collections with only one class defined.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<string> GetUtilityClassNames()
+    {
+        var result = new Dictionary<string,string>();
+
+        foreach (var property in typeof(ScssClassCollection).GetProperties())
+        {
+            var classesProperty = property.PropertyType.GetProperty("Classes");
+
+            if (classesProperty == null || classesProperty.PropertyType.GetGenericTypeDefinition() != typeof(Dictionary<,>))
+                continue;
+            
+            var propertyValue = property.GetValue(this);
+
+            if (propertyValue is null)
+                continue;
+            
+            var dictionaryReference = (IDictionary<string,ScssClass>?)classesProperty.GetValue(propertyValue);
+
+            if (dictionaryReference is null || dictionaryReference.Count != 1)
+                continue;
+
+            result.TryAdd(dictionaryReference.First().Key, string.Empty);
+        }
+
+        return result.Keys;
+    }
+}

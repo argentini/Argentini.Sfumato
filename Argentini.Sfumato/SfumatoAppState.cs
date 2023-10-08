@@ -14,6 +14,7 @@ public sealed class SfumatoAppState
     
     public Regex ArbitraryCssRegex { get; }
     public Regex CoreClassRegex { get; }
+    public Regex UtilityClassRegex { get; }
     
     #endregion
     
@@ -61,6 +62,7 @@ public sealed class SfumatoAppState
 	    
 	    ArbitraryCssRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]))(?=[\s"'`])""", RegexOptions.Compiled);
 	    CoreClassRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}((({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})[a-z0-9\-]{1,100}((/[a-z0-9\.]{1,})|(/\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])){0,1})|(({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])))(?=[\s"'`])""", RegexOptions.Compiled);
+	    UtilityClassRegex = new Regex($$"""(?<=[\s"'`])({{string.Join("|", ScssClassCollection.GetUtilityClassNames())}})(?=[\s"'`])""", RegexOptions.Compiled);
     }
     
     #region Entry Points
@@ -515,6 +517,30 @@ public sealed class SfumatoAppState
 				};
 
 				UsedClasses.TryAdd(userClassName, usedScssClass);
+			}
+			
+			matches.Clear();
+			matches.AddRange(UtilityClassRegex.Matches(markup));
+
+			foreach (var match in matches)
+			{
+				var userClassName = ReOrderPrefixes(match.Value);
+
+				if (UsedClasses.ContainsKey(userClassName))
+					continue;
+
+				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
+
+				foreach (var scssClass in scssClasses)
+				{
+					// 1. Utility class (e.g. "elastic-container")
+					
+					var usedScssClass = scssClass.Adapt<ScssClass>();
+
+					usedScssClass.UserClassName = userClassName;
+
+					UsedClasses.TryAdd(userClassName, usedScssClass);
+				}
 			}
 		}
 

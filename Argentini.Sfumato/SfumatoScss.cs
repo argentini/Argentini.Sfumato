@@ -660,7 +660,7 @@ public static class SfumatoScss
 		initScss = initScss.Replace("#{elas-vw}", $"{appState.Settings.FontSizeViewportUnits?.Elas}vw");
 		
 		sb.Append(initScss);
-		
+
 		diagnosticOutput.Append($"Prepared SCSS Core for output injection in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 
 		var result = sb.ToString();
