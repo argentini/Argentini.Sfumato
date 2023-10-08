@@ -97,91 +97,7 @@ public sealed class SfumatoRunner
 	#region Generation Methods
 	
 	/// <summary>
-	/// Get the complete SCSS class from the cached file from storage
-	/// or dynamically generated (e.g. bracketed selector).
-	/// </summary>
-	/// <param name="scssClass"></param>
-	/// <param name="excludeDeclaration"></param>
-	/// <returns></returns>
-	private string GetScssClassMarkup(ScssClass scssClass, bool excludeDeclaration = false)
-	{
-		if (string.IsNullOrEmpty(scssClass.FilePath))
-		{
-			// todo: Handle dynamic SCSS generation
-
-			
-			
-
-
-
-			return string.Empty;
-		}
-
-		#region Get static SCSS from cached file
-		
-		var startIndex = AppState.ScssFiles[scssClass.FilePath].StartsWith($".{scssClass.RootClassName}", StringComparison.Ordinal) ? 0 : AppState.ScssFiles[scssClass.FilePath].IndexOf($"\n.{scssClass.RootClassName}", StringComparison.Ordinal);
-		var endIndex = -1;
-
-		if (startIndex < 0)
-			return string.Empty;
-
-		endIndex = AppState.ScssFiles[scssClass.FilePath].IndexOf("\n.", startIndex + 1, StringComparison.Ordinal);
-
-		if (endIndex < 0)
-		{
-			// End of file, no more classes; grab last closing brace
-			endIndex = AppState.ScssFiles[scssClass.FilePath].LastIndexOf("}", startIndex + 1, StringComparison.Ordinal);
-		}
-
-		else
-		{
-			// More classes follow so use the next one as a marker for where the current class ends
-			while (endIndex > startIndex)
-			{
-				if (AppState.ScssFiles[scssClass.FilePath][--endIndex] == '}')
-					break;
-			}
-			
-			if (AppState.ScssFiles[scssClass.FilePath][endIndex] != '}')
-				endIndex = -1;
-		}
-
-		if (excludeDeclaration)
-		{
-			// Repoint start index to the opening brace
-			startIndex = AppState.ScssFiles[scssClass.FilePath].IndexOf("{", startIndex, StringComparison.Ordinal);
-			
-			if (startIndex < 0)
-				return string.Empty;
-
-			startIndex++;
-			
-			// Repoint end index to the closing brace
-			while (AppState.ScssFiles[scssClass.FilePath][endIndex] != '}')
-			{
-				endIndex--;
-			}
-
-			endIndex--;
-
-			if (endIndex < 0)
-				return string.Empty;
-		}
-
-		if (endIndex < 0 || endIndex <= startIndex)
-			return string.Empty;
-
-		var result = AppState.ScssFiles[scssClass.FilePath].Substring(startIndex, endIndex - startIndex + 1);
-
-		result = result.TrimStart('\n').TrimEnd().TrimEnd('\n');
-		
-		return result;
-		
-		#endregion
-	}
-
-	/// <summary>
-	/// Generate SCSS class from prefixed class name, including nesting.
+	/// Generate SCSS class from user class name, including nesting.
 	/// Only includes pseudoclasses, not media queries.
 	/// </summary>
 	/// <param name="scssClass"></param>
@@ -191,11 +107,13 @@ public sealed class SfumatoRunner
 	{
 		var scssResult = AppState.StringBuilderPool.Get();
 		var level = 0;
-		var className = scssClass.ClassName;
-		var scssBody = string.Empty;
+		var className = scssClass.UserClassName;
 
 		if (string.IsNullOrEmpty(stripPrefix) == false && className.StartsWith(stripPrefix, StringComparison.Ordinal))
 			className = className.TrimStart(stripPrefix) ?? className;
+		
+		if (className.EndsWith(']') && className.Contains('['))
+			className = className[..className.IndexOf('[')];
 		
 		var segments = className.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
@@ -209,8 +127,6 @@ public sealed class SfumatoRunner
 
 			Array.Copy(segments, prefixes, segments.Length - 1);
 			
-			scssBody = GetScssClassMarkup(scssClass, true);
-
 			foreach (var prefix in prefixes)
 			{
 				if (IsPseudoclassPrefix(prefix) == false)
@@ -218,7 +134,7 @@ public sealed class SfumatoRunner
 				
 				if (renderedClassName == false)
 				{
-					scssResult.Append($"{Indent(level)}.{scssClass.EscapedClassName} {{\n");
+					scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)} {{\n");
 					renderedClassName = true;
 					level++;
 				}
@@ -232,14 +148,11 @@ public sealed class SfumatoRunner
 
 		else
 		{
-			scssBody = GetScssClassMarkup(scssClass, true);
-			scssResult.Append($"{Indent(level)}.{scssClass.EscapedClassName} {{\n");
+			scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)} {{\n");
 			level++;
 		}
 		
-		var existingIndentation = scssBody.FirstNonSpaceCharacter();
-
-		scssResult.Append($"{scssBody.Indent(level * IndentationSpaces - existingIndentation)}\n");
+		scssResult.Append($"{scssClass.GetStyles().Indent(level * IndentationSpaces)}\n");
 
 		while (level > 0)
 		{
@@ -263,7 +176,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	public async Task<string> GenerateScssObjectTreeAsync()
 	{
-		var usedClasses = AppState.UsedClasses.OrderBy(c => c.ClassName).ToList().Adapt<List<ScssClass>>();
+		//var usedClasses = AppState.UsedClasses.OrderBy(c => c.Value.UserClassName).ToList().Adapt<List<ScssClass>>();
 		var hierarchy = new ScssNode
 		{
 			Prefix = string.Empty,
@@ -272,11 +185,11 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 		
-		foreach (var scssClass in usedClasses)
+		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.UserClassName))
 		{
 			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
-			if (scssClass.ClassName.Contains(':') == false || IsPseudoclassPrefix(scssClass.Prefixes[0]))
+			if (scssClass.UserClassName.Contains(':') == false || (scssClass.Prefixes.Length > 0 && IsPseudoclassPrefix(scssClass.Prefixes[0])))
 			{
 				hierarchy.Classes.Add(scssClass);
 			}
@@ -380,7 +293,7 @@ public sealed class SfumatoRunner
 			{
 				var markup = await GenerateScssClassMarkupAsync(scssClass, scssNode.PrefixPath);
 					
-				sb.Append($"{markup.Indent(scssNode.Level * IndentationSpaces - markup.FirstNonSpaceCharacter()).TrimEnd('\n')}\n");
+				sb.Append($"{markup.Indent(scssNode.Level * IndentationSpaces).TrimEnd('\n')}\n");
 			}
 		}
 			
@@ -494,76 +407,4 @@ public sealed class SfumatoRunner
 	}
 	
 	#endregion
-}
-
-public sealed class ScssClass
-{
-	public string FilePath { get; set; } = string.Empty;
-
-	private string _className = string.Empty;
-	public string ClassName
-	{
-		get => _className;
-
-		set
-		{
-			_className = value;
-
-			if (_className.LastIndexOf(':') > -1 && _className.LastIndexOf(':') < _className.Length - 1)
-			{
-				var segments = _className.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-				if (segments.Length == 0)
-					Prefixes = Array.Empty<string>();
-			
-				if (segments.Length == 1)
-				{
-					RootClassName = segments[0];
-				}
-
-				Prefixes = new string[segments.Length - 1];
-
-				Array.Copy(segments, Prefixes, segments.Length - 1);
-				
-				RootClassName = segments[^1];
-			}
-			
-			else
-			{
-				RootClassName = _className;
-			}
-		}
-	}
-
-	public string RootClassName { get; private set; } = string.Empty;
-	public string EscapedClassName => ClassName.Replace(":", "\\:").Replace("[", "\\[").Replace("]", "\\]");
-	public string[] Prefixes { get; private set; } = Array.Empty<string>();
-
-}
-
-public sealed class ScssNode
-{
-	public string Prefix { get; set; } = string.Empty; // e.g. dark
-
-	public string PrefixPathValue = string.Empty;
-	public string PrefixPath // e.g. dark:tabp:
-	{
-		get => PrefixPathValue;
-
-		set
-		{
-			PrefixPathValue = value;
-			Level = 0;
-
-			if (string.IsNullOrEmpty(PrefixPathValue))
-				return;
-
-			var segmentCount = PrefixPathValue.Split(':', StringSplitOptions.RemoveEmptyEntries).Length;
-
-			Level = segmentCount;
-		}
-	}
-	public int Level { get; set; }
-	public List<ScssClass> Classes { get; set; } = new();
-	public List<ScssNode> Nodes { get; set; } = new();
 }

@@ -4,16 +4,6 @@ public sealed class SfumatoAppState
 {
     #region Properties
 
-    #region Modes
-
-    public bool ReleaseMode { get; set; }
-    public bool WatchMode { get; set; }
-    public bool VersionMode { get; set; }
-    public bool HelpMode { get; set; }
-    public bool DiagnosticMode { get; set; }
-	
-    #endregion
-    
     #region Constants
     
     public static string CliErrorPrefix => "Sfumato => ";
@@ -76,6 +66,24 @@ public sealed class SfumatoAppState
     
     #endregion
     
+    #region Run Modes
+
+    public bool ReleaseMode { get; set; }
+    public bool WatchMode { get; set; }
+    public bool VersionMode { get; set; }
+    public bool HelpMode { get; set; }
+    public bool DiagnosticMode { get; set; }
+	
+    #endregion
+    
+    #region Scss Class Collections
+
+    public ScssClassCollection ScssClassCollection { get; } = new();    
+    
+    #endregion
+    
+    #region App State
+
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
     public List<string> CliArguments { get; } = new();
     public SfumatoJsonSettings Settings { get; set; } = new();
@@ -85,13 +93,13 @@ public sealed class SfumatoAppState
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
     public string ScssPath { get; set; } = string.Empty;
-    public Dictionary<string, string> ScssFiles { get; } = new();
-    public List<ScssClass> Classes { get; } = new();
-    public List<ScssClass> UsedClasses { get; } = new();
+    public Dictionary<string,ScssClass> UsedClasses { get; } = new();
     public List<string> AllPrefixes { get; } = new();
     public StringBuilder ScssCoreInjectable { get; } = new();
     public StringBuilder ScssSharedInjectable { get; } = new();
     
+    #endregion
+
     #endregion
 
     public SfumatoAppState()
@@ -213,9 +221,7 @@ public sealed class SfumatoAppState
 
         timer.Restart();
         
-        await GatherAvailableScssCoreClassesAsync();
-
-        DiagnosticOutput.Append($"Identified {Classes.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+        DiagnosticOutput.Append($"Identified {ScssClassCollection.GetClassCount():N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
     }
     
     #endregion
@@ -421,60 +427,6 @@ public sealed class SfumatoAppState
     
     #region Runner Methods
 
-    /// <summary>
-    /// Identify the available class names from the embedded SCSS library.
-    /// Also loads all SCSS file content into memory.
-    /// </summary>
-    /// <param name="config"></param>
-    public async Task GatherAvailableScssCoreClassesAsync()
-    {
-	    var dir = new DirectoryInfo(ScssPath);
-
-	    ScssFiles.Clear();
-	    Classes.Clear();
-		
-	    var files = dir.GetFiles();
-
-	    foreach (var file in files.Where(f => f.Extension.Equals(".scss", StringComparison.InvariantCultureIgnoreCase)).OrderBy(f => f.Name))
-	    {
-		    var scss = (await File.ReadAllTextAsync(file.FullName)).NormalizeLinebreaks();
-
-		    if (scss.Length < 1)
-			    continue;
-
-		    ScssFiles.Add(file.FullName, scss);
-			
-		    var index = 0;
-
-		    while (index > -1)
-		    {
-			    if (scss[index] != '.')
-			    {
-				    index = scss.IndexOf("\n.", index, StringComparison.Ordinal);
-
-				    if (index > -1)
-					    index++;
-			    }
-
-			    if (index < 0)
-				    continue;
-				
-			    var end = scss.IndexOf(' ', index);
-
-			    if (end < 0)
-				    continue;
-					
-			    Classes.Add(new ScssClass
-			    {
-				    FilePath = file.FullName,
-				    ClassName = scss.Substring(index + 1, end - index - 1)
-			    });
-
-			    index = end;
-		    }
-	    }
-    }
-
 	/// <summary>
 	/// Identify the used classes in the project.
 	/// </summary>
@@ -501,7 +453,7 @@ public sealed class SfumatoAppState
 		if (UsedClasses.Count == 0)
 			Console.WriteLine(" no classes used");
 		else
-			Console.WriteLine($" found {UsedClasses.Count:N0}/{Classes.Count:N0} classes");
+			Console.WriteLine($" found {UsedClasses.Count:N0}/{ScssClassCollection.GetClassCount():N0} classes");
 		
 		DiagnosticOutput.Append($"Identified {UsedClasses.Count:N0} used classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}
@@ -522,7 +474,7 @@ public sealed class SfumatoAppState
 		var files = dir.GetFiles();
 		var prefixes = string.Join(":|", AllPrefixes) + ":";
 
-		var regex = new Regex($$"""(?<=[\s"'`])(({{prefixes}}){0,9}[a-z]{1,1}[a-z0-9\-]{1,99}(\[[a-z0-9\-\._]{1,99}\]){0,1})(?=[\s"'`])""", RegexOptions.Compiled);
+		var regex = new Regex($$"""(?<=[\s"'`])(({{prefixes}}){0,9}[a-z]{1,1}[a-z0-9\-]{1,99}(\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1})(?=[\s"'`])""", RegexOptions.Compiled);
 
 		foreach (var projectFile in files.OrderBy(f => f.Name))
 		{
@@ -538,38 +490,80 @@ public sealed class SfumatoAppState
 
 			foreach (Match match in matches)
 			{
-				var mv = match.Value.ToLower().TrimEnd(':');
+				var userClassName = match.Value;
 
+				#region Normalize prefixes to start with theme mode then breakpoint then pseudoclasses
+				
 				foreach (var breakpoint in new[] { "zero:", "phab:", "tabp:", "tabl:", "note:", "desk:", "elas:" })
 				{
-					if (mv.Contains(breakpoint, StringComparison.Ordinal))
-						mv = $"{breakpoint}{mv.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
+					if (userClassName.Contains(breakpoint, StringComparison.Ordinal))
+						userClassName = $"{breakpoint}{userClassName.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
 				}
 				
-				if (mv.Contains("dark:", StringComparison.Ordinal))
-					mv = $"dark:{mv.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
+				if (userClassName.Contains("dark:", StringComparison.Ordinal))
+					userClassName = $"dark:{userClassName.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
 				
-				var matchValue = mv.Contains(':') ? mv[(mv.LastIndexOf(':') + 1)..] : mv;
-				var filePath = string.Empty;
+				#endregion
 				
-				if (matchValue.EndsWith(']') == false)
-				{
-					var matchedClass = Classes.FirstOrDefault(c => c.ClassName.Equals(matchValue, StringComparison.Ordinal));
-					
-					if (matchedClass is null)
-						continue;
-
-					filePath = matchedClass.FilePath;
-				}
-
-				if (UsedClasses.FirstOrDefault(c => c.ClassName.Equals(mv, StringComparison.Ordinal)) is not null)
+				if (UsedClasses.ContainsKey(userClassName))
 					continue;
 				
-				UsedClasses.Add(new ScssClass
+				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
+				var valueType = userClassName.GetUserClassValueType();
+				var value = userClassName.GetUserClassValue();
+				
+				foreach (var scssClass in scssClasses)
 				{
-					FilePath = filePath,
-					ClassName = mv
-				});
+					// No explicit value type included
+					
+					if (string.IsNullOrEmpty(valueType))
+					{
+						var usedScssClass = scssClass.Adapt<ScssClass>();
+
+						usedScssClass.UserClassName = userClassName;
+
+						if (string.IsNullOrEmpty(value) == false)
+							usedScssClass.Value = value;
+
+						UsedClasses.Add(userClassName, usedScssClass);
+
+						break;
+					}
+
+					// Explicit value type specified, is raw CSS property
+					
+					if (valueType == "raw")
+					{
+						var usedScssClass = scssClass.Adapt<ScssClass>();
+
+						usedScssClass.UserClassName = userClassName;
+						usedScssClass.Value = value;
+						usedScssClass.Template = "{value};";
+
+						UsedClasses.Add(userClassName, usedScssClass);
+
+						break;
+					}
+
+					// Explicit value type specified, must match source
+
+					else
+					{
+						if (string.IsNullOrEmpty(valueType) || scssClass.ValueType != valueType)
+							continue;
+
+						var usedScssClass = scssClass.Adapt<ScssClass>();
+
+						usedScssClass.UserClassName = userClassName;
+
+						if (string.IsNullOrEmpty(value) == false)
+							usedScssClass.Value = value;
+
+						UsedClasses.Add(userClassName, usedScssClass);
+
+						break;
+					}
+				}
 			}
 		}
 

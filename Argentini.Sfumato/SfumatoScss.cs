@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato;
 
-public sealed class SfumatoScss
+public static class SfumatoScss
 {
 	/// <summary>
 	/// Get all Sfumato core SCSS include files (e.g. mixins) and return as a single string.
@@ -17,10 +17,10 @@ public sealed class SfumatoScss
 		
 		var sb = appState.StringBuilderPool.Get();
 		
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_core.scss"))).Trim() + '\n');
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_browser-reset.scss"))).Trim() + '\n');
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + '\n');
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_browser-reset.scss"))).Trim() + '\n');
 
-		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_media-queries.scss"))).Trim() + '\n';
+		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + '\n';
 
 		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{appState.Settings.Breakpoints?.Zero}px");
 		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{appState.Settings.Breakpoints?.Phab}px");
@@ -32,7 +32,7 @@ public sealed class SfumatoScss
 		
 		sb.Append(mediaQueriesScss);
 
-		var initScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_initialize.scss"))).Trim() + '\n';
+		var initScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + '\n';
 		
 		initScss = initScss.Replace("#{zero-vw}", $"{appState.Settings.FontSizeViewportUnits?.Zero}vw");
 		initScss = initScss.Replace("#{phab-vw}", $"{appState.Settings.FontSizeViewportUnits?.Phab}vw");
@@ -68,9 +68,9 @@ public sealed class SfumatoScss
 		
 		var sb = appState.StringBuilderPool.Get();
 		
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_core.scss"))).Trim() + '\n');
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + '\n');
 
-		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "includes", "_media-queries.scss"))).Trim() + '\n';
+		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + '\n';
 
 		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{appState.Settings.Breakpoints?.Zero}px");
 		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{appState.Settings.Breakpoints?.Phab}px");
@@ -250,5 +250,96 @@ public sealed class SfumatoScss
 
             return -1;
         }
+    }
+    
+    /// <summary>
+    /// Escape a CSS class name to be used in a CSS selector.
+    /// </summary>
+    /// <param name="className"></param>
+    /// <param name="appState"></param>
+    /// <returns></returns>
+    public static string EscapeCssClassName(this string className, ObjectPool<StringBuilder> pool)
+    {
+	    if (string.IsNullOrEmpty(className))
+		    return className;
+
+	    var sb = pool.Get();
+
+	    for (var i = 0; i < className.Length; i++)
+	    {
+		    var c = className[i];
+            
+		    if ((i == 0 && char.IsDigit(c)) || (!char.IsLetterOrDigit(c) && c != '-' && c != '_'))
+			    sb.Append($"\\{c}");
+		    else
+			    sb.Append(c);
+	    }
+
+	    var result = sb.ToString();
+		
+	    pool.Return(sb);
+
+	    return result;
+    }
+
+    public static IEnumerable<string> CssUnits => new[]
+    {
+	    "cm", "in", "mm", "pc", "pt", "px",
+	    "ch", "em", "ex", "rem", "vw", "vh", "vmin", "vmax", "%"
+    };
+
+    /// <summary>
+    /// Get the value type of the user class name (e.g. "length:...", "color:...", etc.)
+    /// </summary>
+    /// <param name="className"></param>
+    /// <returns></returns>
+    public static string GetUserClassValueType(this string className)
+    {
+	    if (className.EndsWith(']') == false || className.Contains('[') == false)
+		    return string.Empty;
+
+	    var segments = className[className.LastIndexOf('[')..].Trim().TrimStart('[').TrimEnd('[').Split(':', StringSplitOptions.RemoveEmptyEntries);
+	    var value = segments[0];
+
+	    if (segments.Length > 1)
+	    {
+		    return segments[0] switch
+		    {
+			    "length" => "length",
+			    "color" => "color",
+			    _ => "raw"
+		    };
+	    }
+
+	    var trimmed = value;
+
+	    foreach (var unit in CssUnits)
+		    trimmed = trimmed.TrimEnd(unit);
+
+	    if (double.TryParse(trimmed, out _))
+		    return "length";
+		    
+	    if (value.StartsWith('#') || value.StartsWith("rgb(") || value.StartsWith("rgba("))
+		    return "color";
+
+	    return string.Empty;
+    }
+    
+    /// <summary>
+    /// Get the value of the user class name (e.g. "length:value", "color:value", etc.)
+    /// </summary>
+    /// <param name="className"></param>
+    /// <returns></returns>
+    public static string GetUserClassValue(this string className)
+    {
+	    if (className.EndsWith(']') == false || className.Contains('[') == false)
+		    return string.Empty;
+
+	    var segments = className[className.IndexOf('[')..].TrimStart('[').TrimEnd(']').Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+	    if (segments.Length == 2)
+		    return segments[1];
+
+	    return segments[0];
     }
 }

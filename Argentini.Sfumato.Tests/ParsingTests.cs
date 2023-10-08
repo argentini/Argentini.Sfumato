@@ -1,47 +1,88 @@
-using System.Reflection;
-using Xunit.Abstractions;
+using Argentini.Sfumato.Collections;
 
 namespace Argentini.Sfumato.Tests;
 
 public class ParsingTests
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public ParsingTests(ITestOutputHelper testOutputHelper)
+    [Fact]
+    public void ScssClassCollection()
     {
-        _testOutputHelper = testOutputHelper;
+        var scssClassCollection = new ScssClassCollection();
+
+        Assert.True(scssClassCollection.GetClassCount() > 0);
+        Assert.Single(scssClassCollection.GetAllByClassName("bg-slate-100"));
+        Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100"));
+        Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]"));
     }
 
     [Fact]
-    public async Task ParsingTest()
+    public async Task UsedClasses()
     {
-        _testOutputHelper.WriteLine("ParsingTest");
-        
-        var runner = new SfumatoRunner();
+        var appState = new SfumatoAppState();
 
-        await runner.InitializeAsync();
-
-        runner.AppState.UsedClasses.Clear();
-        runner.AppState.UsedClasses.Add(new ScssClass
-        {
-            ClassName = "dark:tabp:bg-fuchsia-200",
-            FilePath = Path.Combine(Assembly.GetExecutingAssembly().Location[..Assembly.GetExecutingAssembly().Location.LastIndexOf(Path.DirectorySeparatorChar)], "scss", "bg-color.scss")
-        });
+        await appState.InitializeAsync(Array.Empty<string>());
+        await appState.GatherUsedScssCoreClassesAsync();
         
-        var scssClass = runner.AppState.UsedClasses.FirstOrDefault(c => c.ClassName == "dark:tabp:bg-fuchsia-200");
-
-        Assert.NotNull(scssClass);
-        
-        var result = await runner.GenerateScssObjectTreeAsync();
-        
-        Assert.Equal("""
-@media (prefers-color-scheme: dark) {
-    @include sf-media($from: tabp) {
-        .dark\:tabp\:bg-fuchsia-200 {
-            background-color: rgb(245 208 254);
-        }
+        Assert.True(appState.UsedClasses.Count > 0);
     }
-}
-""", result.Trim());
-    }
+    
+//     [Fact]
+//     public async Task GenerateColorsCode()
+//     {
+//         var sb = new StringBuilder();
+//         var scss = await File.ReadAllTextAsync(Path.Combine("scss", "text-color.scss"));
+//
+//         if (string.IsNullOrEmpty(scss))
+//             Assert.Fail();
+//
+//         var index = 0;
+//
+//         while (index > -1)
+//         {
+//             if (scss[index] != '.')
+//             {
+//                 index = scss.IndexOf("\n.", index, StringComparison.Ordinal);
+//
+//                 if (index > -1)
+//                     index++;
+//             }
+//
+//             if (index < 0)
+//                 continue;
+// 				
+//             var end = scss.IndexOf(' ', index);
+//
+//             if (end < 0)
+//                 continue;
+//
+//             var propertyPrefix = "color:";
+//             var valueStartIndex = scss.IndexOf(propertyPrefix, end, StringComparison.Ordinal);
+//
+//             if (valueStartIndex > -1)
+//             {
+//                 valueStartIndex += propertyPrefix.Length;
+//                 
+//                 var valueEndIndex = scss.IndexOf(";", valueStartIndex, StringComparison.Ordinal);
+//
+//                 if (valueEndIndex > -1)
+//                 {
+//                     var defaultValue = scss[valueStartIndex..valueEndIndex].Trim();
+//                     
+//                     sb.Append(
+//                         @$"[""{scss.Substring(index + 1, end - index - 1)}""] = new ScssClass
+// {{
+//     ValueMask = ""{{value}}"",
+//     Value = ""{defaultValue}"",
+//     ValueType = ""color"",
+//     Template = ""background-color: {{value}};""
+// }},
+// ");            
+//                 }
+//             }
+//
+//             index = end;
+//         }
+//         
+//         Assert.NotEmpty(sb.ToString());
+//     }
 }

@@ -61,6 +61,26 @@
         <None Include="README.md" Pack="true" PackagePath="" />
         <None Include="LICENSE.txt" Pack="true" PackagePath="" />
         <None Include="sfumato-icon.png" Pack="true" PackagePath="" />
+        <None Update="scss\_browser-reset.scss">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Pack>true</Pack>
+          <PackagePath>contentFiles\any\any\scss\</PackagePath>
+        </None>
+        <None Update="scss\_core.scss">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Pack>true</Pack>
+          <PackagePath>contentFiles\any\any\scss\</PackagePath>
+        </None>
+        <None Update="scss\_initialize.scss">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Pack>true</Pack>
+          <PackagePath>contentFiles\any\any\scss\</PackagePath>
+        </None>
+        <None Update="scss\_media-queries.scss">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Pack>true</Pack>
+          <PackagePath>contentFiles\any\any\scss\</PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>
