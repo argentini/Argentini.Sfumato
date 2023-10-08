@@ -449,6 +449,7 @@ public sealed class SfumatoAppState
 
 		var dirs = dir.GetDirectories();
 		var files = dir.GetFiles();
+		var matches = new List<Match>();
 
 		foreach (var projectFile in files.OrderBy(f => f.Name))
 		{
@@ -460,8 +461,7 @@ public sealed class SfumatoAppState
 			if (string.IsNullOrEmpty(markup))
 				continue;
 
-			var matches = new List<Match>();
-				
+			matches.Clear();
 			matches.AddRange(CoreClassRegex.Matches(markup));
 
 			foreach (var match in matches)
@@ -493,7 +493,8 @@ public sealed class SfumatoAppState
 					UsedClasses.TryAdd(userClassName, usedScssClass);
 				}
 			}
-			
+
+			matches.Clear();
 			matches.AddRange(ArbitraryCssRegex.Matches(markup));
 
 			foreach (var match in matches)
