@@ -14,28 +14,39 @@ public static class SfumatoScss
 
 	public static IEnumerable<string> CssUnits => new[]
 	{
+		// Order here matters as truncating values like 'em' also work on values ending with 'rem'
+
+		"rem", "vmin", "vmax",
 		"cm", "in", "mm", "pc", "pt", "px",
-		"ch", "em", "ex", "rem", "vw", "vh", "vmin", "vmax", "%"
+		"ch", "em", "ex", "vw", "vh"
 	};
 
 	public static IEnumerable<string> CssAngleUnits => new[]
 	{
-		"deg", "grad", "rad", "turn"
+		// Order here matters as truncating values like 'rad' also work on values ending with 'grad'
+
+		"grad", "turn", "deg", "rad"
 	};
 
 	public static IEnumerable<string> CssTimeUnits => new[]
 	{
-		"s", "ms"
+		// Order here matters as truncating values like 's' also work on values ending with 'ms'
+		
+		"ms", "s"
 	};
 
 	public static IEnumerable<string> CssFrequencyUnits => new[]
 	{
-		"Hz", "kHz"
+		// Order here matters as truncating values like 'Hz' also work on values ending with 'kHz'
+		
+		"kHz", "Hz"
 	};
 
 	public static IEnumerable<string> CssResolutionUnits => new[]
 	{
-		"dpi", "dpcm", "dppx", "x"
+		// Order here matters as truncating values like 'x' also work on values ending with 'dppx'
+		
+		"dpcm", "dppx", "dpi", "x"
 	};
 	
 	public static IEnumerable<string> CssNamedColors => new[]
@@ -930,12 +941,14 @@ public static class SfumatoScss
 	    
 	    #region length
 	    
-	    var unitless = rawValue;
+	    var unitless = string.Empty;
 
 	    foreach (var unit in CssUnits)
 	    {
-		    unitless = unitless.TrimEnd(unit);
-		    break;
+		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (rawValue.Length != unitless.Length)
+			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
@@ -951,12 +964,14 @@ public static class SfumatoScss
 	    
 	    #region angle
 
-	    unitless = rawValue;
+	    unitless = string.Empty;
 
 	    foreach (var unit in CssAngleUnits)
 	    {
-		    unitless = unitless.TrimEnd(unit);
-		    break;
+		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (rawValue.Length != unitless.Length)
+			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
@@ -966,12 +981,14 @@ public static class SfumatoScss
 
 	    #region time
 
-	    unitless = rawValue;
+	    unitless = string.Empty;
 
 	    foreach (var unit in CssTimeUnits)
 	    {
-		    unitless = unitless.TrimEnd(unit);
-		    break;
+		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (rawValue.Length != unitless.Length)
+			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
@@ -981,12 +998,14 @@ public static class SfumatoScss
 
 	    #region frequency
 
-	    unitless = rawValue;
+	    unitless = string.Empty;
 
 	    foreach (var unit in CssFrequencyUnits)
 	    {
-		    unitless = unitless.TrimEnd(unit);
-		    break;
+		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (rawValue.Length != unitless.Length)
+			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
@@ -996,12 +1015,14 @@ public static class SfumatoScss
 
 	    #region resolution
 
-	    unitless = rawValue;
+	    unitless = string.Empty;
 
 	    foreach (var unit in CssResolutionUnits)
 	    {
-		    unitless = unitless.TrimEnd(unit);
-		    break;
+		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (rawValue.Length != unitless.Length)
+			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
