@@ -910,7 +910,7 @@ public static class SfumatoScss
 		    return string.Empty;
 
 	    var segments = className[className.LastIndexOf('[')..].Trim().TrimStart('[').TrimEnd(']').Split(':', StringSplitOptions.RemoveEmptyEntries);
-	    var rawValue = segments[0];
+	    var value = segments[0];
 
 	    // Passed a value type prefix (e.g. text-[color:red])
 
@@ -924,19 +924,19 @@ public static class SfumatoScss
 
 	    // Determine value type based on value (e.g. text-[red])
 
-	    if (rawValue.StartsWith('\'') && rawValue.EndsWith('\''))
+	    if (value.StartsWith('\'') && value.EndsWith('\''))
 		    return "string";
 
-	    if (rawValue.StartsWith("url(", StringComparison.Ordinal) && rawValue.EndsWith(')'))
+	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')'))
 		    return "url";
 	    
-	    if (rawValue.EndsWith('%') && double.TryParse(rawValue.TrimEnd('%'), out _))
+	    if (value.EndsWith('%') && double.TryParse(value.TrimEnd('%'), out _))
 		    return "percentage";
 	    
-	    if (int.TryParse(rawValue, out _))
+	    if (int.TryParse(value, out _))
 		    return "integer";
 
-	    if (double.TryParse(rawValue, out _))
+	    if (double.TryParse(value, out _))
 		    return "number";
 	    
 	    #region length
@@ -945,9 +945,9 @@ public static class SfumatoScss
 
 	    foreach (var unit in CssUnits)
 	    {
-		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (rawValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
@@ -956,10 +956,10 @@ public static class SfumatoScss
 
 	    #endregion
 	    
-	    if (rawValue.EndsWith("fr") && double.TryParse(rawValue.TrimEnd("fr"), out _))
+	    if (value.EndsWith("fr") && double.TryParse(value.TrimEnd("fr"), out _))
 		    return "flex";
 
-	    if (rawValue.IsValidWebHexColor() || rawValue.StartsWith("rgb(") || rawValue.StartsWith("rgba(") || CssNamedColors.Contains(rawValue))
+	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || CssNamedColors.Contains(value))
 		    return "color";
 	    
 	    #region angle
@@ -968,9 +968,9 @@ public static class SfumatoScss
 
 	    foreach (var unit in CssAngleUnits)
 	    {
-		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (rawValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
@@ -985,9 +985,9 @@ public static class SfumatoScss
 
 	    foreach (var unit in CssTimeUnits)
 	    {
-		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (rawValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
@@ -1002,9 +1002,9 @@ public static class SfumatoScss
 
 	    foreach (var unit in CssFrequencyUnits)
 	    {
-		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (rawValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
@@ -1019,9 +1019,9 @@ public static class SfumatoScss
 
 	    foreach (var unit in CssResolutionUnits)
 	    {
-		    unitless = rawValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (rawValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
@@ -1032,12 +1032,10 @@ public static class SfumatoScss
 	    
 	    #region ratio
 	    
-	    var spacedValue = rawValue.Replace('_', ' ').Replace("\\ ", "\\_");
-
-	    if (spacedValue.Replace(" ", string.Empty).IndexOf('/') <= 0 || spacedValue.EndsWith('/'))
+	    if (value.Length < 3 || value.IndexOf('/') < 1 || value.IndexOf('/') == value.Length - 1)
 		    return string.Empty;
 	    
-	    var values = spacedValue.Replace(" ", string.Empty).Split('/', StringSplitOptions.RemoveEmptyEntries);
+	    var values = value.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
 	    if (values.Length != 2)
 		    return string.Empty;
