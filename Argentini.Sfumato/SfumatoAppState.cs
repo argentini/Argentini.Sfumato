@@ -6,66 +6,14 @@ public sealed class SfumatoAppState
 
     #region Constants
 
-    public Regex ArbitraryCssRegex => new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]))(?=[\s"'`])""", RegexOptions.Compiled);
-    public Regex CoreClassRegex => new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}((({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})[a-z0-9\-]{1,100})|(({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])))(?=[\s"'`])""", RegexOptions.Compiled);
-    
     public static string CliErrorPrefix => "Sfumato => ";
     
-	public Dictionary<string, string> MediaQueryPrefixes { get; } = new ()
-	{
-		{ "dark", "@media (prefers-color-scheme: dark) {" },
-		{ "portrait", "@media (orientation: portrait) {" },
-		{ "landscape", "@media (orientation: landscape) {" },
-		{ "print", "@media print {" },
-		{ "zero", "@include sf-media($from: zero) {" },
-		{ "phab", "@include sf-media($from: phab) {" },
-		{ "tabp", "@include sf-media($from: tabp) {" },
-		{ "tabl", "@include sf-media($from: tabl) {" },
-		{ "note", "@include sf-media($from: note) {" },
-		{ "desk", "@include sf-media($from: desk) {" },
-		{ "elas", "@include sf-media($from: elas) {" }
-	};
-	public Dictionary<string, string> PseudoclassPrefixes { get; } = new ()
-	{
-		{ "hover", "&:hover {"},
-		{ "focus", "&:focus {" },
-		{ "focus-within", "&:focus-within {" },
-		{ "focus-visible", "&:focus-visible {" },
-		{ "active", "&:active {" },
-		{ "visited", "&:visited {" },
-		{ "target", "&:target {" },
-		{ "first", "&:first-child {" },
-		{ "last", "&:last-child {" },
-		{ "only", "&:only-child {" },
-		{ "odd", "&:nth-child(odd) {" },
-		{ "even", "&:nth-child(even) {" },
-		{ "first-of-type", "&:first-of-type {" },
-		{ "last-of-type", "&:last-of-type {" },
-		{ "only-of-type", "&:only-of-type {" },
-		{ "empty", "&:empty {" },
-		{ "disabled", "&:disabled {" },
-		{ "enabled", "&:enabled {" },
-		{ "checked", "&:checked {" },
-		{ "indeterminate", "&:indeterminate {" },
-		{ "default", "&:default {" },
-		{ "required", "&:required {" },
-		{ "valid", "&:valid {" },
-		{ "invalid", "&:invalid {" },
-		{ "in-range", "&:in-range {" },
-		{ "out-of-range", "&:out-of-range {" },
-		{ "placeholder-shown", "&:placeholder-shown {" },
-		{ "autofill", "&:autofill {" },
-		{ "read-only", "&:read-only {" },
-		{ "before", "&::before {" },
-		{ "after", "&::after {" },
-		{ "first-letter", "&::first-letter {" },
-		{ "first-line", "&::first-line {" },
-		{ "marker", "&::marker {" },
-		{ "selection", "&::selection {" },
-		{ "file", "&::file-selector-button {" },
-		{ "backdrop", "&::backdrop {" },
-		{ "placeholder", "&::placeholder {" }
-	};
+    #endregion
+
+    #region Regex
+    
+    public Regex ArbitraryCssRegex { get; }
+    public Regex CoreClassRegex { get; }
     
     #endregion
     
@@ -108,8 +56,11 @@ public sealed class SfumatoAppState
     public SfumatoAppState()
     {
 	    AllPrefixes.Clear();
-	    AllPrefixes.AddRange(MediaQueryPrefixes.Select(p => p.Key));
-	    AllPrefixes.AddRange(PseudoclassPrefixes.Select(p => p.Key));
+	    AllPrefixes.AddRange(SfumatoScss.MediaQueryPrefixes.Select(p => p.Key));
+	    AllPrefixes.AddRange(SfumatoScss.PseudoclassPrefixes.Select(p => p.Key));
+	    
+	    ArbitraryCssRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]))(?=[\s"'`])""", RegexOptions.Compiled);
+	    CoreClassRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}((({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})[a-z0-9\-]{1,100})|(({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])))(?=[\s"'`])""", RegexOptions.Compiled);
     }
     
     #region Entry Points
@@ -309,7 +260,7 @@ public sealed class SfumatoAppState
         return workingPath;
     }
 
-    public static string GetEmbeddedSassPath()
+    public string GetEmbeddedSassPath()
     {
         var osPlatform = Identify.GetOsPlatform();
         var processorArchitecture = Identify.GetProcessorArchitecture();
@@ -367,7 +318,7 @@ public sealed class SfumatoAppState
 			Environment.Exit(1);
 		}
 		
-		var sb = new StringBuilder();
+		var sb = StringBuilderPool.Get();
 		var cmd = Cli.Wrap(sassPath)
 			.WithArguments(arguments =>
 			{
@@ -386,6 +337,8 @@ public sealed class SfumatoAppState
 			Console.WriteLine($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
 			Environment.Exit(1);
 		}
+
+		StringBuilderPool.Return(sb);
 		
 		return sassPath;
     }

@@ -151,7 +151,7 @@ public sealed class SfumatoRunner
 					level++;
 				}
 
-				var pseudoClass = AppState.PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+				var pseudoClass = SfumatoScss.PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 					
 				scssResult.Append($"{Indent(level)}{pseudoClass.Value}\n");
 				level++;
@@ -281,7 +281,7 @@ public sealed class SfumatoRunner
 			if (prefix.Equals("auto-dark", StringComparison.Ordinal))
 				prefix = "dark";
 			
-			var mediaQueryPrefix = AppState.MediaQueryPrefixes.First(p => p.Key.Equals(prefix));
+			var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.First(p => p.Key.Equals(prefix));
 
 			if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
 			{
@@ -403,7 +403,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	private bool IsMediaQueryPrefix(string prefix)
 	{
-		var mediaQueryPrefix = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(mediaQueryPrefix.Key) == false;
 	}
 
@@ -414,7 +414,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	private bool IsPseudoclassPrefix(string prefix)
 	{
-		var pseudoclassPrefix = AppState.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		var pseudoclassPrefix = SfumatoScss.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;
 	}
 	

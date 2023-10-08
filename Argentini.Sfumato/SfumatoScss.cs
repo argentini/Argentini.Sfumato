@@ -526,6 +526,62 @@ public static class SfumatoScss
 	    "zoom"
 	};
 	
+	public static Dictionary<string, string> MediaQueryPrefixes => new ()
+	{
+		{ "dark", "@media (prefers-color-scheme: dark) {" },
+		{ "portrait", "@media (orientation: portrait) {" },
+		{ "landscape", "@media (orientation: landscape) {" },
+		{ "print", "@media print {" },
+		{ "zero", "@include sf-media($from: zero) {" },
+		{ "phab", "@include sf-media($from: phab) {" },
+		{ "tabp", "@include sf-media($from: tabp) {" },
+		{ "tabl", "@include sf-media($from: tabl) {" },
+		{ "note", "@include sf-media($from: note) {" },
+		{ "desk", "@include sf-media($from: desk) {" },
+		{ "elas", "@include sf-media($from: elas) {" }
+	};
+
+	public static Dictionary<string, string> PseudoclassPrefixes => new ()
+	{
+		{ "hover", "&:hover {"},
+		{ "focus", "&:focus {" },
+		{ "focus-within", "&:focus-within {" },
+		{ "focus-visible", "&:focus-visible {" },
+		{ "active", "&:active {" },
+		{ "visited", "&:visited {" },
+		{ "target", "&:target {" },
+		{ "first", "&:first-child {" },
+		{ "last", "&:last-child {" },
+		{ "only", "&:only-child {" },
+		{ "odd", "&:nth-child(odd) {" },
+		{ "even", "&:nth-child(even) {" },
+		{ "first-of-type", "&:first-of-type {" },
+		{ "last-of-type", "&:last-of-type {" },
+		{ "only-of-type", "&:only-of-type {" },
+		{ "empty", "&:empty {" },
+		{ "disabled", "&:disabled {" },
+		{ "enabled", "&:enabled {" },
+		{ "checked", "&:checked {" },
+		{ "indeterminate", "&:indeterminate {" },
+		{ "default", "&:default {" },
+		{ "required", "&:required {" },
+		{ "valid", "&:valid {" },
+		{ "invalid", "&:invalid {" },
+		{ "in-range", "&:in-range {" },
+		{ "out-of-range", "&:out-of-range {" },
+		{ "placeholder-shown", "&:placeholder-shown {" },
+		{ "autofill", "&:autofill {" },
+		{ "read-only", "&:read-only {" },
+		{ "before", "&::before {" },
+		{ "after", "&::after {" },
+		{ "first-letter", "&::first-letter {" },
+		{ "first-line", "&::first-line {" },
+		{ "marker", "&::marker {" },
+		{ "selection", "&::selection {" },
+		{ "file", "&::file-selector-button {" },
+		{ "backdrop", "&::backdrop {" },
+		{ "placeholder", "&::placeholder {" }
+	};
 	
 	#endregion
 	
