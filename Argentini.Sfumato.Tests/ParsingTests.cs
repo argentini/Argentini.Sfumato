@@ -18,7 +18,7 @@ public class ParsingTests
     <link rel=""stylesheet"" href=""css/sfumato.css"">
 </head>
 <body>
-    <div id=""test-home"" class=""bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233]"">
+    <div id=""test-home"" class=""bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233] desk:text-[--my-color-var] desk:text-[var(--my-color-var)]"">
         <p class=""[font-weight:900] tabp:[font-weight:900]"">Placeholder</p>
         <p class=""[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]"">Invalid Classes</p>
     </div>
@@ -46,7 +46,7 @@ public class ParsingTests
         
         matches = appState.CoreClassRegex.Matches(markup);
 
-        Assert.Equal(6, matches.Count);        
+        Assert.Equal(8, matches.Count);        
         
     }
     
