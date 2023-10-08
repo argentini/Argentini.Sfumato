@@ -473,7 +473,7 @@ public sealed class SfumatoAppState
 
 				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
 				var userClassValueType = userClassName.GetUserClassValueType();
-				var userClassValue = userClassName.GetUserClassValue();
+				var userClassValue = userClassName.GetUserClassValue().Replace('_', ' ').Replace("\\ ", "\\_");
 
 				foreach (var scssClass in scssClasses)
 				{
@@ -509,7 +509,7 @@ public sealed class SfumatoAppState
 				{
 					ValueTypes = string.Empty,
 					UserClassName = userClassName,
-					Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']'),
+					Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_"),
 					Template = "{value};"
 				};
 
