@@ -252,7 +252,7 @@ public sealed class SfumatoRunner
 		
 		var sb = AppState.StringBuilderPool.Get();
 		
-		await GenerateScssObjectTreeRecurseAsync(hierarchy, sb);
+		await GenerateScssFromObjectTreeAsync(hierarchy, sb);
         
 		var scss = sb.ToString();
 		
@@ -260,7 +260,7 @@ public sealed class SfumatoRunner
 		
 		return scss;
 	}
-	private async Task GenerateScssObjectTreeRecurseAsync(ScssNode scssNode, StringBuilder sb)
+	private async Task GenerateScssFromObjectTreeAsync(ScssNode scssNode, StringBuilder sb)
 	{
 		if (string.IsNullOrEmpty(scssNode.Prefix) == false)
 		{
@@ -301,7 +301,7 @@ public sealed class SfumatoRunner
 		{
 			foreach (var node in scssNode.Nodes)
 			{
-				await GenerateScssObjectTreeRecurseAsync(node, sb);
+				await GenerateScssFromObjectTreeAsync(node, sb);
 			}
 		}
 			
