@@ -490,7 +490,7 @@ public sealed class SfumatoAppState
 					if (string.IsNullOrEmpty(userClassValue) == false)
 						usedScssClass.Value = userClassValue;
 
-					UsedClasses.Add(userClassName, usedScssClass);
+					UsedClasses.TryAdd(userClassName, usedScssClass);
 				}
 			}
 			
@@ -513,7 +513,7 @@ public sealed class SfumatoAppState
 					Template = "{value};"
 				};
 
-				UsedClasses.Add(userClassName, usedScssClass);
+				UsedClasses.TryAdd(userClassName, usedScssClass);
 			}
 		}
 
