@@ -5,6 +5,7 @@ public sealed class ScssClassCollection
     public BgColor BgColor { get; } = new();
     public TextColor TextColor { get; } = new();
     public TextSize TextSize { get; } = new();
+    public AspectRatio AspectRatio { get; } = new();
 
     /// <summary>
     /// Get the total number of items in all SCSS class collections. 
