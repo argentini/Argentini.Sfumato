@@ -15,24 +15,36 @@ public sealed class ScssClass
             _userClassName = value;
             Prefixes = Array.Empty<string>();
 
-            var trimmed = _userClassName;
-            
-            if (_userClassName.EndsWith(']') && _userClassName.Contains('['))
+            if (_userClassName.Contains(":[") && _userClassName.EndsWith(']'))
             {
-                trimmed = _userClassName[.._userClassName.IndexOf('[')];
+                var segments = _userClassName[.._userClassName.IndexOf('[')].Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+                Prefixes = new string[segments.Length];
+
+                Array.Copy(segments, Prefixes, segments.Length);
             }
 
-            if (trimmed.LastIndexOf(':') == -1 || trimmed.LastIndexOf(':') >= trimmed.Length - 1)
-                return;
-            
-            var segments = trimmed.Split(':', StringSplitOptions.RemoveEmptyEntries);
+            else
+            {
+                var trimmed = _userClassName;
 
-            if (segments.Length < 2)
-                return;
-			
-            Prefixes = new string[segments.Length - 1];
+                if (_userClassName.EndsWith(']') && _userClassName.Contains('['))
+                {
+                    trimmed = _userClassName[.._userClassName.IndexOf('[')];
+                }
 
-            Array.Copy(segments, Prefixes, segments.Length - 1);
+                if (trimmed.LastIndexOf(':') == -1 || trimmed.LastIndexOf(':') >= trimmed.Length - 1)
+                    return;
+
+                var segments = trimmed.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+                if (segments.Length < 2)
+                    return;
+
+                Prefixes = new string[segments.Length - 1];
+
+                Array.Copy(segments, Prefixes, segments.Length - 1);
+            }
         }
     }
     

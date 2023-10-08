@@ -506,61 +506,79 @@ public sealed class SfumatoAppState
 				
 				if (UsedClasses.ContainsKey(userClassName))
 					continue;
-				
-				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
-				var valueType = userClassName.GetUserClassValueType();
-				var value = userClassName.GetUserClassValue();
-				
-				foreach (var scssClass in scssClasses)
+
+				// Bracketed raw CSS style (e.g. tabp:[display:none])
+				if (userClassName.EndsWith(']') && (userClassName.StartsWith('[') || userClassName.Contains(":[")))
 				{
-					// No explicit value type included
-					
-					if (string.IsNullOrEmpty(valueType))
+					var usedScssClass = new ScssClass
 					{
-						var usedScssClass = scssClass.Adapt<ScssClass>();
+						ValueType = string.Empty,
+						UserClassName = userClassName,
+						Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']'),
+						Template = "{value};"
+					};
 
-						usedScssClass.UserClassName = userClassName;
+					UsedClasses.Add(userClassName, usedScssClass);
+				}
 
-						if (string.IsNullOrEmpty(value) == false)
+				// Standard class syntax
+				else
+				{
+					var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
+					var valueType = userClassName.GetUserClassValueType();
+					var value = userClassName.GetUserClassValue();
+
+					foreach (var scssClass in scssClasses)
+					{
+						// No explicit value type included
+
+						if (string.IsNullOrEmpty(valueType))
+						{
+							var usedScssClass = scssClass.Adapt<ScssClass>();
+
+							usedScssClass.UserClassName = userClassName;
+
+							if (string.IsNullOrEmpty(value) == false)
+								usedScssClass.Value = value;
+
+							UsedClasses.Add(userClassName, usedScssClass);
+
+							break;
+						}
+
+						// Explicit value type specified, is raw CSS property
+
+						if (valueType == "raw")
+						{
+							var usedScssClass = scssClass.Adapt<ScssClass>();
+
+							usedScssClass.UserClassName = userClassName;
 							usedScssClass.Value = value;
+							usedScssClass.Template = "{value};";
 
-						UsedClasses.Add(userClassName, usedScssClass);
+							UsedClasses.Add(userClassName, usedScssClass);
 
-						break;
-					}
+							break;
+						}
 
-					// Explicit value type specified, is raw CSS property
-					
-					if (valueType == "raw")
-					{
-						var usedScssClass = scssClass.Adapt<ScssClass>();
+						// Explicit value type specified, must match source
 
-						usedScssClass.UserClassName = userClassName;
-						usedScssClass.Value = value;
-						usedScssClass.Template = "{value};";
+						else
+						{
+							if (string.IsNullOrEmpty(valueType) || scssClass.ValueType != valueType)
+								continue;
 
-						UsedClasses.Add(userClassName, usedScssClass);
+							var usedScssClass = scssClass.Adapt<ScssClass>();
 
-						break;
-					}
+							usedScssClass.UserClassName = userClassName;
 
-					// Explicit value type specified, must match source
+							if (string.IsNullOrEmpty(value) == false)
+								usedScssClass.Value = value;
 
-					else
-					{
-						if (string.IsNullOrEmpty(valueType) || scssClass.ValueType != valueType)
-							continue;
+							UsedClasses.Add(userClassName, usedScssClass);
 
-						var usedScssClass = scssClass.Adapt<ScssClass>();
-
-						usedScssClass.UserClassName = userClassName;
-
-						if (string.IsNullOrEmpty(value) == false)
-							usedScssClass.Value = value;
-
-						UsedClasses.Add(userClassName, usedScssClass);
-
-						break;
+							break;
+						}
 					}
 				}
 			}

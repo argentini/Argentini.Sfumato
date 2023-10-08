@@ -108,18 +108,30 @@ public sealed class SfumatoRunner
 		var scssResult = AppState.StringBuilderPool.Get();
 		var level = 0;
 		var className = scssClass.UserClassName;
-
+		var segments = Array.Empty<string>();
+		
 		if (string.IsNullOrEmpty(stripPrefix) == false && className.StartsWith(stripPrefix, StringComparison.Ordinal))
 			className = className.TrimStart(stripPrefix) ?? className;
-		
-		if (className.EndsWith(']') && className.Contains('['))
-			className = className[..className.IndexOf('[')];
-		
-		var segments = className.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
-		if (segments.Length == 0)
-			return string.Empty;
+		// Bracketed raw CSS style (e.g. tabp:[display:none])
+		if (className.EndsWith(']') && (className.StartsWith('[') || className.Contains(":[")))
+		{
+			if (className.Contains(":["))
+				segments = className[..className.IndexOf('[')].Split(':', StringSplitOptions.RemoveEmptyEntries);
+		}
+
+		// Standard class syntax
+		else
+		{
+			if (className.EndsWith(']') && className.Contains('['))
+				className = className[..className.IndexOf('[')];
 			
+			segments = className.Split(':', StringSplitOptions.RemoveEmptyEntries);
+			
+			if (segments.Length == 0)
+				return string.Empty;
+		}		
+		
 		if (segments.Length > 1)
 		{
 			var prefixes = new string[segments.Length - 1];
