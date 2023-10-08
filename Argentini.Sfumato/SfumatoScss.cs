@@ -15,6 +15,158 @@ public static class SfumatoScss
 		"ch", "em", "ex", "rem", "vw", "vh", "vmin", "vmax", "%"
 	};
 
+	public static IEnumerable<string> CssNamedColors => new[]
+	{
+	    "aliceblue",
+	    "antiquewhite",
+	    "aqua",
+	    "aquamarine",
+	    "azure",
+	    "beige",
+	    "bisque",
+	    "black",
+	    "blanchedalmond",
+	    "blue",
+	    "blueviolet",
+	    "brown",
+	    "burlywood",
+	    "cadetblue",
+	    "chartreuse",
+	    "chocolate",
+	    "coral",
+	    "cornflowerblue",
+	    "cornsilk",
+	    "crimson",
+	    "cyan",
+	    "darkblue",
+	    "darkcyan",
+	    "darkgoldenrod",
+	    "darkgray",
+	    "darkgreen",
+	    "darkgrey",
+	    "darkkhaki",
+	    "darkmagenta",
+	    "darkolivegreen",
+	    "darkorange",
+	    "darkorchid",
+	    "darkred",
+	    "darksalmon",
+	    "darkseagreen",
+	    "darkslateblue",
+	    "darkslategray",
+	    "darkslategrey",
+	    "darkturquoise",
+	    "darkviolet",
+	    "deeppink",
+	    "deepskyblue",
+	    "dimgray",
+	    "dimgrey",
+	    "dodgerblue",
+	    "firebrick",
+	    "floralwhite",
+	    "forestgreen",
+	    "fuchsia",
+	    "gainsboro",
+	    "ghostwhite",
+	    "gold",
+	    "goldenrod",
+	    "gray",
+	    "green",
+	    "greenyellow",
+	    "grey",
+	    "honeydew",
+	    "hotpink",
+	    "indianred",
+	    "indigo",
+	    "ivory",
+	    "khaki",
+	    "lavender",
+	    "lavenderblush",
+	    "lawngreen",
+	    "lemonchiffon",
+	    "lightblue",
+	    "lightcoral",
+	    "lightcyan",
+	    "lightgoldenrodyellow",
+	    "lightgray",
+	    "lightgreen",
+	    "lightgrey",
+	    "lightpink",
+	    "lightsalmon",
+	    "lightseagreen",
+	    "lightskyblue",
+	    "lightslategray",
+	    "lightslategrey",
+	    "lightsteelblue",
+	    "lightyellow",
+	    "lime",
+	    "limegreen",
+	    "linen",
+	    "magenta",
+	    "maroon",
+	    "mediumaquamarine",
+	    "mediumblue",
+	    "mediumorchid",
+	    "mediumpurple",
+	    "mediumseagreen",
+	    "mediumslateblue",
+	    "mediumspringgreen",
+	    "mediumturquoise",
+	    "mediumvioletred",
+	    "midnightblue",
+	    "mintcream",
+	    "mistyrose",
+	    "moccasin",
+	    "navajowhite",
+	    "navy",
+	    "oldlace",
+	    "olive",
+	    "olivedrab",
+	    "orange",
+	    "orangered",
+	    "orchid",
+	    "palegoldenrod",
+	    "palegreen",
+	    "paleturquoise",
+	    "palevioletred",
+	    "papayawhip",
+	    "peachpuff",
+	    "peru",
+	    "pink",
+	    "plum",
+	    "powderblue",
+	    "purple",
+	    "rebeccapurple",
+	    "red",
+	    "rosybrown",
+	    "royalblue",
+	    "saddlebrown",
+	    "salmon",
+	    "sandybrown",
+	    "seagreen",
+	    "seashell",
+	    "sienna",
+	    "silver",
+	    "skyblue",
+	    "slateblue",
+	    "slategray",
+	    "slategrey",
+	    "snow",
+	    "springgreen",
+	    "steelblue",
+	    "tan",
+	    "teal",
+	    "thistle",
+	    "tomato",
+	    "turquoise",
+	    "violet",
+	    "wheat",
+	    "white",
+	    "whitesmoke",
+	    "yellow",
+	    "yellowgreen"
+	};
+	
 	public static IEnumerable<string> CssPropertyNames => new[]
 	{
 	    "align-content",
@@ -670,6 +822,8 @@ public static class SfumatoScss
 	    var segments = className[className.LastIndexOf('[')..].Trim().TrimStart('[').TrimEnd(']').Split(':', StringSplitOptions.RemoveEmptyEntries);
 	    var value = segments[0];
 
+	    // Passed a value type prefix (e.g. text-[color:red])
+
 	    if (segments.Length > 1)
 	    {
 		    if (ArbitraryValueTypes.Contains(segments[0]))
@@ -677,6 +831,8 @@ public static class SfumatoScss
 		    
 		    return string.Empty;
 	    }
+
+	    // No value type prefix included (e.g. text-[red])
 
 	    var trimmed = value;
 
@@ -687,6 +843,9 @@ public static class SfumatoScss
 		    return "length";
 		    
 	    if (value.StartsWith('#') || value.StartsWith("rgb(") || value.StartsWith("rgba("))
+		    return "color";
+	    
+	    if (CssNamedColors.Contains(value))
 		    return "color";
 
 	    return string.Empty;
