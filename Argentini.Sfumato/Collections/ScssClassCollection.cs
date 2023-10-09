@@ -117,7 +117,7 @@ public sealed class ScssClassCollection
 
     /// <summary>
     /// Gets a list of unique utility class names.
-    /// Utility classe are collections with only one class defined.
+    /// Utility classes are ScssClass items with empty Value and ValueTypes properties.
     /// </summary>
     /// <returns></returns>
     public IEnumerable<string> GetUtilityClassNames()
@@ -138,10 +138,14 @@ public sealed class ScssClassCollection
             
             var dictionaryReference = (IDictionary<string,ScssClass>?)classesProperty.GetValue(propertyValue);
 
-            if (dictionaryReference is null || dictionaryReference.Count != 1)
+            if (dictionaryReference is null || dictionaryReference.Count < 1)
                 continue;
 
-            result.TryAdd(dictionaryReference.First().Key, string.Empty);
+            foreach (var (key, value) in dictionaryReference)
+            {
+                if (value is { Value: "", ValueTypes: "" })
+                    result.TryAdd(dictionaryReference.First().Key, string.Empty);
+            }
         }
 
         return result.Keys;

@@ -7,8 +7,6 @@ public sealed class ElasticContainer
     {
         ["elastic-container"] = new ScssClass
         {
-            Value = "",
-            ValueTypes = "",
             Template = @"width: 100%;
 
 @include sf-media($from: phab) {
