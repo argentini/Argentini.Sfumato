@@ -22,7 +22,7 @@ public class ParsingTests
         <p class="[font-weight:900] tabp:[font-weight:900]">Placeholder</p>
         <p class="[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]">Invalid Classes</p>
     </div>
-    <div class="break-after-auto container aspect-screen elas:aspect-[8/4]"></div>
+    <div class="top-8 break-after-auto container aspect-screen elas:aspect-[8/4]"></div>
     <script>
         function test() {
             let el = document.getElementById('test-element');
@@ -49,6 +49,10 @@ public class ParsingTests
         matches = appState.CoreClassRegex.Matches(markup);
 
         Assert.Equal(16, matches.Count);      
+        
+        matches = appState.UtilityClassRegex.Matches(markup);
+
+        Assert.Equal(2, matches.Count);      
     }
     
     [Fact]

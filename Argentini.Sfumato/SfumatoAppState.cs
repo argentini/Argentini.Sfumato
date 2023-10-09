@@ -61,7 +61,7 @@ public sealed class SfumatoAppState
 	    AllPrefixes.AddRange(SfumatoScss.PseudoclassPrefixes.Select(p => p.Key));
 	    
 	    ArbitraryCssRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]))(?=[\s"'`])""", RegexOptions.Compiled);
-	    CoreClassRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}((({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})[a-z0-9\-]{1,100}((/[a-z0-9\.]{1,})|(/\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])){0,1})|(({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])))(?=[\s"'`])""", RegexOptions.Compiled);
+	    CoreClassRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}((({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})[a-z0-9\-\.]{1,100}((/[a-z0-9\.]{1,})|(/\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])){0,1})|(({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])))(?=[\s"'`])""", RegexOptions.Compiled);
 	    UtilityClassRegex = new Regex($$"""(?<=[\s"'`])({{string.Join(":|", AllPrefixes) + ":"}}){0,10}({{string.Join("|", ScssClassCollection.GetUtilityClassNames())}})(?=[\s"'`])""", RegexOptions.Compiled);
     }
     

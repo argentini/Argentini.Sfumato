@@ -4,6 +4,7 @@ public sealed class ScssUtilityBaseClass
 {
     public string SelectorPrefix { get; set; } = string.Empty;
     public string PropertyName { get; set; } = string.Empty;
+    public string PrefixValueTypes { get; set; } = string.Empty;
 
     private Dictionary<string, string> _options = new();
     public Dictionary<string, string>? Options
@@ -25,7 +26,18 @@ public sealed class ScssUtilityBaseClass
 
         foreach (var item in Options ?? new Dictionary<string, string>())
         {
-            Classes.Add($"{SelectorPrefix}-{item.Key}", new ScssClass
+            if (item is { Key: "-", Value: "" } && PrefixValueTypes != string.Empty && SelectorPrefix != string.Empty)
+            {
+                Classes.Add($"{SelectorPrefix}-", new ScssClass
+                {
+                    ValueTypes = PrefixValueTypes,
+                    Template = $"{PropertyName}: {{value}};"
+                });
+
+                continue;
+            }
+            
+            Classes.Add($"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}-" : string.Empty)}{item.Key}", new ScssClass
             {
                 Template = $"{PropertyName}: {item.Value};"
             });
