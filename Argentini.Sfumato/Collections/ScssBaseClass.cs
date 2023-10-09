@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Collections;
 
-public sealed class ScssUtilityBaseClass
+public sealed class ScssBaseClass
 {
     public string SelectorPrefix { get; set; } = string.Empty;
     public string PropertyName { get; set; } = string.Empty;
@@ -39,7 +39,8 @@ public sealed class ScssUtilityBaseClass
             
             Classes.Add($"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}-" : string.Empty)}{item.Key}", new ScssClass
             {
-                Template = $"{PropertyName}: {item.Value};"
+                Value = item.Value,
+                Template = $"{PropertyName}: {{value}};"
             });
         }
     }

@@ -52,7 +52,7 @@ public class ParsingTests
         
         matches = appState.UtilityClassRegex.Matches(markup);
 
-        Assert.Equal(2, matches.Count);      
+        Assert.Single(matches);      
     }
     
     [Fact]
