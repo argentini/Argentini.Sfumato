@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.Collections;
 
 public sealed class ScssClassCollection
 {
-    #region Classes with arbitrary value support
+    #region Classes (Arbitrary Value Support)
     
     public BgColor BgColor { get; } = new();
     public TextColor TextColor { get; } = new();
@@ -12,11 +12,71 @@ public sealed class ScssClassCollection
 
     #endregion
     
-    #region Utility Classes (no arbitrary value support)
+    #region Classes (No Arbitrary Value Support)
+    
+    public ScssUtilityBaseClass BoxDecorationBreak { get; } = new()
+    {
+        SelectorPrefix = "box-decoration",
+        PropertyName = "box-decoration-break",
+        Options = new Dictionary<string, string>
+        {
+            ["clone"] = "clone",
+            ["slice"] = "slice"
+        }
+    };
+
+    public ScssUtilityBaseClass BreakAfter { get; } = new()
+    {
+        SelectorPrefix = "break-after",
+        PropertyName = "break-after",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["avoid"] = "avoid",
+            ["all"] = "all",
+            ["avoid-page"] = "avoid-page",
+            ["page"] = "page",
+            ["left"] = "left",
+            ["right"] = "right",
+            ["column"] = "column"
+        }
+    };
+
+    public ScssUtilityBaseClass BreakBefore { get; } = new()
+    {
+        SelectorPrefix = "break-before",
+        PropertyName = "break-before",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["avoid"] = "avoid",
+            ["all"] = "all",
+            ["avoid-page"] = "avoid-page",
+            ["page"] = "page",
+            ["left"] = "left",
+            ["right"] = "right",
+            ["column"] = "column"
+        }
+    };
+
+    public ScssUtilityBaseClass BreakInside { get; } = new()
+    {
+        SelectorPrefix = "break-inside",
+        PropertyName = "break-inside",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["avoid"] = "avoid",
+            ["avoid-page"] = "avoid-page",
+            ["avoid-column"] = "avoid-column"
+        }
+    };
+    
+    #endregion
+    
+    #region Utility Classes (Read-Only, No Values)
     
     public Container Container { get; } = new();
-    public BreakAfter BreakAfter { get; } = new();
-    public BreakBefore BreakBefore { get; } = new();
 
     #endregion
     
@@ -155,10 +215,10 @@ public sealed class ScssClassCollection
             if (dictionaryReference is null || dictionaryReference.Count < 1)
                 continue;
 
-            foreach (var (_, value) in dictionaryReference)
+            foreach (var (key, value) in dictionaryReference)
             {
                 if (value is { Value: "", ValueTypes: "" })
-                    result.TryAdd(dictionaryReference.First().Key, string.Empty);
+                    result.TryAdd(key, string.Empty);
             }
         }
 

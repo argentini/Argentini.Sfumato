@@ -22,7 +22,7 @@ public class ParsingTests
         <p class="[font-weight:900] tabp:[font-weight:900]">Placeholder</p>
         <p class="[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]">Invalid Classes</p>
     </div>
-    <div class="container aspect-screen elas:aspect-[8/4]"></div>
+    <div class="break-after-auto container aspect-screen elas:aspect-[8/4]"></div>
     <script>
         function test() {
             let el = document.getElementById('test-element');
@@ -48,8 +48,7 @@ public class ParsingTests
         
         matches = appState.CoreClassRegex.Matches(markup);
 
-        Assert.Equal(15, matches.Count);        
-        
+        Assert.Equal(16, matches.Count);      
     }
     
     [Fact]
@@ -61,6 +60,7 @@ public class ParsingTests
         Assert.Single(scssClassCollection.GetAllByClassName("bg-slate-100"));
         Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100"));
         Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]"));
+        Assert.Single(scssClassCollection.GetAllByClassName("break-after-auto"));
     }
     
 //     [Fact]
