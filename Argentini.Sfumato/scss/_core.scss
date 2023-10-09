@@ -43,25 +43,6 @@
     @return sf-to-number($value) * map-get($units, $unit);
 }
 
-// sf-get-unit() - Strip the value from a measurement, returning the unit as a string.
-@function sf-get-unit($value) {
-
-    $stringVal: inspect($value);
-    $result: "";
-
-    $units: ('px', 'cm', 'mm', '%', 'ch', 'pc', 'in', 'em', 'rem', 'pt', 'ex', 'vw', 'vh', 'vmin', 'vmax');
-
-    @each $unit in $units {
-
-        @if sf-str-endswith($stringVal, $unit) {
-
-            $result: $unit;
-        }
-    }
-
-    @return $result;
-}
-
 // sf-to-number() - Convert a string to a proper SCSS number.
 @function sf-to-number($string) {
 
@@ -139,35 +120,3 @@
         }
     }
 }
-
-// sf-str-split() - Split a string into parts using a delimiter.
-@function sf-str-split($string, $separator: " ") {
-
-    // empty array/list
-    $split-arr: ();
-
-    // first index of separator in string
-    $index : str-index(inspect($string), inspect($separator));
-
-    // loop through string
-    @while $index != null {
-
-        // get the substring from the first character to the separator
-        $item: str-slice(inspect($string), 1, $index - 1);
-
-        // push item to array
-        $split-arr: append($split-arr, $item);
-
-        // remove item and separator from string
-        $string: str-slice(inspect($string), $index + 1);
-
-        // find new index of separator
-        $index : str-index(inspect($string), inspect($separator));
-    }
-
-    // add the remaining string to list (the last item)
-    $split-arr: append($split-arr, inspect($string));
-
-    @return $split-arr;
-}
-
