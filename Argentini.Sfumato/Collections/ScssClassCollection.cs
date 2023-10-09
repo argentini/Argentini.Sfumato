@@ -2,12 +2,26 @@ namespace Argentini.Sfumato.Collections;
 
 public sealed class ScssClassCollection
 {
+    #region Classes with arbitrary value support
+    
     public BgColor BgColor { get; } = new();
     public TextColor TextColor { get; } = new();
     public TextSize TextSize { get; } = new();
     public AspectRatio AspectRatio { get; } = new();
-    public ElasticContainer ElasticContainer { get; } = new();
+    public Columns Columns { get; } = new();
 
+    #endregion
+    
+    #region Utility Classes (no arbitrary value support)
+    
+    public Container Container { get; } = new();
+    public BreakAfter BreakAfter { get; } = new();
+    public BreakBefore BreakBefore { get; } = new();
+
+    #endregion
+    
+    #region Class Helper Methods
+    
     /// <summary>
     /// Get the total number of items in all SCSS class collections. 
     /// </summary>
@@ -141,7 +155,7 @@ public sealed class ScssClassCollection
             if (dictionaryReference is null || dictionaryReference.Count < 1)
                 continue;
 
-            foreach (var (key, value) in dictionaryReference)
+            foreach (var (_, value) in dictionaryReference)
             {
                 if (value is { Value: "", ValueTypes: "" })
                     result.TryAdd(dictionaryReference.First().Key, string.Empty);
@@ -150,4 +164,6 @@ public sealed class ScssClassCollection
 
         return result.Keys;
     }
+    
+    #endregion
 }

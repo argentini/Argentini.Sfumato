@@ -1,11 +1,11 @@
 namespace Argentini.Sfumato.Collections;
 
-public sealed class ElasticContainer
+public sealed class Container
 {
     // ReSharper disable once CollectionNeverQueried.Global
     public Dictionary<string, ScssClass> Classes { get; } = new ()
     {
-        ["elastic-container"] = new ScssClass
+        ["container"] = new ScssClass
         {
             Template = @"width: 100%;
 
