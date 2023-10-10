@@ -48,6 +48,8 @@ public class ScssBaseClass
         set
         {
             _options = value ?? new Dictionary<string, string>();
+
+            ProcessOptions();
             Generate();
         }
     }
@@ -59,8 +61,17 @@ public class ScssBaseClass
         set
         {
             _classes = value;
+
             Generate();
         }
+    }
+    
+    /// <summary>
+    /// Override this method in inherited classes to process options.
+    /// </summary>
+    /// <returns></returns>
+    protected virtual void ProcessOptions()
+    {
     }
     
     #region Helper Methods
@@ -69,17 +80,17 @@ public class ScssBaseClass
     /// Add options for percentages from 1/2 up through 11/12, and "full" =&gt; 100%.
     /// Used by inherited classes.
     /// </summary>
-    protected static void AddPercentages(Dictionary<string, string> options)
+    protected void AddPercentages()
     {
         foreach (var percentage in Percentages)
-            options.TryAdd(percentage.Key, percentage.Value);
+            Options?.TryAdd(percentage.Key, percentage.Value);
     }
 
     /// <summary>
     /// Add numbered size options from 1 to 96 using rem units (e.g. basis-0.5, basis-1.5, etc.).
     /// Used by inherited classes.
     /// </summary>
-    protected static void AddNumberedRemUnits(Dictionary<string, string> options)
+    protected void AddNumberedRemUnits()
     {
         var step = 0.5m;
 
@@ -88,34 +99,40 @@ public class ScssBaseClass
             if (x == 4)
                 step = 1;
 
-            options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
+            Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
         }
     }
     
     /// <summary>
     /// Generate the classes.
     /// </summary>
-    public void Generate()
+    protected void Generate()
     {
         Classes.Clear();
 
         foreach (var item in Options ?? new Dictionary<string, string>())
         {
-            if (item is { Key: "-", Value: "" } && PrefixValueTypes != string.Empty && SelectorPrefix != string.Empty)
+            var template = string.Empty;
+            var propertyNames = PropertyName.Split(',');
+
+            foreach (var propName in propertyNames)
+                template += $"{propName}: {{value}}; ";
+            
+            if (item is { Key: "-", Value: "" } && SelectorPrefix != string.Empty)
             {
                 Classes.Add($"{SelectorPrefix}-", new ScssClass
                 {
                     ValueTypes = PrefixValueTypes,
-                    Template = $"{PropertyName}: {{value}};"
+                    Template = template.Trim()
                 });
 
                 continue;
             }
-            
+
             Classes.Add($"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}-" : string.Empty)}{item.Key}", new ScssClass
             {
                 Value = item.Value,
-                Template = $"{PropertyName}: {{value}};"
+                Template = template.Trim()
             });
         }
     }

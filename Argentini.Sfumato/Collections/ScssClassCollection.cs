@@ -11,7 +11,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "ratio",        
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["auto"] = "auto",
             ["square"] = "1/1",
             ["video"] = "16/9",
@@ -58,7 +58,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage,integer",        
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["auto"] = "auto",
             ["3xs"] = "16rem",
             ["2xs"] = "18rem",
@@ -351,7 +351,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -365,7 +365,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -379,7 +379,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -393,7 +393,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -407,7 +407,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -421,7 +421,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -435,7 +435,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -449,7 +449,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -463,7 +463,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["0"] = "0px",
             ["px"] = "1px",
             ["auto"] = "auto"
@@ -488,7 +488,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "integer",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["auto"] = "auto",
             ["top"] = int.MaxValue.ToString(),
             ["bottom"] = int.MinValue.ToString(),
@@ -512,7 +512,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["px"] = "1px",
             ["auto"] = "auto",
             ["0.5"] = "0.125rem",
@@ -549,6 +549,44 @@ public sealed class ScssClassCollection
         }
     };
 
+    public ScssBaseClass FlexDirection { get; } = new()
+    {
+        PropertyName = "flex-direction",
+        Options = new Dictionary<string, string>
+        {
+            ["flex-row"] = "row",
+            ["flex-row-reverse"] = "row-reverse",
+            ["flex-col"] = "column",
+            ["flex-col-reverse"] = "column-reverse"
+        }
+    };
+    
+    public ScssBaseClass FlexWrap { get; } = new()
+    {
+        PropertyName = "flex-wrap",
+        Options = new Dictionary<string, string>
+        {
+            ["flex-wrap"] = "wrap",
+            ["flex-wrap-reverse"] = "wrap-reverse",
+            ["flex-nowrap"] = "nowrap"
+        }
+    };
+    
+    public ScssBaseClass Flex { get; } = new()
+    {
+        SelectorPrefix = "flex",
+        PropertyName = "flex",
+        PrefixValueTypes = "flex",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["1"] = "1 1 0%",
+            ["auto"] = "1 1 auto",
+            ["initial"] = "0 1 auto",
+            ["none"] = "none"
+        }
+    };
+    
     
     
     
@@ -565,7 +603,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "color",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["inherit"] = "inherit",
             ["transparent"] = "transparent",
             ["black"] = "rgb(0 0 0)",
@@ -828,7 +866,7 @@ public sealed class ScssClassCollection
         PrefixValueTypes = "color",
         Options = new Dictionary<string, string>
         {
-            ["-"] = "",
+            ["-"] = string.Empty,
             ["inherit"] = "inherit",
             ["transparent"] = "transparent",
             ["black"] = "rgb(0 0 0)",
