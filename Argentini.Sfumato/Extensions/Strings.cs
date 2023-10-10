@@ -235,6 +235,20 @@ public static class Strings
 	#endregion
 	
 	#region Transformations
+
+	/// <summary>
+	/// When indenting a complex RegEx use this to make it one line again.
+	/// </summary>
+	/// <param name="regex"></param>
+	/// <returns></returns>
+	public static string CleanUpIndentedRegex(this string regex)
+	{
+		return regex
+			.Replace("\r", string.Empty)
+			.Replace("\n", string.Empty)
+			.Replace("\t", string.Empty)
+			.Replace(" ", string.Empty);
+	}
 	
 	/// <summary>
 	/// Repeat a string a specified number of times.

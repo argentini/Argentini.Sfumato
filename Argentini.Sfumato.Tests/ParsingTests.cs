@@ -45,14 +45,14 @@ public class ParsingTests
         var matches = appState.ArbitraryCssRegex.Matches(markup);
 
         Assert.Equal(6, matches.Count);        
-        
-        matches = appState.CoreClassRegex.Matches(markup);
 
-        Assert.Equal(20, matches.Count);      
-        
         matches = appState.UtilityClassRegex.Matches(markup);
 
         Assert.Single(matches);      
+        
+        matches = appState.CoreClassRegex.Matches(markup);
+
+        Assert.Equal(19, matches.Count);
     }
     
     [Fact]

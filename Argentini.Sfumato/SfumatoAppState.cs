@@ -60,9 +60,40 @@ public sealed class SfumatoAppState
 	    AllPrefixes.AddRange(SfumatoScss.MediaQueryPrefixes.Select(p => p.Key));
 	    AllPrefixes.AddRange(SfumatoScss.PseudoclassPrefixes.Select(p => p.Key));
 	    
-	    ArbitraryCssRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]))(?=[\s"'`])""", RegexOptions.Compiled);
-	    CoreClassRegex = new Regex($$"""(?<=[\s"'`])(({{string.Join(":|", AllPrefixes) + ":"}}){0,10}((({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})[a-z0-9\-\.]{0,100}((/[a-z0-9\.]{1,})|(/\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])){0,1})|(({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])))(?=[\s"'`])""", RegexOptions.Compiled);
-	    UtilityClassRegex = new Regex($$"""(?<=[\s"'`])({{string.Join(":|", AllPrefixes) + ":"}}){0,10}({{string.Join("|", ScssClassCollection.GetUtilityClassNames())}})(?=[\s"'`])""", RegexOptions.Compiled);
+	    var arbitraryCssExpression = $$"""
+(?<=[\s"'`])
+(
+	({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
+	(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
+)
+(?=[\s"'`])
+""";
+	    
+	    ArbitraryCssRegex = new Regex(arbitraryCssExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
+	    
+	    var coreClassExpression = $$"""
+(?<=[\s"'`])
+({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
+(
+    ({{string.Join("|", ScssClassCollection.GetClassNonPrefixesForRegex())}})
+    |
+    (({{string.Join("|", ScssClassCollection.GetClassNonPrefixesForRegex())}})/\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
+    |
+    (({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
+)
+(?=[\s"'`])
+""";
+	    
+	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
+
+	    var utilityClassExpression = $$"""
+(?<=[\s"'`])
+({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
+({{string.Join("|", ScssClassCollection.GetUtilityClassNamesForRegex())}})
+(?=[\s"'`])
+""";
+	    
+	    UtilityClassRegex = new Regex(utilityClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
     }
     
     #region Entry Points

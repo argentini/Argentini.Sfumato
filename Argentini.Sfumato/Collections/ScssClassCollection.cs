@@ -1154,13 +1154,13 @@ public sealed class ScssClassCollection
     }
     
     /// <summary>
-    /// Get the first key of all collections; list has only unique prefixes (e.g. "bg-", "text-", etc.).
+    /// Get the base (first) key of all collections; list has only unique prefixes (e.g. "bg-", "text-", etc.).
     /// </summary>
     /// <returns></returns>
     public IEnumerable<string> GetClassPrefixesForRegex()
     {
         var result = new Dictionary<string,string>();
-        var utilities = GetUtilityClassNames().ToList();
+        var utilities = GetUtilityClassNamesForRegex().ToList();
 
         foreach (var property in typeof(ScssClassCollection).GetProperties())
         {
@@ -1181,31 +1181,63 @@ public sealed class ScssClassCollection
 
             var key = dictionaryReference.First().Key.Replace("-", "\\-");
 
-            if (key == "\\-")
-            {
-                if (utilities.Contains(key) == false)
-                    result.TryAdd(key, string.Empty);
-            }
-
-            else
-            {
-                foreach (var item in dictionaryReference)
-                {
-                    if (utilities.Contains(item.Key) == false)
-                        result.TryAdd(item.Key, string.Empty);
-                }
-            }
+            if (key.EndsWith("\\-", StringComparison.Ordinal) == false)
+                continue;
+            
+            if (utilities.Contains(key) == false)
+                result.TryAdd(key, string.Empty);
         }
 
         return result.Keys;
     }
 
     /// <summary>
+    /// Get all base keys of all collections; list has only unique prefixes (e.g. "block", "inline", etc.).
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<string> GetClassNonPrefixesForRegex()
+    {
+        var result = new Dictionary<string,string>();
+        var utilities = GetUtilityClassNamesForRegex().ToList();
+
+        foreach (var property in typeof(ScssClassCollection).GetProperties())
+        {
+            var classesProperty = property.PropertyType.GetProperty("Classes");
+
+            if (classesProperty == null || classesProperty.PropertyType.GetGenericTypeDefinition() != typeof(Dictionary<,>))
+                continue;
+            
+            var propertyValue = property.GetValue(this);
+
+            if (propertyValue is null)
+                continue;
+            
+            var dictionaryReference = (IDictionary<string,ScssClass>?)classesProperty.GetValue(propertyValue);
+
+            if (dictionaryReference is null || dictionaryReference.Count < 1)
+                continue;
+            
+            foreach (var item in dictionaryReference)
+            {
+                if (item.Key.EndsWith('-'))
+                    continue;
+                
+                var key = item.Key.Replace("-", "\\-").Replace(".", "\\.");
+                
+                if (utilities.Contains(key) == false)
+                    result.TryAdd(key, string.Empty);
+            }
+        }
+
+        return result.Keys;
+    }
+    
+    /// <summary>
     /// Gets a list of unique utility class names.
     /// Utility classes are of type ScssUtilityBaseClass.
     /// </summary>
     /// <returns></returns>
-    public IEnumerable<string> GetUtilityClassNames()
+    public IEnumerable<string> GetUtilityClassNamesForRegex()
     {
         var result = new Dictionary<string,string>();
 
@@ -1232,7 +1264,7 @@ public sealed class ScssClassCollection
             foreach (var (key, value) in dictionaryReference)
             {
                 if (value is { Value: "", ValueTypes: "" })
-                    result.TryAdd(key, string.Empty);
+                    result.TryAdd(key.Replace("-", "\\-").Replace(".", "\\."), string.Empty);
             }
         }
 
