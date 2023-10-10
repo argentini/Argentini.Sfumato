@@ -1028,6 +1028,145 @@ public sealed class ScssClassCollection
     
     #endregion
     
+    #region Spacing
+    
+    public ScssBaseClass Padding { get; } = new()
+    {
+        SelectorPrefix = "p",
+        PropertyName = "padding",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingX { get; } = new()
+    {
+        SelectorPrefix = "px",
+        PropertyName = "padding-left,padding-right",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingY { get; } = new()
+    {
+        SelectorPrefix = "py",
+        PropertyName = "padding-top,padding-bottom",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingInlineStart { get; } = new()
+    {
+        SelectorPrefix = "ps",
+        PropertyName = "padding-inline-start",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingInlineEnd { get; } = new()
+    {
+        SelectorPrefix = "pe",
+        PropertyName = "padding-inline-end",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingTop { get; } = new()
+    {
+        SelectorPrefix = "pt",
+        PropertyName = "padding-top",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingRight { get; } = new()
+    {
+        SelectorPrefix = "pr",
+        PropertyName = "padding-right",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingBottom { get; } = new()
+    {
+        SelectorPrefix = "pb",
+        PropertyName = "padding-bottom",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass PaddingLeft { get; } = new()
+    {
+        SelectorPrefix = "pl",
+        PropertyName = "padding-left",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    #endregion
+    
     #region Backgrounds
     
     public ScssBaseClass BgColor { get; } = new()
