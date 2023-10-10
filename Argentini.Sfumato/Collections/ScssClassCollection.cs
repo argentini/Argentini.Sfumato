@@ -1164,6 +1164,141 @@ public sealed class ScssClassCollection
             ["px"] = "1px"
         }
     };
+
+    public ScssBaseClass Margin { get; } = new()
+    {
+        SelectorPrefix = "m",
+        PropertyName = "margin",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginX { get; } = new()
+    {
+        SelectorPrefix = "mx",
+        PropertyName = "margin-left,margin-right",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginY { get; } = new()
+    {
+        SelectorPrefix = "my",
+        PropertyName = "margin-top,margin-bottom",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginInlineStart { get; } = new()
+    {
+        SelectorPrefix = "ms",
+        PropertyName = "margin-inline-start",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginInlineEnd { get; } = new()
+    {
+        SelectorPrefix = "me",
+        PropertyName = "margin-inline-end",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginTop { get; } = new()
+    {
+        SelectorPrefix = "mt",
+        PropertyName = "margin-top",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginRight { get; } = new()
+    {
+        SelectorPrefix = "mr",
+        PropertyName = "margin-right",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginBottom { get; } = new()
+    {
+        SelectorPrefix = "mb",
+        PropertyName = "margin-bottom",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass MarginLeft { get; } = new()
+    {
+        SelectorPrefix = "ml",
+        PropertyName = "margin-left",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
     
     #endregion
     
