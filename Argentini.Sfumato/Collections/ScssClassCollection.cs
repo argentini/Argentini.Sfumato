@@ -348,7 +348,7 @@ public sealed class ScssClassCollection
     {
         SelectorPrefix = "top",
         PropertyName = "top",
-        PrefixValueTypes = "length,precentage",
+        PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
             ["-"] = "",
@@ -369,7 +369,7 @@ public sealed class ScssClassCollection
     {
         SelectorPrefix = "right",
         PropertyName = "right",
-        PrefixValueTypes = "length,precentage",
+        PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
             ["-"] = "",
@@ -390,7 +390,7 @@ public sealed class ScssClassCollection
     {
         SelectorPrefix = "bottom",
         PropertyName = "bottom",
-        PrefixValueTypes = "length,precentage",
+        PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
             ["-"] = "",
@@ -411,7 +411,7 @@ public sealed class ScssClassCollection
     {
         SelectorPrefix = "left",
         PropertyName = "left",
-        PrefixValueTypes = "length,precentage",
+        PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
             ["-"] = "",
@@ -427,6 +427,129 @@ public sealed class ScssClassCollection
             ["full"] = "100%"
         }
     };
+    
+    public ScssBoxSidesBaseClass Inset { get; } = new()
+    {
+        SelectorPrefix = "inset",
+        PropertyName = "inset",
+        PrefixValueTypes = "length,percentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+    
+    public ScssBoxSidesBaseClass InsetX { get; } = new()
+    {
+        SelectorPrefix = "inset-x",
+        PropertyName = "left,right",
+        PrefixValueTypes = "length,percentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+    
+    public ScssBoxSidesBaseClass InsetY { get; } = new()
+    {
+        SelectorPrefix = "inset-y",
+        PropertyName = "top,bottom",
+        PrefixValueTypes = "length,percentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+    
+    public ScssBoxSidesBaseClass Start { get; } = new()
+    {
+        SelectorPrefix = "start",
+        PropertyName = "inset-inline-start",
+        PrefixValueTypes = "length,percentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+    
+    public ScssBoxSidesBaseClass End { get; } = new()
+    {
+        SelectorPrefix = "end",
+        PropertyName = "inset-inline-end",
+        PrefixValueTypes = "length,percentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+    
+    public ScssBaseClass Visibility { get; } = new()
+    {
+        PropertyName = "visibility",
+        Options = new Dictionary<string, string>
+        {
+            ["visible"] = "visible",
+            ["invisible"] = "hidden",
+            ["collapse"] = "collapse"
+        }
+    };
+    
+    
+    
+    
+    
+    
+    
     
     #endregion
     
@@ -1037,6 +1160,7 @@ public sealed class ScssClassCollection
     public IEnumerable<string> GetClassPrefixesForRegex()
     {
         var result = new Dictionary<string,string>();
+        var utilities = GetUtilityClassNames().ToList();
 
         foreach (var property in typeof(ScssClassCollection).GetProperties())
         {
@@ -1057,7 +1181,8 @@ public sealed class ScssClassCollection
 
             var key = dictionaryReference.First().Key.Replace("-", "\\-");
             
-            result.TryAdd(key, string.Empty);
+            if (utilities.Contains(key) == false)
+                result.TryAdd(key, string.Empty);
         }
 
         return result.Keys;
@@ -1065,7 +1190,7 @@ public sealed class ScssClassCollection
 
     /// <summary>
     /// Gets a list of unique utility class names.
-    /// Utility classes are ScssClass items with empty Value and ValueTypes properties.
+    /// Utility classes are of type ScssUtilityBaseClass.
     /// </summary>
     /// <returns></returns>
     public IEnumerable<string> GetUtilityClassNames()
@@ -1074,6 +1199,9 @@ public sealed class ScssClassCollection
 
         foreach (var property in typeof(ScssClassCollection).GetProperties())
         {
+            if (property.PropertyType != typeof(ScssUtilityBaseClass))
+                continue;
+            
             var classesProperty = property.PropertyType.GetProperty("Classes");
 
             if (classesProperty == null || classesProperty.PropertyType.GetGenericTypeDefinition() != typeof(Dictionary<,>))
