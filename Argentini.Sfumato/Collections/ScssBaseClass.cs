@@ -6,6 +6,23 @@ public sealed class ScssBaseClass
     public string PropertyName { get; set; } = string.Empty;
     public string PrefixValueTypes { get; set; } = string.Empty;
 
+    private string _template = string.Empty;
+    public string Template
+    {
+        get => _template;
+        set
+        {
+            _template = value;
+
+            Classes.Clear();
+            Classes.Add($"{SelectorPrefix}", new ScssClass
+            {
+                Template = _template
+            });
+
+        }
+    }
+
     private Dictionary<string, string> _options = new();
     public Dictionary<string, string>? Options
     {

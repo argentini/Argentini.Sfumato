@@ -2,12 +2,424 @@ namespace Argentini.Sfumato.Collections;
 
 public sealed class ScssClassCollection
 {
-    #region Classes (Arbitrary Value Support)
-    
-    public TextSize TextSize { get; } = new();
-    public AspectRatio AspectRatio { get; } = new();
-    public Columns Columns { get; } = new();
+    #region Layout
 
+    public ScssBaseClass AspectRatio { get; } = new()
+    {
+        SelectorPrefix = "aspect",
+        PropertyName = "aspect-ratio",
+        PrefixValueTypes = "ratio",        
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["auto"] = "auto",
+            ["square"] = "1/1",
+            ["video"] = "16/9",
+            ["screen"] = "4/3"
+        }
+    };
+    
+    public ScssBaseClass Container { get; } = new()
+    {
+        SelectorPrefix = "container",
+        Template = """
+                   width: 100%;
+
+                   @include sf-media($from: phab) {
+                      max-width: $phab-breakpoint;
+                   }
+
+                   @include sf-media($from: tabp) {
+                      max-width: $tabp-breakpoint;
+                   }
+
+                   @include sf-media($from: tabl) {
+                      max-width: $tabl-breakpoint;
+                   }
+
+                   @include sf-media($from: note) {
+                      max-width: $note-breakpoint;
+                   }
+
+                   @include sf-media($from: desk) {
+                      max-width: $desk-breakpoint;
+                   }
+
+                   @include sf-media($from: elas) {
+                      max-width: $elas-breakpoint;
+                   }
+                   """
+    };
+
+    public ScssBaseClass Columns { get; } = new()
+    {
+        SelectorPrefix = "columns",
+        PropertyName = "columns",
+        PrefixValueTypes = "length,percentage,integer",        
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["auto"] = "auto",
+            ["3xs"] = "16rem",
+            ["2xs"] = "18rem",
+            ["xs"] = "20rem",
+            ["sm"] = "24rem",
+            ["md"] = "28rem",
+            ["lg"] = "32rem",
+            ["xl"] = "36rem",
+            ["2xl"] = "42rem",
+            ["3xl"] = "48rem",
+            ["4xl"] = "56rem",
+            ["5xl"] = "64rem",
+            ["6xl"] = "72rem",
+            ["7xl"] = "80rem"
+        }
+    };
+    
+    public ScssBaseClass BreakAfter { get; } = new()
+    {
+        SelectorPrefix = "break-after",
+        PropertyName = "break-after",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["avoid"] = "avoid",
+            ["all"] = "all",
+            ["avoid-page"] = "avoid-page",
+            ["page"] = "page",
+            ["left"] = "left",
+            ["right"] = "right",
+            ["column"] = "column"
+        }
+    };
+
+    public ScssBaseClass BreakBefore { get; } = new()
+    {
+        SelectorPrefix = "break-before",
+        PropertyName = "break-before",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["avoid"] = "avoid",
+            ["all"] = "all",
+            ["avoid-page"] = "avoid-page",
+            ["page"] = "page",
+            ["left"] = "left",
+            ["right"] = "right",
+            ["column"] = "column"
+        }
+    };
+
+    public ScssBaseClass BreakInside { get; } = new()
+    {
+        SelectorPrefix = "break-inside",
+        PropertyName = "break-inside",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["avoid"] = "avoid",
+            ["avoid-page"] = "avoid-page",
+            ["avoid-column"] = "avoid-column"
+        }
+    };
+    
+    public ScssBaseClass BoxDecorationBreak { get; } = new()
+    {
+        SelectorPrefix = "box-decoration",
+        PropertyName = "box-decoration-break",
+        Options = new Dictionary<string, string>
+        {
+            ["clone"] = "clone",
+            ["slice"] = "slice"
+        }
+    };
+
+    public ScssBaseClass BoxSizing { get; } = new()
+    {
+        SelectorPrefix = "box",
+        PropertyName = "box-sizing",
+        Options = new Dictionary<string, string>
+        {
+            ["border"] = "border-box",
+            ["content"] = "content-box"
+        }
+    };
+    
+    public ScssBaseClass Display { get; } = new()
+    {
+        PropertyName = "display",
+        Options = new Dictionary<string, string>
+        {
+            ["block"] = "block",
+            ["inline-block"] = "inline-block",
+            ["inline"] = "inline",
+            ["flex"] = "flex",
+            ["inline-flex"] = "inline-flex",
+            ["table"] = "table",
+            ["inline-table"] = "inline-table",
+            ["table-caption"] = "table-caption",
+            ["table-cell"] = "table-cell",
+            ["table-column"] = "table-column",
+            ["table-column-group"] = "table-column-group",
+            ["table-footer-group"] = "table-footer-group",
+            ["table-header-group"] = "table-header-group",
+            ["table-row-group"] = "table-row-group",
+            ["table-row"] = "table-row",
+            ["flow-root"] = "flow-root",
+            ["grid"] = "grid",
+            ["inline-grid"] = "inline-grid",
+            ["contents"] = "contents",
+            ["list-item"] = "list-item",
+            ["hidden"] = "none"
+        }
+    };
+    
+    public ScssBaseClass Floats { get; } = new()
+    {
+        SelectorPrefix = "float",
+        PropertyName = "float",
+        Options = new Dictionary<string, string>
+        {
+            ["right"] = "right",
+            ["left"] = "left",
+            ["none"] = "none"
+        }
+    };
+
+    public ScssBaseClass Clear { get; } = new()
+    {
+        SelectorPrefix = "clear",
+        PropertyName = "clear",
+        Options = new Dictionary<string, string>
+        {
+            ["right"] = "right",
+            ["left"] = "left",
+            ["both"] = "both",
+            ["none"] = "none"
+        }
+    };
+    
+    public ScssBaseClass Isolation { get; } = new()
+    {
+        PropertyName = "isolation",
+        Options = new Dictionary<string, string>
+        {
+            ["isolate"] = "isolate",
+            ["isolation-auto"] = "auto"
+        }
+    };
+    
+    public ScssBaseClass ObjectFit { get; } = new()
+    {
+        SelectorPrefix = "object",
+        PropertyName = "object-fit",
+        Options = new Dictionary<string, string>
+        {
+            ["contain"] = "contain",
+            ["cover"] = "cover",
+            ["fill"] = "fill",
+            ["none"] = "none",
+            ["scale-down"] = "scale-down"
+        }
+    };
+
+    public ScssBaseClass ObjectBottom { get; } = new()
+    {
+        SelectorPrefix = "object",
+        PropertyName = "object-position",
+        Options = new Dictionary<string, string>
+        {
+            ["bottom"] = "bottom",
+            ["center"] = "center",
+            ["left"] = "left",
+            ["left-bottom"] = "left bottom",
+            ["left-top"] = "left top",
+            ["right"] = "right",
+            ["right-bottom"] = "right bottom",
+            ["right-top"] = "right top",
+            ["top"] = "top"
+        }
+    };
+    
+    public ScssBaseClass Overflow { get; } = new()
+    {
+        SelectorPrefix = "overflow",
+        PropertyName = "overflow",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["hidden"] = "hidden",
+            ["clip"] = "clip",
+            ["visible"] = "visible",
+            ["scroll"] = "scroll"
+        }
+    };
+    
+    public ScssBaseClass OverflowX { get; } = new()
+    {
+        SelectorPrefix = "overflow-x",
+        PropertyName = "overflow-x",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["hidden"] = "hidden",
+            ["clip"] = "clip",
+            ["visible"] = "visible",
+            ["scroll"] = "scroll"
+        }
+    };
+    
+    public ScssBaseClass OverflowY { get; } = new()
+    {
+        SelectorPrefix = "overflow-y",
+        PropertyName = "overflow-y",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["hidden"] = "hidden",
+            ["clip"] = "clip",
+            ["visible"] = "visible",
+            ["scroll"] = "scroll"
+        }
+    };
+    
+    public ScssBaseClass OverscrollBehavior { get; } = new()
+    {
+        SelectorPrefix = "overscroll",
+        PropertyName = "overscroll-behavior",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["contain"] = "contain",
+            ["none"] = "none"
+        }
+    };
+    
+    public ScssBaseClass OverscrollBehaviorX { get; } = new()
+    {
+        SelectorPrefix = "overscroll-x",
+        PropertyName = "overscroll-behavior-x",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["contain"] = "contain",
+            ["none"] = "none"
+        }
+    };
+    
+    public ScssBaseClass OverscrollBehaviorY { get; } = new()
+    {
+        SelectorPrefix = "overscroll-y",
+        PropertyName = "overscroll-behavior-y",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["contain"] = "contain",
+            ["none"] = "none"
+        }
+    };
+    
+    public ScssBaseClass Position { get; } = new()
+    {
+        PropertyName = "position",
+        Options = new Dictionary<string, string>
+        {
+            ["static"] = "static",
+            ["fixed"] = "fixed",
+            ["absolute"] = "absolute",
+            ["relative"] = "relative",
+            ["sticky"] = "sticky"
+        }
+    };
+
+    public ScssBaseClass Top { get; } = new()
+    {
+        SelectorPrefix = "top",
+        PropertyName = "top",
+        PrefixValueTypes = "length,precentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+
+    public ScssBaseClass Right { get; } = new()
+    {
+        SelectorPrefix = "right",
+        PropertyName = "right",
+        PrefixValueTypes = "length,precentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+
+    public ScssBaseClass Bottom { get; } = new()
+    {
+        SelectorPrefix = "bottom",
+        PropertyName = "bottom",
+        PrefixValueTypes = "length,precentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+    
+    public ScssBaseClass Left { get; } = new()
+    {
+        SelectorPrefix = "left",
+        PropertyName = "left",
+        PrefixValueTypes = "length,precentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["0"] = "0px",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["full"] = "100%"
+        }
+    };
+    
+    #endregion
+    
+    #region Backgrounds
+    
     public ScssBaseClass BgColor { get; } = new()
     {
         SelectorPrefix = "bg",
@@ -264,6 +676,12 @@ public sealed class ScssClassCollection
             ["rose-950"] = "rgb(76 5 25)"
         }
     };
+    
+    #endregion
+
+    #region Typography
+    
+    public TextSize TextSize { get; } = new();
 
     public ScssBaseClass TextColor { get; } = new()
     {
@@ -522,360 +940,8 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssBaseClass Top { get; } = new()
-    {
-        SelectorPrefix = "top",
-        PropertyName = "top",
-        PrefixValueTypes = "length,precentage",
-        Options = new Dictionary<string, string>
-        {
-            ["-"] = "",
-            ["0"] = "0px",
-            ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
-        }
-    };
-
-    public ScssBaseClass Right { get; } = new()
-    {
-        SelectorPrefix = "right",
-        PropertyName = "right",
-        PrefixValueTypes = "length,precentage",
-        Options = new Dictionary<string, string>
-        {
-            ["-"] = "",
-            ["0"] = "0px",
-            ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
-        }
-    };
-
-    public ScssBaseClass Bottom { get; } = new()
-    {
-        SelectorPrefix = "bottom",
-        PropertyName = "bottom",
-        PrefixValueTypes = "length,precentage",
-        Options = new Dictionary<string, string>
-        {
-            ["-"] = "",
-            ["0"] = "0px",
-            ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
-        }
-    };
-    
-    public ScssBaseClass Left { get; } = new()
-    {
-        SelectorPrefix = "left",
-        PropertyName = "left",
-        PrefixValueTypes = "length,precentage",
-        Options = new Dictionary<string, string>
-        {
-            ["-"] = "",
-            ["0"] = "0px",
-            ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
-        }
-    };
-    
     #endregion
     
-    #region Utility Classes (Read-Only, No Values)
-    
-    public Container Container { get; } = new();
-
-    public ScssBaseClass BoxDecorationBreak { get; } = new()
-    {
-        SelectorPrefix = "box-decoration",
-        PropertyName = "box-decoration-break",
-        Options = new Dictionary<string, string>
-        {
-            ["clone"] = "clone",
-            ["slice"] = "slice"
-        }
-    };
-
-    public ScssBaseClass BreakAfter { get; } = new()
-    {
-        SelectorPrefix = "break-after",
-        PropertyName = "break-after",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["avoid"] = "avoid",
-            ["all"] = "all",
-            ["avoid-page"] = "avoid-page",
-            ["page"] = "page",
-            ["left"] = "left",
-            ["right"] = "right",
-            ["column"] = "column"
-        }
-    };
-
-    public ScssBaseClass BreakBefore { get; } = new()
-    {
-        SelectorPrefix = "break-before",
-        PropertyName = "break-before",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["avoid"] = "avoid",
-            ["all"] = "all",
-            ["avoid-page"] = "avoid-page",
-            ["page"] = "page",
-            ["left"] = "left",
-            ["right"] = "right",
-            ["column"] = "column"
-        }
-    };
-
-    public ScssBaseClass BreakInside { get; } = new()
-    {
-        SelectorPrefix = "break-inside",
-        PropertyName = "break-inside",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["avoid"] = "avoid",
-            ["avoid-page"] = "avoid-page",
-            ["avoid-column"] = "avoid-column"
-        }
-    };
-    
-    public ScssBaseClass BoxSizing { get; } = new()
-    {
-        SelectorPrefix = "box",
-        PropertyName = "box-sizing",
-        Options = new Dictionary<string, string>
-        {
-            ["border"] = "border-box",
-            ["content"] = "content-box"
-        }
-    };
-    
-    public ScssBaseClass Display { get; } = new()
-    {
-        PropertyName = "display",
-        Options = new Dictionary<string, string>
-        {
-            ["block"] = "block",
-            ["inline-block"] = "inline-block",
-            ["inline"] = "inline",
-            ["flex"] = "flex",
-            ["inline-flex"] = "inline-flex",
-            ["table"] = "table",
-            ["inline-table"] = "inline-table",
-            ["table-caption"] = "table-caption",
-            ["table-cell"] = "table-cell",
-            ["table-column"] = "table-column",
-            ["table-column-group"] = "table-column-group",
-            ["table-footer-group"] = "table-footer-group",
-            ["table-header-group"] = "table-header-group",
-            ["table-row-group"] = "table-row-group",
-            ["table-row"] = "table-row",
-            ["flow-root"] = "flow-root",
-            ["grid"] = "grid",
-            ["inline-grid"] = "inline-grid",
-            ["contents"] = "contents",
-            ["list-item"] = "list-item",
-            ["hidden"] = "none"
-        }
-    };
-    
-    public ScssBaseClass Floats { get; } = new()
-    {
-        SelectorPrefix = "float",
-        PropertyName = "float",
-        Options = new Dictionary<string, string>
-        {
-            ["right"] = "right",
-            ["left"] = "left",
-            ["none"] = "none"
-        }
-    };
-
-    public ScssBaseClass Clear { get; } = new()
-    {
-        SelectorPrefix = "clear",
-        PropertyName = "clear",
-        Options = new Dictionary<string, string>
-        {
-            ["right"] = "right",
-            ["left"] = "left",
-            ["both"] = "both",
-            ["none"] = "none"
-        }
-    };
-    
-    public ScssBaseClass Isolation { get; } = new()
-    {
-        PropertyName = "isolation",
-        Options = new Dictionary<string, string>
-        {
-            ["isolate"] = "isolate",
-            ["isolation-auto"] = "auto"
-        }
-    };
-    
-    public ScssBaseClass ObjectFit { get; } = new()
-    {
-        SelectorPrefix = "object",
-        PropertyName = "object-fit",
-        Options = new Dictionary<string, string>
-        {
-            ["contain"] = "contain",
-            ["cover"] = "cover",
-            ["fill"] = "fill",
-            ["none"] = "none",
-            ["scale-down"] = "scale-down"
-        }
-    };
-
-    public ScssBaseClass ObjectBottom { get; } = new()
-    {
-        SelectorPrefix = "object",
-        PropertyName = "object-position",
-        Options = new Dictionary<string, string>
-        {
-            ["bottom"] = "bottom",
-            ["center"] = "center",
-            ["left"] = "left",
-            ["left-bottom"] = "left bottom",
-            ["left-top"] = "left top",
-            ["right"] = "right",
-            ["right-bottom"] = "right bottom",
-            ["right-top"] = "right top",
-            ["top"] = "top"
-        }
-    };
-    
-    public ScssBaseClass Overflow { get; } = new()
-    {
-        SelectorPrefix = "overflow",
-        PropertyName = "overflow",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["hidden"] = "hidden",
-            ["clip"] = "clip",
-            ["visible"] = "visible",
-            ["scroll"] = "scroll"
-        }
-    };
-    
-    public ScssBaseClass OverflowX { get; } = new()
-    {
-        SelectorPrefix = "overflow-x",
-        PropertyName = "overflow-x",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["hidden"] = "hidden",
-            ["clip"] = "clip",
-            ["visible"] = "visible",
-            ["scroll"] = "scroll"
-        }
-    };
-    
-    public ScssBaseClass OverflowY { get; } = new()
-    {
-        SelectorPrefix = "overflow-y",
-        PropertyName = "overflow-y",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["hidden"] = "hidden",
-            ["clip"] = "clip",
-            ["visible"] = "visible",
-            ["scroll"] = "scroll"
-        }
-    };
-    
-    public ScssBaseClass OverscrollBehavior { get; } = new()
-    {
-        SelectorPrefix = "overscroll",
-        PropertyName = "overscroll-behavior",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["contain"] = "contain",
-            ["none"] = "none"
-        }
-    };
-    
-    public ScssBaseClass OverscrollBehaviorX { get; } = new()
-    {
-        SelectorPrefix = "overscroll-x",
-        PropertyName = "overscroll-behavior-x",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["contain"] = "contain",
-            ["none"] = "none"
-        }
-    };
-    
-    public ScssBaseClass OverscrollBehaviorY { get; } = new()
-    {
-        SelectorPrefix = "overscroll-y",
-        PropertyName = "overscroll-behavior-y",
-        Options = new Dictionary<string, string>
-        {
-            ["auto"] = "auto",
-            ["contain"] = "contain",
-            ["none"] = "none"
-        }
-    };
-    
-    public ScssBaseClass Position { get; } = new()
-    {
-        PropertyName = "position",
-        Options = new Dictionary<string, string>
-        {
-            ["static"] = "static",
-            ["fixed"] = "fixed",
-            ["absolute"] = "absolute",
-            ["relative"] = "relative",
-            ["sticky"] = "sticky"
-        }
-    };
-    
-    
-    
-    
-    
-    
-    
-    #endregion
-
     public ScssClassCollection()
     {
         var step = (decimal)0.5;
@@ -891,10 +957,16 @@ public sealed class ScssClassCollection
             Left.Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
         }
         
+        for (var x = 1; x < 13; x++)
+        {
+            Columns.Options?.TryAdd($"{x}", $"{x}");
+        }        
+        
         Top.Generate();
         Right.Generate();
         Bottom.Generate();
         Left.Generate();
+        Columns.Generate();
     }
     
     #region Class Helper Methods
