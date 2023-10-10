@@ -1180,9 +1180,21 @@ public sealed class ScssClassCollection
                 continue;
 
             var key = dictionaryReference.First().Key.Replace("-", "\\-");
-            
-            if (utilities.Contains(key) == false)
-                result.TryAdd(key, string.Empty);
+
+            if (key == "\\-")
+            {
+                if (utilities.Contains(key) == false)
+                    result.TryAdd(key, string.Empty);
+            }
+
+            else
+            {
+                foreach (var item in dictionaryReference)
+                {
+                    if (utilities.Contains(item.Key) == false)
+                        result.TryAdd(item.Key, string.Empty);
+                }
+            }
         }
 
         return result.Keys;
