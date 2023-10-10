@@ -55,7 +55,9 @@ public sealed class ScssClassCollection
     {
         SelectorPrefix = "columns",
         PropertyName = "columns",
-        PrefixValueTypes = "length,percentage,integer",        
+        PrefixValueTypes = "length,percentage,integer",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 24,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -72,19 +74,7 @@ public sealed class ScssClassCollection
             ["4xl"] = "56rem",
             ["5xl"] = "64rem",
             ["6xl"] = "72rem",
-            ["7xl"] = "80rem",
-            ["1"] = "1",
-            ["2"] = "2",
-            ["3"] = "3",
-            ["4"] = "4",
-            ["5"] = "5",
-            ["6"] = "6",
-            ["7"] = "7",
-            ["8"] = "8",
-            ["9"] = "9",
-            ["10"] = "10",
-            ["11"] = "11",
-            ["12"] = "12"
+            ["7xl"] = "80rem"
         }
     };
     
@@ -344,11 +334,14 @@ public sealed class ScssClassCollection
         }
     };
 
-    public ScssMeasurementClass Top { get; } = new()
+    public ScssBaseClass Top { get; } = new()
     {
         SelectorPrefix = "top",
         PropertyName = "top",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -358,11 +351,14 @@ public sealed class ScssClassCollection
         }
     };
 
-    public ScssMeasurementClass Right { get; } = new()
+    public ScssBaseClass Right { get; } = new()
     {
         SelectorPrefix = "right",
         PropertyName = "right",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -372,11 +368,14 @@ public sealed class ScssClassCollection
         }
     };
 
-    public ScssMeasurementClass Bottom { get; } = new()
+    public ScssBaseClass Bottom { get; } = new()
     {
         SelectorPrefix = "bottom",
         PropertyName = "bottom",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -386,11 +385,14 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssMeasurementClass Left { get; } = new()
+    public ScssBaseClass Left { get; } = new()
     {
         SelectorPrefix = "left",
         PropertyName = "left",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -400,11 +402,14 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssMeasurementClass Inset { get; } = new()
+    public ScssBaseClass Inset { get; } = new()
     {
         SelectorPrefix = "inset",
         PropertyName = "inset",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -414,11 +419,14 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssMeasurementClass InsetX { get; } = new()
+    public ScssBaseClass InsetX { get; } = new()
     {
         SelectorPrefix = "inset-x",
         PropertyName = "left,right",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -428,11 +436,14 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssMeasurementClass InsetY { get; } = new()
+    public ScssBaseClass InsetY { get; } = new()
     {
         SelectorPrefix = "inset-y",
         PropertyName = "top,bottom",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -442,11 +453,14 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssMeasurementClass Start { get; } = new()
+    public ScssBaseClass Start { get; } = new()
     {
         SelectorPrefix = "start",
         PropertyName = "inset-inline-start",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -456,11 +470,14 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssMeasurementClass End { get; } = new()
+    public ScssBaseClass End { get; } = new()
     {
         SelectorPrefix = "end",
         PropertyName = "inset-inline-end",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -505,11 +522,14 @@ public sealed class ScssClassCollection
     
     #region Flexbox and Grid
     
-    public ScssMeasurementClass FlexBasis { get; } = new()
+    public ScssBaseClass FlexBasis { get; } = new()
     {
         SelectorPrefix = "basis",
         PropertyName = "flex-basis",
         PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        AddPercentageOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -633,21 +653,11 @@ public sealed class ScssClassCollection
         SelectorPrefix = "order",
         PropertyName = "order",
         PrefixValueTypes = "integer",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 24,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
-            ["1"] = "1",
-            ["2"] = "2",
-            ["3"] = "3",
-            ["4"] = "4",
-            ["5"] = "5",
-            ["6"] = "6",
-            ["7"] = "7",
-            ["8"] = "8",
-            ["9"] = "9",
-            ["10"] = "10",
-            ["11"] = "11",
-            ["12"] = "12",
             ["first"] = int.MinValue.ToString(),
             ["last"] = int.MaxValue.ToString(),
             ["none"] = "0"
@@ -658,22 +668,77 @@ public sealed class ScssClassCollection
     {
         SelectorPrefix = "-order",
         PropertyName = "order",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 24,
+        AddNumberedOptionsIsNegative = true,
+        Options = new Dictionary<string, string>()
+    };
+    
+    public ScssBaseClass GridTemplateColumns { get; } = new()
+    {
+        SelectorPrefix = "grid-cols",
+        PropertyName = "grid-template-columns",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 24,
+        AddNumberedOptionsValueTemplate = "repeat({value}, minmax(0, 1fr))",
         Options = new Dictionary<string, string>
         {
-            ["1"] = "-1",
-            ["2"] = "-2",
-            ["3"] = "-3",
-            ["4"] = "-4",
-            ["5"] = "-5",
-            ["6"] = "-6",
-            ["7"] = "-7",
-            ["8"] = "-8",
-            ["9"] = "-9",
-            ["10"] = "-10",
-            ["11"] = "-11",
-            ["12"] = "-12"
+            ["-"] = string.Empty,
+            ["none"] = "none"
         }
     };
+    
+    public ScssBaseClass GridColumnAuto { get; } = new()
+    {
+        PropertyName = "grid-column",
+        Options = new Dictionary<string, string>
+        {
+            ["col-auto"] = "auto"
+        }
+    };
+    
+    public ScssBaseClass GridColumnSpan { get; } = new()
+    {
+        SelectorPrefix = "col-span",
+        PropertyName = "grid-column",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 24,
+        AddNumberedOptionsValueTemplate = "span {value} / span {value}",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["full"] = "1 / -1"
+        }
+    };
+    
+    public ScssBaseClass GridColumnStart { get; } = new()
+    {
+        SelectorPrefix = "col-start",
+        PropertyName = "grid-column-start",
+        PrefixValueTypes = "integer",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 25,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto"
+        }
+    };
+    
+    public ScssBaseClass GridColumnEnd { get; } = new()
+    {
+        SelectorPrefix = "col-end",
+        PropertyName = "grid-column-end",
+        PrefixValueTypes = "integer",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 25,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto"
+        }
+    };
+    
     
     
     
@@ -943,7 +1008,7 @@ public sealed class ScssClassCollection
 
     #region Typography
     
-    public TextSize TextSize { get; } = new();
+    public TextSizeClass TextSizeClass { get; } = new();
 
     public ScssBaseClass TextColor { get; } = new()
     {

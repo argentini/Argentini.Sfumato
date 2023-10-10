@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Collections;
 
-public class ScssBaseClass
+public sealed class ScssBaseClass
 {
     #region Constants
 
@@ -41,6 +41,14 @@ public class ScssBaseClass
     public string PropertyName { get; set; } = string.Empty;
     public string PrefixValueTypes { get; set; } = string.Empty;
 
+    public int AddNumberedOptionsMinValue { get; set; } = -1;
+    public int AddNumberedOptionsMaxValue { get; set; } = -1;
+    public bool AddNumberedOptionsIsNegative { get; set; }
+    public string AddNumberedOptionsValueTemplate { get; set; } = string.Empty;
+    public decimal AddNumberedRemUnitsOptionsMinValue { get; set; } = -1;
+    public decimal AddNumberedRemUnitsOptionsMaxValue { get; set; } = -1;
+    public bool AddPercentageOptions { get; set; }
+    
     private Dictionary<string, string> _options = new();
     public Dictionary<string, string>? Options
     {
@@ -49,7 +57,21 @@ public class ScssBaseClass
         {
             _options = value ?? new Dictionary<string, string>();
 
-            ProcessOptions();
+            if (AddNumberedOptionsMinValue > -1 && AddNumberedOptionsMaxValue > -1 && AddNumberedOptionsMaxValue > AddNumberedOptionsMinValue)
+            {
+                AddNumberedOptions();
+            }
+
+            if (AddNumberedRemUnitsOptionsMinValue > -1 && AddNumberedRemUnitsOptionsMaxValue > -1 && AddNumberedRemUnitsOptionsMaxValue > AddNumberedRemUnitsOptionsMinValue)
+            {
+                AddNumberedRemUnitsOptions();
+            }
+
+            if (AddPercentageOptions)
+            {
+                AddPercentagesOptions();
+            }
+
             Generate();
         }
     }
@@ -66,21 +88,30 @@ public class ScssBaseClass
         }
     }
     
-    /// <summary>
-    /// Override this method in inherited classes to process options.
-    /// </summary>
-    /// <returns></returns>
-    protected virtual void ProcessOptions()
-    {
-    }
-    
     #region Helper Methods
 
+    /// <summary>
+    /// Add options for incremental whole numbers where the prefix and value arte the same (e.g. ["order-1"] => "order: 1;").
+    /// Used by inherited classes.
+    /// </summary>
+    public void AddNumberedOptions()
+    {
+        for (var x = AddNumberedOptionsMinValue; x <= AddNumberedOptionsMaxValue; x++)
+        {
+            var value = (AddNumberedOptionsIsNegative ? x * -1 : x).ToString();
+            
+            if (AddNumberedOptionsValueTemplate != string.Empty)
+                value = AddNumberedOptionsValueTemplate.Replace("{value}", value);
+            
+            Options?.TryAdd(x.ToString(), value);
+        }
+    }
+    
     /// <summary>
     /// Add options for percentages from 1/2 up through 11/12, and "full" =&gt; 100%.
     /// Used by inherited classes.
     /// </summary>
-    protected void AddPercentages()
+    public void AddPercentagesOptions()
     {
         foreach (var percentage in Percentages)
             Options?.TryAdd(percentage.Key, percentage.Value);
@@ -90,11 +121,11 @@ public class ScssBaseClass
     /// Add numbered size options from 1 to 96 using rem units (e.g. basis-0.5, basis-1.5, etc.).
     /// Used by inherited classes.
     /// </summary>
-    protected void AddNumberedRemUnits()
+    public void AddNumberedRemUnitsOptions()
     {
-        var step = 0.5m;
+        var step = AddNumberedRemUnitsOptionsMinValue;
 
-        for (var x = 0.5m; x < 97; x += step)
+        for (var x = 0.5m; x < AddNumberedRemUnitsOptionsMaxValue; x += step)
         {
             if (x == 4)
                 step = 1;
@@ -106,7 +137,7 @@ public class ScssBaseClass
     /// <summary>
     /// Generate the classes.
     /// </summary>
-    protected void Generate()
+    public void Generate()
     {
         Classes.Clear();
 

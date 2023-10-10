@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Collections;
 
-public sealed class TextSize
+public sealed class TextSizeClass
 {
     public Dictionary<string, string> TextSizes { get; } = new()
     {
@@ -37,7 +37,7 @@ public sealed class TextSize
         ["loose"] = "2"
     };
     
-    public TextSize()
+    public TextSizeClass()
     {
         foreach (var size in TextSizes)
         {
