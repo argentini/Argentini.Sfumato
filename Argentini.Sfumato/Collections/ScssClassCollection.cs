@@ -576,7 +576,6 @@ public sealed class ScssClassCollection
     {
         SelectorPrefix = "flex",
         PropertyName = "flex",
-        PrefixValueTypes = "flex",
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -587,6 +586,73 @@ public sealed class ScssClassCollection
         }
     };
     
+    public ScssBaseClass FlexGrowPresets { get; } = new()
+    {
+        PropertyName = "flex-grow",
+        Options = new Dictionary<string, string>
+        {
+            ["grow"] = "1",
+            ["grow-0"] = "0"
+        }
+    };
+    
+    public ScssBaseClass FlexGrow { get; } = new()
+    {
+        SelectorPrefix = "grow",
+        PropertyName = "flex-grow",
+        PrefixValueTypes = "integer,number",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
+    
+    public ScssBaseClass FlexShrinkPresets { get; } = new()
+    {
+        PropertyName = "flex-shrink",
+        Options = new Dictionary<string, string>
+        {
+            ["shrink"] = "1",
+            ["shrink-0"] = "0"
+        }
+    };
+    
+    public ScssBaseClass FlexShrink { get; } = new()
+    {
+        SelectorPrefix = "shrink",
+        PropertyName = "flex-shrink",
+        PrefixValueTypes = "integer,number",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
+    
+    public ScssBaseClass Order { get; } = new()
+    {
+        SelectorPrefix = "order",
+        PropertyName = "order",
+        PrefixValueTypes = "integer",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["1"] = "1",
+            ["2"] = "2",
+            ["3"] = "3",
+            ["4"] = "4",
+            ["5"] = "5",
+            ["6"] = "6",
+            ["7"] = "7",
+            ["8"] = "8",
+            ["9"] = "9",
+            ["10"] = "10",
+            ["11"] = "11",
+            ["12"] = "12",
+            ["first"] = int.MinValue.ToString(),
+            ["last"] = int.MaxValue.ToString(),
+            ["none"] = "0"
+        }
+    };
     
     
     
