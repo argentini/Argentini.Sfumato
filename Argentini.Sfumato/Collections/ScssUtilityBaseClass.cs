@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Collections;
 
-public sealed class ScssUtilityBaseClass
+public sealed class ScssUtilityBaseClass : ScssBaseClass
 {
     public string Selector { get; set; } = string.Empty;
 
@@ -14,27 +14,16 @@ public sealed class ScssUtilityBaseClass
             Generate();
         }
     }
-
+    
     /// <summary>
     /// Generate the classes.
     /// </summary>
-    public void Generate()
+    public new void Generate()
     {
         Classes.Clear();
         Classes.Add($"{Selector}", new ScssClass
         {
             Template = _template
         });
-    }
-
-    private Dictionary<string, ScssClass> _classes = new();
-    public Dictionary<string, ScssClass> Classes
-    {
-        get => _classes;
-        set
-        {
-            _classes = value;
-            Generate();
-        }
     }
 }

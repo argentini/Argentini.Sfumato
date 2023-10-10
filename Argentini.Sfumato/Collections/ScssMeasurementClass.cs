@@ -1,37 +1,25 @@
 namespace Argentini.Sfumato.Collections;
 
-public sealed class ScssBoxSidesBaseClass
+public sealed class ScssMeasurementClass : ScssBaseClass
 {
-    public string SelectorPrefix { get; set; } = string.Empty;
-    public string PropertyName { get; set; } = string.Empty;
-    public string PrefixValueTypes { get; set; } = string.Empty;
-
     private Dictionary<string, string> _options = new();
-    public Dictionary<string, string>? Options
+    public new Dictionary<string, string>? Options
     {
         get => _options;
         set
         {
             _options = value ?? new Dictionary<string, string>();
             
-            var step = (decimal)0.5;
-
-            for (var x = (decimal)0.5; x < 97; x += step)
-            {
-                if (x == 4)
-                    step = 1;
-
-                Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
-            }
-            
+            AddNumberedRemUnits(_options);
+            AddPercentages(_options);
             Generate();
         }
     }
-
+    
     /// <summary>
     /// Generate the classes.
     /// </summary>
-    public void Generate()
+    public new void Generate()
     {
         Classes.Clear();
 
@@ -59,17 +47,6 @@ public sealed class ScssBoxSidesBaseClass
                 Value = item.Value,
                 Template = template.Trim()
             });
-        }
-    }
-
-    private Dictionary<string, ScssClass> _classes = new();
-    public Dictionary<string, ScssClass> Classes
-    {
-        get => _classes;
-        set
-        {
-            _classes = value;
-            Generate();
         }
     }
 }

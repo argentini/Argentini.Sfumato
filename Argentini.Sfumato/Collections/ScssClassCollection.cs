@@ -344,7 +344,7 @@ public sealed class ScssClassCollection
         }
     };
 
-    public ScssBoxSidesBaseClass Top { get; } = new()
+    public ScssMeasurementClass Top { get; } = new()
     {
         SelectorPrefix = "top",
         PropertyName = "top",
@@ -354,18 +354,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
 
-    public ScssBoxSidesBaseClass Right { get; } = new()
+    public ScssMeasurementClass Right { get; } = new()
     {
         SelectorPrefix = "right",
         PropertyName = "right",
@@ -375,18 +368,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
 
-    public ScssBoxSidesBaseClass Bottom { get; } = new()
+    public ScssMeasurementClass Bottom { get; } = new()
     {
         SelectorPrefix = "bottom",
         PropertyName = "bottom",
@@ -396,18 +382,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
     
-    public ScssBoxSidesBaseClass Left { get; } = new()
+    public ScssMeasurementClass Left { get; } = new()
     {
         SelectorPrefix = "left",
         PropertyName = "left",
@@ -417,18 +396,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
     
-    public ScssBoxSidesBaseClass Inset { get; } = new()
+    public ScssMeasurementClass Inset { get; } = new()
     {
         SelectorPrefix = "inset",
         PropertyName = "inset",
@@ -438,18 +410,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
     
-    public ScssBoxSidesBaseClass InsetX { get; } = new()
+    public ScssMeasurementClass InsetX { get; } = new()
     {
         SelectorPrefix = "inset-x",
         PropertyName = "left,right",
@@ -459,18 +424,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
     
-    public ScssBoxSidesBaseClass InsetY { get; } = new()
+    public ScssMeasurementClass InsetY { get; } = new()
     {
         SelectorPrefix = "inset-y",
         PropertyName = "top,bottom",
@@ -480,18 +438,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
     
-    public ScssBoxSidesBaseClass Start { get; } = new()
+    public ScssMeasurementClass Start { get; } = new()
     {
         SelectorPrefix = "start",
         PropertyName = "inset-inline-start",
@@ -501,18 +452,11 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
     
-    public ScssBoxSidesBaseClass End { get; } = new()
+    public ScssMeasurementClass End { get; } = new()
     {
         SelectorPrefix = "end",
         PropertyName = "inset-inline-end",
@@ -522,14 +466,7 @@ public sealed class ScssClassCollection
             ["-"] = "",
             ["0"] = "0px",
             ["px"] = "1px",
-            ["auto"] = "auto",
-            ["1/2"] = "50%",
-            ["1/3"] = "33.333333%",
-            ["2/3"] = "66.666667%",
-            ["1/4"] = "25%",
-            ["2/4"] = "50%",
-            ["3/4"] = "75%",
-            ["full"] = "100%"
+            ["auto"] = "auto"
         }
     };
     
@@ -544,8 +481,74 @@ public sealed class ScssClassCollection
         }
     };
     
+    public ScssBaseClass Zindex { get; } = new()
+    {
+        SelectorPrefix = "z",
+        PropertyName = "z-index",
+        PrefixValueTypes = "integer",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["auto"] = "auto",
+            ["top"] = int.MaxValue.ToString(),
+            ["bottom"] = int.MinValue.ToString(),
+            ["0"] = "0",
+            ["10"] = "10",
+            ["20"] = "20",
+            ["30"] = "30",
+            ["40"] = "40",
+            ["50"] = "50"
+        }
+    };
     
+    #endregion
     
+    #region Flexbox and Grid
+    
+    public ScssMeasurementClass FlexBasis { get; } = new()
+    {
+        SelectorPrefix = "basis",
+        PropertyName = "flex-basis",
+        PrefixValueTypes = "length,percentage",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["px"] = "1px",
+            ["auto"] = "auto",
+            ["0.5"] = "0.125rem",
+            ["1.5"] = "0.375rem",
+            ["2.5"] = "0.625rem",
+            ["3.5"] = "0.875rem",
+            ["1/2"] = "50%",
+            ["1/3"] = "33.333333%",
+            ["2/3"] = "66.666667%",
+            ["1/4"] = "25%",
+            ["2/4"] = "50%",
+            ["3/4"] = "75%",
+            ["1/5"] = "20%",
+            ["2/5"] = "40%",
+            ["3/5"] = "60%",
+            ["4/5"] = "80%",
+            ["1/6"] = "16.666667%",
+            ["2/6"] = "33.333333%",
+            ["3/6"] = "50%",
+            ["4/6"] = "66.666667%",
+            ["5/6"] = "83.333333%",
+            ["1/12"] = "8.333333%",
+            ["2/12"] = "16.666667%",
+            ["3/12"] = "25%",
+            ["4/12"] = "33.333333%",
+            ["5/12"] = "41.666667%",
+            ["6/12"] = "50%",
+            ["7/12"] = "58.333333%",
+            ["8/12"] = "66.666667%",
+            ["9/12"] = "75%",
+            ["10/12"] = "83.333333%",
+            ["11/12"] = "91.666667%",
+            ["full"] = "100%"
+        }
+    };
+
     
     
     
