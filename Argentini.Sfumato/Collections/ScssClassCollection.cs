@@ -739,9 +739,292 @@ public sealed class ScssClassCollection
         }
     };
     
+    public ScssBaseClass GridTemplateRows { get; } = new()
+    {
+        SelectorPrefix = "grid-rows",
+        PropertyName = "grid-template-rows",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 24,
+        AddNumberedOptionsValueTemplate = "repeat({value}, minmax(0, 1fr))",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["none"] = "none"
+        }
+    };
     
+    public ScssBaseClass GridRowAuto { get; } = new()
+    {
+        PropertyName = "grid-row",
+        Options = new Dictionary<string, string>
+        {
+            ["row-auto"] = "auto"
+        }
+    };
     
+    public ScssBaseClass GridRowSpan { get; } = new()
+    {
+        SelectorPrefix = "row-span",
+        PropertyName = "grid-row",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 24,
+        AddNumberedOptionsValueTemplate = "span {value} / span {value}",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["full"] = "1 / -1"
+        }
+    };
     
+    public ScssBaseClass GridRowStart { get; } = new()
+    {
+        SelectorPrefix = "row-start",
+        PropertyName = "grid-row-start",
+        PrefixValueTypes = "integer",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 25,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto"
+        }
+    };
+    
+    public ScssBaseClass GridRowEnd { get; } = new()
+    {
+        SelectorPrefix = "row-end",
+        PropertyName = "grid-row-end",
+        PrefixValueTypes = "integer",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 25,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto"
+        }
+    };
+
+    public ScssBaseClass GridAutoFlow { get; } = new()
+    {
+        PropertyName = "grid-auto-flow",
+        Options = new Dictionary<string, string>
+        {
+            ["grid-flow-row"] = "row",
+            ["grid-flow-col"] = "column",
+            ["grid-flow-dense"] = "dense",
+            ["grid-flow-row-dense"] = "row dense",
+            ["grid-flow-col-dense"] = "column dense"
+        }
+    };
+    
+    public ScssBaseClass GridAutoColumns { get; } = new()
+    {
+        SelectorPrefix = "auto-cols",
+        PropertyName = "grid-auto-columns",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto",
+            ["min"] = "min-content",
+            ["max"] = "max-content",
+            ["fr"] = "minmax(0, 1fr)"
+        }
+    };
+    
+    public ScssBaseClass GridAutoRows { get; } = new()
+    {
+        SelectorPrefix = "auto-rows",
+        PropertyName = "grid-auto-rows",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto",
+            ["min"] = "min-content",
+            ["max"] = "max-content",
+            ["fr"] = "minmax(0, 1fr)"
+        }
+    };
+    
+    public ScssBaseClass Gap { get; } = new()
+    {
+        SelectorPrefix = "gap",
+        PropertyName = "gap",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass GapX { get; } = new()
+    {
+        SelectorPrefix = "gap-x",
+        PropertyName = "column-gap",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass GapY { get; } = new()
+    {
+        SelectorPrefix = "gap-y",
+        PropertyName = "row-gap",
+        PrefixValueTypes = "length,percentage",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass JustifyContent { get; } = new()
+    {
+        SelectorPrefix = "justify",
+        PropertyName = "justify-content",
+        Options = new Dictionary<string, string>
+        {
+            ["normal"] = "normal",
+            ["start"] = "flex-start",
+            ["end"] = "flex-end",
+            ["center"] = "center",
+            ["between"] = "space-between",
+            ["around"] = "space-around",
+            ["evenly"] = "space-evenly",
+            ["stretch"] = "stretch"
+        }
+    };
+    
+    public ScssBaseClass JustifyItems { get; } = new()
+    {
+        SelectorPrefix = "justify-items",
+        PropertyName = "justify-items",
+        Options = new Dictionary<string, string>
+        {
+            ["start"] = "start",
+            ["end"] = "end",
+            ["center"] = "center",
+            ["stretch"] = "stretch"
+        }
+    };
+    
+    public ScssBaseClass JustifySelf { get; } = new()
+    {
+        SelectorPrefix = "justify-self",
+        PropertyName = "justify-self",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["start"] = "start",
+            ["end"] = "end",
+            ["center"] = "center",
+            ["stretch"] = "stretch"
+        }
+    };
+    
+    public ScssBaseClass AlignContent { get; } = new()
+    {
+        SelectorPrefix = "content",
+        PropertyName = "align-content",
+        Options = new Dictionary<string, string>
+        {
+            ["normal"] = "normal",
+            ["center"] = "center",
+            ["start"] = "flex-start",
+            ["end"] = "flex-end",
+            ["between"] = "space-between",
+            ["around"] = "space-around",
+            ["evenly"] = "space-evenly",
+            ["baseline"] = "baseline",
+            ["stretch"] = "stretch"
+        }
+    };
+    
+    public ScssBaseClass AlignItems { get; } = new()
+    {
+        SelectorPrefix = "items",
+        PropertyName = "align-items",
+        Options = new Dictionary<string, string>
+        {
+            ["start"] = "flex-start",
+            ["end"] = "flex-end",
+            ["center"] = "center",
+            ["baseline"] = "baseline",
+            ["stretch"] = "stretch"
+        }
+    };
+    
+    public ScssBaseClass AlignSelf { get; } = new()
+    {
+        SelectorPrefix = "self",
+        PropertyName = "align-self",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["start"] = "flex-start",
+            ["end"] = "flex-end",
+            ["center"] = "center",
+            ["baseline"] = "baseline",
+            ["stretch"] = "stretch"
+        }
+    };
+    
+    public ScssBaseClass PlaceContent { get; } = new()
+    {
+        SelectorPrefix = "place-content",
+        PropertyName = "place-content",
+        Options = new Dictionary<string, string>
+        {
+            ["center"] = "center",
+            ["start"] = "start",
+            ["end"] = "end",
+            ["between"] = "space-between",
+            ["around"] = "space-around",
+            ["evenly"] = "space-evenly",
+            ["baseline"] = "baseline",
+            ["stretch"] = "stretch"
+        }
+    };
+
+    public ScssBaseClass PlaceItems { get; } = new()
+    {
+        SelectorPrefix = "place-items",
+        PropertyName = "place-items",
+        Options = new Dictionary<string, string>
+        {
+            ["start"] = "start",
+            ["end"] = "end",
+            ["center"] = "center",
+            ["baseline"] = "baseline",
+            ["stretch"] = "stretch"
+        }
+    };
+    
+    public ScssBaseClass PlaceSelf { get; } = new()
+    {
+        SelectorPrefix = "place-self",
+        PropertyName = "place-self",
+        Options = new Dictionary<string, string>
+        {
+            ["auto"] = "auto",
+            ["start"] = "start",
+            ["end"] = "end",
+            ["center"] = "center",
+            ["stretch"] = "stretch"
+        }
+    };
     
     #endregion
     
