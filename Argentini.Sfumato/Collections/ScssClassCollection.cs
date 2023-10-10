@@ -19,9 +19,9 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssBaseClass Container { get; } = new()
+    public ScssUtilityBaseClass Container { get; } = new()
     {
-        SelectorPrefix = "container",
+        Selector = "container",
         Template = """
                    width: 100%;
 
@@ -72,7 +72,19 @@ public sealed class ScssClassCollection
             ["4xl"] = "56rem",
             ["5xl"] = "64rem",
             ["6xl"] = "72rem",
-            ["7xl"] = "80rem"
+            ["7xl"] = "80rem",
+            ["1"] = "1",
+            ["2"] = "2",
+            ["3"] = "3",
+            ["4"] = "4",
+            ["5"] = "5",
+            ["6"] = "6",
+            ["7"] = "7",
+            ["8"] = "8",
+            ["9"] = "9",
+            ["10"] = "10",
+            ["11"] = "11",
+            ["12"] = "12"
         }
     };
     
@@ -332,7 +344,7 @@ public sealed class ScssClassCollection
         }
     };
 
-    public ScssBaseClass Top { get; } = new()
+    public ScssBoxSidesBaseClass Top { get; } = new()
     {
         SelectorPrefix = "top",
         PropertyName = "top",
@@ -353,7 +365,7 @@ public sealed class ScssClassCollection
         }
     };
 
-    public ScssBaseClass Right { get; } = new()
+    public ScssBoxSidesBaseClass Right { get; } = new()
     {
         SelectorPrefix = "right",
         PropertyName = "right",
@@ -374,7 +386,7 @@ public sealed class ScssClassCollection
         }
     };
 
-    public ScssBaseClass Bottom { get; } = new()
+    public ScssBoxSidesBaseClass Bottom { get; } = new()
     {
         SelectorPrefix = "bottom",
         PropertyName = "bottom",
@@ -395,7 +407,7 @@ public sealed class ScssClassCollection
         }
     };
     
-    public ScssBaseClass Left { get; } = new()
+    public ScssBoxSidesBaseClass Left { get; } = new()
     {
         SelectorPrefix = "left",
         PropertyName = "left",
@@ -941,33 +953,6 @@ public sealed class ScssClassCollection
     };
     
     #endregion
-    
-    public ScssClassCollection()
-    {
-        var step = (decimal)0.5;
-
-        for (var x = (decimal)0.5; x < 97; x += step)
-        {
-            if (x == 4)
-                step = 1;
-
-            Top.Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
-            Right.Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
-            Bottom.Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
-            Left.Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
-        }
-        
-        for (var x = 1; x < 13; x++)
-        {
-            Columns.Options?.TryAdd($"{x}", $"{x}");
-        }        
-        
-        Top.Generate();
-        Right.Generate();
-        Bottom.Generate();
-        Left.Generate();
-        Columns.Generate();
-    }
     
     #region Class Helper Methods
     

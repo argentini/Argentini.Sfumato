@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Collections;
 
-public sealed class ScssBaseClass
+public sealed class ScssBoxSidesBaseClass
 {
     public string SelectorPrefix { get; set; } = string.Empty;
     public string PropertyName { get; set; } = string.Empty;
@@ -13,6 +13,17 @@ public sealed class ScssBaseClass
         set
         {
             _options = value ?? new Dictionary<string, string>();
+            
+            var step = (decimal)0.5;
+
+            for (var x = (decimal)0.5; x < 97; x += step)
+            {
+                if (x == 4)
+                    step = 1;
+
+                Options?.TryAdd($"{x:0.#}", $"{x / 4:0.###}rem");
+            }
+            
             Generate();
         }
     }
