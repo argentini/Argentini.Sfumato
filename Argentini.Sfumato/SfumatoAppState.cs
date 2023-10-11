@@ -190,7 +190,7 @@ public sealed class SfumatoAppState
 
         timer.Restart();
         
-        DiagnosticOutput.Append($"Identified {ScssClassCollection.GetClassCount():N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+        DiagnosticOutput.Append($"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
     }
     
     #endregion
@@ -445,7 +445,7 @@ public sealed class SfumatoAppState
 		if (UsedClasses.Count == 0)
 			Console.WriteLine(" no classes used");
 		else
-			Console.WriteLine($" found {UsedClasses.Count:N0}/{ScssClassCollection.GetClassCount():N0} classes");
+			Console.WriteLine($" found {UsedClasses.Count:N0}/{ScssClassCollection.AllClasses.Count:N0} classes");
 		
 		DiagnosticOutput.Append($"Identified {UsedClasses.Count:N0} used classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
 	}

@@ -56,7 +56,7 @@ public class ParsingTests
     {
         var scssClassCollection = new ScssClassCollection();
 
-        Assert.True(scssClassCollection.GetClassCount() > 0);
+        Assert.True(scssClassCollection.AllClasses.Count > 0);
         Assert.Single(scssClassCollection.GetAllByClassName("bg-slate-100"));
         Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100"));
         Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]"));
