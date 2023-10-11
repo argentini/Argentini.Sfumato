@@ -62,7 +62,7 @@ public sealed class SfumatoAppState
 	    var arbitraryCssExpression = $$"""
 (?<=[\s"'`])
 ({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
-(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-zA-Z0-9%',/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
+(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
 (?=[\s"'`])
 """;
 	    
@@ -74,7 +74,7 @@ public sealed class SfumatoAppState
 (
 	([a-z\-][a-z0-9\-\.]{2,100})
 	(
-		(/[a-z0-9\-\.]{1,100})|([/]{0,1}\[[a-zA-Z0-9%',/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1}
+		(/[a-z0-9\-\.]{1,100})|([/]{0,1}\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1}
 	)
 )
 (?=[\s"'`])
