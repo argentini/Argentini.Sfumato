@@ -157,8 +157,43 @@ public partial class ScssClassCollection
         }
     };
     
+    public ScssBaseClass ListStylePosition { get; } = new()
+    {
+        PropertyName = "list-style-position",
+        Options = new Dictionary<string, string>
+        {
+            ["list-inside"] = "inside",
+            ["list-outside"] = "outside"
+        }
+    };
     
+    public ScssBaseClass ListStyleType { get; } = new()
+    {
+        SelectorPrefix = "list",
+        PropertyName = "list-style-type",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = "",
+            ["none"] = "none",
+            ["disc"] = "disc",
+            ["decimal"] = "decimal"
+        }
+    };
     
+    public ScssBaseClass TextAlign { get; } = new()
+    {
+        SelectorPrefix = "text",
+        PropertyName = "text-align",
+        Options = new Dictionary<string, string>
+        {
+            ["left"] = "left",
+            ["center"] = "center",
+            ["right"] = "right",
+            ["justify"] = "justify",
+            ["start"] = "start",
+            ["end"] = "end"
+        }
+    };
     
     
     
