@@ -909,17 +909,17 @@ public static class SfumatoScss
 	    if (className.EndsWith(']') == false || className.Contains('[') == false)
 		    return string.Empty;
 
-	    var segments = className[className.LastIndexOf('[')..].Trim().TrimStart('[').TrimEnd(']').Split(':', StringSplitOptions.RemoveEmptyEntries);
-	    var value = segments[0];
+	    var value = className[className.IndexOf('[')..].TrimStart('[').TrimEnd(']');
 
-	    // Passed a value type prefix (e.g. text-[color:red])
-
-	    if (segments.Length > 1)
+	    if (value.Contains(':'))
 	    {
-		    if (ArbitraryValueTypes.Contains(segments[0]))
-			    return segments[0];
-		    
-		    return string.Empty;
+		    var segments = value.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+		    if (segments.Length > 1)
+		    {
+			    if (ArbitraryValueTypes.Contains(segments[0]))
+				    value = value[(segments[0].Length + 1)..];
+		    }
 	    }
 
 	    // Determine value type based on value (e.g. text-[red])
@@ -1058,17 +1058,25 @@ public static class SfumatoScss
 	    if (className.EndsWith(']') == false || className.Contains('[') == false)
 		    return string.Empty;
 
-	    var result = string.Empty;
-	    var segments = className[className.IndexOf('[')..].TrimStart('[').TrimEnd(']').Split(':', StringSplitOptions.RemoveEmptyEntries);
-	    
-	    if (segments.Length == 2)
-		    result = segments[1];
-	    else
-		    result = segments[0];
+	    var result = className[className.IndexOf('[')..].TrimStart('[').TrimEnd(']');
+
+	    if (result.Contains(':'))
+	    {
+		    var segments = result.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+		    if (segments.Length > 1)
+		    {
+			    if (ArbitraryValueTypes.Contains(segments[0]))
+				    result = result[(segments[0].Length + 1)..];
+		    }
+	    }
 
 	    if (result.StartsWith("--"))
 		    result = $"var({result})";
 
+	    if (Uri.TryCreate(result, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+		    result = $"url(\"{result}\")";
+	    
 	    return result;
     }
 }

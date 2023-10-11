@@ -67,6 +67,98 @@ public partial class ScssClassCollection
         }
     };
     
+    public ScssBaseClass FontVariantNumeric { get; } = new()
+    {
+        PropertyName = "font-variant-numeric",
+        Options = new Dictionary<string, string>
+        {
+            ["normal-nums"] = "normal",
+            ["ordinal"] = "ordinal",
+            ["slashed-zero"] = "slashed-zero",
+            ["lining-sums"] = "lining-sums",
+            ["oldstyle-nums"] = "oldstyle-nums",
+            ["proportional-nums"] = "proportional-nums",
+            ["tabular-nums"] = "tabular-nums",
+            ["diagonal-fractions"] = "diagonal-fractions",
+            ["stacked-fractions"] = "stacked-fractions"
+        }
+    };
+    
+    public ScssBaseClass LetterSpacing { get; } = new()
+    {
+        SelectorPrefix = "tracking",
+        PropertyName = "letter-spacing",
+        PrefixValueTypes = "length",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["tighter"] = "-0.05em",
+            ["tight"] = "-0.025em",
+            ["normal"] = "0em",
+            ["wide"] = "0.025em",
+            ["wider"] = "0.05em",
+            ["widest"] = "0.1em"
+        }
+    };
+    
+    public ScssBaseClass LineClamp { get; } = new()
+    {
+        SelectorPrefix = "line-clamp",
+        PropertyName = "-webkit-line-clamp",
+        PrefixValueTypes = "integer",
+        AddNumberedOptionsMinValue = 1,
+        AddNumberedOptionsMaxValue = 6,
+        AddNumberedOptionsValueTemplate = "{value}; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
+    
+    public ScssUtilityBaseClass LineClampNone { get; } = new()
+    {
+        Selector = "line-clamp-none",
+        Template = """
+                   overflow: visible;
+                   display: block;
+                   -webkit-box-orient: horizontal;
+                   -webkit-line-clamp: none;
+                   """
+    };
+    
+    public ScssBaseClass LineHeight { get; } = new()
+    {
+        SelectorPrefix = "leading",
+        PropertyName = "line-height",
+        PrefixValueTypes = "length,integer",
+        AddNumberedRemUnitsOptionsMinValue = 3,
+        AddNumberedRemUnitsOptionsMaxValue = 10,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["none"] = "1",
+            ["tight"] = "1.25",
+            ["snug"] = "1.375",
+            ["normal"] = "1.5",
+            ["relaxed"] = "1.625",
+            ["loose"] = "2"
+        }
+    };
+    
+    public ScssBaseClass ListStyleImage { get; } = new()
+    {
+        SelectorPrefix = "list-image",
+        PropertyName = "list-style-image",
+        PrefixValueTypes = "url",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["none"] = "none"
+        }
+    };
+    
+    
+    
     
     
     

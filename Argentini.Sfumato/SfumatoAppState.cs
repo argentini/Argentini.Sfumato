@@ -516,17 +516,17 @@ public sealed class SfumatoAppState
 						break;
 					}
 
-				if (foundScssClass is not null)
-				{
-					var usedScssClass = foundScssClass.Adapt<ScssClass>();
+				if (foundScssClass is null)
+					continue;
+				
+				var usedScssClass = foundScssClass.Adapt<ScssClass>();
 
-					usedScssClass.UserClassName = userClassName;
+				usedScssClass.UserClassName = userClassName;
 
-					if (string.IsNullOrEmpty(userClassValue) == false)
-						usedScssClass.Value = userClassValue;
+				if (string.IsNullOrEmpty(userClassValue) == false)
+					usedScssClass.Value = userClassValue;
 
-					UsedClasses.TryAdd(userClassName, usedScssClass);
-				}
+				UsedClasses.TryAdd(userClassName, usedScssClass);
 			}
 
 			matches.Clear();
