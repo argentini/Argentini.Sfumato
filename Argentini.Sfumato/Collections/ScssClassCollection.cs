@@ -1332,8 +1332,6 @@ public sealed class ScssClassCollection
         }
     };
     
-    
-    
     #endregion
     
     #region Backgrounds
