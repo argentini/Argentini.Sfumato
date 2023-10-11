@@ -126,7 +126,7 @@ public sealed class ScssBaseClass
     {
         var step = AddNumberedRemUnitsOptionsMinValue;
 
-        for (var x = 0.5m; x < AddNumberedRemUnitsOptionsMaxValue; x += step)
+        for (var x = 0.5m; x <= AddNumberedRemUnitsOptionsMaxValue; x += step)
         {
             if (x == 4)
                 step = 1;
