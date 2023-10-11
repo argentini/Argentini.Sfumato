@@ -14,7 +14,6 @@ public sealed class SfumatoAppState
     
     public Regex ArbitraryCssRegex { get; }
     public Regex CoreClassRegex { get; }
-    public Regex UtilityClassRegex { get; }
     
     #endregion
     
@@ -62,10 +61,8 @@ public sealed class SfumatoAppState
 	    
 	    var arbitraryCssExpression = $$"""
 (?<=[\s"'`])
-(
-	({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
-	(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
-)
+({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
+(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
 (?=[\s"'`])
 """;
 	    
@@ -74,26 +71,11 @@ public sealed class SfumatoAppState
 	    var coreClassExpression = $$"""
 (?<=[\s"'`])
 ({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
-(
-    ({{string.Join("|", ScssClassCollection.GetClassNonPrefixesForRegex())}})
-    |
-    (({{string.Join("|", ScssClassCollection.GetClassNonPrefixesForRegex())}})/\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
-    |
-    (({{string.Join("|", ScssClassCollection.GetClassPrefixesForRegex())}})\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
-)
+(([a-z\-][a-z0-9\-\.]{2,100})([/]{0,1}\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1})
 (?=[\s"'`])
 """;
 	    
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
-
-	    var utilityClassExpression = $$"""
-(?<=[\s"'`])
-({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
-({{string.Join("|", ScssClassCollection.GetUtilityClassNamesForRegex())}})
-(?=[\s"'`])
-""";
-	    
-	    UtilityClassRegex = new Regex(utilityClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
     }
     
     #region Entry Points
@@ -512,6 +494,7 @@ public sealed class SfumatoAppState
 				{
 					// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
 					// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
+					// 3. Utility class (e.g. "elastic-container")
 					
 					if (string.IsNullOrEmpty(userClassValueType) == false && scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
 						continue;
@@ -548,30 +531,6 @@ public sealed class SfumatoAppState
 				};
 
 				UsedClasses.TryAdd(userClassName, usedScssClass);
-			}
-			
-			matches.Clear();
-			matches.AddRange(UtilityClassRegex.Matches(markup));
-
-			foreach (var match in matches)
-			{
-				var userClassName = ReOrderPrefixes(match.Value);
-
-				if (UsedClasses.ContainsKey(userClassName))
-					continue;
-
-				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
-
-				foreach (var scssClass in scssClasses)
-				{
-					// 1. Utility class (e.g. "elastic-container")
-					
-					var usedScssClass = scssClass.Adapt<ScssClass>();
-
-					usedScssClass.UserClassName = userClassName;
-
-					UsedClasses.TryAdd(userClassName, usedScssClass);
-				}
 			}
 		}
 
