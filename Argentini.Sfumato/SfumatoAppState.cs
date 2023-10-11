@@ -62,7 +62,7 @@ public sealed class SfumatoAppState
 	    var arbitraryCssExpression = $$"""
 (?<=[\s"'`])
 ({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
-(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
+(\[({{string.Join("|", SfumatoScss.CssPropertyNames)}})\:[a-zA-Z0-9%',/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
 (?=[\s"'`])
 """;
 	    
@@ -71,7 +71,7 @@ public sealed class SfumatoAppState
 	    var coreClassExpression = $$"""
 (?<=[\s"'`])
 ({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
-(([a-z\-][a-z0-9\-\.]{2,100})([/]{0,1}\[[a-z0-9%/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1})
+(([a-z\-][a-z0-9\-\.]{2,100})([/]{0,1}\[[a-zA-Z0-9%',/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1})
 (?=[\s"'`])
 """;
 	    
@@ -486,20 +486,39 @@ public sealed class SfumatoAppState
 				if (UsedClasses.ContainsKey(userClassName))
 					continue;
 
-				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName);
+				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName).ToList();
 				var userClassValueType = userClassName.GetUserClassValueType();
 				var userClassValue = userClassName.GetUserClassValue().Replace('_', ' ').Replace("\\ ", "\\_");
+				ScssClass? foundScssClass = null;
 
-				foreach (var scssClass in scssClasses)
+				// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
+				// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
+				// 3. Utility class (e.g. "elastic-container")
+
+				if (string.IsNullOrEmpty(userClassValueType) == false)
+					foreach (var scssClass in scssClasses)
+					{
+						if (scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
+							continue;
+
+						foundScssClass = scssClass;
+						
+						break;
+					}								
+				else
+					foreach (var scssClass in scssClasses)
+					{
+						if (scssClass.ValueTypes != string.Empty)
+							continue;
+
+						foundScssClass = scssClass;
+						
+						break;
+					}
+
+				if (foundScssClass is not null)
 				{
-					// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
-					// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
-					// 3. Utility class (e.g. "elastic-container")
-					
-					if (string.IsNullOrEmpty(userClassValueType) == false && scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
-						continue;
-					
-					var usedScssClass = scssClass.Adapt<ScssClass>();
+					var usedScssClass = foundScssClass.Adapt<ScssClass>();
 
 					usedScssClass.UserClassName = userClassName;
 

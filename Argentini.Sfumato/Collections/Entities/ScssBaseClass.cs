@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Collections;
+namespace Argentini.Sfumato.Collections.Entities;
 
 public sealed class ScssBaseClass
 {
@@ -77,8 +77,8 @@ public sealed class ScssBaseClass
         }
     }
     
-    private Dictionary<string, ScssClass> _classes = new();
-    public Dictionary<string, ScssClass> Classes
+    private List<ScssClass> _classes = new();
+    public List<ScssClass> Classes
     {
         get => _classes;
         set
@@ -152,8 +152,9 @@ public sealed class ScssBaseClass
             
             if (item is { Key: "-", Value: "" } && SelectorPrefix != string.Empty)
             {
-                Classes.Add($"{SelectorPrefix}-", new ScssClass
+                Classes.Add(new ScssClass
                 {
+                    RootClassName = $"{SelectorPrefix}-",
                     ValueTypes = PrefixValueTypes,
                     ChildSelector = ChildSelector,
                     Template = template.Trim()
@@ -162,8 +163,9 @@ public sealed class ScssBaseClass
                 continue;
             }
 
-            Classes.Add($"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}-" : string.Empty)}{item.Key}", new ScssClass
+            Classes.Add(new ScssClass
             {
+                RootClassName = $"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}-" : string.Empty)}{item.Key}",
                 Value = item.Value,
                 ChildSelector = ChildSelector,
                 Template = template.Trim()

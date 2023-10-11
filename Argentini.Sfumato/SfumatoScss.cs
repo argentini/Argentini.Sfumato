@@ -923,17 +923,11 @@ public static class SfumatoScss
 	    }
 
 	    // Determine value type based on value (e.g. text-[red])
-
-	    if (value.StartsWith('\'') && value.EndsWith('\''))
-		    return "string";
-
-	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')'))
-		    return "url";
 	    
 	    if (value.EndsWith('%') && double.TryParse(value.TrimEnd('%'), out _))
 		    return "percentage";
 	    
-	    if (int.TryParse(value, out _))
+	    if (value.Contains('.') == false && int.TryParse(value, out _))
 		    return "integer";
 
 	    if (double.TryParse(value, out _))
@@ -961,6 +955,12 @@ public static class SfumatoScss
 
 	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || CssNamedColors.Contains(value))
 		    return "color";
+
+	    if (value.StartsWith('\'') && value.EndsWith('\''))
+		    return "string";
+	    
+	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')') || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
+		    return "url";
 	    
 	    #region angle
 

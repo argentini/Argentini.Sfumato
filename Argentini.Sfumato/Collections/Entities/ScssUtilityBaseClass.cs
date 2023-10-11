@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Collections;
+namespace Argentini.Sfumato.Collections.Entities;
 
 public sealed class ScssUtilityBaseClass
 {
@@ -15,8 +15,8 @@ public sealed class ScssUtilityBaseClass
         }
     }
 
-    private Dictionary<string, ScssClass> _classes = new();
-    public Dictionary<string, ScssClass> Classes
+    private List<ScssClass> _classes = new();
+    public List<ScssClass> Classes
     {
         get => _classes;
         set
@@ -33,8 +33,9 @@ public sealed class ScssUtilityBaseClass
     public void Generate()
     {
         Classes.Clear();
-        Classes.Add($"{Selector}", new ScssClass
+        Classes.Add(new ScssClass
         {
+            RootClassName = $"{Selector}",
             Template = _template
         });
     }

@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Collections;
+namespace Argentini.Sfumato.Collections.Entities;
 
 public sealed class TextSizeClass
 {
@@ -41,23 +41,26 @@ public sealed class TextSizeClass
     {
         foreach (var size in TextSizes)
         {
-            Classes.Add($"text-{size.Key}/", new ScssClass
+            Classes.Add(new ScssClass
             {
+                RootClassName = $"text-{size.Key}/",
                 Value = "",
                 ValueTypes = "length,percentage,number",
                 Template = $"font-size: {size.Value}; line-height: {{value}};"
             });
 
-            Classes.Add($"text-{size.Key}", new ScssClass
+            Classes.Add(new ScssClass
             {
+                RootClassName = $"text-{size.Key}",
                 Value = size.Value,
                 Template = "font-size: {value};"
             });
 
             foreach (var leading in Leading)
             {
-                Classes.Add($"text-{size.Key}/{leading.Key}", new ScssClass
+                Classes.Add(new ScssClass
                 {
+                    RootClassName = $"text-{size.Key}/{leading.Key}",
                     Value = size.Value,
                     Template = $"font-size: {{value}}; line-height: {leading.Value};"
                 });
@@ -66,10 +69,11 @@ public sealed class TextSizeClass
     }
     
     // ReSharper disable once CollectionNeverQueried.Global
-    public Dictionary<string, ScssClass> Classes { get; } = new ()
+    public List<ScssClass> Classes { get; } = new ()
     {
-        ["text-"] = new ScssClass
+        new ScssClass
         {
+            RootClassName = "text-",
             Value = "",
             ValueTypes = "length,percentage",
             Template = "font-size: {value};"

@@ -2,6 +2,7 @@ namespace Argentini.Sfumato.Entities;
 
 public sealed class ScssClass
 {
+    public string RootClassName { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string ValueTypes { get; set; } = string.Empty;
     public string ChildSelector { get; set; } = string.Empty;
