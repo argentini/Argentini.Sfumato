@@ -40,6 +40,7 @@ public sealed class ScssBaseClass
     public string SelectorPrefix { get; set; } = string.Empty;
     public string PropertyName { get; set; } = string.Empty;
     public string PrefixValueTypes { get; set; } = string.Empty;
+    public string ChildSelector { get; set; } = string.Empty;
 
     public int AddNumberedOptionsMinValue { get; set; } = -1;
     public int AddNumberedOptionsMaxValue { get; set; } = -1;
@@ -154,6 +155,7 @@ public sealed class ScssBaseClass
                 Classes.Add($"{SelectorPrefix}-", new ScssClass
                 {
                     ValueTypes = PrefixValueTypes,
+                    ChildSelector = ChildSelector,
                     Template = template.Trim()
                 });
 
@@ -163,6 +165,7 @@ public sealed class ScssBaseClass
             Classes.Add($"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}-" : string.Empty)}{item.Key}", new ScssClass
             {
                 Value = item.Value,
+                ChildSelector = ChildSelector,
                 Template = template.Trim()
             });
         }

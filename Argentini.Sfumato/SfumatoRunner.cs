@@ -149,6 +149,12 @@ public sealed class SfumatoRunner
 					scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)} {{\n");
 					renderedClassName = true;
 					level++;
+
+					if (scssClass.ChildSelector != string.Empty)
+					{
+						scssResult.Append($"{Indent(level)}{scssClass.ChildSelector} {{\n");
+						level++;
+					}
 				}
 
 				var pseudoClass = SfumatoScss.PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
@@ -162,6 +168,12 @@ public sealed class SfumatoRunner
 		{
 			scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)} {{\n");
 			level++;
+			
+			if (scssClass.ChildSelector != string.Empty)
+			{
+				scssResult.Append($"{Indent(level)}{scssClass.ChildSelector} {{\n");
+				level++;
+			}
 		}
 		
 		scssResult.Append($"{scssClass.GetStyles().Indent(level * IndentationSpaces)}\n");

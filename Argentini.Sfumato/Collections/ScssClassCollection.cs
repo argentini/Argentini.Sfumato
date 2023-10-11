@@ -1029,7 +1029,7 @@ public sealed class ScssClassCollection
     #endregion
     
     #region Spacing
-    
+
     public ScssBaseClass Padding { get; } = new()
     {
         SelectorPrefix = "p",
@@ -1299,6 +1299,40 @@ public sealed class ScssClassCollection
             ["px"] = "1px"
         }
     };
+
+    public ScssBaseClass SpaceX { get; } = new()
+    {
+        SelectorPrefix = "space-x",
+        PropertyName = "margin-left",
+        PrefixValueTypes = "length,percentage",
+        ChildSelector = "& > * + *",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    public ScssBaseClass SpaceY { get; } = new()
+    {
+        SelectorPrefix = "space-y",
+        PropertyName = "margin-top",
+        PrefixValueTypes = "length,percentage",
+        ChildSelector = "& > * + *",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
+    
+    
     
     #endregion
     
