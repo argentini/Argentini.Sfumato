@@ -231,9 +231,185 @@ public partial class ScssClassCollection
         }
     };
     
+    public ScssBaseClass TextDecorationStyle { get; } = new()
+    {
+        SelectorPrefix = "decoration",
+        PropertyName = "text-decoration-style",
+        Options = new Dictionary<string, string>
+        {
+            ["solid"] = "solid",
+            ["double"] = "double",
+            ["dotted"] = "dotted",
+            ["dashed"] = "dashed",
+            ["wavy"] = "wavy"
+        }
+    };
+
+    public ScssBaseClass TextDecorationThickness { get; } = new()
+    {
+        SelectorPrefix = "decoration",
+        PropertyName = "text-decoration-thickness",
+        PrefixValueTypes = "length",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto",
+            ["from-font"] = "from-font",
+            ["0"] = "0px",
+            ["1"] = "1px",
+            ["2"] = "0.125rem",
+            ["4"] = "0.25rem",
+            ["8"] = "0.5rem"
+        }
+    };    
     
+    public ScssBaseClass TextUnderlineOffset { get; } = new()
+    {
+        SelectorPrefix = "underline-offset",
+        PropertyName = "text-underline-offset",
+        PrefixValueTypes = "length",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["auto"] = "auto",
+            ["0"] = "0px",
+            ["1"] = "1px",
+            ["2"] = "0.125rem",
+            ["4"] = "0.25rem",
+            ["8"] = "0.5rem"
+        }
+    };
     
+    public ScssBaseClass TextTransform { get; } = new()
+    {
+        PropertyName = "text-transform",
+        Options = new Dictionary<string, string>
+        {
+            ["uppercase"] = "uppercase",
+            ["lowercase"] = "lowercase",
+            ["capitalize"] = "capitalize",
+            ["normal-case"] = "none"
+        }
+    };
     
+    public ScssUtilityBaseClass TextOverflowTruncate { get; } = new()
+    {
+        Selector = "truncate",
+        Template = """
+                   overflow: hidden;
+                   text-overflow: ellipsis;
+                   white-space: nowrap;
+                   """
+    };
+
+    public ScssBaseClass TextOverflow { get; } = new()
+    {
+        PropertyName = "text-overflow",
+        Options = new Dictionary<string, string>
+        {
+            ["text-ellipsis"] = "ellipsis",
+            ["text-clip"] = "clip"
+        }
+    };
     
+    public ScssBaseClass TextIndent { get; } = new()
+    {
+        SelectorPrefix = "indent",
+        PropertyName = "text-indent",
+        PrefixValueTypes = "length",
+        AddNumberedRemUnitsOptionsMinValue = 0.5m,
+        AddNumberedRemUnitsOptionsMaxValue = 96m,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["0"] = "0px",
+            ["px"] = "1px"
+        }
+    };
     
+    public ScssBaseClass VerticalAlign { get; } = new()
+    {
+        SelectorPrefix = "align",
+        PropertyName = "vertical-align",
+        PrefixValueTypes = "length",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["baseline"] = "baseline",
+            ["top"] = "top",
+            ["middle"] = "middle",
+            ["bottom"] = "bottom",
+            ["text-top"] = "text-top",
+            ["text-bottom"] = "text-bottom",
+            ["sub"] = "sub",
+            ["super"] = "super"
+        }
+    };
+    
+    public ScssBaseClass Whitespace { get; } = new()
+    {
+        SelectorPrefix = "whitespace",
+        PropertyName = "white-space",
+        Options = new Dictionary<string, string>
+        {
+            ["normal"] = "normal",
+            ["nowrap"] = "nowrap",
+            ["pre"] = "pre",
+            ["pre-line"] = "pre-line",
+            ["pre-wrap"] = "pre-wrap",
+            ["break-spaces"] = "break-spaces"
+        }
+    };
+
+    public ScssUtilityBaseClass WordBreakNormal { get; } = new()
+    {
+        Selector = "break-normal",
+        Template = """
+                   overflow-wrap: normal;
+                   word-break: normal;
+                   """
+    };
+
+    public ScssUtilityBaseClass WordBreakWords { get; } = new()
+    {
+        Selector = "break-words",
+        Template = """
+                   overflow-wrap: break-word;
+                   """
+    };
+    
+    public ScssBaseClass WordBreak { get; } = new()
+    {
+        SelectorPrefix = "break",
+        PropertyName = "word-break",
+        Options = new Dictionary<string, string>
+        {
+            ["all"] = "break-all",
+            ["keep"] = "keep-all"
+        }
+    };
+    
+    public ScssBaseClass Hyphens { get; } = new()
+    {
+        SelectorPrefix = "hyphens",
+        PropertyName = "hyphens",
+        Options = new Dictionary<string, string>
+        {
+            ["none"] = "none",
+            ["manual"] = "manual",
+            ["auto"] = "auto"
+        }
+    };
+    
+    public ScssBaseClass Content { get; } = new()
+    {
+        SelectorPrefix = "content",
+        PropertyName = "content",
+        PrefixValueTypes = "string",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["none"] = "none"
+        }
+    };
 }
