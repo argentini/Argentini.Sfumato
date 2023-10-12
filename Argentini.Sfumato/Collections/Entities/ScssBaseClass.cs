@@ -301,6 +301,7 @@ public sealed class ScssBaseClass
     public decimal AddNumberedRemUnitsOptionsMaxValue { get; set; } = -1;
     public bool AddFractionOptions { get; set; }
     public bool AddPercentageOptions { get; set; }
+    public bool AddOneBasedPercentageOptions { get; set; }
     public bool AddColorOptions { get; set; }
     
     private Dictionary<string, string> _options = new();
@@ -311,7 +312,7 @@ public sealed class ScssBaseClass
         {
             _options = value ?? new Dictionary<string, string>();
 
-            if (AddNumberedOptionsMinValue > -1 && AddNumberedOptionsMaxValue > -1 && AddNumberedOptionsMaxValue > AddNumberedOptionsMinValue)
+            if (AddOneBasedPercentageOptions == false && AddNumberedOptionsMinValue > -1 && AddNumberedOptionsMaxValue > -1 && AddNumberedOptionsMaxValue > AddNumberedOptionsMinValue)
             {
                 AddNumberedOptions();
             }
@@ -329,6 +330,11 @@ public sealed class ScssBaseClass
             if (AddPercentageOptions)
             {
                 AddPercentagesOptions();
+            }
+
+            if (AddOneBasedPercentageOptions)
+            {
+                AddOneBasedPercentagesOptions();
             }
             
             if (AddColorOptions)
@@ -382,6 +388,24 @@ public sealed class ScssBaseClass
         }
     }
 
+    /// <summary>
+    /// Add options for incremental whole numbers where that translate to fractional values from zero to one (e.g. ["opacity-5"] => "opacity: 0.05;").
+    /// Used by inherited classes.
+    /// </summary>
+    public void AddOneBasedPercentagesOptions()
+    {
+        for (var x = AddNumberedOptionsMinValue; x <= AddNumberedOptionsMaxValue; x++)
+        {
+            var percentage = x / 100m;
+            var value = $"{percentage}";
+            
+            if (AddNumberedOptionsValueTemplate != string.Empty)
+                value = AddNumberedOptionsValueTemplate.Replace("{value}", value);
+            
+            Options?.TryAdd(x.ToString(), value);
+        }
+    }
+    
     /// <summary>
     /// Add options for percentages by number.
     /// Used by inherited classes.
