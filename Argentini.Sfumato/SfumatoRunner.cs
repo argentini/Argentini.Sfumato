@@ -275,11 +275,30 @@ public sealed class SfumatoRunner
 		} 
 		
 		var sb = AppState.StringBuilderPool.Get();
+		var globalSelector = AppState.StringBuilderPool.Get();
+		
+		#region Process global class assignments
+		
+		foreach (var (_, usedClass) in AppState.UsedClasses)
+		{
+			if (usedClass.RootClassName.EndsWith('%') == false && (usedClass.RootClassName.StartsWith("from-") || usedClass.RootClassName.StartsWith("to-") || usedClass.RootClassName.StartsWith("via-")))
+				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)}");
+		}
+
+		if (globalSelector.Length > 0)
+		{
+			sb.Append(globalSelector + " {");
+			sb.Append("--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;");
+			sb.Append('}');
+		}
+		
+		#endregion
 		
 		await GenerateScssFromObjectTreeAsync(hierarchy, sb);
         
 		var scss = sb.ToString();
 		
+		AppState.StringBuilderPool.Return(globalSelector);
 		AppState.StringBuilderPool.Return(sb);
 		
 		return scss;

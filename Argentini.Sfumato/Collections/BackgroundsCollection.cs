@@ -4,6 +4,8 @@ namespace Argentini.Sfumato.Collections;
 
 public partial class ScssClassCollection
 {
+    #region Backgrounds
+    
     public ScssBaseClass BackgroundAttachment { get; } = new()
     {
         SelectorPrefix = "bg",
@@ -120,6 +122,10 @@ public partial class ScssClassCollection
             ["none"] = "none"
         }
     };
+    
+    #endregion
+    
+    #region Gradients
     
     public ScssUtilityBaseClass BackgroundImageGradientT { get; } = new()
     {
@@ -292,4 +298,6 @@ public partial class ScssClassCollection
             ["-"] = string.Empty
         }
     };
+    
+    #endregion
 }
