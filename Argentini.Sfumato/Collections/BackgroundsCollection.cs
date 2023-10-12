@@ -109,8 +109,187 @@ public partial class ScssClassCollection
         }
     };
     
+    public ScssBaseClass BackgroundImage { get; } = new()
+    {
+        SelectorPrefix = "bg",
+        PropertyName = "background-image",
+        PrefixValueTypes = "url",
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty,
+            ["none"] = "none"
+        }
+    };
     
+    public ScssUtilityBaseClass BackgroundImageGradientT { get; } = new()
+    {
+        Selector = "bg-gradient-to-t",
+        Template = """
+                   background-image: linear-gradient(to top, var(--tw-gradient-stops));
+                   """
+    };
     
+    public ScssUtilityBaseClass BackgroundImageGradientTr { get; } = new()
+    {
+        Selector = "bg-gradient-to-tr",
+        Template = """
+                   background-image: linear-gradient(to top right, var(--tw-gradient-stops));
+                   """
+    };
     
+    public ScssUtilityBaseClass BackgroundImageGradientR { get; } = new()
+    {
+        Selector = "bg-gradient-to-r",
+        Template = """
+                   background-image: linear-gradient(to right, var(--tw-gradient-stops));
+                   """
+    };
+
+    public ScssUtilityBaseClass BackgroundImageGradientBr { get; } = new()
+    {
+        Selector = "bg-gradient-to-br",
+        Template = """
+                   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+                   """
+    };
+
+    public ScssUtilityBaseClass BackgroundImageGradientB { get; } = new()
+    {
+        Selector = "bg-gradient-to-b",
+        Template = """
+                   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+                   """
+    };
+
+    public ScssUtilityBaseClass BackgroundImageGradientBl { get; } = new()
+    {
+        Selector = "bg-gradient-to-bl",
+        Template = """
+                   background-image: linear-gradient(to bottom left, var(--tw-gradient-stops));
+                   """
+    };
+
+    public ScssUtilityBaseClass BackgroundImageGradientL { get; } = new()
+    {
+        Selector = "bg-gradient-to-l",
+        Template = """
+                   background-image: linear-gradient(to left, var(--tw-gradient-stops));
+                   """
+    };
+
+    public ScssUtilityBaseClass BackgroundImageGradientTl { get; } = new()
+    {
+        Selector = "bg-gradient-to-tl",
+        Template = """
+                   background-image: linear-gradient(to top left, var(--tw-gradient-stops));
+                   """
+    };
+
+    public ScssUtilityBaseClass GradientColorStopsFromInherit { get; } = new()
+    {
+        Selector = "from-inherit",
+        Template = """
+                   --tw-gradient-from: inherit var(--tw-gradient-from-position);
+                   --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+                   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+                   """
+    };
+
+    public ScssBaseClass GradientColorStopsFromColors { get; } = new()
+    {
+        SelectorPrefix = "from",
+        PrefixValueTypes = "color",
+        AddColorOptions = true,
+        PropertyTemplate = """
+                           --tw-gradient-from: {value} var(--tw-gradient-from-position);
+                           --tw-gradient-to: transparent var(--tw-gradient-to-position);
+                           --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+                           """,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
+
+    public ScssBaseClass GradientColorStopsFromPercentages { get; } = new()
+    {
+        SelectorPrefix = "from",
+        PropertyName = "--tw-gradient-from-position",
+        PrefixValueTypes = "percentage",
+        AddPercentageOptions = true,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
     
+    public ScssUtilityBaseClass GradientColorStopsViaInherit { get; } = new()
+    {
+        Selector = "via-inherit",
+        Template = """
+                   --tw-gradient-to: rgb(255 255 255 / 0)  var(--tw-gradient-to-position);
+                   --tw-gradient-stops: var(--tw-gradient-from), inherit var(--tw-gradient-via-position), var(--tw-gradient-to);
+                   """
+    };
+
+    public ScssBaseClass GradientColorStopsViaColors { get; } = new()
+    {
+        SelectorPrefix = "via",
+        PrefixValueTypes = "color",
+        AddColorOptions = true,
+        PropertyTemplate = """
+                           --tw-gradient-to: transparent  var(--tw-gradient-to-position);
+                           --tw-gradient-stops: var(--tw-gradient-from), {value} var(--tw-gradient-via-position), var(--tw-gradient-to);
+                           """,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
+
+    public ScssBaseClass GradientColorStopsViaPercentages { get; } = new()
+    {
+        SelectorPrefix = "via",
+        PropertyName = "--tw-gradient-via-position",
+        PrefixValueTypes = "percentage",
+        AddPercentageOptions = true,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
+    
+    public ScssUtilityBaseClass GradientColorStopsToInherit { get; } = new()
+    {
+        Selector = "to-inherit",
+        Template = """
+                   --tw-gradient-to: inherit var(--tw-gradient-to-position);
+                   """
+    };
+
+    public ScssBaseClass GradientColorStopsToColors { get; } = new()
+    {
+        SelectorPrefix = "to",
+        PrefixValueTypes = "color",
+        AddColorOptions = true,
+        PropertyTemplate = """
+                           --tw-gradient-to: {value} var(--tw-gradient-to-position);
+                           """,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
+
+    public ScssBaseClass GradientColorStopsToPercentages { get; } = new()
+    {
+        SelectorPrefix = "to",
+        PropertyName = "--tw-gradient-to-position",
+        PrefixValueTypes = "percentage",
+        AddPercentageOptions = true,
+        Options = new Dictionary<string, string>
+        {
+            ["-"] = string.Empty
+        }
+    };
 }

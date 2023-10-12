@@ -4,7 +4,7 @@ public sealed class ScssBaseClass
 {
     #region Constants
 
-    public static Dictionary<string, string> Percentages => new()
+    public static Dictionary<string, string> Fractions => new()
     {
         ["1/2"] = "50%",
         ["1/3"] = "33.333333%",
@@ -291,6 +291,7 @@ public sealed class ScssBaseClass
     public string PropertyName { get; set; } = string.Empty;
     public string PrefixValueTypes { get; set; } = string.Empty;
     public string ChildSelector { get; set; } = string.Empty;
+    public string PropertyTemplate { get; set; } = "{property}: {value};";
 
     public int AddNumberedOptionsMinValue { get; set; } = -1;
     public int AddNumberedOptionsMaxValue { get; set; } = -1;
@@ -298,6 +299,7 @@ public sealed class ScssBaseClass
     public string AddNumberedOptionsValueTemplate { get; set; } = string.Empty;
     public decimal AddNumberedRemUnitsOptionsMinValue { get; set; } = -1;
     public decimal AddNumberedRemUnitsOptionsMaxValue { get; set; } = -1;
+    public bool AddFractionOptions { get; set; }
     public bool AddPercentageOptions { get; set; }
     public bool AddColorOptions { get; set; }
     
@@ -319,11 +321,16 @@ public sealed class ScssBaseClass
                 AddNumberedRemUnitsOptions();
             }
 
+            if (AddFractionOptions)
+            {
+                AddFractionsOptions();
+            }
+
             if (AddPercentageOptions)
             {
                 AddPercentagesOptions();
             }
-
+            
             if (AddColorOptions)
             {
                 AddColors();
@@ -374,14 +381,26 @@ public sealed class ScssBaseClass
             Options?.TryAdd(x.ToString(), value);
         }
     }
-    
+
     /// <summary>
-    /// Add options for percentages from 1/2 up through 11/12, and "full" =&gt; 100%.
+    /// Add options for percentages by number.
     /// Used by inherited classes.
     /// </summary>
     public void AddPercentagesOptions()
     {
-        foreach (var percentage in Percentages)
+        for (var x = 0; x <= 100; x+=5)
+        {
+            Options?.TryAdd($"{x}%", $"{x}%");
+        }
+    }
+    
+    /// <summary>
+    /// Add options for fractions from 1/2 up through 11/12, and "full" =&gt; 100%.
+    /// Used by inherited classes.
+    /// </summary>
+    public void AddFractionsOptions()
+    {
+        foreach (var percentage in Fractions)
             Options?.TryAdd(percentage.Key, percentage.Value);
     }
 
@@ -415,7 +434,7 @@ public sealed class ScssBaseClass
             var propertyNames = PropertyName.Split(',');
 
             foreach (var propName in propertyNames)
-                template += $"{propName}: {{value}}; ";
+                template += PropertyTemplate.Replace("{property}", propName) + " ";
             
             if (item is { Key: "-", Value: "" } && SelectorPrefix != string.Empty)
             {

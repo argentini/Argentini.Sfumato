@@ -341,7 +341,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -358,7 +358,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -375,7 +375,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -392,7 +392,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -409,7 +409,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -426,7 +426,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -443,7 +443,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -460,7 +460,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -477,7 +477,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
-        AddPercentageOptions = true,
+        AddFractionOptions = true,
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
