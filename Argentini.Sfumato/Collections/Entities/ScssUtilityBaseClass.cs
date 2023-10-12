@@ -3,6 +3,7 @@ namespace Argentini.Sfumato.Collections.Entities;
 public sealed class ScssUtilityBaseClass
 {
     public string Selector { get; set; } = string.Empty;
+    public string ChildSelector { get; set; } = string.Empty;
 
     private string _template = string.Empty;
     public string Template
@@ -36,6 +37,7 @@ public sealed class ScssUtilityBaseClass
         Classes.Add(new ScssClass
         {
             RootClassName = $"{Selector}",
+            ChildSelector = ChildSelector,
             Template = _template
         });
     }
