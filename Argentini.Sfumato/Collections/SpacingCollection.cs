@@ -149,6 +149,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -164,6 +165,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -179,6 +181,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -194,6 +197,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -209,6 +213,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -224,6 +229,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -239,6 +245,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -254,6 +261,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
@@ -269,6 +277,7 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
+            ["auto"] = "auto",
             ["0"] = "0px",
             ["px"] = "1px"
         }
