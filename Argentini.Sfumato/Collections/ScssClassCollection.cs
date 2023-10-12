@@ -6,6 +6,8 @@ public partial class ScssClassCollection
     
     public ScssClassCollection()
     {
+        var sortIndex = 0;
+        
         foreach (var property in typeof(ScssClassCollection).GetProperties())
         {
             var classesProperty = property.PropertyType.GetProperty("Classes");
@@ -17,12 +19,15 @@ public partial class ScssClassCollection
 
             if (propertyValue is null)
                 continue;
-            
-            var listReference = (List<ScssClass>?)classesProperty.GetValue(propertyValue);
 
-            if (listReference is null)
+            if (classesProperty.GetValue(propertyValue) is not List<ScssClass> listReference)
                 continue;
 
+            foreach (var scssClass in listReference)
+            {
+                scssClass.SortOrder = sortIndex++;
+            }
+            
             AllClasses.AddRange(listReference);
         }
     }

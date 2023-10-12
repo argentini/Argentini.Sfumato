@@ -209,7 +209,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 		
-		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.UserClassName))
+		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.SortOrder))
 		{
 			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
