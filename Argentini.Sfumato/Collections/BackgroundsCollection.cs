@@ -125,7 +125,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-t",
         Template = """
-                   background-image: linear-gradient(to top, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to top, var(--sf-gradient-stops));
                    """
     };
     
@@ -133,7 +133,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-tr",
         Template = """
-                   background-image: linear-gradient(to top right, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to top right, var(--sf-gradient-stops));
                    """
     };
     
@@ -141,7 +141,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-r",
         Template = """
-                   background-image: linear-gradient(to right, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to right, var(--sf-gradient-stops));
                    """
     };
 
@@ -149,7 +149,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-br",
         Template = """
-                   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to bottom right, var(--sf-gradient-stops));
                    """
     };
 
@@ -157,7 +157,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-b",
         Template = """
-                   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to bottom, var(--sf-gradient-stops));
                    """
     };
 
@@ -165,7 +165,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-bl",
         Template = """
-                   background-image: linear-gradient(to bottom left, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to bottom left, var(--sf-gradient-stops));
                    """
     };
 
@@ -173,7 +173,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-l",
         Template = """
-                   background-image: linear-gradient(to left, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to left, var(--sf-gradient-stops));
                    """
     };
 
@@ -181,7 +181,7 @@ public partial class ScssClassCollection
     {
         Selector = "bg-gradient-to-tl",
         Template = """
-                   background-image: linear-gradient(to top left, var(--tw-gradient-stops));
+                   background-image: linear-gradient(to top left, var(--sf-gradient-stops));
                    """
     };
 
@@ -189,9 +189,9 @@ public partial class ScssClassCollection
     {
         Selector = "from-inherit",
         Template = """
-                   --tw-gradient-from: inherit var(--tw-gradient-from-position);
-                   --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
-                   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+                   --sf-gradient-from: inherit var(--sf-gradient-from-position);
+                   --sf-gradient-to: rgb(255 255 255 / 0) var(--sf-gradient-to-position);
+                   --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
                    """
     };
 
@@ -201,9 +201,9 @@ public partial class ScssClassCollection
         PrefixValueTypes = "color",
         AddColorOptions = true,
         PropertyTemplate = """
-                           --tw-gradient-from: {value} var(--tw-gradient-from-position);
-                           --tw-gradient-to: transparent var(--tw-gradient-to-position);
-                           --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+                           --sf-gradient-from: {value} var(--sf-gradient-from-position);
+                           --sf-gradient-to: transparent var(--sf-gradient-to-position);
+                           --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
                            """,
         Options = new Dictionary<string, string>
         {
@@ -214,7 +214,7 @@ public partial class ScssClassCollection
     public ScssBaseClass GradientColorStopsFromPercentages { get; } = new()
     {
         SelectorPrefix = "from",
-        PropertyName = "--tw-gradient-from-position",
+        PropertyName = "--sf-gradient-from-position",
         PrefixValueTypes = "percentage",
         AddPercentageOptions = true,
         Options = new Dictionary<string, string>
@@ -227,8 +227,8 @@ public partial class ScssClassCollection
     {
         Selector = "via-inherit",
         Template = """
-                   --tw-gradient-to: rgb(255 255 255 / 0)  var(--tw-gradient-to-position);
-                   --tw-gradient-stops: var(--tw-gradient-from), inherit var(--tw-gradient-via-position), var(--tw-gradient-to);
+                   --sf-gradient-to: rgb(255 255 255 / 0)  var(--sf-gradient-to-position);
+                   --sf-gradient-stops: var(--sf-gradient-from), inherit var(--sf-gradient-via-position), var(--sf-gradient-to);
                    """
     };
 
@@ -238,8 +238,8 @@ public partial class ScssClassCollection
         PrefixValueTypes = "color",
         AddColorOptions = true,
         PropertyTemplate = """
-                           --tw-gradient-to: transparent  var(--tw-gradient-to-position);
-                           --tw-gradient-stops: var(--tw-gradient-from), {value} var(--tw-gradient-via-position), var(--tw-gradient-to);
+                           --sf-gradient-to: transparent  var(--sf-gradient-to-position);
+                           --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
                            """,
         Options = new Dictionary<string, string>
         {
@@ -250,7 +250,7 @@ public partial class ScssClassCollection
     public ScssBaseClass GradientColorStopsViaPercentages { get; } = new()
     {
         SelectorPrefix = "via",
-        PropertyName = "--tw-gradient-via-position",
+        PropertyName = "--sf-gradient-via-position",
         PrefixValueTypes = "percentage",
         AddPercentageOptions = true,
         Options = new Dictionary<string, string>
@@ -263,7 +263,7 @@ public partial class ScssClassCollection
     {
         Selector = "to-inherit",
         Template = """
-                   --tw-gradient-to: inherit var(--tw-gradient-to-position);
+                   --sf-gradient-to: inherit var(--sf-gradient-to-position);
                    """
     };
 
@@ -273,7 +273,7 @@ public partial class ScssClassCollection
         PrefixValueTypes = "color",
         AddColorOptions = true,
         PropertyTemplate = """
-                           --tw-gradient-to: {value} var(--tw-gradient-to-position);
+                           --sf-gradient-to: {value} var(--sf-gradient-to-position);
                            """,
         Options = new Dictionary<string, string>
         {
@@ -284,7 +284,7 @@ public partial class ScssClassCollection
     public ScssBaseClass GradientColorStopsToPercentages { get; } = new()
     {
         SelectorPrefix = "to",
-        PropertyName = "--tw-gradient-to-position",
+        PropertyName = "--sf-gradient-to-position",
         PrefixValueTypes = "percentage",
         AddPercentageOptions = true,
         Options = new Dictionary<string, string>

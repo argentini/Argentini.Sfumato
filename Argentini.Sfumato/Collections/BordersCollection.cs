@@ -389,14 +389,14 @@ public partial class ScssClassCollection
     {
         Selector = "divide-y-reverse",
         ChildSelector = "& > * + *",
-        Template = "--tw-divide-y-reverse: 1;"
+        Template = "--sf-divide-y-reverse: 1;"
     };
     
     public ScssUtilityBaseClass DivideWidthXReverse { get; } = new()
     {
         Selector = "divide-x-reverse",
         ChildSelector = "& > * + *",
-        Template = "--tw-divide-x-reverse: 1;"
+        Template = "--sf-divide-x-reverse: 1;"
     };
     
     public ScssBaseClass DivideColor { get; } = new()
@@ -496,7 +496,7 @@ public partial class ScssClassCollection
     public ScssBaseClass RingWidth { get; } = new()
     {
         SelectorPrefix = "ring",
-        PropertyTemplate = "box-shadow: var(--tw-ring-inset) 0 0 0 calc({value} + var(--tw-ring-offset-width)) var(--tw-ring-color);",
+        PropertyTemplate = "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);",
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
@@ -513,13 +513,13 @@ public partial class ScssClassCollection
     public ScssUtilityBaseClass RingWidthInset { get; } = new()
     {
         Selector = "ring-inset",
-        Template = "--tw-ring-inset: inset;"
+        Template = "--sf-ring-inset: inset;"
     };
     
     public ScssBaseClass RingColor { get; } = new()
     {
         SelectorPrefix = "ring",
-        PrefixValueTypes = "--tw-ring-color",
+        PrefixValueTypes = "--sf-ring-color",
         AddColorOptions = true,
         Options = new Dictionary<string, string>
         {
@@ -530,7 +530,7 @@ public partial class ScssClassCollection
     public ScssBaseClass RingOffsetWidth { get; } = new()
     {
         SelectorPrefix = "ring-offset",
-        PropertyTemplate = "--tw-ring-offset-width: {value}; box-shadow: 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color), var(--tw-ring-shadow);",
+        PropertyTemplate = "--sf-ring-offset-width: {value}; box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);",
         PrefixValueTypes = "length,percentage",
         Options = new Dictionary<string, string>
         {
@@ -546,7 +546,7 @@ public partial class ScssClassCollection
     public ScssBaseClass RingOffsetColor { get; } = new()
     {
         SelectorPrefix = "ring-offset",
-        PropertyTemplate = "--tw-ring-offset-color: {value}; box-shadow: 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color), var(--tw-ring-shadow);",
+        PropertyTemplate = "--sf-ring-offset-color: {value}; box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);",
         PrefixValueTypes = "color",
         AddColorOptions = true,
         Options = new Dictionary<string, string>
