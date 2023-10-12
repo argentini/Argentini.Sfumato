@@ -451,7 +451,7 @@ public sealed class ScssBaseClass
 
             Classes.Add(new ScssClass
             {
-                RootClassName = $"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}-" : string.Empty)}{item.Key}",
+                RootClassName = $"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}{(item.Key != string.Empty ? "-" : string.Empty)}" : string.Empty)}{item.Key}",
                 Value = item.Value,
                 ChildSelector = ChildSelector,
                 Template = template.Trim()
