@@ -918,7 +918,7 @@ public static class SfumatoScss
 		    if (segments.Length > 1)
 		    {
 			    if (ArbitraryValueTypes.Contains(segments[0]))
-				    value = value[(segments[0].Length + 1)..];
+				    return segments[0];
 		    }
 	    }
 
