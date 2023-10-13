@@ -38,6 +38,7 @@ public sealed class ScssBaseClass
     public static Dictionary<string, string> Colors => new()
     {
         ["inherit"] = "inherit",
+        ["current"] = "currentColor",
         ["transparent"] = "transparent",
         ["black"] = "rgb(0 0 0)",
         ["white"] = "rgb(255 255 255)",
