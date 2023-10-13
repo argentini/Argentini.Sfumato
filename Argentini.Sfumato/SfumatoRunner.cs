@@ -424,7 +424,7 @@ public sealed class SfumatoRunner
 		var dirs = dir.GetDirectories();
 		var files = dir.GetFiles();
 			
-		foreach (var cssFile in files.Where(f => f.Name.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase)))
+		foreach (var cssFile in files.Where(f => f.Name.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase) && f.Name.Equals("sfumato.css", StringComparison.InvariantCultureIgnoreCase) == false))
 			cssFile.Delete();			
 
 		foreach (var file in files.OrderBy(f => f.Name))
