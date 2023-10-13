@@ -10,6 +10,7 @@ public partial class ScssClassCollection
     {
         SelectorPrefix = "shadow",
         PropertyName = "box-shadow",
+        GlobalGrouping = "shadow",
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,

@@ -307,12 +307,21 @@ public sealed class SfumatoRunner
 			sb.Append('}');
 		}
 		
+		globalSelector.Clear();
 
-		// todo: Handle "ring-" classes
-		
-		
-		
-		
+		foreach (var (_, usedClass) in AppState.UsedClasses)
+		{
+			if (usedClass.GlobalGrouping == "shadow")
+				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)}");
+		}
+
+		if (globalSelector.Length > 0)
+		{
+			sb.Append(globalSelector + " {");
+			sb.Append("--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;");
+			sb.Append('}');
+		}
+
 		#endregion
 		
 		await GenerateScssFromObjectTreeAsync(hierarchy, sb);
