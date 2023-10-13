@@ -15,6 +15,7 @@ public partial class ScssClassCollection
         {
             ["-"] = string.Empty,
             [""] = $"0 1px {3.PxToRem()} 0 rgb(0 0 0 / 0.1), 0 1px {2.PxToRem()} -1px rgb(0 0 0 / 0.1)",
+            ["xs"] = "0 0 0 1px rgb(0 0 0 / 0.05)",
             ["sm"] = $"0 1px {2.PxToRem()} 0 rgb(0 0 0 / 0.05)",
             ["md"] = $"0 {4.PxToRem()} {6.PxToRem()} -1px rgb(0 0 0 / 0.1), 0 {2.PxToRem()} {4.PxToRem()} -{2.PxToRem()} rgb(0 0 0 / 0.1)",
             ["lg"] = $"0 {10.PxToRem()} {15.PxToRem()} -{3.PxToRem()} rgb(0 0 0 / 0.1), 0 {4.PxToRem()} {6.PxToRem()} -{4.PxToRem()} rgb(0 0 0 / 0.1)",
