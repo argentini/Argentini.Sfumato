@@ -5,6 +5,12 @@
 /// </summary>
 public static class Strings
 {
+	#region Constants
+
+	public static string ArrowRight => "\u2b95";	
+	
+	#endregion
+	
 	#region Trimming
 	
 	/// <summary>

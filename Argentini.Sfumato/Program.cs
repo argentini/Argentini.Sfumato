@@ -147,7 +147,7 @@ internal class Program
 						{
 							var length = await SfumatoScss.TranspileSingleScss(fileChangeRequest.Value.FilePath, runner.AppState);
 							
-							Console.WriteLine($"\u21d2 Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
+							Console.WriteLine($"{Strings.ArrowRight} Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
 						}
 						
 						while (scssTranspileQueue.TryRemove(fileChangeRequest.Key, out _) == false)

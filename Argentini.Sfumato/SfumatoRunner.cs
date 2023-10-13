@@ -78,7 +78,7 @@ public sealed class SfumatoRunner
 
 		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState);
 		
-		Console.WriteLine($"\u21d2 Generated sfumato.css ({fileSize.FormatBytes()}) in {totalTimer.FormatTimer()}");
+		Console.WriteLine($"{Strings.ArrowRight} Generated sfumato.css ({fileSize.FormatBytes()}) in {totalTimer.FormatTimer()}");
 		AppState.DiagnosticOutput.Append($"Generated sfumato.css ({fileSize.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
 
 		#endregion
@@ -93,9 +93,9 @@ public sealed class SfumatoRunner
 			await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec, fileStats, projectPath.Recurse);
 
 		if (fileStats.FileCount == 0)
-			Console.WriteLine("\u21d2 No project SCSS files found");
+			Console.WriteLine($"{Strings.ArrowRight} No project SCSS files found");
 		else
-			Console.WriteLine($"\u21d2 Generated {fileStats.FileCount:N0} project CSS file{(fileStats.FileCount == 1 ? string.Empty : "s")} ({fileStats.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
+			Console.WriteLine($"{Strings.ArrowRight} Generated {fileStats.FileCount:N0} project CSS file{(fileStats.FileCount == 1 ? string.Empty : "s")} ({fileStats.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
 
 		#endregion
 		
