@@ -19,18 +19,15 @@ internal class Program
 
 		await runner.InitializeAsync(args);
 
-		if (runner.AppState.VersionMode == false)
-			Console.WriteLine(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
-		
-		Console.Write($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
-		
 		if (runner.AppState.VersionMode)
 		{
-			Console.WriteLine();
+			Console.WriteLine($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
 			Environment.Exit(0);
 		}
 
-		Console.WriteLine($" / {runner.AppState.ScssClassCollection.AllClasses.Count:N0} Classes / {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
+		Console.WriteLine(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
+		Console.WriteLine("Sfumato: The lean, modern, utility-based SCSS/CSS framework generation tool");
+		Console.WriteLine($"Version {Identify.Version(Assembly.GetExecutingAssembly())} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / {runner.AppState.ScssClassCollection.AllClasses.Count:N0} Core Classes");
 		
 		Console.WriteLine(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		
@@ -55,21 +52,30 @@ internal class Program
 		Console.WriteLine($"Build Mode       :  {(runner.AppState.ReleaseMode ? "Release" : "Development")}");
 		Console.WriteLine($"Theme Mode       :  {(runner.AppState.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "System" : "CSS Class")}");
 		Console.WriteLine($"Project Path     :  {runner.AppState.WorkingPath}");
-		Console.WriteLine($"CSS Output Path  :  .{runner.AppState.Settings.CssOutputPath.TrimStart(runner.AppState.WorkingPath)}");
+		Console.WriteLine($"CSS Output Path  :  .{runner.AppState.Settings.CssOutputPath.TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}sfumato.css");
 
 		if (runner.AppState.Settings.ProjectPaths.Count > 0)
 		{
-			var paths = string.Empty;
+			var paths = runner.AppState.StringBuilderPool.Get();
 	        
 			foreach (var path in runner.AppState.Settings.ProjectPaths)
 			{
-				if (string.IsNullOrEmpty(paths) == false)
-					paths += "                 :  ";
+				if (paths.Length > 0)
+					paths.Append("                 :  ");
 
-				paths += $".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}{Path.DirectorySeparatorChar}{path.FileSpec}{Environment.NewLine}";
+				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}{Path.DirectorySeparatorChar}{path.FileSpec}");
+
+				if (path.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+					paths.Append(" (transpile in-place)");
+				else
+					paths.Append(" (audit used classes)");
+
+				paths.Append($"{Environment.NewLine}");
 			}
 	        
-			Console.WriteLine($"Include Path(s)  :  {paths.TrimEnd()}");
+			Console.WriteLine($"Watch Path(s)    :  {paths.ToString().TrimEnd()}");
+			
+			runner.AppState.StringBuilderPool.Return(paths);
 		}        
 
 		Console.WriteLine(Strings.ThinLine.Repeat(SfumatoRunner.MaxConsoleWidth));
@@ -147,7 +153,7 @@ internal class Program
 						{
 							var length = await SfumatoScss.TranspileSingleScss(fileChangeRequest.Value.FilePath, runner.AppState);
 							
-							Console.WriteLine($"{Strings.ArrowRight} Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
+							Console.WriteLine($"{Strings.TriangleRight} Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
 						}
 						
 						while (scssTranspileQueue.TryRemove(fileChangeRequest.Key, out _) == false)

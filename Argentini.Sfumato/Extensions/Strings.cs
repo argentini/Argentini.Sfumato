@@ -8,6 +8,7 @@ public static class Strings
 	#region Constants
 
 	public static string ArrowRight => "\u2b95";	
+	public static string TriangleRight => "\u23f5";	
 	public static string ThinLine => "\u23bb";	
 	public static string ThickLine => "\u2501";	
 	
@@ -79,6 +80,19 @@ public static class Strings
 		result.TrimEnd(substring, stringComparison);
 
 		return result.ToString();
+	}
+
+	/// <summary>
+	/// Trim directory separator characters from the end of a string base on the current operating system.
+	/// </summary>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static string TrimEndingPathSeparators(this string? value)
+	{
+		if (string.IsNullOrEmpty(value))
+			return string.Empty;
+
+		return value.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar);
 	}
 	
 	#endregion

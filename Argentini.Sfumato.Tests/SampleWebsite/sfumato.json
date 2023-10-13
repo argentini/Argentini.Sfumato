@@ -1,5 +1,5 @@
 {
-    "cssOutputPath": "wwwroot/css",
+    "cssOutputPath": "wwwroot/css/",
     "projectPaths": [
         {
             "path": "wwwroot",

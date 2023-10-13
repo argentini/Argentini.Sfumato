@@ -438,7 +438,7 @@ public sealed class SfumatoAppState
 
 		if (Settings.ProjectPaths.Count == 0)
 		{
-			Console.WriteLine($"{Strings.ArrowRight} No project paths specified");
+			Console.WriteLine($"{Strings.TriangleRight} No project paths specified");
 			return;
 		}
 
@@ -448,9 +448,9 @@ public sealed class SfumatoAppState
 			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(projectPath.Path, projectPath.FileSpec, fileCount, projectPath.Recurse);
 		
 		if (fileCount == 0)
-			Console.WriteLine($"{Strings.ArrowRight} Identifying no used classes");
+			Console.WriteLine($"{Strings.TriangleRight} Identifying no used classes");
 		else
-			Console.WriteLine($"{Strings.ArrowRight} Identified {fileCount:N0} file{(fileCount == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
+			Console.WriteLine($"{Strings.TriangleRight} Identified {fileCount:N0} file{(fileCount == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
 	}
 	private async Task<int> RecurseProjectPathForUsedScssCoreClassesAsync(string? sourcePath, string fileSpec, int fileCount, bool recurse = false)
 	{
