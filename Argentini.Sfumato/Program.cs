@@ -19,6 +19,9 @@ internal class Program
 
 		await runner.InitializeAsync(args);
 
+		if (runner.AppState.VersionMode == false)
+			Console.WriteLine("\u2501".Repeat(SfumatoRunner.MaxConsoleWidth));
+		
 		Console.Write($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
 		
 		if (runner.AppState.VersionMode)
@@ -29,7 +32,7 @@ internal class Program
 
 		Console.WriteLine($" / {runner.AppState.ScssClassCollection.AllClasses.Count:N0} Classes / {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
 		
-		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
+		Console.WriteLine("\u2501".Repeat(SfumatoRunner.MaxConsoleWidth));
 		
 		if (runner.AppState.HelpMode)
 		{
@@ -69,7 +72,8 @@ internal class Program
 			Console.WriteLine($"Include Path(s)  :  {paths.TrimEnd()}");
 		}        
 
-		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
+		Console.WriteLine("\u23bb".Repeat(SfumatoRunner.MaxConsoleWidth));
+
 		Console.WriteLine($"Started {(runner.AppState.WatchMode ? "initial build" : "build")} at {DateTime.Now:HH:mm:ss.fff}");
 
 		var timer = new Stopwatch();
@@ -143,7 +147,7 @@ internal class Program
 						{
 							var length = await SfumatoScss.TranspileSingleScss(fileChangeRequest.Value.FilePath, runner.AppState);
 							
-							Console.WriteLine($"=> Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
+							Console.WriteLine($"\u21d2 Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
 						}
 						
 						while (scssTranspileQueue.TryRemove(fileChangeRequest.Key, out _) == false)
