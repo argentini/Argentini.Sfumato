@@ -451,9 +451,9 @@ public static class Strings
 	/// <param name="timer"></param>
 	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
 	/// <returns>Formatted timespan</returns>
-	public static string FormatTimer(this Stopwatch timer, string delimitter = " : ")
+	public static string FormatTimer(this Stopwatch timer, string delimitter = ":")
 	{
-		return FormatTimer(TimeSpan.FromMilliseconds(timer.ElapsedMilliseconds));
+		return FormatTimer(TimeSpan.FromMilliseconds(timer.ElapsedMilliseconds), delimitter);
 	}
 	
 	/// <summary>
@@ -463,7 +463,7 @@ public static class Strings
 	/// <param name="timespan"></param>
 	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
 	/// <returns>Formatted timespan</returns>
-	public static string FormatTimer(this TimeSpan timespan, string delimitter = " : ")
+	public static string FormatTimer(this TimeSpan timespan, string delimitter = ":")
 	{
 		var result = "0s";
 
