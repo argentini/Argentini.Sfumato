@@ -406,6 +406,39 @@ public static class Strings
 
 		return result;
 	}
+
+	/// <summary>
+	/// Convert a numeric pixel value to a rem value string, including the "rem" unit.
+	/// </summary>
+	/// <param name="pixels"></param>
+	/// <returns></returns>
+	public static string PxToRem(this decimal pixels)
+	{
+		return $"{(pixels / 16m):#.######}rem";
+	}
+
+	/// <summary>
+	/// Convert a numeric pixel value to a rem value string, including the "rem" unit.
+	/// </summary>
+	/// <param name="pixels"></param>
+	/// <returns></returns>
+	public static string PxToRem(this int pixels)
+	{
+		return $"{(pixels / 16m):#.######}rem";
+	}
 	
+	/// <summary>
+	/// Convert a pixel string value to a rem value string, including the "rem" unit.
+	/// </summary>
+	/// <param name="pixels"></param>
+	/// <returns></returns>
+	public static string PxToRem(this string pixelVal)
+	{
+		if (decimal.TryParse(pixelVal.Trim().TrimEnd("px")?.Trim(), out var pixels) == false)
+			return "0rem";
+		
+		return $"{(pixels / 16):#.######}rem";
+	}
+
 	#endregion
 }
