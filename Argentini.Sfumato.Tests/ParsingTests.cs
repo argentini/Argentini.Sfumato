@@ -48,7 +48,7 @@ public class ParsingTests
 
         matches = appState.CoreClassRegex.Matches(markup);
 
-        Assert.Equal(29, matches.Count);
+        Assert.Equal(31, matches.Count);
     }
     
     [Fact]
