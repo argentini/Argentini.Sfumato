@@ -149,9 +149,9 @@ public partial class ScssClassCollection
         ["-"] = string.Empty,
         [""] = "1px",
         ["0"] = "0px",
-        ["2"] = "0.125rem",
-        ["4"] = "0.25rem",
-        ["8"] = "0.5rem"
+        ["2"] = 2.PxToRem(),
+        ["4"] = 4.PxToRem(),
+        ["8"] = 8.PxToRem()
     };
     
     public ScssBaseClass BorderWidth { get; } = new()
@@ -362,9 +362,9 @@ public partial class ScssClassCollection
         ["-"] = string.Empty,
         [""] = "1px",
         ["0"] = "0px",
-        ["2"] = "0.125rem",
-        ["4"] = "0.25rem",
-        ["8"] = "0.5rem"
+        ["2"] = 2.PxToRem(),
+        ["4"] = 4.PxToRem(),
+        ["8"] = 8.PxToRem()
     };
     
     public ScssBaseClass DivideWidthX { get; } = new()
@@ -441,9 +441,9 @@ public partial class ScssClassCollection
             ["-"] = string.Empty,
             ["0"] = "0px",
             ["1"] = "1px",
-            ["2"] = "0.125rem",
-            ["4"] = "0.25rem",
-            ["8"] = "0.5rem"
+            ["2"] = 2.PxToRem(),
+            ["4"] = 4.PxToRem(),
+            ["8"] = 8.PxToRem()
         }
     };
     
@@ -483,9 +483,9 @@ public partial class ScssClassCollection
             ["-"] = string.Empty,
             ["0"] = "0px",
             ["1"] = "1px",
-            ["2"] = "0.125rem",
-            ["4"] = "0.25rem",
-            ["8"] = "0.5rem"
+            ["2"] = 2.PxToRem(),
+            ["4"] = 4.PxToRem(),
+            ["8"] = 8.PxToRem()
         }
     };
     
@@ -504,9 +504,9 @@ public partial class ScssClassCollection
             [""] = "0.1875rem",
             ["0"] = "0px",
             ["1"] = "1px",
-            ["2"] = "0.125rem",
-            ["4"] = "0.25rem",
-            ["8"] = "0.5rem"
+            ["2"] = 2.PxToRem(),
+            ["4"] = 4.PxToRem(),
+            ["8"] = 8.PxToRem()
         }
     };
     
@@ -537,9 +537,9 @@ public partial class ScssClassCollection
             ["-"] = string.Empty,
             ["0"] = "0px",
             ["1"] = "1px",
-            ["2"] = "0.125rem",
-            ["4"] = "0.25rem",
-            ["8"] = "0.5rem"
+            ["2"] = 2.PxToRem(),
+            ["4"] = 4.PxToRem(),
+            ["8"] = 8.PxToRem()
         }
     };
     

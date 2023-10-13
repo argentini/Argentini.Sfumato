@@ -257,9 +257,9 @@ public partial class ScssClassCollection
             ["from-font"] = "from-font",
             ["0"] = "0px",
             ["1"] = "1px",
-            ["2"] = "0.125rem",
-            ["4"] = "0.25rem",
-            ["8"] = "0.5rem"
+            ["2"] = 2.PxToRem(),
+            ["4"] = 4.PxToRem(),
+            ["8"] = 8.PxToRem()
         }
     };    
     
@@ -274,9 +274,9 @@ public partial class ScssClassCollection
             ["auto"] = "auto",
             ["0"] = "0px",
             ["1"] = "1px",
-            ["2"] = "0.125rem",
-            ["4"] = "0.25rem",
-            ["8"] = "0.5rem"
+            ["2"] = 2.PxToRem(),
+            ["4"] = 4.PxToRem(),
+            ["8"] = 8.PxToRem()
         }
     };
     
