@@ -16,7 +16,7 @@
             "recurse": true
         }
     ],
-    "themeMode": "system",
+    "themeMode": "class",
     "breakpoints":
         {
             "zero": 0,
