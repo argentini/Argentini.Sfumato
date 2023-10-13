@@ -1,11 +1,11 @@
 #test-home {
 
-  color: white;
-
-  @include sf-media($from: tabp) {
-
-    span {
-      color: yellow;
+    color: white;
+    
+    @include sf-media($from: tabp) {
+    
+        span {
+            color: yellow;
+        }
     }
-  }
 }

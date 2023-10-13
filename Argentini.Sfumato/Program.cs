@@ -143,7 +143,7 @@ internal class Program
 						{
 							var length = await SfumatoScss.TranspileSingleScss(fileChangeRequest.Value.FilePath, runner.AppState);
 							
-							Console.WriteLine($"=> Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath, runner.AppState)} ({length.FormatBytes()})");
+							Console.WriteLine($"=> Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
 						}
 						
 						while (scssTranspileQueue.TryRemove(fileChangeRequest.Key, out _) == false)
@@ -188,7 +188,7 @@ internal class Program
 
 			#endregion
 			
-			Console.WriteLine($"Total watch time: {TimeSpan.FromMilliseconds(totalTimer.ElapsedMilliseconds).FormatTimer()}");
+			Console.WriteLine($"Total watch time {TimeSpan.FromMilliseconds(totalTimer.ElapsedMilliseconds).FormatTimer()}");
 		}
 
 		#endregion
