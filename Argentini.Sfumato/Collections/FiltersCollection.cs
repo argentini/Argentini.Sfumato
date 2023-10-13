@@ -277,5 +277,4 @@ public partial class ScssClassCollection
             ["0"] = "0"
         }
     };
-    
 }
