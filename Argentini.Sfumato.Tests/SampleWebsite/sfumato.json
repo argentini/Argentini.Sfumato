@@ -9,11 +9,6 @@
         {
             "path": "wwwroot",
             "fileSpec": "*.scss"
-        },
-        {
-            "path": "wwwroot/components",
-            "fileSpec": "*.scss",
-            "recurse": true
         }
     ],
     "themeMode": "class",
