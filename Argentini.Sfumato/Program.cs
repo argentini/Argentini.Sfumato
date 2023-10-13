@@ -19,12 +19,15 @@ internal class Program
 
 		await runner.InitializeAsync(args);
 
-		Console.WriteLine($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
+		Console.Write($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
 		
 		if (runner.AppState.VersionMode)
 		{
+			Console.WriteLine();
 			Environment.Exit(0);
 		}
+
+		Console.WriteLine($" / {runner.AppState.ScssClassCollection.AllClasses.Count:N0} Classes / {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
 		
 		Console.WriteLine("=".Repeat(SfumatoRunner.MaxConsoleWidth));
 		
@@ -45,7 +48,7 @@ internal class Program
 
 			Environment.Exit(0);
 		}
-		
+
 		Console.WriteLine($"Build Mode       :  {(runner.AppState.ReleaseMode ? "Release" : "Development")}");
 		Console.WriteLine($"Theme Mode       :  {(runner.AppState.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "System" : "CSS Class")}");
 		Console.WriteLine($"Project Path     :  {runner.AppState.WorkingPath}");
@@ -75,7 +78,7 @@ internal class Program
 		
         await runner.PerformBuildAsync();
 
-        Console.WriteLine($"Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
+        Console.WriteLine($"Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
         
 		#region Watcher Mode
 
@@ -154,7 +157,7 @@ internal class Program
 				
 				if (processedFiles)
 				{
-					Console.WriteLine($"Completed build in {watchTimer.Elapsed.TotalSeconds:N2} seconds at {DateTime.Now:HH:mm:ss.fff}");
+					Console.WriteLine($"Completed build in {watchTimer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
 					Console.WriteLine();
 					Console.WriteLine("Watching; Press ESC to Exit");
 					Console.WriteLine();
@@ -184,11 +187,11 @@ internal class Program
 				watcher.Dispose();
 
 			#endregion
+			
+			Console.WriteLine($"Total watch time: {TimeSpan.FromMilliseconds(totalTimer.ElapsedMilliseconds).FormatTimer()}");
 		}
 
 		#endregion
-
-		Console.WriteLine($"Total run time: {totalTimer.Elapsed.TotalSeconds:N2} seconds");
 		
 		if (runner.AppState.DiagnosticMode)
 		{

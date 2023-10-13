@@ -441,4 +441,54 @@ public static class Strings
 	}
 
 	#endregion
+	
+	#region Time
+
+	/// <summary>
+	/// Format the elapsed time as a more friendly time span with a custom delimitter.
+	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
+	/// </summary>
+	/// <param name="timer"></param>
+	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
+	/// <returns>Formatted timespan</returns>
+	public static string FormatTimer(this Stopwatch timer, string delimitter = " : ")
+	{
+		return FormatTimer(TimeSpan.FromMilliseconds(timer.ElapsedMilliseconds));
+	}
+	
+	/// <summary>
+	/// Format the elapsed time as a more friendly time span with a custom delimitter.
+	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
+	/// </summary>
+	/// <param name="timespan"></param>
+	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
+	/// <returns>Formatted timespan</returns>
+	public static string FormatTimer(this TimeSpan timespan, string delimitter = " : ")
+	{
+		var result = "0s";
+
+		if (timespan.TotalMilliseconds <= 0.01)
+			return result;
+		
+		result = $"{timespan.TotalSeconds:0.##}s";
+
+		if (timespan.TotalSeconds < 60)
+			return result;
+		
+		result = timespan.Minutes + "m" + delimitter + timespan.Seconds + "s";
+
+		if (timespan.Hours > 0)
+		{
+			result = timespan.Hours + "h" + delimitter + timespan.Minutes + "m" + delimitter + timespan.Seconds + "s";
+		}
+
+		if (timespan.Days > 0)
+		{
+			result = timespan.Days + "d" + delimitter + timespan.Hours + "h" + delimitter +	timespan.Minutes + "m" + delimitter + timespan.Seconds + "s";
+		}
+
+		return result;
+	}
+	
+	#endregion
 }

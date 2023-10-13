@@ -185,17 +185,17 @@ public sealed class SfumatoAppState
             Environment.Exit(1);
         }
 
-        DiagnosticOutput.Append($"Initialized settings in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+        DiagnosticOutput.Append($"Initialized settings in {timer.FormatTimer()}{Environment.NewLine}");
 
         ScssCoreInjectable.Clear();
         ScssCoreInjectable.Append(await SfumatoScss.GetCoreScssAsync(this, DiagnosticOutput));
 
         ScssSharedInjectable.Clear();
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
+        
+        DiagnosticOutput.Append($"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.FormatTimer()}{Environment.NewLine}");
 
         timer.Restart();
-        
-        DiagnosticOutput.Append($"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
     }
     
     #endregion
@@ -434,30 +434,28 @@ public sealed class SfumatoAppState
 
 		timer.Start();
 
-		Console.Write("=> Identifying used classes...");
-		
 		UsedClasses.Clear();
 
 		if (Settings.ProjectPaths.Count == 0)
 		{
-			Console.WriteLine(" no project paths specified");
+			Console.WriteLine("=> No project paths specified");
 			return;
 		}
 
-		foreach (var projectPath in Settings.ProjectPaths)
-			await RecurseProjectPathForUsedScssCoreClassesAsync(projectPath.Path, projectPath.FileSpec, projectPath.Recurse);
+		var fileCount = 0;
 		
-		if (UsedClasses.Count == 0)
-			Console.WriteLine(" no classes used");
+		foreach (var projectPath in Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false))
+			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(projectPath.Path, projectPath.FileSpec, fileCount, projectPath.Recurse);
+		
+		if (fileCount == 0)
+			Console.WriteLine("=> Identifying no used classes");
 		else
-			Console.WriteLine($" found {UsedClasses.Count:N0}/{ScssClassCollection.AllClasses.Count:N0} classes");
-		
-		DiagnosticOutput.Append($"Identified {UsedClasses.Count:N0} used classes in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+			Console.WriteLine($"=> Identified {fileCount:N0} file{(fileCount == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
 	}
-	private async Task RecurseProjectPathForUsedScssCoreClassesAsync(string? sourcePath, string fileSpec, bool recurse = false)
+	private async Task<int> RecurseProjectPathForUsedScssCoreClassesAsync(string? sourcePath, string fileSpec, int fileCount, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
-			return;
+			return fileCount;
 
 		var dir = new DirectoryInfo(sourcePath);
 
@@ -475,6 +473,8 @@ public sealed class SfumatoAppState
 		{
 			if (projectFile.Name.EndsWith($"{fileSpec.TrimStart('*')}", StringComparison.InvariantCultureIgnoreCase) == false)
 				continue;
+
+			fileCount++;
 			
 			var markup = await File.ReadAllTextAsync(projectFile.FullName);
 
@@ -558,9 +558,13 @@ public sealed class SfumatoAppState
 			}
 		}
 
-		if (recurse)
-			foreach (var subDir in dirs.OrderBy(d => d.Name))
-				await RecurseProjectPathForUsedScssCoreClassesAsync(subDir.FullName, fileSpec);
+		if (recurse == false)
+			return fileCount;
+		
+		foreach (var subDir in dirs.OrderBy(d => d.Name))
+			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(subDir.FullName, fileSpec, fileCount);
+
+		return fileCount;
 	}
 
 	#endregion

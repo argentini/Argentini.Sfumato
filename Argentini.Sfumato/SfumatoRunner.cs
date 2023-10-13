@@ -58,35 +58,45 @@ public sealed class SfumatoRunner
 	public async Task PerformBuildAsync()
 	{
 		var timer = new Stopwatch();
+		var totalTimer = new Stopwatch();
 		
 		#region Generate Global CSS
 		
 		await AppState.GatherUsedScssCoreClassesAsync();
 
 		timer.Start();
+		totalTimer.Start();
 
 		var projectScss = AppState.StringBuilderPool.Get();
 
 		projectScss.Append(AppState.ScssCoreInjectable);
 		projectScss.Append(await GenerateScssObjectTreeAsync());
 		
-		AppState.DiagnosticOutput.Append($"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		AppState.DiagnosticOutput.Append($"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
 
 		timer.Restart();
 
 		var fileSize = await SfumatoScss.TranspileScss(projectScss, AppState);
 		
-		Console.WriteLine($"=> Generated sfumato.css ({fileSize.FormatBytes()})");
-		AppState.DiagnosticOutput.Append($"Generated sfumato.css ({fileSize.FormatBytes()}) in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		Console.WriteLine($"=> Generated sfumato.css ({fileSize.FormatBytes()}) in {totalTimer.FormatTimer()}");
+		AppState.DiagnosticOutput.Append($"Generated sfumato.css ({fileSize.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
 
 		#endregion
 		
 		#region Compile Project SCSS In-Place
+
+		timer.Restart();
+
+		var fileStats = new FileResults();
 		
-		foreach (var projectPath in AppState.Settings.ProjectPaths)
-			if (projectPath.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-				await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec, projectPath.Recurse);
-		
+		foreach (var projectPath in AppState.Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase)))
+			await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec, fileStats, projectPath.Recurse);
+
+		if (fileStats.FileCount == 0)
+			Console.WriteLine("=> No project SCSS files found");
+		else
+			Console.WriteLine($"=> Generated {fileStats.FileCount:N0} project CSS file{(fileStats.FileCount == 1 ? string.Empty : "s")} ({fileStats.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
+
 		#endregion
 		
 		AppState.StringBuilderPool.Return(projectScss);
@@ -395,9 +405,10 @@ public sealed class SfumatoRunner
 	/// <param name="appState"></param>
 	/// <param name="sourcePath"></param>
 	/// <param name="fileSpec"></param>
+	/// <param name="fileStats"></param>
 	/// <param name="recurse"></param>
 	/// <returns></returns>
-	private static async Task FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, bool recurse = false)
+	private static async Task FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, FileResults fileStats, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
 			return;
@@ -421,15 +432,22 @@ public sealed class SfumatoRunner
 			if (file.Name.ToLower().EndsWith(fileSpec.TrimStart("*") ?? ".scss") == false)
 				continue;
 
+			fileStats.FileCount++;
+			
 			var length = await SfumatoScss.TranspileSingleScss(file.FullName, appState);
 
-			if (length > -1)
-				Console.WriteLine($"=> Generated {ShortenPathForOutput(file.FullName, appState)} ({length.FormatBytes()})");
+			if (length < 0)
+				continue;
+			
+			fileStats.TotalBytes += length;
+			appState.DiagnosticOutput.Append($"Generated {ShortenPathForOutput(file.FullName.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", appState)} ({length.FormatBytes()}){Environment.NewLine}");
 		}
 
-		if (recurse)
-			foreach (var subDir in dirs.OrderBy(d => d.Name))
-				await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, recurse);
+		if (recurse == false)
+			return;
+		
+		foreach (var subDir in dirs.OrderBy(d => d.Name))
+			await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, fileStats, recurse);
 	}
 	
 	#endregion
@@ -480,4 +498,10 @@ public sealed class SfumatoRunner
 	}
 	
 	#endregion
+}
+
+public class FileResults
+{
+	public int FileCount { get; set; }
+	public decimal TotalBytes { get; set; }
 }

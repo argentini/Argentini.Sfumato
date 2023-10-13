@@ -661,7 +661,7 @@ public static class SfumatoScss
 		
 		sb.Append(initScss);
 
-		diagnosticOutput.Append($"Prepared SCSS Core for output injection in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		diagnosticOutput.Append($"Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
 		
@@ -699,7 +699,7 @@ public static class SfumatoScss
 		
 		sb.Append(mediaQueriesScss);
 
-		diagnosticOutput.Append($"Prepared shared SCSS for output injection in {timer.Elapsed.TotalSeconds:N3} seconds{Environment.NewLine}");
+		diagnosticOutput.Append($"Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
 		
