@@ -519,7 +519,8 @@ public partial class ScssClassCollection
     public ScssBaseClass RingColor { get; } = new()
     {
         SelectorPrefix = "ring",
-        PrefixValueTypes = "--sf-ring-color",
+        PropertyName = "--sf-ring-color",
+        PrefixValueTypes = "color",
         AddColorOptions = true,
         Options = new Dictionary<string, string>
         {
