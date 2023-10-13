@@ -8,6 +8,8 @@ public static class Strings
 	#region Constants
 
 	public static string ArrowRight => "\u2b95";	
+	public static string ThinLine => "\u23bb";	
+	public static string ThickLine => "\u2501";	
 	
 	#endregion
 	

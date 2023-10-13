@@ -20,7 +20,7 @@ internal class Program
 		await runner.InitializeAsync(args);
 
 		if (runner.AppState.VersionMode == false)
-			Console.WriteLine("\u2501".Repeat(SfumatoRunner.MaxConsoleWidth));
+			Console.WriteLine(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		
 		Console.Write($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
 		
@@ -32,7 +32,7 @@ internal class Program
 
 		Console.WriteLine($" / {runner.AppState.ScssClassCollection.AllClasses.Count:N0} Classes / {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
 		
-		Console.WriteLine("\u2501".Repeat(SfumatoRunner.MaxConsoleWidth));
+		Console.WriteLine(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		
 		if (runner.AppState.HelpMode)
 		{
@@ -72,7 +72,7 @@ internal class Program
 			Console.WriteLine($"Include Path(s)  :  {paths.TrimEnd()}");
 		}        
 
-		Console.WriteLine("\u23bb".Repeat(SfumatoRunner.MaxConsoleWidth));
+		Console.WriteLine(Strings.ThinLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 
 		Console.WriteLine($"Started {(runner.AppState.WatchMode ? "initial build" : "build")} at {DateTime.Now:HH:mm:ss.fff}");
 
