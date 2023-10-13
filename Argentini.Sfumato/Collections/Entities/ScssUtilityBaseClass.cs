@@ -4,6 +4,7 @@ public sealed class ScssUtilityBaseClass
 {
     public string Selector { get; set; } = string.Empty;
     public string ChildSelector { get; set; } = string.Empty;
+    public string GlobalGrouping { get; set; } = string.Empty;
 
     private string _template = string.Empty;
     public string Template
@@ -37,6 +38,7 @@ public sealed class ScssUtilityBaseClass
         Classes.Add(new ScssClass
         {
             RootClassName = $"{Selector}",
+            GlobalGrouping = GlobalGrouping,
             ChildSelector = ChildSelector,
             Template = _template
         });

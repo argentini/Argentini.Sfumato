@@ -205,6 +205,7 @@ public partial class ScssClassCollection
     {
         SelectorPrefix = "from",
         PrefixValueTypes = "color",
+        GlobalGrouping = "gradients",
         AddColorOptions = true,
         PropertyTemplate = """
                            --sf-gradient-from: {value} var(--sf-gradient-from-position);
@@ -242,6 +243,7 @@ public partial class ScssClassCollection
     {
         SelectorPrefix = "via",
         PrefixValueTypes = "color",
+        GlobalGrouping = "gradients",
         AddColorOptions = true,
         PropertyTemplate = """
                            --sf-gradient-to: transparent  var(--sf-gradient-to-position);
@@ -277,6 +279,7 @@ public partial class ScssClassCollection
     {
         SelectorPrefix = "to",
         PrefixValueTypes = "color",
+        GlobalGrouping = "gradients",
         AddColorOptions = true,
         PropertyTemplate = """
                            --sf-gradient-to: {value} var(--sf-gradient-to-position);

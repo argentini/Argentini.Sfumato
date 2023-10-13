@@ -281,7 +281,7 @@ public sealed class SfumatoRunner
 		
 		foreach (var (_, usedClass) in AppState.UsedClasses)
 		{
-			if (usedClass.RootClassName.EndsWith('%') == false && (usedClass.RootClassName.StartsWith("from-") || usedClass.RootClassName.StartsWith("to-") || usedClass.RootClassName.StartsWith("via-")))
+			if (usedClass.GlobalGrouping == "gradients")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)}");
 		}
 
@@ -291,6 +291,27 @@ public sealed class SfumatoRunner
 			sb.Append("--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;");
 			sb.Append('}');
 		}
+
+		globalSelector.Clear();
+
+		foreach (var (_, usedClass) in AppState.UsedClasses)
+		{
+			if (usedClass.GlobalGrouping == "ring")
+				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)}");
+		}
+
+		if (globalSelector.Length > 0)
+		{
+			sb.Append(globalSelector + " {");
+			sb.Append("--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;");
+			sb.Append('}');
+		}
+		
+
+		// todo: Handle "ring-" classes
+		
+		
+		
 		
 		#endregion
 		

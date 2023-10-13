@@ -315,7 +315,8 @@ public sealed class ScssBaseClass
     public string PrefixValueTypes { get; set; } = string.Empty;
     public string ChildSelector { get; set; } = string.Empty;
     public string PropertyTemplate { get; set; } = "{property}: {value};";
-
+    public string GlobalGrouping { get; set; } = string.Empty;
+    
     public int AddNumberedOptionsMinValue { get; set; } = -1;
     public int AddNumberedOptionsMaxValue { get; set; } = -1;
     public bool AddNumberedOptionsIsNegative { get; set; }
@@ -488,6 +489,7 @@ public sealed class ScssBaseClass
                 Classes.Add(new ScssClass
                 {
                     RootClassName = $"{SelectorPrefix}-",
+                    GlobalGrouping = GlobalGrouping,
                     ValueTypes = PrefixValueTypes,
                     ChildSelector = ChildSelector,
                     Template = template.Trim()
@@ -499,6 +501,7 @@ public sealed class ScssBaseClass
             Classes.Add(new ScssClass
             {
                 RootClassName = $"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}{(item.Key != string.Empty ? "-" : string.Empty)}" : string.Empty)}{item.Key}",
+                GlobalGrouping = GlobalGrouping,
                 Value = item.Value,
                 ChildSelector = ChildSelector,
                 Template = template.Trim()

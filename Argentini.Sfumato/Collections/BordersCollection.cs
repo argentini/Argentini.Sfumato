@@ -498,6 +498,7 @@ public partial class ScssClassCollection
         SelectorPrefix = "ring",
         PropertyTemplate = "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);",
         PrefixValueTypes = "length,percentage",
+        GlobalGrouping = "ring",
         Options = new Dictionary<string, string>
         {
             ["-"] = string.Empty,
@@ -513,6 +514,7 @@ public partial class ScssClassCollection
     public ScssUtilityBaseClass RingWidthInset { get; } = new()
     {
         Selector = "ring-inset",
+        GlobalGrouping = "ring",
         Template = "--sf-ring-inset: inset;"
     };
     

@@ -8,6 +8,9 @@ public sealed class ScssClass
     public string ChildSelector { get; set; } = string.Empty;
     public string Template { get; set; } = string.Empty;
     public int SortOrder { get; set; }
+
+    public string GlobalGrouping { get; set; } = string.Empty;
+    
     private string _userClassName = string.Empty;
     public string UserClassName
     {

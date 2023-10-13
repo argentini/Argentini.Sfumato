@@ -39,11 +39,21 @@ public sealed class TextSizeClass
     
     public TextSizeClass()
     {
+        Classes.Add(new ScssClass
+        {
+            RootClassName = "text-",
+            GlobalGrouping = GlobalGrouping,
+            Value = "",
+            ValueTypes = "length,percentage",
+            Template = "font-size: {value};"
+        });
+        
         foreach (var size in TextSizes)
         {
             Classes.Add(new ScssClass
             {
                 RootClassName = $"text-{size.Key}/",
+                GlobalGrouping = GlobalGrouping,
                 Value = "",
                 ValueTypes = "length,percentage,number",
                 Template = $"font-size: {size.Value}; line-height: {{value}};"
@@ -52,6 +62,7 @@ public sealed class TextSizeClass
             Classes.Add(new ScssClass
             {
                 RootClassName = $"text-{size.Key}",
+                GlobalGrouping = GlobalGrouping,
                 Value = size.Value,
                 Template = "font-size: {value};"
             });
@@ -61,22 +72,16 @@ public sealed class TextSizeClass
                 Classes.Add(new ScssClass
                 {
                     RootClassName = $"text-{size.Key}/{leading.Key}",
+                    GlobalGrouping = GlobalGrouping,
                     Value = size.Value,
                     Template = $"font-size: {{value}}; line-height: {leading.Value};"
                 });
             }
         }
     }
+ 
+    public string GlobalGrouping { get; set; } = string.Empty;
     
     // ReSharper disable once CollectionNeverQueried.Global
-    public List<ScssClass> Classes { get; } = new ()
-    {
-        new ScssClass
-        {
-            RootClassName = "text-",
-            Value = "",
-            ValueTypes = "length,percentage",
-            Template = "font-size: {value};"
-        }
-    };
+    public List<ScssClass> Classes { get; } = new ();
 }
