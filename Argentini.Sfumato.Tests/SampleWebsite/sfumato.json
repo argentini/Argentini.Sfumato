@@ -11,7 +11,8 @@
             "fileSpec": "*.scss"
         },
         {
-            "path": "wwwroot/css/app.scss"
+            "path": "wwwroot/css/",
+            "fileSpec": "app.scss"
         }
     ],
     "themeMode": "class",

@@ -160,17 +160,19 @@ public sealed class SfumatoAppState
         
             foreach (var projectPath in jsonSettings.ProjectPaths)
             {
+	            if (string.IsNullOrEmpty(projectPath.FileSpec))
+		            continue;
+	            
                 projectPath.Path = Path.Combine(WorkingPath, projectPath.Path.SetNativePathSeparators());
-
-                if (File.Exists(projectPath.Path))
+                
+                if (projectPath.FileSpec.Contains('.') && projectPath.FileSpec.StartsWith("*", StringComparison.Ordinal) == false)
                 {
 	                projectPath.IsFilePath = true;
-	                projectPath.FileSpec = $"*{projectPath.Path[projectPath.Path.LastIndexOf('.')..]}";
-                }
+	                Settings.ProjectPaths.Add(projectPath);
 
-                if (string.IsNullOrEmpty(projectPath.FileSpec))
-                    return;
-            
+	                continue;
+                }
+                
                 var tempFileSpec = projectPath.FileSpec.Replace("*", string.Empty).Replace(".", string.Empty);
 
                 if (string.IsNullOrEmpty(tempFileSpec) == false)
@@ -469,7 +471,7 @@ public sealed class SfumatoAppState
 		if (isFilePath)
 		{
 			recurse = false;
-			files = new [] { new FileInfo(sourcePath) };
+			files = new [] { new FileInfo(Path.Combine(sourcePath, fileSpec)) };
 		}
 
 		else
@@ -483,16 +485,13 @@ public sealed class SfumatoAppState
 			}
 
 			dirs = dir.GetDirectories();
-			files = dir.GetFiles();
+			files = dir.GetFiles().Where(f => f.Name.EndsWith(fileSpec.TrimStart('*'))).ToArray();
 		}
 		
 		var matches = new List<Match>();
 
 		foreach (var projectFile in files.OrderBy(f => f.Name))
 		{
-			if (projectFile.Name.EndsWith($"{fileSpec.TrimStart('*')}", StringComparison.InvariantCultureIgnoreCase) == false)
-				continue;
-
 			fileCount++;
 			
 			var markup = await File.ReadAllTextAsync(projectFile.FullName);

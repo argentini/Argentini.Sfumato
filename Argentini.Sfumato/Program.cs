@@ -63,25 +63,12 @@ internal class Program
 				if (paths.Length > 0)
 					paths.Append("                 :  ");
 
-				if (path.IsFilePath)
-				{
-					paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}");
-
-					if (path.Path.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-						paths.Append(" (transpile in-place)");
-					else
-						paths.Append(" (audit used classes)");
-				}
-
+				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{path.FileSpec}");
+				
+				if (path.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+					paths.Append(" (transpile in-place)");
 				else
-				{
-					paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}{Path.DirectorySeparatorChar}{path.FileSpec}");
-					
-					if (path.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-						paths.Append(" (transpile in-place)");
-					else
-						paths.Append(" (audit used classes)");
-				}
+					paths.Append(" (audit used classes)");
 
 				paths.Append($"{Environment.NewLine}");
 			}
@@ -242,12 +229,6 @@ internal class Program
 
 	    var filePath = projectPath.Path;
 	    var fileSpec = projectPath.FileSpec;
-	    
-	    if (projectPath.IsFilePath)
-	    {
-		    fileSpec = projectPath.Path[(projectPath.Path.LastIndexOf(Path.DirectorySeparatorChar) + 1)..];
-		    filePath = projectPath.Path[..projectPath.Path.LastIndexOf(Path.DirectorySeparatorChar)];
-	    }
 	    
 	    if (string.IsNullOrEmpty(fileSpec))
 	    {

@@ -90,7 +90,7 @@ public sealed class SfumatoRunner
 		var fileStats = new FileResults();
 		
 		foreach (var projectPath in AppState.Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase)))
-			await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec, fileStats, projectPath.Recurse);
+			await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, fileStats, projectPath.Recurse);
 
 		if (fileStats.FileCount == 0)
 			Console.WriteLine($"{Strings.TriangleRight} No project SCSS files found");
@@ -405,10 +405,11 @@ public sealed class SfumatoRunner
 	/// <param name="appState"></param>
 	/// <param name="sourcePath"></param>
 	/// <param name="fileSpec"></param>
+	/// <param name="isFilePath"></param>
 	/// <param name="fileStats"></param>
 	/// <param name="recurse"></param>
 	/// <returns></returns>
-	private static async Task FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, FileResults fileStats, bool recurse = false)
+	private static async Task FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, bool isFilePath, FileResults fileStats, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
 			return;
@@ -416,24 +417,24 @@ public sealed class SfumatoRunner
 		FileInfo[] files = null!;
 		DirectoryInfo[] dirs = null!;
 		
-		if (File.Exists(sourcePath)) // Single file path
+		if (isFilePath)
 		{
 			recurse = false;
-			files = new [] { new FileInfo(sourcePath) };
+			files = new [] { new FileInfo(Path.Combine(sourcePath, fileSpec)) };
 		}
 
-		else // Directory path
+		else
 		{
 			var dir = new DirectoryInfo(sourcePath);
 
 			if (dir.Exists == false)
 			{
-				Console.WriteLine($"Source directory does not exist: {sourcePath}");
+				Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
 				Environment.Exit(1);
 			}
 
 			dirs = dir.GetDirectories();
-			files = dir.GetFiles();
+			files = dir.GetFiles().Where(f => f.Name.EndsWith(fileSpec.TrimStart('*'))).ToArray();
 		}
 
 		foreach (var cssFile in files.Where(f => f.Name.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase) && f.Name.Equals("sfumato.css", StringComparison.InvariantCultureIgnoreCase) == false))
@@ -441,9 +442,6 @@ public sealed class SfumatoRunner
 
 		foreach (var file in files.OrderBy(f => f.Name))
 		{
-			if (file.Name.ToLower().EndsWith(fileSpec.TrimStart("*") ?? ".scss") == false)
-				continue;
-
 			fileStats.FileCount++;
 			
 			var length = await SfumatoScss.TranspileSingleScss(file.FullName, appState);
@@ -459,7 +457,7 @@ public sealed class SfumatoRunner
 			return;
 		
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, fileStats, recurse);
+			await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, isFilePath, fileStats, recurse);
 	}
 	
 	#endregion
