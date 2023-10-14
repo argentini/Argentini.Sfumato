@@ -86,7 +86,7 @@ internal class Program
 
 		timer.Start();
 		
-        await runner.PerformBuildAsync();
+        await runner.PerformFullBuildAsync();
 
         Console.WriteLine($"Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
         
@@ -124,12 +124,12 @@ internal class Program
 
 				if (rebuildProjectQueue.IsEmpty == false)
 				{
-					Console.WriteLine($"Started rebuild at {DateTime.Now:HH:mm:ss.fff}");
+					Console.WriteLine($"Started sfumato.css rebuild at {DateTime.Now:HH:mm:ss.fff}");
 
 					rebuildProjectQueue.Clear();
 					scssTranspileQueue.Clear();
 
-					await runner.PerformBuildAsync();
+					await runner.PerformCoreBuildAsync();
 					processedFiles = true;
 				}
 

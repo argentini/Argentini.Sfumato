@@ -52,10 +52,17 @@ public sealed class SfumatoRunner
 	}
 	
 	/// <summary>
-	/// Build the project's CSS and write to storage.
+	/// Perform a full build of sfumato.css and project SCSS.
 	/// </summary>
-	/// <param name="runner"></param>
-	public async Task PerformBuildAsync()
+	public async Task PerformFullBuildAsync()
+	{
+		await Task.WhenAll(PerformCoreBuildAsync(), PerformProjectScssBuildAsync());		
+	}
+	
+	/// <summary>
+	/// Build sfumato.css based on watched project files.
+	/// </summary>
+	public async Task PerformCoreBuildAsync()
 	{
 		var timer = new Stopwatch();
 		var totalTimer = new Stopwatch();
@@ -83,9 +90,17 @@ public sealed class SfumatoRunner
 
 		#endregion
 		
-		#region Compile Project SCSS In-Place
-
-		timer.Restart();
+		AppState.StringBuilderPool.Return(projectScss);
+	}
+	
+	/// <summary>
+	/// Build the project's CSS and write to storage.
+	/// </summary>
+	public async Task PerformProjectScssBuildAsync()
+	{
+		var timer = new Stopwatch();
+		
+		timer.Start();
 
 		var fileStats = new FileResults();
 		
@@ -96,10 +111,6 @@ public sealed class SfumatoRunner
 			Console.WriteLine($"{Strings.TriangleRight} No project SCSS files found");
 		else
 			Console.WriteLine($"{Strings.TriangleRight} Generated {fileStats.FileCount:N0} project CSS file{(fileStats.FileCount == 1 ? string.Empty : "s")} ({fileStats.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
-
-		#endregion
-		
-		AppState.StringBuilderPool.Return(projectScss);
 	}
 	
 	#endregion
