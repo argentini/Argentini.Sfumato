@@ -224,7 +224,6 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	public async Task<string> GenerateScssObjectTreeAsync()
 	{
-		//var usedClasses = AppState.UsedClasses.OrderBy(c => c.Value.UserClassName).ToList().Adapt<List<ScssClass>>();
 		var hierarchy = new ScssNode
 		{
 			Prefix = string.Empty,
@@ -233,7 +232,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 		
-		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.SortOrder))
+		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.MediaQueryDepth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Value.SortOrder))
 		{
 			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
@@ -282,8 +281,8 @@ public sealed class SfumatoRunner
 
 		if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase))
 		{
-			// Search first level nodes for "dark" prefixes and add additional nodes to support "auto-theme";
-			// Light mode will work without any CSS since removing "dark-theme" and "auto-theme" from the
+			// Search first level nodes for "dark" prefix and add additional nodes to support "theme-auto";
+			// Light mode will work without any CSS since removing "theme-dark" and "theme-auto" from the
 			// <html> class list will disabled dark mode altogether.
 			foreach (var node in hierarchy.Nodes.ToList())
 			{
@@ -366,21 +365,21 @@ public sealed class SfumatoRunner
 			if (prefix.Equals("auto-dark", StringComparison.Ordinal))
 				prefix = "dark";
 			
-			var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.First(p => p.Key.Equals(prefix));
+			var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.First(p => p.Prefix.Equals(prefix));
 
 			if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
 			{
-				sb.Append($"{Indent(scssNode.Level - 1)}html.dark-theme {{\n");
+				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-dark {{\n");
 			}
 
 			else if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "auto-dark")
 			{
-				sb.Append($"{Indent(scssNode.Level - 1)}html.auto-theme {{ {mediaQueryPrefix.Value}\n");
+				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-auto {{ {mediaQueryPrefix.Statement}\n");
 			}
 			
 			else
 			{
-				sb.Append($"{Indent(scssNode.Level - 1)}{mediaQueryPrefix.Value}\n");
+				sb.Append($"{Indent(scssNode.Level - 1)}{mediaQueryPrefix.Statement}\n");
 			}
 		}
 			
@@ -506,10 +505,10 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="prefix"></param>
 	/// <returns></returns>
-	private bool IsMediaQueryPrefix(string prefix)
+	private static bool IsMediaQueryPrefix(string prefix)
 	{
-		var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
-		return string.IsNullOrEmpty(mediaQueryPrefix.Key) == false;
+		var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix.Equals(prefix, StringComparison.Ordinal));
+		return string.IsNullOrEmpty(mediaQueryPrefix?.Prefix) == false;
 	}
 
 	/// <summary>
@@ -517,7 +516,7 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="prefix"></param>
 	/// <returns></returns>
-	private bool IsPseudoclassPrefix(string prefix)
+	private static bool IsPseudoclassPrefix(string prefix)
 	{
 		var pseudoclassPrefix = SfumatoScss.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;

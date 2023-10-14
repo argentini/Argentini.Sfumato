@@ -560,19 +560,85 @@ public static class SfumatoScss
 	    "zoom"
 	};
 	
-	public static Dictionary<string, string> MediaQueryPrefixes => new ()
+	public static IEnumerable<CssMediaQuery> MediaQueryPrefixes => new[]
 	{
-		{ "dark", "@media (prefers-color-scheme: dark) {" },
-		{ "portrait", "@media (orientation: portrait) {" },
-		{ "landscape", "@media (orientation: landscape) {" },
-		{ "print", "@media print {" },
-		{ "zero", "@include sf-media($from: zero) {" },
-		{ "phab", "@include sf-media($from: phab) {" },
-		{ "tabp", "@include sf-media($from: tabp) {" },
-		{ "tabl", "@include sf-media($from: tabl) {" },
-		{ "note", "@include sf-media($from: note) {" },
-		{ "desk", "@include sf-media($from: desk) {" },
-		{ "elas", "@include sf-media($from: elas) {" }
+		new CssMediaQuery
+		{
+			PrefixOrder = 1,
+			Priority = 1024,
+			Prefix = "dark",
+			Statement = "@media (prefers-color-scheme: dark) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 2,
+			Priority = 128,
+			Prefix = "portrait",
+			Statement = "@media (orientation: portrait) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 3,
+			Priority = 256,
+			Prefix = "landscape",
+			Statement = "@media (orientation: landscape) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 4,
+			Priority = 512,
+			Prefix = "print",
+			Statement = "@media print {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 5,
+			Priority = 1,
+			Prefix = "zero",
+			Statement = "@include sf-media($from: zero) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 6,
+			Priority = 2,
+			Prefix = "phab",
+			Statement = "@include sf-media($from: phab) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 7,
+			Priority = 4,
+			Prefix = "tabp",
+			Statement = "@include sf-media($from: tabp) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 8,
+			Priority = 8,
+			Prefix = "tabl",
+			Statement = "@include sf-media($from: tabl) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 9,
+			Priority = 16,
+			Prefix = "note",
+			Statement = "@include sf-media($from: note) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 10,
+			Priority = 32,
+			Prefix = "desk",
+			Statement = "@include sf-media($from: desk) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 11,
+			Priority = 64,
+			Prefix = "elas",
+			Statement = "@include sf-media($from: elas) {"
+		}
 	};
 
 	public static Dictionary<string, string> PseudoclassPrefixes => new ()
@@ -1079,4 +1145,12 @@ public static class SfumatoScss
 	    
 	    return result;
     }
+}
+
+public class CssMediaQuery
+{
+	public int PrefixOrder { get; set; }
+	public int Priority { get; set; }
+	public string Prefix { get; set; } = string.Empty;
+	public string Statement { get; set; } = string.Empty;
 }

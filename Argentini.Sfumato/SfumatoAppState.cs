@@ -56,7 +56,7 @@ public sealed class SfumatoAppState
     public SfumatoAppState()
     {
 	    AllPrefixes.Clear();
-	    AllPrefixes.AddRange(SfumatoScss.MediaQueryPrefixes.Select(p => p.Key));
+	    AllPrefixes.AddRange(SfumatoScss.MediaQueryPrefixes.Select(p => p.Prefix));
 	    AllPrefixes.AddRange(SfumatoScss.PseudoclassPrefixes.Select(p => p.Key));
 	    
 	    var arbitraryCssExpression = $$"""
@@ -418,21 +418,12 @@ public sealed class SfumatoAppState
     private static string ReOrderPrefixes(string userClassName)
     {
 	    var result = userClassName;
-	    
-	    foreach (var breakpoint in new[] { "zero:", "phab:", "tabp:", "tabl:", "note:", "desk:", "elas:" })
-	    {
-		    if (result.Contains(breakpoint, StringComparison.Ordinal))
-			    result = $"{breakpoint}{result.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
-	    }
 
-	    foreach (var breakpoint in new[] { "portrait:", "landscape:", "print:" })
+	    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.OrderByDescending(k => k.PrefixOrder))
 	    {
-		    if (result.Contains(breakpoint, StringComparison.Ordinal))
-			    result = $"{breakpoint}{result.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
+		    if (result.Contains($"{breakpoint.Prefix}:0", StringComparison.Ordinal))
+			    result = $"{breakpoint.Prefix}:{result.Replace($"{breakpoint.Prefix}:0", string.Empty, StringComparison.Ordinal)}";
 	    }
-	    
-	    if (result.Contains("dark:", StringComparison.Ordinal))
-		    result = $"dark:{userClassName.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
 
 	    return result;
     }
@@ -506,7 +497,7 @@ public sealed class SfumatoAppState
 
 			matches.Clear();
 			matches.AddRange(CoreClassRegex.Matches(markup));
-
+			
 			foreach (var match in matches)
 			{
 				var userClassName = ReOrderPrefixes(match.Value);
@@ -554,6 +545,15 @@ public sealed class SfumatoAppState
 				if (string.IsNullOrEmpty(userClassValue) == false)
 					usedScssClass.Value = userClassValue;
 
+				foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
+				{
+					if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
+						continue;
+					
+					usedScssClass.MediaQueryDepth++;
+					usedScssClass.PrefixSortOrder += breakpoint.Priority;
+				}
+				
 				UsedClasses.TryAdd(userClassName, usedScssClass);
 			}
 
@@ -577,6 +577,15 @@ public sealed class SfumatoAppState
 					Template = "{value};"
 				};
 
+				foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
+				{
+					if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
+						continue;
+					
+					usedScssClass.MediaQueryDepth++;
+					usedScssClass.PrefixSortOrder += breakpoint.Priority;
+				}
+				
 				UsedClasses.TryAdd(userClassName, usedScssClass);
 			}
 		}

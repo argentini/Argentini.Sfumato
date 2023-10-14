@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html :class="{ 'dark-theme': dark }" x-data="data()" lang="en">
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,6 +26,7 @@
     <script src="./assets/js/charts-pie.js" defer></script>
   </head>
   <body>
+  <div class="dark:desk:inline dark:desk:p-0 dark:tabp:inline dark:tabp:p-0"></div>
     <div
       class="flex h-screen bg-gray-50 dark:bg-gray-900"
       :class="{ 'overflow-hidden': isSideMenuOpen }"
