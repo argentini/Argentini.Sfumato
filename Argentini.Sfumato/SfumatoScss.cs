@@ -727,6 +727,8 @@ public static class SfumatoScss
 		
 		sb.Append(initScss);
 
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n');
+		
 		diagnosticOutput.Append($"Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();

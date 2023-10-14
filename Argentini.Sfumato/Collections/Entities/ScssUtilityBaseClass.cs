@@ -39,6 +39,7 @@ public sealed class ScssUtilityBaseClass
         {
             RootClassName = $"{Selector}",
             GlobalGrouping = GlobalGrouping,
+            IsUtilityClass = true,
             ChildSelector = ChildSelector,
             Template = _template
         });

@@ -11,7 +11,8 @@ public sealed class ScssClass
     public int PrefixSortOrder { get; set; }
     public int SortOrder { get; set; }
 
-    public string GlobalGrouping { get; set; } = string.Empty;
+    public bool IsUtilityClass { get; set; }
+    public string GlobalGrouping { get; set; } = string.Empty; // For creating shared styles for a group of classes
     
     private string _userClassName = string.Empty;
     public string UserClassName
