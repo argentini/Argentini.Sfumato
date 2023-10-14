@@ -424,7 +424,13 @@ public sealed class SfumatoAppState
 		    if (result.Contains(breakpoint, StringComparison.Ordinal))
 			    result = $"{breakpoint}{result.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
 	    }
-				
+
+	    foreach (var breakpoint in new[] { "portrait:", "landscape:", "print:" })
+	    {
+		    if (result.Contains(breakpoint, StringComparison.Ordinal))
+			    result = $"{breakpoint}{result.Replace(breakpoint, string.Empty, StringComparison.Ordinal)}";
+	    }
+	    
 	    if (result.Contains("dark:", StringComparison.Ordinal))
 		    result = $"dark:{userClassName.Replace("dark:", string.Empty, StringComparison.Ordinal)}";
 
