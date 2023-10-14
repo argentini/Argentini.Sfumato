@@ -412,18 +412,30 @@ public sealed class SfumatoRunner
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
 			return;
-		
-		var dir = new DirectoryInfo(sourcePath);
 
-		if (dir.Exists == false)
+		FileInfo[] files = null!;
+		DirectoryInfo[] dirs = null!;
+		
+		if (File.Exists(sourcePath)) // Single file path
 		{
-			Console.WriteLine($"Source directory does not exist: {sourcePath}");
-			Environment.Exit(1);
+			recurse = false;
+			files = new [] { new FileInfo(sourcePath) };
 		}
 
-		var dirs = dir.GetDirectories();
-		var files = dir.GetFiles();
-			
+		else // Directory path
+		{
+			var dir = new DirectoryInfo(sourcePath);
+
+			if (dir.Exists == false)
+			{
+				Console.WriteLine($"Source directory does not exist: {sourcePath}");
+				Environment.Exit(1);
+			}
+
+			dirs = dir.GetDirectories();
+			files = dir.GetFiles();
+		}
+
 		foreach (var cssFile in files.Where(f => f.Name.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase) && f.Name.Equals("sfumato.css", StringComparison.InvariantCultureIgnoreCase) == false))
 			cssFile.Delete();			
 

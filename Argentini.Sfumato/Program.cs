@@ -63,12 +63,25 @@ internal class Program
 				if (paths.Length > 0)
 					paths.Append("                 :  ");
 
-				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}{Path.DirectorySeparatorChar}{path.FileSpec}");
+				if (path.IsFilePath)
+				{
+					paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}");
 
-				if (path.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-					paths.Append(" (transpile in-place)");
+					if (path.Path.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+						paths.Append(" (transpile in-place)");
+					else
+						paths.Append(" (audit used classes)");
+				}
+
 				else
-					paths.Append(" (audit used classes)");
+				{
+					paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath)}{Path.DirectorySeparatorChar}{path.FileSpec}");
+					
+					if (path.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+						paths.Append(" (transpile in-place)");
+					else
+						paths.Append(" (audit used classes)");
+				}
 
 				paths.Append($"{Environment.NewLine}");
 			}
@@ -103,9 +116,9 @@ internal class Program
 			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
 			{
 				if (projectPath.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-					fileWatchers.Add(CreateFileChangeWatcher(scssTranspileQueue, projectPath.Path, projectPath.FileSpec));
+					fileWatchers.Add(CreateFileChangeWatcher(scssTranspileQueue, projectPath));
 				else
-					fileWatchers.Add(CreateFileChangeWatcher(rebuildProjectQueue, projectPath.Path, projectPath.FileSpec));
+					fileWatchers.Add(CreateFileChangeWatcher(rebuildProjectQueue, projectPath));
 			}
 			
 			#endregion
@@ -217,23 +230,32 @@ internal class Program
     /// Construct a file changes watcher.
     /// </summary>
     /// <param name="fileChangeQueue">scss or rebuild</param>
-    /// <param name="path">Path tree to watch for file changes</param>
+    /// <param name="projectPath">Path tree to watch for file changes</param>
     /// <param name="fileSpec">File type to watch (e.g. *.scss)</param>
-    private static FileSystemWatcher CreateFileChangeWatcher(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, string path, string fileSpec)
+    private static FileSystemWatcher CreateFileChangeWatcher(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, ProjectPath projectPath)
     {
-	    if (string.IsNullOrEmpty(path))
+	    if (string.IsNullOrEmpty(projectPath.Path))
 	    {
 		    Console.WriteLine("Fatal Error: No watch path specified");
 		    Environment.Exit(1);
 	    }
 
+	    var filePath = projectPath.Path;
+	    var fileSpec = projectPath.FileSpec;
+	    
+	    if (projectPath.IsFilePath)
+	    {
+		    fileSpec = projectPath.Path[(projectPath.Path.LastIndexOf(Path.DirectorySeparatorChar) + 1)..];
+		    filePath = projectPath.Path[..projectPath.Path.LastIndexOf(Path.DirectorySeparatorChar)];
+	    }
+	    
 	    if (string.IsNullOrEmpty(fileSpec))
 	    {
 		    Console.WriteLine("Fatal Error: No watch filespec specified");
 		    Environment.Exit(1);
 	    }
 
-	    var watcher = new FileSystemWatcher(path)
+	    var watcher = new FileSystemWatcher(filePath)
         {
             NotifyFilter = NotifyFilters.Attributes
                            | NotifyFilters.CreationTime
@@ -247,7 +269,7 @@ internal class Program
         watcher.Deleted += (_, e) => AddChangeToQueue(fileChangeQueue, e, fileSpec);
         
         watcher.Filter = fileSpec;
-        watcher.IncludeSubdirectories = true;
+        watcher.IncludeSubdirectories = projectPath.IsFilePath == false;
         watcher.EnableRaisingEvents = true;
 
         return watcher;

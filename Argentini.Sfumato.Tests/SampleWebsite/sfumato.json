@@ -9,6 +9,9 @@
         {
             "path": "wwwroot",
             "fileSpec": "*.scss"
+        },
+        {
+            "path": "wwwroot/css/app.scss"
         }
     ],
     "themeMode": "class",

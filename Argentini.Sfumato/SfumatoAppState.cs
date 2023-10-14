@@ -162,6 +162,12 @@ public sealed class SfumatoAppState
             {
                 projectPath.Path = Path.Combine(WorkingPath, projectPath.Path.SetNativePathSeparators());
 
+                if (File.Exists(projectPath.Path))
+                {
+	                projectPath.IsFilePath = true;
+	                projectPath.FileSpec = $"*{projectPath.Path[projectPath.Path.LastIndexOf('.')..]}";
+                }
+
                 if (string.IsNullOrEmpty(projectPath.FileSpec))
                     return;
             
@@ -445,28 +451,41 @@ public sealed class SfumatoAppState
 		var fileCount = 0;
 		
 		foreach (var projectPath in Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false))
-			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(projectPath.Path, projectPath.FileSpec, fileCount, projectPath.Recurse);
+			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, fileCount, projectPath.Recurse);
 		
 		if (fileCount == 0)
 			Console.WriteLine($"{Strings.TriangleRight} Identifying no used classes");
 		else
 			Console.WriteLine($"{Strings.TriangleRight} Identified {fileCount:N0} file{(fileCount == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
 	}
-	private async Task<int> RecurseProjectPathForUsedScssCoreClassesAsync(string? sourcePath, string fileSpec, int fileCount, bool recurse = false)
+	private async Task<int> RecurseProjectPathForUsedScssCoreClassesAsync(string? sourcePath, string fileSpec, bool isFilePath, int fileCount, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
 			return fileCount;
 
-		var dir = new DirectoryInfo(sourcePath);
-
-		if (dir.Exists == false)
+		FileInfo[] files = null!;
+		DirectoryInfo[] dirs = null!;
+		
+		if (isFilePath)
 		{
-			Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
-			Environment.Exit(1);
+			recurse = false;
+			files = new [] { new FileInfo(sourcePath) };
 		}
 
-		var dirs = dir.GetDirectories();
-		var files = dir.GetFiles();
+		else
+		{
+			var dir = new DirectoryInfo(sourcePath);
+
+			if (dir.Exists == false)
+			{
+				Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
+				Environment.Exit(1);
+			}
+
+			dirs = dir.GetDirectories();
+			files = dir.GetFiles();
+		}
+		
 		var matches = new List<Match>();
 
 		foreach (var projectFile in files.OrderBy(f => f.Name))
@@ -562,7 +581,7 @@ public sealed class SfumatoAppState
 			return fileCount;
 		
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(subDir.FullName, fileSpec, fileCount);
+			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(subDir.FullName, fileSpec, isFilePath, fileCount);
 
 		return fileCount;
 	}
