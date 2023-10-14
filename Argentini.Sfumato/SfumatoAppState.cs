@@ -153,6 +153,8 @@ public sealed class SfumatoAppState
                 _ => "system"
             };
 
+            Settings.UseAutoTheme = jsonSettings.UseAutoTheme;
+            
             SassCliPath = GetEmbeddedSassPath();
             ScssPath = GetEmbeddedScssPath();
 
@@ -545,12 +547,21 @@ public sealed class SfumatoAppState
 				if (string.IsNullOrEmpty(userClassValue) == false)
 					usedScssClass.Value = userClassValue;
 
+				var segments = userClassName.Split(':');
+
+				foreach (var prefix in segments)
+				{
+					if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
+						usedScssClass.Depth++;
+					else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
+						usedScssClass.Depth++;
+				}
+
 				foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
 				{
 					if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
 						continue;
 					
-					usedScssClass.MediaQueryDepth++;
 					usedScssClass.PrefixSortOrder += breakpoint.Priority;
 				}
 				
@@ -577,12 +588,21 @@ public sealed class SfumatoAppState
 					Template = "{value};"
 				};
 
+				var segments = userClassName.Split(':');
+				
+				foreach (var prefix in segments)
+				{
+					if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
+						usedScssClass.Depth++;
+					else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
+						usedScssClass.Depth++;
+				}
+				
 				foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
 				{
 					if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
 						continue;
 					
-					usedScssClass.MediaQueryDepth++;
 					usedScssClass.PrefixSortOrder += breakpoint.Priority;
 				}
 				

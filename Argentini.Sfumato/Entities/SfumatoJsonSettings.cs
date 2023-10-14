@@ -7,6 +7,7 @@ public class SfumatoJsonSettings
     public List<ProjectPath> ProjectPaths { get; set;  } = new();
 
     public string ThemeMode { get; set; } = "system";
+    public bool UseAutoTheme { get; set; }
 
     public Breakpoints? Breakpoints { get; set; } = new();
     public FontSizeViewportUnits? FontSizeViewportUnits { get; set; } = new();

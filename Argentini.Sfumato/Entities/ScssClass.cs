@@ -7,7 +7,7 @@ public sealed class ScssClass
     public string ValueTypes { get; set; } = string.Empty;
     public string ChildSelector { get; set; } = string.Empty;
     public string Template { get; set; } = string.Empty;
-    public int MediaQueryDepth { get; set; }
+    public int Depth { get; set; }
     public int PrefixSortOrder { get; set; }
     public int SortOrder { get; set; }
 

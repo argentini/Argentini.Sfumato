@@ -16,6 +16,7 @@
         }
     ],
     "themeMode": "class",
+    "useAutoTheme": true,
     "breakpoints":
         {
             "zero": 0,

@@ -232,7 +232,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 		
-		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.MediaQueryDepth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Value.SortOrder))
+		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Value.SortOrder))
 		{
 			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
@@ -372,7 +372,7 @@ public sealed class SfumatoRunner
 				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-dark {{\n");
 			}
 
-			else if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "auto-dark")
+			else if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && AppState.Settings.UseAutoTheme && scssNode.Prefix == "auto-dark")
 			{
 				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-auto {{ {mediaQueryPrefix.Statement}\n");
 			}
@@ -406,7 +406,7 @@ public sealed class SfumatoRunner
 			sb.Append($"{Indent(scssNode.Level - 1)}}}\n");
 		}
 
-		if (scssNode.Prefix == "auto-dark")
+		if (AppState.Settings.UseAutoTheme && scssNode.Prefix == "auto-dark")
 		{
 			sb.Append($"{Indent(scssNode.Level - 1)}}}\n");
 		}
