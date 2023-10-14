@@ -849,13 +849,15 @@ public static class SfumatoScss
     /// </summary>
     /// <param name="scssFilePath">File system path to the scss input file (e.g. "/scss/application.scss")</param>
     /// <param name="appState">When true compacts the generated CSS</param>
+    /// <param name="includeCore">Insert Sfumato core at top of file</param>
     /// <returns>Byte length of generated CSS file</returns>
-    public static async Task<long> TranspileSingleScss(string scssFilePath, SfumatoAppState appState)
+    public static async Task<long> TranspileSingleScss(string scssFilePath, SfumatoAppState appState, bool includeCore = true)
     {
 	    var scss = appState.StringBuilderPool.Get();
 	    var sb = appState.StringBuilderPool.Get();
 
-	    scss.Append(appState.ScssSharedInjectable);
+	    if (includeCore)
+			scss.Append(appState.ScssSharedInjectable);
 	    
 		if (string.IsNullOrEmpty(scssFilePath) || scssFilePath.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false)
 		{
