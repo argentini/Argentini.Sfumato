@@ -193,7 +193,8 @@ public sealed class SfumatoAppState
             Environment.Exit(1);
         }
 
-        DiagnosticOutput.Append($"Initialized settings in {timer.FormatTimer()}{Environment.NewLine}");
+        if (DiagnosticMode)
+			DiagnosticOutput.Append($"Initialized settings in {timer.FormatTimer()}{Environment.NewLine}");
 
         ScssCoreInjectable.Clear();
         ScssCoreInjectable.Append(await SfumatoScss.GetCoreScssAsync(this, DiagnosticOutput));
@@ -201,7 +202,8 @@ public sealed class SfumatoAppState
         ScssSharedInjectable.Clear();
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
         
-        DiagnosticOutput.Append($"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.FormatTimer()}{Environment.NewLine}");
+        if (DiagnosticMode)
+	        DiagnosticOutput.Append($"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.FormatTimer()}{Environment.NewLine}");
 
         timer.Restart();
     }
@@ -236,9 +238,6 @@ public sealed class SfumatoAppState
 			else if (arg.StartsWith("--version", StringComparison.InvariantCultureIgnoreCase))
 				VersionMode = true;
 
-			else if (arg.StartsWith("--diagnostics", StringComparison.InvariantCultureIgnoreCase))
-				DiagnosticMode = true;
-			
 			else if (arg.StartsWith("--path", StringComparison.InvariantCultureIgnoreCase))
 				if (CliArguments.Count - 1 >= CliArguments.IndexOf(arg) + 1)
 				{
