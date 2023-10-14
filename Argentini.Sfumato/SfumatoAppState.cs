@@ -14,6 +14,7 @@ public sealed class SfumatoAppState
     
     public Regex ArbitraryCssRegex { get; }
     public Regex CoreClassRegex { get; }
+    public Regex SfumatoScssIncludesRegex { get; }
     
     #endregion
     
@@ -81,7 +82,11 @@ public sealed class SfumatoAppState
 """;
 	    
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
-    }
+
+	    const string sfumatoScssIncludesRegexExpression = @"^@sfumato\s+((core)|(base));\r?\n";
+	    
+	    SfumatoScssIncludesRegex = new Regex(sfumatoScssIncludesRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
+   }
     
     #region Entry Points
     

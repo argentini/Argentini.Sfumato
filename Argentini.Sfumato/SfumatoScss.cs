@@ -849,16 +849,12 @@ public static class SfumatoScss
     /// </summary>
     /// <param name="scssFilePath">File system path to the scss input file (e.g. "/scss/application.scss")</param>
     /// <param name="appState">When true compacts the generated CSS</param>
-    /// <param name="includeCore">Insert Sfumato core at top of file</param>
     /// <returns>Byte length of generated CSS file</returns>
-    public static async Task<long> TranspileSingleScss(string scssFilePath, SfumatoAppState appState, bool includeCore = true)
+    public static async Task<long> TranspileSingleScss(string scssFilePath, SfumatoAppState appState)
     {
 	    var scss = appState.StringBuilderPool.Get();
 	    var sb = appState.StringBuilderPool.Get();
 
-	    if (includeCore)
-			scss.Append(appState.ScssSharedInjectable);
-	    
 		if (string.IsNullOrEmpty(scssFilePath) || scssFilePath.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false)
 		{
 			Console.WriteLine($"{Strings.TriangleRight} ERROR: invalid SCSS file path: {scssFilePath}");
@@ -879,6 +875,8 @@ public static class SfumatoScss
             arguments.Add("--stdin");
             arguments.Add($"{outputPath}");
 
+            #region Read SCSS markup
+            
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
             while (cancellationToken.IsCancellationRequested == false)
@@ -889,7 +887,22 @@ public static class SfumatoScss
                     
 	                using (var sr = new StreamReader(fs, Encoding.UTF8))
                     {
-	                    scss.Append(await sr.ReadToEndAsync(cancellationToken.Token));
+	                    var rawScss = await sr.ReadToEndAsync(cancellationToken.Token);
+	                    var matches = appState.SfumatoScssIncludesRegex.Matches(rawScss);
+	                    var startIndex = 0;
+
+	                    foreach (Match match in matches)
+	                    {
+		                    if (match.Index + match.Value.Length > startIndex)
+			                    startIndex = match.Index + match.Value.Length;
+
+		                    if (match.Value.Trim().EndsWith("core;"))
+		                    {
+			                    scss.Append(appState.ScssSharedInjectable);
+		                    }
+	                    }
+	                    
+	                    scss.Append(rawScss[startIndex..]);
                     }
 
                     cancellationToken.Cancel();
@@ -901,6 +914,10 @@ public static class SfumatoScss
                 }
             }
 
+            #endregion
+
+            sb.Clear();
+            
             var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap("sass")
                 .WithArguments(args =>
                 {

@@ -86,7 +86,7 @@ public sealed class SfumatoRunner
 		
 		timer.Restart();
 		
-		var fileSize = await SfumatoScss.TranspileSingleScss(Path.Combine(AppState.Settings.CssOutputPath, "sfumato.scss"), AppState, false);
+		var fileSize = await SfumatoScss.TranspileSingleScss(Path.Combine(AppState.Settings.CssOutputPath, "sfumato.scss"), AppState);
 		
 		Console.WriteLine($"{Strings.TriangleRight} Generated sfumato.css ({fileSize.FormatBytes()}) in {totalTimer.FormatTimer()}");
 
