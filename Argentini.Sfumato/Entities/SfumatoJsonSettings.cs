@@ -10,7 +10,7 @@ public class SfumatoJsonSettings
     public bool UseAutoTheme { get; set; }
 
     public Breakpoints? Breakpoints { get; set; } = new();
-    public FontSizeViewportUnits? FontSizeViewportUnits { get; set; } = new();
+    public FontSizeUnits? FontSizeUnits { get; set; } = new();
 }
 
 public sealed class ProjectPath
@@ -116,97 +116,13 @@ public sealed class Breakpoints
     }
 }
 
-public sealed class FontSizeViewportUnits
+public sealed class FontSizeUnits
 {
-    private double _zero = 4.35;
-    public double Zero
-    {
-        get => _zero;
-        set
-        {
-            _zero = value switch
-            {
-                < 0 => 4.35,
-                _ => value
-            };
-        }
-    }
-    private double _phab = 4;
-    public double Phab
-    {
-        get => _phab;
-        set
-        {
-            _phab = value switch
-            {
-                < 0 => 4,
-                _ => value
-            };
-        }
-    }
-    private double _tabp = 1.6;
-    public double Tabp
-    {
-        get => _tabp;
-        set
-        {
-            _tabp = value switch
-            {
-                < 0 => 1.6,
-                _ => value
-            };
-        }
-    }
-    private double _tabl = 1;
-    public double Tabl
-    {
-        get => _tabl;
-        set
-        {
-            _tabl = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
-    private double _note = 1;
-    public double Note
-    {
-        get => _note;
-        set
-        {
-            _note = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
-    private double _desk = 1;
-    public double Desk
-    {
-        get => _desk;
-        set
-        {
-            _desk = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
-    private double _elas = 1;
-    public double Elas
-    {
-        get => _elas;
-        set
-        {
-            _elas = value switch
-            {
-                < 0 => 1,
-                _ => value
-            };
-        }
-    }
+    public string Zero { get; set; } = "4.35vw";
+    public string Phab { get; set; } = "4vw";
+    public string Tabp { get; set; } = "1.6vw";
+    public string Tabl { get; set; } = "1vw";
+    public string Note { get; set; } = "1vw";
+    public string Desk { get; set; } = "1vw";
+    public string Elas { get; set; } = "1vw";
 }

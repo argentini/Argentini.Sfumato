@@ -189,7 +189,7 @@ public sealed class SfumatoAppState
             }
 
             jsonSettings.Breakpoints.Adapt(Settings.Breakpoints);
-            jsonSettings.FontSizeViewportUnits.Adapt(Settings.FontSizeViewportUnits);
+            jsonSettings.FontSizeUnits.Adapt(Settings.FontSizeUnits);
             
             #endregion
         }

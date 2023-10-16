@@ -717,13 +717,13 @@ public static class SfumatoScss
 
 		var initScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + '\n';
 		
-		initScss = initScss.Replace("#{zero-vw}", $"{appState.Settings.FontSizeViewportUnits?.Zero}vw");
-		initScss = initScss.Replace("#{phab-vw}", $"{appState.Settings.FontSizeViewportUnits?.Phab}vw");
-		initScss = initScss.Replace("#{tabp-vw}", $"{appState.Settings.FontSizeViewportUnits?.Tabp}vw");
-		initScss = initScss.Replace("#{tabl-vw}", $"{appState.Settings.FontSizeViewportUnits?.Tabl}vw");
-		initScss = initScss.Replace("#{note-vw}", $"{appState.Settings.FontSizeViewportUnits?.Note}vw");
-		initScss = initScss.Replace("#{desk-vw}", $"{appState.Settings.FontSizeViewportUnits?.Desk}vw");
-		initScss = initScss.Replace("#{elas-vw}", $"{appState.Settings.FontSizeViewportUnits?.Elas}vw");
+		initScss = initScss.Replace("#{zero-vw}", $"{appState.Settings.FontSizeUnits?.Zero}");
+		initScss = initScss.Replace("#{phab-vw}", $"{appState.Settings.FontSizeUnits?.Phab}");
+		initScss = initScss.Replace("#{tabp-vw}", $"{appState.Settings.FontSizeUnits?.Tabp}");
+		initScss = initScss.Replace("#{tabl-vw}", $"{appState.Settings.FontSizeUnits?.Tabl}");
+		initScss = initScss.Replace("#{note-vw}", $"{appState.Settings.FontSizeUnits?.Note}");
+		initScss = initScss.Replace("#{desk-vw}", $"{appState.Settings.FontSizeUnits?.Desk}");
+		initScss = initScss.Replace("#{elas-vw}", $"{appState.Settings.FontSizeUnits?.Elas}");
 		
 		sb.Append(initScss);
 

@@ -27,14 +27,14 @@
             "desk": 1440,
             "elas": 1600
         },
-    "fontSizeViewportUnits":
+    "fontSizeUnits":
     {
-        "zero": 4.35,
-        "phab": 4,
-        "tabp": 1.6,
-        "tabl": 1,
-        "note": 1,
-        "desk": 1,
-        "elas": 1
+        "zero": "4.35vw",
+        "phab": "4vw",
+        "tabp": "1.6vw",
+        "tabl": "1vw",
+        "note": "1vw",
+        "desk": "1vw",
+        "elas": "1vw"
     }
 }
