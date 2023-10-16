@@ -27,36 +27,36 @@ html {
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-    font-size: #{zero-vw};
+    font-size: #{zero-font-size};
 
     @include sf-media($from: phab) {
 
-        font-size: #{phab-vw};
+        font-size: #{phab-font-size};
     }
 
     @include sf-media($from: tabp) {
 
-        font-size: #{tabp-vw};
+        font-size: #{tabp-font-size};
     }
 
     @include sf-media($from: tabl) {
 
-        font-size: #{tabl-vw};
+        font-size: #{tabl-font-size};
     }
 
     @include sf-media($from: note) {
 
-        font-size: #{note-vw};
+        font-size: #{note-font-size};
     }
 
     @include sf-media($from: desk) {
 
-        font-size: #{desk-vw};
+        font-size: #{desk-font-size};
     }
 
     @include sf-media($from: elas) {
 
-        font-size: calc(#{$elas-breakpoint} * (#{sf-strip-unit(#{elas-vw})} / 100));
+        font-size: #{elas-font-size};
     }
 }
 
