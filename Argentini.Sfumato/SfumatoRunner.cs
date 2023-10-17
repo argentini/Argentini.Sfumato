@@ -507,7 +507,7 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="prefix"></param>
 	/// <returns></returns>
-	private static bool IsMediaQueryPrefix(string prefix)
+	public static bool IsMediaQueryPrefix(string prefix)
 	{
 		var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(mediaQueryPrefix?.Prefix) == false;
@@ -518,7 +518,7 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="prefix"></param>
 	/// <returns></returns>
-	private static bool IsPseudoclassPrefix(string prefix)
+	public static bool IsPseudoclassPrefix(string prefix)
 	{
 		var pseudoclassPrefix = SfumatoScss.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;

@@ -3,7 +3,7 @@ using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
 
-public class ParsingTests
+public class SfumatoAppStateTests
 {
     #region Constants
     
