@@ -567,6 +567,7 @@ public static class SfumatoScss
 			PrefixOrder = 1,
 			Priority = 1024,
 			Prefix = "dark",
+			PrefixType = "theme",
 			Statement = "@media (prefers-color-scheme: dark) {"
 		},
 		new CssMediaQuery
@@ -574,6 +575,7 @@ public static class SfumatoScss
 			PrefixOrder = 2,
 			Priority = 128,
 			Prefix = "portrait",
+			PrefixType = "orientation",
 			Statement = "@media (orientation: portrait) {"
 		},
 		new CssMediaQuery
@@ -581,6 +583,7 @@ public static class SfumatoScss
 			PrefixOrder = 3,
 			Priority = 256,
 			Prefix = "landscape",
+			PrefixType = "orientation",
 			Statement = "@media (orientation: landscape) {"
 		},
 		new CssMediaQuery
@@ -588,6 +591,7 @@ public static class SfumatoScss
 			PrefixOrder = 4,
 			Priority = 512,
 			Prefix = "print",
+			PrefixType = "output",
 			Statement = "@media print {"
 		},
 		new CssMediaQuery
@@ -595,6 +599,7 @@ public static class SfumatoScss
 			PrefixOrder = 5,
 			Priority = 1,
 			Prefix = "zero",
+			PrefixType = "breakpoint",
 			Statement = "@include sf-media($from: zero) {"
 		},
 		new CssMediaQuery
@@ -602,6 +607,7 @@ public static class SfumatoScss
 			PrefixOrder = 6,
 			Priority = 2,
 			Prefix = "phab",
+			PrefixType = "breakpoint",
 			Statement = "@include sf-media($from: phab) {"
 		},
 		new CssMediaQuery
@@ -609,6 +615,7 @@ public static class SfumatoScss
 			PrefixOrder = 7,
 			Priority = 4,
 			Prefix = "tabp",
+			PrefixType = "breakpoint",
 			Statement = "@include sf-media($from: tabp) {"
 		},
 		new CssMediaQuery
@@ -616,6 +623,7 @@ public static class SfumatoScss
 			PrefixOrder = 8,
 			Priority = 8,
 			Prefix = "tabl",
+			PrefixType = "breakpoint",
 			Statement = "@include sf-media($from: tabl) {"
 		},
 		new CssMediaQuery
@@ -623,6 +631,7 @@ public static class SfumatoScss
 			PrefixOrder = 9,
 			Priority = 16,
 			Prefix = "note",
+			PrefixType = "breakpoint",
 			Statement = "@include sf-media($from: note) {"
 		},
 		new CssMediaQuery
@@ -630,6 +639,7 @@ public static class SfumatoScss
 			PrefixOrder = 10,
 			Priority = 32,
 			Prefix = "desk",
+			PrefixType = "breakpoint",
 			Statement = "@include sf-media($from: desk) {"
 		},
 		new CssMediaQuery
@@ -637,6 +647,7 @@ public static class SfumatoScss
 			PrefixOrder = 11,
 			Priority = 64,
 			Prefix = "elas",
+			PrefixType = "breakpoint",
 			Statement = "@include sf-media($from: elas) {"
 		}
 	};
@@ -1055,7 +1066,7 @@ public static class SfumatoScss
 	    if (value.StartsWith('\'') && value.EndsWith('\''))
 		    return "string";
 	    
-	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')') || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
+	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')') || (value.StartsWith('/') && Uri.TryCreate(value, UriKind.Relative, out _)) || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
 		    return "url";
 	    
 	    #region angle
@@ -1131,7 +1142,7 @@ public static class SfumatoScss
 	    if (value.Length < 3 || value.IndexOf('/') < 1 || value.IndexOf('/') == value.Length - 1)
 		    return string.Empty;
 	    
-	    var values = value.Split('/', StringSplitOptions.RemoveEmptyEntries);
+	    var values = value.Replace('_', ' ').Split('/', StringSplitOptions.RemoveEmptyEntries);
 
 	    if (values.Length != 2)
 		    return string.Empty;
@@ -1182,5 +1193,6 @@ public class CssMediaQuery
 	public int PrefixOrder { get; set; }
 	public int Priority { get; set; }
 	public string Prefix { get; set; } = string.Empty;
+	public string PrefixType { get; set; } = string.Empty;
 	public string Statement { get; set; } = string.Empty;
 }
