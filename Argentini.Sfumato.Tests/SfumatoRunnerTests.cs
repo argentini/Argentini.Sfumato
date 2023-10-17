@@ -1,4 +1,5 @@
 using Argentini.Sfumato.Collections;
+using Argentini.Sfumato.Entities;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
@@ -21,5 +22,21 @@ public class SfumatoRunnerTests
         Assert.False(SfumatoRunner.IsPseudoclassPrefix("dark"));
         Assert.True(SfumatoRunner.IsPseudoclassPrefix("hover"));
         Assert.True(SfumatoRunner.IsPseudoclassPrefix("focus"));
+    }
+    
+    [Fact]
+    public async Task UsedClasses()
+    {
+        // var runner = new SfumatoRunner();
+        //
+        // runner.AppState.UsedClasses.Add("text-red-500", new ScssClass
+        // {
+        //     
+        // });
+        
+        
+        
+        
+
     }
 }

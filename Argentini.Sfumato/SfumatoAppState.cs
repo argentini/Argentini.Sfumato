@@ -45,7 +45,7 @@ public sealed class SfumatoAppState
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
     public string ScssPath { get; set; } = string.Empty;
-    public Dictionary<string,ScssClass> UsedClasses { get; } = new();
+    public ConcurrentDictionary<string,ScssClass> UsedClasses { get; } = new();
     public List<string> AllPrefixes { get; } = new();
     public StringBuilder ScssCoreInjectable { get; } = new();
     public StringBuilder ScssSharedInjectable { get; } = new();
@@ -483,21 +483,42 @@ public sealed class SfumatoAppState
 			Console.WriteLine($"{Strings.TriangleRight} No project paths specified");
 			return;
 		}
+		
+		var filesList = new ConcurrentBag<string>();
+		var tasks = new List<Task>();
 
-		var fileCount = 0;
-		
 		foreach (var projectPath in Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false))
-			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, fileCount, projectPath.Recurse);
+			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, filesList, projectPath.Recurse));
+
+		await Task.WhenAll(tasks);
+
+		tasks.Clear();
 		
-		if (fileCount == 0)
-			Console.WriteLine($"{Strings.TriangleRight} Identifying no used classes");
+		foreach (var filePath in filesList)
+			tasks.Add(ExamineFileForUsedScssCoreClassesAsync(filePath));
+		
+		await Task.WhenAll(tasks);		
+		
+		if (filesList.IsEmpty)
+			Console.WriteLine($"{Strings.TriangleRight} Identified no used classes");
 		else
-			Console.WriteLine($"{Strings.TriangleRight} Identified {fileCount:N0} file{(fileCount == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
+			Console.WriteLine($"{Strings.TriangleRight} Identified {filesList.Count:N0} file{(filesList.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
 	}
-	private async Task<int> RecurseProjectPathForUsedScssCoreClassesAsync(string? sourcePath, string fileSpec, bool isFilePath, int fileCount, bool recurse = false)
+
+	private async Task ExamineFileForUsedScssCoreClassesAsync(string filePath)
+	{
+		if (string.IsNullOrEmpty(filePath))
+			return;
+
+		var markup = await File.ReadAllTextAsync(filePath);
+
+		ExamineMarkupForUsedClasses(markup);
+	}
+
+	private async Task RecurseProjectPathAsync(string? sourcePath, string fileSpec, bool isFilePath, ConcurrentBag<string> filesList, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
-			return fileCount;
+			return;
 
 		FileInfo[] files = null!;
 		DirectoryInfo[] dirs = null!;
@@ -522,138 +543,139 @@ public sealed class SfumatoAppState
 			files = dir.GetFiles().Where(f => f.Name.EndsWith(fileSpec.TrimStart('*'))).ToArray();
 		}
 		
-		var matches = new List<Match>();
-
 		foreach (var projectFile in files.OrderBy(f => f.Name))
-		{
-			fileCount++;
-			
-			var markup = await File.ReadAllTextAsync(projectFile.FullName);
-
-			if (string.IsNullOrEmpty(markup))
-				continue;
-
-			matches.Clear();
-			matches.AddRange(CoreClassRegex.Matches(markup));
-			
-			foreach (var match in matches)
-			{
-				var userClassName = ReOrderPrefixes(match.Value);
-
-				if (UsedClasses.ContainsKey(userClassName))
-					continue;
-
-				var scssClasses = ScssClassCollection.GetAllByClassName(userClassName).ToList();
-				var userClassValueType = userClassName.GetUserClassValueType();
-				var userClassValue = userClassName.GetUserClassValue().Replace('_', ' ').Replace("\\ ", "\\_");
-				ScssClass? foundScssClass = null;
-
-				// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
-				// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
-				// 3. Utility class (e.g. "elastic-container")
-
-				if (string.IsNullOrEmpty(userClassValueType) == false)
-					foreach (var scssClass in scssClasses)
-					{
-						if (scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
-							continue;
-
-						foundScssClass = scssClass;
-						
-						break;
-					}								
-				else
-					foreach (var scssClass in scssClasses)
-					{
-						if (scssClass.ValueTypes != string.Empty)
-							continue;
-
-						foundScssClass = scssClass;
-						
-						break;
-					}
-
-				if (foundScssClass is null)
-					continue;
-				
-				var usedScssClass = foundScssClass.Adapt<ScssClass>();
-
-				usedScssClass.UserClassName = userClassName;
-
-				if (string.IsNullOrEmpty(userClassValue) == false)
-					usedScssClass.Value = userClassValue;
-
-				var segments = userClassName.Split(':');
-
-				foreach (var prefix in segments)
-				{
-					if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
-						usedScssClass.Depth++;
-					else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
-						usedScssClass.Depth++;
-				}
-
-				foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
-				{
-					if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
-						continue;
-					
-					usedScssClass.PrefixSortOrder += breakpoint.Priority;
-				}
-				
-				UsedClasses.TryAdd(userClassName, usedScssClass);
-			}
-
-			matches.Clear();
-			matches.AddRange(ArbitraryCssRegex.Matches(markup));
-
-			foreach (var match in matches)
-			{
-				var userClassName = ReOrderPrefixes(match.Value);
-				
-				if (UsedClasses.ContainsKey(userClassName))
-					continue;
-
-				// 1. Arbitrary CSS style (e.g. tabp:[display:none])
-
-				var usedScssClass = new ScssClass
-				{
-					ValueTypes = string.Empty,
-					UserClassName = userClassName,
-					Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_"),
-					Template = "{value};"
-				};
-
-				var segments = userClassName.Split(':');
-				
-				foreach (var prefix in segments)
-				{
-					if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
-						usedScssClass.Depth++;
-					else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
-						usedScssClass.Depth++;
-				}
-				
-				foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
-				{
-					if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
-						continue;
-					
-					usedScssClass.PrefixSortOrder += breakpoint.Priority;
-				}
-				
-				UsedClasses.TryAdd(userClassName, usedScssClass);
-			}
-		}
+			filesList.Add(projectFile.FullName);
 
 		if (recurse == false)
-			return fileCount;
+			return;
 		
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			fileCount = await RecurseProjectPathForUsedScssCoreClassesAsync(subDir.FullName, fileSpec, isFilePath, fileCount);
+			await RecurseProjectPathAsync(subDir.FullName, fileSpec, isFilePath, filesList, recurse);
+	}
+	
+	public void ExamineMarkupForUsedClasses(string markup)
+	{
+		if (string.IsNullOrEmpty(markup))
+			return;
 
-		return fileCount;
+		var matches = new List<Match>();
+
+		matches.AddRange(CoreClassRegex.Matches(markup));
+		
+		foreach (var match in matches)
+		{
+			var userClassName = ReOrderPrefixes(match.Value);
+
+			if (UsedClasses.ContainsKey(userClassName))
+				continue;
+
+			var scssClasses = ScssClassCollection.GetAllByClassName(userClassName).ToList();
+			var userClassValueType = userClassName.GetUserClassValueType();
+			var userClassValue = userClassName.GetUserClassValue().Replace('_', ' ').Replace("\\ ", "\\_");
+			ScssClass? foundScssClass = null;
+
+			// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
+			// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
+			// 3. Utility class (e.g. "elastic-container")
+
+			if (string.IsNullOrEmpty(userClassValueType) == false)
+				foreach (var scssClass in scssClasses)
+				{
+					if (scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
+						continue;
+
+					foundScssClass = scssClass;
+					
+					break;
+				}								
+			else
+				foreach (var scssClass in scssClasses)
+				{
+					if (scssClass.ValueTypes != string.Empty)
+						continue;
+
+					foundScssClass = scssClass;
+					
+					break;
+				}
+
+			if (foundScssClass is null)
+				continue;
+			
+			var usedScssClass = foundScssClass.Adapt<ScssClass>();
+
+			usedScssClass.UserClassName = userClassName;
+
+			if (string.IsNullOrEmpty(userClassValue) == false)
+				usedScssClass.Value = userClassValue;
+
+			var segments = userClassName.Split(':');
+
+			foreach (var prefix in segments)
+			{
+				if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
+					usedScssClass.Depth++;
+				else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
+					usedScssClass.Depth++;
+			}
+
+			foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
+			{
+				if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
+					continue;
+				
+				usedScssClass.PrefixSortOrder += breakpoint.Priority;
+			}
+			
+			UsedClasses.TryAdd(userClassName, usedScssClass);
+		}
+
+		matches.Clear();
+		matches.AddRange(ArbitraryCssRegex.Matches(markup));
+
+		foreach (var match in matches)
+		{
+			var userClassName = ReOrderPrefixes(match.Value);
+			
+			if (UsedClasses.ContainsKey(userClassName))
+				continue;
+
+			// 1. Arbitrary CSS style (e.g. tabp:[display:none])
+
+			var usedScssClass = new ScssClass
+			{
+				ValueTypes = string.Empty,
+				UserClassName = userClassName,
+				Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_"),
+				Template = "{value};"
+			};
+
+			var segments = userClassName.Split(':');
+			
+			foreach (var prefix in segments)
+			{
+				if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
+					usedScssClass.Depth++;
+				else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
+					usedScssClass.Depth++;
+			}
+			
+			foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
+			{
+				if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
+					continue;
+				
+				usedScssClass.PrefixSortOrder += breakpoint.Priority;
+			}
+			
+			UsedClasses.TryAdd(userClassName, usedScssClass);
+		}
 	}
 
 	#endregion
+}
+
+public class FileScour
+{
+	public int FileCount { get; set; }
 }
