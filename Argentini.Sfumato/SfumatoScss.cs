@@ -1181,8 +1181,11 @@ public static class SfumatoScss
 	    if (result.StartsWith("--"))
 		    result = $"var({result})";
 
-	    if (Uri.TryCreate(result, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+	    if ((result.StartsWith('/') && Uri.TryCreate(result, UriKind.Relative, out _)) || Uri.TryCreate(result, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
 		    result = $"url(\"{result}\")";
+	    
+	    if (result.StartsWith("url(", StringComparison.Ordinal) && result.StartsWith("url(\"", StringComparison.Ordinal) == false && result.EndsWith(')'))
+		    result = result.Replace("url(", "url(\"").TrimEnd(')') + "\")";
 	    
 	    return result;
     }

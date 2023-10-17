@@ -187,4 +187,19 @@ public class ParsingTests
         Assert.Equal("ratio", "dark:tabp:width-[1/2]".GetUserClassValueType());
         Assert.Equal("ratio", "dark:tabp:width-[1_/_2]".GetUserClassValueType());
     }
+    
+    [Fact]
+    public void GetUserClassValue()
+    {
+        Assert.Equal("3fr", "dark:tabp:p-[3fr]".GetUserClassValue());
+        Assert.Equal("3rem", "dark:tabp:p-[3rem]".GetUserClassValue());
+        Assert.Equal("#112233", "dark:tabp:p-[#112233]".GetUserClassValue());
+        Assert.Equal("2rem", "dark:tabp:p-[length:2rem]".GetUserClassValue());
+        Assert.Equal("width:100px", "dark:tabp:[width:100px]".GetUserClassValue());
+        Assert.Equal("var(--my-width)", "dark:tabp:w-[--my-width]".GetUserClassValue());
+        Assert.Equal("var(--my-width)", "dark:tabp:w-[var(--my-width)]".GetUserClassValue());
+        Assert.Equal("url(\"http://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[http://sfumato.com/images/file.jpg]".GetUserClassValue());
+        Assert.Equal("url(\"https://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[https://sfumato.com/images/file.jpg]".GetUserClassValue());
+        Assert.Equal("url(\"http://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[url(http://sfumato.com/images/file.jpg)]".GetUserClassValue());
+    }
 }
