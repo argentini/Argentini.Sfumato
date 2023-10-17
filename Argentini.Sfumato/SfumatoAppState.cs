@@ -515,7 +515,15 @@ public sealed class SfumatoAppState
 		ExamineMarkupForUsedClasses(markup);
 	}
 
-	private async Task RecurseProjectPathAsync(string? sourcePath, string fileSpec, bool isFilePath, ConcurrentBag<string> filesList, bool recurse = false)
+	/// <summary>
+	/// Recurse a project path to collect all matching file paths in a list.
+	/// </summary>
+	/// <param name="sourcePath"></param>
+	/// <param name="fileSpec"></param>
+	/// <param name="isFilePath"></param>
+	/// <param name="filesList"></param>
+	/// <param name="recurse"></param>
+	public static async Task RecurseProjectPathAsync(string? sourcePath, string fileSpec, bool isFilePath, ConcurrentBag<string> filesList, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
 			return;
@@ -553,6 +561,10 @@ public sealed class SfumatoAppState
 			await RecurseProjectPathAsync(subDir.FullName, fileSpec, isFilePath, filesList, recurse);
 	}
 	
+	/// <summary>
+	/// Examine markup for used classes and add them to the USedClasses dictionary.
+	/// </summary>
+	/// <param name="markup"></param>
 	public void ExamineMarkupForUsedClasses(string markup)
 	{
 		if (string.IsNullOrEmpty(markup))
@@ -673,9 +685,4 @@ public sealed class SfumatoAppState
 	}
 
 	#endregion
-}
-
-public class FileScour
-{
-	public int FileCount { get; set; }
 }

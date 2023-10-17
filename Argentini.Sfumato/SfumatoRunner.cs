@@ -108,10 +108,21 @@ public sealed class SfumatoRunner
 		timer.Start();
 
 		var fileStats = new FileResults();
-		
-		foreach (var projectPath in AppState.Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase)))
-			await FindAndBuildProjectScssAsync(AppState, projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, fileStats, projectPath.Recurse);
+		var filesList = new ConcurrentBag<string>();
+		var tasks = new List<Task>();
 
+		foreach (var projectPath in AppState.Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase)))
+			tasks.Add(SfumatoAppState.RecurseProjectPathAsync(projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, filesList, projectPath.Recurse));
+
+		await Task.WhenAll(tasks);
+
+		tasks.Clear();
+		
+		foreach (var filePath in filesList)
+			tasks.Add(TranspileScssFileAsync(AppState, filePath, fileStats));
+		
+		await Task.WhenAll(tasks);
+		
 		if (fileStats.FileCount == 0)
 			Console.WriteLine($"{Strings.TriangleRight} No project SCSS files found");
 		else
@@ -358,7 +369,7 @@ public sealed class SfumatoRunner
 		
 		return scss;
 	}
-	private async Task GenerateScssFromObjectTreeAsync(ScssNode scssNode, StringBuilder sb)
+	public async Task GenerateScssFromObjectTreeAsync(ScssNode scssNode, StringBuilder sb)
 	{
 		if (string.IsNullOrEmpty(scssNode.Prefix) == false)
 		{
@@ -415,66 +426,31 @@ public sealed class SfumatoRunner
 	}
 	
 	/// <summary>
-	/// Transpile all configured project SCSS files in-place.
+	/// Transpile a SCSS file in-place.
 	/// </summary>
 	/// <param name="appState"></param>
-	/// <param name="sourcePath"></param>
-	/// <param name="fileSpec"></param>
-	/// <param name="isFilePath"></param>
+	/// <param name="filePath"></param>
 	/// <param name="fileStats"></param>
-	/// <param name="recurse"></param>
 	/// <returns></returns>
-	private static async Task FindAndBuildProjectScssAsync(SfumatoAppState appState, string? sourcePath, string fileSpec, bool isFilePath, FileResults fileStats, bool recurse = false)
+	public static async Task TranspileScssFileAsync(SfumatoAppState appState, string filePath, FileResults fileStats)
 	{
-		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
+		if (string.IsNullOrEmpty(filePath))
 			return;
 
-		FileInfo[] files = null!;
-		DirectoryInfo[] dirs = null!;
-		
-		if (isFilePath)
-		{
-			recurse = false;
-			files = new [] { new FileInfo(Path.Combine(sourcePath, fileSpec)) };
-		}
-
-		else
-		{
-			var dir = new DirectoryInfo(sourcePath);
-
-			if (dir.Exists == false)
-			{
-				Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
-				Environment.Exit(1);
-			}
-
-			dirs = dir.GetDirectories();
-			files = dir.GetFiles().Where(f => f.Name.EndsWith(fileSpec.TrimStart('*'))).ToArray();
-		}
-
-		foreach (var cssFile in files.Where(f => f.Name.EndsWith(".css", StringComparison.InvariantCultureIgnoreCase) && f.Name.Equals("sfumato.css", StringComparison.InvariantCultureIgnoreCase) == false))
-			cssFile.Delete();			
-
-		foreach (var file in files.OrderBy(f => f.Name))
-		{
-			fileStats.FileCount++;
-			
-			var length = await SfumatoScss.TranspileSingleScss(file.FullName, appState);
-
-			if (length < 0)
-				continue;
-			
-			fileStats.TotalBytes += length;
-
-			if (appState.DiagnosticMode)
-				appState.DiagnosticOutput.Append($"Generated {ShortenPathForOutput(file.FullName.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", appState)} ({length.FormatBytes()}){Environment.NewLine}");
-		}
-
-		if (recurse == false)
+		if (File.Exists(filePath) == false)
 			return;
 		
-		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			await FindAndBuildProjectScssAsync(appState, subDir.FullName, fileSpec, isFilePath, fileStats, recurse);
+		fileStats.FileCount++;
+			
+		var length = await SfumatoScss.TranspileSingleScss(filePath, appState);
+
+		if (length < 0)
+			return;
+		
+		fileStats.TotalBytes += length;
+
+		if (appState.DiagnosticMode)
+			appState.DiagnosticOutput.Append($"Generated {ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", appState)} ({length.FormatBytes()}){Environment.NewLine}");
 	}
 	
 	#endregion
