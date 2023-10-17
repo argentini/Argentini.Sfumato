@@ -83,7 +83,7 @@ public sealed class SfumatoAppState
 	    
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 
-	    const string sfumatoScssIncludesRegexExpression = @"^@sfumato\s+((core)|(base));\r?\n";
+	    const string sfumatoScssIncludesRegexExpression = @"^\s*@sfumato\s+((core)|(base))[\s]{0,};\r?\n";
 	    
 	    SfumatoScssIncludesRegex = new Regex(sfumatoScssIncludesRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
    }
@@ -422,17 +422,48 @@ public sealed class SfumatoAppState
     /// </summary>
     /// <param name="className"></param>
     /// <returns></returns>
-    private static string ReOrderPrefixes(string userClassName)
+    public static string ReOrderPrefixes(string userClassName)
     {
-	    var result = userClassName;
+	    var index = userClassName.IndexOf('[');
+	    var bracket = index > 0 ? userClassName[index..] : string.Empty;
+	    var className = index > 0 ? userClassName[..index] : userClassName;
+	    var segments = className.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
-	    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.OrderByDescending(k => k.PrefixOrder))
+	    if (segments.Length < 2)
+		    return userClassName;
+	    
+	    var rootClass = segments[^1];
+	    var lastType = string.Empty;
+	    var prefixes = new List<string>();
+	    var pseudoclasses = new List<string>();
+
+	    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.OrderBy(k => k.PrefixOrder))
 	    {
-		    if (result.Contains($"{breakpoint.Prefix}:0", StringComparison.Ordinal))
-			    result = $"{breakpoint.Prefix}:{result.Replace($"{breakpoint.Prefix}:0", string.Empty, StringComparison.Ordinal)}";
+		    if (breakpoint.PrefixType == lastType)
+			    continue;
+		    
+		    if (prefixes.Contains(breakpoint.Prefix))
+			    continue;
+
+		    if (segments.Contains(breakpoint.Prefix) == false)
+			    continue;
+
+		    prefixes.Add(breakpoint.Prefix);
+		    lastType = breakpoint.PrefixType;
 	    }
 
-	    return result;
+	    foreach (var segment in segments)
+	    {
+		    if (pseudoclasses.Contains(segment))
+			    continue;
+
+		    if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
+			    continue;
+
+		    pseudoclasses.Add(segment);
+	    }
+
+	    return $"{(prefixes.Count > 0 ? string.Join(':', prefixes) + ':' : string.Empty)}{(pseudoclasses.Count > 0 ? string.Join(':', pseudoclasses) + ':' : string.Empty)}{rootClass}{bracket}";
     }
     
 	/// <summary>
