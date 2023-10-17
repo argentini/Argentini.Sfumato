@@ -422,7 +422,7 @@ public sealed class SfumatoAppState
     /// </summary>
     /// <param name="className"></param>
     /// <returns></returns>
-    public string ReOrderPrefixes(string userClassName)
+    public static string ReOrderPrefixes(string userClassName)
     {
 	    var index = userClassName.IndexOf('[');
 	    var bracket = index > 0 ? userClassName[index..] : string.Empty;
@@ -434,8 +434,8 @@ public sealed class SfumatoAppState
 	    
 	    var rootClass = segments[^1];
 	    var lastType = string.Empty;
-	    var prefixes = StringBuilderPool.Get();
-	    var pseudoclasses = StringBuilderPool.Get();
+	    var prefixes = new List<string>();
+	    var pseudoclasses = new List<string>();
 
 	    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.OrderBy(k => k.PrefixOrder))
 	    {
@@ -448,8 +448,7 @@ public sealed class SfumatoAppState
 		    if (segments.Contains(breakpoint.Prefix) == false)
 			    continue;
 
-		    prefixes.Append(breakpoint.Prefix);
-		    prefixes.Append(':');
+		    prefixes.Add(breakpoint.Prefix);
 		    lastType = breakpoint.PrefixType;
 	    }
 
@@ -461,16 +460,10 @@ public sealed class SfumatoAppState
 		    if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
 			    continue;
 
-		    pseudoclasses.Append(segment);
-		    pseudoclasses.Append(':');
+		    pseudoclasses.Add(segment);
 	    }
 
-	    var result = $"{(prefixes.Length > 0 ? prefixes : string.Empty)}{(pseudoclasses.Length > 0 ? pseudoclasses : string.Empty)}{rootClass}{bracket}";
-	    
-	    StringBuilderPool.Return(prefixes);
-	    StringBuilderPool.Return(pseudoclasses);
-
-	    return result;
+	    return $"{(prefixes.Count > 0 ? string.Join(':', prefixes) + ':' : string.Empty)}{(pseudoclasses.Count > 0 ? string.Join(':', pseudoclasses) + ':' : string.Empty)}{rootClass}{bracket}";
     }
     
 	/// <summary>

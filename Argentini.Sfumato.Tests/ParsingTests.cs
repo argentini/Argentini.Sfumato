@@ -112,15 +112,13 @@ public class ParsingTests
     [Fact]
     public void ReorderPrefixes()
     {
-        var appState = new SfumatoAppState();
-
-        Assert.Equal("bg-slate-100", appState.ReOrderPrefixes("bg-slate-100"));
-        Assert.Equal("bg-slate-100[--my-value]", appState.ReOrderPrefixes("bg-slate-100[--my-value]"));
-        Assert.Equal("font-2/2", appState.ReOrderPrefixes("font-2/2"));
-        Assert.Equal("tabp:bg-slate-100", appState.ReOrderPrefixes("tabp:bg-slate-100"));
-        Assert.Equal("tabp:hover:bg-slate-100", appState.ReOrderPrefixes("tabp:hover:bg-slate-100"));
-        Assert.Equal("tabp:hover:bg-slate-100", appState.ReOrderPrefixes("hover:tabp:bg-slate-100"));
-        Assert.Equal("dark:tabp:hover:focus:bg-slate-100[--my-value]", appState.ReOrderPrefixes("hover:tabp:note:focus:dark:elas:bg-slate-100[--my-value]"));
+        Assert.Equal("bg-slate-100", SfumatoAppState.ReOrderPrefixes("bg-slate-100"));
+        Assert.Equal("bg-slate-100[--my-value]", SfumatoAppState.ReOrderPrefixes("bg-slate-100[--my-value]"));
+        Assert.Equal("font-2/2", SfumatoAppState.ReOrderPrefixes("font-2/2"));
+        Assert.Equal("tabp:bg-slate-100", SfumatoAppState.ReOrderPrefixes("tabp:bg-slate-100"));
+        Assert.Equal("tabp:hover:bg-slate-100", SfumatoAppState.ReOrderPrefixes("tabp:hover:bg-slate-100"));
+        Assert.Equal("tabp:hover:bg-slate-100", SfumatoAppState.ReOrderPrefixes("hover:tabp:bg-slate-100"));
+        Assert.Equal("dark:tabp:hover:focus:bg-slate-100[--my-value]", SfumatoAppState.ReOrderPrefixes("hover:tabp:note:focus:dark:elas:bg-slate-100[--my-value]"));
     }
 
     [Fact]
