@@ -797,11 +797,10 @@ public static class SfumatoScss
 	}
 	
 	/// <summary>
-	/// Transpile SCSS markup into CSS.
+	/// Transpile SCSS markup into sfumato.css.
 	/// </summary>
 	/// <param name="scss"></param>
 	/// <param name="appState"></param>
-	/// <param name="releaseMode"></param>
 	/// <returns>Byte length of generated CSS file</returns>
 	public static async Task<long> TranspileScss(StringBuilder scss, SfumatoAppState appState)
 	{
