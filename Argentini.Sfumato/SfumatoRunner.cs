@@ -138,11 +138,12 @@ public sealed class SfumatoRunner
 	/// Only includes pseudoclasses, not media queries.
 	/// </summary>
 	/// <param name="scssClass"></param>
+	/// <param name="pool"></param>
 	/// <param name="stripPrefix"></param>
 	/// <returns></returns>
-	public async Task<string> GenerateScssClassMarkupAsync(ScssClass scssClass, string stripPrefix = "")
+	public static async Task<string> GenerateScssClassMarkupAsync(ScssClass scssClass, ObjectPool<StringBuilder> pool, string stripPrefix = "")
 	{
-		var scssResult = AppState.StringBuilderPool.Get();
+		var scssResult = pool.Get();
 		var level = 0;
 		var className = scssClass.UserClassName;
 		var segments = Array.Empty<string>();
@@ -183,7 +184,7 @@ public sealed class SfumatoRunner
 				
 				if (renderedClassName == false)
 				{
-					scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)} {{\n");
+					scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(pool)} {{\n");
 					renderedClassName = true;
 					level++;
 
@@ -203,7 +204,7 @@ public sealed class SfumatoRunner
 
 		else
 		{
-			scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(AppState.StringBuilderPool)} {{\n");
+			scssResult.Append($"{Indent(level)}.{scssClass.UserClassName.EscapeCssClassName(pool)} {{\n");
 			level++;
 			
 			if (scssClass.ChildSelector != string.Empty)
@@ -223,7 +224,7 @@ public sealed class SfumatoRunner
 		
 		var result = scssResult.ToString();
 		
-		AppState.StringBuilderPool.Return(scssResult);
+		pool.Return(scssResult);
 		
 		return await Task.FromResult(result);
 	}
@@ -400,7 +401,7 @@ public sealed class SfumatoRunner
 		{
 			foreach (var scssClass in scssNode.Classes)
 			{
-				var markup = await GenerateScssClassMarkupAsync(scssClass, scssNode.PrefixPath);
+				var markup = await GenerateScssClassMarkupAsync(scssClass, AppState.StringBuilderPool, scssNode.PrefixPath);
 					
 				sb.Append($"{markup.Indent(scssNode.Level * IndentationSpaces).TrimEnd('\n')}\n");
 			}

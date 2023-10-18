@@ -1,4 +1,8 @@
+using System.Text;
+using System.Text.RegularExpressions;
+using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Extensions;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
 
@@ -20,6 +24,48 @@ public class SfumatoRunnerTests
         Assert.False(SfumatoRunner.IsPseudoclassPrefix("dark"));
         Assert.True(SfumatoRunner.IsPseudoclassPrefix("hover"));
         Assert.True(SfumatoRunner.IsPseudoclassPrefix("focus"));
+    }
+
+    [Fact]
+    public async Task GenerateScssClassMarkupAsync()
+    {
+        var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass
+        {
+            RootClassName = "text-",
+            UserClassName = "text-1.0",
+            Value = "1rem",
+            ValueTypes = "length,percentage",
+            Template = "font-size: {value};"
+            
+        }, pool, string.Empty);
+
+        Assert.Equal(".text-1\\.0{\nfont-size:1rem;\n}", result.Trim().Replace(" ", string.Empty));
+        
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass
+        {
+            RootClassName = "text-base/2",
+            UserClassName = "text-base/2",
+            Value = "1rem",
+            ValueTypes = "length,percentage,number",
+            Template = "font-size: {value}; line-height: 1.15rem;"            
+            
+        }, pool, string.Empty);
+
+        Assert.Equal(".text-base\\/2{\nfont-size:1rem;line-height:1.15rem;\n}", result.Trim().Replace(" ", string.Empty));
+        
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass
+        {
+            RootClassName = "text-base/[3rem]",
+            UserClassName = "text-base/[3rem]",
+            Value = "1rem",
+            ValueTypes = "length,percentage,number",
+            Template = "font-size: {value}; line-height: 3rem;"            
+            
+        }, pool, string.Empty);
+
+        Assert.Equal(".text-base\\/\\[3rem\\]{\nfont-size:1rem;line-height:3rem;\n}", result.Trim().Replace(" ", string.Empty));
     }
     
     [Fact]

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Argentini.Sfumato.Collections;
 using Microsoft.Extensions.ObjectPool;
 
@@ -107,6 +108,7 @@ public class SfumatoAppStateTests
         Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]"));
         Assert.Single(scssClassCollection.GetAllByClassName("break-after-auto"));
         Assert.Equal("bg-slate-100", scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]").First().RootClassName);
+        Assert.Single(scssClassCollection.GetAllByClassName("text-base/5"));
     }
 
     [Fact]
@@ -205,5 +207,40 @@ public class SfumatoAppStateTests
         Assert.Equal("url(\"http://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[http://sfumato.com/images/file.jpg]".GetUserClassValue());
         Assert.Equal("url(\"https://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[https://sfumato.com/images/file.jpg]".GetUserClassValue());
         Assert.Equal("url(\"http://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[url(http://sfumato.com/images/file.jpg)]".GetUserClassValue());
+    }
+    
+    [Fact]
+    public async Task ExamineMarkupForUsedClasses()
+    {
+        var runner = new SfumatoRunner();
+        var markup = string.Empty;
+
+        await runner.InitializeAsync();
+
+        #region slashed
+        
+        runner.AppState.UsedClasses.Clear();
+        runner.AppState.ExamineMarkupForUsedClasses("<div class=\"text-base/5\"></div>");
+
+        Assert.Single(runner.AppState.UsedClasses);
+
+        markup = await runner.GenerateScssObjectTreeAsync();
+        
+        Assert.Equal(".text-base\\/5{\nfont-size:1rem;line-height:1.25rem;\n}", markup.Trim().Replace(" ", string.Empty));
+
+        #endregion
+
+        #region slashed bracketed
+
+        runner.AppState.UsedClasses.Clear();
+        runner.AppState.ExamineMarkupForUsedClasses("<div class=\"text-base/[3rem]\"></div>");
+
+        Assert.Single(runner.AppState.UsedClasses);
+
+        markup = await runner.GenerateScssObjectTreeAsync();
+        
+        Assert.Equal(".text-base\\/\\[3rem\\]{\nfont-size:1rem;line-height:3rem;\n}", markup.Trim().Replace(" ", string.Empty));
+        
+        #endregion
     }
 }
