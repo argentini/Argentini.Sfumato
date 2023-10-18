@@ -245,7 +245,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 		
-		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Value.SortOrder))
+		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Value.SortOrder).ThenBy(c => c.Key))
 		{
 			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
@@ -323,9 +323,9 @@ public sealed class SfumatoRunner
 
 		if (globalSelector.Length > 0)
 		{
-			sb.Append(globalSelector + " {");
-			sb.Append("--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;");
-			sb.Append('}');
+			sb.Append(globalSelector + " {" + Environment.NewLine);
+			sb.Append($"{Indent(1)}--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" + Environment.NewLine);
+			sb.Append("}" + Environment.NewLine);
 		}
 
 		globalSelector.Clear();
@@ -338,9 +338,9 @@ public sealed class SfumatoRunner
 
 		if (globalSelector.Length > 0)
 		{
-			sb.Append(globalSelector + " {");
-			sb.Append("--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;");
-			sb.Append('}');
+			sb.Append(globalSelector + " {" + Environment.NewLine);
+			sb.Append($"{Indent(1)}--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+			sb.Append("}" + Environment.NewLine);
 		}
 		
 		globalSelector.Clear();
@@ -353,9 +353,9 @@ public sealed class SfumatoRunner
 
 		if (globalSelector.Length > 0)
 		{
-			sb.Append(globalSelector + " {");
-			sb.Append("--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;");
-			sb.Append('}');
+			sb.Append(globalSelector + " {" + Environment.NewLine);
+			sb.Append($"{Indent(1)}--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+			sb.Append("}" + Environment.NewLine);
 		}
 
 		#endregion
