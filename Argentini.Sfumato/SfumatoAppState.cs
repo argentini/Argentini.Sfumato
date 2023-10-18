@@ -424,16 +424,31 @@ public sealed class SfumatoAppState
     /// <returns></returns>
     public static string ReOrderPrefixes(string userClassName)
     {
-	    var index = userClassName.IndexOf('[');
-	    var bracket = index > 0 ? userClassName[index..] : string.Empty;
-	    var className = index > 0 ? userClassName[..index] : userClassName;
-	    var segments = className.Split(':', StringSplitOptions.RemoveEmptyEntries);
+	    if (string.IsNullOrEmpty(userClassName) || userClassName.Contains(':') == false)
+		    return userClassName;
 
-	    if (segments.Length < 2)
+	    var index = -1;
+
+	    for (var x = 0; x < userClassName.Length; x++)
+	    {
+		    if (userClassName[x] == '[')
+			    break;
+
+		    if (userClassName[x] == ':')
+			    index = x;
+	    }
+
+	    if (index == -1)
 		    return userClassName;
 	    
-	    var rootClass = segments[^1];
-	    var lastType = string.Empty;
+	    var prefixSegment = userClassName[..(index + 1)];
+	    var rootClass = string.Empty;
+
+	    if (prefixSegment.Length < userClassName.Length)
+		    rootClass = userClassName[prefixSegment.Length..];
+	    
+		var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
+		var lastType = string.Empty;
 	    var prefixes = new List<string>();
 	    var pseudoclasses = new List<string>();
 
@@ -463,7 +478,7 @@ public sealed class SfumatoAppState
 		    pseudoclasses.Add(segment);
 	    }
 
-	    return $"{(prefixes.Count > 0 ? string.Join(':', prefixes) + ':' : string.Empty)}{(pseudoclasses.Count > 0 ? string.Join(':', pseudoclasses) + ':' : string.Empty)}{rootClass}{bracket}";
+	    return $"{(prefixes.Count > 0 ? string.Join(':', prefixes) + ':' : string.Empty)}{(pseudoclasses.Count > 0 ? string.Join(':', pseudoclasses) + ':' : string.Empty)}{rootClass}";
     }
     
 	/// <summary>
