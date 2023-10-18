@@ -6,40 +6,40 @@ namespace Argentini.Sfumato.Tests;
 public class SfumatoAppStateTests
 {
     #region Constants
-    
-    private static string Markup => """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sample Website</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/sfumato.css">
-</head>
-<body class="text-base/5 desk:text-base/[3rem]">
-    <div id="test-home" class="text-[1rem] note:text-[1.25rem] bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233] desk:text-[red] desk:text-[--my-color-var] desk:text-[var(--my-color-var)]">
-        <p class="[font-weight:900] tabp:[font-weight:900]">Placeholder</p>
-        <p class="[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]">Invalid Classes</p>
-    </div>
-    <div class="block invisible top-8 break-after-auto container aspect-screen elas:aspect-[8/4]"></div>
-    <script>
-        function test() {
-          let el = document.getElementById('test-element');
-          if (el) {
-                el.classList.add($`
-                    bg-emerald-900
-                    [font-weight:700]
-                    tabl:[font-weight:700]
-                `);
-                el.classList.add(`bg-emerald-950`);
-                el.classList.add(`[font-weight:600]`);
-                el.classList.add(`note:[font-weight:600]`);
-          }
-        }
-    </script>
-</body>
-</html>
-""";
+
+    public static string Markup => """
+                                   <!DOCTYPE html>
+                                   <html lang="en">
+                                   <head>
+                                       <meta charset="UTF-8">
+                                       <title>Sample Website</title>
+                                       <meta name="viewport" content="width=device-width, initial-scale=1">
+                                       <link rel="stylesheet" href="css/sfumato.css">
+                                   </head>
+                                   <body class="text-base/5 desk:text-base/[3rem]">
+                                       <div id="test-home" class="text-[1rem] note:text-[1.25rem] bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233] desk:text-[red] desk:text-[--my-color-var] desk:text-[var(--my-color-var)]">
+                                           <p class="[font-weight:900] tabp:[font-weight:900]">Placeholder</p>
+                                           <p class="[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]">Invalid Classes</p>
+                                       </div>
+                                       <div class="block invisible top-8 break-after-auto container aspect-screen elas:aspect-[8/4]"></div>
+                                       <script>
+                                           function test() {
+                                             let el = document.getElementById('test-element');
+                                             if (el) {
+                                                   el.classList.add($`
+                                                       bg-emerald-900
+                                                       [font-weight:700]
+                                                       tabl:[font-weight:700]
+                                                   `);
+                                                   el.classList.add(`bg-emerald-950`);
+                                                   el.classList.add(`[font-weight:600]`);
+                                                   el.classList.add(`note:[font-weight:600]`);
+                                             }
+                                           }
+                                       </script>
+                                   </body>
+                                   </html>
+                                   """;
     
     #endregion
     
@@ -119,6 +119,10 @@ public class SfumatoAppStateTests
         Assert.Equal("tabp:hover:bg-slate-100", SfumatoAppState.ReOrderPrefixes("tabp:hover:bg-slate-100"));
         Assert.Equal("tabp:hover:bg-slate-100", SfumatoAppState.ReOrderPrefixes("hover:tabp:bg-slate-100"));
         Assert.Equal("dark:tabp:hover:focus:bg-slate-100[--my-value]", SfumatoAppState.ReOrderPrefixes("hover:tabp:note:focus:dark:elas:bg-slate-100[--my-value]"));
+        
+        Assert.Equal("[font-size:3rem]", SfumatoAppState.ReOrderPrefixes("[font-size:3rem]"));
+        Assert.Equal("tabp:[font-size:3rem]", SfumatoAppState.ReOrderPrefixes("tabp:[font-size:3rem]"));
+        Assert.Equal("dark:tabp:[font-size:3rem]", SfumatoAppState.ReOrderPrefixes("tabp:dark:[font-size:3rem]"));
     }
 
     [Fact]
