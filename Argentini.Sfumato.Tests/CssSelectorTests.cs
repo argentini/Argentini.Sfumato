@@ -5,6 +5,57 @@ namespace Argentini.Sfumato.Tests;
 public class CssSelectorTests
 {
     [Fact]
+    public void InvalidEmpty()
+    {
+        var selector = new CssSelector
+        {
+            Value = ""
+        };
+        
+        Assert.True(selector.IsInvalid);
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Empty(selector.MediaQueries);
+        Assert.Empty(selector.PseudoClasses);
+        Assert.Empty(selector.Root);
+        Assert.Empty(selector.CustomValue);
+        Assert.Empty(selector.EscapedSelector);
+    }
+
+    [Fact]
+    public void InvalidBracketOrder()
+    {
+        var selector = new CssSelector
+        {
+            Value = "]dsfdfsfsd["
+        };
+        
+        Assert.True(selector.IsInvalid);
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Empty(selector.MediaQueries);
+        Assert.Empty(selector.PseudoClasses);
+        Assert.Empty(selector.Root);
+        Assert.Empty(selector.CustomValue);
+        Assert.Empty(selector.EscapedSelector);
+    }
+
+    [Fact]
+    public void InvalidBracketContent()
+    {
+        var selector = new CssSelector
+        {
+            Value = "dsfdfsfsd[]"
+        };
+        
+        Assert.True(selector.IsInvalid);
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Empty(selector.MediaQueries);
+        Assert.Empty(selector.PseudoClasses);
+        Assert.Empty(selector.Root);
+        Assert.Empty(selector.CustomValue);
+        Assert.Empty(selector.EscapedSelector);
+    }
+    
+    [Fact]
     public void BaseClass()
     {
         var selector = new CssSelector

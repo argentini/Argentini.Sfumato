@@ -19,8 +19,9 @@ public sealed class CssSelector
     public List<string> PseudoClasses { get; } = new();
     public string Root { get; private set; } = string.Empty;
     public string CustomValue { get; private set; } = string.Empty;
-    public bool IsArbitraryCss { get; private set; }
     public string EscapedSelector { get; private set; } = string.Empty;
+    public bool IsArbitraryCss { get; private set; }
+    public bool IsInvalid { get; private set; }
 
     private void ProcessValue()
     {
@@ -30,10 +31,29 @@ public sealed class CssSelector
         CustomValue = string.Empty;
         IsArbitraryCss = false;
         EscapedSelector = string.Empty;
+        IsInvalid = false;
 
         if (string.IsNullOrEmpty(Value))
+        {
+            IsInvalid = true;
+            Root = string.Empty;
             return;
+        }
 
+        if (Value.IndexOf('[') > Value.IndexOf(']'))
+        {
+            IsInvalid = true;
+            Root = string.Empty;
+            return;
+        }
+
+        if (Value.Contains("[]") || Value.EndsWith("/"))
+        {
+            IsInvalid = true;
+            Root = string.Empty;
+            return;
+        }
+        
         EscapeCssClassName();
         
         var index = -1;
@@ -88,29 +108,35 @@ public sealed class CssSelector
             }
         }
 
-        var indexOfBracket = Root.IndexOf('[');
-        var indexOfSlash = Root.IndexOf('/');
+        if (string.IsNullOrEmpty(Root) == false)
+        {
+            var indexOfBracket = Root.IndexOf('[');
+            var indexOfSlash = Root.IndexOf('/');
 
-        if (indexOfBracket == 0)
-            IsArbitraryCss = true;
-        
-        if (IsArbitraryCss)
-        {
-            CustomValue = Root;
-            Root = string.Empty;
-        }
-        
-        else if (indexOfBracket > 0)
-        {
-            CustomValue = Root[indexOfBracket..];
-            Root = Root[..indexOfBracket];
+            if (indexOfBracket == 0)
+                IsArbitraryCss = true;
+
+            if (IsArbitraryCss)
+            {
+                CustomValue = Root;
+                Root = string.Empty;
+            }
+
+            else if (indexOfBracket > 0)
+            {
+                CustomValue = Root[indexOfBracket..];
+                Root = Root[..indexOfBracket];
+            }
+
+            else if (indexOfSlash > -1 && indexOfSlash < Root.Length - 1)
+            {
+                CustomValue = Root[(indexOfSlash + 1)..];
+                Root = Root[..(indexOfSlash + 1)];
+            }
         }
 
-        else if (indexOfSlash > -1 && indexOfSlash < Root.Length - 1)
-        {
-            CustomValue = Root[(indexOfSlash + 1)..];
-            Root = Root[..(indexOfSlash + 1)];
-        }
+        if (string.IsNullOrEmpty(Root) && string.IsNullOrEmpty(CustomValue))
+            IsInvalid = true;
     }
     
     /// <summary>
