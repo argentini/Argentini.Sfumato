@@ -279,7 +279,7 @@ public static class Strings
 	/// <returns></returns>
 	public static string CompactCss(this string css)
 	{
-		return css.NormalizeLinebreaks().Replace("\n", " ").Replace(" ", string.Empty);
+		return Regex.Replace(css.NormalizeLinebreaks(), @"\s+", " ").Trim();
 	}
 	
 	/// <summary>

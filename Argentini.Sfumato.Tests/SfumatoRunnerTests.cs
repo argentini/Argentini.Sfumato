@@ -75,7 +75,7 @@ public class SfumatoRunnerTests
             
         }, pool, string.Empty);
 
-        Assert.Equal(".text-base{font-size:1rem;}", result.CompactCss());
+        Assert.Equal(".text-base { font-size: 1rem; }", result.CompactCss());
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class SfumatoRunnerTests
             
         }, pool, string.Empty);
 
-        Assert.Equal(".text-base\\/2{font-size:1rem;line-height:1.15rem;}", result.CompactCss());
+        Assert.Equal(".text-base\\/2 { font-size: 1rem; line-height: 1.15rem; }", result.CompactCss());
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass("text-base/[3rem]")
         {
@@ -101,7 +101,7 @@ public class SfumatoRunnerTests
             
         }, pool, string.Empty);
 
-        Assert.Equal(".text-base\\/\\[3rem\\]{font-size:1rem;line-height:3rem;}", result.CompactCss());
+        Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }", result.CompactCss());
 
         var scssClass = new ScssClass("tabp:text-base/[3rem]")
         {
@@ -112,7 +112,7 @@ public class SfumatoRunnerTests
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
-        Assert.Equal(".tabp\\:text-base\\/\\[3rem\\]{font-size:1rem;line-height:3rem;}", result.CompactCss());
+        Assert.Equal(".tabp\\:text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }", result.CompactCss());
     }
     
     [Fact]
@@ -129,7 +129,7 @@ public class SfumatoRunnerTests
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
 
-        Assert.Equal(".\\[width\\:10rem\\]{width:10rem;}", result.CompactCss());
+        Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new ScssClass("tabp:[width:10rem]")
         {
@@ -140,7 +140,7 @@ public class SfumatoRunnerTests
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
-        Assert.Equal(".tabp\\:\\[width\\:10rem\\]{width:10rem;}", result.CompactCss());
+        Assert.Equal(".tabp\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new ScssClass("tabp:hover:[width:10rem]")
         {
@@ -151,7 +151,7 @@ public class SfumatoRunnerTests
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
-        Assert.Equal(".tabp\\:hover\\:\\[width\\:10rem\\]{&:hover{width:10rem;}}", result.CompactCss());
+        Assert.Equal(".tabp\\:hover\\:\\[width\\:10rem\\] { &:hover { width:10rem; } }", result.CompactCss());
     }
     
     [Fact]

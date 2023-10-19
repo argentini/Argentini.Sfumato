@@ -96,7 +96,15 @@ public class SfumatoAppStateTests
 
         Assert.Empty(matches);
     }
-    
+
+    [Fact]
+    public void GetAllByClassNamePrep()
+    {
+        var scssClassCollection = new ScssClassCollection();
+
+        Assert.True(scssClassCollection.AllClasses.Count > 0);
+    }
+
     [Fact]
     public void GetAllByClassName()
     {
