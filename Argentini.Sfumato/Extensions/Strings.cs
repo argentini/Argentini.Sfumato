@@ -271,6 +271,16 @@ public static class Strings
 			.Replace("\t", string.Empty)
 			.Replace(" ", string.Empty);
 	}
+
+	/// <summary>
+	/// Removes spaces and newlines from a string.
+	/// </summary>
+	/// <param name="css"></param>
+	/// <returns></returns>
+	public static string CompactCss(this string css)
+	{
+		return css.NormalizeLinebreaks().Replace("\n", " ").Replace(" ", string.Empty);
+	}
 	
 	/// <summary>
 	/// Repeat a string a specified number of times.
