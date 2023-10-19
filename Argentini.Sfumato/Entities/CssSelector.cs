@@ -39,7 +39,7 @@ public sealed class CssSelector
     {
         Value = value;
     }
-    
+
     /// <summary>
     /// Establish all property values from parsing the Value property.
     /// </summary>
@@ -83,7 +83,7 @@ public sealed class CssSelector
         RootClass = Value;
         
         EscapeCssClassName();
-        
+
         var index = -1;
 
         for (var x = 0; x < Value.Length; x++)
@@ -95,14 +95,12 @@ public sealed class CssSelector
                 index = x;
         }
 
-        if (index > -1)
+        if (index > 0)
         {
             var prefixSegment = Value[..(index + 1)];
-
-            if (prefixSegment.Length < Value.Length)
-                RootClass = RootSegment = Value[prefixSegment.Length..];
-
             var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+            RootClass = RootSegment = Value[(index + 1)..];
 
             if (segments.Length > 0)
             {
@@ -120,7 +118,6 @@ public sealed class CssSelector
                         continue;
 
                     MediaQueries.Add(breakpoint.Prefix);
-                    AllPrefixes.Add(breakpoint.Prefix);
 
                     lastType = breakpoint.PrefixType;
                 }
@@ -134,8 +131,10 @@ public sealed class CssSelector
                         continue;
 
                     PseudoClasses.Add(segment);
-                    AllPrefixes.Add(segment);
                 }
+
+                AllPrefixes.AddRange(MediaQueries);
+                AllPrefixes.AddRange(PseudoClasses);
             }
         }
 
@@ -179,14 +178,10 @@ public sealed class CssSelector
             FixedValue = string.Empty;
 
             if (MediaQueries.Count > 0)
-            {
                 FixedValue += $"{string.Join(':', MediaQueries)}:";
-            }
 
             if (PseudoClasses.Count > 0)
-            {
                 FixedValue += $"{string.Join(':', PseudoClasses)}:";
-            }
             
             FixedValue += RootClass;
             FixedValue += CustomValueSegment;

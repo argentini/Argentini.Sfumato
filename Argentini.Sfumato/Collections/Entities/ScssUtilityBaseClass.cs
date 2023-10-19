@@ -38,7 +38,6 @@ public sealed class ScssUtilityBaseClass
         Classes.Add(new ScssClass($"{Selector}")
         {
             GlobalGrouping = GlobalGrouping,
-            IsUtilityClass = true,
             ChildSelector = ChildSelector,
             Template = _template
         });

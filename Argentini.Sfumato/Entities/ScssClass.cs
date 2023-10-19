@@ -20,7 +20,6 @@ public class ScssClass
     public string Template { get; set; } = string.Empty;
     public int PrefixSortOrder { get; set; }
     public int SortOrder { get; set; }
-    public bool IsUtilityClass { get; set; }
     public string GlobalGrouping { get; set; } = string.Empty; // For creating shared styles for a group of classes
     
     #endregion
@@ -41,15 +40,14 @@ public class ScssClass
     protected void BuildPrefixSortOrder()
     {
         PrefixSortOrder = 0;
-        
-        foreach (var prefix in CssSelector?.MediaQueries ?? Enumerable.Empty<string>())
-        {
-            var breakpoint = SfumatoScss.MediaQueryPrefixes.FirstOrDefault(m => m.Prefix == prefix);
 
-            if (breakpoint is null)
-                continue;
-				
-            PrefixSortOrder += breakpoint.Priority;
+        if (CssSelector is null)
+            return;
+        
+        foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
+        {
+            if (CssSelector.MediaQueries.Contains(breakpoint.Prefix))
+                PrefixSortOrder += breakpoint.Priority;    
         }
     }
     

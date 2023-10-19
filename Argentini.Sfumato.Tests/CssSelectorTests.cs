@@ -354,7 +354,7 @@ public class CssSelectorTests
     }
 
     [Fact]
-    public void SlashTest()
+    public void TrailingSlash()
     {
         var selector = new CssSelector
         {

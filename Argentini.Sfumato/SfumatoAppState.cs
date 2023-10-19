@@ -548,7 +548,7 @@ public sealed class SfumatoAppState
 
 			// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
 			// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
-			// 3. Utility class (e.g. "elastic-container")
+			// 3. Utility class (e.g. "container")
 
 			if (string.IsNullOrEmpty(userClassValueType) == false)
 				foreach (var scssClass in scssClasses)
@@ -598,6 +598,9 @@ public sealed class SfumatoAppState
 			{
 				Value = match.Value
 			};
+			
+			if (cssSelector.IsInvalid)
+				continue;
 			
 			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
