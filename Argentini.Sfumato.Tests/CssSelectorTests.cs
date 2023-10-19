@@ -209,4 +209,74 @@ public class CssSelectorTests
         Assert.Equal("3", selector.CustomValue);
         Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/3", selector.EscapedSelector);
     }
+    
+    [Fact]
+    public void BaseClassSlashWithCustomValueWithPrefixes()
+    {
+        var selector = new CssSelector
+        {
+            Value = "dark:tabp:hover:text-base/[3]"
+        };
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Equal(2, selector.MediaQueries.Count);
+        Assert.Equal("dark", selector.MediaQueries[0]);
+        Assert.Equal("tabp", selector.MediaQueries[1]);
+        Assert.Single(selector.PseudoClasses);
+        Assert.Equal("hover", selector.PseudoClasses[0]);
+        Assert.NotEqual(selector.Value, selector.Root);
+        Assert.Equal("text-base/", selector.Root);
+        Assert.Equal("[3]", selector.CustomValue);
+        Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/\\[3\\]", selector.EscapedSelector);
+    }
+    
+    [Fact]
+    public void ArbitraryCss()
+    {
+        var selector = new CssSelector
+        {
+            Value = "[font-size:1rem]"
+        };
+        
+        Assert.True(selector.IsArbitraryCss);
+        Assert.Empty(selector.MediaQueries);
+        Assert.Empty(selector.PseudoClasses);
+        Assert.Empty(selector.Root);
+        Assert.Equal(selector.Value, selector.CustomValue);
+        Assert.Equal("\\[font-size\\:1rem\\]", selector.EscapedSelector);
+    }
+    
+    [Fact]
+    public void ArbitraryCssWithPrefix()
+    {
+        var selector = new CssSelector
+        {
+            Value = "tabp:[font-size:1rem]"
+        };
+        
+        Assert.True(selector.IsArbitraryCss);
+        Assert.Single(selector.MediaQueries);
+        Assert.Equal("tabp", selector.MediaQueries[0]);
+        Assert.Empty(selector.PseudoClasses);
+        Assert.Empty(selector.Root);
+        Assert.Equal("[font-size:1rem]", selector.CustomValue);
+        Assert.Equal("tabp\\:\\[font-size\\:1rem\\]", selector.EscapedSelector);
+    }
+    
+    [Fact]
+    public void ArbitraryCssWithSpaces()
+    {
+        var selector = new CssSelector
+        {
+            Value = "tabp:[padding:1rem_2rem]"
+        };
+        
+        Assert.True(selector.IsArbitraryCss);
+        Assert.Single(selector.MediaQueries);
+        Assert.Equal("tabp", selector.MediaQueries[0]);
+        Assert.Empty(selector.PseudoClasses);
+        Assert.Empty(selector.Root);
+        Assert.Equal("[padding:1rem_2rem]", selector.CustomValue);
+        Assert.Equal("tabp\\:\\[padding\\:1rem_2rem\\]", selector.EscapedSelector);
+    }
 }
