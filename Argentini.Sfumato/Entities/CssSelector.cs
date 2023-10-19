@@ -20,13 +20,14 @@ public sealed class CssSelector
     public string FixedValue { get; private set; } = string.Empty;
     public List<string> MediaQueries { get; } = new();
     public List<string> PseudoClasses { get; } = new();
-    public List<string> AllPrefixes { get; } = new();
+    public List<string> AllPrefixes => GetAllPrefixes();
     public string RootSegment { get; private set; } = string.Empty;
     public string RootClass { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
-    public string CustomValue { get; private set; } = string.Empty;
-    public string EscapedSelector { get; private set; } = string.Empty;
-    public int Depth { get; private set; }
+    public string CustomValue => GetCustomValue();
+    public string EscapedSelector => IsInvalid ? string.Empty : EscapeCssClassName();
+
+    public int Depth => AllPrefixes.Count;
     public bool IsArbitraryCss { get; private set; }
     public bool IsInvalid { get; private set; }
 
@@ -48,14 +49,11 @@ public sealed class CssSelector
         FixedValue = string.Empty;
         RootSegment = string.Empty;
         RootClass = string.Empty;
+        CustomValueSegment = string.Empty;
+
         MediaQueries.Clear();
         PseudoClasses.Clear();
         AllPrefixes.Clear();
-        CustomValueSegment = string.Empty;
-        CustomValue = string.Empty;
-        EscapedSelector = string.Empty;
-
-        Depth = 0;
         
         IsArbitraryCss = false;
         IsInvalid = false;
@@ -82,59 +80,58 @@ public sealed class CssSelector
         RootSegment = Value;
         RootClass = Value;
         
-        EscapeCssClassName();
-
         var index = -1;
 
-        for (var x = 0; x < Value.Length; x++)
+        if (Value.Contains(':'))
         {
-            if (Value[x] == '[')
-                break;
-
-            if (Value[x] == ':')
-                index = x;
-        }
-
-        if (index > 0)
-        {
-            var prefixSegment = Value[..(index + 1)];
-            var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-            RootClass = RootSegment = Value[(index + 1)..];
-
-            if (segments.Length > 0)
+            for (var x = 0; x < Value.Length; x++)
             {
-                var lastType = string.Empty;
+                if (Value[x] == '[')
+                    break;
 
-                foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.OrderBy(k => k.PrefixOrder))
+                if (Value[x] == ':')
+                    index = x;
+            }
+
+            if (index > 0)
+            {
+                var prefixSegment = Value[..(index + 1)];
+                var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+                RootClass = RootSegment = Value[(index + 1)..];
+
+                if (segments.Length > 0)
                 {
-                    if (breakpoint.PrefixType == lastType)
-                        continue;
+                    var lastType = string.Empty;
 
-                    if (MediaQueries.Contains(breakpoint.Prefix))
-                        continue;
+                    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.Where(p => segments.Contains(p.Prefix)).OrderBy(k => k.PrefixOrder))
+                    {
+                        if (breakpoint.PrefixType == lastType)
+                            continue;
 
-                    if (segments.Contains(breakpoint.Prefix) == false)
-                        continue;
+                        MediaQueries.Add(breakpoint.Prefix);
 
-                    MediaQueries.Add(breakpoint.Prefix);
+                        lastType = breakpoint.PrefixType;
+                    }
 
-                    lastType = breakpoint.PrefixType;
+                    foreach (var segment in segments)
+                    {
+                        if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
+                            continue;
+
+                        PseudoClasses.Add(segment);
+                    }
+                    
+                    FixedValue = string.Empty;
+
+                    if (MediaQueries.Count > 0)
+                        FixedValue += $"{string.Join(':', MediaQueries)}:";
+
+                    if (PseudoClasses.Count > 0)
+                        FixedValue += $"{string.Join(':', PseudoClasses)}:";
+
+                    FixedValue += RootSegment;
                 }
-
-                foreach (var segment in segments)
-                {
-                    if (PseudoClasses.Contains(segment))
-                        continue;
-
-                    if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
-                        continue;
-
-                    PseudoClasses.Add(segment);
-                }
-
-                AllPrefixes.AddRange(MediaQueries);
-                AllPrefixes.AddRange(PseudoClasses);
             }
         }
 
@@ -165,30 +162,8 @@ public sealed class CssSelector
                 CustomValueSegment = RootSegment[(indexOfSlash + 1)..];
                 RootClass = RootSegment[..(indexOfSlash + 1)];
             }
-            
-            CustomValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
-            
-            foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
-                if (CustomValue?.StartsWith($"{arbitraryType}:") ?? false)
-                    CustomValue = CustomValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
         }
 
-        if (MediaQueries.Count > 0 || PseudoClasses.Count > 0)
-        {
-            FixedValue = string.Empty;
-
-            if (MediaQueries.Count > 0)
-                FixedValue += $"{string.Join(':', MediaQueries)}:";
-
-            if (PseudoClasses.Count > 0)
-                FixedValue += $"{string.Join(':', PseudoClasses)}:";
-            
-            FixedValue += RootClass;
-            FixedValue += CustomValueSegment;
-        }
-
-        Depth = AllPrefixes.Count;
-        
         if (string.IsNullOrEmpty(RootSegment) == false || string.IsNullOrEmpty(CustomValueSegment) == false)
             return;
         
@@ -200,10 +175,10 @@ public sealed class CssSelector
     /// Escape the CSS class name to be used in a CSS selector.
     /// </summary>
     /// <returns></returns>
-    private void EscapeCssClassName()
+    private string EscapeCssClassName()
     {
         if (string.IsNullOrEmpty(Value))
-            return;
+            return Value;
 
         var value = new StringBuilder();
 
@@ -217,6 +192,30 @@ public sealed class CssSelector
             value.Append(c);
         }
 
-        EscapedSelector = value.ToString();
+        return value.ToString();
+    }
+
+    /// <summary>
+    /// Get the custom value from parsing the custom value segment.
+    /// </summary>
+    /// <returns></returns>
+    private string GetCustomValue()
+    {
+        var customValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
+            
+        foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
+            if (customValue?.StartsWith($"{arbitraryType}:") ?? false)
+                customValue = customValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
+
+        return customValue ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Return a list of all prefixes.
+    /// </summary>
+    /// <returns></returns>
+    private List<string> GetAllPrefixes()
+    {
+        return MediaQueries.Concat(PseudoClasses).ToList();
     }
 }
