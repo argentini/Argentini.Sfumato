@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Entities;
 
-public sealed class ScssClass
+public class ScssClass
 {
     public string RootClassName { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
@@ -63,4 +63,8 @@ public sealed class ScssClass
     {
         return Template.Replace("{value}", Value);
     }
+}
+
+public sealed class ArbitraryScssClass : ScssClass
+{
 }

@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Argentini.Sfumato.Collections;
 using Microsoft.Extensions.ObjectPool;
 

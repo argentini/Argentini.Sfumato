@@ -669,7 +669,7 @@ public sealed class SfumatoAppState
 
 			// 1. Arbitrary CSS style (e.g. tabp:[display:none])
 
-			var usedScssClass = new ScssClass
+			var usedScssClass = new ArbitraryScssClass
 			{
 				ValueTypes = string.Empty,
 				UserClassName = userClassName,

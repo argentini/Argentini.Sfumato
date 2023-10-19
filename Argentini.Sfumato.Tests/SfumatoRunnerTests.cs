@@ -1,5 +1,3 @@
-using System.Text;
-using System.Text.RegularExpressions;
 using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Extensions;
 using Microsoft.Extensions.ObjectPool;
@@ -66,6 +64,62 @@ public class SfumatoRunnerTests
         }, pool, string.Empty);
 
         Assert.Equal(".text-base\\/\\[3rem\\]{\nfont-size:1rem;line-height:3rem;\n}", result.Trim().Replace(" ", string.Empty));
+
+        var scssClass = new ScssClass
+        {
+            RootClassName = "text-base/",
+            UserClassName = "tabp:text-base/[3rem]",
+            Value = "3rem",
+            ValueTypes = "length,percentage,number",
+            Template = "font-size: 1rem; line-height: {value};"
+        };
+        
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
+
+        Assert.Equal(".tabp\\:text-base\\/\\[3rem\\]{\nfont-size:1rem;line-height:3rem;\n}", result.Trim().Replace(" ", string.Empty));
+
+        #region Arbitrary Styles
+        
+        scssClass = new ArbitraryScssClass
+        {
+            RootClassName = "",
+            UserClassName = "[width:10rem]",
+            Value = "width:10rem",
+            ValueTypes = "length,percentage",
+            Template = "{value};"
+        };
+        
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
+
+        Assert.Equal(".\\[width\\:10rem\\]{\nwidth:10rem;\n}", result.Trim().Replace(" ", string.Empty));
+        
+        scssClass = new ArbitraryScssClass
+        {
+            RootClassName = "",
+            UserClassName = "tabp:[width:10rem]",
+            Value = "width:10rem",
+            ValueTypes = "length,percentage",
+            Template = "{value};"
+        };
+        
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
+
+        Assert.Equal(".tabp\\:\\[width\\:10rem\\]{\nwidth:10rem;\n}", result.Trim().Replace(" ", string.Empty));
+        
+        scssClass = new ArbitraryScssClass
+        {
+            RootClassName = "",
+            UserClassName = "tabp:hover:[width:10rem]",
+            Value = "width:10rem",
+            ValueTypes = "length,percentage",
+            Template = "{value};"
+        };
+        
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
+
+        Assert.Equal(".tabp\\:hover\\:\\[width\\:10rem\\]{\n&:hover{\nwidth:10rem;\n}\n}", result.Trim().Replace(" ", string.Empty));
+        
+        #endregion
     }
     
     [Fact]
