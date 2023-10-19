@@ -486,9 +486,8 @@ public sealed class ScssBaseClass
             
             if (item is { Key: "-", Value: "" } && SelectorPrefix != string.Empty)
             {
-                Classes.Add(new ScssClass
+                Classes.Add(new ScssClass($"{SelectorPrefix}-")
                 {
-                    RootClassName = $"{SelectorPrefix}-",
                     GlobalGrouping = GlobalGrouping,
                     ValueTypes = PrefixValueTypes,
                     ChildSelector = ChildSelector,
@@ -498,12 +497,11 @@ public sealed class ScssBaseClass
                 continue;
             }
 
-            Classes.Add(new ScssClass
+            Classes.Add(new ScssClass($"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}{(item.Key != string.Empty ? "-" : string.Empty)}" : string.Empty)}{item.Key}")
             {
-                RootClassName = $"{(SelectorPrefix != string.Empty ? $"{SelectorPrefix}{(item.Key != string.Empty ? "-" : string.Empty)}" : string.Empty)}{item.Key}",
                 GlobalGrouping = GlobalGrouping,
-                Value = item.Value,
                 ChildSelector = ChildSelector,
+                Value = item.Value,
                 Template = template.Trim()
             });
         }

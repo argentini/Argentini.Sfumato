@@ -1,4 +1,5 @@
 using Argentini.Sfumato.Collections;
+using Argentini.Sfumato.Entities;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
@@ -102,28 +103,24 @@ public class SfumatoAppStateTests
         var scssClassCollection = new ScssClassCollection();
 
         Assert.True(scssClassCollection.AllClasses.Count > 0);
-        Assert.Single(scssClassCollection.GetAllByClassName("bg-slate-100"));
-        Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100"));
-        Assert.Single(scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]"));
-        Assert.Single(scssClassCollection.GetAllByClassName("break-after-auto"));
-        Assert.Equal("bg-slate-100", scssClassCollection.GetAllByClassName("dark:tabp:hover:bg-slate-100[--my-value]").First().RootClassName);
-        Assert.Single(scssClassCollection.GetAllByClassName("text-base/5"));
-    }
 
-    [Fact]
-    public void ReorderPrefixes()
-    {
-        Assert.Equal("bg-slate-100", SfumatoAppState.ReOrderPrefixes("bg-slate-100"));
-        Assert.Equal("bg-slate-100[--my-value]", SfumatoAppState.ReOrderPrefixes("bg-slate-100[--my-value]"));
-        Assert.Equal("font-2/2", SfumatoAppState.ReOrderPrefixes("font-2/2"));
-        Assert.Equal("tabp:bg-slate-100", SfumatoAppState.ReOrderPrefixes("tabp:bg-slate-100"));
-        Assert.Equal("tabp:hover:bg-slate-100", SfumatoAppState.ReOrderPrefixes("tabp:hover:bg-slate-100"));
-        Assert.Equal("tabp:hover:bg-slate-100", SfumatoAppState.ReOrderPrefixes("hover:tabp:bg-slate-100"));
-        Assert.Equal("dark:tabp:hover:focus:bg-slate-100[--my-value]", SfumatoAppState.ReOrderPrefixes("hover:tabp:note:focus:dark:elas:bg-slate-100[--my-value]"));
+        var selector = new CssSelector("bg-slate-100");
+        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+
+        selector = new CssSelector("dark:tabp:hover:bg-slate-100");
+        Assert.Single(scssClassCollection.GetAllByClassName(selector));
         
-        Assert.Equal("[font-size:3rem]", SfumatoAppState.ReOrderPrefixes("[font-size:3rem]"));
-        Assert.Equal("tabp:[font-size:3rem]", SfumatoAppState.ReOrderPrefixes("tabp:[font-size:3rem]"));
-        Assert.Equal("dark:tabp:[font-size:3rem]", SfumatoAppState.ReOrderPrefixes("tabp:dark:[font-size:3rem]"));
+        selector = new CssSelector("dark:tabp:hover:bg-slate-100[--my-value]");
+        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+        
+        selector = new CssSelector("break-after-auto");
+        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+        
+        selector = new CssSelector("dark:tabp:hover:bg-slate-100[--my-value]");
+        Assert.Equal("bg-slate-100", scssClassCollection.GetAllByClassName(selector).First().CssSelector?.RootSegment);
+        
+        selector = new CssSelector("text-base/5");
+        Assert.Single(scssClassCollection.GetAllByClassName(selector));
     }
 
     [Fact]
@@ -139,58 +136,50 @@ public class SfumatoAppStateTests
     [Fact]
     public void GetUserClassValueType()
     {
-        Assert.Equal(string.Empty, "text-base".GetUserClassValueType());
-        Assert.Equal(string.Empty, "dark:tabp:[width:3rem]".GetUserClassValueType());
-
-        Assert.Equal("length", "dark:tabp:text-base/[3rem]".GetUserClassValueType());
-        Assert.Equal("length", "dark:tabp:p-[3rem]".GetUserClassValueType());
-
-        foreach (var unit in SfumatoScss.CssUnits)
-        {
-            Assert.Equal("length", $"dark:tabp:p-[3{unit}]".GetUserClassValueType());
-        }
-
-        Assert.Equal("flex", "dark:tabp:p-[3fr]".GetUserClassValueType());
-        Assert.Equal("percentage", "dark:tabp:p-[3%]".GetUserClassValueType());
-        Assert.Equal("percentage", "dark:tabp:p-[3.5%]".GetUserClassValueType());
-        Assert.Equal("integer", "dark:tabp:p-[3]".GetUserClassValueType());
-        Assert.Equal("number", "dark:tabp:p-[0.5]".GetUserClassValueType());
-        Assert.Equal("number", "dark:tabp:p-[3.0]".GetUserClassValueType());
-        Assert.Equal("color", "dark:tabp:bg-[#123]".GetUserClassValueType());
-        Assert.Equal("color", "dark:tabp:bg-[#123f]".GetUserClassValueType());
-        Assert.Equal("color", "dark:tabp:bg-[#aa1122]".GetUserClassValueType());
-        Assert.Equal("color", "dark:tabp:bg-[#aa1122ff]".GetUserClassValueType());
-        Assert.Equal("color", "dark:tabp:bg-[rgb(1,2,3)]".GetUserClassValueType());
-        Assert.Equal("color", "dark:tabp:bg-[rgba(1,2,3,0.5)]".GetUserClassValueType());
-        Assert.Equal("string", "dark:tabp:content['hello_world!']".GetUserClassValueType());
-        Assert.Equal("url", "dark:tabp:bg-[url(http://image.src)]".GetUserClassValueType());
-        Assert.Equal("url", "dark:tabp:bg-[http://sfumato.org/images/file.jpg]".GetUserClassValueType());
-        Assert.Equal("url", "dark:tabp:bg-[https://sfumato.org/images/file.jpg]".GetUserClassValueType());
-        Assert.Equal("url", "dark:tabp:bg-[url(/images/file.jpg)]".GetUserClassValueType());
-        Assert.Equal("url", "dark:tabp:bg-[/images/file.jpg]".GetUserClassValueType());
+        Assert.Equal(string.Empty, "".GetUserClassValueType());
+        Assert.Equal(string.Empty, "[width:3rem]".GetUserClassValueType());
+        Assert.Equal("length", "[3rem]".GetUserClassValueType());
+        Assert.Equal("flex", "[3fr]".GetUserClassValueType());
+        Assert.Equal("percentage", "[3%]".GetUserClassValueType());
+        Assert.Equal("percentage", "[3.5%]".GetUserClassValueType());
+        Assert.Equal("integer", "[3]".GetUserClassValueType());
+        Assert.Equal("number", "[0.5]".GetUserClassValueType());
+        Assert.Equal("number", "[3.0]".GetUserClassValueType());
+        Assert.Equal("color", "[#123]".GetUserClassValueType());
+        Assert.Equal("color", "[#123f]".GetUserClassValueType());
+        Assert.Equal("color", "[#aa1122]".GetUserClassValueType());
+        Assert.Equal("color", "[#aa1122ff]".GetUserClassValueType());
+        Assert.Equal("color", "[rgb(1,2,3)]".GetUserClassValueType());
+        Assert.Equal("color", "[rgba(1,2,3,0.5)]".GetUserClassValueType());
+        Assert.Equal("string", "['hello_world!']".GetUserClassValueType());
+        Assert.Equal("url", "[url(http://image.src)]".GetUserClassValueType());
+        Assert.Equal("url", "[http://sfumato.org/images/file.jpg]".GetUserClassValueType());
+        Assert.Equal("url", "[https://sfumato.org/images/file.jpg]".GetUserClassValueType());
+        Assert.Equal("url", "[url(/images/file.jpg)]".GetUserClassValueType());
+        Assert.Equal("url", "[/images/file.jpg]".GetUserClassValueType());
         
         foreach (var unit in SfumatoScss.CssAngleUnits)
         {
-            Assert.Equal("angle", $"dark:tabp:rotate-[1{unit}]".GetUserClassValueType());
+            Assert.Equal("angle", $"[1{unit}]".GetUserClassValueType());
         }
 
         foreach (var unit in SfumatoScss.CssTimeUnits)
         {
-            Assert.Equal("time", $"dark:tabp:duration-[100{unit}]".GetUserClassValueType());
+            Assert.Equal("time", $"[100{unit}]".GetUserClassValueType());
         }
 
         foreach (var unit in SfumatoScss.CssFrequencyUnits)
         {
-            Assert.Equal("frequency", $"dark:tabp:volume-[1{unit}]".GetUserClassValueType());
+            Assert.Equal("frequency", $"[1{unit}]".GetUserClassValueType());
         }
 
         foreach (var unit in SfumatoScss.CssResolutionUnits)
         {
-            Assert.Equal("resolution", $"dark:tabp:width-[1024{unit}]".GetUserClassValueType());
+            Assert.Equal("resolution", $"[1024{unit}]".GetUserClassValueType());
         }
         
-        Assert.Equal("ratio", "dark:tabp:width-[1/2]".GetUserClassValueType());
-        Assert.Equal("ratio", "dark:tabp:width-[1_/_2]".GetUserClassValueType());
+        Assert.Equal("ratio", "[1/2]".GetUserClassValueType());
+        Assert.Equal("ratio", "[1_/_2]".GetUserClassValueType());
     }
     
     [Fact]

@@ -35,9 +35,8 @@ public sealed class ScssUtilityBaseClass
     public void Generate()
     {
         Classes.Clear();
-        Classes.Add(new ScssClass
+        Classes.Add(new ScssClass($"{Selector}")
         {
-            RootClassName = $"{Selector}",
             GlobalGrouping = GlobalGrouping,
             IsUtilityClass = true,
             ChildSelector = ChildSelector,

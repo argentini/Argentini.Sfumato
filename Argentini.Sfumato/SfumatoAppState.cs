@@ -416,70 +416,6 @@ public sealed class SfumatoAppState
     #endregion
     
     #region Runner Methods
-
-    /// <summary>
-    /// Normalize prefixes to start with theme mode then breakpoint then pseudoclasses.
-    /// </summary>
-    /// <param name="className"></param>
-    /// <returns></returns>
-    public static string ReOrderPrefixes(string userClassName)
-    {
-	    if (string.IsNullOrEmpty(userClassName) || userClassName.Contains(':') == false)
-		    return userClassName;
-
-	    var index = -1;
-
-	    for (var x = 0; x < userClassName.Length; x++)
-	    {
-		    if (userClassName[x] == '[')
-			    break;
-
-		    if (userClassName[x] == ':')
-			    index = x;
-	    }
-
-	    if (index == -1)
-		    return userClassName;
-	    
-	    var prefixSegment = userClassName[..(index + 1)];
-	    var rootClass = string.Empty;
-
-	    if (prefixSegment.Length < userClassName.Length)
-		    rootClass = userClassName[prefixSegment.Length..];
-	    
-		var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
-		var lastType = string.Empty;
-	    var prefixes = new List<string>();
-	    var pseudoclasses = new List<string>();
-
-	    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.OrderBy(k => k.PrefixOrder))
-	    {
-		    if (breakpoint.PrefixType == lastType)
-			    continue;
-		    
-		    if (prefixes.Contains(breakpoint.Prefix))
-			    continue;
-
-		    if (segments.Contains(breakpoint.Prefix) == false)
-			    continue;
-
-		    prefixes.Add(breakpoint.Prefix);
-		    lastType = breakpoint.PrefixType;
-	    }
-
-	    foreach (var segment in segments)
-	    {
-		    if (pseudoclasses.Contains(segment))
-			    continue;
-
-		    if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
-			    continue;
-
-		    pseudoclasses.Add(segment);
-	    }
-
-	    return $"{(prefixes.Count > 0 ? string.Join(':', prefixes) + ':' : string.Empty)}{(pseudoclasses.Count > 0 ? string.Join(':', pseudoclasses) + ':' : string.Empty)}{rootClass}";
-    }
     
 	/// <summary>
 	/// Identify the used classes in the project.
@@ -577,7 +513,7 @@ public sealed class SfumatoAppState
 	}
 	
 	/// <summary>
-	/// Examine markup for used classes and add them to the USedClasses dictionary.
+	/// Examine markup for used classes and add them to the UsedClasses collection.
 	/// </summary>
 	/// <param name="markup"></param>
 	public void ExamineMarkupForUsedClasses(string markup)
@@ -591,14 +527,23 @@ public sealed class SfumatoAppState
 		
 		foreach (var match in matches)
 		{
-			var userClassName = ReOrderPrefixes(match.Value);
+			var cssSelector = new CssSelector
+			{
+				Value = match.Value
+			};
 
-			if (UsedClasses.ContainsKey(userClassName))
+			if (cssSelector.IsInvalid)
 				continue;
+			
+			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
+				continue;
+			
+			var scssClasses = ScssClassCollection.GetAllByClassName(cssSelector).ToList();
 
-			var scssClasses = ScssClassCollection.GetAllByClassName(userClassName).ToList();
-			var userClassValueType = userClassName.GetUserClassValueType();
-			var userClassValue = userClassName.GetUserClassValue().Replace('_', ' ').Replace("\\ ", "\\_");
+			if (scssClasses.Count == 0)
+				continue;
+			
+			var userClassValueType = cssSelector.CustomValueSegment.GetUserClassValueType();
 			ScssClass? foundScssClass = null;
 
 			// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
@@ -618,11 +563,16 @@ public sealed class SfumatoAppState
 			else
 				foreach (var scssClass in scssClasses)
 				{
+					if (scssClass.CssSelector is null)
+						continue;
+					
 					if (scssClass.ValueTypes != string.Empty)
 						continue;
 
-					foundScssClass = scssClass;
+					if (scssClass.CssSelector.FixedValue != cssSelector.RootSegment)
+						continue;
 					
+					foundScssClass = scssClass;
 					break;
 				}
 
@@ -631,30 +581,12 @@ public sealed class SfumatoAppState
 			
 			var usedScssClass = foundScssClass.Adapt<ScssClass>();
 
-			usedScssClass.UserClassName = userClassName;
-
-			if (string.IsNullOrEmpty(userClassValue) == false)
-				usedScssClass.Value = userClassValue;
-
-			var segments = userClassName.Split(':');
-
-			foreach (var prefix in segments)
-			{
-				if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
-					usedScssClass.Depth++;
-				else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
-					usedScssClass.Depth++;
-			}
-
-			foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
-			{
-				if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
-					continue;
-				
-				usedScssClass.PrefixSortOrder += breakpoint.Priority;
-			}
+			usedScssClass.CssSelector = cssSelector;
 			
-			UsedClasses.TryAdd(userClassName, usedScssClass);
+			if (string.IsNullOrEmpty(userClassValueType) == false)
+				usedScssClass.Value = usedScssClass.CssSelector.CustomValue;
+
+			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
 
 		matches.Clear();
@@ -662,40 +594,25 @@ public sealed class SfumatoAppState
 
 		foreach (var match in matches)
 		{
-			var userClassName = ReOrderPrefixes(match.Value);
+			var cssSelector = new CssSelector
+			{
+				Value = match.Value
+			};
 			
-			if (UsedClasses.ContainsKey(userClassName))
+			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
 
 			// 1. Arbitrary CSS style (e.g. tabp:[display:none])
 
-			var usedScssClass = new ArbitraryScssClass
+			var usedScssClass = new ScssClass
 			{
+				CssSelector = cssSelector,
 				ValueTypes = string.Empty,
-				UserClassName = userClassName,
-				Value = userClassName[(userClassName.IndexOf('[') + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_"),
+				Value = cssSelector.CustomValue,				
 				Template = "{value};"
 			};
 
-			var segments = userClassName.Split(':');
-			
-			foreach (var prefix in segments)
-			{
-				if (SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix) is not null)
-					usedScssClass.Depth++;
-				else if (SfumatoScss.PseudoclassPrefixes.ContainsKey(prefix))
-					usedScssClass.Depth++;
-			}
-			
-			foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
-			{
-				if (userClassName.Contains($"{breakpoint.Prefix}:", StringComparison.Ordinal) == false)
-					continue;
-				
-				usedScssClass.PrefixSortOrder += breakpoint.Priority;
-			}
-			
-			UsedClasses.TryAdd(userClassName, usedScssClass);
+			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
 	}
 

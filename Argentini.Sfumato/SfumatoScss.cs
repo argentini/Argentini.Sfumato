@@ -1006,17 +1006,20 @@ public static class SfumatoScss
     }
     
     /// <summary>
-    /// Get the value type of the user class name (e.g. "length:...", "color:...", etc.)
+    /// Get the value type of the user class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <param name="className"></param>
     /// <returns></returns>
-    public static string GetUserClassValueType(this string className)
+    public static string GetUserClassValueType(this string valueSegment)
     {
-	    if (className.EndsWith(']') == false || className.Contains('[') == false)
+	    if (string.IsNullOrEmpty(valueSegment))
+		    return string.Empty;
+	    
+	    if (valueSegment.StartsWith('[') == false)
 		    return string.Empty;
 
-	    var value = className[className.IndexOf('[')..].TrimStart('[').TrimEnd(']');
-
+	    var value = valueSegment.TrimStart('[').TrimEnd(']');
+	    
 	    if (value.Contains(':'))
 	    {
 		    var segments = value.Split(':', StringSplitOptions.RemoveEmptyEntries);

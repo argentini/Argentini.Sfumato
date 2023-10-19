@@ -39,18 +39,9 @@ public partial class ScssClassCollection
     /// </summary>
     /// <param name="className"></param>
     /// <returns></returns>
-    public IEnumerable<ScssClass> GetAllByClassName(string className)
+    public IEnumerable<ScssClass> GetAllByClassName(CssSelector selector)
     {
-        var rootClassName = className;
-
-        if (className.EndsWith(']') && className.Contains('['))
-        {
-            rootClassName = className[..className.IndexOf('[')];
-        }
-        
-        rootClassName = rootClassName.Contains(':') ? rootClassName[(rootClassName.LastIndexOf(':') + 1)..] : rootClassName;
-
-        return AllClasses.Where(x => x.RootClassName == rootClassName);
+        return AllClasses.Where(x => x.CssSelector is not null && x.CssSelector.RootSegment == selector.RootSegment);
     }
     
     #endregion

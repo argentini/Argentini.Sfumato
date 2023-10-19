@@ -67,17 +67,15 @@ public class SfumatoRunnerTests
     {
         var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
         
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass("text-base")
         {
-            RootClassName = "text-",
-            UserClassName = "text-1.0",
             Value = "1rem",
             ValueTypes = "length,percentage",
             Template = "font-size: {value};"
             
         }, pool, string.Empty);
 
-        Assert.Equal(".text-1\\.0{\nfont-size:1rem;\n}", result.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".text-base{font-size:1rem;}", result.CompactCss());
     }
 
     [Fact]
@@ -85,34 +83,28 @@ public class SfumatoRunnerTests
     {
         var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
         
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass("text-base/2")
         {
-            RootClassName = "text-base/2",
-            UserClassName = "text-base/2",
             Value = "1rem",
             ValueTypes = "length,percentage,number",
             Template = "font-size: {value}; line-height: 1.15rem;"            
             
         }, pool, string.Empty);
 
-        Assert.Equal(".text-base\\/2{\nfont-size:1rem;line-height:1.15rem;\n}", result.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".text-base\\/2{font-size:1rem;line-height:1.15rem;}", result.CompactCss());
         
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new ScssClass("text-base/[3rem]")
         {
-            RootClassName = "text-base/[3rem]",
-            UserClassName = "text-base/[3rem]",
             Value = "1rem",
             ValueTypes = "length,percentage,number",
             Template = "font-size: {value}; line-height: 3rem;"            
             
         }, pool, string.Empty);
 
-        Assert.Equal(".text-base\\/\\[3rem\\]{\nfont-size:1rem;line-height:3rem;\n}", result.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".text-base\\/\\[3rem\\]{font-size:1rem;line-height:3rem;}", result.CompactCss());
 
-        var scssClass = new ScssClass
+        var scssClass = new ScssClass("tabp:text-base/[3rem]")
         {
-            RootClassName = "text-base/",
-            UserClassName = "tabp:text-base/[3rem]",
             Value = "3rem",
             ValueTypes = "length,percentage,number",
             Template = "font-size: 1rem; line-height: {value};"
@@ -120,7 +112,7 @@ public class SfumatoRunnerTests
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
-        Assert.Equal(".tabp\\:text-base\\/\\[3rem\\]{\nfont-size:1rem;line-height:3rem;\n}", result.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".tabp\\:text-base\\/\\[3rem\\]{font-size:1rem;line-height:3rem;}", result.CompactCss());
     }
     
     [Fact]
@@ -128,44 +120,38 @@ public class SfumatoRunnerTests
     {
         var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
         
-        var scssClass = new ArbitraryScssClass
+        var scssClass = new ScssClass("[width:10rem]")
         {
-            RootClassName = "",
-            UserClassName = "[width:10rem]",
-            Value = "width:10rem",
             ValueTypes = "length,percentage",
+            Value = "width:10rem",
             Template = "{value};"
         };
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
 
-        Assert.Equal(".\\[width\\:10rem\\]{\nwidth:10rem;\n}", result.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".\\[width\\:10rem\\]{width:10rem;}", result.CompactCss());
         
-        scssClass = new ArbitraryScssClass
+        scssClass = new ScssClass("tabp:[width:10rem]")
         {
-            RootClassName = "",
-            UserClassName = "tabp:[width:10rem]",
-            Value = "width:10rem",
             ValueTypes = "length,percentage",
+            Value = "width:10rem",
             Template = "{value};"
         };
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
-        Assert.Equal(".tabp\\:\\[width\\:10rem\\]{\nwidth:10rem;\n}", result.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".tabp\\:\\[width\\:10rem\\]{width:10rem;}", result.CompactCss());
         
-        scssClass = new ArbitraryScssClass
+        scssClass = new ScssClass("tabp:hover:[width:10rem]")
         {
-            RootClassName = "",
-            UserClassName = "tabp:hover:[width:10rem]",
-            Value = "width:10rem",
             ValueTypes = "length,percentage",
+            Value = "width:10rem",
             Template = "{value};"
         };
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
-        Assert.Equal(".tabp\\:hover\\:\\[width\\:10rem\\]{\n&:hover{\nwidth:10rem;\n}\n}", result.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".tabp\\:hover\\:\\[width\\:10rem\\]{&:hover{width:10rem;}}", result.CompactCss());
     }
     
     [Fact]

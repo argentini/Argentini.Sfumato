@@ -2,6 +2,8 @@ namespace Argentini.Sfumato.Entities;
 
 public sealed class CssSelector
 {
+    #region Properties
+    
     private string _value = string.Empty;
 
     public string Value
@@ -15,44 +17,70 @@ public sealed class CssSelector
         }
     }
     
+    public string FixedValue { get; private set; } = string.Empty;
     public List<string> MediaQueries { get; } = new();
     public List<string> PseudoClasses { get; } = new();
-    public string Root { get; private set; } = string.Empty;
+    public List<string> AllPrefixes { get; } = new();
+    public string RootSegment { get; private set; } = string.Empty;
+    public string RootClass { get; private set; } = string.Empty;
+    public string CustomValueSegment { get; private set; } = string.Empty;
     public string CustomValue { get; private set; } = string.Empty;
     public string EscapedSelector { get; private set; } = string.Empty;
+    public int Depth { get; private set; }
     public bool IsArbitraryCss { get; private set; }
     public bool IsInvalid { get; private set; }
 
+    #endregion
+
+    public CssSelector()
+    {}
+
+    public CssSelector(string value)
+    {
+        Value = value;
+    }
+    
+    /// <summary>
+    /// Establish all property values from parsing the Value property.
+    /// </summary>
     private void ProcessValue()
     {
-        Root = Value;
+        FixedValue = string.Empty;
+        RootSegment = string.Empty;
+        RootClass = string.Empty;
         MediaQueries.Clear();
         PseudoClasses.Clear();
+        AllPrefixes.Clear();
+        CustomValueSegment = string.Empty;
         CustomValue = string.Empty;
-        IsArbitraryCss = false;
         EscapedSelector = string.Empty;
+
+        Depth = 0;
+        
+        IsArbitraryCss = false;
         IsInvalid = false;
 
         if (string.IsNullOrEmpty(Value))
         {
             IsInvalid = true;
-            Root = string.Empty;
             return;
         }
 
         if (Value.IndexOf('[') > Value.IndexOf(']'))
         {
             IsInvalid = true;
-            Root = string.Empty;
             return;
         }
 
-        if (Value.Contains("[]") || Value.EndsWith("/"))
+        if (Value.Contains("[]"))
         {
             IsInvalid = true;
-            Root = string.Empty;
             return;
         }
+
+        FixedValue = Value;
+        RootSegment = Value;
+        RootClass = Value;
         
         EscapeCssClassName();
         
@@ -72,7 +100,7 @@ public sealed class CssSelector
             var prefixSegment = Value[..(index + 1)];
 
             if (prefixSegment.Length < Value.Length)
-                Root = Value[prefixSegment.Length..];
+                RootClass = RootSegment = Value[prefixSegment.Length..];
 
             var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
@@ -92,6 +120,8 @@ public sealed class CssSelector
                         continue;
 
                     MediaQueries.Add(breakpoint.Prefix);
+                    AllPrefixes.Add(breakpoint.Prefix);
+
                     lastType = breakpoint.PrefixType;
                 }
 
@@ -104,43 +134,75 @@ public sealed class CssSelector
                         continue;
 
                     PseudoClasses.Add(segment);
+                    AllPrefixes.Add(segment);
                 }
             }
         }
 
-        if (string.IsNullOrEmpty(Root) == false)
+        if (string.IsNullOrEmpty(RootSegment) == false)
         {
-            var indexOfBracket = Root.IndexOf('[');
-            var indexOfSlash = Root.IndexOf('/');
+            var indexOfBracket = RootSegment.IndexOf('[');
+            var indexOfSlash = RootSegment.IndexOf('/');
 
             if (indexOfBracket == 0)
                 IsArbitraryCss = true;
 
             if (IsArbitraryCss)
             {
-                CustomValue = Root;
-                Root = string.Empty;
+                CustomValueSegment = RootSegment;
+                RootSegment = string.Empty;
+                RootClass = string.Empty;
             }
 
             else if (indexOfBracket > 0)
             {
-                CustomValue = Root[indexOfBracket..];
-                Root = Root[..indexOfBracket];
+                CustomValueSegment = RootSegment[indexOfBracket..];
+                RootSegment = RootSegment[..indexOfBracket];
+                RootClass = RootSegment;
             }
 
-            else if (indexOfSlash > -1 && indexOfSlash < Root.Length - 1)
+            else if (indexOfSlash > -1 && indexOfSlash < RootSegment.Length - 1)
             {
-                CustomValue = Root[(indexOfSlash + 1)..];
-                Root = Root[..(indexOfSlash + 1)];
+                CustomValueSegment = RootSegment[(indexOfSlash + 1)..];
+                RootClass = RootSegment[..(indexOfSlash + 1)];
             }
+            
+            CustomValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
+            
+            foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
+                if (CustomValue?.StartsWith($"{arbitraryType}:") ?? false)
+                    CustomValue = CustomValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
         }
 
-        if (string.IsNullOrEmpty(Root) && string.IsNullOrEmpty(CustomValue))
-            IsInvalid = true;
+        if (MediaQueries.Count > 0 || PseudoClasses.Count > 0)
+        {
+            FixedValue = string.Empty;
+
+            if (MediaQueries.Count > 0)
+            {
+                FixedValue += $"{string.Join(':', MediaQueries)}:";
+            }
+
+            if (PseudoClasses.Count > 0)
+            {
+                FixedValue += $"{string.Join(':', PseudoClasses)}:";
+            }
+            
+            FixedValue += RootClass;
+            FixedValue += CustomValueSegment;
+        }
+
+        Depth = AllPrefixes.Count;
+        
+        if (string.IsNullOrEmpty(RootSegment) == false || string.IsNullOrEmpty(CustomValueSegment) == false)
+            return;
+        
+        IsInvalid = true;
+        FixedValue = string.Empty;
     }
     
     /// <summary>
-    /// Escape a CSS class name to be used in a CSS selector.
+    /// Escape the CSS class name to be used in a CSS selector.
     /// </summary>
     /// <returns></returns>
     private void EscapeCssClassName()
