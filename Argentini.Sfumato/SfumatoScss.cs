@@ -703,7 +703,7 @@ public static class SfumatoScss
 	/// <param name="appState"></param>
 	/// <param name="diagnosticOutput"></param>
 	/// <returns></returns>
-	public static async Task<string> GetCoreScssAsync(SfumatoAppState appState, StringBuilder diagnosticOutput)
+	public static async Task<string> GetCoreScssAsync(SfumatoAppState appState, ConcurrentBag<string> diagnosticOutput)
 	{
 		var timer = new Stopwatch();
 
@@ -749,7 +749,7 @@ public static class SfumatoScss
 
 		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n');
 		
-		diagnosticOutput.Append($"Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
+		diagnosticOutput.Add($"Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
 		
@@ -765,7 +765,7 @@ public static class SfumatoScss
 	/// <param name="appState"></param>
 	/// <param name="diagnosticOutput"></param>
 	/// <returns></returns>
-	public static async Task<string> GetSharedScssAsync(SfumatoAppState appState, StringBuilder diagnosticOutput)
+	public static async Task<string> GetSharedScssAsync(SfumatoAppState appState, ConcurrentBag<string> diagnosticOutput)
 	{
 		var timer = new Stopwatch();
 
@@ -787,7 +787,7 @@ public static class SfumatoScss
 		
 		sb.Append(mediaQueriesScss);
 
-		diagnosticOutput.Append($"Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
+		diagnosticOutput.Add($"Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
 		

@@ -207,7 +207,7 @@ internal class Program
 		{
 			Console.WriteLine();
 			Console.WriteLine("DIAGNOSTICS:");
-			Console.WriteLine(runner.AppState.DiagnosticOutput.ToString());
+			Console.WriteLine(string.Join(string.Empty, runner.AppState.DiagnosticOutput));
 		}
 
 		Environment.Exit(0);

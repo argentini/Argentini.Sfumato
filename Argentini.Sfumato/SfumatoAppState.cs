@@ -39,7 +39,7 @@ public sealed class SfumatoAppState
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
     public List<string> CliArguments { get; } = new();
     public SfumatoJsonSettings Settings { get; set; } = new();
-    public StringBuilder DiagnosticOutput { get; set; } = new();
+    public ConcurrentBag<string> DiagnosticOutput { get; set; } = new();
     public string WorkingPathOverride { get; set; } = string.Empty;
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();
@@ -201,7 +201,7 @@ public sealed class SfumatoAppState
         }
 
         if (DiagnosticMode)
-			DiagnosticOutput.Append($"Initialized settings in {timer.FormatTimer()}{Environment.NewLine}");
+			DiagnosticOutput.Add($"Initialized settings in {timer.FormatTimer()}{Environment.NewLine}");
 
         ScssCoreInjectable.Clear();
         ScssCoreInjectable.Append(await SfumatoScss.GetCoreScssAsync(this, DiagnosticOutput));
@@ -210,7 +210,7 @@ public sealed class SfumatoAppState
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
         
         if (DiagnosticMode)
-	        DiagnosticOutput.Append($"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.FormatTimer()}{Environment.NewLine}");
+	        DiagnosticOutput.Add($"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.FormatTimer()}{Environment.NewLine}");
 
         timer.Restart();
     }
