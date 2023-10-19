@@ -299,7 +299,7 @@ public sealed class SfumatoAppState
         var osPlatform = Identify.GetOsPlatform();
         var processorArchitecture = Identify.GetProcessorArchitecture();
         var sassPath = string.Empty;
-		var workingPath = Assembly.GetExecutingAssembly().Location;
+		var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
 		while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
 		{
@@ -379,7 +379,7 @@ public sealed class SfumatoAppState
 
     public static string GetEmbeddedScssPath()
     {
-	    var workingPath = Assembly.GetExecutingAssembly().Location;
+	    var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
 	    while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
 	    {

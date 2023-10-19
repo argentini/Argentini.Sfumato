@@ -1,4 +1,5 @@
-﻿using System.Runtime.Versioning;
+﻿using System.Reflection;
+using System.Runtime.Versioning;
 
 namespace Argentini.Sfumato.Extensions;
 

@@ -229,7 +229,7 @@ public sealed class SfumatoRunner
 		};
 
 		#region Build Hierarchy
-		
+
 		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.CssSelector?.Depth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Value.SortOrder).ThenBy(c => c.Key))
 		{
 			if (scssClass.CssSelector is null)

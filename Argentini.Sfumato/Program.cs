@@ -21,13 +21,13 @@ internal class Program
 
 		if (runner.AppState.VersionMode)
 		{
-			Console.WriteLine($"Sfumato Version {Identify.Version(Assembly.GetExecutingAssembly())}");
+			Console.WriteLine($"Sfumato Version {Identify.Version(System.Reflection.Assembly.GetExecutingAssembly())}");
 			Environment.Exit(0);
 		}
 
 		Console.WriteLine(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		Console.WriteLine("Sfumato: The lean, modern, utility-based SCSS/CSS framework generation tool");
-		Console.WriteLine($"Version {Identify.Version(Assembly.GetExecutingAssembly())} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / {runner.AppState.ScssClassCollection.AllClasses.Count:N0} Core Classes");
+		Console.WriteLine($"Version {Identify.Version(System.Reflection.Assembly.GetExecutingAssembly())} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / {runner.AppState.ScssClassCollection.AllClasses.Count:N0} Core Classes");
 		
 		Console.WriteLine(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		
