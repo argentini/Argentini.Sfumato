@@ -20,14 +20,14 @@ public sealed class CssSelector
     public string FixedValue { get; private set; } = string.Empty;
     public List<string> MediaQueries { get; } = new();
     public List<string> PseudoClasses { get; } = new();
-    public List<string> AllPrefixes => GetAllPrefixes();
+    public List<string> AllPrefixes => MediaQueries.Concat(PseudoClasses).ToList();
     public string RootSegment { get; private set; } = string.Empty;
     public string RootClass { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
     public string CustomValue => GetCustomValue();
     public string EscapedSelector => IsInvalid ? string.Empty : EscapeCssClassName();
 
-    public int Depth => AllPrefixes.Count;
+    public int Depth => MediaQueries.Count + PseudoClasses.Count;
     public bool IsArbitraryCss { get; private set; }
     public bool IsInvalid { get; private set; }
 
@@ -208,14 +208,5 @@ public sealed class CssSelector
                 customValue = customValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
 
         return customValue ?? string.Empty;
-    }
-
-    /// <summary>
-    /// Return a list of all prefixes.
-    /// </summary>
-    /// <returns></returns>
-    private List<string> GetAllPrefixes()
-    {
-        return MediaQueries.Concat(PseudoClasses).ToList();
     }
 }

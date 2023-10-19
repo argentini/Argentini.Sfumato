@@ -37,7 +37,7 @@ public class ScssClass
         BuildPrefixSortOrder();
     }
 
-    protected void BuildPrefixSortOrder()
+    public void BuildPrefixSortOrder()
     {
         PrefixSortOrder = 0;
 

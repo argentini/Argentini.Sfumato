@@ -579,13 +579,19 @@ public sealed class SfumatoAppState
 			if (foundScssClass is null)
 				continue;
 			
-			var usedScssClass = foundScssClass.Adapt<ScssClass>();
+			var usedScssClass = new ScssClass
+			{
+				CssSelector = cssSelector,
+				ValueTypes = foundScssClass.ValueTypes,
+				Value = string.IsNullOrEmpty(userClassValueType) == false ? cssSelector.CustomValue : foundScssClass.Value,
+				Template = foundScssClass.Template,
+				ChildSelector = foundScssClass.ChildSelector,
+				GlobalGrouping = foundScssClass.GlobalGrouping,
+				SortOrder = foundScssClass.SortOrder
+			};
 
-			usedScssClass.CssSelector = cssSelector;
+			usedScssClass.BuildPrefixSortOrder();
 			
-			if (string.IsNullOrEmpty(userClassValueType) == false)
-				usedScssClass.Value = usedScssClass.CssSelector.CustomValue;
-
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
 

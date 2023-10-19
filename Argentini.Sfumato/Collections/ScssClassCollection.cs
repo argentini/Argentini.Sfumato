@@ -24,9 +24,7 @@ public partial class ScssClassCollection
                 continue;
 
             foreach (var scssClass in listReference)
-            {
                 scssClass.SortOrder = sortIndex++;
-            }
             
             AllClasses.AddRange(listReference);
         }
@@ -41,7 +39,7 @@ public partial class ScssClassCollection
     /// <returns></returns>
     public IEnumerable<ScssClass> GetAllByClassName(CssSelector selector)
     {
-        return AllClasses.Where(x => x.CssSelector is not null && x.CssSelector.RootSegment == selector.RootSegment);
+        return AllClasses.Where(x => x.CssSelector?.RootSegment.Equals(selector.RootSegment, StringComparison.Ordinal) ?? false);
     }
     
     #endregion
