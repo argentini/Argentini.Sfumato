@@ -82,7 +82,7 @@ public sealed class SfumatoRunner
 		await File.WriteAllTextAsync(Path.Combine(AppState.Settings.CssOutputPath, "sfumato.scss"), projectScss.ToString());
 
 		if (AppState.DiagnosticMode)
-			AppState.DiagnosticOutput.Add($"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
+			AppState.DiagnosticOutput.TryAdd("init4", $"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
 		
 		timer.Restart();
 		
@@ -91,7 +91,7 @@ public sealed class SfumatoRunner
 		Console.WriteLine($"{Strings.TriangleRight} Generated sfumato.css ({fileSize.FormatBytes()}) in {totalTimer.FormatTimer()}");
 
 		if (AppState.DiagnosticMode)
-			AppState.DiagnosticOutput.Add($"Generated sfumato.css ({fileSize.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
+			AppState.DiagnosticOutput.TryAdd("init5", $"Generated sfumato.css ({fileSize.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
 
 		#endregion
 		
@@ -451,7 +451,7 @@ public sealed class SfumatoRunner
 		fileStats.TotalBytes += length;
 
 		if (appState.DiagnosticMode)
-			appState.DiagnosticOutput.Add($"Generated {ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", appState)} ({length.FormatBytes()}){Environment.NewLine}");
+			appState.DiagnosticOutput.TryAdd("init6" + Guid.NewGuid(), $"Generated {ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", appState)} ({length.FormatBytes()}){Environment.NewLine}");
 	}
 	
 	#endregion

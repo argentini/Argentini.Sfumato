@@ -207,7 +207,7 @@ internal class Program
 		{
 			Console.WriteLine();
 			Console.WriteLine("DIAGNOSTICS:");
-			Console.WriteLine(string.Join(string.Empty, runner.AppState.DiagnosticOutput));
+			Console.WriteLine(string.Join(string.Empty, runner.AppState.DiagnosticOutput.OrderBy(d => d.Key).Select(v => v.Value)));
 		}
 
 		Environment.Exit(0);
