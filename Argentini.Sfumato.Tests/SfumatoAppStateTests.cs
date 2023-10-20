@@ -1,6 +1,5 @@
 using Argentini.Sfumato.Collections;
 using Argentini.Sfumato.Entities;
-using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
 
@@ -132,16 +131,6 @@ public class SfumatoAppStateTests
     }
 
     [Fact]
-    public void EscapeCssClassName()
-    {
-        var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-        
-        Assert.Equal("text-base", "text-base".EscapeCssClassName(pool));
-        Assert.Equal(@"dark\:tabp\:text-base\/5", "dark:tabp:text-base/5".EscapeCssClassName(pool));
-        Assert.Equal(@"dark\:tabp\:text-base\/\[3rem\]", "dark:tabp:text-base/[3rem]".EscapeCssClassName(pool));
-    }
-
-    [Fact]
     public void GetUserClassValueType()
     {
         Assert.Equal(string.Empty, "".GetUserClassValueType());
@@ -188,21 +177,6 @@ public class SfumatoAppStateTests
         
         Assert.Equal("ratio", "[1/2]".GetUserClassValueType());
         Assert.Equal("ratio", "[1_/_2]".GetUserClassValueType());
-    }
-    
-    [Fact]
-    public void GetUserClassValue()
-    {
-        Assert.Equal("3fr", "dark:tabp:p-[3fr]".GetUserClassValue());
-        Assert.Equal("3rem", "dark:tabp:p-[3rem]".GetUserClassValue());
-        Assert.Equal("#112233", "dark:tabp:p-[#112233]".GetUserClassValue());
-        Assert.Equal("2rem", "dark:tabp:p-[length:2rem]".GetUserClassValue());
-        Assert.Equal("width:100px", "dark:tabp:[width:100px]".GetUserClassValue());
-        Assert.Equal("var(--my-width)", "dark:tabp:w-[--my-width]".GetUserClassValue());
-        Assert.Equal("var(--my-width)", "dark:tabp:w-[var(--my-width)]".GetUserClassValue());
-        Assert.Equal("url(\"http://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[http://sfumato.com/images/file.jpg]".GetUserClassValue());
-        Assert.Equal("url(\"https://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[https://sfumato.com/images/file.jpg]".GetUserClassValue());
-        Assert.Equal("url(\"http://sfumato.com/images/file.jpg\")", "dark:tabp:bg-[url(http://sfumato.com/images/file.jpg)]".GetUserClassValue());
     }
     
     [Fact]

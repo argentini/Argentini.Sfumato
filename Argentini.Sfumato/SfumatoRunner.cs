@@ -235,7 +235,7 @@ public sealed class SfumatoRunner
 			
 			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
-			if (scssClass.CssSelector.FixedValue.Contains(':') == false || (scssClass.CssSelector.AllPrefixes.Count > 0 && IsPseudoclassPrefix(scssClass.CssSelector.AllPrefixes[0])))
+			if (scssClass.CssSelector.MediaQueries.Count == 0)
 			{
 				hierarchy.Classes.Add(scssClass);
 			}

@@ -976,36 +976,6 @@ public static class SfumatoScss
     }
     
     /// <summary>
-    /// Escape a CSS class name to be used in a CSS selector.
-    /// </summary>
-    /// <param name="className"></param>
-    /// <param name="appState"></param>
-    /// <returns></returns>
-    public static string EscapeCssClassName(this string className, ObjectPool<StringBuilder> pool)
-    {
-	    if (string.IsNullOrEmpty(className))
-		    return className;
-
-	    var sb = pool.Get();
-
-	    for (var i = 0; i < className.Length; i++)
-	    {
-		    var c = className[i];
-            
-		    if ((i == 0 && char.IsDigit(c)) || (!char.IsLetterOrDigit(c) && c != '-' && c != '_'))
-			    sb.Append($"\\{c}");
-		    else
-			    sb.Append(c);
-	    }
-
-	    var result = sb.ToString();
-		
-	    pool.Return(sb);
-
-	    return result;
-    }
-    
-    /// <summary>
     /// Get the value type of the user class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <param name="className"></param>
@@ -1155,41 +1125,6 @@ public static class SfumatoScss
 	    #endregion
 	    
 	    return string.Empty;
-    }
-    
-    /// <summary>
-    /// Get the value of the user class name (e.g. "length:value", "color:value", etc.)
-    /// </summary>
-    /// <param name="className"></param>
-    /// <returns></returns>
-    public static string GetUserClassValue(this string className)
-    {
-	    if (className.EndsWith(']') == false || className.Contains('[') == false)
-		    return string.Empty;
-
-	    var result = className[className.IndexOf('[')..].TrimStart('[').TrimEnd(']');
-
-	    if (result.Contains(':'))
-	    {
-		    var segments = result.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-		    if (segments.Length > 1)
-		    {
-			    if (ArbitraryValueTypes.Contains(segments[0]))
-				    result = result[(segments[0].Length + 1)..];
-		    }
-	    }
-
-	    if (result.StartsWith("--"))
-		    result = $"var({result})";
-
-	    if ((result.StartsWith('/') && Uri.TryCreate(result, UriKind.Relative, out _)) || Uri.TryCreate(result, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
-		    result = $"url(\"{result}\")";
-	    
-	    if (result.StartsWith("url(", StringComparison.Ordinal) && result.StartsWith("url(\"", StringComparison.Ordinal) == false && result.EndsWith(')'))
-		    result = result.Replace("url(", "url(\"").TrimEnd(')') + "\")";
-	    
-	    return result;
     }
 }
 
