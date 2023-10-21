@@ -84,7 +84,7 @@ public sealed class SfumatoRunner
 
 		var css = await SfumatoScss.TranspileScss(AppState.SfumatoScssOutputPath, projectScss.ToString(), AppState);
 		
-		Console.WriteLine($"{Strings.TriangleRight} Generated sfumato.css ({css.Length.FormatBytes()}) in {totalTimer.FormatTimer()}");
+		await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated sfumato.css ({css.Length.FormatBytes()}) in {totalTimer.FormatTimer()}");
 
 		if (AppState.DiagnosticMode)
 			AppState.DiagnosticOutput.TryAdd("init5", $"Generated sfumato.css ({css.Length.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
@@ -112,9 +112,9 @@ public sealed class SfumatoRunner
 		await Task.WhenAll(tasks);
 		
 		if (fileStats.FileCount == 0)
-			Console.WriteLine($"{Strings.TriangleRight} No project SCSS files found");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} No project SCSS files found");
 		else
-			Console.WriteLine($"{Strings.TriangleRight} Generated {fileStats.FileCount:N0} project CSS file{(fileStats.FileCount == 1 ? string.Empty : "s")} ({fileStats.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {fileStats.FileCount:N0} project CSS file{(fileStats.FileCount == 1 ? string.Empty : "s")} ({fileStats.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
 	}
 	
 	#endregion
@@ -486,7 +486,7 @@ public sealed class SfumatoRunner
 			});
 		}
 							
-		Console.WriteLine($"{Strings.TriangleRight} Generated {SfumatoRunner.ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", AppState)} ({css.Length.FormatBytes()})");
+		await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", AppState)} ({css.Length.FormatBytes()})");
 	}
 	
 	#endregion

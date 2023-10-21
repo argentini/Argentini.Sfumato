@@ -32,7 +32,7 @@ public sealed class CssSelector
 
     public int Depth => MediaQueries.Count + PseudoClasses.Count;
     public bool IsArbitraryCss { get; private set; }
-    public bool IsInvalid { get; private set; }
+    public bool IsInvalid { get; private set; } = true;
 
     #endregion
 
@@ -59,29 +59,20 @@ public sealed class CssSelector
         AllPrefixes.Clear();
         
         IsArbitraryCss = false;
-        IsInvalid = false;
+        IsInvalid = true;
 
         if (string.IsNullOrEmpty(Value))
-        {
-            IsInvalid = true;
             return;
-        }
 
         var indexOfColon = Value.IndexOf(':');
         var indexOfBracket = Value.IndexOf('[');
         var indexOfBracketClose = Value.IndexOf(']');
         
         if (indexOfColon == 0 || indexOfBracket > indexOfBracketClose)
-        {
-            IsInvalid = true;
             return;
-        }
 
         if (indexOfBracketClose == indexOfBracket + 1)
-        {
-            IsInvalid = true;
             return;
-        }
 
         FixedValue = Value;
         RootSegment = Value;
@@ -171,9 +162,11 @@ public sealed class CssSelector
         }
 
         if (RootSegment.Length > 0 || CustomValueSegment.Length > 0)
+        {
+            IsInvalid = false;
             return;
-        
-        IsInvalid = true;
+        }
+
         FixedValue = string.Empty;
     }
     

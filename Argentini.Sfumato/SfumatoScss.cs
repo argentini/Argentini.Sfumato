@@ -874,7 +874,7 @@ public static class SfumatoScss
 			sb.AppendLine(e.StackTrace?.Trim());
 			sb.AppendLine(string.Empty);
 
-			Console.WriteLine(sb.ToString());
+			await Console.Out.WriteLineAsync(sb.ToString());
 
 			appState.StringBuilderPool.Return(sb);
 

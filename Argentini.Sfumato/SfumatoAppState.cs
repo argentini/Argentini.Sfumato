@@ -104,7 +104,7 @@ public sealed class SfumatoAppState
 
 	    timer.Start();
 
-	    ProcessCliArguments(args);
+	    await ProcessCliArgumentsAsync(args);
 
 	    if (VersionMode || HelpMode)
 		    return;
@@ -118,7 +118,7 @@ public sealed class SfumatoAppState
 
         if (File.Exists(SettingsFilePath) == false)
         {
-            Console.WriteLine($"{CliErrorPrefix}Could not find settings file at path {SettingsFilePath}");
+            await Console.Out.WriteLineAsync($"{CliErrorPrefix}Could not find settings file at path {SettingsFilePath}");
             Environment.Exit(1);
         }
 
@@ -138,7 +138,7 @@ public sealed class SfumatoAppState
 		
             if (jsonSettings is null)
             {
-                Console.WriteLine($"{CliErrorPrefix}Invalid settings file at path {SettingsFilePath}");
+                await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid settings file at path {SettingsFilePath}");
                 Environment.Exit(1);
             }
             
@@ -150,7 +150,7 @@ public sealed class SfumatoAppState
         
             if (Directory.Exists(Settings.CssOutputPath) == false)
             {
-                Console.WriteLine($"{CliErrorPrefix}Could not find CSS output path: {Settings.CssOutputPath}");
+                await Console.Out.WriteLineAsync($"{CliErrorPrefix}Could not find CSS output path: {Settings.CssOutputPath}");
                 Environment.Exit(1);
             }
         
@@ -163,8 +163,8 @@ public sealed class SfumatoAppState
 
             Settings.UseAutoTheme = jsonSettings.UseAutoTheme;
             
-            SassCliPath = GetEmbeddedSassPath();
-            ScssPath = GetEmbeddedScssPath();
+            SassCliPath = await GetEmbeddedSassPathAsync();
+            ScssPath = await GetEmbeddedScssPathAsync();
 
             Settings.ProjectPaths.Clear();
         
@@ -199,7 +199,7 @@ public sealed class SfumatoAppState
 
         catch
         {
-            Console.WriteLine($"{CliErrorPrefix}Invalid settings file at path {SettingsFilePath}");
+            await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid settings file at path {SettingsFilePath}");
             Environment.Exit(1);
         }
 
@@ -228,7 +228,7 @@ public sealed class SfumatoAppState
 	/// Process CLI arguments and set properties accordingly.
 	/// </summary>
 	/// <param name="args"></param>
-	public void ProcessCliArguments(IEnumerable<string>? args)
+	public async Task ProcessCliArgumentsAsync(IEnumerable<string>? args)
 	{
 		CliArguments.Clear();
 		CliArguments.AddRange(args?.ToList() ?? new List<string>());
@@ -268,7 +268,7 @@ public sealed class SfumatoAppState
 
 					catch
 					{
-						Console.WriteLine($"{CliErrorPrefix}Invalid project path at {path}");
+						await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid project path at {path}");
 						Environment.Exit(1);
 					}
 				}
@@ -299,7 +299,7 @@ public sealed class SfumatoAppState
         return workingPath;
     }
 
-    public string GetEmbeddedSassPath()
+    public async Task<string> GetEmbeddedSassPathAsync()
     {
         var osPlatform = Identify.GetOsPlatform();
         var processorArchitecture = Identify.GetProcessorArchitecture();
@@ -353,7 +353,7 @@ public sealed class SfumatoAppState
 		
 		if (string.IsNullOrEmpty(sassPath) || File.Exists(sassPath) == false)
 		{
-			Console.WriteLine($"{CliErrorPrefix}Embedded Dart Sass cannot be found.");
+			await Console.Out.WriteLineAsync($"{CliErrorPrefix}Embedded Dart Sass cannot be found.");
 			Environment.Exit(1);
 		}
 		
@@ -373,7 +373,7 @@ public sealed class SfumatoAppState
 
 		catch
 		{
-			Console.WriteLine($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
+			await Console.Out.WriteLineAsync($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
 			Environment.Exit(1);
 		}
 
@@ -382,7 +382,7 @@ public sealed class SfumatoAppState
 		return sassPath;
     }
 
-    public static string GetEmbeddedScssPath()
+    public static async Task<string> GetEmbeddedScssPathAsync()
     {
 	    var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
@@ -411,7 +411,7 @@ public sealed class SfumatoAppState
         // ReSharper disable once InvertIf
         if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
         {
-            Console.WriteLine($"{CliErrorPrefix}Embedded SCSS resources cannot be found.");
+            await Console.Out.WriteLineAsync($"{CliErrorPrefix}Embedded SCSS resources cannot be found.");
             Environment.Exit(1);
         }
         
@@ -429,17 +429,20 @@ public sealed class SfumatoAppState
 	public async Task GatherWatchedFilesAsync()
 	{
 		var timer = new Stopwatch();
+		var totalTimer = new Stopwatch();
 
-		timer.Start();
+		totalTimer.Start();
 
 		if (Settings.ProjectPaths.Count == 0)
 		{
-			Console.WriteLine($"{Strings.TriangleRight} No project paths specified");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} No project paths specified");
 			return;
 		}
 		
 		var tasks = new List<Task>();
 
+		timer.Start();
+		
 		// Gather files lists
 		
 		foreach (var projectPath in Settings.ProjectPaths)
@@ -449,21 +452,34 @@ public sealed class SfumatoAppState
 		
 		tasks.Clear();
 
-		// Add matches to files lists
+		if (DiagnosticMode)
+			DiagnosticOutput.TryAdd("init0a", $"{Strings.TriangleRight} RecurseProjectPathAsync => {timer.FormatTimer()}{Environment.NewLine}");
+
+		timer.Restart();
 		
+		// Add matches to files lists
+
 		foreach (var watchedFile in WatchedFiles)
 			tasks.Add(ProcessFileMatchesAsync(watchedFile.Value));
 		
 		await Task.WhenAll(tasks);
+
+		if (DiagnosticMode)
+			DiagnosticOutput.TryAdd("init0b", $"{Strings.TriangleRight} ProcessFileMatchesAsync => {timer.FormatTimer()}{Environment.NewLine}");
+
+		timer.Restart();
 		
-		// Generate used classes list		
+		// Generate used classes list
 
 		await ExamineWatchedFilesForUsedClassesAsync();
+
+		if (DiagnosticMode)
+			DiagnosticOutput.TryAdd("init0c", $"{Strings.TriangleRight} ExamineWatchedFilesForUsedClassesAsync => {timer.FormatTimer()}{Environment.NewLine}");
 		
 		if (WatchedFiles.IsEmpty)
-			Console.WriteLine($"{Strings.TriangleRight} Identified no used classes");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified no used classes");
 		else
-			Console.WriteLine($"{Strings.TriangleRight} Identified {WatchedFiles.Count:N0} file{(WatchedFiles.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified {WatchedFiles.Count:N0} file{(WatchedFiles.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {totalTimer.FormatTimer()}");
 	}
 	
 	/// <summary>
@@ -494,7 +510,7 @@ public sealed class SfumatoAppState
 
 			if (dir.Exists == false)
 			{
-				Console.WriteLine($"Source directory does not exist or could not be found: {sourcePath}");
+				await Console.Out.WriteLineAsync($"Source directory does not exist or could not be found: {sourcePath}");
 				Environment.Exit(1);
 			}
 
@@ -502,28 +518,14 @@ public sealed class SfumatoAppState
 			files = dir.GetFiles().Where(f => f.Name.EndsWith(fileSpec.TrimStart('*'))).ToArray();
 		}
 
-		foreach (var projectFile in files.OrderBy(f => f.Name))
+		var tasks = new List<Task>();
+		
+		foreach (var projectFile in files)
 		{
-			var markup = await File.ReadAllTextAsync(projectFile.FullName);
-
-			if (fileSpec.EndsWith(".scss"))
-			{
-				WatchedScssFiles.TryAdd(projectFile.FullName, new WatchedScssFile
-				{
-					FilePath = projectFile.FullName,
-					Scss = markup
-				});
-			}
-
-			else
-			{
-				WatchedFiles.TryAdd(projectFile.FullName, new WatchedFile
-				{
-					FilePath = projectFile.FullName,
-					Markup = markup
-				});
-			}
+			tasks.Add(AddProjectFileToCollection(projectFile, fileSpec));
 		}
+
+		await Task.WhenAll(tasks);
 
 		if (recurse == false)
 			return;
@@ -532,6 +534,77 @@ public sealed class SfumatoAppState
 			await RecurseProjectPathAsync(subDir.FullName, fileSpec, isFilePath, recurse);
 	}
 
+	/// <summary>
+	/// Read a FileInfo object and add it to the appropriate collection.
+	/// </summary>
+	/// <param name="projectFile"></param>
+	/// <param name="fileSpec"></param>
+	public async Task AddProjectFileToCollection(FileInfo projectFile, string fileSpec)
+	{
+		var markup = await File.ReadAllTextAsync(projectFile.FullName);
+
+		if (fileSpec.EndsWith(".scss"))
+		{
+			WatchedScssFiles.TryAdd(projectFile.FullName, new WatchedScssFile
+			{
+				FilePath = projectFile.FullName,
+				Scss = markup
+			});
+		}
+
+		else
+		{
+			WatchedFiles.TryAdd(projectFile.FullName, new WatchedFile
+			{
+				FilePath = projectFile.FullName,
+				Markup = markup
+			});
+		}
+	}
+	
+	/// <summary>
+	/// Identify class matches in a given watched file.
+	/// </summary>
+	/// <param name="watchedFile"></param>
+	public async Task ProcessFileMatchesAsync(WatchedFile watchedFile)
+	{
+		watchedFile.CoreClassMatches.Clear();
+		watchedFile.ArbitraryCssMatches.Clear();
+		
+		var tasks = new List<Task>();
+
+		var matches = CoreClassRegex.Matches(watchedFile.Markup);
+
+		if (matches.Count > 0)
+		{
+			foreach (Match match in matches)
+				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, match.Value));
+
+			await Task.WhenAll(tasks);
+			tasks.Clear();
+		}
+
+		matches = ArbitraryCssRegex.Matches(watchedFile.Markup);
+
+		if (matches.Count > 0)
+		{
+			foreach (Match match in matches)
+				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, match.Value));
+
+			await Task.WhenAll(tasks);
+		}
+	}
+
+	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value)
+	{
+		var cssSelector = new CssSelector(value);
+		
+		if (cssSelector.IsInvalid == false)
+			collection.TryAdd(value,new CssSelector(value));
+
+		await Task.CompletedTask;
+	}
+	
 	/// <summary>
 	/// Examine all watched files for used classes.
 	/// Generates the UsedClasses collection.
@@ -549,73 +622,35 @@ public sealed class SfumatoAppState
 	}
 	
 	/// <summary>
-	/// Identify class matches in a given watched file.
-	/// </summary>
-	/// <param name="watchedFile"></param>
-	public async Task ProcessFileMatchesAsync(WatchedFile watchedFile)
-	{
-		if (string.IsNullOrEmpty(watchedFile.FilePath))
-			return;
-
-		watchedFile.CoreClassMatches.Clear();
-		watchedFile.ArbitraryCssMatches.Clear();
-		
-		var tasks = new List<Task>();
-
-		foreach (Match match in CoreClassRegex.Matches(watchedFile.Markup))
-			tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, match.Value));
-		
-		foreach (Match match in ArbitraryCssRegex.Matches(watchedFile.Markup))
-			tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, match.Value));
-		
-		await Task.WhenAll(tasks);
-	}
-
-	public static async Task AddCssSelectorToCollection(ConcurrentBag<CssSelector> collection, string value)
-	{
-		var cssSelector = new CssSelector(value);
-		
-		if (cssSelector.IsInvalid == false)
-			collection.Add(new CssSelector(value));
-
-		await Task.CompletedTask;
-	}
-	
-	/// <summary>
 	/// Examine markup for used classes and add them to the UsedClasses collection.
 	/// </summary>
 	/// <param name="watchedFile"></param>
 	public async Task ExamineMarkupForUsedClassesAsync(WatchedFile watchedFile)
 	{
-		foreach (var cssSelector in watchedFile.CoreClassMatches)
+		foreach (var cssSelector in watchedFile.CoreClassMatches.Values)
 		{
 			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
 			
-			var scssClasses = ScssClassCollection.GetAllByClassName(cssSelector).ToList();
+			var matchingScssClasses = ScssClassCollection.GetAllByClassName(cssSelector).ToList();
 
-			if (scssClasses.Count == 0)
+			if (matchingScssClasses.Count == 0)
 				continue;
 			
 			var userClassValueType = cssSelector.CustomValueSegment.GetUserClassValueType();
 			ScssClass? foundScssClass = null;
 
-			// 1. No arbitrary value type specified (e.g. text-slate-100 or text-[#112233])
-			// 2. Arbitrary value type specified, must match source class value type (e.g. text-[color:#112233])
-			// 3. Utility class (e.g. "container")
-
 			if (string.IsNullOrEmpty(userClassValueType) == false)
-				foreach (var scssClass in scssClasses)
+				foreach (var scssClass in matchingScssClasses)
 				{
 					if (scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
 						continue;
 
 					foundScssClass = scssClass;
-					
 					break;
 				}								
 			else
-				foreach (var scssClass in scssClasses)
+				foreach (var scssClass in matchingScssClasses)
 				{
 					if (scssClass.CssSelector is null)
 						continue;
@@ -649,12 +684,10 @@ public sealed class SfumatoAppState
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
 
-		foreach (var cssSelector in watchedFile.ArbitraryCssMatches)
+		foreach (var cssSelector in watchedFile.ArbitraryCssMatches.Values)
 		{
 			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
-
-			// 1. Arbitrary CSS style (e.g. tabp:[display:none])
 
 			var usedScssClass = new ScssClass
 			{
@@ -677,8 +710,8 @@ public class WatchedFile
 {
 	public string FilePath { get; set; } = string.Empty;
 	public string Markup { get; set; } = string.Empty;
-	public ConcurrentBag<CssSelector> CoreClassMatches { get; set; } = new ();
-	public ConcurrentBag<CssSelector> ArbitraryCssMatches { get; set; } = new ();
+	public ConcurrentDictionary<string,CssSelector> CoreClassMatches { get; set; } = new ();
+	public ConcurrentDictionary<string,CssSelector> ArbitraryCssMatches { get; set; } = new ();
 }
 
 public class WatchedScssFile

@@ -45,10 +45,8 @@ public class ScssClass
             return;
         
         foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
-        {
             if (CssSelector.MediaQueries.Contains(breakpoint.Prefix))
                 PrefixSortOrder += breakpoint.Priority;    
-        }
     }
     
     public string GetStyles()
