@@ -444,10 +444,9 @@ public sealed class SfumatoRunner
 	/// <param name="filePath"></param>
 	public async Task DeleteWatchedScssFile(string filePath)
 	{
-		if (AppState.WatchedScssFiles.ContainsKey(filePath))
-			AppState.WatchedScssFiles.TryRemove(AppState.WatchedScssFiles.First(w => w.Key == filePath));
-								
-		var cssFilePath =
+        _ = AppState.WatchedScssFiles.TryRemove(filePath, out _);
+
+        var cssFilePath =
 			filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) +
 			".css"; 
 							
@@ -500,8 +499,7 @@ public sealed class SfumatoRunner
 	/// <param name="filePath"></param>
 	public async Task DeleteWatchedFile(string filePath)
 	{
-		if (AppState.WatchedFiles.ContainsKey(filePath))
-			AppState.WatchedFiles.TryRemove(AppState.WatchedFiles.First(w => w.Key == filePath));
+		_ = AppState.WatchedFiles.TryRemove(filePath, out _);
 								
 		await Task.CompletedTask;
 	}

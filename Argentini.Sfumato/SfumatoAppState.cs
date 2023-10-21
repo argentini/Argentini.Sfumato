@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoAppState
