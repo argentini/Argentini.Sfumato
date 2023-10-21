@@ -797,21 +797,24 @@ public static class SfumatoScss
 	}
 	
 	/// <summary>
-	/// Transpile SCSS markup into sfumato.css.
+	/// Transpile SCSS markup into CSS.
 	/// </summary>
-	/// <param name="scss"></param>
+	/// <param name="filePath"></param>
+	/// <param name="rawScss"></param>
 	/// <param name="appState"></param>
-	/// <returns>Byte length of generated CSS file</returns>
-	public static async Task<long> TranspileScss(StringBuilder scss, SfumatoAppState appState)
+	/// <returns>Generated CSS file</returns>
+	public static async Task<string> TranspileScss(string filePath, string rawScss, SfumatoAppState appState)
 	{
 		var sb = appState.StringBuilderPool.Get();
 
 		try
 		{
 			var arguments = new List<string>();
-
-			if (File.Exists(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css.map")))
-				File.Delete(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css.map"));
+			var cssOutputPath = filePath.TrimEnd(".scss") + ".css"; 
+			var cssMapOutputPath = cssOutputPath + ".map"; 
+			
+			if (File.Exists(cssMapOutputPath))
+				File.Delete(cssMapOutputPath);
 
 			if (appState.ReleaseMode == false)
 			{
@@ -827,7 +830,24 @@ public static class SfumatoScss
 			}
 
 			arguments.Add("--stdin");
-			arguments.Add(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css"));
+			arguments.Add(cssOutputPath);
+			
+			var scss = appState.StringBuilderPool.Get();
+			var matches = appState.SfumatoScssIncludesRegex.Matches(rawScss);
+			var startIndex = 0;
+
+			foreach (Match match in matches)
+			{
+				if (match.Index + match.Value.Length > startIndex)
+					startIndex = match.Index + match.Value.Length;
+
+				if (match.Value.Trim().EndsWith("core;"))
+				{
+					scss.Append(appState.ScssSharedInjectable);
+				}
+			}
+			
+			scss.Append(rawScss[startIndex..]);
 			
 			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(appState.SassCliPath)
 				.WithArguments(args =>
@@ -840,12 +860,11 @@ public static class SfumatoScss
 				.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
 
 			await cmd.ExecuteAsync();
-
-			var fileInfo = new FileInfo(Path.Combine(appState.Settings.CssOutputPath, "sfumato.css"));
 			
 			appState.StringBuilderPool.Return(sb);
-			
-			return fileInfo.Length;
+			appState.StringBuilderPool.Return(scss);
+
+			return await File.ReadAllTextAsync(cssOutputPath);
 		}
 
 		catch (Exception e)
@@ -860,121 +879,11 @@ public static class SfumatoScss
 			appState.StringBuilderPool.Return(sb);
 
 			Environment.Exit(1);
-		}
 
-		return -1;
+			return string.Empty;
+		}
 	}
 	
-    /// <summary>
-    /// Transpile a single SCSS file into CSS, in-place.
-    /// </summary>
-    /// <param name="scssFilePath">File system path to the scss input file (e.g. "/scss/application.scss")</param>
-    /// <param name="appState">When true compacts the generated CSS</param>
-    /// <returns>Byte length of generated CSS file</returns>
-    public static async Task<long> TranspileSingleScss(string scssFilePath, SfumatoAppState appState)
-    {
-	    var scss = appState.StringBuilderPool.Get();
-	    var sb = appState.StringBuilderPool.Get();
-
-		if (string.IsNullOrEmpty(scssFilePath) || scssFilePath.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false)
-		{
-			Console.WriteLine($"{Strings.TriangleRight} ERROR: invalid SCSS file path: {scssFilePath}");
-			return -1;
-        }
-
-        var outputPath = string.Concat(scssFilePath.AsSpan(0, scssFilePath.Length - 4), "css");
-
-        try
-        {
-            var arguments = new List<string>();
-
-            if (File.Exists(Path.GetFullPath(outputPath) + ".map"))
-                File.Delete(Path.GetFullPath(outputPath) + ".map");
-
-            arguments.Add($"--style={(appState.ReleaseMode ? "compressed" : "expanded")}");
-            arguments.Add("--no-source-map");
-            arguments.Add("--stdin");
-            arguments.Add($"{outputPath}");
-
-            #region Read SCSS markup
-            
-            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-
-            while (cancellationToken.IsCancellationRequested == false)
-            {
-                try
-                {
-	                await using (var fs = new FileStream(scssFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    
-	                using (var sr = new StreamReader(fs, Encoding.UTF8))
-                    {
-	                    var rawScss = await sr.ReadToEndAsync(cancellationToken.Token);
-	                    var matches = appState.SfumatoScssIncludesRegex.Matches(rawScss);
-	                    var startIndex = 0;
-
-	                    foreach (Match match in matches)
-	                    {
-		                    if (match.Index + match.Value.Length > startIndex)
-			                    startIndex = match.Index + match.Value.Length;
-
-		                    if (match.Value.Trim().EndsWith("core;"))
-		                    {
-			                    scss.Append(appState.ScssSharedInjectable);
-		                    }
-	                    }
-	                    
-	                    scss.Append(rawScss[startIndex..]);
-                    }
-
-                    cancellationToken.Cancel();
-                }
-
-                catch
-                {
-                    await Task.Delay(10, cancellationToken.Token);
-                }
-            }
-
-            #endregion
-
-            sb.Clear();
-            
-            var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap("sass")
-                .WithArguments(args =>
-                {
-	                foreach (var arg in arguments)
-		                args.Add(arg);
-
-                })
-                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
-                .WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
-
-            await cmd.ExecuteAsync();
-            
-            appState.StringBuilderPool.Return(sb);
-            appState.StringBuilderPool.Return(scss);
-
-            var fileInfo = new FileInfo(outputPath);
-		
-            return fileInfo.Length;
-        }
-
-        catch (Exception ex)
-        {
-            sb.AppendLine($"{Strings.TriangleRight} ERROR: {ex.Message.Trim()}");
-            sb.AppendLine(string.Empty);
-            sb.AppendLine(ex.StackTrace?.Trim());
-            sb.AppendLine(string.Empty);
-            
-            Console.WriteLine(sb.ToString());
-            
-            appState.StringBuilderPool.Return(sb);
-            appState.StringBuilderPool.Return(scss);
-
-            return -1;
-        }
-    }
-    
     /// <summary>
     /// Get the value type of the user class value (e.g. "length:...", "color:...", etc.)
     /// </summary>

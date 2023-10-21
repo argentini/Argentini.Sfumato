@@ -163,7 +163,15 @@ public class SfumatoRunnerTests
 
         runner.AppState.ReleaseMode = true;
         runner.AppState.Settings.ThemeMode = "system";
-        runner.AppState.ExamineMarkupForUsedClasses(Markup);
+        
+        var watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = Markup
+        };
+        
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
         
         Assert.Equal(24, runner.AppState.UsedClasses.Count);
     }
@@ -177,7 +185,15 @@ public class SfumatoRunnerTests
 
         runner.AppState.ReleaseMode = true;
         runner.AppState.Settings.ThemeMode = "system";
-        runner.AppState.ExamineMarkupForUsedClasses(Markup);
+        
+        var watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = Markup
+        };
+        
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
 
         var scss = await runner.GenerateScssObjectTreeAsync();
 

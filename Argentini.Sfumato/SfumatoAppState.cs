@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoAppState
@@ -28,8 +30,12 @@ public sealed class SfumatoAppState
 	
     #endregion
     
-    #region Scss Class Collections
+    #region Collections
 
+    public List<string> CliArguments { get; } = new();
+    public ConcurrentDictionary<string,WatchedFile> WatchedFiles { get; } = new();
+    public ConcurrentDictionary<string,WatchedScssFile> WatchedScssFiles { get; } = new();
+    public ConcurrentDictionary<string,ScssClass> UsedClasses { get; } = new();
     public ScssClassCollection ScssClassCollection { get; } = new();    
     
     #endregion
@@ -37,7 +43,6 @@ public sealed class SfumatoAppState
     #region App State
 
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-    public List<string> CliArguments { get; } = new();
     public SfumatoJsonSettings Settings { get; set; } = new();
     public ConcurrentDictionary<string,string> DiagnosticOutput { get; set; } = new();
     public string WorkingPathOverride { get; set; } = string.Empty;
@@ -45,7 +50,7 @@ public sealed class SfumatoAppState
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
     public string ScssPath { get; set; } = string.Empty;
-    public ConcurrentDictionary<string,ScssClass> UsedClasses { get; } = new();
+    public string SfumatoScssOutputPath { get; set; } = string.Empty;
     public List<string> AllPrefixes { get; } = new();
     public StringBuilder ScssCoreInjectable { get; } = new();
     public StringBuilder ScssSharedInjectable { get; } = new();
@@ -200,6 +205,8 @@ public sealed class SfumatoAppState
             Environment.Exit(1);
         }
 
+        SfumatoScssOutputPath = Path.Combine(Settings.CssOutputPath, "sfumato.scss");
+        
         if (DiagnosticMode)
 			DiagnosticOutput.TryAdd("init0", $"Initialized settings in {timer.FormatTimer()}{Environment.NewLine}");
 
@@ -418,16 +425,14 @@ public sealed class SfumatoAppState
     #region Runner Methods
     
 	/// <summary>
-	/// Identify the used classes in the project.
+	/// Gather all watched files defined in settings.
 	/// </summary>
 	/// <param name="runner"></param>
-	public async Task GatherUsedScssCoreClassesAsync()
+	public async Task GatherWatchedFilesAsync()
 	{
 		var timer = new Stopwatch();
 
 		timer.Start();
-
-		UsedClasses.Clear();
 
 		if (Settings.ProjectPaths.Count == 0)
 		{
@@ -435,46 +440,43 @@ public sealed class SfumatoAppState
 			return;
 		}
 		
-		var filesList = new ConcurrentBag<string>();
 		var tasks = new List<Task>();
 
-		foreach (var projectPath in Settings.ProjectPaths.Where(p => p.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) == false))
-			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, filesList, projectPath.Recurse));
+		// Gather files lists
+		
+		foreach (var projectPath in Settings.ProjectPaths)
+			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, projectPath.Recurse));
 
 		await Task.WhenAll(tasks);
-
+		
 		tasks.Clear();
+
+		// Add matches to files lists
 		
-		foreach (var filePath in filesList)
-			tasks.Add(ExamineFileForUsedScssCoreClassesAsync(filePath));
+		foreach (var watchedFile in WatchedFiles)
+			tasks.Add(ProcessFileMatchesAsync(watchedFile.Value));
 		
-		await Task.WhenAll(tasks);		
+		await Task.WhenAll(tasks);
 		
-		if (filesList.IsEmpty)
+		// Generate used classes list		
+
+		await ExamineWatchedFilesForUsedClassesAsync();
+		
+		if (WatchedFiles.IsEmpty)
 			Console.WriteLine($"{Strings.TriangleRight} Identified no used classes");
 		else
-			Console.WriteLine($"{Strings.TriangleRight} Identified {filesList.Count:N0} file{(filesList.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
+			Console.WriteLine($"{Strings.TriangleRight} Identified {WatchedFiles.Count:N0} file{(WatchedFiles.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {timer.FormatTimer()}");
 	}
-
-	private async Task ExamineFileForUsedScssCoreClassesAsync(string filePath)
-	{
-		if (string.IsNullOrEmpty(filePath))
-			return;
-
-		var markup = await File.ReadAllTextAsync(filePath);
-
-		ExamineMarkupForUsedClasses(markup);
-	}
-
+	
 	/// <summary>
-	/// Recurse a project path to collect all matching file paths in a list.
+	/// Recurse a project path to collect all matching files.
 	/// </summary>
 	/// <param name="sourcePath"></param>
 	/// <param name="fileSpec"></param>
 	/// <param name="isFilePath"></param>
-	/// <param name="filesList"></param>
+	/// <param name="watchedFiles"></param>
 	/// <param name="recurse"></param>
-	public static async Task RecurseProjectPathAsync(string? sourcePath, string fileSpec, bool isFilePath, ConcurrentBag<string> filesList, bool recurse = false)
+	public async Task RecurseProjectPathAsync(string? sourcePath, string fileSpec, bool isFilePath, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
 			return;
@@ -501,40 +503,94 @@ public sealed class SfumatoAppState
 			dirs = dir.GetDirectories();
 			files = dir.GetFiles().Where(f => f.Name.EndsWith(fileSpec.TrimStart('*'))).ToArray();
 		}
-		
+
 		foreach (var projectFile in files.OrderBy(f => f.Name))
-			filesList.Add(projectFile.FullName);
+		{
+			var markup = await File.ReadAllTextAsync(projectFile.FullName);
+
+			if (fileSpec.EndsWith(".scss"))
+			{
+				WatchedScssFiles.TryAdd(projectFile.FullName, new WatchedScssFile
+				{
+					FilePath = projectFile.FullName,
+					Scss = markup
+				});
+			}
+
+			else
+			{
+				WatchedFiles.TryAdd(projectFile.FullName, new WatchedFile
+				{
+					FilePath = projectFile.FullName,
+					Markup = markup
+				});
+			}
+		}
 
 		if (recurse == false)
 			return;
 		
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			await RecurseProjectPathAsync(subDir.FullName, fileSpec, isFilePath, filesList, recurse);
+			await RecurseProjectPathAsync(subDir.FullName, fileSpec, isFilePath, recurse);
+	}
+
+	/// <summary>
+	/// Examine all watched files for used classes.
+	/// Generates the UsedClasses collection.
+	/// </summary>
+	public async Task ExamineWatchedFilesForUsedClassesAsync()
+	{
+		UsedClasses.Clear();
+
+		var tasks = new List<Task>();
+		
+		foreach (var watchedFile in WatchedFiles)
+			tasks.Add(ExamineMarkupForUsedClassesAsync(watchedFile.Value));
+		
+		await Task.WhenAll(tasks);
+	}
+	
+	/// <summary>
+	/// Identify class matches in a given watched file.
+	/// </summary>
+	/// <param name="watchedFile"></param>
+	public async Task ProcessFileMatchesAsync(WatchedFile watchedFile)
+	{
+		if (string.IsNullOrEmpty(watchedFile.FilePath))
+			return;
+
+		watchedFile.CoreClassMatches.Clear();
+		watchedFile.ArbitraryCssMatches.Clear();
+		
+		var tasks = new List<Task>();
+
+		foreach (Match match in CoreClassRegex.Matches(watchedFile.Markup))
+			tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, match.Value));
+		
+		foreach (Match match in ArbitraryCssRegex.Matches(watchedFile.Markup))
+			tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, match.Value));
+		
+		await Task.WhenAll(tasks);
+	}
+
+	public static async Task AddCssSelectorToCollection(ConcurrentBag<CssSelector> collection, string value)
+	{
+		var cssSelector = new CssSelector(value);
+		
+		if (cssSelector.IsInvalid == false)
+			collection.Add(new CssSelector(value));
+
+		await Task.CompletedTask;
 	}
 	
 	/// <summary>
 	/// Examine markup for used classes and add them to the UsedClasses collection.
 	/// </summary>
-	/// <param name="markup"></param>
-	public void ExamineMarkupForUsedClasses(string markup)
+	/// <param name="watchedFile"></param>
+	public async Task ExamineMarkupForUsedClassesAsync(WatchedFile watchedFile)
 	{
-		if (string.IsNullOrEmpty(markup))
-			return;
-
-		var matches = new List<Match>();
-
-		matches.AddRange(CoreClassRegex.Matches(markup));
-		
-		foreach (var match in matches)
+		foreach (var cssSelector in watchedFile.CoreClassMatches)
 		{
-			var cssSelector = new CssSelector
-			{
-				Value = match.Value
-			};
-
-			if (cssSelector.IsInvalid)
-				continue;
-			
 			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
 			
@@ -595,19 +651,8 @@ public sealed class SfumatoAppState
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
 
-		matches.Clear();
-		matches.AddRange(ArbitraryCssRegex.Matches(markup));
-
-		foreach (var match in matches)
+		foreach (var cssSelector in watchedFile.ArbitraryCssMatches)
 		{
-			var cssSelector = new CssSelector
-			{
-				Value = match.Value
-			};
-			
-			if (cssSelector.IsInvalid)
-				continue;
-			
 			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
 
@@ -623,7 +668,24 @@ public sealed class SfumatoAppState
 
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
-	}
 
+		await Task.CompletedTask;
+	}
+	
 	#endregion
+}
+
+public class WatchedFile
+{
+	public string FilePath { get; set; } = string.Empty;
+	public string Markup { get; set; } = string.Empty;
+	public ConcurrentBag<CssSelector> CoreClassMatches { get; set; } = new ();
+	public ConcurrentBag<CssSelector> ArbitraryCssMatches { get; set; } = new ();
+}
+
+public class WatchedScssFile
+{
+	public string FilePath { get; set; } = string.Empty;
+	public string Scss { get; set; } = string.Empty;
+	public string Css { get; set; } = string.Empty;
 }

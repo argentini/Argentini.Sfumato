@@ -86,6 +86,7 @@ internal class Program
 
 		timer.Start();
 		
+		await runner.AppState.GatherWatchedFilesAsync();
         await runner.PerformFullBuildAsync();
 
         Console.WriteLine($"Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
@@ -103,9 +104,9 @@ internal class Program
 			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
 			{
 				if (projectPath.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-					fileWatchers.Add(CreateFileChangeWatcher(scssTranspileQueue, projectPath));
+					fileWatchers.Add(CreateFileChangeWatcher(scssTranspileQueue, projectPath, projectPath.Recurse));
 				else
-					fileWatchers.Add(CreateFileChangeWatcher(rebuildProjectQueue, projectPath));
+					fileWatchers.Add(CreateFileChangeWatcher(rebuildProjectQueue, projectPath, projectPath.Recurse));
 			}
 			
 			#endregion
@@ -118,7 +119,7 @@ internal class Program
 			{
 				var processedFiles = false;
 
-				await Task.Delay(100, cancellationTokenSource.Token);
+				await Task.Delay(25, cancellationTokenSource.Token);
 
 				watchTimer.Restart();
 
@@ -126,48 +127,55 @@ internal class Program
 				{
 					Console.WriteLine($"Started sfumato.css rebuild at {DateTime.Now:HH:mm:ss.fff}");
 
+					foreach (var fileChangeRequest in rebuildProjectQueue.OrderBy(f => f.Key))
+					{
+						if (fileChangeRequest.Value.ChangeType.Equals("deleted", StringComparison.OrdinalIgnoreCase))
+						{
+							Console.WriteLine($"{Strings.TriangleRight} Removed {fileChangeRequest.Value.FileName} at {DateTime.Now:HH:mm:ss.fff}");
+							await runner.DeleteWatchedFile(fileChangeRequest.Value.FilePath);
+						}
+						else
+						{
+							Console.WriteLine($"{Strings.TriangleRight} Updated {fileChangeRequest.Value.FileName} at {DateTime.Now:HH:mm:ss.fff}");
+							await runner.AddUpdateWatchedFile(fileChangeRequest.Value.FilePath, cancellationTokenSource);
+						}
+					}					
+					
 					rebuildProjectQueue.Clear();
-					scssTranspileQueue.Clear();
 
+					await runner.AppState.ExamineWatchedFilesForUsedClassesAsync();
+					
 					await runner.PerformCoreBuildAsync();
+
 					processedFiles = true;
 				}
 
 				else if (scssTranspileQueue.IsEmpty == false)
 				{
-					Console.WriteLine($"Started transpile at {DateTime.Now:HH:mm:ss.fff}");
-
 					foreach (var fileChangeRequest in scssTranspileQueue.OrderBy(f => f.Key))
 					{
+						if (fileChangeRequest.Value.FilePath.Equals(runner.AppState.SfumatoScssOutputPath, StringComparison.OrdinalIgnoreCase))
+							continue;
+
 						if (fileChangeRequest.Value.ChangeType.Equals("deleted", StringComparison.OrdinalIgnoreCase))
 						{
-							var cssFilePath =
-								fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) +
-								".css"; 
-							
-							if (File.Exists(cssFilePath))
-								File.Delete(cssFilePath);
+							Console.WriteLine($"Deleting {fileChangeRequest.Value.FileName.TrimEnd(".scss")}.css at {DateTime.Now:HH:mm:ss.fff}");
+							await runner.DeleteWatchedScssFile(fileChangeRequest.Value.FilePath);
 						}
-
 						else
 						{
-							var length = await SfumatoScss.TranspileSingleScss(fileChangeRequest.Value.FilePath, runner.AppState);
-							
-							Console.WriteLine($"{Strings.TriangleRight} Generated {SfumatoRunner.ShortenPathForOutput(fileChangeRequest.Value.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({length.FormatBytes()})");
-						}
-						
-						while (scssTranspileQueue.TryRemove(fileChangeRequest.Key, out _) == false)
-						{
-							await Task.Delay(10, cancellationTokenSource.Token);
+							Console.WriteLine($"Started transpile at {DateTime.Now:HH:mm:ss.fff}");
+							await runner.AddUpdateWatchedScssFile(fileChangeRequest.Value.FilePath, cancellationTokenSource);
 						}
 					}
 
+					scssTranspileQueue.Clear();
+					
 					processedFiles = true;
 				}
 				
 				if (processedFiles)
 				{
-					Console.WriteLine($"Completed build in {watchTimer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
 					Console.WriteLine();
 					Console.WriteLine("Watching; Press ESC to Exit");
 					Console.WriteLine();
@@ -184,7 +192,7 @@ internal class Program
 				if (keyPress.Key != ConsoleKey.Escape)
 					continue;
 				
-				cancellationTokenSource.Cancel();
+				await cancellationTokenSource.CancelAsync();
 				
 				break;
 			}
@@ -218,8 +226,8 @@ internal class Program
     /// </summary>
     /// <param name="fileChangeQueue">scss or rebuild</param>
     /// <param name="projectPath">Path tree to watch for file changes</param>
-    /// <param name="fileSpec">File type to watch (e.g. *.scss)</param>
-    private static FileSystemWatcher CreateFileChangeWatcher(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, ProjectPath projectPath)
+    /// <param name="recurse">Also watch subdirectories</param>
+    private static FileSystemWatcher CreateFileChangeWatcher(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, ProjectPath projectPath, bool recurse)
     {
 	    if (string.IsNullOrEmpty(projectPath.Path))
 	    {
@@ -250,7 +258,7 @@ internal class Program
         watcher.Deleted += (_, e) => AddChangeToQueue(fileChangeQueue, e, fileSpec);
         
         watcher.Filter = fileSpec;
-        watcher.IncludeSubdirectories = projectPath.IsFilePath == false;
+        watcher.IncludeSubdirectories = recurse;
         watcher.EnableRaisingEvents = true;
 
         return watcher;
@@ -280,12 +288,14 @@ internal class Program
 	    fileChangeQueue.AddOrUpdate(newKey, new FileChangeRequest
 	    {
 		    FilePath = e.FullPath,
+		    FileName = e.Name ?? e.FullPath,
 		    ChangeType = changeType,
 		    FileSpec = fileSpec
 
 	    }, (_, oldValue) => new FileChangeRequest
 	    {
 		    FilePath = oldValue.FilePath,
+		    FileName = e.Name ?? e.FullPath,
 		    ChangeType = oldValue.ChangeType,
 		    FileSpec = fileSpec
 	    });
@@ -297,4 +307,5 @@ public class FileChangeRequest
     public string ChangeType { get; set; } = string.Empty;
     public string FileSpec { get; set; } = string.Empty;
     public string FilePath { get; set; } = string.Empty;
+    public string FileName { get; set; } = string.Empty;
 }

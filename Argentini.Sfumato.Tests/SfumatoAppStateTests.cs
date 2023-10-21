@@ -190,7 +190,15 @@ public class SfumatoAppStateTests
         #region slashed
         
         runner.AppState.UsedClasses.Clear();
-        runner.AppState.ExamineMarkupForUsedClasses("<div class=\"text-base/5\"></div>");
+
+        var watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"text-base/5\"></div>"
+        };
+
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
 
         Assert.Single(runner.AppState.UsedClasses);
 
@@ -203,7 +211,15 @@ public class SfumatoAppStateTests
         #region slashed bracketed
 
         runner.AppState.UsedClasses.Clear();
-        runner.AppState.ExamineMarkupForUsedClasses("<div class=\"text-base/[3rem]\"></div>");
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"text-base/[3rem]\"></div>" 
+        };
+        
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
 
         Assert.Single(runner.AppState.UsedClasses);
 
