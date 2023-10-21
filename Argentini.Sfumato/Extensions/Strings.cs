@@ -502,7 +502,7 @@ public static class Strings
 		if (timespan.TotalMilliseconds <= 0.01)
 			return result;
 		
-		result = $"{timespan.TotalSeconds:0.##}s";
+		result = $"{timespan.TotalSeconds:0.###}s";
 
 		if (timespan.TotalSeconds < 60)
 			return result;
