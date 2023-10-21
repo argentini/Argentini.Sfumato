@@ -3,7 +3,7 @@ namespace Argentini.Sfumato.Entities;
 public sealed class CssSelector
 {
     #region Properties
-    
+
     private string _value = string.Empty;
 
     public string Value
@@ -12,11 +12,14 @@ public sealed class CssSelector
 
         set
         {
+            var oldValue = _value;
+            
             _value = value;
-            ProcessValue();
+
+            if (oldValue != _value)
+                ProcessValue();
         }
-    }
-    
+    }    
     public string FixedValue { get; private set; } = string.Empty;
     public List<string> MediaQueries { get; } = new();
     public List<string> PseudoClasses { get; } = new();
@@ -44,7 +47,7 @@ public sealed class CssSelector
     /// <summary>
     /// Establish all property values from parsing the Value property.
     /// </summary>
-    private void ProcessValue()
+    public void ProcessValue()
     {
         FixedValue = string.Empty;
         RootSegment = string.Empty;
@@ -64,13 +67,17 @@ public sealed class CssSelector
             return;
         }
 
-        if (Value.IndexOf('[') > Value.IndexOf(']'))
+        var indexOfColon = Value.IndexOf(':');
+        var indexOfBracket = Value.IndexOf('[');
+        var indexOfBracketClose = Value.IndexOf(']');
+        
+        if (indexOfColon == 0 || indexOfBracket > indexOfBracketClose)
         {
             IsInvalid = true;
             return;
         }
 
-        if (Value.Contains("[]"))
+        if (indexOfBracketClose == indexOfBracket + 1)
         {
             IsInvalid = true;
             return;
@@ -80,9 +87,9 @@ public sealed class CssSelector
         RootSegment = Value;
         RootClass = Value;
         
-        var index = -1;
+        var prefixesIndex = -1;
 
-        if (Value.Contains(':'))
+        if (indexOfColon > 0 && (indexOfBracket == -1 || (indexOfBracket > -1 && indexOfColon < indexOfBracket)))
         {
             for (var x = 0; x < Value.Length; x++)
             {
@@ -90,15 +97,15 @@ public sealed class CssSelector
                     break;
 
                 if (Value[x] == ':')
-                    index = x;
+                    prefixesIndex = x;
             }
 
-            if (index > 0)
+            if (prefixesIndex > 0)
             {
-                var prefixSegment = Value[..(index + 1)];
+                var prefixSegment = Value[..(prefixesIndex + 1)];
                 var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
-                RootClass = RootSegment = Value[(index + 1)..];
+                RootClass = RootSegment = Value[(prefixesIndex + 1)..];
 
                 if (segments.Length > 0)
                 {
@@ -137,14 +144,13 @@ public sealed class CssSelector
 
         if (string.IsNullOrEmpty(RootSegment) == false)
         {
-            var indexOfBracket = RootSegment.IndexOf('[');
             var indexOfSlash = RootSegment.IndexOf('/');
 
-            if (indexOfBracket == 0)
-                IsArbitraryCss = true;
+            indexOfBracket = RootSegment.IndexOf('[');
 
-            if (IsArbitraryCss)
+            if (indexOfBracket == 0)
             {
+                IsArbitraryCss = true;
                 CustomValueSegment = RootSegment;
                 RootSegment = string.Empty;
                 RootClass = string.Empty;
@@ -164,7 +170,7 @@ public sealed class CssSelector
             }
         }
 
-        if (string.IsNullOrEmpty(RootSegment) == false || string.IsNullOrEmpty(CustomValueSegment) == false)
+        if (RootSegment.Length > 0 || CustomValueSegment.Length > 0)
             return;
         
         IsInvalid = true;
