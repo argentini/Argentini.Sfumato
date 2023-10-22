@@ -33,8 +33,6 @@ public class ScssClass
         {
             Value = selector
         };
-
-        BuildPrefixSortOrder();
     }
 
     public void BuildPrefixSortOrder()

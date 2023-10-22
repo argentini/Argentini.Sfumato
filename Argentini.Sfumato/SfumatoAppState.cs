@@ -709,8 +709,6 @@ public sealed class SfumatoAppState
 				SortOrder = foundScssClass.SortOrder
 			};
 
-			usedScssClass.BuildPrefixSortOrder();
-			
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
 
