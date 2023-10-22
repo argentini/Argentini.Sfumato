@@ -504,7 +504,7 @@ public static class Strings
 
 		seconds = $"{timespan.Seconds:00.00000000000000000}";
 		
-		if (timespan.Hours == 0)
+		if (timespan is { Days: 0, Hours: 0 })
 			return $"{timespan.Minutes:00}m{delimitter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
 
 		if (timespan.Days == 0)

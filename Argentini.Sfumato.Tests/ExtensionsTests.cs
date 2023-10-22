@@ -30,5 +30,16 @@ public class ExtensionsTests
         timer = TimeSpan.FromSeconds(70);
         
         Assert.Equal("01m:10.000s", timer.FormatTimer());
+
+        timer = TimeSpan.FromSeconds(70);
+        timer = timer.Add(TimeSpan.FromHours(2));
+        
+        Assert.Equal("02h:01m:10.000s", timer.FormatTimer());
+        
+        timer = TimeSpan.FromSeconds(70);
+        timer = timer.Add(TimeSpan.FromHours(2));
+        timer = timer.Add(TimeSpan.FromDays(7));
+        
+        Assert.Equal("07d:02h:01m:10.000s", timer.FormatTimer());
     }
 }
