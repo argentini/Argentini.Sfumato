@@ -467,6 +467,10 @@ public sealed class SfumatoRunner
 	/// <param name="cancellationTokenSource"></param>
 	public async Task AddUpdateWatchedScssFile(string filePath, CancellationTokenSource cancellationTokenSource)
 	{
+		var timer = new Stopwatch();
+
+		timer.Start();
+		
 		var scss = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
 		var css = await SfumatoScss.TranspileScss(filePath, scss, AppState);
 
@@ -486,7 +490,7 @@ public sealed class SfumatoRunner
 			});
 		}
 							
-		await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", AppState)} ({css.Length.FormatBytes()})");
+		await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", AppState)} ({css.Length.FormatBytes()}) in {timer.FormatTimer()}");
 	}
 	
 	#endregion
