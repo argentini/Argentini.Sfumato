@@ -39,7 +39,7 @@ public partial class ScssClassCollection
     /// <returns></returns>
     public IEnumerable<ScssClass> GetAllByClassName(CssSelector selector)
     {
-        return AllClasses.Where(x => x.CssSelector?.RootSegment.Equals(selector.RootSegment, StringComparison.Ordinal) ?? false);
+        return AllClasses.Where(x => x.CssSelector?.RootSegment == selector.RootSegment);
     }
     
     #endregion
