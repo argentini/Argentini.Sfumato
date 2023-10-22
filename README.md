@@ -16,7 +16,7 @@ Create one simple "sfumato.json" file for your web-based app or website project 
 
 **NOTE:** the dotnet tool installation below is not yet available. *This message will be removed once Sfumato launches*.
 
-Install dotnet 7 or later from [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download) and then install Sfumato with the following command:
+Install dotnet 8 or later from [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download) and then install Sfumato with the following command:
 
 ```dotnet tool install --global argentini.sfumato```
 
