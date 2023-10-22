@@ -119,7 +119,7 @@ public sealed class SfumatoAppState
         if (File.Exists(SettingsFilePath) == false)
         {
             await Console.Out.WriteLineAsync($"Could not find sfumato.json settings file at path {WorkingPath}");
-            await Console.Out.WriteLineAsync("Use command `sfumato --help` for assistance");
+            await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
             Environment.Exit(1);
         }
 
@@ -247,7 +247,7 @@ public sealed class SfumatoAppState
 			if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch")
 			{
 				await Console.Out.WriteLineAsync("Invalid command specified; must be: help, version, build, or watch");
-				await Console.Out.WriteLineAsync("Use command `sfumato --help` for assistance");
+				await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
 				Environment.Exit(1);
 			}			
 			
