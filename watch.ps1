@@ -1,1 +1,1 @@
-dotnet run --project Argentini.Sfumato\Argentini.Sfumato.csproj --path Argentini.Sfumato.Tests\SampleWebsite\ --release --watch
+dotnet run --project Argentini.Sfumato\Argentini.Sfumato.csproj watch --path Argentini.Sfumato.Tests\SampleWebsite\ --minify
