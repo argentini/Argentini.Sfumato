@@ -368,4 +368,54 @@ public class CssSelectorTests
         Assert.Equal(selector.Value, selector.FixedValue);
         Assert.Equal("text-base\\/", selector.EscapedSelector);
     }
+    
+    [Fact]
+    public void IsImportant()
+    {
+        var selector = new CssSelector
+        {
+            Value = "!text-base"
+        };
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Empty(selector.MediaQueries);
+        Assert.Empty(selector.PseudoClasses);
+        Assert.Equal("text-base", selector.RootSegment);
+        Assert.True(selector.IsImportant);
+        
+        selector = new CssSelector
+        {
+            Value = "tabp:focus:!text-base"
+        };
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Single(selector.MediaQueries);
+        Assert.Single(selector.PseudoClasses);
+        Assert.Equal("text-base", selector.RootSegment);
+        Assert.True(selector.IsImportant);
+        
+        selector = new CssSelector
+        {
+            Value = "tabp:focus:!text-base/3"
+        };
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Single(selector.MediaQueries);
+        Assert.Single(selector.PseudoClasses);
+        Assert.Equal("text-base/3", selector.RootSegment);
+        Assert.True(selector.IsImportant);
+        
+        selector = new CssSelector
+        {
+            Value = "tabp:focus:!text-base/[3]"
+        };
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Single(selector.MediaQueries);
+        Assert.Single(selector.PseudoClasses);
+        Assert.Equal("text-base/", selector.RootSegment);
+        Assert.Equal("[3]", selector.CustomValueSegment);
+        Assert.Equal("3", selector.CustomValue);
+        Assert.True(selector.IsImportant);
+    }
 }

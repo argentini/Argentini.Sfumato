@@ -31,6 +31,7 @@ public sealed class CssSelector
     public string EscapedSelector => IsInvalid ? string.Empty : EscapeCssClassName();
 
     public int Depth => MediaQueries.Count + PseudoClasses.Count;
+    public bool IsImportant { get; private set; }
     public bool IsArbitraryCss { get; private set; }
     public bool IsInvalid { get; private set; } = true;
 
@@ -57,7 +58,8 @@ public sealed class CssSelector
         MediaQueries.Clear();
         PseudoClasses.Clear();
         AllPrefixes.Clear();
-        
+
+        IsImportant = false;
         IsArbitraryCss = false;
         IsInvalid = true;
 
@@ -84,7 +86,7 @@ public sealed class CssSelector
         {
             for (var x = 0; x < Value.Length; x++)
             {
-                if (Value[x] == '[')
+                if (Value[x] == '[' || Value[x] == '!')
                     break;
 
                 if (Value[x] == ':')
@@ -135,6 +137,11 @@ public sealed class CssSelector
 
         if (string.IsNullOrEmpty(RootSegment) == false)
         {
+            IsImportant = RootSegment.StartsWith('!');
+
+            if (IsImportant)
+                RootSegment = RootSegment.TrimStart('!');
+            
             var indexOfSlash = RootSegment.IndexOf('/');
 
             indexOfBracket = RootSegment.IndexOf('[');

@@ -51,6 +51,11 @@ public class ScssClass
     
     public string GetStyles()
     {
-        return Template.Replace("{value}", Value);
+        var result = Template.Replace("{value}", Value);
+
+        if (CssSelector?.IsImportant ?? false)
+            return result.Replace(";", " !important;");
+
+        return result;
     }
 }
