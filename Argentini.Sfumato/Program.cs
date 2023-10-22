@@ -35,16 +35,27 @@ internal class Program
 		if (runner.AppState.HelpMode)
 		{
 			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("Usage: sfumato [options]");
+			await Console.Out.WriteLineAsync("Usage:");
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Usage:".Length));
+			await Console.Out.WriteLineAsync("sfumato [help|version]");
+			await Console.Out.WriteLineAsync("sfumato [build|watch] [options]");
+			await Console.Out.WriteLineAsync();
+			await Console.Out.WriteLineAsync("Commands:");
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Commands:".Length));
+			await Console.Out.WriteLineAsync("build     : Perform a single complete build");
+			await Console.Out.WriteLineAsync("watch     : Perform a complete build and then watch for changes");
+			await Console.Out.WriteLineAsync("version   : Show the sfumato version number");
+			await Console.Out.WriteLineAsync("help      : Show this help message");
+			await Console.Out.WriteLineAsync();
+			await Console.Out.WriteLineAsync("* build and watch commands look in the current path for a `sfumato.json`");
+			await Console.Out.WriteLineAsync("  settings file unless using the `--path` option; see the website for more");
+			await Console.Out.WriteLineAsync("  information on creating a sfumato.json settings file");
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync("Options:");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("--help      Show this help message");
-			await Console.Out.WriteLineAsync("--version   Show the sfumato version number");
-			await Console.Out.WriteLineAsync("--release   Build CSS in release mode");
-			await Console.Out.WriteLineAsync("--watch     Remain active and rebuild CSS whenever a project file changes");
-			await Console.Out.WriteLineAsync("--path      Follow with a relative or absolute path to your sfumato.json file");
-			await Console.Out.WriteLineAsync("            (e.g. Development/MyProject)");
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
+			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to your sfumato.json");
+			await Console.Out.WriteLineAsync("            settings file (e.g. `sfumato watch --path Code/MyProject`)");
+			await Console.Out.WriteLineAsync("--minify  : Minify CSS output; use with build and watch commands");
 			await Console.Out.WriteLineAsync();
 
 			Environment.Exit(0);

@@ -118,7 +118,8 @@ public sealed class SfumatoAppState
 
         if (File.Exists(SettingsFilePath) == false)
         {
-            await Console.Out.WriteLineAsync($"{CliErrorPrefix}Could not find settings file at path {SettingsFilePath}");
+            await Console.Out.WriteLineAsync($"Could not find sfumato.json settings file at path {WorkingPath}");
+            await Console.Out.WriteLineAsync("Use command `sfumato --help` for assistance");
             Environment.Exit(1);
         }
 
@@ -235,43 +236,72 @@ public sealed class SfumatoAppState
 
 		if (CliArguments.Count < 1)
 			return;
-		
-		foreach (var arg in CliArguments)
+
+		if (CliArguments.Count == 0)
 		{
-			if (arg.StartsWith("--release", StringComparison.InvariantCultureIgnoreCase))
-				ReleaseMode = true;
-					
-			else if (arg.StartsWith("--watch", StringComparison.InvariantCultureIgnoreCase))
-				WatchMode = true;
+			HelpMode = true;
+		}
 
-			else if (arg.StartsWith("--help", StringComparison.InvariantCultureIgnoreCase))
+		else
+		{
+			if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch")
+			{
+				await Console.Out.WriteLineAsync("Invalid command specified; must be: help, version, build, or watch");
+				await Console.Out.WriteLineAsync("Use command `sfumato --help` for assistance");
+				Environment.Exit(1);
+			}			
+			
+			if (CliArguments[0] == "help")
+			{
 				HelpMode = true;
+				return;
+			}
 
-			else if (arg.StartsWith("--version", StringComparison.InvariantCultureIgnoreCase))
+			if (CliArguments[0] == "version")
+			{
 				VersionMode = true;
+				return;
+			}
 
-			else if (arg.StartsWith("--path", StringComparison.InvariantCultureIgnoreCase))
-				if (CliArguments.Count - 1 >= CliArguments.IndexOf(arg) + 1)
+			if (CliArguments[0] == "watch")
+			{
+				WatchMode = true;
+			}
+
+			if (CliArguments.Count > 1)
+			{
+				for (var x = 1; x < CliArguments.Count; x++)
 				{
-					var path = CliArguments[CliArguments.IndexOf(arg) + 1].SetNativePathSeparators();
-
-					if (path.Contains(Path.DirectorySeparatorChar) == false && path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-						continue;
+					var arg = CliArguments[x];
 					
-					if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-						path = path[..path.LastIndexOf(Path.DirectorySeparatorChar)];
+					if (arg.Equals("--minify", StringComparison.OrdinalIgnoreCase))
+						ReleaseMode = true;
 
-					try
-					{
-						WorkingPathOverride = Path.GetFullPath(path);
-					}
+					else if (arg.Equals("--path", StringComparison.OrdinalIgnoreCase))
+						if (++x < CliArguments.Count)
+						{
+							var path = CliArguments[x].SetNativePathSeparators();
 
-					catch
-					{
-						await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid project path at {path}");
-						Environment.Exit(1);
-					}
+							if (path.Contains(Path.DirectorySeparatorChar) == false &&
+							    path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+								continue;
+
+							if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+								path = path[..path.LastIndexOf(Path.DirectorySeparatorChar)];
+
+							try
+							{
+								WorkingPathOverride = Path.GetFullPath(path);
+							}
+
+							catch
+							{
+								await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid project path at {path}");
+								Environment.Exit(1);
+							}
+						}
 				}
+			}
 		}
 	}
 	
