@@ -4,20 +4,20 @@ public sealed class ScssNode
 {
     public string Prefix { get; set; } = string.Empty; // e.g. dark
 
-    public string PrefixPathValue = string.Empty;
+    private string _prefixPathValue = string.Empty;
     public string PrefixPath // e.g. dark:tabp:
     {
-        get => PrefixPathValue;
+        get => _prefixPathValue;
 
         set
         {
-            PrefixPathValue = value;
+            _prefixPathValue = value;
             Level = 0;
 
-            if (string.IsNullOrEmpty(PrefixPathValue))
+            if (string.IsNullOrEmpty(_prefixPathValue))
                 return;
 
-            var segmentCount = PrefixPathValue.Split(':', StringSplitOptions.RemoveEmptyEntries).Length;
+            var segmentCount = _prefixPathValue.Split(':', StringSplitOptions.RemoveEmptyEntries).Length;
 
             Level = segmentCount;
         }

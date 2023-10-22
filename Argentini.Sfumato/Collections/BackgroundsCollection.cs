@@ -31,7 +31,7 @@ public partial class ScssClassCollection
         }
     };
     
-    public ScssBaseClass BgColor { get; } = new()
+    public ScssBaseClass BackgroundColor { get; } = new()
     {
         SelectorPrefix = "bg",
         PropertyName = "background-color",
