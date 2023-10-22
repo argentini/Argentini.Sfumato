@@ -16,16 +16,15 @@ internal class Program
 		Console.OutputEncoding = Encoding.UTF8;
 		
 		var runner = new SfumatoRunner();
+		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
 		await runner.InitializeAsync(args);
 
 		if (runner.AppState.VersionMode)
 		{
-			await Console.Out.WriteLineAsync($"Sfumato Version {Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly())}");
+			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
 			Environment.Exit(0);
 		}
-
-		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		await Console.Out.WriteLineAsync("Sfumato: The lean, modern, utility-based SCSS/CSS framework generation tool");
