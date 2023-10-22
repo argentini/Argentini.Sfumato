@@ -48,8 +48,8 @@ internal class Program
 			await Console.Out.WriteLineAsync("help      : Show this help message");
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync("* build and watch commands look in the current path for a `sfumato.json`");
-			await Console.Out.WriteLineAsync("  settings file unless using the `--path` option; see the website for more");
-			await Console.Out.WriteLineAsync("  information on creating a sfumato.json settings file");
+			await Console.Out.WriteLineAsync("  settings file unless using the `--path` option; visit https://sfumato.app");
+			await Console.Out.WriteLineAsync("  for more information on creating a sfumato.json settings file");
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync("Options:");
 			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
