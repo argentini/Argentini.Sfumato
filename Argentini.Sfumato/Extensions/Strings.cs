@@ -497,29 +497,22 @@ public static class Strings
 	/// <returns>Formatted timespan</returns>
 	public static string FormatTimer(this TimeSpan timespan, string delimitter = ":")
 	{
-		var result = "0s";
-
-		if (timespan.TotalMilliseconds <= 0.01)
-			return result;
-		
-		result = $"{timespan.TotalSeconds:0.###}s";
+		var seconds = $"{timespan.TotalSeconds:0.00000000000000000}";
 
 		if (timespan.TotalSeconds < 60)
-			return result;
+			return $"{seconds[..(seconds.IndexOf('.') + 4)]}s";
+
+		seconds = $"{timespan.Seconds:00.00000000000000000}";
 		
-		result = timespan.Minutes + "m" + delimitter + timespan.Seconds + "s";
+		if (timespan.Hours == 0)
+			return $"{timespan.Minutes:00}m{delimitter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
 
-		if (timespan.Hours > 0)
+		if (timespan.Days == 0)
 		{
-			result = timespan.Hours + "h" + delimitter + timespan.Minutes + "m" + delimitter + timespan.Seconds + "s";
+			return $"{timespan.Hours:00}h{delimitter}{timespan.Minutes:00}m{delimitter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
 		}
 
-		if (timespan.Days > 0)
-		{
-			result = timespan.Days + "d" + delimitter + timespan.Hours + "h" + delimitter +	timespan.Minutes + "m" + delimitter + timespan.Seconds + "s";
-		}
-
-		return result;
+		return $"{timespan.Days:00}d{delimitter}{timespan.Hours:00}h{delimitter}{timespan.Minutes:00}m{delimitter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
 	}
 	
 	#endregion
