@@ -211,9 +211,11 @@ public class CssSelectorTests
         Assert.Empty(selector.PseudoClasses);
         Assert.NotEqual(selector.Value, selector.RootSegment);
         Assert.Equal(selector.Value, selector.FixedValue);
+        Assert.Equal("text-", selector.RootClass);
         Assert.Equal("text-", selector.RootSegment);
         Assert.Equal("[3rem]", selector.CustomValueSegment);
         Assert.Equal("text-\\[3rem\\]", selector.EscapedSelector);
+        Assert.Equal("length", selector.CustomValueType);
     }
     
     [Fact]
@@ -298,6 +300,7 @@ public class CssSelectorTests
         Assert.Equal("text-base/", selector.RootSegment);
         Assert.Equal("[3]", selector.CustomValueSegment);
         Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/\\[3\\]", selector.EscapedSelector);
+        Assert.Equal("integer", selector.CustomValueType);
     }
     
     [Fact]

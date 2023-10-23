@@ -43,7 +43,7 @@ public sealed class SfumatoAppState
 
     // todo: New utility class structure
     
-    public ConcurrentDictionary<string,ScssUtilityClass> BackgroundsCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> BackgroundsCollection { get; } = new();
     
     
     
@@ -242,17 +242,17 @@ public sealed class SfumatoAppState
         
         var tasks = new List<Task>
         {
-	        BackgroundsCollection.AddBackgroundAsync(),
-	        BackgroundsCollection.AddFromAsync(),
-	        BackgroundsCollection.AddViaAsync(),
-	        BackgroundsCollection.AddToAsync()
+	        BackgroundsCollection.AddBackgroundGroupAsync(),
+	        BackgroundsCollection.AddFromGroupAsync(),
+	        BackgroundsCollection.AddViaGroupAsync(),
+	        BackgroundsCollection.AddToGroupAsync()
         };
 
         await Task.WhenAll(tasks);
 
         var classCount = 0;
 
-        classCount += BackgroundsCollection.Sum(c => c.Value.Options.Count);
+        classCount += BackgroundsCollection.Sum(c => c.Value.Classes.Count);
         
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1a", $"Loaded {classCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");

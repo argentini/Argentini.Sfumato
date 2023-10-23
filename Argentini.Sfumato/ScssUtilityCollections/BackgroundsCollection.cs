@@ -4,9 +4,9 @@ namespace Argentini.Sfumato.ScssUtilityCollections;
 
 public static class BackgroundsCollection
 {
-    public static async Task AddBackgroundAsync(this ConcurrentDictionary<string,ScssUtilityClass> collection)
+    public static async Task AddBackgroundGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClass
+        var scssUtilityClass = new ScssUtilityClassGroup
         {
             SelectorPrefix = "bg"
         };
@@ -47,7 +47,7 @@ public static class BackgroundsCollection
         #region Color
 
         await scssUtilityClass.AddOptionsAsync(
-            Constants.Colors,
+            SfumatoScss.Colors,
             "background-color: {value};"
         );
             
@@ -166,9 +166,9 @@ public static class BackgroundsCollection
         await Task.CompletedTask;
     }
     
-    public static async Task AddFromAsync(this ConcurrentDictionary<string,ScssUtilityClass> collection)
+    public static async Task AddFromGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClass
+        var scssUtilityClass = new ScssUtilityClassGroup
         {
             SelectorPrefix = "from",
             Category = "gradients"
@@ -205,7 +205,7 @@ public static class BackgroundsCollection
         #region Color
         
         await scssUtilityClass.AddOptionsAsync(
-            Constants.Colors,
+            SfumatoScss.Colors,
             $$"""
               --sf-gradient-from: {value} var(--sf-gradient-from-position);
               --sf-gradient-to: transparent var(--sf-gradient-to-position);
@@ -219,7 +219,7 @@ public static class BackgroundsCollection
         
         for (var x = 0; x <= 100; x+=5)
         {
-            scssUtilityClass.Options.Add(new ScssUtilityClassOption
+            scssUtilityClass.Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{scssUtilityClass.SelectorPrefix}-{x}%",
                 Value = $"{x}%",
@@ -232,9 +232,9 @@ public static class BackgroundsCollection
         collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
     }
     
-    public static async Task AddViaAsync(this ConcurrentDictionary<string,ScssUtilityClass> collection)
+    public static async Task AddViaGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClass
+        var scssUtilityClass = new ScssUtilityClassGroup
         {
             SelectorPrefix = "via",
             Category = "gradients"
@@ -269,7 +269,7 @@ public static class BackgroundsCollection
         #region Color
         
         await scssUtilityClass.AddOptionsAsync(
-            Constants.Colors,
+            SfumatoScss.Colors,
             $$"""
               --sf-gradient-to: transparent  var(--sf-gradient-to-position);
               --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
@@ -282,7 +282,7 @@ public static class BackgroundsCollection
         
         for (var x = 0; x <= 100; x+=5)
         {
-            scssUtilityClass.Options.Add(new ScssUtilityClassOption
+            scssUtilityClass.Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{scssUtilityClass.SelectorPrefix}-{x}%",
                 Value = $"{x}%",
@@ -295,9 +295,9 @@ public static class BackgroundsCollection
         collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
     }
     
-    public static async Task AddToAsync(this ConcurrentDictionary<string,ScssUtilityClass> collection)
+    public static async Task AddToGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClass
+        var scssUtilityClass = new ScssUtilityClassGroup
         {
             SelectorPrefix = "to",
             Category = "gradients"
@@ -323,7 +323,7 @@ public static class BackgroundsCollection
         #region Color
 
         await scssUtilityClass.AddOptionsAsync(
-            Constants.Colors,
+            SfumatoScss.Colors,
             "--sf-gradient-to: {value} var(--sf-gradient-to-position);"
         );
         
@@ -333,7 +333,7 @@ public static class BackgroundsCollection
         
         for (var x = 0; x <= 100; x+=5)
         {
-            scssUtilityClass.Options.Add(new ScssUtilityClassOption
+            scssUtilityClass.Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{scssUtilityClass.SelectorPrefix}-{x}%",
                 Value = $"{x}%",

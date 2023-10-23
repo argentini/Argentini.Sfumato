@@ -27,7 +27,8 @@ public sealed class CssSelector
     public string RootSegment { get; private set; } = string.Empty;
     public string RootClass { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
-    public string CustomValue => GetCustomValue();
+    public string CustomValue { get; private set; } = string.Empty;
+    public string CustomValueType { get; private set; } = string.Empty;
     public string EscapedSelector => IsInvalid ? string.Empty : EscapeCssClassName();
 
     public int Depth => MediaQueries.Count + PseudoClasses.Count;
@@ -54,6 +55,7 @@ public sealed class CssSelector
         RootSegment = string.Empty;
         RootClass = string.Empty;
         CustomValueSegment = string.Empty;
+        CustomValueType = string.Empty;
 
         MediaQueries.Clear();
         PseudoClasses.Clear();
@@ -168,6 +170,9 @@ public sealed class CssSelector
             }
         }
 
+        SetCustomValue();
+        SetCustomValueType();
+        
         if (RootSegment.Length > 0 || CustomValueSegment.Length > 0)
         {
             IsInvalid = false;
@@ -175,6 +180,208 @@ public sealed class CssSelector
         }
 
         FixedValue = string.Empty;
+    }
+
+    /// <summary>
+    /// Set the custom value from parsing the custom value segment.
+    /// </summary>
+    /// <returns></returns>
+    private void SetCustomValue()
+    {
+	    if (string.IsNullOrEmpty(CustomValueSegment))
+	    {
+		    CustomValue = string.Empty;
+		    return;
+	    }
+	    
+	    CustomValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
+            
+	    foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
+		    if (CustomValue?.StartsWith($"{arbitraryType}:") ?? false)
+			    CustomValue = CustomValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
+    }
+    
+    /// <summary>
+    /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
+    /// </summary>
+    /// <returns></returns>
+    public void SetCustomValueType()
+    {
+	    if (string.IsNullOrEmpty(CustomValue))
+		    return;
+	    
+	    if (CustomValue.Contains(':'))
+	    {
+		    var segments = CustomValue.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+		    if (segments.Length > 1)
+		    {
+			    if (SfumatoScss.ArbitraryValueTypes.Contains(segments[0]))
+			    {
+				    CustomValueType = segments[0];
+				    return;
+			    }
+		    }
+	    }
+
+	    // Determine CustomValue type based on CustomValue (e.g. text-[red])
+
+	    if (CustomValue.EndsWith('%') && double.TryParse(CustomValue.TrimEnd('%'), out _))
+	    {
+		    CustomValueType = "percentage";
+		    return;
+	    }
+
+	    if (CustomValue.Contains('.') == false && int.TryParse(CustomValue, out _))
+	    {
+		    CustomValueType = "integer";
+		    return;
+	    }
+
+	    if (double.TryParse(CustomValue, out _))
+	    {
+		    CustomValueType = "number";
+		    return;
+	    }
+
+	    #region length
+	    
+	    var unitless = string.Empty;
+
+	    foreach (var unit in SfumatoScss.CssUnits)
+	    {
+		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (CustomValue.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    CustomValueType = "length";
+		    return;
+	    }
+
+	    #endregion
+
+	    if (CustomValue.EndsWith("fr") && double.TryParse(CustomValue.TrimEnd("fr"), out _))
+	    {
+		    CustomValueType = "flex";
+		    return;
+	    }
+
+	    if (CustomValue.IsValidWebHexColor() || CustomValue.StartsWith("rgb(") || CustomValue.StartsWith("rgba(") || SfumatoScss.CssNamedColors.Contains(CustomValue))
+	    {
+		    CustomValueType = "color";
+		    return;
+		}
+
+	    if (CustomValue.StartsWith('\'') && CustomValue.EndsWith('\''))
+	    {
+		    CustomValueType = "string";
+		    return;
+	    }
+
+	    if (CustomValue.StartsWith("url(", StringComparison.Ordinal) && CustomValue.EndsWith(')') || (CustomValue.StartsWith('/') && Uri.TryCreate(CustomValue, UriKind.Relative, out _)) || (Uri.TryCreate(CustomValue, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
+	    {
+		    CustomValueType = "url";
+		    return;
+		}
+	    
+	    #region angle
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in SfumatoScss.CssAngleUnits)
+	    {
+		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (CustomValue.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    CustomValueType = "angle";
+		    return;
+	    }
+
+	    #endregion
+
+	    #region time
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in SfumatoScss.CssTimeUnits)
+	    {
+		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (CustomValue.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    CustomValueType = "time";
+		    return;
+	    }
+
+	    #endregion
+
+	    #region frequency
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in SfumatoScss.CssFrequencyUnits)
+	    {
+		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (CustomValue.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    CustomValueType = "frequency";
+		    return;
+	    }
+
+	    #endregion
+
+	    #region resolution
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in SfumatoScss.CssResolutionUnits)
+	    {
+		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (CustomValue.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    CustomValueType = "resolution";
+		    return;
+	    }
+
+	    #endregion
+	    
+	    #region ratio
+	    
+	    if (CustomValue.Length < 3 || CustomValue.IndexOf('/') < 1 || CustomValue.IndexOf('/') == CustomValue.Length - 1)
+		    return;
+	    
+	    var customValues = CustomValue.Replace('_', ' ').Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+	    if (customValues.Length != 2)
+		    return;
+
+	    if (double.TryParse(customValues[0], out _) && double.TryParse(customValues[1], out _))
+		    CustomValueType = "ratio";
+
+	    #endregion
     }
     
     /// <summary>
@@ -199,20 +406,5 @@ public sealed class CssSelector
         }
 
         return value.ToString();
-    }
-
-    /// <summary>
-    /// Get the custom value from parsing the custom value segment.
-    /// </summary>
-    /// <returns></returns>
-    private string GetCustomValue()
-    {
-        var customValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
-            
-        foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
-            if (customValue?.StartsWith($"{arbitraryType}:") ?? false)
-                customValue = customValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
-
-        return customValue ?? string.Empty;
     }
 }

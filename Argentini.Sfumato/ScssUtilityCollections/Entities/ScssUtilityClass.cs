@@ -2,45 +2,39 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Entities;
 
 public sealed class ScssUtilityClass
 {
-    public string SelectorPrefix { get; set; } = string.Empty;
-    public string Category { get; set; } = string.Empty;
-    public ConcurrentBag<ScssUtilityClassOption> Options { get; } = new();
-
-    /// <summary>
-    /// Add a dictionary of options.
-    /// </summary>
-    /// <param name="options"></param>
-    /// <param name="scssTemplate"></param>
-    public async Task AddOptionsAsync(Dictionary<string,string> options, string scssTemplate)
+    public string Selector { get; set; } = string.Empty;
+    public string[] ArbitraryValueTypes { get; set; } = Array.Empty<string>();
+    private string _value = string.Empty;
+    public string Value
     {
-        foreach (var (key, value) in options)
+        get => _value;
+        set
         {
-            Options.Add(new ScssUtilityClassOption
-            {
-                Selector = $"{SelectorPrefix}-{key}",
-                Value = value,
-                ScssTemplate = scssTemplate
-            });
+            _value = value;
+            BuildScssMarkup();
         }
-
-        await Task.CompletedTask;
     }
     
-    /// <summary>
-    /// Add an arbitrary value option.
-    /// </summary>
-    /// <param name="valueTypes"></param>
-    /// <param name="scssTemplate"></param>
-    /// <param name="separator"></param>
-    public async Task AddAbitraryValueOptionAsync(string valueTypes, string scssTemplate, string separator = "-")
+    private string _scssTemplate = string.Empty;
+    public string ScssTemplate
     {
-        Options.Add(new ScssUtilityClassOption
+        get => _scssTemplate;
+        set
         {
-            Selector = $"{SelectorPrefix}{separator}",
-            ArbitraryValueTypes = valueTypes.Split(','),
-            ScssTemplate = scssTemplate
-        });
+            _scssTemplate = value;
+            BuildScssMarkup();
+        }
+    }
+    
+    public string ScssMarkup { get; private set; } = string.Empty;
 
-        await Task.CompletedTask;
+    /// <summary>
+    /// Use the ScssTemplate to generate a value for ScssMarkup,
+    /// injecting the value of the option.
+    /// </summary>
+    /// <param name="important"></param>
+    public void BuildScssMarkup()
+    {
+        ScssMarkup = ScssTemplate.Replace("{value}", Value);
     }
 }

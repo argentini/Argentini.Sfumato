@@ -209,13 +209,13 @@ public class SfumatoRunnerTests
                          font-weight:900;
                      }
                      .bg-emerald-900 {
-                         background-color: rgb(6, 78, 59);
+                         background-color: rgb(6,78,59);
                      }
                      .bg-emerald-950 {
-                         background-color: rgb(2, 44, 34);
+                         background-color: rgb(2,44,34);
                      }
                      .bg-fuchsia-500 {
-                         background-color: rgb(217, 70, 239);
+                         background-color: rgb(217,70,239);
                      }
                      .aspect-screen {
                          aspect-ratio: 4/3;
@@ -301,7 +301,7 @@ public class SfumatoRunnerTests
                      }
                      @media (prefers-color-scheme: dark) {
                          .dark\:bg-fuchsia-300 {
-                             background-color: rgb(240, 171, 252);
+                             background-color: rgb(240,171,252);
                          }
                          .dark\:text-\[length\:1rem\] {
                              font-size: 1rem;
