@@ -1,3 +1,6 @@
+using Argentini.Sfumato.ScssUtilityCollections;
+using Argentini.Sfumato.ScssUtilityCollections.Entities;
+
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoAppState
@@ -36,6 +39,15 @@ public sealed class SfumatoAppState
     public ConcurrentDictionary<string,ScssClass> UsedClasses { get; } = new();
     public ScssClassCollection ScssClassCollection { get; } = new();    
     
+    
+
+    // todo: New utility class structure
+    
+    public ConcurrentDictionary<string,ScssUtilityClass> BackgroundsCollection { get; } = new();
+    
+    
+    
+    
     #endregion
     
     #region App State
@@ -63,6 +75,8 @@ public sealed class SfumatoAppState
 	    AllPrefixes.AddRange(SfumatoScss.MediaQueryPrefixes.Select(p => p.Prefix));
 	    AllPrefixes.AddRange(SfumatoScss.PseudoclassPrefixes.Select(p => p.Key));
 	    
+	    #region Regular Expressions
+	    
 	    var arbitraryCssExpression = $$"""
 (?<=[\s"'`])
 ({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
@@ -89,6 +103,8 @@ public sealed class SfumatoAppState
 	    const string sfumatoScssIncludesRegexExpression = @"^\s*@sfumato\s+((core)|(base))[\s]{0,};\r?\n";
 	    
 	    SfumatoScssIncludesRegex = new Regex(sfumatoScssIncludesRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
+	    
+	    #endregion
    }
     
     #region Entry Points
@@ -218,7 +234,30 @@ public sealed class SfumatoAppState
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1", $"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.FormatTimer()}{Environment.NewLine}");
 
+        #region Load Utility Classes
+
         timer.Restart();
+
+        // todo: Add all utility class collections here
+        
+        var tasks = new List<Task>
+        {
+	        BackgroundsCollection.AddBackgroundAsync(),
+	        BackgroundsCollection.AddFromAsync(),
+	        BackgroundsCollection.AddViaAsync(),
+	        BackgroundsCollection.AddToAsync()
+        };
+
+        await Task.WhenAll(tasks);
+
+        var classCount = 0;
+
+        classCount += BackgroundsCollection.Sum(c => c.Value.Options.Count);
+        
+        if (DiagnosticMode)
+	        DiagnosticOutput.TryAdd("init1a", $"Loaded {classCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
+        
+        #endregion
     }
     
     #endregion

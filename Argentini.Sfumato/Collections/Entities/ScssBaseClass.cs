@@ -4,7 +4,7 @@ public sealed class ScssBaseClass
 {
     #region Constants
 
-    public static Dictionary<string, string> Fractions => new()
+    public static Dictionary<string, string> Fractions { get; } = new()
     {
         ["1/2"] = "50%",
         ["1/3"] = "33.333333%",
@@ -35,7 +35,7 @@ public sealed class ScssBaseClass
         ["full"] = "100%"
     };
 
-    public static Dictionary<string, string> Colors => new()
+    public static Dictionary<string, string> Colors { get; } = new()
     {
         ["inherit"] = "inherit",
         ["current"] = "currentColor",
