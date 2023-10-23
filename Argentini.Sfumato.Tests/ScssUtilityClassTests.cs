@@ -64,5 +64,18 @@ public class ScssUtilityClassTests
         matches[0].Value = cssSelector.CustomValue;
         
         Assert.Equal("background-color: #aabbcc;", matches[0].ScssMarkup);
+        
+        cssSelector = new CssSelector
+        {
+            Value = "bg-[top_center]"
+        };
+        
+        matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
+        
+        Assert.Single(matches);
+        
+        matches[0].Value = cssSelector.CustomValue;
+        
+        Assert.Equal("background-position: top center;", matches[0].ScssMarkup);
     }
 }
