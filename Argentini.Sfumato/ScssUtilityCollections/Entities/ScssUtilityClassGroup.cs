@@ -11,7 +11,7 @@ public sealed class ScssUtilityClassGroup
     /// </summary>
     /// <param name="options"></param>
     /// <param name="scssTemplate"></param>
-    public async Task AddOptionsAsync(Dictionary<string,string> options, string scssTemplate)
+    public async Task AddClassAsync(Dictionary<string,string> options, string scssTemplate)
     {
         foreach (var (key, value) in options)
         {
@@ -32,7 +32,7 @@ public sealed class ScssUtilityClassGroup
     /// <param name="valueTypes"></param>
     /// <param name="scssTemplate"></param>
     /// <param name="separator"></param>
-    public async Task AddAbitraryValueOptionAsync(string valueTypes, string scssTemplate, string separator = "-")
+    public async Task AddAbitraryValueClassAsync(string valueTypes, string scssTemplate, string separator = "-")
     {
         Classes.Add(new ScssUtilityClass
         {

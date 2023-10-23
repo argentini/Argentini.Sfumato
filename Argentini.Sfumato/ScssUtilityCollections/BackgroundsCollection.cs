@@ -13,16 +13,16 @@ public static class BackgroundsCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueOptionAsync("color", "background-color: {value};");
-        await scssUtilityClass.AddAbitraryValueOptionAsync("length,percentage", "background-size: {value};");
-        await scssUtilityClass.AddAbitraryValueOptionAsync("url", "background-image: {value};");
-        await scssUtilityClass.AddAbitraryValueOptionAsync("raw", "background-position: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("color", "background-color: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "background-size: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("url", "background-image: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "background-position: {value};");
 
         #endregion
         
         #region Repeat
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["repeat"] = "repeat",
@@ -31,7 +31,7 @@ public static class BackgroundsCollection
             "background-repeat: {value};"
         );
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["repeat-x"] = "border-box",
@@ -46,7 +46,7 @@ public static class BackgroundsCollection
         
         #region Color
 
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             SfumatoScss.Colors,
             "background-color: {value};"
         );
@@ -55,7 +55,7 @@ public static class BackgroundsCollection
         
         #region Origin
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["origin-border"] = "border-box",
@@ -69,7 +69,7 @@ public static class BackgroundsCollection
         
         #region Attachment
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["fixed"] = "fixed",
@@ -83,7 +83,7 @@ public static class BackgroundsCollection
 
         #region Clip
 
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["border"] = "border-box",
@@ -98,7 +98,7 @@ public static class BackgroundsCollection
         
         #region Position
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["bottom"] = "bottom",
@@ -118,7 +118,7 @@ public static class BackgroundsCollection
         
         #region Size
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["auto"] = "auto",
@@ -132,7 +132,7 @@ public static class BackgroundsCollection
         
         #region Image
 
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none"
@@ -144,7 +144,7 @@ public static class BackgroundsCollection
      
         #region Gradient To
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             new Dictionary<string,string>
             {
                 ["gradient-to-t"] = "background-image: linear-gradient(to top, var(--sf-gradient-stops))",
@@ -176,7 +176,7 @@ public static class BackgroundsCollection
 
         #region Arbitrary Value Options
         
-        await scssUtilityClass.AddAbitraryValueOptionAsync(
+        await scssUtilityClass.AddAbitraryValueClassAsync(
             "color",
             $$"""
               --sf-gradient-from: {value} var(--sf-gradient-from-position);
@@ -185,13 +185,13 @@ public static class BackgroundsCollection
               """
         );
 
-        await scssUtilityClass.AddAbitraryValueOptionAsync("percentage", "--sf-gradient-from-position: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "--sf-gradient-from-position: {value};");
         
         #endregion
         
         #region Inherit
 
-        await scssUtilityClass.AddOptionsAsync(new Dictionary<string, string>
+        await scssUtilityClass.AddClassAsync(new Dictionary<string, string>
         {
             ["inherit"] = """
                           --sf-gradient-from: inherit var(--sf-gradient-from-position);
@@ -204,7 +204,7 @@ public static class BackgroundsCollection
         
         #region Color
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             SfumatoScss.Colors,
             $$"""
               --sf-gradient-from: {value} var(--sf-gradient-from-position);
@@ -242,7 +242,7 @@ public static class BackgroundsCollection
 
         #region Arbitrary Value Options
         
-        await scssUtilityClass.AddAbitraryValueOptionAsync(
+        await scssUtilityClass.AddAbitraryValueClassAsync(
             "color",
             $$"""
               --sf-gradient-to: transparent  var(--sf-gradient-to-position);
@@ -250,13 +250,13 @@ public static class BackgroundsCollection
               """
         );
 
-        await scssUtilityClass.AddAbitraryValueOptionAsync("percentage", "--sf-gradient-via-position: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "--sf-gradient-via-position: {value};");
         
         #endregion
         
         #region Inherit
         
-        await scssUtilityClass.AddOptionsAsync(new Dictionary<string, string>
+        await scssUtilityClass.AddClassAsync(new Dictionary<string, string>
         {
             ["inherit"] = """
                           --sf-gradient-to: rgb(255 255 255 / 0)  var(--sf-gradient-to-position);
@@ -268,7 +268,7 @@ public static class BackgroundsCollection
         
         #region Color
         
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             SfumatoScss.Colors,
             $$"""
               --sf-gradient-to: transparent  var(--sf-gradient-to-position);
@@ -305,14 +305,14 @@ public static class BackgroundsCollection
 
         #region Arbitrary Value Options
         
-        await scssUtilityClass.AddAbitraryValueOptionAsync("color", "--sf-gradient-to: {value} var(--sf-gradient-to-position);");
-        await scssUtilityClass.AddAbitraryValueOptionAsync("percentage", "--sf-gradient-to-position: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("color", "--sf-gradient-to: {value} var(--sf-gradient-to-position);");
+        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "--sf-gradient-to-position: {value};");
         
         #endregion
         
         #region Inherit
         
-        await scssUtilityClass.AddOptionsAsync(new Dictionary<string, string>
+        await scssUtilityClass.AddClassAsync(new Dictionary<string, string>
         {
             ["inherit"] = "--sf-gradient-to: inherit var(--sf-gradient-to-position);"
                           
@@ -322,7 +322,7 @@ public static class BackgroundsCollection
         
         #region Color
 
-        await scssUtilityClass.AddOptionsAsync(
+        await scssUtilityClass.AddClassAsync(
             SfumatoScss.Colors,
             "--sf-gradient-to: {value} var(--sf-gradient-to-position);"
         );
