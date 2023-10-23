@@ -150,9 +150,9 @@ public sealed class ScssBaseClass
     /// </summary>
     public void AddNumberedRemUnitsOptions()
     {
-        var step = AddNumberedRemUnitsOptionsMinValue;
+        var step = 0.5m;
 
-        for (var x = 0.5m; x <= AddNumberedRemUnitsOptionsMaxValue; x += step)
+        for (var x = AddNumberedRemUnitsOptionsMinValue; x <= AddNumberedRemUnitsOptionsMaxValue; x += step)
         {
             if (x == 4)
                 step = 1;

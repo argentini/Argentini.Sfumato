@@ -369,7 +369,7 @@ public static class SfumatoScss
         ["rose-950"] = "rgb(76,5,25)"
     };
     
-    public static Dictionary<string, string> Fractions { get; } = new()
+    public static Dictionary<string,string> Fractions { get; } = new()
     {
 	    ["1/2"] = "50%",
 	    ["1/3"] = "33.333333%",
@@ -400,6 +400,54 @@ public static class SfumatoScss
 	    ["full"] = "100%"
     };
 	
+    public static Dictionary<string,string> TextSizes { get; } = new()
+    {
+	    ["xs"] = "0.75rem",
+	    ["sm"] = "0.875rem",
+	    ["base"] = "1rem",
+	    ["lg"] = "1.125rem",
+	    ["xl"] = "1.25rem",
+	    ["2xl"] = "1.5rem",
+	    ["3xl"] = "1.875rem",
+	    ["4xl"] = "2.25rem",
+	    ["5xl"] = "3rem",
+	    ["6xl"] = "3.75rem",
+	    ["7xl"] = "4.5rem",
+	    ["8xl"] = "6rem",
+	    ["9xl"] = "8rem"
+    };
+
+    public static Dictionary<string,string> Leading { get; } = new()
+    {
+	    ["3"] = "0.75rem",
+	    ["4"] = "1rem",
+	    ["5"] = "1.25rem",
+	    ["6"] = "1.5rem",
+	    ["7"] = "1.75rem",
+	    ["8"] = "2rem",
+	    ["9"] = "2.25rem",
+	    ["10"] = "2.5rem",
+	    ["none"] = "1",
+	    ["tight"] = "1.25",
+	    ["snug"] = "1.375",
+	    ["normal"] = "1.5",
+	    ["relaxed"] = "1.625",
+	    ["loose"] = "2"
+    };
+    
+    public static Dictionary<string, string> RoundedOptions => new()
+    {
+	    [""] = "0.25rem",
+	    ["none"] = "0px",
+	    ["sm"] = "0.125rem",
+	    ["md"] = "0.375rem",
+	    ["lg"] = "0.5rem",
+	    ["xl"] = "0.75rem",
+	    ["2xl"] = "1rem",
+	    ["3xl"] = "1.5rem",
+	    ["full"] = "9999px"
+    };
+    
     #endregion
     
     #region CSS Constants
@@ -960,7 +1008,7 @@ public static class SfumatoScss
 	    "zoom"
 	};
 	
-	public static Dictionary<string, string> PseudoclassPrefixes => new ()
+	public static Dictionary<string,string> PseudoclassPrefixes => new ()
 	{
 		{ "hover", "&:hover {"},
 		{ "focus", "&:focus {" },
@@ -1003,6 +1051,8 @@ public static class SfumatoScss
 	};
 	
 	#endregion
+	
+	#region Core Shared SCSS
 	
 	/// <summary>
 	/// Get all Sfumato core SCSS include files (e.g. mixins) and return as a single string.
@@ -1104,6 +1154,10 @@ public static class SfumatoScss
 		return result;
 	}
 	
+	#endregion
+	
+	#region SCSS Transpiling
+	
 	/// <summary>
 	/// Transpile SCSS markup into CSS.
 	/// </summary>
@@ -1191,6 +1245,10 @@ public static class SfumatoScss
 			return string.Empty;
 		}
 	}
+	
+	#endregion
+	
+	// todo: Remove after refactor
 	
     /// <summary>
     /// Get the value type of the user class value (e.g. "length:...", "color:...", etc.)

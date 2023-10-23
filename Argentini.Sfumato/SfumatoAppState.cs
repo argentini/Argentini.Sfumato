@@ -43,7 +43,10 @@ public sealed class SfumatoAppState
 
     // todo: New utility class structure
     
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> BackgroundsCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> BackgroundCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> TypographyCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> AccessibilityCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> BordersCollection { get; } = new();
     
     
     
@@ -239,20 +242,22 @@ public sealed class SfumatoAppState
         timer.Restart();
 
         // todo: Add all utility class collections here
-        
-        var tasks = new List<Task>
-        {
-	        BackgroundsCollection.AddBackgroundGroupAsync(),
-	        BackgroundsCollection.AddFromGroupAsync(),
-	        BackgroundsCollection.AddViaGroupAsync(),
-	        BackgroundsCollection.AddToGroupAsync()
-        };
 
+        var tasks = new List<Task>();
+
+		BackgroundCollection.AddAllBackgroundClassesAsync(tasks);
+		TypographyCollection.AddAllTypographyClassesAsync(tasks);
+		AccessibilityCollection.AddAllAccessibilityClassesAsync(tasks);
+		BordersCollection.AddAllBordersClassesAsync(tasks);
+        
         await Task.WhenAll(tasks);
 
         var classCount = 0;
 
-        classCount += BackgroundsCollection.Sum(c => c.Value.Classes.Count);
+        classCount += BackgroundCollection.Sum(c => c.Value.Classes.Count);
+        classCount += TypographyCollection.Sum(c => c.Value.Classes.Count);
+        classCount += AccessibilityCollection.Sum(c => c.Value.Classes.Count);
+        classCount += BordersCollection.Sum(c => c.Value.Classes.Count);
         
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1a", $"Loaded {classCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
