@@ -384,6 +384,7 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueries);
         Assert.Empty(selector.PseudoClasses);
         Assert.Equal("text-base", selector.RootSegment);
+        Assert.Equal("text-base", selector.RootClass);
         Assert.True(selector.IsImportant);
         
         selector = new CssSelector
