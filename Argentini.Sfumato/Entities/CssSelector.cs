@@ -142,8 +142,11 @@ public sealed class CssSelector
             IsImportant = RootSegment.StartsWith('!');
 
             if (IsImportant)
-                RootSegment = RootSegment.TrimStart('!');
-            
+            {
+	            RootSegment = RootSegment.TrimStart('!');
+	            RootClass = RootClass.TrimStart('!');
+            }
+
             var indexOfSlash = RootSegment.IndexOf('/');
 
             indexOfBracket = RootSegment.IndexOf('[');
