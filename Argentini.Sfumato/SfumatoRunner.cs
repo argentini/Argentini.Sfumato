@@ -267,10 +267,15 @@ public sealed class SfumatoRunner
 				if (node.Prefix.Equals("dark", StringComparison.Ordinal) == false)
 					continue;
 				
-				var newNode = node.Adapt<ScssNode>();
-
-				newNode.Prefix = "auto-dark";
-					
+				var newNode = new ScssNode
+				{
+					Prefix = "auto-dark",
+					PrefixPath = node.PrefixPath,
+					Level = node.Level,
+					Classes = node.Classes,
+					Nodes = node.Nodes
+				};
+				
 				hierarchy.Nodes.Add(newNode);
 			}
 		} 
