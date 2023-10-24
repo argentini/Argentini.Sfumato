@@ -51,6 +51,7 @@ public sealed class SfumatoAppState
     public ConcurrentDictionary<string,ScssUtilityClassGroup> FiltersCollection { get; } = new();
     public ConcurrentDictionary<string,ScssUtilityClassGroup> FlexboxAndGridCollection { get; } = new();
     public ConcurrentDictionary<string,ScssUtilityClassGroup> InteractivityCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> LayoutCollection { get; } = new();
     
     
     #endregion
@@ -255,6 +256,7 @@ public sealed class SfumatoAppState
 		FiltersCollection.AddAllFiltersClassesAsync(tasks);
 		FlexboxAndGridCollection.AddAllFlexboxAndGridClassesAsync(tasks);
 		InteractivityCollection.AddAllInteractivityClassesAsync(tasks);
+		LayoutCollection.AddAllLayoutClassesAsync(tasks);
         
         await Task.WhenAll(tasks);
 
@@ -268,6 +270,7 @@ public sealed class SfumatoAppState
         classCount += FiltersCollection.Sum(c => c.Value.Classes.Count);
         classCount += FlexboxAndGridCollection.Sum(c => c.Value.Classes.Count);
         classCount += InteractivityCollection.Sum(c => c.Value.Classes.Count);
+        classCount += LayoutCollection.Sum(c => c.Value.Classes.Count);
         
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1a", $"Loaded {classCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
