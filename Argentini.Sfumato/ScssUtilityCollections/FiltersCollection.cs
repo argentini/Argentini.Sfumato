@@ -76,7 +76,7 @@ public static class FiltersCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 200),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: brightness({value});"
         );
         
@@ -97,7 +97,7 @@ public static class FiltersCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 200),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: contrast({value});"
         );
         
@@ -227,7 +227,7 @@ public static class FiltersCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 200),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: saturate({value});"
         );
         
@@ -304,7 +304,7 @@ public static class FiltersCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 200),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: brightness({value});"
         );
         
@@ -325,7 +325,7 @@ public static class FiltersCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 200),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: contrast({value});"
         );
         
@@ -425,7 +425,7 @@ public static class FiltersCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 200),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: saturate({value});"
         );
         
@@ -471,7 +471,7 @@ public static class FiltersCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 100),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
             "backdrop-filter: opacity({value});"
         );
         

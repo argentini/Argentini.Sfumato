@@ -68,7 +68,7 @@ public static class EffectsCollection
         #endregion
         
         await scssUtilityClass.AddClassesAsync(
-            await CollectionBase.AddOneBasedPercentagesOptions(0, 100),
+            await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
             "opacity: {value};"
         );
         
