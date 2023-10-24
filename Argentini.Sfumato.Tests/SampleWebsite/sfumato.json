@@ -27,7 +27,7 @@
             "desk": 1440,
             "elas": 1600
         },
-    "fontSizeUnits":
+    "xxxfontSizeUnits":
     {
         "zero": "4.35vw",
         "phab": "4vw",
@@ -36,5 +36,15 @@
         "note": "1vw",
         "desk": "1vw",
         "elas": "1vw"
+    },
+    "fontSizeUnits":
+    {
+        "zero": "16px",
+        "phab": "16px",
+        "tabp": "16px",
+        "tabl": "16px",
+        "note": "16px",
+        "desk": "16px",
+        "elas": "16px"
     }
 }

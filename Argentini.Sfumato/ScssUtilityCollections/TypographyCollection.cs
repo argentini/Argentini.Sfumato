@@ -729,6 +729,7 @@ public static class TypographyCollection
             {
                 ["normal"] = "normal",
                 ["nowrap"] = "nowrap",
+                ["no-wrap"] = "nowrap",
                 ["pre"] = "pre",
                 ["pre-line"] = "pre-line",
                 ["pre-wrap"] = "pre-wrap",
