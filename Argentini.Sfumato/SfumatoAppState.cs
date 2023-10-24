@@ -737,8 +737,16 @@ public sealed class SfumatoAppState
 			if (foundScssUtilityClass is null)
 				continue;
 
-			var cloneutilityClass = foundScssUtilityClass.Adapt<ScssUtilityClass>();
-
+			var cloneutilityClass = new ScssUtilityClass
+			{
+				Selector = foundScssUtilityClass.Selector,
+				Category = foundScssUtilityClass.Category,
+				ArbitraryValueTypes = foundScssUtilityClass.ArbitraryValueTypes,
+				SortOrder = foundScssUtilityClass.SortOrder,
+				ScssTemplate = foundScssUtilityClass.ScssTemplate,
+				Value = foundScssUtilityClass.Value
+			};
+			
 			if (string.IsNullOrEmpty(cssSelector.CustomValue) == false)
 				cloneutilityClass.Value = cssSelector.CustomValue;
 			
