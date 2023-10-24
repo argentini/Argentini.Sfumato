@@ -9,46 +9,57 @@ public static class TypographyCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllTypographyClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllTypographyClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddFontGroupAsync());
-        tasks.Add(collection.AddAntialiasedGroupAsync());
-        tasks.Add(collection.AddTrackingGroupAsync());
-        tasks.Add(collection.AddLineClampGroupAsync());
-        tasks.Add(collection.AddLeadingGroupAsync());
-        tasks.Add(collection.AddListGroupAsync());
-        tasks.Add(collection.AddTextGroupAsync());
-        tasks.Add(collection.AddTextDecorationLineGroupAsync());
-        tasks.Add(collection.AddTextDecorationGroupAsync());
-        tasks.Add(collection.AddTextUnderlineOffsetGroupAsync());
-        tasks.Add(collection.AddTextTransformGroupAsync());
-        tasks.Add(collection.AddTruncateGroupAsync());
-        tasks.Add(collection.AddTextOverflowGroupAsync());
-        tasks.Add(collection.AddTextIndentGroupAsync());
-        tasks.Add(collection.AddVerticalAlignGroupAsync());
-        tasks.Add(collection.AddWhitespaceGroupAsync());
-        tasks.Add(collection.AddWordBreakGroupAsync());
-        tasks.Add(collection.AddHyphensGroupAsync());
-        tasks.Add(collection.AddContentGroupAsync());
+        var sortSeed = 1400000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddFontGroupAsync();
+        await internalCollection.AddAntialiasedGroupAsync();
+        await internalCollection.AddTrackingGroupAsync();
+        await internalCollection.AddLineClampGroupAsync();
+        await internalCollection.AddLeadingGroupAsync();
+        await internalCollection.AddListGroupAsync();
+        await internalCollection.AddTextGroupAsync();
+        await internalCollection.AddTextDecorationLineGroupAsync();
+        await internalCollection.AddTextDecorationGroupAsync();
+        await internalCollection.AddTextUnderlineOffsetGroupAsync();
+        await internalCollection.AddTextTransformGroupAsync();
+        await internalCollection.AddTruncateGroupAsync();
+        await internalCollection.AddTextOverflowGroupAsync();
+        await internalCollection.AddTextIndentGroupAsync();
+        await internalCollection.AddVerticalAlignGroupAsync();
+        await internalCollection.AddWhitespaceGroupAsync();
+        await internalCollection.AddWordBreakGroupAsync();
+        await internalCollection.AddHyphensGroupAsync();
+        await internalCollection.AddContentGroupAsync();
+        
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
 
-    public static async Task AddFontGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task AddFontGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "font"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("integer", "font-weight: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "font-family: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "font-weight: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "font-family: {value};");
 
         #endregion
         
         #region Family
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["sans"] = "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Aptos\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
@@ -62,7 +73,7 @@ public static class TypographyCollection
         
         #region Style
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["italic"] = "italic",
@@ -75,7 +86,7 @@ public static class TypographyCollection
         
         #region Weight
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["thin"] = "100",
@@ -95,7 +106,7 @@ public static class TypographyCollection
         
         #region Variant Numeric
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["normal-nums"] = "normal",
@@ -113,10 +124,10 @@ public static class TypographyCollection
         
         #endregion
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
 
-    public static async Task AddAntialiasedGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddAntialiasedGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
@@ -143,20 +154,20 @@ public static class TypographyCollection
         );
     }
 
-    public static async Task AddTrackingGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTrackingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "tracking"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length", "letter-spacing: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "letter-spacing: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["tighter"] = "-0.05em",
@@ -169,19 +180,19 @@ public static class TypographyCollection
             "letter-spacing: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddLineClampGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddLineClampGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "line-clamp"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "integer",
             """
                        -webkit-line-clamp: {value};
@@ -193,7 +204,7 @@ public static class TypographyCollection
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = ""
@@ -206,23 +217,23 @@ public static class TypographyCollection
                """
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddLeadingGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddLeadingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "leading"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,integer", "line-height: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,integer", "line-height: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "1",
@@ -235,29 +246,29 @@ public static class TypographyCollection
             "line-height: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(3m, 10m, 1m),
             "line-height: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddListGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddListGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "list"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("url", "list-style-image: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "list-style-type: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("url", "list-style-image: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "list-style-type: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none"
@@ -265,7 +276,7 @@ public static class TypographyCollection
             "list-style-image: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["inside"] = "inside",
@@ -274,7 +285,7 @@ public static class TypographyCollection
             "list-style-position: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none",
@@ -284,24 +295,24 @@ public static class TypographyCollection
             "list-style-type: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddTextGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task AddTextGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "text"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "color: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "font-size: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "color: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "font-size: {value};");
 
         foreach (var size in SfumatoScss.TextSizes)
         {
-            await scssUtilityClass.AddAbitrarySlashValueClassAsync(
+            await scssUtilityClassGroup.AddAbitrarySlashValueClassAsync(
                 size.Key,
                 "length,percentage,number",
                 $$"""
@@ -317,7 +328,7 @@ public static class TypographyCollection
         
         foreach (var size in SfumatoScss.TextSizes)
         {
-            await scssUtilityClass.AddClassesAsync(
+            await scssUtilityClassGroup.AddClassesAsync(
                 new Dictionary<string,string>
                 {
                     [size.Key] = size.Value
@@ -327,7 +338,7 @@ public static class TypographyCollection
 
             foreach (var leading in SfumatoScss.Leading)
             {
-                await scssUtilityClass.AddClassesAsync(
+                await scssUtilityClassGroup.AddClassesAsync(
                     new Dictionary<string,string>
                     {
                         [$"{size.Key}/{leading.Key}"] = size.Value
@@ -344,7 +355,7 @@ public static class TypographyCollection
         
         #region Family
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["sans"] = "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Aptos\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
@@ -358,7 +369,7 @@ public static class TypographyCollection
         
         #region Style
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["italic"] = "italic",
@@ -371,7 +382,7 @@ public static class TypographyCollection
         
         #region Weight
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["thin"] = "100",
@@ -391,7 +402,7 @@ public static class TypographyCollection
         
         #region Variant Numeric
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["normal-nums"] = "normal",
@@ -411,7 +422,7 @@ public static class TypographyCollection
 
         #region Align
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["left"] = "left",
@@ -428,17 +439,17 @@ public static class TypographyCollection
         
         #region Color
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "color: {value};"
         );
             
         #endregion
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddTextDecorationLineGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTextDecorationLineGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
@@ -453,23 +464,23 @@ public static class TypographyCollection
         );
     }
     
-    public static async Task AddTextDecorationGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task AddTextDecorationGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "decoration"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "text-decoration-color: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("length", "text-decoration-thickness: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "text-decoration-color: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-decoration-thickness: {value};");
 
         #endregion
         
         #region Color
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "text-decoration-color: {value};"
         );
@@ -478,7 +489,7 @@ public static class TypographyCollection
 
         #region Style
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["solid"] = "solid",
@@ -494,7 +505,7 @@ public static class TypographyCollection
 
         #region Thickness
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["auto"] = "auto",
@@ -510,23 +521,23 @@ public static class TypographyCollection
         
         #endregion
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
 
-    public static async Task AddTextUnderlineOffsetGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task AddTextUnderlineOffsetGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "underline-offset"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length", "text-underline-offset: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-underline-offset: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["auto"] = "auto",
@@ -539,10 +550,10 @@ public static class TypographyCollection
             "text-decoration-style: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddTextTransformGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTextTransformGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
@@ -557,7 +568,7 @@ public static class TypographyCollection
         );
     }
     
-    public static async Task AddTruncateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTruncateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
@@ -573,7 +584,7 @@ public static class TypographyCollection
         );
     }
     
-    public static async Task AddTextOverflowGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTextOverflowGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
@@ -586,20 +597,20 @@ public static class TypographyCollection
         );
     }
 
-    public static async Task AddTextIndentGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTextIndentGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "indent"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length", "text-indent: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-indent: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["0"] = "0px",
@@ -608,28 +619,28 @@ public static class TypographyCollection
             "text-indent: {value};"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "text-indent: {value};"
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddVerticalAlignGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddVerticalAlignGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "align"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length", "vertical-align: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "vertical-align: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["baseline"] = "baseline",
@@ -644,17 +655,17 @@ public static class TypographyCollection
             "vertical-align: {value};"
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
 
-    public static async Task AddWhitespaceGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddWhitespaceGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "whitespace"
         };
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["normal"] = "normal",
@@ -667,10 +678,10 @@ public static class TypographyCollection
             "white-space: {value};"
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddWordBreakGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddWordBreakGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
@@ -693,12 +704,12 @@ public static class TypographyCollection
             "overflow-wrap: {value};"
         );
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "break"
         };
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["all"] = "break-all",
@@ -707,17 +718,17 @@ public static class TypographyCollection
             "word-break: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddHyphensGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddHyphensGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "hyphens"
         };
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none",
@@ -727,23 +738,23 @@ public static class TypographyCollection
             "hyphens: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddContentGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddContentGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "content"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("string", "content: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("string", "content: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none",
@@ -751,6 +762,6 @@ public static class TypographyCollection
             "content: {value};"
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
 }

@@ -12,9 +12,9 @@ public class ScssUtilityClassTests
     {
         var backgrounds = new ConcurrentDictionary<string, ScssUtilityClassGroup>();
 
-        await backgrounds.AddBackgroundGroupAsync();
+        await backgrounds.AddAllBackgroundClassesAsync();
         
-        Assert.Single(backgrounds);
+        Assert.Equal(4, backgrounds.Count);
         Assert.Equal(310, backgrounds["bg"].Classes.Count);
         Assert.Equal("background-color: rgb(255,255,255);", backgrounds["bg"].Classes.First(o => o.Selector == "bg-white").ScssMarkup);
     }
@@ -24,7 +24,7 @@ public class ScssUtilityClassTests
     {
         var backgrounds = new ConcurrentDictionary<string, ScssUtilityClassGroup>();
 
-        await backgrounds.AddBackgroundGroupAsync();
+        await backgrounds.AddAllBackgroundClassesAsync();
         
         var scssUtilityClass = backgrounds["bg"].Classes.First(o => o.Selector == "bg-");
 
@@ -38,10 +38,7 @@ public class ScssUtilityClassTests
     {
         var backgrounds = new ConcurrentDictionary<string, ScssUtilityClassGroup>();
 
-        await backgrounds.AddBackgroundGroupAsync();
-        await backgrounds.AddFromGroupAsync();
-        await backgrounds.AddViaGroupAsync();
-        await backgrounds.AddToGroupAsync();
+        await backgrounds.AddAllBackgroundClassesAsync();
 
         var cssSelector = new CssSelector
         {

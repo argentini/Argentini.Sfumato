@@ -1,5 +1,8 @@
-using Argentini.Sfumato.Collections;
+using System.Collections.Concurrent;
 using Argentini.Sfumato.Entities;
+using Argentini.Sfumato.Extensions;
+using Argentini.Sfumato.ScssUtilityCollections;
+using Argentini.Sfumato.ScssUtilityCollections.Entities;
 
 namespace Argentini.Sfumato.Tests;
 
@@ -97,37 +100,41 @@ public class SfumatoAppStateTests
     }
 
     [Fact]
-    public void GetAllByClassNamePrep()
+    public async Task GetAllByClassNamePrep()
     {
-        var scssClassCollection = new ScssClassCollection();
+        var appState = new SfumatoAppState();
 
-        Assert.True(scssClassCollection.AllClasses.Count > 0);
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        Assert.True(appState.UtilityClassCount > 0);
     }
 
     [Fact]
-    public void GetAllByClassName()
+    public async Task GetAllByClassName()
     {
-        var scssClassCollection = new ScssClassCollection();
+        var collection = new ConcurrentDictionary<string, ScssUtilityClassGroup>();
 
-        Assert.True(scssClassCollection.AllClasses.Count > 0);
+        await collection.AddAllBackgroundClassesAsync();
+        await collection.AddAllLayoutClassesAsync();
+        await collection.AddAllTypographyClassesAsync();
 
         var selector = new CssSelector("bg-slate-100");
-        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+        Assert.Single(await collection.GetMatchingClassesAsync(selector));
 
         selector = new CssSelector("dark:tabp:hover:bg-slate-100");
-        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+        Assert.Single(await collection.GetMatchingClassesAsync(selector));
         
-        selector = new CssSelector("dark:tabp:hover:bg-slate-100[--my-value]");
-        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+        selector = new CssSelector("dark:tabp:hover:bg-[color:--my-value]");
+        Assert.Single(await collection.GetMatchingClassesAsync(selector));
         
         selector = new CssSelector("break-after-auto");
-        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+        Assert.Single(await collection.GetMatchingClassesAsync(selector));
         
-        selector = new CssSelector("dark:tabp:hover:bg-slate-100[--my-value]");
-        Assert.Equal("bg-slate-100", scssClassCollection.GetAllByClassName(selector).First().CssSelector?.RootSegment);
+        selector = new CssSelector("dark:tabp:hover:bg-[color:--my-value]");
+        Assert.Equal("bg-", (await collection.GetMatchingClassesAsync(selector)).First().Selector);
         
         selector = new CssSelector("text-base/5");
-        Assert.Single(scssClassCollection.GetAllByClassName(selector));
+        Assert.Single(await collection.GetMatchingClassesAsync(selector));
     }
 
     [Fact]
@@ -204,7 +211,7 @@ public class SfumatoAppStateTests
 
         markup = await runner.GenerateScssObjectTreeAsync();
         
-        Assert.Equal(".text-base\\/5{\nfont-size:1rem;line-height:1.25rem;\n}", markup.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".text-base\\/5 {\nfont-size: 1rem; line-height: 1.25rem;\n}".CompactCss(), markup.CompactCss());
 
         #endregion
 
@@ -225,7 +232,28 @@ public class SfumatoAppStateTests
 
         markup = await runner.GenerateScssObjectTreeAsync();
         
-        Assert.Equal(".text-base\\/\\[3rem\\]{\nfont-size:1rem;line-height:3rem;\n}", markup.Trim().Replace(" ", string.Empty));
+        Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), markup.CompactCss());
+        
+        #endregion
+        
+        #region slashed class
+
+        runner.AppState.UsedClasses.Clear();
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"w-1/2\"></div>" 
+        };
+        
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
+
+        Assert.Single(runner.AppState.UsedClasses);
+
+        markup = await runner.GenerateScssObjectTreeAsync();
+        
+        Assert.Equal(".w-1\\/2{\nwidth:50%;\n}", markup.Trim().Replace(" ", string.Empty));
         
         #endregion
     }

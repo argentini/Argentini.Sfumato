@@ -9,12 +9,23 @@ public static class TablesCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllTableClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllTableClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddTableGroupAsync());
+        var sortSeed = 1100000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddTableGroupAsync();
+        
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddTableGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTableGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Border Collapse
 
@@ -32,18 +43,18 @@ public static class TablesCollection
         
         #region Border Spacing
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "border-spacing",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -52,29 +63,29 @@ public static class TablesCollection
             "border-spacing: {value} {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "border-spacing: {value} {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Border Spacing X
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "border-spacing-x",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} var(--sf-border-spacing-y);");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} var(--sf-border-spacing-y);");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -83,29 +94,29 @@ public static class TablesCollection
             "border-spacing: {value} var(--sf-border-spacing-y);"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "border-spacing: {value} var(--sf-border-spacing-y);"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Border Spacing Y
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "border-spacing-y",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "border-spacing: var(--sf-border-spacing-x) {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: var(--sf-border-spacing-x) {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -114,23 +125,23 @@ public static class TablesCollection
             "border-spacing: var(--sf-border-spacing-x) {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "border-spacing: var(--sf-border-spacing-x) {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Table Layout
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "table"
         };
     
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -139,18 +150,18 @@ public static class TablesCollection
             "table-layout: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Caption Side
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "caption"
         };
     
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["top"] = "top",
@@ -159,7 +170,7 @@ public static class TablesCollection
             "caption-side: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
     }

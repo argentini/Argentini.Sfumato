@@ -9,27 +9,38 @@ public static class TransitionsAndAnimationsCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllTransitionsAndAnimationsClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllTransitionsAndAnimationsClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
     {
-        //tasks.Add(collection.Add());
+        var sortSeed = 1300000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddTransformsGroupAsync();
+        
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddTransformsGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTransformsGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Scale
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "scale",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "transform: scale({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "transform: scale({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -46,24 +57,24 @@ public static class TransitionsAndAnimationsCollection
             "transform: scale({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
 
         #region Scale X
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "scale-x",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "transform: scaleX({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "transform: scaleX({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -80,24 +91,24 @@ public static class TransitionsAndAnimationsCollection
             "transform: scaleX({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Scale Y
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "scale-y",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "transform: scaleY({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "transform: scaleY({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -114,24 +125,24 @@ public static class TransitionsAndAnimationsCollection
             "transform: scaleY({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Rotate
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "rotate",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("angle", "transform: rotate({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "transform: rotate({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0deg",
@@ -147,24 +158,24 @@ public static class TransitionsAndAnimationsCollection
             "transform: rotate({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Translate X
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "translate-x",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "transform: translateX({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "transform: translateX({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -173,34 +184,34 @@ public static class TransitionsAndAnimationsCollection
             "transform: translateX({value});"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "transform: translateX({value});"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "transform: translateX({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Translate Y
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "translate-y",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "transform: translateY({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "transform: translateY({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -209,34 +220,34 @@ public static class TransitionsAndAnimationsCollection
             "transform: translateY({value});"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "transform: translateY({value});"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "transform: translateY({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Skew X
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "skew-x",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("angle", "transform: skewX({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "transform: skewX({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0deg",
@@ -252,24 +263,24 @@ public static class TransitionsAndAnimationsCollection
             "transform: skewX({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Skew Y
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "skew-y",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("angle", "transform: skewY({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "transform: skewY({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0deg",
@@ -285,24 +296,24 @@ public static class TransitionsAndAnimationsCollection
             "transform: skewY({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Origin
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "origin",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "transform-origin: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "transform-origin: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["center"] = "center",
@@ -318,7 +329,7 @@ public static class TransitionsAndAnimationsCollection
             "transform-origin: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
     }

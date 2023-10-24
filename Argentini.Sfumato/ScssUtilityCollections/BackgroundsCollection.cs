@@ -9,42 +9,49 @@ public static class BackgroundsCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllBackgroundClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllBackgroundClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddBackgroundGroupAsync());
-        tasks.Add(collection.AddFromGroupAsync());
-        tasks.Add(collection.AddViaGroupAsync());
-        tasks.Add(collection.AddToGroupAsync());
+        var sortSeed = 100000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        sortSeed = await internalCollection.AddBackgroundGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddFromGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddViaGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddToGroupAsync(sortSeed);
+
+        foreach (var group in internalCollection)
+            collection.TryAdd(group.Key, group.Value);
     }
     
-    public static async Task AddBackgroundGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackgroundGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "bg"
         };
 
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "background-color: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "background-size: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("url", "background-image: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "background-position: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "background-color: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "background-size: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("url", "background-image: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "background-position: {value};", sortSeed);
 
         #endregion
         
         #region Repeat
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["repeat"] = "repeat",
                 ["no-repeat"] = "no-repeat"
             },
-            "background-repeat: {value};"
+            "background-repeat: {value};",
+            sortSeed
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["repeat-x"] = "border-box",
@@ -52,51 +59,55 @@ public static class BackgroundsCollection
                 ["repeat-round"] = "round",
                 ["repeat-space"] = "space"
             },
-            "background-repeat: {value};"
+            "background-repeat: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Color
 
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "background-color: {value};"
+            "background-color: {value};",
+            sortSeed
         );
             
         #endregion
         
         #region Origin
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["origin-border"] = "border-box",
                 ["origin-padding"] = "padding-box",
                 ["origin-content"] = "content-box"
             },
-            "background-origin: {value};"
+            "background-origin: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Attachment
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["fixed"] = "fixed",
                 ["local"] = "local",
                 ["scroll"] = "scroll"
             },
-            "background-attachment: {value};"
+            "background-attachment: {value};",
+            sortSeed
         );
 
         #endregion
 
         #region Clip
 
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["border"] = "border-box",
@@ -104,14 +115,15 @@ public static class BackgroundsCollection
                 ["content"] = "content-box",
                 ["text"] = "text"
             },
-            "background-clip: {value};"
+            "background-clip: {value};",
+            sortSeed
         );
 
         #endregion
         
         #region Position
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["bottom"] = "bottom",
@@ -124,40 +136,43 @@ public static class BackgroundsCollection
                 ["right-top"] = "right top",
                 ["top"] = "top"
             },
-            "background-position: {value};"
+            "background-position: {value};",
+            sortSeed
         );
 
         #endregion
         
         #region Size
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["auto"] = "auto",
                 ["cover"] = "cover",
                 ["contain"] = "contain"
             },
-            "background-size: {value};"
+            "background-size: {value};",
+            sortSeed
         );
 
         #endregion
         
         #region Image
 
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none"
             },
-            "background-image: {value};"
+            "background-image: {value};",
+            sortSeed
         );
         
         #endregion
      
         #region Gradient To
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["gradient-to-t"] = "background-image: linear-gradient(to top, var(--sf-gradient-stops))",
@@ -169,17 +184,20 @@ public static class BackgroundsCollection
                 ["gradient-to-l"] = "background-image: linear-gradient(to left, var(--sf-gradient-stops))",
                 ["gradient-to-tl"] = "background-image: linear-gradient(to top left, var(--sf-gradient-stops))"
             },
-            "{value};"
+            "{value};",
+            sortSeed
         );
 
         #endregion
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddFromGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddFromGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "from",
             Category = "gradients"
@@ -187,41 +205,46 @@ public static class BackgroundsCollection
 
         #region Arbitrary Value Options
         
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "color",
-            $$"""
-                       --sf-gradient-from: {value} var(--sf-gradient-from-position);
-                       --sf-gradient-to: transparent var(--sf-gradient-to-position);
-                       --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
-                       """
+            """
+            --sf-gradient-from: {value} var(--sf-gradient-from-position);
+            --sf-gradient-to: transparent var(--sf-gradient-to-position);
+            --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
+            """,
+            sortSeed
         );
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "--sf-gradient-from-position: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "--sf-gradient-from-position: {value};", sortSeed);
         
         #endregion
         
         #region Inherit
 
-        await scssUtilityClass.AddClassesAsync(new Dictionary<string, string>
-        {
-            ["inherit"] = """
-                          --sf-gradient-from: inherit var(--sf-gradient-from-position);
-                          --sf-gradient-to: rgb(255 255 255 / 0) var(--sf-gradient-to-position);
-                          --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
-                          """
-        }, "{value}");
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
+            new Dictionary<string, string>
+            {
+                ["inherit"] = """
+                              --sf-gradient-from: inherit var(--sf-gradient-from-position);
+                              --sf-gradient-to: rgb(255 255 255 / 0) var(--sf-gradient-to-position);
+                              --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
+                              """
+            },
+            "{value}",
+            sortSeed);
 
         #endregion
         
         #region Color
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            $$"""
-              --sf-gradient-from: {value} var(--sf-gradient-from-position);
-              --sf-gradient-to: transparent var(--sf-gradient-to-position);
-              --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
-              """
+            """
+            --sf-gradient-from: {value} var(--sf-gradient-from-position);
+            --sf-gradient-to: transparent var(--sf-gradient-to-position);
+            --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
+            """,
+            sortSeed
         );
         
         #endregion
@@ -230,9 +253,10 @@ public static class BackgroundsCollection
         
         for (var x = 0; x <= 100; x+=5)
         {
-            scssUtilityClass.Classes.Add(new ScssUtilityClass
+            scssUtilityClassGroup.Classes.Add(new ScssUtilityClass
             {
-                Selector = $"{scssUtilityClass.SelectorPrefix}-{x}%",
+                Selector = $"{scssUtilityClassGroup.SelectorPrefix}-{x}%",
+                SortOrder = sortSeed++,
                 Value = $"{x}%",
                 ScssTemplate = "--sf-gradient-from-position: {value};"
             });
@@ -240,12 +264,14 @@ public static class BackgroundsCollection
         
         #endregion
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddViaGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddViaGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "via",
             Category = "gradients"
@@ -253,21 +279,22 @@ public static class BackgroundsCollection
 
         #region Arbitrary Value Options
         
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "color",
             """
             --sf-gradient-to: transparent  var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
-            """
+            """,
+            sortSeed
         );
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "--sf-gradient-via-position: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "--sf-gradient-via-position: {value};", sortSeed);
         
         #endregion
         
         #region Inherit
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["inherit"] = ""
@@ -275,19 +302,21 @@ public static class BackgroundsCollection
             """
             --sf-gradient-to: rgb(255 255 255 / 0)  var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), inherit var(--sf-gradient-via-position), var(--sf-gradient-to);
-            """
+            """,
+            sortSeed
             );
 
         #endregion
         
         #region Color
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             """
             --sf-gradient-to: transparent  var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
-            """
+            """,
+            sortSeed
         );
 
         #endregion
@@ -296,9 +325,10 @@ public static class BackgroundsCollection
         
         for (var x = 0; x <= 100; x+=5)
         {
-            scssUtilityClass.Classes.Add(new ScssUtilityClass
+            scssUtilityClassGroup.Classes.Add(new ScssUtilityClass
             {
-                Selector = $"{scssUtilityClass.SelectorPrefix}-{x}%",
+                Selector = $"{scssUtilityClassGroup.SelectorPrefix}-{x}%",
+                SortOrder = sortSeed++,
                 Value = $"{x}%",
                 ScssTemplate = "--sf-gradient-via-position: {value};"
             });
@@ -306,12 +336,14 @@ public static class BackgroundsCollection
         
         #endregion
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddToGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddToGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "to",
             Category = "gradients"
@@ -319,29 +351,31 @@ public static class BackgroundsCollection
 
         #region Arbitrary Value Options
         
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "--sf-gradient-to: {value} var(--sf-gradient-to-position);");
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "--sf-gradient-to-position: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "--sf-gradient-to: {value} var(--sf-gradient-to-position);", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "--sf-gradient-to-position: {value};", sortSeed);
         
         #endregion
         
         #region Inherit
         
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["inherit"] = ""
                               
             },
-            "--sf-gradient-to: inherit var(--sf-gradient-to-position);"
+            "--sf-gradient-to: inherit var(--sf-gradient-to-position);",
+            sortSeed
         );
         
         #endregion
         
         #region Color
 
-        await scssUtilityClass.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "--sf-gradient-to: {value} var(--sf-gradient-to-position);"
+            "--sf-gradient-to: {value} var(--sf-gradient-to-position);",
+            sortSeed
         );
         
         #endregion
@@ -350,9 +384,10 @@ public static class BackgroundsCollection
         
         for (var x = 0; x <= 100; x+=5)
         {
-            scssUtilityClass.Classes.Add(new ScssUtilityClass
+            scssUtilityClassGroup.Classes.Add(new ScssUtilityClass
             {
-                Selector = $"{scssUtilityClass.SelectorPrefix}-{x}%",
+                Selector = $"{scssUtilityClassGroup.SelectorPrefix}-{x}%",
+                SortOrder = sortSeed++,
                 Value = $"{x}%",
                 ScssTemplate = "--sf-gradient-to-position: {value};"
             });
@@ -360,6 +395,8 @@ public static class BackgroundsCollection
         
         #endregion
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 }

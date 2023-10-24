@@ -165,7 +165,7 @@ public sealed class CssSelector
 
             else if (indexOfSlash > -1 && indexOfSlash < RootSegment.Length - 1)
             {
-                CustomValueSegment = RootSegment[(indexOfSlash + 1)..];
+                //CustomValueSegment = RootSegment[(indexOfSlash + 1)..];
                 RootClass = RootSegment[..(indexOfSlash + 1)];
             }
         }

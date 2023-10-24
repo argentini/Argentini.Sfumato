@@ -9,28 +9,39 @@ public static class EffectsCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllEffectsClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllEffectsClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddShadowGroupAsync());
-        tasks.Add(collection.AddOpacityGroupAsync());
-        tasks.Add(collection.AddBlendModeGroupAsync());
+        var sortSeed = 300000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddShadowGroupAsync();
+        await internalCollection.AddOpacityGroupAsync();
+        await internalCollection.AddBlendModeGroupAsync();
+
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddShadowGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddShadowGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "shadow"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "box-shadow: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "--sf-shadow-color: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "box-shadow: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "--sf-shadow-color: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = $"0 1px {3.PxToRem()} 0 rgb(0 0 0 / 0.1), 0 1px {2.PxToRem()} -1px rgb(0 0 0 / 0.1)",
@@ -46,59 +57,59 @@ public static class EffectsCollection
             "box-shadow: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "--sf-shadow-color: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddOpacityGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddOpacityGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "opacity"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "opacity: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "opacity: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
             "opacity: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBlendModeGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBlendModeGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "mix-blend"
         };
     
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.BlendModeOptions,
             "mix-blend-mode: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "bg-blend"
         };
     
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.BlendModeOptions,
             "background-blend-mode: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
 }

@@ -9,28 +9,39 @@ public static class SizingCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllSizingClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllSizingClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddWidthGroupAsync());
-        tasks.Add(collection.AddHeightGroupAsync());
+        var sortSeed = 800000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddWidthGroupAsync();
+        await internalCollection.AddHeightGroupAsync();
+        
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddWidthGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddWidthGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Width
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "w"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "width: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "width: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -44,34 +55,34 @@ public static class SizingCollection
             "width: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "width: {value};"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "width: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Min Width
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "min-w"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "min-width: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "min-width: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -84,24 +95,24 @@ public static class SizingCollection
             "min-width: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Max Width
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "max-w"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "max-width: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "max-width: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -133,27 +144,27 @@ public static class SizingCollection
             "max-width: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
     }
 
-    public static async Task AddHeightGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddHeightGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Height
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "h"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "height: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "height: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -167,34 +178,34 @@ public static class SizingCollection
             "height: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "height: {value};"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "height: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Min Height
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "min-h"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "min-height: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "min-height: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -207,24 +218,24 @@ public static class SizingCollection
             "min-height: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Max Height
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "max-h"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "max-height: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "max-height: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -239,12 +250,12 @@ public static class SizingCollection
             "max-height: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "max-height: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
     }

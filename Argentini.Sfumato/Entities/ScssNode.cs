@@ -23,6 +23,6 @@ public sealed class ScssNode
         }
     }
     public int Level { get; set; }
-    public List<ScssClass> Classes { get; set; } = new();
+    public List<UsedScssClass> Classes { get; set; } = new();
     public List<ScssNode> Nodes { get; set; } = new();
 }

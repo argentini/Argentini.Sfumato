@@ -11,67 +11,53 @@ public sealed class ScssUtilityClassGroup
     /// </summary>
     /// <param name="classes"></param>
     /// <param name="scssTemplate"></param>
-    public async Task AddClassesAsync(Dictionary<string,string> classes, string scssTemplate)
+    /// <param name="sortSeed"></param>
+    public async Task<int> AddClassesAsync(Dictionary<string,string> classes, string scssTemplate, int sortSeed)
     {
         foreach (var (key, value) in classes)
         {
             Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{SelectorPrefix}{(string.IsNullOrEmpty(key) ? string.Empty : $"-{key}")}",
+                SortOrder = sortSeed++,
+                Category = Category,
                 Value = value,
                 ScssTemplate = scssTemplate
             });
         }
 
-        await Task.CompletedTask;
+        return await Task.FromResult(sortSeed);
     }
 
-    /// <summary>
-    /// Add a dictionary of classes, injecting the prefix before each key.
-    /// </summary>
-    /// <param name="classes"></param>
-    /// <param name="prefix"></param>
-    /// <param name="scssTemplate"></param>
-    public async Task AddClassesWithPrefixAsync(Dictionary<string,string> classes, string prefix, string scssTemplate)
-    {
-        foreach (var (key, value) in classes)
-        {
-            Classes.Add(new ScssUtilityClass
-            {
-                Selector = $"{SelectorPrefix}-{prefix}{(string.IsNullOrEmpty(key) ? string.Empty : $"-{key}")}",
-                Value = value,
-                ScssTemplate = scssTemplate
-            });
-        }
-
-        await Task.CompletedTask;
-    }
-    
     /// <summary>
     /// Add a dictionary of vanity class groups (e.g. "uppercase", "lowercase", etc.)
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="classes"></param>
     /// <param name="scssTemplate"></param>
-    public static async Task AddVanityClassGroups(ConcurrentDictionary<string, ScssUtilityClassGroup> collection, Dictionary<string,string> classes, string scssTemplate)
+    /// <param name="sortSeed"></param>
+    public static async Task<int> AddVanityClassGroups(Dictionary<string, ScssUtilityClassGroup> collection, Dictionary<string,string> classes, string scssTemplate, int sortSeed)
     {
         foreach (var (key, value) in classes)
         {
-            var scssUtilityClass = new ScssUtilityClassGroup
+            var scssUtilityClassGroup = new ScssUtilityClassGroup
             {
                 SelectorPrefix = key
             };
 
-            await scssUtilityClass.AddClassesAsync(
+            sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 new Dictionary<string, string>
                 {
                     [""] = value
                 },
-                scssTemplate
+                scssTemplate,
+                sortSeed
             );
 
-            if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+            if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         }
+        
+        return await Task.FromResult(sortSeed);
     }
     
     /// <summary>
@@ -79,16 +65,19 @@ public sealed class ScssUtilityClassGroup
     /// </summary>
     /// <param name="valueTypes"></param>
     /// <param name="scssTemplate"></param>
-    public async Task AddAbitraryValueClassAsync(string valueTypes, string scssTemplate)
+    /// <param name="sortSeed"></param>
+    public async Task<int> AddAbitraryValueClassAsync(string valueTypes, string scssTemplate, int sortSeed)
     {
         Classes.Add(new ScssUtilityClass
         {
             Selector = $"{SelectorPrefix}-",
+            SortOrder = sortSeed++,
+            Category = Category,
             ArbitraryValueTypes = valueTypes.Split(','),
             ScssTemplate = scssTemplate
         });
 
-        await Task.CompletedTask;
+        return await Task.FromResult(sortSeed);
     }
     
     /// <summary>
@@ -97,15 +86,18 @@ public sealed class ScssUtilityClassGroup
     /// <param name="suffix"></param>
     /// <param name="valueTypes"></param>
     /// <param name="scssTemplate"></param>
-    public async Task AddAbitrarySlashValueClassAsync(string suffix, string valueTypes, string scssTemplate)
+    /// <param name="sortSeed"></param>
+    public async Task<int> AddAbitrarySlashValueClassAsync(string suffix, string valueTypes, string scssTemplate, int sortSeed)
     {
         Classes.Add(new ScssUtilityClass
         {
             Selector = $"{SelectorPrefix}{(string.IsNullOrEmpty(suffix) ? string.Empty : $"-{suffix}")}/",
+            SortOrder = sortSeed++,
+            Category = Category,
             ArbitraryValueTypes = valueTypes.Split(','),
             ScssTemplate = scssTemplate
         });
 
-        await Task.CompletedTask;
+        return await Task.FromResult(sortSeed);
     }
 }

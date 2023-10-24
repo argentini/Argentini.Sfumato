@@ -15,9 +15,9 @@ public static class CollectionBase
 
         if (string.IsNullOrEmpty(cssSelector.CustomValueSegment))
             foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClass));
+                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootSegment));
         
-        else if (string.IsNullOrEmpty(cssSelector.CustomValueType) == false)
+        else if (string.IsNullOrEmpty(cssSelector.CustomValueType) == false && string.IsNullOrEmpty(cssSelector.CustomValueType) == false)
             foreach (var (_, group) in groups)
                 result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClass && c.ArbitraryValueTypes.Contains(cssSelector.CustomValueType)));
 
@@ -84,22 +84,6 @@ public static class CollectionBase
                 value = valueTemplate.Replace("{value}", value);
             
             result.Add(x.ToString(), value);
-        }
-
-        return await Task.FromResult(result);
-    }
-    
-    /// <summary>
-    /// Return classes for percentages by number.
-    /// Used by inherited classes.
-    /// </summary>
-    public static async Task<Dictionary<string,string>> AddPercentagesClassesAsync()
-    {
-        var result = new Dictionary<string, string>();
-
-        for (var x = 0; x <= 100; x+=5)
-        {
-            result.Add($"{x}%", $"{x}%");
         }
 
         return await Task.FromResult(result);

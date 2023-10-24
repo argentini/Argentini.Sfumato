@@ -9,28 +9,39 @@ public static class TransformsCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllTransformsClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllTransformsClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddTransitionsGroupAsync());
-        tasks.Add(collection.AddAnimationGroupAsync());
+        var sortSeed = 1200000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddTransitionsGroupAsync();
+        await internalCollection.AddAnimationGroupAsync();
+        
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddTransitionsGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddTransitionsGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Transition
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "transition",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "transition: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "transition: {value};");
 
         #endregion
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter",
@@ -48,24 +59,24 @@ public static class TransformsCollection
             """
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
 
         #endregion
         
         #region Duration
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "duration",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("time", "transition-duration: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("time", "transition-duration: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0s",
@@ -81,24 +92,24 @@ public static class TransformsCollection
             "transition-duration: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Timing
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "ease",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "transition-timing-function: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "transition-timing-function: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["linear"] = "linear",
@@ -109,24 +120,24 @@ public static class TransformsCollection
             "transition-timing-function: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Delay
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "delay",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("time", "transition-delay: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("time", "transition-delay: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0s",
@@ -142,25 +153,25 @@ public static class TransformsCollection
             "transition-delay: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
     }
     
-    public static async Task AddAnimationGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddAnimationGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "animate",
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "animation: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "animation: {value};");
 
         #endregion
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none",
@@ -168,7 +179,7 @@ public static class TransformsCollection
             "animation: {value};"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["spin"] = "",
@@ -187,7 +198,7 @@ public static class TransformsCollection
             """
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["ping"] = "",
@@ -204,7 +215,7 @@ public static class TransformsCollection
             """
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["pulse"] = "",
@@ -223,7 +234,7 @@ public static class TransformsCollection
             """
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["bounce"] = "",
@@ -244,6 +255,6 @@ public static class TransformsCollection
             """
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
 }

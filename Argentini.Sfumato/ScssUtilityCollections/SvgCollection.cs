@@ -9,27 +9,38 @@ public static class SvgCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllSvgClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllSvgClassesAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddSvgGroupAsync());
+        var sortSeed = 1000000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddSvgGroupAsync();
+        
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddSvgGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddSvgGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Fill
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "fill"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "fill: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "fill: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none"
@@ -37,30 +48,30 @@ public static class SvgCollection
             "fill: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "fill: {value};"
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
         #region Stroke
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "stroke"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "stroke: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,integer,number,percentage", "stroke-width: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "stroke: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,integer,number,percentage", "stroke-width: {value};");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none"
@@ -68,7 +79,7 @@ public static class SvgCollection
             "stroke: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -78,12 +89,12 @@ public static class SvgCollection
             "stroke-width: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "stroke: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
     }

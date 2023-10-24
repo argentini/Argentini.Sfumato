@@ -36,28 +36,9 @@ public sealed class SfumatoAppState
     public List<string> CliArguments { get; } = new();
     public ConcurrentDictionary<string,WatchedFile> WatchedFiles { get; } = new();
     public ConcurrentDictionary<string,WatchedScssFile> WatchedScssFiles { get; } = new();
-    public ConcurrentDictionary<string,ScssClass> UsedClasses { get; } = new();
-    public ScssClassCollection ScssClassCollection { get; } = new();    
-    
-    
-
-    // todo: New utility class structure
-    
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> BackgroundCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> TypographyCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> AccessibilityCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> BordersCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> EffectsCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> FiltersCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> FlexboxAndGridCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> InteractivityCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> LayoutCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> SizingCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> SpacingCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> SvgCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> TablesCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> TransformsCollection { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroup> TransitionsAndAnimationsCollection { get; } = new();
+    public ConcurrentDictionary<string,UsedScssClass> UsedClasses { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> UtilityClassCollection { get; } = new();
+	public int UtilityClassCount { get; private set; }
     
     #endregion
     
@@ -242,57 +223,44 @@ public sealed class SfumatoAppState
         ScssSharedInjectable.Clear();
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
         
-        if (DiagnosticMode)
-	        DiagnosticOutput.TryAdd("init1", $"Identified {ScssClassCollection.AllClasses.Count:N0} available classes in {timer.FormatTimer()}{Environment.NewLine}");
-
         #region Load Utility Classes
 
         timer.Restart();
 
-        // todo: Add all utility class collections here
+        var tasks = new List<Task>
+        {
+	        UtilityClassCollection.AddAllAccessibilityClassesAsync(),
+	        UtilityClassCollection.AddAllBackgroundClassesAsync(),
+	        UtilityClassCollection.AddAllBordersClassesAsync(),
+	        UtilityClassCollection.AddAllEffectsClassesAsync(),
+	        UtilityClassCollection.AddAllFiltersClassesAsync(),
+	        UtilityClassCollection.AddAllFlexboxAndGridClassesAsync(),
+	        UtilityClassCollection.AddAllInteractivityClassesAsync(),
+	        UtilityClassCollection.AddAllLayoutClassesAsync(),
+	        UtilityClassCollection.AddAllSizingClassesAsync(),
+	        UtilityClassCollection.AddAllSpacingClassesAsync(),
+	        UtilityClassCollection.AddAllSvgClassesAsync(),
+	        UtilityClassCollection.AddAllTableClassesAsync(),
+	        UtilityClassCollection.AddAllTransformsClassesAsync(),
+	        UtilityClassCollection.AddAllTransitionsAndAnimationsClassesAsync(),
+	        UtilityClassCollection.AddAllTypographyClassesAsync()
+        };
 
-        var tasks = new List<Task>();
-
-		BackgroundCollection.AddAllBackgroundClassesAsync(tasks);
-		TypographyCollection.AddAllTypographyClassesAsync(tasks);
-		AccessibilityCollection.AddAllAccessibilityClassesAsync(tasks);
-		BordersCollection.AddAllBordersClassesAsync(tasks);
-		EffectsCollection.AddAllEffectsClassesAsync(tasks);
-		FiltersCollection.AddAllFiltersClassesAsync(tasks);
-		FlexboxAndGridCollection.AddAllFlexboxAndGridClassesAsync(tasks);
-		InteractivityCollection.AddAllInteractivityClassesAsync(tasks);
-		LayoutCollection.AddAllLayoutClassesAsync(tasks);
-		SizingCollection.AddAllSizingClassesAsync(tasks);
-		SpacingCollection.AddAllSpacingClassesAsync(tasks);
-		SvgCollection.AddAllSvgClassesAsync(tasks);
-		TablesCollection.AddAllTableClassesAsync(tasks);
-		TransformsCollection.AddAllTransformsClassesAsync(tasks);
-		TransitionsAndAnimationsCollection.AddAllTransitionsAndAnimationsClassesAsync(tasks);
-		
         await Task.WhenAll(tasks);
 
-        var classCount = 0;
+        #endregion
+        
+        #region Get Utility Class Count
+        
+        UtilityClassCount = 0;
 
-        classCount += BackgroundCollection.Sum(c => c.Value.Classes.Count);
-        classCount += TypographyCollection.Sum(c => c.Value.Classes.Count);
-        classCount += AccessibilityCollection.Sum(c => c.Value.Classes.Count);
-        classCount += BordersCollection.Sum(c => c.Value.Classes.Count);
-        classCount += EffectsCollection.Sum(c => c.Value.Classes.Count);
-        classCount += FiltersCollection.Sum(c => c.Value.Classes.Count);
-        classCount += FlexboxAndGridCollection.Sum(c => c.Value.Classes.Count);
-        classCount += InteractivityCollection.Sum(c => c.Value.Classes.Count);
-        classCount += LayoutCollection.Sum(c => c.Value.Classes.Count);
-        classCount += SizingCollection.Sum(c => c.Value.Classes.Count);
-        classCount += SpacingCollection.Sum(c => c.Value.Classes.Count);
-        classCount += SvgCollection.Sum(c => c.Value.Classes.Count);
-        classCount += TablesCollection.Sum(c => c.Value.Classes.Count);
-        classCount += TransformsCollection.Sum(c => c.Value.Classes.Count);
-        classCount += TransitionsAndAnimationsCollection.Sum(c => c.Value.Classes.Count);
+        foreach (var item in UtilityClassCollection)
+	        UtilityClassCount += item.Value.Classes.Count;
+
+        #endregion
         
         if (DiagnosticMode)
-	        DiagnosticOutput.TryAdd("init1a", $"Loaded {classCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
-        
-        #endregion
+	        DiagnosticOutput.TryAdd("init1", $"Loaded {UtilityClassCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
     }
     
     #endregion
@@ -735,52 +703,50 @@ public sealed class SfumatoAppState
 		{
 			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
-			
-			var matchingScssClasses = ScssClassCollection.GetAllByClassName(cssSelector).ToList();
+
+			var matchingScssClasses = await UtilityClassCollection.GetMatchingClassesAsync(cssSelector);
 
 			if (matchingScssClasses.Count == 0)
 				continue;
 			
 			var userClassValueType = cssSelector.CustomValueSegment.GetUserClassValueType();
-			ScssClass? foundScssClass = null;
+			ScssUtilityClass? foundScssUtilityClass = null;
 
 			if (string.IsNullOrEmpty(userClassValueType) == false)
-				foreach (var scssClass in matchingScssClasses)
+				foreach (var scssUtilityClass in matchingScssClasses)
 				{
-					if (scssClass.ValueTypes.Split(',', StringSplitOptions.RemoveEmptyEntries).Contains(userClassValueType) == false)
+					if (scssUtilityClass.ArbitraryValueTypes.Contains(userClassValueType) == false)
 						continue;
 
-					foundScssClass = scssClass;
+					foundScssUtilityClass = scssUtilityClass;
 					break;
 				}								
 			else
-				foreach (var scssClass in matchingScssClasses)
+				foreach (var scssUtilityClass in matchingScssClasses)
 				{
-					if (scssClass.CssSelector is null)
-						continue;
-					
-					if (scssClass.ValueTypes != string.Empty)
+					if (scssUtilityClass.ArbitraryValueTypes.Length > 0)
 						continue;
 
-					if (scssClass.CssSelector.FixedValue != cssSelector.RootSegment)
+					if (scssUtilityClass.Selector != cssSelector.RootSegment)
 						continue;
 					
-					foundScssClass = scssClass;
+					foundScssUtilityClass = scssUtilityClass;
 					break;
 				}
 
-			if (foundScssClass is null)
+			if (foundScssUtilityClass is null)
 				continue;
+
+			var cloneutilityClass = foundScssUtilityClass.Adapt<ScssUtilityClass>();
+
+			if (string.IsNullOrEmpty(cssSelector.CustomValue) == false)
+				cloneutilityClass.Value = cssSelector.CustomValue;
 			
-			var usedScssClass = new ScssClass
+			var usedScssClass = new UsedScssClass
 			{
 				CssSelector = cssSelector,
-				ValueTypes = foundScssClass.ValueTypes,
-				Value = string.IsNullOrEmpty(userClassValueType) == false ? cssSelector.CustomValue : foundScssClass.Value,
-				Template = foundScssClass.Template,
-				ChildSelector = foundScssClass.ChildSelector,
-				GlobalGrouping = foundScssClass.GlobalGrouping,
-				SortOrder = foundScssClass.SortOrder
+				ScssUtilityClass = cloneutilityClass,
+				SortOrder = foundScssUtilityClass.SortOrder
 			};
 
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
@@ -791,18 +757,13 @@ public sealed class SfumatoAppState
 			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
 				continue;
 
-			var usedScssClass = new ScssClass
+			var usedScssClass = new UsedScssClass
 			{
-				CssSelector = cssSelector,
-				ValueTypes = string.Empty,
-				Value = cssSelector.CustomValue,				
-				Template = "{value};"
+				CssSelector = cssSelector
 			};
 
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
 		}
-
-		await Task.CompletedTask;
 	}
 	
 	#endregion

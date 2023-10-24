@@ -30,7 +30,7 @@ public sealed class SfumatoRunner
 			.PreserveReference(true)
 			.AfterMapping((src, dest) => 
 			{
-				dest.Classes = src.Classes.Adapt<List<ScssClass>>();
+				dest.Classes = src.Classes.Adapt<List<UsedScssClass>>();
 				dest.Nodes = src.Nodes.Adapt<List<ScssNode>>();
 			});
 		
@@ -125,19 +125,19 @@ public sealed class SfumatoRunner
 	/// Generate SCSS class from user class name, including nesting.
 	/// Only includes pseudoclasses, not media queries.
 	/// </summary>
-	/// <param name="scssClass"></param>
+	/// <param name="usedScssClass"></param>
 	/// <param name="pool"></param>
 	/// <param name="stripPrefix"></param>
 	/// <returns></returns>
-	public static async Task<string> GenerateScssClassMarkupAsync(ScssClass scssClass, ObjectPool<StringBuilder> pool, string stripPrefix = "")
+	public static async Task<string> GenerateScssClassMarkupAsync(UsedScssClass usedScssClass, ObjectPool<StringBuilder> pool, string stripPrefix = "")
 	{
-		if (scssClass.CssSelector is null)
+		if (usedScssClass.CssSelector is null)
 			return string.Empty;
 		
 		var scssResult = pool.Get();
 		var level = 0;
 		var stripPrefixes = stripPrefix.Split(':', StringSplitOptions.RemoveEmptyEntries);
-		var prefixes = scssClass.CssSelector.AllPrefixes;
+		var prefixes = usedScssClass.CssSelector.AllPrefixes;
 
 		foreach (var prefix in stripPrefixes)
 			if (prefixes.Count > 0 && prefixes[0] == prefix)
@@ -154,15 +154,9 @@ public sealed class SfumatoRunner
 				
 				if (renderedClassName == false)
 				{
-					scssResult.Append($"{Indent(level)}.{scssClass.CssSelector.EscapedSelector} {{\n");
+					scssResult.Append($"{Indent(level)}.{usedScssClass.CssSelector.EscapedSelector} {{\n");
 					renderedClassName = true;
 					level++;
-
-					if (scssClass.ChildSelector != string.Empty)
-					{
-						scssResult.Append($"{Indent(level)}{scssClass.ChildSelector} {{\n");
-						level++;
-					}
 				}
 
 				var pseudoClass = SfumatoScss.PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
@@ -174,18 +168,15 @@ public sealed class SfumatoRunner
 
 		else
 		{
-			scssResult.Append($"{Indent(level)}.{scssClass.CssSelector.EscapedSelector} {{\n");
+			scssResult.Append($"{Indent(level)}.{usedScssClass.CssSelector.EscapedSelector} {{\n");
 			level++;
-			
-			if (scssClass.ChildSelector != string.Empty)
-			{
-				scssResult.Append($"{Indent(level)}{scssClass.ChildSelector} {{\n");
-				level++;
-			}
 		}
 		
-		scssResult.Append($"{scssClass.GetStyles().Indent(level * IndentationSpaces)}\n");
-
+		if (usedScssClass.IsArbitraryCss)
+			scssResult.Append($"{usedScssClass.CssSelector.CustomValue.Indent(level * IndentationSpaces)};\n");
+		else
+			scssResult.Append($"{usedScssClass.ScssUtilityClass?.ScssMarkup.Indent(level * IndentationSpaces)}\n");
+			
 		while (level > 0)
 		{
 			level--;
@@ -294,7 +285,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 			
-			if (usedClass.GlobalGrouping == "gradients")
+			if (usedClass.ScssUtilityClass?.Category == "gradients")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 
@@ -312,7 +303,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 
-			if (usedClass.GlobalGrouping == "ring")
+			if (usedClass.ScssUtilityClass?.Category == "ring")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 
@@ -330,7 +321,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 
-			if (usedClass.GlobalGrouping == "shadow")
+			if (usedClass.ScssUtilityClass?.Category == "shadow")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 

@@ -9,16 +9,27 @@ public static class BordersCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllBordersClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllBordersClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddRoundedGroupAsync());
-        tasks.Add(collection.AddBorderGroupAsync());
-        tasks.Add(collection.AddDivideGroupAsync());
-        tasks.Add(collection.AddOutlineGroupAsync());
-        tasks.Add(collection.AddRingGroupAsync());
+        var sortSeed = 200000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddRoundedGroupAsync();
+        await internalCollection.AddBorderGroupAsync();
+        await internalCollection.AddDivideGroupAsync();
+        await internalCollection.AddOutlineGroupAsync();
+        await internalCollection.AddRingGroupAsync();
+
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddRoundedGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddRoundedGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         var variations = new Dictionary<string, string>
         {
@@ -59,46 +70,46 @@ public static class BordersCollection
 
         foreach (var (selector, scssTemplate) in variations)
         {
-            var scssUtilityClass = new ScssUtilityClassGroup
+            var scssUtilityClassGroup = new ScssUtilityClassGroup
             {
                 SelectorPrefix = selector
             };
         
             #region Arbitrary Value Options
 
-            await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", scssTemplate);
+            await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", scssTemplate);
 
             #endregion
         
-            await scssUtilityClass.AddClassesAsync(
+            await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.RoundedOptions,
                 scssTemplate
             );
 
-            if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+            if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         }
     }
     
-    public static async Task AddBorderGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBorderGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "border"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "border-width: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "border-color: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-width: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "border-color: {value};");
 
         #endregion
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.RoundedOptions,
             "border-width: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["solid"] = "solid",
@@ -111,12 +122,12 @@ public static class BordersCollection
             "border-style: {value};"
         );
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "border-color: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         var variations = new Dictionary<string, string>
         {
@@ -138,44 +149,44 @@ public static class BordersCollection
 
         foreach (var (selector, scssTemplate) in variations)
         {
-            scssUtilityClass = new ScssUtilityClassGroup
+            scssUtilityClassGroup = new ScssUtilityClassGroup
             {
                 SelectorPrefix = selector
             };
         
             #region Arbitrary Value Options
 
-            await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", scssTemplate);
-            await scssUtilityClass.AddAbitraryValueClassAsync("color", scssTemplate.Replace("width:", "color:"));
+            await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", scssTemplate);
+            await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", scssTemplate.Replace("width:", "color:"));
 
             #endregion
         
-            await scssUtilityClass.AddClassesAsync(
+            await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.RoundedOptions,
                 scssTemplate
             );
             
-            await scssUtilityClass.AddClassesAsync(
+            await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.Colors,
                 scssTemplate.Replace("width:", "color:")
             );
 
-            if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+            if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         }
     }
     
-    public static async Task AddDivideGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddDivideGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Divide
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "divide"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "color",
             """
             & > * + * {
@@ -186,7 +197,7 @@ public static class BordersCollection
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             """
             & > * + * {
@@ -195,7 +206,7 @@ public static class BordersCollection
             """
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["solid"] = "solid",
@@ -211,20 +222,20 @@ public static class BordersCollection
             """
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
 
         #endregion
 
         #region Divide X
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "divide-x"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             & > * + * {
@@ -236,7 +247,7 @@ public static class BordersCollection
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.DivideWidthOptions,
             """
             & > * + * {
@@ -246,20 +257,20 @@ public static class BordersCollection
             """
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
 
         #endregion
         
         #region Divide Y
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "divide-y"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             & > * + * {
@@ -271,7 +282,7 @@ public static class BordersCollection
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.DivideWidthOptions,
             """
             & > * + * {
@@ -281,7 +292,7 @@ public static class BordersCollection
             """
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
 
         #endregion
         
@@ -301,22 +312,22 @@ public static class BordersCollection
         
     }
     
-    public static async Task AddOutlineGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddOutlineGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "outline"
         };
         
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "outline-width: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "outline-color: {value};");
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "outline-style: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "outline-width: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "outline-color: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "outline-style: {value};");
 
         #endregion
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -328,12 +339,12 @@ public static class BordersCollection
             "border-style: {value};"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "outline-color: {value};"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["dashed"] = "dashed",
@@ -344,20 +355,20 @@ public static class BordersCollection
             "outline-style: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "outline-offset"
         };
         
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "outline-offset: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "outline-offset: {value};");
 
         #endregion
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -369,14 +380,14 @@ public static class BordersCollection
             "outline-offset: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddRingGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddRingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         #region Ring
         
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "ring",
             Category = "ring"
@@ -384,12 +395,12 @@ public static class BordersCollection
         
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);");
-        await scssUtilityClass.AddAbitraryValueClassAsync("color", "--sf-ring-color: {value};");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "--sf-ring-color: {value};");
 
         #endregion
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "0.1875rem",
@@ -402,24 +413,24 @@ public static class BordersCollection
             "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);"
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "--sf-ring-color: {value};"
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
 
         #endregion
         
         #region Ring Inset
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "ring-inset",
             Category = "ring"
         };
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "inset"
@@ -427,27 +438,27 @@ public static class BordersCollection
             "--sf-ring-inset: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion        
         
         #region Ring Offset
         
-        scssUtilityClass = new ScssUtilityClassGroup
+        scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "ring-offset"
         };
         
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             --sf-ring-offset-width: {value};
             box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
             """
             );
-        await scssUtilityClass.AddAbitraryValueClassAsync(
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "color",
             """
             --sf-ring-offset-color: {value};
@@ -457,7 +468,7 @@ public static class BordersCollection
 
         #endregion
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -472,7 +483,7 @@ public static class BordersCollection
             """
         );
 
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             """
             --sf-ring-offset-color: {value};
@@ -480,7 +491,7 @@ public static class BordersCollection
             """
         );
 
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
 
         #endregion
     }

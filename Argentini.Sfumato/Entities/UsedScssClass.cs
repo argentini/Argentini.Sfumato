@@ -1,6 +1,8 @@
+using Argentini.Sfumato.ScssUtilityCollections.Entities;
+
 namespace Argentini.Sfumato.Entities;
 
-public class ScssClass
+public class UsedScssClass
 {
     #region Properties
 
@@ -14,20 +16,17 @@ public class ScssClass
             BuildPrefixSortOrder();
         }
     }
-    public string Value { get; set; } = string.Empty;
-    public string ValueTypes { get; set; } = string.Empty;
-    public string ChildSelector { get; set; } = string.Empty;
-    public string Template { get; set; } = string.Empty;
+    public ScssUtilityClass? ScssUtilityClass { get; set; }
+    public bool IsArbitraryCss => ScssUtilityClass is null;
     public int PrefixSortOrder { get; set; }
     public int SortOrder { get; set; }
-    public string GlobalGrouping { get; set; } = string.Empty; // For creating shared styles for a group of classes
     
     #endregion
     
-    public ScssClass()
+    public UsedScssClass()
     {}
 
-    public ScssClass(string selector)
+    public UsedScssClass(string selector)
     {
         CssSelector = new CssSelector
         {
@@ -45,15 +44,5 @@ public class ScssClass
         foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
             if (CssSelector.MediaQueries.Contains(breakpoint.Prefix))
                 PrefixSortOrder += breakpoint.Priority;    
-    }
-    
-    public string GetStyles()
-    {
-        var result = Template.Replace("{value}", Value);
-
-        if (CssSelector?.IsImportant ?? false)
-            return result.Replace(";", " !important;");
-
-        return result;
     }
 }

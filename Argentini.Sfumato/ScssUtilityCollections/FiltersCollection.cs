@@ -9,42 +9,53 @@ public static class FiltersCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllFiltersClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllFiltersClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddBlurGroupAsync());
-        tasks.Add(collection.AddBrightnessGroupAsync());
-        tasks.Add(collection.AddContrastGroupAsync());
-        tasks.Add(collection.AddDropShadowGroupAsync());
-        tasks.Add(collection.AddGrayscaleGroupAsync());
-        tasks.Add(collection.AddHueRotateGroupAsync());
-        tasks.Add(collection.AddInvertGroupAsync());
-        tasks.Add(collection.AddSaturateGroupAsync());
-        tasks.Add(collection.AddSepiaGroupAsync());
-        tasks.Add(collection.AddBackdropBlurGroupAsync());
-        tasks.Add(collection.AddBackdropBrightnessGroupAsync());
-        tasks.Add(collection.AddBackdropContrastGroupAsync());
-        tasks.Add(collection.AddBackdropGrayscaleGroupAsync());
-        tasks.Add(collection.AddBackdropHueRotateGroupAsync());
-        tasks.Add(collection.AddBackdropInvertGroupAsync());
-        tasks.Add(collection.AddBackdropSaturateGroupAsync());
-        tasks.Add(collection.AddBackdropSepiaGroupAsync());
-        tasks.Add(collection.AddBackdropOpacityGroupAsync());
+        var sortSeed = 400000;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddBlurGroupAsync();
+        await internalCollection.AddBrightnessGroupAsync();
+        await internalCollection.AddContrastGroupAsync();
+        await internalCollection.AddDropShadowGroupAsync();
+        await internalCollection.AddGrayscaleGroupAsync();
+        await internalCollection.AddHueRotateGroupAsync();
+        await internalCollection.AddInvertGroupAsync();
+        await internalCollection.AddSaturateGroupAsync();
+        await internalCollection.AddSepiaGroupAsync();
+        await internalCollection.AddBackdropBlurGroupAsync();
+        await internalCollection.AddBackdropBrightnessGroupAsync();
+        await internalCollection.AddBackdropContrastGroupAsync();
+        await internalCollection.AddBackdropGrayscaleGroupAsync();
+        await internalCollection.AddBackdropHueRotateGroupAsync();
+        await internalCollection.AddBackdropInvertGroupAsync();
+        await internalCollection.AddBackdropSaturateGroupAsync();
+        await internalCollection.AddBackdropSepiaGroupAsync();
+        await internalCollection.AddBackdropOpacityGroupAsync();
+        
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddBlurGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBlurGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "blur"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "filter: blur({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "filter: blur({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = 8.PxToRem(),
@@ -59,65 +70,65 @@ public static class FiltersCollection
             "filter: blur({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBrightnessGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBrightnessGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "brightness"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "filter: brightness({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: brightness({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: brightness({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddContrastGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddContrastGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "contrast"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "filter: contrast({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: contrast({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: contrast({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddDropShadowGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddDropShadowGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "drop-shadow"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("raw", "filter: drop-shadow({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "filter: drop-shadow({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = $"drop-shadow(0 1px {2.PxToRem()} rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))",
@@ -131,23 +142,23 @@ public static class FiltersCollection
             "filter: {value};"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddGrayscaleGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddGrayscaleGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "grayscale"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "filter: grayscale({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: grayscale({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
@@ -156,23 +167,23 @@ public static class FiltersCollection
             "filter: grayscale({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddHueRotateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddHueRotateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "hue-rotate"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("angle", "filter: hue-rotate({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "filter: hue-rotate({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0deg",
@@ -185,23 +196,23 @@ public static class FiltersCollection
             "filter: hue-rotate({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddInvertGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddInvertGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "invert"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "filter: invert({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: invert({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
@@ -210,44 +221,44 @@ public static class FiltersCollection
             "filter: invert({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddSaturateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddSaturateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "saturate"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "filter: saturate({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: saturate({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: saturate({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddSepiaGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddSepiaGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "sepia"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "filter: sepia({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: sepia({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
@@ -256,23 +267,23 @@ public static class FiltersCollection
             "filter: sepia({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropBlurGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropBlurGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-blur"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("length", "backdrop-filter: blur({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "backdrop-filter: blur({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = 8.PxToRem(),
@@ -287,65 +298,65 @@ public static class FiltersCollection
             "backdrop-filter: blur({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropBrightnessGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropBrightnessGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-brightness"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "backdrop-filter: brightness({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: brightness({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: brightness({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropContrastGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropContrastGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-contrast"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "backdrop-filter: contrast({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: contrast({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: contrast({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropGrayscaleGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropGrayscaleGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-grayscale"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "backdrop-filter: grayscale({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: grayscale({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
@@ -354,23 +365,23 @@ public static class FiltersCollection
             "backdrop-filter: grayscale({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropHueRotateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropHueRotateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-hue-rotate"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("angle", "backdrop-filter: hue-rotate({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "backdrop-filter: hue-rotate({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0deg",
@@ -383,23 +394,23 @@ public static class FiltersCollection
             "backdrop-filter: hue-rotate({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropInvertGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropInvertGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-invert"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "backdrop-filter: invert({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: invert({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
@@ -408,44 +419,44 @@ public static class FiltersCollection
             "backdrop-filter: invert({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropSaturateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropSaturateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-saturate"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "backdrop-filter: saturate({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: saturate({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: saturate({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropSepiaGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropSepiaGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-sepia"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "backdrop-filter: sepia({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: sepia({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
@@ -454,27 +465,27 @@ public static class FiltersCollection
             "backdrop-filter: sepia({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
     
-    public static async Task AddBackdropOpacityGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddBackdropOpacityGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
-        var scssUtilityClass = new ScssUtilityClassGroup
+        var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "backdrop-opacity"
         };
     
         #region Arbitrary Value Options
 
-        await scssUtilityClass.AddAbitraryValueClassAsync("number", "backdrop-filter: opacity({value});");
+        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: opacity({value});");
 
         #endregion
         
-        await scssUtilityClass.AddClassesAsync(
+        await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
             "backdrop-filter: opacity({value});"
         );
         
-        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
+        if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
     }
 }

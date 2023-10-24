@@ -9,12 +9,23 @@ public static class AccessibilityCollection
     /// </summary>
     /// <param name="collection"></param>
     /// <param name="tasks"></param>
-    public static void AddAllAccessibilityClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, List<Task> tasks)
+    public static async Task AddAllAccessibilityClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
     {
-        tasks.Add(collection.AddScreenReadersGroupAsync());
+        var sortSeed = 0;
+        var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
+
+        await internalCollection.AddScreenReadersGroupAsync();
+
+        foreach (var group in internalCollection)
+        {
+            foreach (var item in group.Value.Classes)
+                item.SortOrder = sortSeed++;
+            
+            collection.TryAdd(group.Key, group.Value);
+        }
     }
     
-    public static async Task AddScreenReadersGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task AddScreenReadersGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
     {
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,

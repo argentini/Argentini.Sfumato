@@ -3,6 +3,7 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Entities;
 public sealed class ScssUtilityClass
 {
     public string Selector { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
     public string[] ArbitraryValueTypes { get; set; } = Array.Empty<string>();
     private string _value = string.Empty;
     public string Value
@@ -27,6 +28,7 @@ public sealed class ScssUtilityClass
     }
     
     public string ScssMarkup { get; private set; } = string.Empty;
+    public int SortOrder { get; set; }
 
     /// <summary>
     /// Use the ScssTemplate to generate a value for ScssMarkup,
