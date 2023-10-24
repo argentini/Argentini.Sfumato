@@ -759,7 +759,8 @@ public sealed class SfumatoAppState
 
 			var usedScssClass = new UsedScssClass
 			{
-				CssSelector = cssSelector
+				CssSelector = cssSelector,
+				SortOrder = int.MaxValue
 			};
 
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Argentini.Sfumato.Entities;
 
 namespace Argentini.Sfumato.Tests;
@@ -234,7 +235,7 @@ public class CssSelectorTests
         Assert.Equal(selector.Value, selector.FixedValue);
         Assert.Equal("text-base/", selector.RootClass);
         Assert.Equal("text-base/3", selector.RootSegment);
-        Assert.Equal("3", selector.CustomValueSegment);
+        Assert.Equal(string.Empty, selector.CustomValueSegment);
         Assert.Equal("text-base\\/3", selector.EscapedSelector);
     }
     
@@ -277,7 +278,7 @@ public class CssSelectorTests
         Assert.Equal(selector.Value, selector.FixedValue);
         Assert.Equal("text-base/", selector.RootClass);
         Assert.Equal("text-base/3", selector.RootSegment);
-        Assert.Equal("3", selector.CustomValueSegment);
+        Assert.Equal(string.Empty, selector.CustomValueSegment);
         Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/3", selector.EscapedSelector);
     }
     

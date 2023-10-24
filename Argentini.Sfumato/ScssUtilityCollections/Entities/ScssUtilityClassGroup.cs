@@ -45,7 +45,7 @@ public sealed class ScssUtilityClassGroup
                 SelectorPrefix = key
             };
 
-            sortSeed = await scssUtilityClassGroup.AddClassesAsync(
+            sortSeed = sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 new Dictionary<string, string>
                 {
                     [""] = value

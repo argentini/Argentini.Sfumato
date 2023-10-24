@@ -14,20 +14,15 @@ public static class EffectsCollection
         var sortSeed = 300000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddShadowGroupAsync();
-        await internalCollection.AddOpacityGroupAsync();
-        await internalCollection.AddBlendModeGroupAsync();
+        sortSeed = await internalCollection.AddShadowGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddOpacityGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBlendModeGroupAsync(sortSeed);
 
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddShadowGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddShadowGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -36,12 +31,12 @@ public static class EffectsCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "box-shadow: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "--sf-shadow-color: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "box-shadow: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "--sf-shadow-color: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = $"0 1px {3.PxToRem()} 0 rgb(0 0 0 / 0.1), 0 1px {2.PxToRem()} -1px rgb(0 0 0 / 0.1)",
@@ -54,18 +49,22 @@ public static class EffectsCollection
                 ["inner"] = $"inset 0 {2.PxToRem()} {4.PxToRem()} 0 rgb(0 0 0 / 0.05)",
                 ["none"] = "0 0 #0000"
             },
-            "box-shadow: {value};"
+            "box-shadow: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "--sf-shadow-color: {value};"
+            "--sf-shadow-color: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddOpacityGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddOpacityGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -74,28 +73,32 @@ public static class EffectsCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "opacity: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "opacity: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
-            "opacity: {value};"
+            "opacity: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBlendModeGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBlendModeGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "mix-blend"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.BlendModeOptions,
-            "mix-blend-mode: {value};"
+            "mix-blend-mode: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -105,11 +108,14 @@ public static class EffectsCollection
             SelectorPrefix = "bg-blend"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.BlendModeOptions,
-            "background-blend-mode: {value};"
+            "background-blend-mode: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 }

@@ -14,29 +14,24 @@ public static class InteractivityCollection
         var sortSeed = 600000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddAccentGroupAsync();
-        await internalCollection.AddAppearanceGroupAsync();
-        await internalCollection.AddCursorGroupAsync();
-        await internalCollection.AddCaretGroupAsync();
-        await internalCollection.AddPointerEventsGroupAsync();
-        await internalCollection.AddResizeGroupAsync();
-        await internalCollection.AddScrollBehaviorGroupAsync();
-        await internalCollection.AddScrollMarginGroupAsync();
-        await internalCollection.AddScrollPaddingGroupAsync();
-        await internalCollection.AddScrollSnapGroupAsync();
-        await internalCollection.AddTouchSelectSnapGroupAsync();
-        await internalCollection.AddWillChangeSnapGroupAsync();
+        sortSeed = await internalCollection.AddAccentGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddAppearanceGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddCursorGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddCaretGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddPointerEventsGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddResizeGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddScrollBehaviorGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddScrollMarginGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddScrollPaddingGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddScrollSnapGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTouchSelectSnapGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddWillChangeSnapGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddAccentGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddAccentGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -45,37 +40,43 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "accent-color: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "accent-color: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "accent-color: {value};"
+            "accent-color: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddAppearanceGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddAppearanceGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "appearance"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none"
             },
-            "appearance: {value};"
+            "appearance: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddCursorGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddCursorGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -84,11 +85,11 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "cursor: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "cursor: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["alias"] = "alias",
@@ -128,13 +129,16 @@ public static class InteractivityCollection
                 ["zoom-in"] = "zoom-in",
                 ["zoom-out"] = "zoom-out"
             },
-            "cursor: {value};"
+            "cursor: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddCaretGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddCaretGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -143,45 +147,51 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "caret-color: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "caret-color: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "caret-color: {value};"
+            "caret-color: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddPointerEventsGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddPointerEventsGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "pointer-events"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none",
                 ["auto"] = "auto"
             },
-            "pointer-events: {value};"
+            "pointer-events: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddResizeGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddResizeGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "resize"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "both",
@@ -189,32 +199,38 @@ public static class InteractivityCollection
                 ["y"] = "vertical",
                 ["x"] = "horizontal"
             },
-            "resize: {value};"
+            "resize: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddScrollBehaviorGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddScrollBehaviorGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "scroll"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["smooth"] = "smooth"
             },
-            "scroll-behavior: {value};"
+            "scroll-behavior: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddScrollMarginGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddScrollMarginGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Scroll Margin
         
@@ -225,22 +241,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-margin: {value};"
+            "scroll-margin: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-margin: {value};"
+            "scroll-margin: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -256,17 +274,18 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             scroll-margin-left: {value};
             scroll-margin-right: {value};
-            """
+            """,
+            sortSeed
             );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -275,15 +294,17 @@ public static class InteractivityCollection
             """
             scroll-margin-left: {value};
             scroll-margin-right: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             scroll-margin-left: {value};
             scroll-margin-right: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -299,17 +320,18 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             scroll-margin-top: {value};
             scroll-margin-bottom: {value};
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -318,15 +340,17 @@ public static class InteractivityCollection
             """
             scroll-margin-top: {value};
             scroll-margin-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             scroll-margin-top: {value};
             scroll-margin-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -342,22 +366,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-inline-start: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-inline-start: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-margin-inline-start: {value};"
+            "scroll-margin-inline-start: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-margin-inline-start: {value};"
+            "scroll-margin-inline-start: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -373,22 +399,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-inline-end: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-inline-end: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-margin-inline-end: {value};"
+            "scroll-margin-inline-end: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-margin-inline-end: {value};"
+            "scroll-margin-inline-end: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -404,22 +432,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-top: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-top: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-margin-top: {value};"
+            "scroll-margin-top: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-margin-top: {value};"
+            "scroll-margin-top: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -435,22 +465,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-right: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-right: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-margin-right: {value};"
+            "scroll-margin-right: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-margin-right: {value};"
+            "scroll-margin-right: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -466,22 +498,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-bottom: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-bottom: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-margin-bottom: {value};"
+            "scroll-margin-bottom: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-margin-bottom: {value};"
+            "scroll-margin-bottom: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -497,30 +531,34 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-left: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-margin-left: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-margin-left: {value};"
+            "scroll-margin-left: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-margin-left: {value};"
+            "scroll-margin-left: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }    
     
-    public static async Task AddScrollPaddingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddScrollPaddingGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Scroll Padding
         
@@ -531,22 +569,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-padding: {value};"
+            "scroll-padding: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-padding: {value};"
+            "scroll-padding: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -562,17 +602,18 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             scroll-padding-left: {value};
             scroll-padding-right: {value};
-            """
+            """,
+            sortSeed
             );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -581,15 +622,17 @@ public static class InteractivityCollection
             """
             scroll-padding-left: {value};
             scroll-padding-right: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             scroll-padding-left: {value};
             scroll-padding-right: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -605,17 +648,18 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             scroll-padding-top: {value};
             scroll-padding-bottom: {value};
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
@@ -624,15 +668,17 @@ public static class InteractivityCollection
             """
             scroll-padding-top: {value};
             scroll-padding-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             scroll-padding-top: {value};
             scroll-padding-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -648,22 +694,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-inline-start: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-inline-start: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-padding-inline-start: {value};"
+            "scroll-padding-inline-start: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-padding-inline-start: {value};"
+            "scroll-padding-inline-start: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -679,22 +727,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-inline-end: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-inline-end: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-padding-inline-end: {value};"
+            "scroll-padding-inline-end: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-padding-inline-end: {value};"
+            "scroll-padding-inline-end: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -710,22 +760,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-top: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-top: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-padding-top: {value};"
+            "scroll-padding-top: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-padding-top: {value};"
+            "scroll-padding-top: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -741,22 +793,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-right: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-right: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-padding-right: {value};"
+            "scroll-padding-right: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-padding-right: {value};"
+            "scroll-padding-right: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -772,22 +826,24 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-bottom: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-bottom: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-padding-bottom: {value};"
+            "scroll-padding-bottom: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-padding-bottom: {value};"
+            "scroll-padding-bottom: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -803,37 +859,41 @@ public static class InteractivityCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-left: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "scroll-padding-left: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "scroll-padding-left: {value};"
+            "scroll-padding-left: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "scroll-padding-left: {value};"
+            "scroll-padding-left: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }    
     
-    public static async Task AddScrollSnapGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddScrollSnapGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "snap"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["start"] = "start",
@@ -841,19 +901,21 @@ public static class InteractivityCollection
                 ["center"] = "center",
                 ["align-none"] = "none"
             },
-            "scroll-snap-align: {value};"
+            "scroll-snap-align: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["normal"] = "normal",
                 ["always"] = "always"
             },
-            "scroll-snap-stop: {value};"
+            "scroll-snap-stop: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none",
@@ -861,30 +923,34 @@ public static class InteractivityCollection
                 ["y"] = "y var(--sf-scroll-snap-strictness)",
                 ["both"] = "both var(--sf-scroll-snap-strictness)"
             },
-            "scroll-snap-type: {value};"
+            "scroll-snap-type: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
                 ["snap-mandatory"] = "mandatory",
                 ["snap-proximity"] = "proximity"
             },
-            "--sf-scroll-snap-strictness: {value};"
+            "--sf-scroll-snap-strictness: {value};",
+            sortSeed
         );        
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddTouchSelectSnapGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTouchSelectSnapGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "touch"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -898,7 +964,8 @@ public static class InteractivityCollection
                 ["pinch-zoom"] = "pinch-zoom",
                 ["manipulation"] = "manipulation"
             },
-            "touch-action: {value};"
+            "touch-action: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -908,7 +975,7 @@ public static class InteractivityCollection
             SelectorPrefix = "select"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none",
@@ -916,20 +983,23 @@ public static class InteractivityCollection
                 ["all"] = "all",
                 ["auto"] = "auto"
             },
-            "user-select: {value};"
+            "user-select: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddWillChangeSnapGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddWillChangeSnapGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "will-change"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -937,9 +1007,12 @@ public static class InteractivityCollection
                 ["contents"] = "contents",
                 ["transform"] = "transform"
             },
-            "will-change: {value};"
+            "will-change: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 }

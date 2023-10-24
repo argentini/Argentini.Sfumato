@@ -14,35 +14,30 @@ public static class FiltersCollection
         var sortSeed = 400000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddBlurGroupAsync();
-        await internalCollection.AddBrightnessGroupAsync();
-        await internalCollection.AddContrastGroupAsync();
-        await internalCollection.AddDropShadowGroupAsync();
-        await internalCollection.AddGrayscaleGroupAsync();
-        await internalCollection.AddHueRotateGroupAsync();
-        await internalCollection.AddInvertGroupAsync();
-        await internalCollection.AddSaturateGroupAsync();
-        await internalCollection.AddSepiaGroupAsync();
-        await internalCollection.AddBackdropBlurGroupAsync();
-        await internalCollection.AddBackdropBrightnessGroupAsync();
-        await internalCollection.AddBackdropContrastGroupAsync();
-        await internalCollection.AddBackdropGrayscaleGroupAsync();
-        await internalCollection.AddBackdropHueRotateGroupAsync();
-        await internalCollection.AddBackdropInvertGroupAsync();
-        await internalCollection.AddBackdropSaturateGroupAsync();
-        await internalCollection.AddBackdropSepiaGroupAsync();
-        await internalCollection.AddBackdropOpacityGroupAsync();
+        sortSeed = await internalCollection.AddBlurGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBrightnessGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddContrastGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddDropShadowGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddGrayscaleGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddHueRotateGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddInvertGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddSaturateGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddSepiaGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropBlurGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropBrightnessGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropContrastGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropGrayscaleGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropHueRotateGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropInvertGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropSaturateGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropSepiaGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBackdropOpacityGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddBlurGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBlurGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -51,11 +46,11 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "filter: blur({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "filter: blur({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = 8.PxToRem(),
@@ -67,13 +62,16 @@ public static class FiltersCollection
                 ["2xl"] = 40.PxToRem(),
                 ["3xl"] = 64.PxToRem(),
             },
-            "filter: blur({value});"
+            "filter: blur({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBrightnessGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBrightnessGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -82,19 +80,22 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: brightness({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: brightness({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
-            "filter: brightness({value});"
+            "filter: brightness({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddContrastGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddContrastGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -103,19 +104,22 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: contrast({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: contrast({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
-            "filter: contrast({value});"
+            "filter: contrast({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddDropShadowGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddDropShadowGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -124,11 +128,11 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "filter: drop-shadow({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "filter: drop-shadow({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = $"drop-shadow(0 1px {2.PxToRem()} rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06))",
@@ -139,13 +143,16 @@ public static class FiltersCollection
                 ["2xl"] = $"drop-shadow(0 {25.PxToRem()} {25.PxToRem()} rgb(0 0 0 / 0.15))",
                 ["none"] = "drop-shadow(0 0 #0000)"
             },
-            "filter: {value};"
+            "filter: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddGrayscaleGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddGrayscaleGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -154,23 +161,26 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: grayscale({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: grayscale({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
                 ["0"] = "0"
             },
-            "filter: grayscale({value});"
+            "filter: grayscale({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddHueRotateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddHueRotateGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -179,11 +189,11 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "filter: hue-rotate({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "filter: hue-rotate({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0deg",
@@ -193,13 +203,16 @@ public static class FiltersCollection
                 ["90"] = "90deg",
                 ["180"] = "180deg"
             },
-            "filter: hue-rotate({value});"
+            "filter: hue-rotate({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddInvertGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddInvertGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -208,23 +221,26 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: invert({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: invert({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
                 ["0"] = "0"
             },
-            "filter: invert({value});"
+            "filter: invert({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddSaturateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddSaturateGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -233,19 +249,22 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: saturate({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "filter: saturate({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
-            "filter: saturate({value});"
+            "filter: saturate({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddSepiaGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddSepiaGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -254,23 +273,26 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: sepia({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "filter: sepia({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
                 ["0"] = "0"
             },
-            "filter: sepia({value});"
+            "filter: sepia({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropBlurGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropBlurGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -279,11 +301,11 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "backdrop-filter: blur({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "backdrop-filter: blur({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = 8.PxToRem(),
@@ -295,13 +317,16 @@ public static class FiltersCollection
                 ["2xl"] = 40.PxToRem(),
                 ["3xl"] = 64.PxToRem(),
             },
-            "backdrop-filter: blur({value});"
+            "backdrop-filter: blur({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropBrightnessGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropBrightnessGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -310,19 +335,22 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: brightness({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: brightness({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
-            "backdrop-filter: brightness({value});"
+            "backdrop-filter: brightness({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropContrastGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropContrastGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -331,19 +359,22 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: contrast({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: contrast({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
-            "backdrop-filter: contrast({value});"
+            "backdrop-filter: contrast({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropGrayscaleGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropGrayscaleGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -352,23 +383,26 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: grayscale({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: grayscale({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
                 ["0"] = "0"
             },
-            "backdrop-filter: grayscale({value});"
+            "backdrop-filter: grayscale({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropHueRotateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropHueRotateGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -377,11 +411,11 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "backdrop-filter: hue-rotate({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("angle", "backdrop-filter: hue-rotate({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0deg",
@@ -391,13 +425,16 @@ public static class FiltersCollection
                 ["90"] = "90deg",
                 ["180"] = "180deg"
             },
-            "backdrop-filter: hue-rotate({value});"
+            "backdrop-filter: hue-rotate({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropInvertGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropInvertGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -406,23 +443,26 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: invert({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: invert({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
                 ["0"] = "0"
             },
-            "backdrop-filter: invert({value});"
+            "backdrop-filter: invert({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropSaturateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropSaturateGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -431,19 +471,22 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: saturate({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: saturate({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
-            "backdrop-filter: saturate({value});"
+            "backdrop-filter: saturate({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropSepiaGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropSepiaGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -452,23 +495,26 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: sepia({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("percentage", "backdrop-filter: sepia({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "100%",
                 ["0"] = "0"
             },
-            "backdrop-filter: sepia({value});"
+            "backdrop-filter: sepia({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBackdropOpacityGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBackdropOpacityGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -477,15 +523,18 @@ public static class FiltersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: opacity({value});");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("number", "backdrop-filter: opacity({value});", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
-            "backdrop-filter: opacity({value});"
+            "backdrop-filter: opacity({value});",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 }

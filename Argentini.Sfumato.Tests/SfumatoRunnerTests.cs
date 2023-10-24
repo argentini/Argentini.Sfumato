@@ -203,16 +203,6 @@ public class SfumatoRunnerTests
         var scss = await runner.GenerateScssObjectTreeAsync();
 
         Assert.Equal("""
-
-                     .\[font-weight\:600\] {
-                         font-weight:600;
-                     }
-                     .\[font-weight\:700\] {
-                         font-weight:700;
-                     }
-                     .\[font-weight\:900\] {
-                         font-weight:900;
-                     }
                      .bg-emerald-900 {
                          background-color: rgb(6,78,59);
                      }
@@ -268,7 +258,17 @@ public class SfumatoRunnerTests
                          font-size: 1rem;
                      }
                      .text-base\/5 {
-                         font-size: 1rem; line-height: 1.25rem;
+                         font-size: 1rem;
+                         line-height: 1.25rem;
+                     }
+                     .\[font-weight\:600\] {
+                         font-weight:600;
+                     }
+                     .\[font-weight\:700\] {
+                         font-weight:700;
+                     }
+                     .\[font-weight\:900\] {
+                         font-weight:900;
                      }
                      @include sf-media($from: tabp) {
                          .tabp\:\[font-weight\:900\] {
@@ -281,22 +281,23 @@ public class SfumatoRunnerTests
                          }
                      }
                      @include sf-media($from: note) {
-                         .note\:\[font-weight\:600\] {
-                             font-weight:600;
-                         }
                          .note\:text-\[1\.25rem\] {
                              font-size: 1.25rem;
                          }
+                         .note\:\[font-weight\:600\] {
+                             font-weight:600;
+                         }
                      }
                      @include sf-media($from: desk) {
-                         .desk\:text-base\/\[3rem\] {
-                             font-size: 1rem; line-height: 3rem;
-                         }
                          .desk\:text-\[\#112233\] {
                              color: #112233;
                          }
                          .desk\:text-\[red\] {
                              color: red;
+                         }
+                         .desk\:text-base\/\[3rem\] {
+                             font-size: 1rem;
+                             line-height: 3rem;
                          }
                      }
                      @include sf-media($from: elas) {
@@ -312,7 +313,7 @@ public class SfumatoRunnerTests
                              font-size: 1rem;
                          }
                      }
-
+                     
                      """.CompactCss(), scss.CompactCss());
     }
 }

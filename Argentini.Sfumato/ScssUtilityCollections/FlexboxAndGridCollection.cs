@@ -14,23 +14,18 @@ public static class FlexboxAndGridCollection
         var sortSeed = 500000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddFlexBasisGroupAsync();
-        await internalCollection.AddFlexGroupAsync();
-        await internalCollection.AddGridGroupAsync();
-        await internalCollection.AddJustifyGroupAsync();
-        await internalCollection.AddAlignGroupAsync();
-        await internalCollection.AddPlaceGroupAsync();
+        sortSeed = await internalCollection.AddFlexBasisGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddFlexGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddGridGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddJustifyGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddAlignGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddPlaceGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddFlexBasisGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddFlexBasisGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -39,11 +34,11 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "flex-basis: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "flex-basis: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["px"] = "1px",
@@ -80,18 +75,22 @@ public static class FlexboxAndGridCollection
                 ["11/12"] = "91.666667%",
                 ["full"] = "100%"
             },
-            "flex-basis: {value};"
+            "flex-basis: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "flex-basis: {value};"
+            "flex-basis: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddFlexGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddFlexGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Flex
         
@@ -102,19 +101,20 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "flex: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "flex: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "",
             },
-            "display: flex;"
+            "display: flex;",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["row"] = "row",
@@ -122,20 +122,22 @@ public static class FlexboxAndGridCollection
                 ["col"] = "column",
                 ["col-reverse"] = "column-reverse"
             },
-            "flex-direction: {value};"
+            "flex-direction: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["wrap"] = "wrap",
                 ["wrap-reverse"] = "wrap-reverse",
                 ["nowrap"] = "nowrap"
             },
-            "flex-wrap: {value};"
+            "flex-wrap: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["1"] = "1 1 0%",
@@ -143,25 +145,28 @@ public static class FlexboxAndGridCollection
                 ["initial"] = "0 1 auto",
                 ["none"] = "none"
             },
-            "flex: {value};"
+            "flex: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["grow"] = "1",
                 ["grow-0"] = "0"
             },
-            "flex-grow: {value};"
+            "flex-grow: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["shrink"] = "1",
                 ["shrink-0"] = "0"
             },
-            "flex-shrink: {value};"
+            "flex-shrink: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -177,7 +182,7 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer,number", "flex-grow: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer,number", "flex-grow: {value};", sortSeed);
 
         #endregion
 
@@ -194,7 +199,7 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer,number", "flex-shrink: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer,number", "flex-shrink: {value};", sortSeed);
 
         #endregion
         
@@ -211,23 +216,25 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "order: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "order: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["first"] = int.MinValue.ToString(),
                 ["last"] = int.MaxValue.ToString(),
                 ["none"] = "0"
             },
-            "order: {value};"
+            "order: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24),
-            "order: {value};"
+            "order: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -243,21 +250,24 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "order: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "order: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, true),
-            "order: {value};"
+            "order: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddGridGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddGridGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Grid Template Columns
         
@@ -268,34 +278,37 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-template-columns: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-template-columns: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none"
             },
-            "grid-template-columns: {value};"
+            "grid-template-columns: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "repeat({value}, minmax(0, 1fr))"),
-            "grid-template-columns: {value};"
+            "grid-template-columns: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
                 ["col-auto"] = "auto"
             },
-            "grid-column: {value};"
+            "grid-column: {value};",
+            sortSeed
         );        
         
         #region Grid Column Span
@@ -307,21 +320,23 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-column: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-column: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["full"] = "1 / -1"
             },
-            "grid-column: {value};"
+            "grid-column: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "span {value} / span {value}"),
-            "grid-column: {value};"
+            "grid-column: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -337,21 +352,23 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-column-start: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-column-start: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto"
             },
-            "grid-column-start: {value};"
+            "grid-column-start: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
-            "grid-column-start: {value};"
+            "grid-column-start: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -367,21 +384,23 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-column-end: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-column-end: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto"
             },
-            "grid-column-end: {value};"
+            "grid-column-end: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
-            "grid-column-end: {value};"
+            "grid-column-end: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -397,34 +416,37 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-template-rows: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-template-rows: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none"
             },
-            "grid-template-rows: {value};"
+            "grid-template-rows: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "repeat({value}, minmax(0, 1fr))"),
-            "grid-template-rows: {value};"
+            "grid-template-rows: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
         
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
                 ["row-auto"] = "auto"
             },
-            "grid-row: {value};"
+            "grid-row: {value};",
+            sortSeed
         );        
         
         #region Grid Row Span
@@ -436,21 +458,23 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-row: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-row: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["full"] = "1 / -1"
             },
-            "grid-row: {value};"
+            "grid-row: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "span {value} / span {value}"),
-            "grid-row: {value};"
+            "grid-row: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -466,21 +490,23 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-row-start: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-row-start: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto"
             },
-            "grid-row-start: {value};"
+            "grid-row-start: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
-            "grid-row-start: {value};"
+            "grid-row-start: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -496,21 +522,23 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-row-end: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "grid-row-end: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto"
             },
-            "grid-row-end: {value};"
+            "grid-row-end: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
-            "grid-row-end: {value};"
+            "grid-row-end: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -524,7 +552,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "grid-flow"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["row"] = "row",
@@ -533,12 +561,14 @@ public static class FlexboxAndGridCollection
                 ["row-dense"] = "row dense",
                 ["col-dense"] = "column dense"
             },
-            "grid-auto-flow: {value};"
+            "grid-auto-flow: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
-            "grid-row-end: {value};"
+            "grid-row-end: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -554,11 +584,11 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-auto-columns: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-auto-columns: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -566,7 +596,8 @@ public static class FlexboxAndGridCollection
                 ["max"] = "max-content",
                 ["fr"] = "minmax(0, 1fr)"
             },
-            "grid-auto-columns: {value};"
+            "grid-auto-columns: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -582,11 +613,11 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-auto-rows: {value}");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "grid-auto-rows: {value}", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -594,7 +625,8 @@ public static class FlexboxAndGridCollection
                 ["max"] = "max-content",
                 ["fr"] = "minmax(0, 1fr)"
             },
-            "grid-auto-rows: {value};"
+            "grid-auto-rows: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -610,22 +642,24 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "gap: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "gap: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "gap: {value};"
+            "gap: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "gap: {value};"
+            "gap: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -641,22 +675,24 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "column-gap: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "column-gap: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "column-gap: {value};"
+            "column-gap: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "column-gap: {value};"
+            "column-gap: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -672,30 +708,34 @@ public static class FlexboxAndGridCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "row-gap: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "row-gap: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0",
                 ["px"] = "1px",
             },
-            "row-gap: {value};"
+            "row-gap: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "row-gap: {value};"
+            "row-gap: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddJustifyGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddJustifyGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Justify Content
         
@@ -704,7 +744,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "justify"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["normal"] = "normal",
@@ -716,7 +756,8 @@ public static class FlexboxAndGridCollection
                 ["evenly"] = "space-evenly",
                 ["stretch"] = "stretch"
             },
-            "justify-content: {value};"
+            "justify-content: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -730,7 +771,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "justify-items"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["start"] = "start",
@@ -738,7 +779,8 @@ public static class FlexboxAndGridCollection
                 ["center"] = "center",
                 ["stretch"] = "stretch"
             },
-            "justify-items: {value};"
+            "justify-items: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -752,7 +794,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "justify-self"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -761,15 +803,18 @@ public static class FlexboxAndGridCollection
                 ["center"] = "center",
                 ["stretch"] = "stretch"
             },
-            "justify-self: {value};"
+            "justify-self: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddAlignGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddAlignGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Align Content
         
@@ -778,7 +823,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "content"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["normal"] = "normal",
@@ -791,7 +836,8 @@ public static class FlexboxAndGridCollection
                 ["baseline"] = "baseline",
                 ["stretch"] = "stretch"
             },
-            "align-content: {value};"
+            "align-content: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -805,7 +851,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "items"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["start"] = "flex-start",
@@ -814,7 +860,8 @@ public static class FlexboxAndGridCollection
                 ["baseline"] = "baseline",
                 ["stretch"] = "stretch"
             },
-            "align-items: {value};"
+            "align-items: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -828,7 +875,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "self"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -838,15 +885,18 @@ public static class FlexboxAndGridCollection
                 ["baseline"] = "baseline",
                 ["stretch"] = "stretch"
             },
-            "align-self: {value};"
+            "align-self: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddPlaceGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddPlaceGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Place Content
         
@@ -855,7 +905,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "place-content"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["center"] = "center",
@@ -867,7 +917,8 @@ public static class FlexboxAndGridCollection
                 ["baseline"] = "baseline",
                 ["stretch"] = "stretch"
             },
-            "place-content: {value};"
+            "place-content: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -881,7 +932,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "place-items"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["start"] = "start",
@@ -890,7 +941,8 @@ public static class FlexboxAndGridCollection
                 ["baseline"] = "baseline",
                 ["stretch"] = "stretch"
             },
-            "place-items: {value};"
+            "place-items: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -904,7 +956,7 @@ public static class FlexboxAndGridCollection
             SelectorPrefix = "place-self"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -913,11 +965,14 @@ public static class FlexboxAndGridCollection
                 ["center"] = "center",
                 ["stretch"] = "stretch"
             },
-            "place-self: {value};"
+            "place-self: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 }

@@ -14,19 +14,14 @@ public static class TransformsCollection
         var sortSeed = 1200000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddTransitionsGroupAsync();
-        await internalCollection.AddAnimationGroupAsync();
+        sortSeed = await internalCollection.AddTransitionsGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddAnimationGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddTransitionsGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTransitionsGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Transition
         
@@ -37,11 +32,11 @@ public static class TransformsCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "transition: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "transition: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter",
@@ -56,11 +51,12 @@ public static class TransformsCollection
             transition-property: {value};
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             transition-duration: 150ms;
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Duration
@@ -72,11 +68,11 @@ public static class TransformsCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("time", "transition-duration: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("time", "transition-duration: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0s",
@@ -89,7 +85,8 @@ public static class TransformsCollection
                 ["700"] = "700ms",
                 ["1000"] = "1000ms"
             },
-            "transition-duration: {value};"
+            "transition-duration: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -105,11 +102,11 @@ public static class TransformsCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "transition-timing-function: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "transition-timing-function: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["linear"] = "linear",
@@ -117,7 +114,8 @@ public static class TransformsCollection
                 ["out"] = "cubic-bezier(0, 0, 0.2, 1)",
                 ["in-out"] = "cubic-bezier(0.4, 0, 0.2, 1)",
             },
-            "transition-timing-function: {value};"
+            "transition-timing-function: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -133,11 +131,11 @@ public static class TransformsCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("time", "transition-delay: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("time", "transition-delay: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0s",
@@ -150,15 +148,18 @@ public static class TransformsCollection
                 ["700"] = "700ms",
                 ["1000"] = "1000ms"
             },
-            "transition-delay: {value};"
+            "transition-delay: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddAnimationGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddAnimationGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -167,19 +168,20 @@ public static class TransformsCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "animation: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "animation: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["none"] = "none",
             },
-            "animation: {value};"
+            "animation: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["spin"] = "",
@@ -195,10 +197,11 @@ public static class TransformsCollection
                    transform: rotate(360deg);
                 }
             }
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["ping"] = "",
@@ -212,10 +215,11 @@ public static class TransformsCollection
                      opacity: 0;
                  }
              }
-            """
+            """,
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["pulse"] = "",
@@ -231,10 +235,11 @@ public static class TransformsCollection
                      opacity: .5;
                  }
              }
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["bounce"] = "",
@@ -252,9 +257,12 @@ public static class TransformsCollection
                      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
                  }
              }
-            """
+            """,
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 }

@@ -14,36 +14,31 @@ public static class TypographyCollection
         var sortSeed = 1400000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddFontGroupAsync();
-        await internalCollection.AddAntialiasedGroupAsync();
-        await internalCollection.AddTrackingGroupAsync();
-        await internalCollection.AddLineClampGroupAsync();
-        await internalCollection.AddLeadingGroupAsync();
-        await internalCollection.AddListGroupAsync();
-        await internalCollection.AddTextGroupAsync();
-        await internalCollection.AddTextDecorationLineGroupAsync();
-        await internalCollection.AddTextDecorationGroupAsync();
-        await internalCollection.AddTextUnderlineOffsetGroupAsync();
-        await internalCollection.AddTextTransformGroupAsync();
-        await internalCollection.AddTruncateGroupAsync();
-        await internalCollection.AddTextOverflowGroupAsync();
-        await internalCollection.AddTextIndentGroupAsync();
-        await internalCollection.AddVerticalAlignGroupAsync();
-        await internalCollection.AddWhitespaceGroupAsync();
-        await internalCollection.AddWordBreakGroupAsync();
-        await internalCollection.AddHyphensGroupAsync();
-        await internalCollection.AddContentGroupAsync();
+        sortSeed = await internalCollection.AddFontGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddAntialiasedGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTrackingGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddLineClampGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddLeadingGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddListGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTextGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTextDecorationLineGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTextDecorationGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTextUnderlineOffsetGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTextTransformGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTruncateGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTextOverflowGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddTextIndentGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddVerticalAlignGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddWhitespaceGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddWordBreakGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddHyphensGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddContentGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
 
-    public static async Task AddFontGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddFontGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -52,41 +47,43 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "font-weight: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "font-family: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("integer", "font-weight: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "font-family: {value};", sortSeed);
 
         #endregion
         
         #region Family
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["sans"] = "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Aptos\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
                 ["serif"] = "ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif",
                 ["mono"] = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"JetBrains Mono\", \"Liberation Mono\", \"Courier New\", monospace"
             },
-            "font-family: {value};"
+            "font-family: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Style
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["italic"] = "italic",
                 ["not-italic"] = "normal"
             },
-            "font-style: {value};"
+            "font-style: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Weight
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["thin"] = "100",
@@ -99,14 +96,15 @@ public static class TypographyCollection
                 ["extrabold"] = "800",
                 ["black"] = "900"
             },
-            "font-weight: {value};"
+            "font-weight: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Variant Numeric
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["normal-nums"] = "normal",
@@ -119,17 +117,20 @@ public static class TypographyCollection
                 ["diagonal-fractions"] = "diagonal-fractions",
                 ["stacked-fractions"] = "stacked-fractions"
             },
-            "font-variant-numeric: {value};"
+            "font-variant-numeric: {value};",
+            sortSeed
         );
         
         #endregion
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddAntialiasedGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddAntialiasedGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -138,10 +139,11 @@ public static class TypographyCollection
             """
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            """
+            """,
+            sortSeed
         );
         
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -150,11 +152,14 @@ public static class TypographyCollection
             """
             -webkit-font-smoothing: auto;
             -moz-osx-font-smoothing: auto;
-            """
+            """,
+            sortSeed
         );
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddTrackingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTrackingGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -163,11 +168,11 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "letter-spacing: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "letter-spacing: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["tighter"] = "-0.05em",
@@ -177,13 +182,16 @@ public static class TypographyCollection
                 ["wider"] = "0.05em",
                 ["widest"] = "0.1em"
             },
-            "letter-spacing: {value};"
+            "letter-spacing: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddLineClampGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddLineClampGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -192,35 +200,39 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "integer",
             """
-                       -webkit-line-clamp: {value};
-                       overflow: hidden;
-                       display: -webkit-box;
-                       -webkit-box-orient: vertical;
-                       """
+            -webkit-line-clamp: {value};
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            """,
+            sortSeed
             );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = ""
             },
             """
-               overflow: visible;
-               display: block;
-               -webkit-box-orient: horizontal;
-               -webkit-line-clamp: none;
-               """
+            overflow: visible;
+            display: block;
+            -webkit-box-orient: horizontal;
+            -webkit-line-clamp: none;
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddLeadingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddLeadingGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -229,11 +241,11 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,integer", "line-height: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,integer", "line-height: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "1",
@@ -243,18 +255,22 @@ public static class TypographyCollection
                 ["relaxed"] = "1.625",
                 ["loose"] = "2"
             },
-            "line-height: {value};"
+            "line-height: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(3m, 10m, 1m),
-            "line-height: {value};"
+            "line-height: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddListGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddListGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -263,42 +279,47 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("url", "list-style-image: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "list-style-type: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("url", "list-style-image: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "list-style-type: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none"
             },
-            "list-style-image: {value};"
+            "list-style-image: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["inside"] = "inside",
                 ["outside"] = "outside"
             },
-            "list-style-position: {value};"
+            "list-style-position: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none",
                 ["disc"] = "disc",
                 ["decimal"] = "decimal"
             },
-            "list-style-type: {value};"
+            "list-style-type: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddTextGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTextGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -307,8 +328,8 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "color: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "font-size: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "color: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "font-size: {value};", sortSeed);
 
         foreach (var size in SfumatoScss.TextSizes)
         {
@@ -316,9 +337,10 @@ public static class TypographyCollection
                 size.Key,
                 "length,percentage,number",
                 $$"""
-                  font-size: {{size.Value}};
-                  line-height: {value};
-                  """
+                font-size: {{size.Value}};
+                line-height: {value};
+                """,
+                sortSeed
             );
         }
         
@@ -328,25 +350,27 @@ public static class TypographyCollection
         
         foreach (var size in SfumatoScss.TextSizes)
         {
-            await scssUtilityClassGroup.AddClassesAsync(
+            sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 new Dictionary<string,string>
                 {
                     [size.Key] = size.Value
                 },
-                "font-size: {value};"
+                "font-size: {value};",
+                sortSeed
             );
 
             foreach (var leading in SfumatoScss.Leading)
             {
-                await scssUtilityClassGroup.AddClassesAsync(
+                sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                     new Dictionary<string,string>
                     {
                         [$"{size.Key}/{leading.Key}"] = size.Value
                     },
                     $$"""
-                      font-size: {value};
-                      line-height: {{leading.Value}};
-                      """
+                    font-size: {value};
+                    line-height: {{leading.Value}};
+                    """,
+                    sortSeed
                 );
             }
         }
@@ -355,34 +379,36 @@ public static class TypographyCollection
         
         #region Family
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["sans"] = "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Aptos\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
                 ["serif"] = "ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif",
                 ["mono"] = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"JetBrains Mono\", \"Liberation Mono\", \"Courier New\", monospace"
             },
-            "font-family: {value};"
+            "font-family: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Style
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["italic"] = "italic",
                 ["not-italic"] = "normal"
             },
-            "font-style: {value};"
+            "font-style: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Weight
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["thin"] = "100",
@@ -395,14 +421,15 @@ public static class TypographyCollection
                 ["extrabold"] = "800",
                 ["black"] = "900"
             },
-            "font-weight: {value};"
+            "font-weight: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Variant Numeric
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["normal-nums"] = "normal",
@@ -415,14 +442,15 @@ public static class TypographyCollection
                 ["diagonal-fractions"] = "diagonal-fractions",
                 ["stacked-fractions"] = "stacked-fractions"
             },
-            "font-variant-numeric: {value};"
+            "font-variant-numeric: {value};",
+            sortSeed
         );
         
         #endregion
 
         #region Align
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["left"] = "left",
@@ -432,26 +460,30 @@ public static class TypographyCollection
                 ["start"] = "start",
                 ["end"] = "end"
             },
-            "text-align: {value};"
+            "text-align: {value};",
+            sortSeed
         );
         
         #endregion
         
         #region Color
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "color: {value};"
+            "color: {value};",
+            sortSeed
         );
             
         #endregion
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddTextDecorationLineGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTextDecorationLineGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -460,11 +492,14 @@ public static class TypographyCollection
                 ["line-through"] = "line-through",
                 ["no-underline"] = "none"
             },
-            "text-decoration-line: {value};"
+            "text-decoration-line: {value};",
+            sortSeed
         );
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddTextDecorationGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTextDecorationGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -473,23 +508,24 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "text-decoration-color: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-decoration-thickness: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "text-decoration-color: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-decoration-thickness: {value};", sortSeed);
 
         #endregion
         
         #region Color
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "text-decoration-color: {value};"
+            "text-decoration-color: {value};",
+            sortSeed
         );
             
         #endregion
 
         #region Style
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["solid"] = "solid",
@@ -498,14 +534,15 @@ public static class TypographyCollection
                 ["dashed"] = "dashed",
                 ["wavy"] = "wavy"
             },
-            "text-decoration-style: {value};"
+            "text-decoration-style: {value};",
+            sortSeed
         );
         
         #endregion
 
         #region Thickness
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["auto"] = "auto",
@@ -516,15 +553,18 @@ public static class TypographyCollection
                 ["4"] = 4.PxToRem(),
                 ["8"] = 8.PxToRem()
             },
-            "text-decoration-thickness: {value};"
+            "text-decoration-thickness: {value};",
+            sortSeed
         );
         
         #endregion
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddTextUnderlineOffsetGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTextUnderlineOffsetGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -533,11 +573,11 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-underline-offset: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-underline-offset: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["auto"] = "auto",
@@ -547,15 +587,18 @@ public static class TypographyCollection
                 ["4"] = 4.PxToRem(),
                 ["8"] = 8.PxToRem()
             },
-            "text-decoration-style: {value};"
+            "text-decoration-style: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddTextTransformGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTextTransformGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -564,40 +607,49 @@ public static class TypographyCollection
                 ["capitalize"] = "capitalize",
                 ["normal-case"] = "none"
             },
-            "text-transform: {value};"
+            "text-transform: {value};",
+            sortSeed
         );
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddTruncateGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTruncateGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
                 ["truncate"] = ""
             },
             """
-               overflow: hidden;
-               text-overflow: ellipsis;
-               white-space: nowrap;
-               """
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            """,
+            sortSeed
         );
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddTextOverflowGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTextOverflowGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
                 ["text-ellipsis"] = "ellipsis",
                 ["text-clip"] = "clip",
             },
-            "text-overflow: {value};"
+            "text-overflow: {value};",
+            sortSeed
         );
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddTextIndentGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTextIndentGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -606,28 +658,32 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-indent: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "text-indent: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "text-indent: {value};"
+            "text-indent: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "text-indent: {value};"
+            "text-indent: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddVerticalAlignGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddVerticalAlignGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -636,11 +692,11 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "vertical-align: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length", "vertical-align: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["baseline"] = "baseline",
@@ -652,20 +708,23 @@ public static class TypographyCollection
                 ["sub"] = "sub",
                 ["super"] = "super"
             },
-            "vertical-align: {value};"
+            "vertical-align: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddWhitespaceGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddWhitespaceGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "whitespace"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["normal"] = "normal",
@@ -675,15 +734,18 @@ public static class TypographyCollection
                 ["pre-wrap"] = "pre-wrap",
                 ["break-spaces"] = "break-spaces"
             },
-            "white-space: {value};"
+            "white-space: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddWordBreakGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddWordBreakGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -692,16 +754,18 @@ public static class TypographyCollection
             """
             overflow-wrap: normal;
             word-break: normal;
-            """
+            """,
+            sortSeed
         );
         
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
                 ["break-words"] = "break-word"
             },
-            "overflow-wrap: {value};"
+            "overflow-wrap: {value};",
+            sortSeed
         );
         
         var scssUtilityClassGroup = new ScssUtilityClassGroup
@@ -709,39 +773,45 @@ public static class TypographyCollection
             SelectorPrefix = "break"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["all"] = "break-all",
                 ["keep"] = "keep-all"
             },
-            "word-break: {value};"
+            "word-break: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddHyphensGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddHyphensGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "hyphens"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none",
                 ["manual"] = "manual",
                 ["auto"] = "auto"
             },
-            "hyphens: {value};"
+            "hyphens: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddContentGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddContentGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -750,18 +820,21 @@ public static class TypographyCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("string", "content: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("string", "content: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string,string>
             {
                 ["none"] = "none",
             },
-            "content: {value};"
+            "content: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 }

@@ -14,29 +14,25 @@ public static class TablesCollection
         var sortSeed = 1100000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddTableGroupAsync();
+        sortSeed = await internalCollection.AddTableGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddTableGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddTableGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Border Collapse
 
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string, string>
             {
                 ["border-collapse"] = "collapse",
                 ["border-separate"] = "separate",
             },
-            "border-collapse: {value};"
+            "border-collapse: {value};",
+            sortSeed
         );
 
         #endregion
@@ -50,22 +46,24 @@ public static class TablesCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "border-spacing: {value} {value};"
+            "border-spacing: {value} {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "border-spacing: {value} {value};"
+            "border-spacing: {value} {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -81,22 +79,24 @@ public static class TablesCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} var(--sf-border-spacing-y);");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: {value} var(--sf-border-spacing-y);", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "border-spacing: {value} var(--sf-border-spacing-y);"
+            "border-spacing: {value} var(--sf-border-spacing-y);",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "border-spacing: {value} var(--sf-border-spacing-y);"
+            "border-spacing: {value} var(--sf-border-spacing-y);",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -112,22 +112,24 @@ public static class TablesCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: var(--sf-border-spacing-x) {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-spacing: var(--sf-border-spacing-x) {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "border-spacing: var(--sf-border-spacing-x) {value};"
+            "border-spacing: var(--sf-border-spacing-x) {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "border-spacing: var(--sf-border-spacing-x) {value};"
+            "border-spacing: var(--sf-border-spacing-x) {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -141,13 +143,14 @@ public static class TablesCollection
             SelectorPrefix = "table"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["fixed"] = "fixed"
             },
-            "table-layout: {value};"
+            "table-layout: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -161,17 +164,20 @@ public static class TablesCollection
             SelectorPrefix = "caption"
         };
     
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["top"] = "top",
                 ["bottom"] = "bottom"
             },
-            "caption-side: {value};"
+            "caption-side: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 }

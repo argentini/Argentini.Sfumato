@@ -14,19 +14,14 @@ public static class SizingCollection
         var sortSeed = 800000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddWidthGroupAsync();
-        await internalCollection.AddHeightGroupAsync();
+        sortSeed = await internalCollection.AddWidthGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddHeightGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddWidthGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddWidthGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Width
         
@@ -37,11 +32,11 @@ public static class SizingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "width: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "width: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -52,17 +47,20 @@ public static class SizingCollection
                 ["max"] = "max-content",
                 ["fit"] = "fit-content"
             },
-            "width: {value};"
+            "width: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "width: {value};"
+            "width: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "width: {value};"
+            "width: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -78,11 +76,11 @@ public static class SizingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "min-width: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "min-width: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -92,7 +90,8 @@ public static class SizingCollection
                 ["max"] = "max-content",
                 ["fit"] = "fit-content"
             },
-            "min-width: {value};"
+            "min-width: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -108,11 +107,11 @@ public static class SizingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "max-width: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "max-width: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -141,15 +140,18 @@ public static class SizingCollection
                 ["screen-desk"] = "#{$elas-breakpoint}",
                 ["screen-elas"] = "#{$tabp-breakpoint}"
             },
-            "max-width: {value};"
+            "max-width: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddHeightGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddHeightGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Height
         
@@ -160,11 +162,11 @@ public static class SizingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "height: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "height: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -175,17 +177,20 @@ public static class SizingCollection
                 ["max"] = "max-content",
                 ["fit"] = "fit-content"
             },
-            "height: {value};"
+            "height: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "height: {value};"
+            "height: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "height: {value};"
+            "height: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -201,11 +206,11 @@ public static class SizingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "min-height: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "min-height: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -215,7 +220,8 @@ public static class SizingCollection
                 ["max"] = "max-content",
                 ["fit"] = "fit-content"
             },
-            "min-height: {value};"
+            "min-height: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -231,11 +237,11 @@ public static class SizingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "max-height: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "max-height: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -247,16 +253,20 @@ public static class SizingCollection
                 ["max"] = "max-content",
                 ["fit"] = "fit-content"
             },
-            "max-height: {value};"
+            "max-height: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "max-height: {value};"
+            "max-height: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 }

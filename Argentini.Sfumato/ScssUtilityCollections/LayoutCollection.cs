@@ -14,27 +14,22 @@ public static class LayoutCollection
         var sortSeed = 700000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddAspectRatioGroupAsync();
-        await internalCollection.AddContainerGroupAsync();
-        await internalCollection.AddColumnsGroupAsync();
-        await internalCollection.AddBreakGroupAsync();
-        await internalCollection.AddBoxGroupAsync();
-        await internalCollection.AddDisplayGroupAsync();
-        await internalCollection.AddFloatGroupAsync();
-        await internalCollection.AddObjectGroupAsync();
-        await internalCollection.AddOverflowGroupAsync();
-        await internalCollection.AddPositionGroupAsync();
+        sortSeed = await internalCollection.AddAspectRatioGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddContainerGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddColumnsGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBreakGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBoxGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddDisplayGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddFloatGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddObjectGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddOverflowGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddPositionGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
 
-    public static async Task AddAspectRatioGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddAspectRatioGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -43,11 +38,11 @@ public static class LayoutCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("ratio", "aspect-ratio: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("ratio", "aspect-ratio: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -55,15 +50,18 @@ public static class LayoutCollection
                 ["video"] = "16/9",
                 ["screen"] = "4/3"
             },
-            "aspect-ratio: {value};"
+            "aspect-ratio: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddContainerGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddContainerGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string, string>
             {
@@ -95,11 +93,14 @@ public static class LayoutCollection
             @include sf-media($from: elas) {
                max-width: $elas-breakpoint;
             }
-            """
+            """,
+            sortSeed
         );
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddColumnsGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddColumnsGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -108,11 +109,11 @@ public static class LayoutCollection
 
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage,integer", "columns: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage,integer", "columns: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -130,18 +131,22 @@ public static class LayoutCollection
                 ["6xl"] = "72rem",
                 ["7xl"] = "80rem"
             },
-            "columns: {value};"
+            "columns: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24),
-            "columns: {value};"
+            "columns: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddBreakGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBreakGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Break After
 
@@ -150,7 +155,7 @@ public static class LayoutCollection
             SelectorPrefix = "break-after"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -162,11 +167,12 @@ public static class LayoutCollection
                 ["right"] = "right",
                 ["column"] = "column"
             },
-            "break-after: {value};"
+            "break-after: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
 
         #region Break Before
@@ -176,7 +182,7 @@ public static class LayoutCollection
             SelectorPrefix = "break-before"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -188,11 +194,12 @@ public static class LayoutCollection
                 ["right"] = "right",
                 ["column"] = "column"
             },
-            "break-before: {value};"
+            "break-before: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
 
         #region Break Inside
@@ -202,7 +209,7 @@ public static class LayoutCollection
             SelectorPrefix = "break-inside"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -210,11 +217,12 @@ public static class LayoutCollection
                 ["avoid-page"] = "avoid-page",
                 ["avoid-column"] = "avoid-column"
             },
-            "break-inside: {value};"
+            "break-inside: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
 
         #region Box Decoration Break
@@ -224,42 +232,48 @@ public static class LayoutCollection
             SelectorPrefix = "box-decoration"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["clone"] = "clone",
                 ["slice"] = "slice"
             },
-            "box-decoration-break: {value};"
+            "box-decoration-break: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddBoxGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBoxGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
             SelectorPrefix = "box"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["border"] = "border-box",
                 ["content"] = "content-box"
             },
-            "box-sizing: {value};"
+            "box-sizing: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddDisplayGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddDisplayGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -284,11 +298,14 @@ public static class LayoutCollection
                 ["list-item"] = "list-item",
                 ["hidden"] = "none"
             },
-            "display: {value};"
+            "display: {value};",
+            sortSeed
         );        
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddFloatGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddFloatGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Float
 
@@ -297,18 +314,19 @@ public static class LayoutCollection
             SelectorPrefix = "float"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["right"] = "right",
                 ["left"] = "left",
                 ["none"] = "none"
             },
-            "float: {value};"
+            "float: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
 
         #region Clear
@@ -318,7 +336,7 @@ public static class LayoutCollection
             SelectorPrefix = "clear"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["right"] = "right",
@@ -326,26 +344,30 @@ public static class LayoutCollection
                 ["both"] = "both",
                 ["none"] = "none"
             },
-            "clear: {value};"
+            "clear: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddObjectGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddObjectGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Isolation
 
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string, string>
             {
                 ["isolate"] = "isolate",
                 ["isolation-auto"] = "auto",
             },
-            "isolation: {value};"
+            "isolation: {value};",
+            sortSeed
         );
         
         #endregion
@@ -357,7 +379,7 @@ public static class LayoutCollection
             SelectorPrefix = "object"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["contain"] = "contain",
@@ -366,10 +388,11 @@ public static class LayoutCollection
                 ["none"] = "none",
                 ["scale-down"] = "scale-down"
             },
-            "object-fit: {value};"
+            "object-fit: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["bottom"] = "bottom",
@@ -382,15 +405,18 @@ public static class LayoutCollection
                 ["right-top"] = "right top",
                 ["top"] = "top"
             },
-            "object-position: {value};"
+            "object-position: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddOverflowGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddOverflowGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Overflow
 
@@ -399,7 +425,7 @@ public static class LayoutCollection
             SelectorPrefix = "overflow"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -408,11 +434,12 @@ public static class LayoutCollection
                 ["visible"] = "visible",
                 ["scroll"] = "scroll"
             },
-            "overflow: {value};"
+            "overflow: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Overflow X
@@ -422,7 +449,7 @@ public static class LayoutCollection
             SelectorPrefix = "overflow-x"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -431,11 +458,12 @@ public static class LayoutCollection
                 ["visible"] = "visible",
                 ["scroll"] = "scroll"
             },
-            "overflow-x: {value};"
+            "overflow-x: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Overflow Y
@@ -445,7 +473,7 @@ public static class LayoutCollection
             SelectorPrefix = "overflow-y"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -454,11 +482,12 @@ public static class LayoutCollection
                 ["visible"] = "visible",
                 ["scroll"] = "scroll"
             },
-            "overflow-y: {value};"
+            "overflow-y: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Overscroll
@@ -468,18 +497,19 @@ public static class LayoutCollection
             SelectorPrefix = "overscroll"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["contain"] = "contain",
                 ["none"] = "none"
             },
-            "overscroll-behavior: {value};"
+            "overscroll-behavior: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Overscroll X
@@ -489,18 +519,19 @@ public static class LayoutCollection
             SelectorPrefix = "overscroll-x"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["contain"] = "contain",
                 ["none"] = "none"
             },
-            "overscroll-behavior-x: {value};"
+            "overscroll-behavior-x: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Overscroll Y
@@ -510,26 +541,29 @@ public static class LayoutCollection
             SelectorPrefix = "overscroll-y"
         };
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["contain"] = "contain",
                 ["none"] = "none"
             },
-            "overscroll-behavior-y: {value};"
+            "overscroll-behavior-y: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddPositionGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddPositionGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Position
 
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -539,7 +573,8 @@ public static class LayoutCollection
                 ["relative"] = "relative",
                 ["sticky"] = "sticky"
             },
-            "position: {value};"
+            "position: {value};",
+            sortSeed
         );
 
         #endregion
@@ -553,28 +588,31 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "top: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "top: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px",
                 ["auto"] = "auto"
             },
-            "top: {value};"
+            "top: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "top: {value};"
+            "top: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "top: {value};"
+            "top: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -590,28 +628,31 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "right: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "right: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px",
                 ["auto"] = "auto"
             },
-            "right: {value};"
+            "right: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "right: {value};"
+            "right: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "right: {value};"
+            "right: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -627,28 +668,31 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "bottom: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "bottom: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px",
                 ["auto"] = "auto"
             },
-            "bottom: {value};"
+            "bottom: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "bottom: {value};"
+            "bottom: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "bottom: {value};"
+            "bottom: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -664,28 +708,31 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "left: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "left: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px",
                 ["auto"] = "auto"
             },
-            "left: {value};"
+            "left: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "left: {value};"
+            "left: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "left: {value};"
+            "left: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -701,28 +748,31 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "inset: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "inset: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px",
                 ["auto"] = "auto"
             },
-            "inset: {value};"
+            "inset: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "inset: {value};"
+            "inset: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "inset: {value};"
+            "inset: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -738,17 +788,17 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             left: {value};
             right: {value};
-            """
+            """, sortSeed
             );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -758,23 +808,26 @@ public static class LayoutCollection
             """
             left: {value};
             right: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             left: {value};
             right: {value};
-            """
+            """,
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             """
             left: {value};
             right: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -790,17 +843,17 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             top: {value};
             bottom: {value};
-            """
+            """, sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -810,23 +863,26 @@ public static class LayoutCollection
             """
             top: {value};
             bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             top: {value};
             bottom: {value};
-            """
+            """,
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             """
             top: {value};
             bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -842,31 +898,34 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "inset-inline-start: {value};"
+            "inset-inline-start: {value};", sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px",
                 ["auto"] = "auto"
             },
-            "inset-inline-start: {value};"
+            "inset-inline-start: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "inset-inline-start: {value};"
+            "inset-inline-start: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "inset-inline-start: {value};"
+            "inset-inline-start: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -882,31 +941,35 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "inset-inline-end: {value};"
+            "inset-inline-end: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px",
                 ["auto"] = "auto"
             },
-            "inset-inline-end: {value};"
+            "inset-inline-end: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "inset-inline-end: {value};"
+            "inset-inline-end: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
-            "inset-inline-end: {value};"
+            "inset-inline-end: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -915,7 +978,7 @@ public static class LayoutCollection
         
         #region Visibility
 
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string, string>
             {
@@ -923,7 +986,8 @@ public static class LayoutCollection
                 ["invisible"] = "hidden",
                 ["collapse"] = "collapse"
             },
-            "visibility: {value};"
+            "visibility: {value};",
+            sortSeed
         );
         
         #endregion
@@ -937,14 +1001,15 @@ public static class LayoutCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "integer",
-            "z-index: {value};"
+            "z-index: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -957,11 +1022,14 @@ public static class LayoutCollection
                 ["40"] = "40",
                 ["50"] = "50"
             },
-            "z-index: {value};"
+            "z-index: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 }

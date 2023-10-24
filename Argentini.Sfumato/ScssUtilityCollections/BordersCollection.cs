@@ -14,22 +14,17 @@ public static class BordersCollection
         var sortSeed = 200000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddRoundedGroupAsync();
-        await internalCollection.AddBorderGroupAsync();
-        await internalCollection.AddDivideGroupAsync();
-        await internalCollection.AddOutlineGroupAsync();
-        await internalCollection.AddRingGroupAsync();
+        sortSeed = await internalCollection.AddRoundedGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddBorderGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddDivideGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddOutlineGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddRingGroupAsync(sortSeed);
 
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddRoundedGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddRoundedGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var variations = new Dictionary<string, string>
         {
@@ -77,20 +72,23 @@ public static class BordersCollection
         
             #region Arbitrary Value Options
 
-            await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", scssTemplate);
+            sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", scssTemplate, sortSeed);
 
             #endregion
         
-            await scssUtilityClassGroup.AddClassesAsync(
+            sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.RoundedOptions,
-                scssTemplate
+                scssTemplate,
+                sortSeed
             );
 
             if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         }
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddBorderGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddBorderGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -99,17 +97,18 @@ public static class BordersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-width: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "border-color: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "border-width: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "border-color: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.RoundedOptions,
-            "border-width: {value};"
+            "border-width: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["solid"] = "solid",
@@ -119,12 +118,14 @@ public static class BordersCollection
                 ["hidden"] = "hidden",
                 ["none"] = "none"
             },
-            "border-style: {value};"
+            "border-style: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "border-color: {value};"
+            "border-color: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -156,26 +157,30 @@ public static class BordersCollection
         
             #region Arbitrary Value Options
 
-            await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", scssTemplate);
-            await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", scssTemplate.Replace("width:", "color:"));
+            sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", scssTemplate, sortSeed);
+            sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", scssTemplate.Replace("width:", "color:"), sortSeed);
 
             #endregion
         
-            await scssUtilityClassGroup.AddClassesAsync(
+            sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.RoundedOptions,
-                scssTemplate
+                scssTemplate,
+                sortSeed
             );
             
-            await scssUtilityClassGroup.AddClassesAsync(
+            sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.Colors,
-                scssTemplate.Replace("width:", "color:")
+                scssTemplate.Replace("width:", "color:"),
+                sortSeed
             );
 
             if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         }
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddDivideGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddDivideGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Divide
         
@@ -186,27 +191,29 @@ public static class BordersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "color",
             """
             & > * + * {
                 border-color: {value};
             }
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             """
             & > * + * {
                 border-color: {value};
             }
-            """
+            """,
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["solid"] = "solid",
@@ -219,11 +226,12 @@ public static class BordersCollection
             & > * + * {
                 border-style: {value};
             }
-            """
+            """,
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
 
         #region Divide X
@@ -235,30 +243,32 @@ public static class BordersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             & > * + * {
                 border-right-width: 0px;
                 border-left-width: {value};
             }
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.DivideWidthOptions,
             """
             & > * + * {
                 border-right-width: 0px;
                 border-left-width: {value};
             }
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Divide Y
@@ -270,33 +280,35 @@ public static class BordersCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             & > * + * {
                 border-top-width: {value};
                 border-bottom-width: 0px;
             }
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.DivideWidthOptions,
             """
             & > * + * {
                 border-top-width: {value};
                 border-bottom-width: 0px;
             }
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -307,12 +319,14 @@ public static class BordersCollection
             & > * + * {
                 {value};
             }
-            """
+            """,
+            sortSeed
         );
         
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddOutlineGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddOutlineGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
@@ -321,13 +335,13 @@ public static class BordersCollection
         
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "outline-width: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "outline-color: {value};");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "outline-style: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "outline-width: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "outline-color: {value};", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("raw", "outline-style: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -336,15 +350,17 @@ public static class BordersCollection
                 ["4"] = 4.PxToRem(),
                 ["8"] = 8.PxToRem()
             },
-            "border-style: {value};"
+            "border-style: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "outline-color: {value};"
+            "outline-color: {value};",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["dashed"] = "dashed",
@@ -352,7 +368,8 @@ public static class BordersCollection
                 ["double"] = "double",
                 ["none"] = "none"
             },
-            "outline-style: {value};"
+            "outline-style: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -364,11 +381,11 @@ public static class BordersCollection
         
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "outline-offset: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "outline-offset: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -377,13 +394,16 @@ public static class BordersCollection
                 ["4"] = 4.PxToRem(),
                 ["8"] = 8.PxToRem()
             },
-            "outline-offset: {value};"
+            "outline-offset: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddRingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddRingGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Ring
         
@@ -395,12 +415,12 @@ public static class BordersCollection
         
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);");
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "--sf-ring-color: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);", sortSeed);
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("color", "--sf-ring-color: {value};", sortSeed);
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "0.1875rem",
@@ -410,16 +430,18 @@ public static class BordersCollection
                 ["4"] = 4.PxToRem(),
                 ["8"] = 8.PxToRem()
             },
-            "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);"
+            "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);",
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
-            "--sf-ring-color: {value};"
+            "--sf-ring-color: {value};",
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
         
         #region Ring Inset
@@ -430,12 +452,13 @@ public static class BordersCollection
             Category = "ring"
         };
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 [""] = "inset"
             },
-            "--sf-ring-inset: {value};"
+            "--sf-ring-inset: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -451,24 +474,26 @@ public static class BordersCollection
         
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             --sf-ring-offset-width: {value};
             box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
-            """
+            """,
+            sortSeed
             );
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "color",
             """
             --sf-ring-offset-color: {value};
             box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
-            """
+            """,
+            sortSeed
             );
 
         #endregion
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -480,19 +505,23 @@ public static class BordersCollection
             """
             --sf-ring-offset-width: {value};
             box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
-            """
+            """,
+            sortSeed
         );
 
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             """
             --sf-ring-offset-color: {value};
             box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
-            """
+            """,
+            sortSeed
         );
 
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
-
+        
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 }

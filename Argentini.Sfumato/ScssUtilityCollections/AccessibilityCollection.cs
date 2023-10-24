@@ -14,20 +14,15 @@ public static class AccessibilityCollection
         var sortSeed = 0;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddScreenReadersGroupAsync();
+        sortSeed = await internalCollection.AddScreenReadersGroupAsync(sortSeed);
 
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddScreenReadersGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddScreenReadersGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -43,10 +38,11 @@ public static class AccessibilityCollection
             clip: rect(0, 0, 0, 0);
             white-space: nowrap;
             border-width: 0;
-            """
+            """,
+            sortSeed
         );
         
-        await ScssUtilityClassGroup.AddVanityClassGroups(
+        sortSeed = await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
             new Dictionary<string,string>
             {
@@ -61,7 +57,10 @@ public static class AccessibilityCollection
             overflow: visible;
             clip: auto;
             white-space: normal;
-            """
+            """,
+            sortSeed
         );
+
+        return await Task.FromResult(sortSeed);
     }
 }

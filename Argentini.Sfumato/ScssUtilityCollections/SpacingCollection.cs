@@ -14,20 +14,15 @@ public static class SpacingCollection
         var sortSeed = 900000;
         var internalCollection = new Dictionary<string, ScssUtilityClassGroup>();
 
-        await internalCollection.AddPaddingGroupAsync();
-        await internalCollection.AddMarginGroupAsync();
-        await internalCollection.AddSpaceGroupAsync();
+        sortSeed = await internalCollection.AddPaddingGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddMarginGroupAsync(sortSeed);
+        sortSeed = await internalCollection.AddSpaceGroupAsync(sortSeed);
         
         foreach (var group in internalCollection)
-        {
-            foreach (var item in group.Value.Classes)
-                item.SortOrder = sortSeed++;
-            
             collection.TryAdd(group.Key, group.Value);
-        }
     }
     
-    public static async Task AddPaddingGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddPaddingGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Padding
         
@@ -38,22 +33,24 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "padding: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "padding: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "padding: {value};"
+            "padding: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "padding: {value};"
+            "padding: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -69,17 +66,18 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             padding-left: {value};
             padding-right: {value};
-            """
+            """,
+            sortSeed
             );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -88,15 +86,17 @@ public static class SpacingCollection
             """
             padding-left: {value};
             padding-right: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             padding-left: {value};
             padding-right: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -112,17 +112,18 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             padding-top: {value};
             padding-bottom: {value};
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -131,15 +132,17 @@ public static class SpacingCollection
             """
             padding-top: {value};
             padding-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             padding-top: {value};
             padding-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -155,25 +158,28 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "padding-inline-start: {value};"
+            "padding-inline-start: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "padding-inline-start: {value};"
+            "padding-inline-start: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "padding-inline-start: {value};"
+            "padding-inline-start: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -189,25 +195,28 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "padding-inline-end: {value};"
+            "padding-inline-end: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "padding-inline-end: {value};"
+            "padding-inline-end: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "padding-inline-end: {value};"
+            "padding-inline-end: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -223,25 +232,28 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "padding-top: {value};"
+            "padding-top: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "padding-top: {value};"
+            "padding-top: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "padding-top: {value};"
+            "padding-top: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -257,25 +269,28 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "padding-right: {value};"
+            "padding-right: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "padding-right: {value};"
+            "padding-right: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "padding-right: {value};"
+            "padding-right: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -291,25 +306,28 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "padding-bottom: {value};"
+            "padding-bottom: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "padding-bottom: {value};"
+            "padding-bottom: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "padding-bottom: {value};"
+            "padding-bottom: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -325,33 +343,38 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "padding-left: {value};"
+            "padding-left: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "padding-left: {value};"
+            "padding-left: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "padding-left: {value};"
+            "padding-left: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 
-    public static async Task AddMarginGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddMarginGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Margin
         
@@ -362,23 +385,25 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "margin: {value};");
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync("length,percentage", "margin: {value};", sortSeed);
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "margin: {value};"
+            "margin: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "margin: {value};"
+            "margin: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -394,17 +419,18 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             margin-left: {value};
             margin-right: {value};
-            """
+            """,
+            sortSeed
             );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -414,15 +440,17 @@ public static class SpacingCollection
             """
             margin-left: {value};
             margin-right: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             margin-left: {value};
             margin-right: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -438,17 +466,18 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             margin-top: {value};
             margin-bottom: {value};
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
@@ -458,15 +487,17 @@ public static class SpacingCollection
             """
             margin-top: {value};
             margin-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             margin-top: {value};
             margin-bottom: {value};
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -482,26 +513,28 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "margin-inline-start: {value};"
+            "margin-inline-start: {value};", sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "margin-inline-start: {value};"
+            "margin-inline-start: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "margin-inline-start: {value};"
+            "margin-inline-start: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -517,26 +550,29 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "margin-inline-end: {value};"
+            "margin-inline-end: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "margin-inline-end: {value};"
+            "margin-inline-end: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "margin-inline-end: {value};"
+            "margin-inline-end: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -552,26 +588,29 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "margin-top: {value};"
+            "margin-top: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "margin-top: {value};"
+            "margin-top: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "margin-top: {value};"
+            "margin-top: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -587,26 +626,29 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "margin-right: {value};"
+            "margin-right: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "margin-right: {value};"
+            "margin-right: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "margin-right: {value};"
+            "margin-right: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -622,26 +664,29 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "margin-bottom: {value};"
+            "margin-bottom: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "margin-bottom: {value};"
+            "margin-bottom: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "margin-bottom: {value};"
+            "margin-bottom: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -657,34 +702,39 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
-            "margin-left: {value};"
+            "margin-left: {value};",
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["auto"] = "auto",
                 ["0"] = "0px",
                 ["px"] = "1px"
             },
-            "margin-left: {value};"
+            "margin-left: {value};",
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
-            "margin-left: {value};"
+            "margin-left: {value};",
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
     
-    public static async Task AddSpaceGroupAsync(this Dictionary<string, ScssUtilityClassGroup> collection)
+    public static async Task<int> AddSpaceGroupAsync(this Dictionary<string,ScssUtilityClassGroup> collection, int sortSeed)
     {
         #region Space X
         
@@ -695,18 +745,19 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             & > * + * {
                 margin-left: {value};
             }
-            """
+            """,
+            sortSeed
             );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -716,16 +767,18 @@ public static class SpacingCollection
             & > * + * {
                 margin-left: {value};
             }
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             & > * + * {
                 margin-left: {value};
             }
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
@@ -741,18 +794,19 @@ public static class SpacingCollection
     
         #region Arbitrary Value Options
 
-        await scssUtilityClassGroup.AddAbitraryValueClassAsync(
+        sortSeed = await scssUtilityClassGroup.AddAbitraryValueClassAsync(
             "length,percentage",
             """
             & > * + * {
                 margin-top: {value};
             }
-            """
+            """,
+            sortSeed
         );
 
         #endregion
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             new Dictionary<string, string>
             {
                 ["0"] = "0px",
@@ -762,20 +816,24 @@ public static class SpacingCollection
             & > * + * {
                 margin-top: {value};
             }
-            """
+            """,
+            sortSeed
         );
         
-        await scssUtilityClassGroup.AddClassesAsync(
+        sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             """
             & > * + * {
                 margin-top: {value};
             }
-            """
+            """,
+            sortSeed
         );
         
         if (collection.TryAdd(scssUtilityClassGroup.SelectorPrefix, scssUtilityClassGroup) == false) throw new Exception();
         
         #endregion
+        
+        return await Task.FromResult(sortSeed);
     }
 }
