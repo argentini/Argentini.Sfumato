@@ -47,7 +47,8 @@ public sealed class SfumatoAppState
     public ConcurrentDictionary<string,ScssUtilityClassGroup> TypographyCollection { get; } = new();
     public ConcurrentDictionary<string,ScssUtilityClassGroup> AccessibilityCollection { get; } = new();
     public ConcurrentDictionary<string,ScssUtilityClassGroup> BordersCollection { get; } = new();
-    
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> EffectsCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> FiltersCollection { get; } = new();
     
     
     
@@ -249,6 +250,8 @@ public sealed class SfumatoAppState
 		TypographyCollection.AddAllTypographyClassesAsync(tasks);
 		AccessibilityCollection.AddAllAccessibilityClassesAsync(tasks);
 		BordersCollection.AddAllBordersClassesAsync(tasks);
+		EffectsCollection.AddAllEffectsClassesAsync(tasks);
+		FiltersCollection.AddAllFiltersClassesAsync(tasks);
         
         await Task.WhenAll(tasks);
 
@@ -258,6 +261,8 @@ public sealed class SfumatoAppState
         classCount += TypographyCollection.Sum(c => c.Value.Classes.Count);
         classCount += AccessibilityCollection.Sum(c => c.Value.Classes.Count);
         classCount += BordersCollection.Sum(c => c.Value.Classes.Count);
+        classCount += EffectsCollection.Sum(c => c.Value.Classes.Count);
+        classCount += FiltersCollection.Sum(c => c.Value.Classes.Count);
         
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1a", $"Loaded {classCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");

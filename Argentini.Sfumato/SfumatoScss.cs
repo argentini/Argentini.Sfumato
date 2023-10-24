@@ -466,6 +466,27 @@ public static class SfumatoScss
 	    ["8"] = 8.PxToRem()
     };
     
+    public static Dictionary<string, string> BlendModeOptions => new()
+    {
+	    ["normal"] = "normal",
+	    ["multiply"] = "multiply",
+	    ["screen"] = "multiply",
+	    ["overlay"] = "overlay",
+	    ["darken"] = "darken",
+	    ["lighten"] = "lighten",
+	    ["color-dodge"] = "color-dodge",
+	    ["color-burn"] = "color-burn",
+	    ["hard-light"] = "hard-light",
+	    ["soft-light"] = "soft-light",
+	    ["difference"] = "difference",
+	    ["exclusion"] = "exclusion",
+	    ["hue"] = "hue",
+	    ["saturation"] = "saturation",
+	    ["color"] = "color",
+	    ["luminosity"] = "luminosity",
+	    ["plus-lighter"] = "plus-lighter"
+    };
+    
     #endregion
     
     #region CSS Constants

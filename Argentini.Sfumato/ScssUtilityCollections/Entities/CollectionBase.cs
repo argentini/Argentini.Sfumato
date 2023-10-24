@@ -46,4 +46,23 @@ public static class CollectionBase
         return await Task.FromResult(result);
     }
 
+    /// <summary>
+    /// Add options for incremental whole numbers where that translate to fractional values from zero to one (e.g. ["opacity-5"] => "opacity: 0.05;").
+    /// Used by inherited classes.
+    /// </summary>
+    public static async Task<Dictionary<string,string>> AddOneBasedPercentagesOptions(decimal minValue, decimal maxValue)
+    {
+        var result = new Dictionary<string, string>();
+
+        for (var x = minValue; x <= maxValue; x++)
+        {
+            var percentage = x / 100m;
+            var value = $"{percentage}";
+            
+            result.Add($"{x}", value);
+        }
+
+        return await Task.FromResult(result);
+    }
+
 }
