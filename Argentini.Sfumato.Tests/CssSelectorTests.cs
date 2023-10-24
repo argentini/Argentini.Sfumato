@@ -1,4 +1,3 @@
-using System.Reflection;
 using Argentini.Sfumato.Entities;
 
 namespace Argentini.Sfumato.Tests;
