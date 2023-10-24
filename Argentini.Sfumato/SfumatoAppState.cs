@@ -55,6 +55,7 @@ public sealed class SfumatoAppState
     public ConcurrentDictionary<string,ScssUtilityClassGroup> SizingCollection { get; } = new();
     public ConcurrentDictionary<string,ScssUtilityClassGroup> SpacingCollection { get; } = new();
     public ConcurrentDictionary<string,ScssUtilityClassGroup> SvgCollection { get; } = new();
+    public ConcurrentDictionary<string,ScssUtilityClassGroup> TablesCollection { get; } = new();
     
     #endregion
     
@@ -262,6 +263,7 @@ public sealed class SfumatoAppState
 		SizingCollection.AddAllSizingClassesAsync(tasks);
 		SpacingCollection.AddAllSpacingClassesAsync(tasks);
 		SvgCollection.AddAllSvgClassesAsync(tasks);
+		TablesCollection.AddAllTableClassesAsync(tasks);
 		
         await Task.WhenAll(tasks);
 
@@ -279,6 +281,7 @@ public sealed class SfumatoAppState
         classCount += SizingCollection.Sum(c => c.Value.Classes.Count);
         classCount += SpacingCollection.Sum(c => c.Value.Classes.Count);
         classCount += SvgCollection.Sum(c => c.Value.Classes.Count);
+        classCount += TablesCollection.Sum(c => c.Value.Classes.Count);
         
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1a", $"Loaded {classCount:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
