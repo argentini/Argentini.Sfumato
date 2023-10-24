@@ -146,7 +146,7 @@ public partial class ScssClassCollection
     
     public ScssUtilityBaseClass AnimationNone { get; } = new()
     {
-        Selector = "animate",
+        Selector = "animate-none",
         Template = "animation: none;"
     };
     

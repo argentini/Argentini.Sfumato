@@ -977,6 +977,4 @@ public static class LayoutCollection
         
         #endregion
     }
-    
-    
 }

@@ -92,6 +92,11 @@ public static class BordersCollection
         await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "border-width: {value};");
 
         #endregion
+
+        await scssUtilityClass.AddClassesAsync(
+            SfumatoScss.RoundedOptions,
+            "border-width: {value};"
+        );
         
         await scssUtilityClass.AddClassesAsync(
             new Dictionary<string, string>
@@ -104,11 +109,6 @@ public static class BordersCollection
                 ["none"] = "none"
             },
             "border-style: {value};"
-        );
-        
-        await scssUtilityClass.AddClassesAsync(
-            SfumatoScss.RoundedOptions,
-            "border-width: {value};"
         );
         
         collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);

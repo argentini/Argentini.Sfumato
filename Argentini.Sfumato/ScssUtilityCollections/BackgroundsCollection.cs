@@ -255,10 +255,10 @@ public static class BackgroundsCollection
         
         await scssUtilityClass.AddAbitraryValueClassAsync(
             "color",
-            $$"""
-                       --sf-gradient-to: transparent  var(--sf-gradient-to-position);
-                       --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
-                       """
+            """
+            --sf-gradient-to: transparent  var(--sf-gradient-to-position);
+            --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
+            """
         );
 
         await scssUtilityClass.AddAbitraryValueClassAsync("percentage", "--sf-gradient-via-position: {value};");
@@ -267,13 +267,16 @@ public static class BackgroundsCollection
         
         #region Inherit
         
-        await scssUtilityClass.AddClassesAsync(new Dictionary<string, string>
-        {
-            ["inherit"] = """
-                          --sf-gradient-to: rgb(255 255 255 / 0)  var(--sf-gradient-to-position);
-                          --sf-gradient-stops: var(--sf-gradient-from), inherit var(--sf-gradient-via-position), var(--sf-gradient-to);
-                          """
-        }, "{value}");
+        await scssUtilityClass.AddClassesAsync(
+            new Dictionary<string, string>
+            {
+                ["inherit"] = ""
+            },
+            """
+            --sf-gradient-to: rgb(255 255 255 / 0)  var(--sf-gradient-to-position);
+            --sf-gradient-stops: var(--sf-gradient-from), inherit var(--sf-gradient-via-position), var(--sf-gradient-to);
+            """
+            );
 
         #endregion
         
@@ -281,10 +284,10 @@ public static class BackgroundsCollection
         
         await scssUtilityClass.AddClassesAsync(
             SfumatoScss.Colors,
-            $$"""
-              --sf-gradient-to: transparent  var(--sf-gradient-to-position);
-              --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
-              """
+            """
+            --sf-gradient-to: transparent  var(--sf-gradient-to-position);
+            --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
+            """
         );
 
         #endregion
@@ -323,11 +326,14 @@ public static class BackgroundsCollection
         
         #region Inherit
         
-        await scssUtilityClass.AddClassesAsync(new Dictionary<string, string>
-        {
-            ["inherit"] = "--sf-gradient-to: inherit var(--sf-gradient-to-position);"
-                          
-        }, "{value}");
+        await scssUtilityClass.AddClassesAsync(
+            new Dictionary<string, string>
+            {
+                ["inherit"] = ""
+                              
+            },
+            "--sf-gradient-to: inherit var(--sf-gradient-to-position);"
+        );
         
         #endregion
         
