@@ -103,7 +103,7 @@ public static class BordersCollection
         #endregion
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
-            SfumatoScss.RoundedOptions,
+            SfumatoScss.BorderWidthOptions,
             "border-width: {value};",
             sortSeed
         );
@@ -163,7 +163,7 @@ public static class BordersCollection
             #endregion
         
             sortSeed = await scssUtilityClassGroup.AddClassesAsync(
-                SfumatoScss.RoundedOptions,
+                SfumatoScss.BorderWidthOptions,
                 scssTemplate,
                 sortSeed
             );

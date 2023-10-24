@@ -26,7 +26,8 @@ public static class EffectsCollection
     {
         var scssUtilityClassGroup = new ScssUtilityClassGroup
         {
-            SelectorPrefix = "shadow"
+            SelectorPrefix = "shadow",
+            Category = "shadow"
         };
     
         #region Arbitrary Value Options
