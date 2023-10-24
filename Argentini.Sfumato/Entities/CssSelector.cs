@@ -25,7 +25,6 @@ public sealed class CssSelector
     public List<string> PseudoClasses { get; } = new();
     public List<string> AllPrefixes => MediaQueries.Concat(PseudoClasses).ToList();
     public string RootSegment { get; private set; } = string.Empty;
-    public string RootClass { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
     public string CustomValue { get; private set; } = string.Empty;
     public string CustomValueType { get; private set; } = string.Empty;
@@ -53,7 +52,6 @@ public sealed class CssSelector
     {
         FixedValue = string.Empty;
         RootSegment = string.Empty;
-        RootClass = string.Empty;
         CustomValueSegment = string.Empty;
         CustomValueType = string.Empty;
 
@@ -80,7 +78,6 @@ public sealed class CssSelector
 
         FixedValue = Value;
         RootSegment = Value;
-        RootClass = Value;
         
         var prefixesIndex = -1;
 
@@ -100,7 +97,7 @@ public sealed class CssSelector
                 var prefixSegment = Value[..(prefixesIndex + 1)];
                 var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
-                RootClass = RootSegment = Value[(prefixesIndex + 1)..];
+                RootSegment = Value[(prefixesIndex + 1)..];
 
                 if (segments.Length > 0)
                 {
@@ -142,12 +139,7 @@ public sealed class CssSelector
             IsImportant = RootSegment.StartsWith('!');
 
             if (IsImportant)
-            {
 	            RootSegment = RootSegment.TrimStart('!');
-	            RootClass = RootClass.TrimStart('!');
-            }
-
-            var indexOfSlash = RootSegment.IndexOf('/');
 
             indexOfBracket = RootSegment.IndexOf('[');
 
@@ -156,26 +148,18 @@ public sealed class CssSelector
                 IsArbitraryCss = true;
                 CustomValueSegment = RootSegment;
                 RootSegment = string.Empty;
-                RootClass = string.Empty;
             }
 
             else if (indexOfBracket > 0)
             {
                 CustomValueSegment = RootSegment[indexOfBracket..];
                 RootSegment = RootSegment[..indexOfBracket];
-                RootClass = RootSegment;
-            }
-
-            else if (indexOfSlash > -1 && indexOfSlash < RootSegment.Length - 1)
-            {
-                //CustomValueSegment = RootSegment[(indexOfSlash + 1)..];
-                RootClass = RootSegment[..(indexOfSlash + 1)];
             }
         }
 
         SetCustomValue();
         SetCustomValueType();
-        
+
         if (RootSegment.Length > 0 || CustomValueSegment.Length > 0)
         {
             IsInvalid = false;
