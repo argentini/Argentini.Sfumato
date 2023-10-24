@@ -32,7 +32,7 @@ public partial class ScssClassCollection
     public ScssBaseClass BorderSpacingX { get; } = new()
     {
         SelectorPrefix = "border-spacing-x",
-        PropertyTemplate = "border-spacing: {value} var(--tw-border-spacing-y);",
+        PropertyTemplate = "border-spacing: {value} var(--sf-border-spacing-y);",
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,
@@ -47,7 +47,7 @@ public partial class ScssClassCollection
     public ScssBaseClass BorderSpacingY { get; } = new()
     {
         SelectorPrefix = "border-spacing-y",
-        PropertyTemplate = "border-spacing: var(--tw-border-spacing-x) {value};",
+        PropertyTemplate = "border-spacing: var(--sf-border-spacing-x) {value};",
         PrefixValueTypes = "length,percentage",
         AddNumberedRemUnitsOptionsMinValue = 0.5m,
         AddNumberedRemUnitsOptionsMaxValue = 96m,

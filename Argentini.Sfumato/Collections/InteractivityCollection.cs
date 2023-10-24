@@ -424,22 +424,22 @@ public partial class ScssClassCollection
         Options = new Dictionary<string, string>
         {
             ["none"] = "none",
-            ["x"] = "x var(--tw-scroll-snap-strictness)",
-            ["y"] = "y var(--tw-scroll-snap-strictness)",
-            ["both"] = "both var(--tw-scroll-snap-strictness)"
+            ["x"] = "x var(--sf-scroll-snap-strictness)",
+            ["y"] = "y var(--sf-scroll-snap-strictness)",
+            ["both"] = "both var(--sf-scroll-snap-strictness)"
         }
     };
     
     public ScssUtilityBaseClass SnapMandatory { get; } = new()
     {
         Selector = "snap-mandatory",
-        Template = "--tw-scroll-snap-strictness: mandatory;"
+        Template = "--sf-scroll-snap-strictness: mandatory;"
     };
     
     public ScssUtilityBaseClass SnapProximity { get; } = new()
     {
         Selector = "snap-proximity",
-        Template = "--tw-scroll-snap-strictness: proximity;"
+        Template = "--sf-scroll-snap-strictness: proximity;"
     };
     
     public ScssBaseClass TouchAction { get; } = new()
