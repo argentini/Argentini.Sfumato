@@ -77,7 +77,7 @@ public static class FlexboxAndGridCollection
             "flex-basis: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddFlexGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -145,7 +145,7 @@ public static class FlexboxAndGridCollection
             "flex-shrink: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -162,7 +162,7 @@ public static class FlexboxAndGridCollection
 
         #endregion
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -179,7 +179,7 @@ public static class FlexboxAndGridCollection
 
         #endregion
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -211,7 +211,7 @@ public static class FlexboxAndGridCollection
             "order: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -233,7 +233,7 @@ public static class FlexboxAndGridCollection
             "order: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
     }
@@ -266,7 +266,7 @@ public static class FlexboxAndGridCollection
             "grid-template-columns: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -305,7 +305,7 @@ public static class FlexboxAndGridCollection
             "grid-column: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -335,7 +335,7 @@ public static class FlexboxAndGridCollection
             "grid-column-start: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -365,7 +365,7 @@ public static class FlexboxAndGridCollection
             "grid-column-end: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -395,7 +395,7 @@ public static class FlexboxAndGridCollection
             "grid-template-rows: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -434,7 +434,7 @@ public static class FlexboxAndGridCollection
             "grid-row: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -464,7 +464,7 @@ public static class FlexboxAndGridCollection
             "grid-row-start: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -494,7 +494,7 @@ public static class FlexboxAndGridCollection
             "grid-row-end: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -522,7 +522,7 @@ public static class FlexboxAndGridCollection
             "grid-row-end: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -550,7 +550,7 @@ public static class FlexboxAndGridCollection
             "grid-auto-columns: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -578,7 +578,7 @@ public static class FlexboxAndGridCollection
             "grid-auto-rows: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -609,7 +609,7 @@ public static class FlexboxAndGridCollection
             "gap: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -640,7 +640,7 @@ public static class FlexboxAndGridCollection
             "column-gap: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -671,7 +671,7 @@ public static class FlexboxAndGridCollection
             "row-gap: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }
@@ -700,7 +700,7 @@ public static class FlexboxAndGridCollection
             "justify-content: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -722,7 +722,7 @@ public static class FlexboxAndGridCollection
             "justify-items: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -745,7 +745,7 @@ public static class FlexboxAndGridCollection
             "justify-self: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }
@@ -775,7 +775,7 @@ public static class FlexboxAndGridCollection
             "align-content: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -798,7 +798,7 @@ public static class FlexboxAndGridCollection
             "align-items: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -822,7 +822,7 @@ public static class FlexboxAndGridCollection
             "align-self: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }
@@ -851,7 +851,7 @@ public static class FlexboxAndGridCollection
             "place-content: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -874,7 +874,7 @@ public static class FlexboxAndGridCollection
             "place-items: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -897,7 +897,7 @@ public static class FlexboxAndGridCollection
             "place-self: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }

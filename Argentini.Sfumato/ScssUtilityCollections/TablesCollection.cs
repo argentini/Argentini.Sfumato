@@ -57,7 +57,7 @@ public static class TablesCollection
             "border-spacing: {value} {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -88,7 +88,7 @@ public static class TablesCollection
             "border-spacing: {value} var(--sf-border-spacing-y);"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -119,7 +119,7 @@ public static class TablesCollection
             "border-spacing: var(--sf-border-spacing-x) {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -139,7 +139,7 @@ public static class TablesCollection
             "table-layout: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -159,7 +159,7 @@ public static class TablesCollection
             "caption-side: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }

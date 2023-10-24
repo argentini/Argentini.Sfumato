@@ -13,7 +13,6 @@ public static class BordersCollection
     {
         tasks.Add(collection.AddRoundedGroupAsync());
         tasks.Add(collection.AddBorderGroupAsync());
-        tasks.Add(collection.AddBorderColorGroupAsync());
         tasks.Add(collection.AddDivideGroupAsync());
         tasks.Add(collection.AddOutlineGroupAsync());
         tasks.Add(collection.AddRingGroupAsync());
@@ -76,7 +75,7 @@ public static class BordersCollection
                 scssTemplate
             );
 
-            collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+            if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         }
     }
     
@@ -90,6 +89,7 @@ public static class BordersCollection
         #region Arbitrary Value Options
 
         await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", "border-width: {value};");
+        await scssUtilityClass.AddAbitraryValueClassAsync("color", "border-color: {value};");
 
         #endregion
 
@@ -111,7 +111,12 @@ public static class BordersCollection
             "border-style: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        await scssUtilityClass.AddClassesAsync(
+            SfumatoScss.Colors,
+            "border-color: {value};"
+        );
+        
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         var variations = new Dictionary<string, string>
         {
@@ -141,6 +146,7 @@ public static class BordersCollection
             #region Arbitrary Value Options
 
             await scssUtilityClass.AddAbitraryValueClassAsync("length,percentage", scssTemplate);
+            await scssUtilityClass.AddAbitraryValueClassAsync("color", scssTemplate.Replace("width:", "color:"));
 
             #endregion
         
@@ -148,51 +154,13 @@ public static class BordersCollection
                 SfumatoScss.RoundedOptions,
                 scssTemplate
             );
-
-            collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
-        }
-    }
-    
-    public static async Task AddBorderColorGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
-    {
-        var variations = new Dictionary<string, string>
-        {
-            ["border"] = "border-color: {value};",
-            ["border-x"] = """
-                           border-left-color: {value};
-                           border-right-color: {value};
-                           """,
-            ["border-y"] = """
-                           border-top-color: {value};
-                           border-bottom-color: {value};
-                           """,
-            ["border-s"] = "border-inline-start-color: {value};",
-            ["border-e"] = "border-inline-end-color: {value};",
-            ["border-t"] = "border-top-color: {value};",
-            ["border-r"] = "border-right-color: {value};",
-            ["border-b"] = "border-bottom-color: {value};",
-            ["border-l"] = "border-left-color: {value};"
-        };
-
-        foreach (var (selector, scssTemplate) in variations)
-        {
-            var scssUtilityClass = new ScssUtilityClassGroup
-            {
-                SelectorPrefix = selector
-            };
-        
-            #region Arbitrary Value Options
-
-            await scssUtilityClass.AddAbitraryValueClassAsync("color", scssTemplate);
-
-            #endregion
-        
+            
             await scssUtilityClass.AddClassesAsync(
                 SfumatoScss.Colors,
-                scssTemplate
+                scssTemplate.Replace("width:", "color:")
             );
 
-            collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+            if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         }
     }
     
@@ -243,7 +211,7 @@ public static class BordersCollection
             """
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
 
@@ -278,7 +246,7 @@ public static class BordersCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -313,7 +281,7 @@ public static class BordersCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -376,7 +344,7 @@ public static class BordersCollection
             "outline-style: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         scssUtilityClass = new ScssUtilityClassGroup
         {
@@ -401,7 +369,7 @@ public static class BordersCollection
             "outline-offset: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddRingGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -439,7 +407,7 @@ public static class BordersCollection
             "--sf-ring-color: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -459,7 +427,7 @@ public static class BordersCollection
             "--sf-ring-inset: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion        
         
@@ -512,7 +480,7 @@ public static class BordersCollection
             """
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
     }

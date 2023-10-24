@@ -51,7 +51,7 @@ public static class EffectsCollection
             "--sf-shadow-color: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddOpacityGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -72,7 +72,7 @@ public static class EffectsCollection
             "opacity: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBlendModeGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -87,7 +87,7 @@ public static class EffectsCollection
             "mix-blend-mode: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         scssUtilityClass = new ScssUtilityClassGroup
         {
@@ -99,6 +99,6 @@ public static class EffectsCollection
             "background-blend-mode: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 }

@@ -42,7 +42,7 @@ public static class SvgCollection
             "fill: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -83,7 +83,7 @@ public static class SvgCollection
             "stroke: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }

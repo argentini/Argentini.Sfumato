@@ -46,7 +46,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: scale({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
 
@@ -80,7 +80,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: scaleX({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -114,7 +114,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: scaleY({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -147,7 +147,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: rotate({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -183,7 +183,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: translateX({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -219,7 +219,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: translateY({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -252,7 +252,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: skewX({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -285,7 +285,7 @@ public static class TransitionsAndAnimationsCollection
             "transform: skewY({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -318,7 +318,7 @@ public static class TransitionsAndAnimationsCollection
             "transform-origin: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }

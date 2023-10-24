@@ -43,7 +43,7 @@ public static class InteractivityCollection
             "accent-color: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddAppearanceGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -61,7 +61,7 @@ public static class InteractivityCollection
             "appearance: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddCursorGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -120,7 +120,7 @@ public static class InteractivityCollection
             "cursor: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddCaretGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -141,7 +141,7 @@ public static class InteractivityCollection
             "caret-color: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddPointerEventsGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -160,7 +160,7 @@ public static class InteractivityCollection
             "pointer-events: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddResizeGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -181,7 +181,7 @@ public static class InteractivityCollection
             "resize: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddScrollBehaviorGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -200,7 +200,7 @@ public static class InteractivityCollection
             "scroll-behavior: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddScrollMarginGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -232,7 +232,7 @@ public static class InteractivityCollection
             "scroll-margin: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -275,7 +275,7 @@ public static class InteractivityCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -318,7 +318,7 @@ public static class InteractivityCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -349,7 +349,7 @@ public static class InteractivityCollection
             "scroll-margin-inline-start: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -380,7 +380,7 @@ public static class InteractivityCollection
             "scroll-margin-inline-end: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -411,7 +411,7 @@ public static class InteractivityCollection
             "scroll-margin-top: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -442,7 +442,7 @@ public static class InteractivityCollection
             "scroll-margin-right: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -473,7 +473,7 @@ public static class InteractivityCollection
             "scroll-margin-bottom: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -504,7 +504,7 @@ public static class InteractivityCollection
             "scroll-margin-left: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }    
@@ -538,7 +538,7 @@ public static class InteractivityCollection
             "scroll-padding: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -581,7 +581,7 @@ public static class InteractivityCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -624,7 +624,7 @@ public static class InteractivityCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -655,7 +655,7 @@ public static class InteractivityCollection
             "scroll-padding-inline-start: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -686,7 +686,7 @@ public static class InteractivityCollection
             "scroll-padding-inline-end: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -717,7 +717,7 @@ public static class InteractivityCollection
             "scroll-padding-top: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -748,7 +748,7 @@ public static class InteractivityCollection
             "scroll-padding-right: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -779,7 +779,7 @@ public static class InteractivityCollection
             "scroll-padding-bottom: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -810,7 +810,7 @@ public static class InteractivityCollection
             "scroll-padding-left: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }    
@@ -853,7 +853,7 @@ public static class InteractivityCollection
             "scroll-snap-type: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         await ScssUtilityClassGroup.AddVanityClassGroups(
             collection,
@@ -890,7 +890,7 @@ public static class InteractivityCollection
             "touch-action: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         scssUtilityClass = new ScssUtilityClassGroup
         {
@@ -908,7 +908,7 @@ public static class InteractivityCollection
             "user-select: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddWillChangeSnapGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -929,6 +929,6 @@ public static class InteractivityCollection
             "will-change: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 }

@@ -174,7 +174,7 @@ public static class BackgroundsCollection
 
         #endregion
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddFromGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
@@ -240,7 +240,7 @@ public static class BackgroundsCollection
         
         #endregion
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddViaGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
@@ -306,7 +306,7 @@ public static class BackgroundsCollection
         
         #endregion
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddToGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
@@ -360,6 +360,6 @@ public static class BackgroundsCollection
         
         #endregion
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 }

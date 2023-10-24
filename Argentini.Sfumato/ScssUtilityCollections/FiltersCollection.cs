@@ -59,7 +59,7 @@ public static class FiltersCollection
             "filter: blur({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBrightnessGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -80,7 +80,7 @@ public static class FiltersCollection
             "filter: brightness({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddContrastGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -101,7 +101,7 @@ public static class FiltersCollection
             "filter: contrast({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddDropShadowGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -131,7 +131,7 @@ public static class FiltersCollection
             "filter: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddGrayscaleGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -156,7 +156,7 @@ public static class FiltersCollection
             "filter: grayscale({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddHueRotateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -185,7 +185,7 @@ public static class FiltersCollection
             "filter: hue-rotate({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddInvertGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -210,7 +210,7 @@ public static class FiltersCollection
             "filter: invert({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddSaturateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -231,7 +231,7 @@ public static class FiltersCollection
             "filter: saturate({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddSepiaGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -256,7 +256,7 @@ public static class FiltersCollection
             "filter: sepia({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropBlurGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -287,7 +287,7 @@ public static class FiltersCollection
             "backdrop-filter: blur({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropBrightnessGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -308,7 +308,7 @@ public static class FiltersCollection
             "backdrop-filter: brightness({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropContrastGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -329,7 +329,7 @@ public static class FiltersCollection
             "backdrop-filter: contrast({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropGrayscaleGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -354,7 +354,7 @@ public static class FiltersCollection
             "backdrop-filter: grayscale({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropHueRotateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -383,7 +383,7 @@ public static class FiltersCollection
             "backdrop-filter: hue-rotate({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropInvertGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -408,7 +408,7 @@ public static class FiltersCollection
             "backdrop-filter: invert({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropSaturateGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -429,7 +429,7 @@ public static class FiltersCollection
             "backdrop-filter: saturate({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropSepiaGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -454,7 +454,7 @@ public static class FiltersCollection
             "backdrop-filter: sepia({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddBackdropOpacityGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -475,6 +475,6 @@ public static class FiltersCollection
             "backdrop-filter: opacity({value});"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 }

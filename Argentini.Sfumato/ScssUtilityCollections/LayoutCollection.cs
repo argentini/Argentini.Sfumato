@@ -47,7 +47,7 @@ public static class LayoutCollection
             "aspect-ratio: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddContainerGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -127,7 +127,7 @@ public static class LayoutCollection
             "columns: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddBreakGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -154,7 +154,7 @@ public static class LayoutCollection
             "break-after: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
 
@@ -180,7 +180,7 @@ public static class LayoutCollection
             "break-before: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
 
@@ -202,7 +202,7 @@ public static class LayoutCollection
             "break-inside: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
 
@@ -222,7 +222,7 @@ public static class LayoutCollection
             "box-decoration-break: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
     }
@@ -243,7 +243,7 @@ public static class LayoutCollection
             "box-sizing: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddDisplayGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -281,7 +281,7 @@ public static class LayoutCollection
             "display: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddFloatGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -303,7 +303,7 @@ public static class LayoutCollection
             "float: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
 
@@ -325,7 +325,7 @@ public static class LayoutCollection
             "clear: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
     }
@@ -346,7 +346,7 @@ public static class LayoutCollection
         
         #endregion
 
-        #region Object Fit
+        #region Object
 
         var scssUtilityClass = new ScssUtilityClassGroup
         {
@@ -365,17 +365,6 @@ public static class LayoutCollection
             "object-fit: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
-
-        #endregion
-        
-        #region Object Position
-
-        scssUtilityClass = new ScssUtilityClassGroup
-        {
-            SelectorPrefix = "object"
-        };
-
         await scssUtilityClass.AddClassesAsync(
             new Dictionary<string, string>
             {
@@ -391,8 +380,8 @@ public static class LayoutCollection
             },
             "object-position: {value};"
         );
-
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
     }
@@ -418,7 +407,7 @@ public static class LayoutCollection
             "overflow: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -441,7 +430,7 @@ public static class LayoutCollection
             "overflow-x: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -464,7 +453,7 @@ public static class LayoutCollection
             "overflow-y: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -485,7 +474,7 @@ public static class LayoutCollection
             "overscroll-behavior: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -506,7 +495,7 @@ public static class LayoutCollection
             "overscroll-behavior-x: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -527,7 +516,7 @@ public static class LayoutCollection
             "overscroll-behavior-y: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
     }
@@ -553,7 +542,7 @@ public static class LayoutCollection
             "position: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
 
         #endregion
         
@@ -590,7 +579,7 @@ public static class LayoutCollection
             "top: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -627,7 +616,7 @@ public static class LayoutCollection
             "right: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
 
@@ -664,7 +653,7 @@ public static class LayoutCollection
             "bottom: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
 
@@ -701,7 +690,7 @@ public static class LayoutCollection
             "left: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
 
@@ -738,7 +727,7 @@ public static class LayoutCollection
             "inset: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -790,7 +779,7 @@ public static class LayoutCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -842,7 +831,7 @@ public static class LayoutCollection
             """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -882,7 +871,7 @@ public static class LayoutCollection
             "inset-inline-start: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -922,7 +911,7 @@ public static class LayoutCollection
             "inset-inline-end: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
         
@@ -973,7 +962,7 @@ public static class LayoutCollection
             "z-index: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         
         #endregion
     }

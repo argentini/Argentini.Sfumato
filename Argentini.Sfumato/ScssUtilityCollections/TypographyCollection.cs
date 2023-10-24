@@ -113,7 +113,7 @@ public static class TypographyCollection
         
         #endregion
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddAntialiasedGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -169,7 +169,7 @@ public static class TypographyCollection
             "letter-spacing: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddLineClampGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -206,7 +206,7 @@ public static class TypographyCollection
                """
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddLeadingGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -240,7 +240,7 @@ public static class TypographyCollection
             "line-height: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddListGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -284,7 +284,7 @@ public static class TypographyCollection
             "list-style-type: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddTextGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
@@ -435,7 +435,7 @@ public static class TypographyCollection
             
         #endregion
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddTextDecorationLineGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -510,7 +510,7 @@ public static class TypographyCollection
         
         #endregion
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddTextUnderlineOffsetGroupAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection)
@@ -539,7 +539,7 @@ public static class TypographyCollection
             "text-decoration-style: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddTextTransformGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -613,7 +613,7 @@ public static class TypographyCollection
             "text-indent: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddVerticalAlignGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -644,7 +644,7 @@ public static class TypographyCollection
             "vertical-align: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 
     public static async Task AddWhitespaceGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -667,7 +667,7 @@ public static class TypographyCollection
             "white-space: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddWordBreakGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -707,7 +707,7 @@ public static class TypographyCollection
             "word-break: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddHyphensGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -727,7 +727,7 @@ public static class TypographyCollection
             "hyphens: {value};"
         );
         
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
     
     public static async Task AddContentGroupAsync(this ConcurrentDictionary<string, ScssUtilityClassGroup> collection)
@@ -751,6 +751,6 @@ public static class TypographyCollection
             "content: {value};"
         );
 
-        collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+        if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
     }
 }

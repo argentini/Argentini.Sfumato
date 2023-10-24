@@ -70,7 +70,7 @@ public sealed class ScssUtilityClassGroup
                 scssTemplate
             );
 
-            collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass);
+            if (collection.TryAdd(scssUtilityClass.SelectorPrefix, scssUtilityClass) == false) throw new Exception();
         }
     }
     
