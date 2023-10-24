@@ -448,6 +448,24 @@ public static class SfumatoScss
 	    ["full"] = "9999px"
     };
     
+    public static Dictionary<string, string> BorderWidthOptions => new()
+    {
+	    [""] = "1px",
+	    ["0"] = "0px",
+	    ["2"] = 2.PxToRem(),
+	    ["4"] = 4.PxToRem(),
+	    ["8"] = 8.PxToRem()
+    };
+   
+    public static Dictionary<string, string> DivideWidthOptions => new()
+    {
+	    [""] = "1px",
+	    ["0"] = "0px",
+	    ["2"] = 2.PxToRem(),
+	    ["4"] = 4.PxToRem(),
+	    ["8"] = 8.PxToRem()
+    };
+    
     #endregion
     
     #region CSS Constants
