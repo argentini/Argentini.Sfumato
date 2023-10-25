@@ -333,7 +333,7 @@ public static class TypographyCollection
 
         foreach (var size in SfumatoScss.TextSizes)
         {
-            await scssUtilityClassGroup.AddAbitrarySlashValueClassAsync(
+            sortSeed = await scssUtilityClassGroup.AddAbitrarySlashValueClassAsync(
                 size.Key,
                 "length,percentage,number",
                 $$"""
