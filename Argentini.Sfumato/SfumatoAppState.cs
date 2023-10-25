@@ -727,7 +727,7 @@ public sealed class SfumatoAppState
 					if (scssUtilityClass.ArbitraryValueTypes.Length > 0)
 						continue;
 
-					if (scssUtilityClass.Selector != cssSelector.RootSegment)
+					if (scssUtilityClass.Selector != cssSelector.RootClassSegment)
 						continue;
 					
 					foundScssUtilityClass = scssUtilityClass;

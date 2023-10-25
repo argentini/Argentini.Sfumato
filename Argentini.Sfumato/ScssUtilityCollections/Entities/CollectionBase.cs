@@ -11,19 +11,19 @@ public static class CollectionBase
     public static async Task<List<ScssUtilityClass>> GetMatchingClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, CssSelector cssSelector)
     {
         var result = new List<ScssUtilityClass>();
-        var groups = collection.Where(g => cssSelector.RootSegment.StartsWith(g.Key, StringComparison.Ordinal)).ToList();
+        var groups = collection.Where(g => cssSelector.RootClassSegment.StartsWith(g.Key, StringComparison.Ordinal)).ToList();
 
         if (string.IsNullOrEmpty(cssSelector.CustomValueSegment))
             foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootSegment));
+                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment));
         
         else if (string.IsNullOrEmpty(cssSelector.CustomValueType) == false && string.IsNullOrEmpty(cssSelector.CustomValueType) == false)
             foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootSegment && c.ArbitraryValueTypes.Contains(cssSelector.CustomValueType)));
+                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment && c.ArbitraryValueTypes.Contains(cssSelector.CustomValueType)));
 
         else if (string.IsNullOrEmpty(cssSelector.CustomValueType))
             foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootSegment && c.ArbitraryValueTypes.Contains("raw")));
+                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment && c.ArbitraryValueTypes.Contains("raw")));
         
         return await Task.FromResult(result);
     }

@@ -24,10 +24,12 @@ public sealed class CssSelector
     public List<string> MediaQueries { get; } = new();
     public List<string> PseudoClasses { get; } = new();
     public List<string> AllPrefixes => MediaQueries.Concat(PseudoClasses).ToList();
-    public string RootSegment { get; private set; } = string.Empty;
+    public string RootClassSegment { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
     public string CustomValue { get; private set; } = string.Empty;
     public string CustomValueType { get; private set; } = string.Empty;
+    public string SlashValue { get; private set; } = string.Empty;
+    public string SlashValueType { get; private set; } = string.Empty;
     public string EscapedSelector => IsInvalid ? string.Empty : EscapeCssClassName();
 
     public int Depth => MediaQueries.Count + PseudoClasses.Count;
@@ -51,9 +53,11 @@ public sealed class CssSelector
     public void ProcessValue()
     {
         FixedValue = string.Empty;
-        RootSegment = string.Empty;
+        RootClassSegment = string.Empty;
         CustomValueSegment = string.Empty;
         CustomValueType = string.Empty;
+        SlashValue = string.Empty;
+        SlashValueType = string.Empty;
 
         MediaQueries.Clear();
         PseudoClasses.Clear();
@@ -69,6 +73,7 @@ public sealed class CssSelector
         var indexOfColon = Value.IndexOf(':');
         var indexOfBracket = Value.IndexOf('[');
         var indexOfBracketClose = Value.IndexOf(']');
+        var indexOfSlash = Value.IndexOf('/');
         
         if (indexOfColon == 0 || indexOfBracket > indexOfBracketClose)
             return;
@@ -77,7 +82,7 @@ public sealed class CssSelector
             return;
 
         FixedValue = Value;
-        RootSegment = Value;
+        RootClassSegment = Value;
         
         var prefixesIndex = -1;
 
@@ -97,7 +102,7 @@ public sealed class CssSelector
                 var prefixSegment = Value[..(prefixesIndex + 1)];
                 var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
-                RootSegment = Value[(prefixesIndex + 1)..];
+                RootClassSegment = Value[(prefixesIndex + 1)..];
 
                 if (segments.Length > 0)
                 {
@@ -129,38 +134,45 @@ public sealed class CssSelector
                     if (PseudoClasses.Count > 0)
                         FixedValue += $"{string.Join(':', PseudoClasses)}:";
 
-                    FixedValue += RootSegment;
+                    FixedValue += RootClassSegment;
                 }
             }
         }
 
-        if (string.IsNullOrEmpty(RootSegment) == false)
+        if (indexOfSlash > 0 && indexOfSlash < Value.Length - 1)
         {
-            IsImportant = RootSegment.StartsWith('!');
+	        SlashValue = Value[(indexOfSlash + 1)..];
+	        SlashValueType = SetCustomValueType(SlashValue);
+        }
+        
+        if (string.IsNullOrEmpty(RootClassSegment) == false)
+        {
+            IsImportant = RootClassSegment.StartsWith('!');
 
             if (IsImportant)
-	            RootSegment = RootSegment.TrimStart('!');
+	            RootClassSegment = RootClassSegment.TrimStart('!');
 
-            indexOfBracket = RootSegment.IndexOf('[');
+            indexOfBracket = RootClassSegment.IndexOf('[');
 
             if (indexOfBracket == 0)
             {
                 IsArbitraryCss = true;
-                CustomValueSegment = RootSegment;
-                RootSegment = string.Empty;
+                CustomValueSegment = RootClassSegment;
+                RootClassSegment = string.Empty;
             }
 
             else if (indexOfBracket > 0)
             {
-                CustomValueSegment = RootSegment[indexOfBracket..];
-                RootSegment = RootSegment[..indexOfBracket];
+                CustomValueSegment = RootClassSegment[indexOfBracket..];
+                RootClassSegment = RootClassSegment[..indexOfBracket];
             }
+            
+            SetCustomValue();
+
+            CustomValueType = SetCustomValueType(CustomValue);
         }
-
-        SetCustomValue();
-        SetCustomValueType();
-
-        if (RootSegment.Length > 0 || CustomValueSegment.Length > 0)
+        
+        if (RootClassSegment.Length > 0 || CustomValueSegment.Length > 0)
         {
             IsInvalid = false;
             return;
@@ -192,44 +204,32 @@ public sealed class CssSelector
     /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <returns></returns>
-    public void SetCustomValueType()
+    public string SetCustomValueType(string value)
     {
-	    if (string.IsNullOrEmpty(CustomValue))
-		    return;
+	    if (string.IsNullOrEmpty(value))
+		    return string.Empty;
 	    
-	    if (CustomValue.Contains(':'))
+	    if (value.Contains(':'))
 	    {
-		    var segments = CustomValue.Split(':', StringSplitOptions.RemoveEmptyEntries);
+		    var segments = value.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
 		    if (segments.Length > 1)
 		    {
 			    if (SfumatoScss.ArbitraryValueTypes.Contains(segments[0]))
-			    {
-				    CustomValueType = segments[0];
-				    return;
-			    }
+				    return segments[0];
 		    }
 	    }
 
-	    // Determine CustomValue type based on CustomValue (e.g. text-[red])
+	    // Determine value type based on value (e.g. text-[red])
 
-	    if (CustomValue.EndsWith('%') && double.TryParse(CustomValue.TrimEnd('%'), out _))
-	    {
-		    CustomValueType = "percentage";
-		    return;
-	    }
+	    if (value.EndsWith('%') && double.TryParse(value.TrimEnd('%'), out _))
+		    return "percentage";
 
-	    if (CustomValue.Contains('.') == false && int.TryParse(CustomValue, out _))
-	    {
-		    CustomValueType = "integer";
-		    return;
-	    }
+	    if (value.Contains('.') == false && int.TryParse(value, out _))
+		    return "integer";
 
-	    if (double.TryParse(CustomValue, out _))
-	    {
-		    CustomValueType = "number";
-		    return;
-	    }
+	    if (double.TryParse(value, out _))
+		    return "number";
 
 	    #region length
 	    
@@ -237,43 +237,28 @@ public sealed class CssSelector
 
 	    foreach (var unit in SfumatoScss.CssUnits)
 	    {
-		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (CustomValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
-	    {
-		    CustomValueType = "length";
-		    return;
-	    }
+		    return "length";
 
 	    #endregion
 
-	    if (CustomValue.EndsWith("fr") && double.TryParse(CustomValue.TrimEnd("fr"), out _))
-	    {
-		    CustomValueType = "flex";
-		    return;
-	    }
+	    if (value.EndsWith("fr") && double.TryParse(value.TrimEnd("fr"), out _))
+		    return "flex";
 
-	    if (CustomValue.IsValidWebHexColor() || CustomValue.StartsWith("rgb(") || CustomValue.StartsWith("rgba(") || SfumatoScss.CssNamedColors.Contains(CustomValue))
-	    {
-		    CustomValueType = "color";
-		    return;
-		}
+	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || SfumatoScss.CssNamedColors.Contains(value))
+		    return "color";
 
-	    if (CustomValue.StartsWith('\'') && CustomValue.EndsWith('\''))
-	    {
-		    CustomValueType = "string";
-		    return;
-	    }
+	    if (value.StartsWith('\'') && value.EndsWith('\''))
+		    return "string";
 
-	    if (CustomValue.StartsWith("url(", StringComparison.Ordinal) && CustomValue.EndsWith(')') || (CustomValue.StartsWith('/') && Uri.TryCreate(CustomValue, UriKind.Relative, out _)) || (Uri.TryCreate(CustomValue, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
-	    {
-		    CustomValueType = "url";
-		    return;
-		}
+	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')') || (value.StartsWith('/') && Uri.TryCreate(value, UriKind.Relative, out _)) || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
+		    return "url";
 	    
 	    #region angle
 
@@ -281,17 +266,14 @@ public sealed class CssSelector
 
 	    foreach (var unit in SfumatoScss.CssAngleUnits)
 	    {
-		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (CustomValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
-	    {
-		    CustomValueType = "angle";
-		    return;
-	    }
+		    return "angle";
 
 	    #endregion
 
@@ -301,17 +283,14 @@ public sealed class CssSelector
 
 	    foreach (var unit in SfumatoScss.CssTimeUnits)
 	    {
-		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (CustomValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
-	    {
-		    CustomValueType = "time";
-		    return;
-	    }
+		    return "time";
 
 	    #endregion
 
@@ -321,17 +300,14 @@ public sealed class CssSelector
 
 	    foreach (var unit in SfumatoScss.CssFrequencyUnits)
 	    {
-		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (CustomValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
-	    {
-		    CustomValueType = "frequency";
-		    return;
-	    }
+		    return "frequency";
 
 	    #endregion
 
@@ -341,34 +317,33 @@ public sealed class CssSelector
 
 	    foreach (var unit in SfumatoScss.CssResolutionUnits)
 	    {
-		    unitless = CustomValue.TrimEnd(unit) ?? string.Empty;
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
-		    if (CustomValue.Length != unitless.Length)
+		    if (value.Length != unitless.Length)
 			    break;
 	    }
 
 	    if (double.TryParse(unitless, out _))
-	    {
-		    CustomValueType = "resolution";
-		    return;
-	    }
+		    return "resolution";
 
 	    #endregion
 	    
 	    #region ratio
 	    
-	    if (CustomValue.Length < 3 || CustomValue.IndexOf('/') < 1 || CustomValue.IndexOf('/') == CustomValue.Length - 1)
-		    return;
+	    if (value.Length < 3 || value.IndexOf('/') < 1 || value.IndexOf('/') == value.Length - 1)
+		    return string.Empty;
 	    
-	    var customValues = CustomValue.Replace('_', ' ').Split('/', StringSplitOptions.RemoveEmptyEntries);
+	    var customValues = value.Replace('_', ' ').Split('/', StringSplitOptions.RemoveEmptyEntries);
 
 	    if (customValues.Length != 2)
-		    return;
+		    return string.Empty;
 
 	    if (double.TryParse(customValues[0], out _) && double.TryParse(customValues[1], out _))
-		    CustomValueType = "ratio";
+		    return "ratio";
 
 	    #endregion
+
+	    return string.Empty;
     }
     
     /// <summary>
