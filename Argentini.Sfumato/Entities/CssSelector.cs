@@ -48,11 +48,12 @@ public sealed class CssSelector
 	 * 
 	 */
 	
-    #region New Properties
+    #region Properties
 
     public SfumatoAppState? AppState { get; set; }
+
+    #region Selector
     
-    // Selector
     private string _selector = string.Empty;
     public string Selector
     {
@@ -83,13 +84,19 @@ public sealed class CssSelector
 
 	    set => _escapedSelector = value;
     }    
+
+    #endregion
     
-    // Variants
+    #region Variants
+    
     public List<string> MediaQueryVariants { get; } = new();
     public List<string> PseudoClassVariants { get; } = new();
     public List<string> AllVariants { get; } = new();
+    
+    #endregion
 
-    // Segments
+    #region Segments
+    
     public string PrefixSegment { get; private set; } = string.Empty;
     public string CoreSegment { get; private set; } = string.Empty;
     public string ModifierValue { get; private set; } = string.Empty;
@@ -97,8 +104,10 @@ public sealed class CssSelector
     public string ArbitraryValue { get; private set; } = string.Empty;
     public string ArbitraryValueType { get; private set; } = string.Empty;
     
-    
+	#endregion    
 
+	#region Calculated Properties
+	
     public int Depth => MediaQueryVariants.Count + PseudoClassVariants.Count;
     public bool IsImportant { get; private set; }
     public bool IsArbitraryCss { get; private set; }
@@ -106,13 +115,15 @@ public sealed class CssSelector
 
     #endregion
     
-    #region Properties
+    #region Legacy Properties
     
     public string RootClassSegment { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
     
     #endregion
 
+    #endregion
+    
     public CssSelector(SfumatoAppState appState)
     {
 	    AppState = appState;
