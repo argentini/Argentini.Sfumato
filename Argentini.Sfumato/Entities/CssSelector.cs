@@ -48,39 +48,56 @@ public sealed class CssSelector
 	 * 
 	 */
 	
-    #region Properties
+    #region New Properties
 
     public SfumatoAppState? AppState { get; set; }
     
-    private string _value = string.Empty;
-
-    public string Value
+    // Selector
+    private string _selector = string.Empty;
+    public string Selector
     {
-        get => _value;
+        get => _selector;
 
         set
         {
-            var oldValue = _value;
+            var oldValue = _selector;
             
-            _value = value;
+            _selector = value;
 
-            if (oldValue != _value)
+            if (oldValue != _selector)
                 ProcessValue();
         }
     }    
-    public string FixedValue { get; private set; } = string.Empty;
+    public string FixedSelector { get; private set; } = string.Empty;
     
+    private string _escapedSelector = string.Empty;
+    public string EscapedSelector
+    {
+	    get
+	    {
+		    if (_escapedSelector == string.Empty)
+			    _escapedSelector = EscapeCssClassName();
+
+		    return _escapedSelector;
+	    }
+
+	    set => _escapedSelector = value;
+    }    
+    
+    // Variants
     public List<string> MediaQueryVariants { get; } = new();
     public List<string> PseudoClassVariants { get; } = new();
     public List<string> AllVariants { get; } = new();
 
-    public string RootClassSegment { get; private set; } = string.Empty;
-    public string CustomValueSegment { get; private set; } = string.Empty;
-    public string CustomValue { get; private set; } = string.Empty;
-    public string CustomValueType { get; private set; } = string.Empty;
-    public string SlashValue { get; private set; } = string.Empty;
-    public string SlashValueType { get; private set; } = string.Empty;
-    public string EscapedSelector => IsInvalid ? string.Empty : EscapeCssClassName();
+    // Segments
+    public string PrefixSegment { get; private set; } = string.Empty;
+    public string CoreSegment { get; private set; } = string.Empty;
+    public string ModifierValue { get; private set; } = string.Empty;
+    public string ModifierValueType { get; private set; } = string.Empty;
+    public string ArbitraryValue { get; private set; } = string.Empty;
+    public string ArbitraryValueType { get; private set; } = string.Empty;
+    
+    
 
     public int Depth => MediaQueryVariants.Count + PseudoClassVariants.Count;
     public bool IsImportant { get; private set; }
@@ -88,16 +105,23 @@ public sealed class CssSelector
     public bool IsInvalid { get; private set; } = true;
 
     #endregion
+    
+    #region Properties
+    
+    public string RootClassSegment { get; private set; } = string.Empty;
+    public string CustomValueSegment { get; private set; } = string.Empty;
+    
+    #endregion
 
     public CssSelector(SfumatoAppState appState)
     {
 	    AppState = appState;
     }
 
-    public CssSelector(SfumatoAppState appState, string value)
+    public CssSelector(SfumatoAppState appState, string selector)
     {
 	    AppState = appState;
-        Value = value;
+        Selector = selector;
     }
 
     /// <summary>
@@ -105,12 +129,13 @@ public sealed class CssSelector
     /// </summary>
     public void ProcessValue()
     {
-        FixedValue = string.Empty;
+        FixedSelector = string.Empty;
+        EscapedSelector = string.Empty;
         RootClassSegment = string.Empty;
         CustomValueSegment = string.Empty;
-        CustomValueType = string.Empty;
-        SlashValue = string.Empty;
-        SlashValueType = string.Empty;
+        ArbitraryValueType = string.Empty;
+        ModifierValue = string.Empty;
+        ModifierValueType = string.Empty;
 
         MediaQueryVariants.Clear();
         PseudoClassVariants.Clear();
@@ -120,13 +145,13 @@ public sealed class CssSelector
         IsArbitraryCss = false;
         IsInvalid = true;
 
-        if (string.IsNullOrEmpty(Value))
+        if (string.IsNullOrEmpty(Selector))
             return;
 
-        var indexOfColon = Value.IndexOf(':');
-        var indexOfBracket = Value.IndexOf('[');
-        var indexOfBracketClose = Value.IndexOf(']');
-        var indexOfSlash = Value.IndexOf('/');
+        var indexOfColon = Selector.IndexOf(':');
+        var indexOfBracket = Selector.IndexOf('[');
+        var indexOfBracketClose = Selector.IndexOf(']');
+        var indexOfSlash = Selector.IndexOf('/');
         
         if (indexOfColon == 0 || indexOfBracket > indexOfBracketClose)
             return;
@@ -134,28 +159,28 @@ public sealed class CssSelector
         if (indexOfBracketClose == indexOfBracket + 1)
             return;
 
-        FixedValue = Value;
-        RootClassSegment = Value;
+        FixedSelector = Selector;
+        RootClassSegment = Selector;
         
         var prefixesIndex = -1;
 
         if (indexOfColon > 0 && (indexOfBracket == -1 || (indexOfBracket > -1 && indexOfColon < indexOfBracket)))
         {
-            for (var x = 0; x < Value.Length; x++)
+            for (var x = 0; x < Selector.Length; x++)
             {
-                if (Value[x] == '[' || Value[x] == '!')
+                if (Selector[x] == '[' || Selector[x] == '!')
                     break;
 
-                if (Value[x] == ':')
+                if (Selector[x] == ':')
                     prefixesIndex = x;
             }
 
             if (prefixesIndex > 0)
             {
-                var prefixSegment = Value[..(prefixesIndex + 1)];
+                var prefixSegment = Selector[..(prefixesIndex + 1)];
                 var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
-                RootClassSegment = Value[(prefixesIndex + 1)..];
+                RootClassSegment = Selector[(prefixesIndex + 1)..];
 
                 if (segments.Length > 0)
                 {
@@ -179,15 +204,15 @@ public sealed class CssSelector
                         PseudoClassVariants.Add(segment);
                     }
                     
-                    FixedValue = string.Empty;
+                    FixedSelector = string.Empty;
 
                     if (MediaQueryVariants.Count > 0)
-                        FixedValue += $"{string.Join(':', MediaQueryVariants)}:";
+                        FixedSelector += $"{string.Join(':', MediaQueryVariants)}:";
 
                     if (PseudoClassVariants.Count > 0)
-                        FixedValue += $"{string.Join(':', PseudoClassVariants)}:";
+                        FixedSelector += $"{string.Join(':', PseudoClassVariants)}:";
 
-                    FixedValue += RootClassSegment;
+                    FixedSelector += RootClassSegment;
                 }
                 
                 AllVariants.AddRange(MediaQueryVariants);
@@ -195,10 +220,10 @@ public sealed class CssSelector
             }
         }
 
-        if (indexOfSlash > 0 && indexOfSlash < Value.Length - 1)
+        if (indexOfSlash > 0 && indexOfSlash < Selector.Length - 1)
         {
-	        SlashValue = Value[(indexOfSlash + 1)..];
-	        SlashValueType = SetCustomValueType(SlashValue);
+	        ModifierValue = Selector[(indexOfSlash + 1)..];
+	        ModifierValueType = SetCustomValueType(ModifierValue);
         }
         
         if (string.IsNullOrEmpty(RootClassSegment) == false)
@@ -225,7 +250,7 @@ public sealed class CssSelector
             
             SetCustomValue();
 
-            CustomValueType = SetCustomValueType(CustomValue);
+            ArbitraryValueType = SetCustomValueType(ArbitraryValue);
         }
         
         if (RootClassSegment.Length > 0 || CustomValueSegment.Length > 0)
@@ -234,7 +259,7 @@ public sealed class CssSelector
             return;
         }
 
-        FixedValue = string.Empty;
+        FixedSelector = string.Empty;
     }
 
     /// <summary>
@@ -245,15 +270,15 @@ public sealed class CssSelector
     {
 	    if (string.IsNullOrEmpty(CustomValueSegment))
 	    {
-		    CustomValue = string.Empty;
+		    ArbitraryValue = string.Empty;
 		    return;
 	    }
 	    
-	    CustomValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
+	    ArbitraryValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
             
 	    foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
-		    if (CustomValue?.StartsWith($"{arbitraryType}:") ?? false)
-			    CustomValue = CustomValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
+		    if (ArbitraryValue?.StartsWith($"{arbitraryType}:") ?? false)
+			    ArbitraryValue = ArbitraryValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
     }
     
     /// <summary>
@@ -408,14 +433,14 @@ public sealed class CssSelector
     /// <returns></returns>
     private string EscapeCssClassName()
     {
-        if (string.IsNullOrEmpty(Value))
-            return Value;
+        if (string.IsNullOrEmpty(Selector))
+            return Selector;
 
         var value = new StringBuilder();
 
-        for (var i = 0; i < Value.Length; i++)
+        for (var i = 0; i < Selector.Length; i++)
         {
-            var c = Value[i];
+            var c = Selector[i];
             
             if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
                 value.Append('\\');

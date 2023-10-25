@@ -56,7 +56,7 @@ public class ScssUtilityClassTests
         
         Assert.Single(matches);
         
-        matches[0].Value = cssSelector.CustomValue;
+        matches[0].Value = cssSelector.ArbitraryValue;
         
         Assert.Equal("background-color: #aabbcc;", matches[0].ScssMarkup);
 
@@ -66,7 +66,7 @@ public class ScssUtilityClassTests
         
         Assert.Single(matches);
         
-        matches[0].Value = cssSelector.CustomValue;
+        matches[0].Value = cssSelector.ArbitraryValue;
         
         Assert.Equal("background-position: top center;", matches[0].ScssMarkup);
     }

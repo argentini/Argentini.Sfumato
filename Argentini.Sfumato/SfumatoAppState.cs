@@ -701,7 +701,7 @@ public sealed class SfumatoAppState
 	{
 		foreach (var cssSelector in watchedFile.CoreClassMatches.Values)
 		{
-			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
+			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))
 				continue;
 
 			var matchingScssClasses = await UtilityClassCollection.GetMatchingClassesAsync(cssSelector);
@@ -747,8 +747,8 @@ public sealed class SfumatoAppState
 				Value = foundScssUtilityClass.Value
 			};
 			
-			if (string.IsNullOrEmpty(cssSelector.CustomValue) == false)
-				cloneutilityClass.Value = cssSelector.CustomValue;
+			if (string.IsNullOrEmpty(cssSelector.ArbitraryValue) == false)
+				cloneutilityClass.Value = cssSelector.ArbitraryValue;
 			
 			var usedScssClass = new UsedScssClass
 			{
@@ -757,12 +757,12 @@ public sealed class SfumatoAppState
 				SortOrder = foundScssUtilityClass.SortOrder
 			};
 
-			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
+			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedSelector, usedScssClass);
 		}
 
 		foreach (var cssSelector in watchedFile.ArbitraryCssMatches.Values)
 		{
-			if (UsedClasses.ContainsKey(cssSelector.FixedValue))
+			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))
 				continue;
 
 			var usedScssClass = new UsedScssClass
@@ -771,7 +771,7 @@ public sealed class SfumatoAppState
 				SortOrder = int.MaxValue
 			};
 
-			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedValue, usedScssClass);
+			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedSelector, usedScssClass);
 		}
 	}
 	

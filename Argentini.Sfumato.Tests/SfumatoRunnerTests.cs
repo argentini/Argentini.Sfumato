@@ -116,7 +116,7 @@ public class SfumatoRunnerTests
         scssUtilityClass = new ScssUtilityClass
         {
             Selector = "text-base/",
-            Value = cssSelector.CustomValue,
+            Value = cssSelector.ArbitraryValue,
             ScssTemplate = "font-size: 1rem;\nline-height: {value};",
             ArbitraryValueTypes = new [] { "length", "percentage", "number" },
         };

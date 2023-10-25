@@ -17,11 +17,11 @@ public static class CollectionBase
             foreach (var (_, group) in groups)
                 result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment));
         
-        else if (string.IsNullOrEmpty(cssSelector.CustomValueType) == false && string.IsNullOrEmpty(cssSelector.CustomValueType) == false)
+        else if (string.IsNullOrEmpty(cssSelector.ArbitraryValueType) == false && string.IsNullOrEmpty(cssSelector.ArbitraryValueType) == false)
             foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment && c.ArbitraryValueTypes.Contains(cssSelector.CustomValueType)));
+                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment && c.ArbitraryValueTypes.Contains(cssSelector.ArbitraryValueType)));
 
-        else if (string.IsNullOrEmpty(cssSelector.CustomValueType))
+        else if (string.IsNullOrEmpty(cssSelector.ArbitraryValueType))
             foreach (var (_, group) in groups)
                 result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment && c.ArbitraryValueTypes.Contains("raw")));
         
