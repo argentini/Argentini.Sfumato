@@ -2,6 +2,50 @@ namespace Argentini.Sfumato.Entities;
 
 public sealed class CssSelector
 {
+	/*
+	 * Structure of a CSS selector:
+	 * ============================
+	 * 
+	 * Starts with optional variants:
+	 * {media-queries}: {pseudo-classes}:
+	 *
+	 * Followed by optional important flag
+	 * {!}
+	 * 
+	 * Followed by a prefix, core, modifier, and arbitrary value segments:
+	 * {prefix}-{core} { /{modifier-value} or /[{arbitrary-value}] or -[{arbitrary-value}] }
+	 *
+	 * Segment Examples:
+	 * -----------------
+	 * text-base		  {prefix:text}-{core:base}
+	 * text-base/5        {prefix:text}-{core:base}/{modifier-value:5}
+	 * text-base/[3rem]   {prefix:text}-{core:base}/[{arbitrary-value:3rem}]
+	 * bg-[#aabbcc]       {prefix:bg}-[{arbitrary-value:#aabbcc}]
+	 * bg-rose/50         {prefix:bg}-{core:rose}/{modifier-value:5}
+	 * w-1/2	          {prefix:w}-{core:1/2} 
+	 * sr-only	          {prefix:sr-only}
+	 *
+	 * Selector examples:
+	 * ------------------
+	 * tabp:focus:bg-rose/50
+	 * dark:tabp:hover:!text-base/5
+	 * 
+	 * Parsing order:
+	 * --------------
+	 * 1. No brackets:
+	 *	  a. Match prefix (empty core value, no hyphen delimiter)
+	 *	     i. Find "/" and modifier value
+	 *    b. Match prefix and core (hyphen delimiter)
+	 *	     i. Find "/" and modifier value
+	 *    c. Find "/" and modifier value
+	 * 2. Brackets
+	 *	  a. Match prefix (empty core value, no hyphen delimiter)
+	 *	     i. Find "[" and "]" and arbitrary value
+	 *    b. Match prefix and core (hyphen delimiter)
+	 *	     i. Find "[" and "]" and arbitrary value
+	 * 
+	 */
+	
     #region Properties
 
     private string _value = string.Empty;
