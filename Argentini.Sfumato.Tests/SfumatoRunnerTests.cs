@@ -166,7 +166,7 @@ public class SfumatoRunnerTests
 
         await runner.InitializeAsync();
 
-        runner.AppState.ReleaseMode = true;
+        runner.AppState.Minify = true;
         runner.AppState.Settings.ThemeMode = "system";
         
         var watchedFile = new WatchedFile
@@ -188,7 +188,7 @@ public class SfumatoRunnerTests
 
         await runner.InitializeAsync();
 
-        runner.AppState.ReleaseMode = true;
+        runner.AppState.Minify = true;
         runner.AppState.Settings.ThemeMode = "system";
         
         var watchedFile = new WatchedFile

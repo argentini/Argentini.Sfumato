@@ -1217,7 +1217,7 @@ public static class SfumatoScss
 			if (File.Exists(cssMapOutputPath))
 				File.Delete(cssMapOutputPath);
 
-			if (appState.ReleaseMode == false)
+			if (appState.Minify == false)
 			{
 				arguments.Add("--style=expanded");
 				arguments.Add("--embed-sources");

@@ -61,8 +61,8 @@ internal class Program
 			Environment.Exit(0);
 		}
 
-		await Console.Out.WriteLineAsync($"Build Mode       :  {(runner.AppState.ReleaseMode ? "Release" : "Development")}");
-		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "System" : "CSS Class")}");
+		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "OS Dark/Light Mode" : "CSS Classes")}");
+		await Console.Out.WriteLineAsync($"Transpile        :  {(runner.AppState.Minify ? "Minify" : "Expanded")}");
 		await Console.Out.WriteLineAsync($"Project Path     :  {runner.AppState.WorkingPath}");
 		await Console.Out.WriteLineAsync($"CSS Output Path  :  .{runner.AppState.Settings.CssOutputPath.TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}sfumato.css");
 

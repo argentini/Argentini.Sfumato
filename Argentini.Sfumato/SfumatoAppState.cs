@@ -23,7 +23,7 @@ public sealed class SfumatoAppState
     
     #region Run Modes
 
-    public bool ReleaseMode { get; set; }
+    public bool Minify { get; set; }
     public bool WatchMode { get; set; }
     public bool VersionMode { get; set; }
     public bool HelpMode { get; set; }
@@ -317,7 +317,7 @@ public sealed class SfumatoAppState
 					var arg = CliArguments[x];
 					
 					if (arg.Equals("--minify", StringComparison.OrdinalIgnoreCase))
-						ReleaseMode = true;
+						Minify = true;
 
 					else if (arg.Equals("--path", StringComparison.OrdinalIgnoreCase))
 						if (++x < CliArguments.Count)
