@@ -106,12 +106,15 @@ public sealed class CssSelector
     
 	#endregion    
 
-	#region Calculated Properties
+	#region Metadata
 	
-    public int Depth => MediaQueryVariants.Count + PseudoClassVariants.Count;
+    public int Depth => AllVariants.Count;
+    public bool HasModifierValue => ModifierValue.Length > 0;
+    public bool HasArbitraryValue  => ArbitraryValue.Length > 0;
+    public bool UsesModifier { get; private set; }
     public bool IsImportant { get; private set; }
     public bool IsArbitraryCss { get; private set; }
-    public bool IsInvalid { get; private set; } = true;
+    public bool IsInvalid { get; private set; }
 
     #endregion
     
@@ -138,6 +141,149 @@ public sealed class CssSelector
     /// Establish all property values from parsing the Value property.
     /// </summary>
     public void ProcessValue()
+    {
+	    MediaQueryVariants.Clear();
+	    PseudoClassVariants.Clear();
+	    AllVariants.Clear();
+
+	    FixedSelector = string.Empty;
+	    EscapedSelector = string.Empty;
+
+	    PrefixSegment = string.Empty;
+	    CoreSegment = string.Empty;
+	    
+	    ArbitraryValue = string.Empty;
+	    ArbitraryValueType = string.Empty;
+	    ModifierValue = string.Empty;
+	    ModifierValueType = string.Empty;
+	    
+	    IsImportant = false;
+	    IsArbitraryCss = false;
+	    IsInvalid = false;
+
+	    if (string.IsNullOrEmpty(Selector))
+		    return;
+	    
+	    var rightOfVariants = Selector;
+	    var rootSegment = Selector;
+	    var variantSegment = string.Empty;
+	    var arbitraryValueSegment = string.Empty;
+	    
+	    var indexOfBracket = rootSegment.IndexOf('[');
+	    var indexOfBracketClose = rootSegment.LastIndexOf(']');
+
+	    if (indexOfBracketClose < indexOfBracket + 2 || (indexOfBracket == -1 && indexOfBracketClose > -1))
+	    {
+		    IsInvalid = true;
+		    return;
+	    }
+	    
+	    if (indexOfBracket > -1)
+	    {
+		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']');
+		    rootSegment = Selector[..indexOfBracket];
+	    }
+	    
+	    var indexOfColon = rootSegment.LastIndexOf(':');
+
+	    if (indexOfColon == 0 || indexOfColon == rootSegment.Length - 1)
+	    {
+		    IsInvalid = true;
+		    return;
+	    }
+	    
+	    if (indexOfColon > 0)
+	    {
+		    variantSegment = rootSegment[..(indexOfColon + 1)];
+		    rootSegment = rootSegment[(indexOfColon + 1)..];
+		    rightOfVariants = Selector[(indexOfColon + 1)..];
+	    }
+	    
+	    var indexOfSlash = rootSegment.LastIndexOf('/');
+
+	    if (indexOfSlash == 0)
+	    {
+		    IsInvalid = true;
+		    return;
+	    }
+	    
+	    if (indexOfSlash > 0)
+	    {
+		    UsesModifier = true;
+
+		    if (ArbitraryValue == string.Empty)
+		    {
+			    ModifierValue = rootSegment[(indexOfSlash + 1)..];
+		    }
+
+		    rootSegment = rootSegment[..indexOfSlash]; 
+	    }
+
+	    if (rootSegment.StartsWith('!'))
+	    {
+		    IsImportant = true;
+		    rootSegment = rootSegment.TrimStart('!');
+	    }
+	    
+	    if (variantSegment.Length > 0)
+	    {
+		    var segments = variantSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
+		    
+		    if (segments.Length > 0)
+		    {
+			    var lastType = string.Empty;
+
+			    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.Where(p => segments.Contains(p.Prefix)).OrderBy(k => k.PrefixOrder))
+			    {
+				    if (breakpoint.PrefixType == lastType)
+					    continue;
+
+				    MediaQueryVariants.Add(breakpoint.Prefix);
+
+				    lastType = breakpoint.PrefixType;
+			    }
+
+			    foreach (var segment in segments)
+			    {
+				    if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
+					    continue;
+
+				    PseudoClassVariants.Add(segment);
+			    }
+                    
+			    FixedSelector = string.Empty;
+
+			    if (MediaQueryVariants.Count > 0)
+				    FixedSelector += $"{string.Join(':', MediaQueryVariants)}:";
+
+			    if (PseudoClassVariants.Count > 0)
+				    FixedSelector += $"{string.Join(':', PseudoClassVariants)}:";
+
+			    FixedSelector += rightOfVariants;
+		    }
+                
+		    AllVariants.AddRange(MediaQueryVariants);
+		    AllVariants.AddRange(PseudoClassVariants);
+	    }
+
+		// todo: scan utility class collections for valid prefix, core
+	    
+	    
+	    
+	    
+		// todo: if valid prefix, core, set arbitrary/modifier value types	    
+	    
+	    
+
+
+
+    }
+
+
+    /// <summary>
+    /// Establish all property values from parsing the Value property.
+    /// </summary>
+    public void xxxProcessValue()
     {
         FixedSelector = string.Empty;
         EscapedSelector = string.Empty;
