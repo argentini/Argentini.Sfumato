@@ -26,12 +26,9 @@ public class UsedScssClass
     public UsedScssClass()
     {}
 
-    public UsedScssClass(string selector)
+    public UsedScssClass(SfumatoAppState appState, string selector)
     {
-        CssSelector = new CssSelector
-        {
-            Value = selector
-        };
+        CssSelector = new CssSelector(appState, selector);
     }
 
     public void BuildPrefixSortOrder()

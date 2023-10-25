@@ -5,12 +5,13 @@ namespace Argentini.Sfumato.Tests;
 public class CssSelectorTests
 {
     [Fact]
-    public void InvalidEmpty()
+    public async Task InvalidEmpty()
     {
-        var selector = new CssSelector
-        {
-            Value = ""
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "");
         
         Assert.True(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -23,12 +24,13 @@ public class CssSelectorTests
     }
 
     [Fact]
-    public void InvalidBracketOrder()
+    public async Task InvalidBracketOrder()
     {
-        var selector = new CssSelector
-        {
-            Value = "]dsfdfsfsd["
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "]dsfdfsfsd[");
         
         Assert.True(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -41,12 +43,13 @@ public class CssSelectorTests
     }
 
     [Fact]
-    public void InvalidBracketContent()
+    public async Task InvalidBracketContent()
     {
-        var selector = new CssSelector
-        {
-            Value = "dsfdfsfsd[]"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "dsfdfsfsd[]");
         
         Assert.True(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -59,12 +62,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void BaseClass()
+    public async Task BaseClass()
     {
-        var selector = new CssSelector
-        {
-            Value = "text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -76,12 +80,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void MediaQuery()
+    public async Task MediaQuery()
     {
-        var selector = new CssSelector
-        {
-            Value = "tabp:text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "tabp:text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -95,12 +100,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void MediaQueries()
+    public async Task MediaQueries()
     {
-        var selector = new CssSelector
-        {
-            Value = "dark:tabp:text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "dark:tabp:text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.PseudoClassVariants);
@@ -115,12 +121,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void PseudoClass()
+    public async Task PseudoClass()
     {
-        var selector = new CssSelector
-        {
-            Value = "hover:text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "hover:text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -134,12 +141,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void PseudoClasses()
+    public async Task PseudoClasses()
     {
-        var selector = new CssSelector
-        {
-            Value = "hover:focus:text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "hover:focus:text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -154,12 +162,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void MixedPrefixes()
+    public async Task MixedPrefixes()
     {
-        var selector = new CssSelector
-        {
-            Value = "dark:tabp:hover:focus:text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "dark:tabp:hover:focus:text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -176,12 +185,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void MixedPrefixesReordered()
+    public async Task MixedPrefixesReordered()
     {
-        var selector = new CssSelector
-        {
-            Value = "focus:dark:hover:tabp:dark:text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "focus:dark:hover:tabp:dark:text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -199,12 +209,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void BaseClassCustomValue()
+    public async Task BaseClassCustomValue()
     {
-        var selector = new CssSelector
-        {
-            Value = "text-[3rem]"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "text-[3rem]");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -218,12 +229,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void BaseClassSlashCustomValue()
+    public async Task BaseClassSlashCustomValue()
     {
-        var selector = new CssSelector
-        {
-            Value = "text-base/3"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "text-base/3");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -236,12 +248,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void BaseClassCustomValueWithPrefixes()
+    public async Task BaseClassCustomValueWithPrefixes()
     {
-        var selector = new CssSelector
-        {
-            Value = "dark:tabp:hover:text-[3rem]"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "dark:tabp:hover:text-[3rem]");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -257,12 +270,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void BaseClassSlashCustomValueWithPrefixes()
+    public async Task BaseClassSlashCustomValueWithPrefixes()
     {
-        var selector = new CssSelector
-        {
-            Value = "dark:tabp:hover:text-base/3"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "dark:tabp:hover:text-base/3");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -278,12 +292,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void BaseClassSlashWithCustomValueWithPrefixes()
+    public async Task BaseClassSlashWithCustomValueWithPrefixes()
     {
-        var selector = new CssSelector
-        {
-            Value = "dark:tabp:hover:text-base/[3]"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "dark:tabp:hover:text-base/[3]");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -300,12 +315,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void ArbitraryCss()
+    public async Task ArbitraryCss()
     {
-        var selector = new CssSelector
-        {
-            Value = "[font-size:1rem]"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "[font-size:1rem]");
         
         Assert.True(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -317,12 +333,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void ArbitraryCssWithPrefix()
+    public async Task ArbitraryCssWithPrefix()
     {
-        var selector = new CssSelector
-        {
-            Value = "tabp:[font-size:1rem]"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "tabp:[font-size:1rem]");
         
         Assert.True(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -335,12 +352,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void ArbitraryCssWithSpaces()
+    public async Task ArbitraryCssWithSpaces()
     {
-        var selector = new CssSelector
-        {
-            Value = "tabp:[padding:1rem_2rem]"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "tabp:[padding:1rem_2rem]");
         
         Assert.True(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -353,12 +371,13 @@ public class CssSelectorTests
     }
 
     [Fact]
-    public void TrailingSlash()
+    public async Task TrailingSlash()
     {
-        var selector = new CssSelector
-        {
-            Value = "text-base/"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "text-base/");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -369,12 +388,13 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public void IsImportant()
+    public async Task IsImportant()
     {
-        var selector = new CssSelector
-        {
-            Value = "!text-base"
-        };
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "!text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -382,10 +402,7 @@ public class CssSelectorTests
         Assert.Equal("text-base", selector.RootClassSegment);
         Assert.True(selector.IsImportant);
         
-        selector = new CssSelector
-        {
-            Value = "tabp:focus:!text-base"
-        };
+        selector = new CssSelector(appState, "tabp:focus:!text-base");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -393,10 +410,7 @@ public class CssSelectorTests
         Assert.Equal("text-base", selector.RootClassSegment);
         Assert.True(selector.IsImportant);
         
-        selector = new CssSelector
-        {
-            Value = "tabp:focus:!text-base/3"
-        };
+        selector = new CssSelector(appState, "tabp:focus:!text-base/3");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -404,10 +418,7 @@ public class CssSelectorTests
         Assert.Equal("text-base/3", selector.RootClassSegment);
         Assert.True(selector.IsImportant);
         
-        selector = new CssSelector
-        {
-            Value = "tabp:focus:!text-base/[3]"
-        };
+        selector = new CssSelector(appState, "tabp:focus:!text-base/[3]");
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);

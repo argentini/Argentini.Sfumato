@@ -50,6 +50,8 @@ public sealed class CssSelector
 	
     #region Properties
 
+    public SfumatoAppState? AppState { get; set; }
+    
     private string _value = string.Empty;
 
     public string Value
@@ -87,11 +89,14 @@ public sealed class CssSelector
 
     #endregion
 
-    public CssSelector()
-    {}
-
-    public CssSelector(string value)
+    public CssSelector(SfumatoAppState appState)
     {
+	    AppState = appState;
+    }
+
+    public CssSelector(SfumatoAppState appState, string value)
+    {
+	    AppState = appState;
         Value = value;
     }
 

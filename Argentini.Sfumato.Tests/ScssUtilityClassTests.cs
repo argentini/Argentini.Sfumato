@@ -36,23 +36,21 @@ public class ScssUtilityClassTests
     [Fact]
     public async Task MatchingClasses()
     {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+        
         var backgrounds = new ConcurrentDictionary<string, ScssUtilityClassGroup>();
 
         await backgrounds.AddAllBackgroundClassesAsync();
 
-        var cssSelector = new CssSelector
-        {
-            Value = "bg-white"
-        };
+        var cssSelector = new CssSelector(appState, "bg-white");
         
         var matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
         
         Assert.Single(matches);
-        
-        cssSelector = new CssSelector
-        {
-            Value = "bg-[#aabbcc]"
-        };
+
+        cssSelector = new CssSelector(appState, "bg-[#aabbcc]");
         
         matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
         
@@ -61,11 +59,8 @@ public class ScssUtilityClassTests
         matches[0].Value = cssSelector.CustomValue;
         
         Assert.Equal("background-color: #aabbcc;", matches[0].ScssMarkup);
-        
-        cssSelector = new CssSelector
-        {
-            Value = "bg-[top_center]"
-        };
+
+        cssSelector = new CssSelector(appState, "bg-[top_center]");
         
         matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
         

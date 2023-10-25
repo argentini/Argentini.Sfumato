@@ -650,7 +650,7 @@ public sealed class SfumatoAppState
 		if (matches.Count > 0)
 		{
 			foreach (Match match in matches)
-				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, match.Value));
+				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, this, match.Value));
 
 			await Task.WhenAll(tasks);
 			tasks.Clear();
@@ -661,18 +661,18 @@ public sealed class SfumatoAppState
 		if (matches.Count > 0)
 		{
 			foreach (Match match in matches)
-				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, match.Value));
+				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, this, match.Value));
 
 			await Task.WhenAll(tasks);
 		}
 	}
 
-	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value)
+	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, SfumatoAppState appState, string value)
 	{
-		var cssSelector = new CssSelector(value);
+		var cssSelector = new CssSelector(appState, value);
 		
 		if (cssSelector.IsInvalid == false)
-			collection.TryAdd(value,new CssSelector(value));
+			collection.TryAdd(value,new CssSelector(appState, value));
 
 		await Task.CompletedTask;
 	}

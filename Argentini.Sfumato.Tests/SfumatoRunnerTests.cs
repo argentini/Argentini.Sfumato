@@ -67,6 +67,9 @@ public class SfumatoRunnerTests
     public async Task GenerateScssClassMarkup_Base()
     {
         var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
 
         var scssUtilityClass = new ScssUtilityClass
         {
@@ -76,7 +79,7 @@ public class SfumatoRunnerTests
         };
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass("text-base")
+            new UsedScssClass(appState, "text-base")
             {
                 ScssUtilityClass = scssUtilityClass
                 
@@ -89,6 +92,9 @@ public class SfumatoRunnerTests
     public async Task GenerateScssClassMarkup_Options()
     {
         var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
 
         var scssUtilityClass = new ScssUtilityClass
         {
@@ -97,7 +103,7 @@ public class SfumatoRunnerTests
         };
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass("text-base/2")
+            new UsedScssClass(appState, "text-base/2")
             {
                 ScssUtilityClass = scssUtilityClass
                 
@@ -105,7 +111,7 @@ public class SfumatoRunnerTests
         
         Assert.Equal(".text-base\\/2 { font-size: 1rem; line-height: 1.15rem; }".CompactCss(), result.CompactCss());
         
-        var cssSelector = new CssSelector("text-base/[3rem]");
+        var cssSelector = new CssSelector(appState, "text-base/[3rem]");
 
         scssUtilityClass = new ScssUtilityClass
         {
@@ -126,7 +132,7 @@ public class SfumatoRunnerTests
         Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
 
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass("tabp:text-base/[3rem]")
+            new UsedScssClass(appState, "tabp:text-base/[3rem]")
             {
                 ScssUtilityClass = scssUtilityClass
                 
@@ -139,20 +145,23 @@ public class SfumatoRunnerTests
     public async Task GenerateScssClassMarkup_ArbitraryStyles()
     {
         var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
         
-        var scssClass = new UsedScssClass("[width:10rem]");
+        var scssClass = new UsedScssClass(appState, "[width:10rem]");
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
 
         Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new UsedScssClass("tabp:[width:10rem]");
+        scssClass = new UsedScssClass(appState, "tabp:[width:10rem]");
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
         Assert.Equal(".tabp\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new UsedScssClass("tabp:hover:[width:10rem]");
+        scssClass = new UsedScssClass(appState, "tabp:hover:[width:10rem]");
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
