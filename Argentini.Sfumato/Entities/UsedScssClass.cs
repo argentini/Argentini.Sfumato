@@ -42,7 +42,7 @@ public class UsedScssClass
             return;
         
         foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
-            if (CssSelector.MediaQueries.Contains(breakpoint.Prefix))
+            if (CssSelector.MediaQueryVariants.Contains(breakpoint.Prefix))
                 PrefixSortOrder += breakpoint.Priority;    
     }
 }

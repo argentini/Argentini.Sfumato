@@ -67,9 +67,11 @@ public sealed class CssSelector
         }
     }    
     public string FixedValue { get; private set; } = string.Empty;
-    public List<string> MediaQueries { get; } = new();
-    public List<string> PseudoClasses { get; } = new();
-    public List<string> AllPrefixes { get; } = new();
+    
+    public List<string> MediaQueryVariants { get; } = new();
+    public List<string> PseudoClassVariants { get; } = new();
+    public List<string> AllVariants { get; } = new();
+
     public string RootClassSegment { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
     public string CustomValue { get; private set; } = string.Empty;
@@ -78,7 +80,7 @@ public sealed class CssSelector
     public string SlashValueType { get; private set; } = string.Empty;
     public string EscapedSelector => IsInvalid ? string.Empty : EscapeCssClassName();
 
-    public int Depth => MediaQueries.Count + PseudoClasses.Count;
+    public int Depth => MediaQueryVariants.Count + PseudoClassVariants.Count;
     public bool IsImportant { get; private set; }
     public bool IsArbitraryCss { get; private set; }
     public bool IsInvalid { get; private set; } = true;
@@ -105,9 +107,9 @@ public sealed class CssSelector
         SlashValue = string.Empty;
         SlashValueType = string.Empty;
 
-        MediaQueries.Clear();
-        PseudoClasses.Clear();
-        AllPrefixes.Clear();
+        MediaQueryVariants.Clear();
+        PseudoClassVariants.Clear();
+        AllVariants.Clear();
 
         IsImportant = false;
         IsArbitraryCss = false;
@@ -159,7 +161,7 @@ public sealed class CssSelector
                         if (breakpoint.PrefixType == lastType)
                             continue;
 
-                        MediaQueries.Add(breakpoint.Prefix);
+                        MediaQueryVariants.Add(breakpoint.Prefix);
 
                         lastType = breakpoint.PrefixType;
                     }
@@ -169,22 +171,22 @@ public sealed class CssSelector
                         if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
                             continue;
 
-                        PseudoClasses.Add(segment);
+                        PseudoClassVariants.Add(segment);
                     }
                     
                     FixedValue = string.Empty;
 
-                    if (MediaQueries.Count > 0)
-                        FixedValue += $"{string.Join(':', MediaQueries)}:";
+                    if (MediaQueryVariants.Count > 0)
+                        FixedValue += $"{string.Join(':', MediaQueryVariants)}:";
 
-                    if (PseudoClasses.Count > 0)
-                        FixedValue += $"{string.Join(':', PseudoClasses)}:";
+                    if (PseudoClassVariants.Count > 0)
+                        FixedValue += $"{string.Join(':', PseudoClassVariants)}:";
 
                     FixedValue += RootClassSegment;
                 }
                 
-                AllPrefixes.AddRange(MediaQueries);
-                AllPrefixes.AddRange(PseudoClasses);
+                AllVariants.AddRange(MediaQueryVariants);
+                AllVariants.AddRange(PseudoClassVariants);
             }
         }
 

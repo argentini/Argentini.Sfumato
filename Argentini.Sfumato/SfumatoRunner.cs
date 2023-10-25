@@ -137,7 +137,7 @@ public sealed class SfumatoRunner
 		var scssResult = pool.Get();
 		var level = 0;
 		var stripPrefixes = stripPrefix.Split(':', StringSplitOptions.RemoveEmptyEntries);
-		var prefixes = usedScssClass.CssSelector.AllPrefixes;
+		var prefixes = usedScssClass.CssSelector.AllVariants;
 
 		foreach (var prefix in stripPrefixes)
 			if (prefixes.Count > 0 && prefixes[0] == prefix)
@@ -214,7 +214,7 @@ public sealed class SfumatoRunner
 			
 			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
-			if (scssClass.CssSelector.MediaQueries.Count == 0)
+			if (scssClass.CssSelector.MediaQueryVariants.Count == 0)
 			{
 				hierarchy.Classes.Add(scssClass);
 			}
@@ -224,7 +224,7 @@ public sealed class SfumatoRunner
 				var prefixPath = string.Empty;
 				var node = hierarchy;
 
-				foreach (var prefix in scssClass.CssSelector.AllPrefixes)
+				foreach (var prefix in scssClass.CssSelector.AllVariants)
 				{
 					if (IsMediaQueryPrefix(prefix) == false)
 						break;
