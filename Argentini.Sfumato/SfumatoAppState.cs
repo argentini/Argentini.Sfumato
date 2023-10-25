@@ -709,7 +709,7 @@ public sealed class SfumatoAppState
 			if (matchingScssClasses.Count == 0)
 				continue;
 			
-			var userClassValueType = cssSelector.CustomValueSegment.GetUserClassValueType();
+			var userClassValueType = cssSelector.ArbitraryValue.GetUserClassValueType();
 			ScssUtilityClass? foundScssUtilityClass = null;
 
 			if (string.IsNullOrEmpty(userClassValueType) == false)

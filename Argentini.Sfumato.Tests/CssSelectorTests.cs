@@ -18,7 +18,7 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Empty(selector.RootClassSegment);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.Empty(selector.FixedSelector);
         Assert.Empty(selector.EscapedSelector);
     }
@@ -38,8 +38,7 @@ public class CssSelectorTests
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Empty(selector.RootClassSegment);
         Assert.Empty(selector.FixedSelector);
-        Assert.Empty(selector.CustomValueSegment);
-        Assert.Empty(selector.EscapedSelector);
+        Assert.Empty(selector.ArbitraryValue);
     }
 
     [Fact]
@@ -56,9 +55,8 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Empty(selector.RootClassSegment);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.Empty(selector.FixedSelector);
-        Assert.Empty(selector.EscapedSelector);
     }
     
     [Fact]
@@ -73,7 +71,7 @@ public class CssSelectorTests
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.Equal(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base", selector.EscapedSelector);
@@ -92,7 +90,7 @@ public class CssSelectorTests
         Assert.Single(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Equal("tabp", selector.MediaQueryVariants[0]);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base", selector.RootClassSegment);
@@ -113,7 +111,7 @@ public class CssSelectorTests
         Assert.Equal(2, selector.MediaQueryVariants.Count);
         Assert.Equal("dark", selector.MediaQueryVariants[0]);
         Assert.Equal("tabp", selector.MediaQueryVariants[1]);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base", selector.RootClassSegment);
@@ -133,7 +131,7 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
         Assert.Equal("hover", selector.PseudoClassVariants[0]);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base", selector.RootClassSegment);
@@ -154,7 +152,7 @@ public class CssSelectorTests
         Assert.Equal(2, selector.PseudoClassVariants.Count);
         Assert.Equal("hover", selector.PseudoClassVariants[0]);
         Assert.Equal("focus", selector.PseudoClassVariants[1]);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base", selector.RootClassSegment);
@@ -177,7 +175,7 @@ public class CssSelectorTests
         Assert.Equal(2, selector.PseudoClassVariants.Count);
         Assert.Equal("hover", selector.PseudoClassVariants[0]);
         Assert.Equal("focus", selector.PseudoClassVariants[1]);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base", selector.RootClassSegment);
@@ -200,7 +198,7 @@ public class CssSelectorTests
         Assert.Equal(2, selector.PseudoClassVariants.Count);
         Assert.Equal("focus", selector.PseudoClassVariants[0]);
         Assert.Equal("hover", selector.PseudoClassVariants[1]);
-        Assert.Empty(selector.CustomValueSegment);
+        Assert.Empty(selector.ArbitraryValue);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.NotEqual(selector.Selector, selector.FixedSelector);
         Assert.Equal("dark:tabp:focus:hover:text-base", selector.FixedSelector);
@@ -223,7 +221,7 @@ public class CssSelectorTests
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-", selector.RootClassSegment);
-        Assert.Equal("[3rem]", selector.CustomValueSegment);
+        Assert.Equal("3rem", selector.ArbitraryValue);
         Assert.Equal("text-\\[3rem\\]", selector.EscapedSelector);
         Assert.Equal("length", selector.ArbitraryValueType);
     }
@@ -243,7 +241,7 @@ public class CssSelectorTests
         Assert.Equal(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base/3", selector.RootClassSegment);
-        Assert.Equal(string.Empty, selector.CustomValueSegment);
+        Assert.Equal(string.Empty, selector.ArbitraryValue);
         Assert.Equal("text-base\\/3", selector.EscapedSelector);
     }
     
@@ -265,7 +263,7 @@ public class CssSelectorTests
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-", selector.RootClassSegment);
-        Assert.Equal("[3rem]", selector.CustomValueSegment);
+        Assert.Equal("3rem", selector.ArbitraryValue);
         Assert.Equal("dark\\:tabp\\:hover\\:text-\\[3rem\\]", selector.EscapedSelector);
     }
     
@@ -287,7 +285,7 @@ public class CssSelectorTests
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base/3", selector.RootClassSegment);
-        Assert.Equal(string.Empty, selector.CustomValueSegment);
+        Assert.Equal(string.Empty, selector.ArbitraryValue);
         Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/3", selector.EscapedSelector);
     }
     
@@ -309,7 +307,7 @@ public class CssSelectorTests
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("text-base/", selector.RootClassSegment);
-        Assert.Equal("[3]", selector.CustomValueSegment);
+        Assert.Equal("3", selector.ArbitraryValue);
         Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/\\[3\\]", selector.EscapedSelector);
         Assert.Equal("integer", selector.ArbitraryValueType);
     }
@@ -327,7 +325,7 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Empty(selector.RootClassSegment);
-        Assert.Equal(selector.Selector, selector.CustomValueSegment);
+        Assert.Equal("font-size:1rem", selector.ArbitraryValue);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("\\[font-size\\:1rem\\]", selector.EscapedSelector);
     }
@@ -347,7 +345,7 @@ public class CssSelectorTests
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Empty(selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("[font-size:1rem]", selector.CustomValueSegment);
+        Assert.Equal("font-size:1rem", selector.ArbitraryValue);
         Assert.Equal("tabp\\:\\[font-size\\:1rem\\]", selector.EscapedSelector);
     }
     
@@ -366,7 +364,7 @@ public class CssSelectorTests
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Empty(selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("[padding:1rem_2rem]", selector.CustomValueSegment);
+        Assert.Equal("padding:1rem 2rem", selector.ArbitraryValue);
         Assert.Equal("tabp\\:\\[padding\\:1rem_2rem\\]", selector.EscapedSelector);
     }
 
@@ -424,7 +422,6 @@ public class CssSelectorTests
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
         Assert.Equal("text-base/", selector.RootClassSegment);
-        Assert.Equal("[3]", selector.CustomValueSegment);
         Assert.Equal("3", selector.ArbitraryValue);
         Assert.True(selector.IsImportant);
     }

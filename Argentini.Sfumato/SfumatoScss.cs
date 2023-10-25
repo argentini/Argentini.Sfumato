@@ -1287,8 +1287,6 @@ public static class SfumatoScss
 	
 	#endregion
 	
-	// todo: Remove after refactor
-	
     /// <summary>
     /// Get the value type of the user class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
@@ -1299,9 +1297,6 @@ public static class SfumatoScss
 	    if (string.IsNullOrEmpty(valueSegment))
 		    return string.Empty;
 	    
-	    if (valueSegment.StartsWith('[') == false)
-		    return string.Empty;
-
 	    var value = valueSegment.TrimStart('[').TrimEnd(']');
 	    
 	    if (value.Contains(':'))

@@ -118,7 +118,6 @@ public sealed class CssSelector
     #region Legacy Properties
     
     public string RootClassSegment { get; private set; } = string.Empty;
-    public string CustomValueSegment { get; private set; } = string.Empty;
     
     #endregion
 
@@ -143,7 +142,7 @@ public sealed class CssSelector
         FixedSelector = string.Empty;
         EscapedSelector = string.Empty;
         RootClassSegment = string.Empty;
-        CustomValueSegment = string.Empty;
+        ArbitraryValue = string.Empty;
         ArbitraryValueType = string.Empty;
         ModifierValue = string.Empty;
         ModifierValueType = string.Empty;
@@ -249,22 +248,20 @@ public sealed class CssSelector
             if (indexOfBracket == 0)
             {
                 IsArbitraryCss = true;
-                CustomValueSegment = RootClassSegment;
+                SetArbitraryValue(RootClassSegment);
                 RootClassSegment = string.Empty;
             }
 
             else if (indexOfBracket > 0)
             {
-                CustomValueSegment = RootClassSegment[indexOfBracket..];
+	            SetArbitraryValue(RootClassSegment[indexOfBracket..]);
                 RootClassSegment = RootClassSegment[..indexOfBracket];
             }
             
-            SetCustomValue();
-
             ArbitraryValueType = SetCustomValueType(ArbitraryValue);
         }
         
-        if (RootClassSegment.Length > 0 || CustomValueSegment.Length > 0)
+        if (RootClassSegment.Length > 0 || ArbitraryValue.Length > 0)
         {
             IsInvalid = false;
             return;
@@ -274,18 +271,18 @@ public sealed class CssSelector
     }
 
     /// <summary>
-    /// Set the custom value from parsing the custom value segment.
+    /// Set the arbitrary value from parsing the arbitrary value segment.
     /// </summary>
     /// <returns></returns>
-    private void SetCustomValue()
+    private void SetArbitraryValue(string segment)
     {
-	    if (string.IsNullOrEmpty(CustomValueSegment))
+	    if (string.IsNullOrEmpty(segment))
 	    {
 		    ArbitraryValue = string.Empty;
 		    return;
 	    }
 	    
-	    ArbitraryValue = CustomValueSegment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
+	    ArbitraryValue = segment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
             
 	    foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
 		    if (ArbitraryValue?.StartsWith($"{arbitraryType}:") ?? false)

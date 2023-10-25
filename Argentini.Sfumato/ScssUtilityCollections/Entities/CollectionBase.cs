@@ -13,7 +13,7 @@ public static class CollectionBase
         var result = new List<ScssUtilityClass>();
         var groups = collection.Where(g => cssSelector.RootClassSegment.StartsWith(g.Key, StringComparison.Ordinal)).ToList();
 
-        if (string.IsNullOrEmpty(cssSelector.CustomValueSegment))
+        if (string.IsNullOrEmpty(cssSelector.ArbitraryValue))
             foreach (var (_, group) in groups)
                 result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment));
         
