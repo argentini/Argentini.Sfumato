@@ -11,15 +11,21 @@ public sealed class CssSelector
 	 *
 	 * Followed by optional important flag
 	 * {!}
-	 * 
-	 * Followed by a prefix, core, modifier, and arbitrary value segments:
-	 * {prefix}-{core} { /{modifier-value} or /[{arbitrary-value}] or -[{arbitrary-value}] }
+	 *
+	 * Arbitrary CSS:
+	 * [{arbitrary-css}]
+	 *
+	 * OR
+	 *
+	 * Utility class:
+	 * Prefix, core, modifier, and arbitrary value segments:
+	 * {prefix}-{core} { /{modifier-value} or /[{arbitrary-modifier-value}] or -[{arbitrary-value}] }
 	 *
 	 * Segment Examples:
 	 * -----------------
 	 * text-base		  {prefix:text}-{core:base}
 	 * text-base/5        {prefix:text}-{core:base}/{modifier-value:5}
-	 * text-base/[3rem]   {prefix:text}-{core:base}/[{arbitrary-value:3rem}]
+	 * text-base/[3rem]   {prefix:text}-{core:base}/[{arbitrary-modifier-value:3rem}]
 	 * bg-[#aabbcc]       {prefix:bg}-[{arbitrary-value:#aabbcc}]
 	 * bg-rose/50         {prefix:bg}-{core:rose}/{modifier-value:5}
 	 * w-1/2	          {prefix:w}-{core:1/2} 
@@ -32,17 +38,13 @@ public sealed class CssSelector
 	 * 
 	 * Parsing order:
 	 * --------------
-	 * 1. No brackets:
-	 *	  a. Match prefix (empty core value, no hyphen delimiter)
-	 *	     i. Find "/" and modifier value
-	 *    b. Match prefix and core (hyphen delimiter)
-	 *	     i. Find "/" and modifier value
-	 *    c. Find "/" and modifier value
-	 * 2. Brackets
-	 *	  a. Match prefix (empty core value, no hyphen delimiter)
-	 *	     i. Find "[" and "]" and arbitrary value
-	 *    b. Match prefix and core (hyphen delimiter)
-	 *	     i. Find "[" and "]" and arbitrary value
+	 * 1. Process variants
+	 * 2. Identify optional important flag
+	 * 3. Identify arbitrary CSS
+	 * 4. Identify prefix segment from UtilityClassIndex; if not, SKIP
+	 * 5. Identify core segment from UtilityClassIndex; if not, SKIP
+	 * 6. Find "/[" and "]" and arbitrary modifier value
+	 * 7. Find "[" and "]" and arbitrary value
 	 * 
 	 */
 	
@@ -67,7 +69,7 @@ public sealed class CssSelector
     public string FixedValue { get; private set; } = string.Empty;
     public List<string> MediaQueries { get; } = new();
     public List<string> PseudoClasses { get; } = new();
-    public List<string> AllPrefixes => MediaQueries.Concat(PseudoClasses).ToList();
+    public List<string> AllPrefixes { get; } = new();
     public string RootClassSegment { get; private set; } = string.Empty;
     public string CustomValueSegment { get; private set; } = string.Empty;
     public string CustomValue { get; private set; } = string.Empty;
@@ -180,6 +182,9 @@ public sealed class CssSelector
 
                     FixedValue += RootClassSegment;
                 }
+                
+                AllPrefixes.AddRange(MediaQueries);
+                AllPrefixes.AddRange(PseudoClasses);
             }
         }
 
