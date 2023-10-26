@@ -3,7 +3,7 @@ namespace Argentini.Sfumato.ScssUtilityCollections;
 public static class CollectionExtensions
 {
     /// <summary>
-    /// Add numbered rem size classes (e.g. basis-0.5, basis-1.5, etc.).
+    /// Add numbered rem size options (e.g. basis-0.5, basis-1.5, etc.).
     /// </summary>
     public static void AddNumberedRemUnitOptions(this Dictionary<string,string> dictionary, decimal minValue, decimal maxValue, decimal step = 0.5m)
     {
@@ -17,7 +17,7 @@ public static class CollectionExtensions
     }
 
     /// <summary>
-    /// Return classes for incremental whole numbers where that translate to fractional values from zero to one (e.g. ["opacity-5"] => "opacity: 0.05;").
+    /// Add incremental whole number options that translate to fractional values from zero to one (e.g. ["opacity-5"] => "opacity: 0.05;").
     /// Used by inherited classes.
     /// </summary>
     public static void AddOneBasedPercentageOptions(this Dictionary<string,string> dictionary, decimal minValue, decimal maxValue)
@@ -32,7 +32,7 @@ public static class CollectionExtensions
     }
 
     /// <summary>
-    /// Return classes for incremental whole numbers where the prefix and value arte the same (e.g. ["order-1"] => "order: 1;").
+    /// Add incremental whole number options where the prefix and value arte the same (e.g. ["order-1"] => "order: 1;").
     /// Used by inherited classes.
     /// </summary>
     public static void AddWholeNumberOptions(this Dictionary<string,string> dictionary, int minValue, int maxValue, bool isNegative = false)
@@ -43,6 +43,16 @@ public static class CollectionExtensions
             
             dictionary.TryAdd(x.ToString(), value);
         }
+    }
+
+    /// <summary>
+    /// Add whole number percentage number options that end with '%' e.g. ["50%"] = "50%".
+    /// Used by inherited classes.
+    /// </summary>
+    public static void AddPercentageOptions(this Dictionary<string,string> dictionary, int minValue, int maxValue)
+    {
+        for (var x = minValue; x <= maxValue; x++)
+            dictionary.TryAdd($"{x}%", $"{x}%");
     }
     
     /// <summary>

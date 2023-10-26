@@ -56,6 +56,10 @@ public class Bg : ScssUtilityClassGroupBase
         if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
             return styles;
         
+        #endregion
+        
+        #region Calculated Utilities
+        
         // Color preset (e.g. bg-rose-100)
         if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
             return $"background-color: {color};";
@@ -75,7 +79,7 @@ public class Bg : ScssUtilityClassGroupBase
 
             var opacity = int.Parse(value) / 100m;
             
-            return $"background-color: {colorWithOpacity.Replace("rgb(", "rgba(").TrimEnd(')') + $",{opacity:F2})"};";
+            return $"background-color: {colorWithOpacity.Replace(",1.0)", $",{opacity:F2})")};";
         }
 
         #endregion
