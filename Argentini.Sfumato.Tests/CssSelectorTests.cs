@@ -623,4 +623,82 @@ public class CssSelectorTests
         Assert.Equal("", selector.ModifierValue);
         Assert.Equal("", selector.ModifierValueType);
     }
+    
+    [Fact]
+    public async Task BaseUtilityWithArbitraryValue2()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "text-[#abcdef]");
+
+        await selector.ProcessSelector();
+
+        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.Equal("color: #abcdef;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        
+        Assert.False(selector.IsInvalid);
+        Assert.False(selector.IsArbitraryCss);
+        Assert.False(selector.IsImportant);
+        Assert.False(selector.UsesModifier);
+        Assert.False(selector.HasModifierValue);
+        Assert.True(selector.HasArbitraryValue);
+
+        Assert.Empty(selector.MediaQueryVariants);
+        Assert.Empty(selector.PseudoClassVariants);
+        
+        Assert.Equal("text-[#abcdef]", selector.Selector);
+        Assert.Equal("text-\\[\\#abcdef\\]", selector.EscapedSelector);
+        Assert.Equal("text-[#abcdef]", selector.FixedSelector);
+
+        Assert.Equal("", selector.VariantSegment);
+        Assert.Equal("text", selector.PrefixSegment);
+        Assert.Equal("", selector.CoreSegment);
+        Assert.Equal("", selector.ModifierSegment);
+
+        Assert.Equal("#abcdef", selector.ArbitraryValue);
+        Assert.Equal("color", selector.ArbitraryValueType);
+        Assert.Equal("", selector.ModifierValue);
+        Assert.Equal("", selector.ModifierValueType);
+    }
+    
+    [Fact]
+    public async Task BaseUtilityWithArbitraryValueWithType()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "text-[color:#abcdef]");
+
+        await selector.ProcessSelector();
+
+        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.Equal("color: #abcdef;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        
+        Assert.False(selector.IsInvalid);
+        Assert.False(selector.IsArbitraryCss);
+        Assert.False(selector.IsImportant);
+        Assert.False(selector.UsesModifier);
+        Assert.False(selector.HasModifierValue);
+        Assert.True(selector.HasArbitraryValue);
+
+        Assert.Empty(selector.MediaQueryVariants);
+        Assert.Empty(selector.PseudoClassVariants);
+        
+        Assert.Equal("text-[color:#abcdef]", selector.Selector);
+        Assert.Equal("text-\\[color\\:\\#abcdef\\]", selector.EscapedSelector);
+        Assert.Equal("text-[color:#abcdef]", selector.FixedSelector);
+
+        Assert.Equal("", selector.VariantSegment);
+        Assert.Equal("text", selector.PrefixSegment);
+        Assert.Equal("", selector.CoreSegment);
+        Assert.Equal("", selector.ModifierSegment);
+
+        Assert.Equal("#abcdef", selector.ArbitraryValue);
+        Assert.Equal("color", selector.ArbitraryValueType);
+        Assert.Equal("", selector.ModifierValue);
+        Assert.Equal("", selector.ModifierValueType);
+    }
 }
