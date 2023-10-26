@@ -3,6 +3,7 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Entities;
 public sealed class ScssUtilityClass
 {
     public string Selector { get; set; } = string.Empty;
+    public string CoreSegment { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public string[] ArbitraryValueTypes { get; set; } = Array.Empty<string>();
     private string _value = string.Empty;

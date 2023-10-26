@@ -19,6 +19,7 @@ public sealed class ScssUtilityClassGroup
             Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{SelectorPrefix}{(string.IsNullOrEmpty(key) ? string.Empty : $"-{key}")}",
+                CoreSegment = key,
                 SortOrder = sortSeed++,
                 Category = Category,
                 Value = value,
@@ -71,6 +72,7 @@ public sealed class ScssUtilityClassGroup
         Classes.Add(new ScssUtilityClass
         {
             Selector = $"{SelectorPrefix}-",
+            CoreSegment = "",
             SortOrder = sortSeed++,
             Category = Category,
             ArbitraryValueTypes = valueTypes.Split(','),
@@ -92,6 +94,7 @@ public sealed class ScssUtilityClassGroup
         Classes.Add(new ScssUtilityClass
         {
             Selector = $"{SelectorPrefix}{(string.IsNullOrEmpty(suffix) ? string.Empty : $"-{suffix}")}/",
+            CoreSegment = suffix,
             SortOrder = sortSeed++,
             Category = Category,
             ArbitraryValueTypes = valueTypes.Split(','),

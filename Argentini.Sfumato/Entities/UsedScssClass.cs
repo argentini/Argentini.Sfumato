@@ -16,8 +16,6 @@ public class UsedScssClass
             BuildPrefixSortOrder();
         }
     }
-    public ScssUtilityClass? ScssUtilityClass { get; set; }
-    public bool IsArbitraryCss => ScssUtilityClass is null;
     public int PrefixSortOrder { get; set; }
     public int SortOrder { get; set; }
     
@@ -26,9 +24,10 @@ public class UsedScssClass
     public UsedScssClass()
     {}
 
-    public UsedScssClass(SfumatoAppState appState, string selector)
+    public UsedScssClass(SfumatoAppState appState, string selector, bool isArbitraryCss = false)
     {
-        CssSelector = new CssSelector(appState, selector);
+        CssSelector = new CssSelector(appState, selector, isArbitraryCss);
+        _ = CssSelector.ProcessValue();
     }
 
     public void BuildPrefixSortOrder()

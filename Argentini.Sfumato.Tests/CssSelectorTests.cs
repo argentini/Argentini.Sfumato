@@ -12,15 +12,10 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "");
+
+        await selector.ProcessValue();
         
         Assert.True(selector.IsInvalid);
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        Assert.Empty(selector.RootClassSegment);
-        Assert.Empty(selector.ArbitraryValue);
-        Assert.Empty(selector.FixedSelector);
-        Assert.Empty(selector.EscapedSelector);
     }
 
     [Fact]
@@ -31,14 +26,10 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "]dsfdfsfsd[");
+
+        await selector.ProcessValue();
         
         Assert.True(selector.IsInvalid);
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        Assert.Empty(selector.RootClassSegment);
-        Assert.Empty(selector.FixedSelector);
-        Assert.Empty(selector.ArbitraryValue);
     }
 
     [Fact]
@@ -50,13 +41,9 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "dsfdfsfsd[]");
         
+        await selector.ProcessValue();
+        
         Assert.True(selector.IsInvalid);
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        Assert.Empty(selector.RootClassSegment);
-        Assert.Empty(selector.ArbitraryValue);
-        Assert.Empty(selector.FixedSelector);
     }
     
     [Fact]
@@ -67,6 +54,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "text-base");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -85,7 +74,9 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "tabp:text-base");
-        
+
+        await selector.ProcessValue();
+
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
@@ -105,6 +96,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "dark:tabp:text-base");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.PseudoClassVariants);
@@ -126,6 +119,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "hover:text-base");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -146,6 +141,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "hover:focus:text-base");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -167,6 +164,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "dark:tabp:hover:focus:text-base");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -190,6 +189,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "focus:dark:hover:tabp:dark:text-base");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -214,6 +215,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "text-[3rem]");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -234,13 +237,16 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "text-base/3");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
-        Assert.Equal(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("text-base/3", selector.RootClassSegment);
+        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("/3", selector.ModifierSegment);
+        Assert.Equal("3", selector.ModifierValue);
         Assert.Equal(string.Empty, selector.ArbitraryValue);
         Assert.Equal("text-base\\/3", selector.EscapedSelector);
     }
@@ -253,6 +259,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "dark:tabp:hover:text-[3rem]");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -275,6 +283,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "dark:tabp:hover:text-base/3");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -284,7 +294,9 @@ public class CssSelectorTests
         Assert.Equal("hover", selector.PseudoClassVariants[0]);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("text-base/3", selector.RootClassSegment);
+        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("/3", selector.ModifierSegment);
+        Assert.Equal("3", selector.ModifierValue);
         Assert.Equal(string.Empty, selector.ArbitraryValue);
         Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/3", selector.EscapedSelector);
     }
@@ -297,6 +309,8 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "dark:tabp:hover:text-base/[3]");
+
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Equal(2, selector.MediaQueryVariants.Count);
@@ -306,7 +320,8 @@ public class CssSelectorTests
         Assert.Equal("hover", selector.PseudoClassVariants[0]);
         Assert.NotEqual(selector.Selector, selector.RootClassSegment);
         Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("text-base/", selector.RootClassSegment);
+        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("/", selector.ModifierSegment);
         Assert.Equal("3", selector.ArbitraryValue);
         Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/\\[3\\]", selector.EscapedSelector);
         Assert.Equal("integer", selector.ArbitraryValueType);
@@ -319,7 +334,9 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "[font-size:1rem]");
+        var selector = new CssSelector(appState, "[font-size:1rem]", true);
+
+        await selector.ProcessValue();
         
         Assert.True(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -337,7 +354,9 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "tabp:[font-size:1rem]");
+        var selector = new CssSelector(appState, "tabp:[font-size:1rem]", true);
+
+        await selector.ProcessValue();
         
         Assert.True(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -356,7 +375,9 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "tabp:[padding:1rem_2rem]");
+        var selector = new CssSelector(appState, "tabp:[padding:1rem_2rem]", true);
+
+        await selector.ProcessValue();
         
         Assert.True(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -376,13 +397,10 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "text-base/");
-        
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        Assert.Equal("text-base/", selector.RootClassSegment);
-        Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("text-base\\/", selector.EscapedSelector);
+
+        await selector.ProcessValue();
+
+        Assert.True(selector.IsInvalid);
     }
     
     [Fact]
@@ -393,6 +411,7 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "!text-base");
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -401,6 +420,7 @@ public class CssSelectorTests
         Assert.True(selector.IsImportant);
         
         selector = new CssSelector(appState, "tabp:focus:!text-base");
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -409,20 +429,29 @@ public class CssSelectorTests
         Assert.True(selector.IsImportant);
         
         selector = new CssSelector(appState, "tabp:focus:!text-base/3");
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
-        Assert.Equal("text-base/3", selector.RootClassSegment);
+        Assert.Equal("text", selector.PrefixSegment);
+        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("/3", selector.ModifierSegment);
+        Assert.Equal("3", selector.ModifierValue);
+        Assert.Equal("integer", selector.ModifierValueType);
         Assert.True(selector.IsImportant);
         
         selector = new CssSelector(appState, "tabp:focus:!text-base/[3]");
+        await selector.ProcessValue();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
-        Assert.Equal("text-base/", selector.RootClassSegment);
+        Assert.Equal("text", selector.PrefixSegment);
+        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("/", selector.ModifierSegment);
         Assert.Equal("3", selector.ArbitraryValue);
+        Assert.Equal("integer", selector.ArbitraryValueType);
         Assert.True(selector.IsImportant);
     }
 }

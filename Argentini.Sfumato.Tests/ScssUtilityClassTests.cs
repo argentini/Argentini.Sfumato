@@ -45,12 +45,14 @@ public class ScssUtilityClassTests
         await backgrounds.AddAllBackgroundClassesAsync();
 
         var cssSelector = new CssSelector(appState, "bg-white");
+        await cssSelector.ProcessValue();
         
         var matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
         
         Assert.Single(matches);
 
         cssSelector = new CssSelector(appState, "bg-[#aabbcc]");
+        await cssSelector.ProcessValue();
         
         matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
         
@@ -61,6 +63,7 @@ public class ScssUtilityClassTests
         Assert.Equal("background-color: #aabbcc;", matches[0].ScssMarkup);
 
         cssSelector = new CssSelector(appState, "bg-[top_center]");
+        await cssSelector.ProcessValue();
         
         matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
         

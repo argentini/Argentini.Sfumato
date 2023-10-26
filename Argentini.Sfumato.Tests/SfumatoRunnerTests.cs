@@ -1,6 +1,5 @@
 using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Extensions;
-using Argentini.Sfumato.ScssUtilityCollections.Entities;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
@@ -71,19 +70,7 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var scssUtilityClass = new ScssUtilityClass
-        {
-            Selector = "text-base",
-            ScssTemplate = "font-size: {value};",
-            Value = "1rem"
-        };
-        
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass(appState, "text-base")
-            {
-                ScssUtilityClass = scssUtilityClass
-                
-            }, pool, string.Empty);
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new UsedScssClass(appState, "text-base"), pool, string.Empty);
 
         Assert.Equal(".text-base { font-size: 1rem; }", result.CompactCss());
     }
@@ -96,47 +83,23 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var scssUtilityClass = new ScssUtilityClass
-        {
-            Selector = "text-base/2",
-            ScssTemplate = "font-size: 1rem;\nline-height: 1.15rem;"
-        };
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new UsedScssClass(appState, "text-base/5"), pool, string.Empty);
         
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass(appState, "text-base/2")
-            {
-                ScssUtilityClass = scssUtilityClass
-                
-            }, pool, string.Empty);
-        
-        Assert.Equal(".text-base\\/2 { font-size: 1rem; line-height: 1.15rem; }".CompactCss(), result.CompactCss());
+        Assert.Equal(".text-base\\/5 { font-size: 1rem; line-height: 1.25rem; }".CompactCss(), result.CompactCss());
         
         var cssSelector = new CssSelector(appState, "text-base/[3rem]");
+        await cssSelector.ProcessValue();
 
-        scssUtilityClass = new ScssUtilityClass
-        {
-            Selector = "text-base/",
-            Value = cssSelector.ArbitraryValue,
-            ScssTemplate = "font-size: 1rem;\nline-height: {value};",
-            ArbitraryValueTypes = new [] { "length", "percentage", "number" },
-        };
-        
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass()
+            new UsedScssClass
             {
                 CssSelector = cssSelector,
-                ScssUtilityClass = scssUtilityClass
                 
             }, pool, string.Empty);
 
         Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
 
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass(appState, "tabp:text-base/[3rem]")
-            {
-                ScssUtilityClass = scssUtilityClass
-                
-            }, pool, "tabp:");
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new UsedScssClass(appState, "tabp:text-base/[3rem]"), pool, "tabp:");
         
         Assert.Equal(".tabp\\:text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
     }
@@ -149,19 +112,19 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
         
-        var scssClass = new UsedScssClass(appState, "[width:10rem]");
+        var scssClass = new UsedScssClass(appState, "[width:10rem]", true);
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
 
         Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new UsedScssClass(appState, "tabp:[width:10rem]");
+        scssClass = new UsedScssClass(appState, "tabp:[width:10rem]", true);
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
         Assert.Equal(".tabp\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new UsedScssClass(appState, "tabp:hover:[width:10rem]");
+        scssClass = new UsedScssClass(appState, "tabp:hover:[width:10rem]", true);
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
@@ -187,7 +150,7 @@ public class SfumatoRunnerTests
         await runner.AppState.ProcessFileMatchesAsync(watchedFile);
         await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
         
-        Assert.Equal(24, runner.AppState.UsedClasses.Count);
+        Assert.Equal(28, runner.AppState.UsedClasses.Count);
     }
 
     [Fact]
@@ -298,15 +261,27 @@ public class SfumatoRunnerTests
                          }
                      }
                      @include sf-media($from: desk) {
+                         .desk\:text-\[--my-color-var\] {
+                             font-size: var(--my-color-var);
+                         }
                          .desk\:text-\[\#112233\] {
-                             color: #112233;
+                             font-size: #112233;
                          }
                          .desk\:text-\[red\] {
-                             color: red;
+                             font-size: red;
+                         }
+                         .desk\:text-\[var\(--my-color-var\)\] {
+                             font-size: var(--my-color-var);
                          }
                          .desk\:text-base\/\[3rem\] {
                              font-size: 1rem;
                              line-height: 3rem;
+                         }
+                         .desk\:text-slate\[\#112233\] {
+                             color: #112233;
+                         }
+                         .desk\:text-slate-50\[\#112233\] {
+                             color: #112233;
                          }
                      }
                      @include sf-media($from: elas) {
@@ -319,10 +294,9 @@ public class SfumatoRunnerTests
                              background-color: rgb(240,171,252);
                          }
                          .dark\:text-\[length\:1rem\] {
-                             font-size: 1rem;
+                             font-size: length:1rem;
                          }
                      }
-                     
                      """.CompactCss(), scss.CompactCss());
     }
 }

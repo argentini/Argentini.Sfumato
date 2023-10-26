@@ -256,6 +256,7 @@ public static class BackgroundsCollection
             scssUtilityClassGroup.Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{scssUtilityClassGroup.SelectorPrefix}-{x}%",
+                CoreSegment = $"{x}%",
                 SortOrder = sortSeed++,
                 Value = $"{x}%",
                 ScssTemplate = "--sf-gradient-from-position: {value};"
@@ -328,6 +329,7 @@ public static class BackgroundsCollection
             scssUtilityClassGroup.Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{scssUtilityClassGroup.SelectorPrefix}-{x}%",
+                CoreSegment = $"{x}%",
                 SortOrder = sortSeed++,
                 Value = $"{x}%",
                 ScssTemplate = "--sf-gradient-via-position: {value};"
@@ -387,6 +389,7 @@ public static class BackgroundsCollection
             scssUtilityClassGroup.Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{scssUtilityClassGroup.SelectorPrefix}-{x}%",
+                CoreSegment = $"{x}%",
                 SortOrder = sortSeed++,
                 Value = $"{x}%",
                 ScssTemplate = "--sf-gradient-to-position: {value};"

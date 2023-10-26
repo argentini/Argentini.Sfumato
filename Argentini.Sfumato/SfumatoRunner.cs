@@ -172,10 +172,10 @@ public sealed class SfumatoRunner
 			level++;
 		}
 		
-		if (usedScssClass.IsArbitraryCss)
+		if (usedScssClass.CssSelector.IsArbitraryCss)
 			scssResult.Append($"{usedScssClass.CssSelector.ArbitraryValue.Indent(level * IndentationSpaces)}{(usedScssClass.CssSelector.IsImportant ? " !important" : string.Empty)};\n");
 		else
-			scssResult.Append($"{usedScssClass.ScssUtilityClass?.ScssMarkup.Replace(";", (usedScssClass.CssSelector.IsImportant ? " !important;" : ";")).Indent(level * IndentationSpaces)}\n");
+			scssResult.Append($"{usedScssClass.CssSelector.ScssUtilityClass?.ScssMarkup.Replace(";", (usedScssClass.CssSelector.IsImportant ? " !important;" : ";")).Indent(level * IndentationSpaces)}\n");
 			
 		while (level > 0)
 		{
@@ -290,7 +290,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 			
-			if (usedClass.ScssUtilityClass?.Category == "gradients")
+			if (usedClass.CssSelector.ScssUtilityClass?.Category == "gradients")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 
@@ -308,7 +308,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 
-			if (usedClass.ScssUtilityClass?.Category == "ring")
+			if (usedClass.CssSelector.ScssUtilityClass?.Category == "ring")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 
@@ -326,7 +326,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 
-			if (usedClass.ScssUtilityClass?.Category == "shadow")
+			if (usedClass.CssSelector.ScssUtilityClass?.Category == "shadow")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 

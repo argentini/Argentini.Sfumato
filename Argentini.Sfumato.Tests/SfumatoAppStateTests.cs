@@ -123,22 +123,28 @@ public class SfumatoAppStateTests
         await collection.AddAllTypographyClassesAsync();
 
         var selector = new CssSelector(appState, "bg-slate-100");
-        Assert.Single(await collection.GetMatchingClassesAsync(selector));
+        await selector.ProcessValue();
+        Assert.NotNull(selector.ScssUtilityClass);
 
         selector = new CssSelector(appState, "dark:tabp:hover:bg-slate-100");
-        Assert.Single(await collection.GetMatchingClassesAsync(selector));
+        await selector.ProcessValue();
+        Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
-        Assert.Single(await collection.GetMatchingClassesAsync(selector));
+        await selector.ProcessValue();
+        Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "break-after-auto");
-        Assert.Single(await collection.GetMatchingClassesAsync(selector));
+        await selector.ProcessValue();
+        Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
-        Assert.Equal("bg-", (await collection.GetMatchingClassesAsync(selector)).First().Selector);
+        await selector.ProcessValue();
+        Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "text-base/5");
-        Assert.Single(await collection.GetMatchingClassesAsync(selector));
+        await selector.ProcessValue();
+        Assert.NotNull(selector.ScssUtilityClass);
     }
 
     [Fact]

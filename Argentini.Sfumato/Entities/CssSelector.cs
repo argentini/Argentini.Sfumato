@@ -1,3 +1,5 @@
+using Argentini.Sfumato.ScssUtilityCollections.Entities;
+
 namespace Argentini.Sfumato.Entities;
 
 public sealed class CssSelector
@@ -51,24 +53,12 @@ public sealed class CssSelector
     #region Properties
 
     public SfumatoAppState? AppState { get; set; }
+    public ScssUtilityClass? ScssUtilityClass { get; set; }
 
     #region Selector
     
-    private string _selector = string.Empty;
-    public string Selector
-    {
-        get => _selector;
+    public string Selector { get; private set; } = string.Empty;
 
-        set
-        {
-            var oldValue = _selector;
-            
-            _selector = value;
-
-            if (oldValue != _selector)
-                ProcessValue();
-        }
-    }    
     public string FixedSelector { get; private set; } = string.Empty;
     
     private string _escapedSelector = string.Empty;
@@ -97,8 +87,10 @@ public sealed class CssSelector
 
     #region Segments
     
+    public string VariantSegment { get; private set; } = string.Empty;
     public string PrefixSegment { get; private set; } = string.Empty;
     public string CoreSegment { get; private set; } = string.Empty;
+    public string ModifierSegment { get; private set; } = string.Empty;
     public string ModifierValue { get; private set; } = string.Empty;
     public string ModifierValueType { get; private set; } = string.Empty;
     public string ArbitraryValue { get; private set; } = string.Empty;
@@ -113,7 +105,7 @@ public sealed class CssSelector
     public bool HasArbitraryValue  => ArbitraryValue.Length > 0;
     public bool UsesModifier { get; private set; }
     public bool IsImportant { get; private set; }
-    public bool IsArbitraryCss { get; private set; }
+    public bool IsArbitraryCss { get; set; }
     public bool IsInvalid { get; private set; }
 
     #endregion
@@ -126,31 +118,36 @@ public sealed class CssSelector
 
     #endregion
     
-    public CssSelector(SfumatoAppState appState)
+    public CssSelector(SfumatoAppState appState, bool isArbitraryCss = false)
     {
 	    AppState = appState;
+	    IsArbitraryCss = isArbitraryCss;
     }
 
-    public CssSelector(SfumatoAppState appState, string selector)
+    public CssSelector(SfumatoAppState appState, string selector, bool isArbitraryCss = false)
     {
 	    AppState = appState;
+	    IsArbitraryCss = isArbitraryCss;
         Selector = selector;
     }
 
     /// <summary>
     /// Establish all property values from parsing the Value property.
     /// </summary>
-    public void ProcessValue()
+    public async Task ProcessValue()
     {
 	    MediaQueryVariants.Clear();
 	    PseudoClassVariants.Clear();
 	    AllVariants.Clear();
 
-	    FixedSelector = string.Empty;
+	    FixedSelector = Selector;
+	    RootClassSegment = string.Empty;
 	    EscapedSelector = string.Empty;
 
+	    VariantSegment = string.Empty;
 	    PrefixSegment = string.Empty;
 	    CoreSegment = string.Empty;
+	    ModifierSegment = string.Empty;
 	    
 	    ArbitraryValue = string.Empty;
 	    ArbitraryValueType = string.Empty;
@@ -158,76 +155,92 @@ public sealed class CssSelector
 	    ModifierValueType = string.Empty;
 	    
 	    IsImportant = false;
-	    IsArbitraryCss = false;
 	    IsInvalid = false;
 
 	    if (string.IsNullOrEmpty(Selector))
+	    {
+		    IsInvalid = true;
 		    return;
-	    
+	    }
+
 	    var rightOfVariants = Selector;
 	    var rootSegment = Selector;
-	    var variantSegment = string.Empty;
-	    var arbitraryValueSegment = string.Empty;
+	    var selectorNoVariantsNoBrackets = Selector;
 	    
 	    var indexOfBracket = rootSegment.IndexOf('[');
 	    var indexOfBracketClose = rootSegment.LastIndexOf(']');
 
-	    if (indexOfBracketClose < indexOfBracket + 2 || (indexOfBracket == -1 && indexOfBracketClose > -1))
+	    if (rootSegment.EndsWith('/') || (indexOfBracket > -1 && indexOfBracketClose > -1 && indexOfBracketClose < indexOfBracket + 2))
 	    {
 		    IsInvalid = true;
 		    return;
 	    }
+	    
+	    RootClassSegment = Selector;
 	    
 	    if (indexOfBracket > -1)
 	    {
-		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']');
+		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
+
+		    if (ArbitraryValue.StartsWith("--"))
+			    ArbitraryValue = $"var({ArbitraryValue})";
+		    
 		    rootSegment = Selector[..indexOfBracket];
+		    selectorNoVariantsNoBrackets = rootSegment;
+		    RootClassSegment = rootSegment;
 	    }
 	    
-	    var indexOfColon = rootSegment.LastIndexOf(':');
+	    var indexOfLastColon = rootSegment.LastIndexOf(':');
 
-	    if (indexOfColon == 0 || indexOfColon == rootSegment.Length - 1)
+	    if (indexOfLastColon == 0)
 	    {
 		    IsInvalid = true;
 		    return;
 	    }
 	    
-	    if (indexOfColon > 0)
+	    if (indexOfLastColon > 0)
 	    {
-		    variantSegment = rootSegment[..(indexOfColon + 1)];
-		    rootSegment = rootSegment[(indexOfColon + 1)..];
-		    rightOfVariants = Selector[(indexOfColon + 1)..];
-	    }
-	    
-	    var indexOfSlash = rootSegment.LastIndexOf('/');
-
-	    if (indexOfSlash == 0)
-	    {
-		    IsInvalid = true;
-		    return;
-	    }
-	    
-	    if (indexOfSlash > 0)
-	    {
-		    UsesModifier = true;
-
-		    if (ArbitraryValue == string.Empty)
-		    {
-			    ModifierValue = rootSegment[(indexOfSlash + 1)..];
-		    }
-
-		    rootSegment = rootSegment[..indexOfSlash]; 
+		    VariantSegment = rootSegment[..(indexOfLastColon + 1)];
+		    rootSegment = rootSegment[(indexOfLastColon + 1)..];
+		    rightOfVariants = Selector[(indexOfLastColon + 1)..];
+		    selectorNoVariantsNoBrackets = rootSegment;
+		    RootClassSegment = rootSegment;
 	    }
 
 	    if (rootSegment.StartsWith('!'))
 	    {
 		    IsImportant = true;
 		    rootSegment = rootSegment.TrimStart('!');
+		    selectorNoVariantsNoBrackets = rootSegment;
+		    RootClassSegment = RootClassSegment.TrimStart('!');
 	    }
-	    
-	    if (variantSegment.Length > 0)
+
+	    if (IsArbitraryCss == false)
 	    {
-		    var segments = variantSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
+		    var indexOfLastSlash = rootSegment.LastIndexOf('/');
+
+		    if (indexOfLastSlash == 0)
+		    {
+			    IsInvalid = true;
+			    return;
+		    }
+
+		    if (indexOfLastSlash > 0)
+		    {
+			    UsesModifier = true;
+
+			    ModifierSegment = rootSegment[indexOfLastSlash..];
+				    
+			    if (ArbitraryValue == string.Empty)
+				    ModifierValue = rootSegment[(indexOfLastSlash + 1)..];
+
+			    rootSegment = rootSegment[..indexOfLastSlash];
+		    }
+	    }
+
+	    if (VariantSegment.Length > 0)
+	    {
+		    var segments = VariantSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
 		    
 		    if (segments.Length > 0)
 		    {
@@ -266,180 +279,88 @@ public sealed class CssSelector
 		    AllVariants.AddRange(PseudoClassVariants);
 	    }
 
-		// todo: scan utility class collections for valid prefix, core
-	    
-	    
-	    
-	    
-		// todo: if valid prefix, core, set arbitrary/modifier value types	    
-	    
-	    
-
-
-
-    }
-
-
-    /// <summary>
-    /// Establish all property values from parsing the Value property.
-    /// </summary>
-    public void xxxProcessValue()
-    {
-        FixedSelector = string.Empty;
-        EscapedSelector = string.Empty;
-        RootClassSegment = string.Empty;
-        ArbitraryValue = string.Empty;
-        ArbitraryValueType = string.Empty;
-        ModifierValue = string.Empty;
-        ModifierValueType = string.Empty;
-
-        MediaQueryVariants.Clear();
-        PseudoClassVariants.Clear();
-        AllVariants.Clear();
-
-        IsImportant = false;
-        IsArbitraryCss = false;
-        IsInvalid = true;
-
-        if (string.IsNullOrEmpty(Selector))
-            return;
-
-        var indexOfColon = Selector.IndexOf(':');
-        var indexOfBracket = Selector.IndexOf('[');
-        var indexOfBracketClose = Selector.IndexOf(']');
-        var indexOfSlash = Selector.IndexOf('/');
-        
-        if (indexOfColon == 0 || indexOfBracket > indexOfBracketClose)
-            return;
-
-        if (indexOfBracketClose == indexOfBracket + 1)
-            return;
-
-        FixedSelector = Selector;
-        RootClassSegment = Selector;
-        
-        var prefixesIndex = -1;
-
-        if (indexOfColon > 0 && (indexOfBracket == -1 || (indexOfBracket > -1 && indexOfColon < indexOfBracket)))
-        {
-            for (var x = 0; x < Selector.Length; x++)
-            {
-                if (Selector[x] == '[' || Selector[x] == '!')
-                    break;
-
-                if (Selector[x] == ':')
-                    prefixesIndex = x;
-            }
-
-            if (prefixesIndex > 0)
-            {
-                var prefixSegment = Selector[..(prefixesIndex + 1)];
-                var segments = prefixSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-                RootClassSegment = Selector[(prefixesIndex + 1)..];
-
-                if (segments.Length > 0)
-                {
-                    var lastType = string.Empty;
-
-                    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.Where(p => segments.Contains(p.Prefix)).OrderBy(k => k.PrefixOrder))
-                    {
-                        if (breakpoint.PrefixType == lastType)
-                            continue;
-
-                        MediaQueryVariants.Add(breakpoint.Prefix);
-
-                        lastType = breakpoint.PrefixType;
-                    }
-
-                    foreach (var segment in segments)
-                    {
-                        if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
-                            continue;
-
-                        PseudoClassVariants.Add(segment);
-                    }
-                    
-                    FixedSelector = string.Empty;
-
-                    if (MediaQueryVariants.Count > 0)
-                        FixedSelector += $"{string.Join(':', MediaQueryVariants)}:";
-
-                    if (PseudoClassVariants.Count > 0)
-                        FixedSelector += $"{string.Join(':', PseudoClassVariants)}:";
-
-                    FixedSelector += RootClassSegment;
-                }
-                
-                AllVariants.AddRange(MediaQueryVariants);
-                AllVariants.AddRange(PseudoClassVariants);
-            }
-        }
-
-        if (indexOfSlash > 0 && indexOfSlash < Selector.Length - 1)
-        {
-	        ModifierValue = Selector[(indexOfSlash + 1)..];
-	        ModifierValueType = SetCustomValueType(ModifierValue);
-        }
-        
-        if (string.IsNullOrEmpty(RootClassSegment) == false)
-        {
-            IsImportant = RootClassSegment.StartsWith('!');
-
-            if (IsImportant)
-	            RootClassSegment = RootClassSegment.TrimStart('!');
-
-            indexOfBracket = RootClassSegment.IndexOf('[');
-
-            if (indexOfBracket == 0)
-            {
-                IsArbitraryCss = true;
-                SetArbitraryValue(RootClassSegment);
-                RootClassSegment = string.Empty;
-            }
-
-            else if (indexOfBracket > 0)
-            {
-	            SetArbitraryValue(RootClassSegment[indexOfBracket..]);
-                RootClassSegment = RootClassSegment[..indexOfBracket];
-            }
-            
-            ArbitraryValueType = SetCustomValueType(ArbitraryValue);
-        }
-        
-        if (RootClassSegment.Length > 0 || ArbitraryValue.Length > 0)
-        {
-            IsInvalid = false;
-            return;
-        }
-
-        FixedSelector = string.Empty;
-    }
-
-    /// <summary>
-    /// Set the arbitrary value from parsing the arbitrary value segment.
-    /// </summary>
-    /// <returns></returns>
-    private void SetArbitraryValue(string segment)
-    {
-	    if (string.IsNullOrEmpty(segment))
+	    if (IsArbitraryCss)
 	    {
-		    ArbitraryValue = string.Empty;
+		    RootClassSegment = string.Empty;
 		    return;
 	    }
-	    
-	    ArbitraryValue = segment.TrimStart('[').TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
-            
-	    foreach (var arbitraryType in SfumatoScss.ArbitraryValueTypes)
-		    if (ArbitraryValue?.StartsWith($"{arbitraryType}:") ?? false)
-			    ArbitraryValue = ArbitraryValue.TrimStart($"{arbitraryType}:") ?? string.Empty;
+
+	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroup>>()).ToList();
+		
+		foreach (var (_, scssUtilityClassGroup) in matches)
+		{
+			foreach (var scssUtilityClass in scssUtilityClassGroup.Classes)
+			{
+				if (scssUtilityClass.Selector != selectorNoVariantsNoBrackets)
+					continue;
+				
+				PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
+				CoreSegment = scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) ?? string.Empty;
+				ScssUtilityClass = new ScssUtilityClass
+				{
+					Selector = scssUtilityClass.Selector,
+					Category = scssUtilityClass.Category,
+					ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
+					SortOrder = scssUtilityClass.SortOrder,
+					ScssTemplate = scssUtilityClass.ScssTemplate,
+					Value = scssUtilityClass.Value
+				};
+				
+				if (string.IsNullOrEmpty(ArbitraryValue) == false)
+					ScssUtilityClass.Value = ArbitraryValue;
+					
+				break;
+			}
+			
+			if (ScssUtilityClass is not null)
+				break;
+		}
+
+		if (ScssUtilityClass is null)
+		{
+			foreach (var (_, scssUtilityClassGroup) in matches)
+			{
+				foreach (var scssUtilityClass in scssUtilityClassGroup.Classes)
+				{
+					if (scssUtilityClass.Selector.TrimEnd('/') != rootSegment)
+						continue;
+
+					PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
+					CoreSegment = scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) ?? string.Empty;
+					ScssUtilityClass = new ScssUtilityClass
+					{
+						Selector = scssUtilityClass.Selector,
+						Category = scssUtilityClass.Category,
+						ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
+						SortOrder = scssUtilityClass.SortOrder,
+						ScssTemplate = scssUtilityClass.ScssTemplate,
+						Value = scssUtilityClass.Value
+					};
+
+					if (string.IsNullOrEmpty(ArbitraryValue) == false)
+						ScssUtilityClass.Value = ArbitraryValue;
+					
+					break;
+				}
+			
+				if (ScssUtilityClass is not null)
+					break;
+			}
+		}
+
+		RootClassSegment = rootSegment + (HasModifierValue ? "/" : string.Empty);
+		
+		ModifierValueType = SetCustomValueType(ModifierValue);
+		ArbitraryValueType = SetCustomValueType(ArbitraryValue);
+
+		await Task.CompletedTask;
     }
-    
+
     /// <summary>
     /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <returns></returns>
-    public string SetCustomValueType(string value)
+    public static string SetCustomValueType(string value)
     {
 	    if (string.IsNullOrEmpty(value))
 		    return string.Empty;

@@ -644,7 +644,6 @@ public sealed class SfumatoAppState
 		watchedFile.ArbitraryCssMatches.Clear();
 		
 		var tasks = new List<Task>();
-
 		var matches = CoreClassRegex.Matches(watchedFile.Markup);
 
 		if (matches.Count > 0)
@@ -661,18 +660,19 @@ public sealed class SfumatoAppState
 		if (matches.Count > 0)
 		{
 			foreach (Match match in matches)
-				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, this, match.Value));
+				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, this, match.Value, true));
 
 			await Task.WhenAll(tasks);
 		}
 	}
 
-	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, SfumatoAppState appState, string value)
+	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, SfumatoAppState appState, string value, bool isArbitraryCss = false)
 	{
-		var cssSelector = new CssSelector(appState, value);
-		
+		var cssSelector = new CssSelector(appState, value, isArbitraryCss);
+
 		if (cssSelector.IsInvalid == false)
-			collection.TryAdd(value,new CssSelector(appState, value));
+			if (collection.TryAdd(value, cssSelector))
+				await cssSelector.ProcessValue();
 
 		await Task.CompletedTask;
 	}
@@ -704,57 +704,13 @@ public sealed class SfumatoAppState
 			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))
 				continue;
 
-			var matchingScssClasses = await UtilityClassCollection.GetMatchingClassesAsync(cssSelector);
-
-			if (matchingScssClasses.Count == 0)
-				continue;
-			
-			var userClassValueType = cssSelector.ArbitraryValue.GetUserClassValueType();
-			ScssUtilityClass? foundScssUtilityClass = null;
-
-			if (string.IsNullOrEmpty(userClassValueType) == false)
-				foreach (var scssUtilityClass in matchingScssClasses)
-				{
-					if (scssUtilityClass.ArbitraryValueTypes.Contains(userClassValueType) == false)
-						continue;
-
-					foundScssUtilityClass = scssUtilityClass;
-					break;
-				}								
-			else
-				foreach (var scssUtilityClass in matchingScssClasses)
-				{
-					if (scssUtilityClass.ArbitraryValueTypes.Length > 0)
-						continue;
-
-					if (scssUtilityClass.Selector != cssSelector.RootClassSegment)
-						continue;
-					
-					foundScssUtilityClass = scssUtilityClass;
-					break;
-				}
-
-			if (foundScssUtilityClass is null)
+			if (cssSelector.ScssUtilityClass is null)
 				continue;
 
-			var cloneutilityClass = new ScssUtilityClass
-			{
-				Selector = foundScssUtilityClass.Selector,
-				Category = foundScssUtilityClass.Category,
-				ArbitraryValueTypes = foundScssUtilityClass.ArbitraryValueTypes,
-				SortOrder = foundScssUtilityClass.SortOrder,
-				ScssTemplate = foundScssUtilityClass.ScssTemplate,
-				Value = foundScssUtilityClass.Value
-			};
-			
-			if (string.IsNullOrEmpty(cssSelector.ArbitraryValue) == false)
-				cloneutilityClass.Value = cssSelector.ArbitraryValue;
-			
 			var usedScssClass = new UsedScssClass
 			{
 				CssSelector = cssSelector,
-				ScssUtilityClass = cloneutilityClass,
-				SortOrder = foundScssUtilityClass.SortOrder
+				SortOrder = cssSelector.ScssUtilityClass.SortOrder
 			};
 
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedSelector, usedScssClass);
@@ -773,6 +729,8 @@ public sealed class SfumatoAppState
 
 			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedSelector, usedScssClass);
 		}
+
+		await Task.CompletedTask;
 	}
 	
 	#endregion
