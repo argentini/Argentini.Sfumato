@@ -1,6 +1,4 @@
-using Argentini.Sfumato.ScssUtilityCollections.Entities;
-
-namespace Argentini.Sfumato.ScssUtilityCollections;
+namespace Argentini.Sfumato.ScssUtilityCollections.Backgrounds;
 
 public class Bg : ScssUtilityClassGroupBase 
 {

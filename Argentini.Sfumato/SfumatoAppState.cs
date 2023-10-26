@@ -1,5 +1,5 @@
 using Argentini.Sfumato.ScssUtilityCollections;
-using Argentini.Sfumato.ScssUtilityCollections.Entities;
+using Argentini.Sfumato.ScssUtilityCollections.Backgrounds;
 
 namespace Argentini.Sfumato;
 

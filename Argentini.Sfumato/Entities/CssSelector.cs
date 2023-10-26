@@ -1,4 +1,4 @@
-using Argentini.Sfumato.ScssUtilityCollections.Entities;
+using Argentini.Sfumato.ScssUtilityCollections;
 
 namespace Argentini.Sfumato.Entities;
 
