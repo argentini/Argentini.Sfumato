@@ -52,6 +52,7 @@ public static class TransformsCollection
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             transition-duration: 150ms;
             """,
+            false,
             sortSeed
         );
         
@@ -86,6 +87,7 @@ public static class TransformsCollection
                 ["1000"] = "1000ms"
             },
             "transition-duration: {value};",
+            false,
             sortSeed
         );
         
@@ -115,6 +117,7 @@ public static class TransformsCollection
                 ["in-out"] = "cubic-bezier(0.4, 0, 0.2, 1)",
             },
             "transition-timing-function: {value};",
+            false,
             sortSeed
         );
         
@@ -149,6 +152,7 @@ public static class TransformsCollection
                 ["1000"] = "1000ms"
             },
             "transition-delay: {value};",
+            false,
             sortSeed
         );
         
@@ -178,6 +182,7 @@ public static class TransformsCollection
                 ["none"] = "none",
             },
             "animation: {value};",
+            false,
             sortSeed
         );
 
@@ -198,6 +203,7 @@ public static class TransformsCollection
                 }
             }
             """,
+            false,
             sortSeed
         );
         
@@ -216,6 +222,7 @@ public static class TransformsCollection
                  }
              }
             """,
+            false,
             sortSeed
         );
 
@@ -236,6 +243,7 @@ public static class TransformsCollection
                  }
              }
             """,
+            false,
             sortSeed
         );
         
@@ -258,6 +266,7 @@ public static class TransformsCollection
                  }
              }
             """,
+            false,
             sortSeed
         );
 

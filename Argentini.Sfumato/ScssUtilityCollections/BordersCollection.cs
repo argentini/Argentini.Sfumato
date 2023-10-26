@@ -79,6 +79,7 @@ public static class BordersCollection
             sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.RoundedOptions,
                 scssTemplate,
+                false,
                 sortSeed
             );
 
@@ -105,6 +106,7 @@ public static class BordersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.BorderWidthOptions,
             "border-width: {value};",
+            false,
             sortSeed
         );
         
@@ -119,12 +121,14 @@ public static class BordersCollection
                 ["none"] = "none"
             },
             "border-style: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "border-color: {value};",
+            false,
             sortSeed
         );
         
@@ -165,12 +169,14 @@ public static class BordersCollection
             sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.BorderWidthOptions,
                 scssTemplate,
+                false,
                 sortSeed
             );
             
             sortSeed = await scssUtilityClassGroup.AddClassesAsync(
                 SfumatoScss.Colors,
                 scssTemplate.Replace("width:", "color:"),
+                false,
                 sortSeed
             );
 
@@ -210,6 +216,7 @@ public static class BordersCollection
                 border-color: {value};
             }
             """,
+            false,
             sortSeed
         );
 
@@ -227,6 +234,7 @@ public static class BordersCollection
                 border-style: {value};
             }
             """,
+            false,
             sortSeed
         );
 
@@ -264,6 +272,7 @@ public static class BordersCollection
                 border-left-width: {value};
             }
             """,
+            false,
             sortSeed
         );
         
@@ -301,6 +310,7 @@ public static class BordersCollection
                 border-bottom-width: 0px;
             }
             """,
+            false,
             sortSeed
         );
         
@@ -351,12 +361,14 @@ public static class BordersCollection
                 ["8"] = 8.PxToRem()
             },
             "border-style: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "outline-color: {value};",
+            false,
             sortSeed
         );
 
@@ -369,6 +381,7 @@ public static class BordersCollection
                 ["none"] = "none"
             },
             "outline-style: {value};",
+            false,
             sortSeed
         );
         
@@ -395,6 +408,7 @@ public static class BordersCollection
                 ["8"] = 8.PxToRem()
             },
             "outline-offset: {value};",
+            false,
             sortSeed
         );
         
@@ -431,12 +445,14 @@ public static class BordersCollection
                 ["8"] = 8.PxToRem()
             },
             "box-shadow: var(--sf-ring-inset) 0 0 0 calc({value} + var(--sf-ring-offset-width)) var(--sf-ring-color);",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "--sf-ring-color: {value};",
+            false,
             sortSeed
         );
 
@@ -458,6 +474,7 @@ public static class BordersCollection
                 [""] = "inset"
             },
             "--sf-ring-inset: {value};",
+            false,
             sortSeed
         );
         
@@ -506,6 +523,7 @@ public static class BordersCollection
             --sf-ring-offset-width: {value};
             box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
             """,
+            false,
             sortSeed
         );
 
@@ -515,6 +533,7 @@ public static class BordersCollection
             --sf-ring-offset-color: {value};
             box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
             """,
+            false,
             sortSeed
         );
 

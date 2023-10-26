@@ -47,6 +47,7 @@ public static class InteractivityCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "accent-color: {value};",
+            false,
             sortSeed
         );
         
@@ -68,6 +69,7 @@ public static class InteractivityCollection
                 ["none"] = "none"
             },
             "appearance: {value};",
+            false,
             sortSeed
         );
         
@@ -130,6 +132,7 @@ public static class InteractivityCollection
                 ["zoom-out"] = "zoom-out"
             },
             "cursor: {value};",
+            false,
             sortSeed
         );
         
@@ -154,6 +157,7 @@ public static class InteractivityCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "caret-color: {value};",
+            false,
             sortSeed
         );
         
@@ -176,6 +180,7 @@ public static class InteractivityCollection
                 ["auto"] = "auto"
             },
             "pointer-events: {value};",
+            false,
             sortSeed
         );
         
@@ -200,6 +205,7 @@ public static class InteractivityCollection
                 ["x"] = "horizontal"
             },
             "resize: {value};",
+            false,
             sortSeed
         );
         
@@ -222,6 +228,7 @@ public static class InteractivityCollection
                 ["smooth"] = "smooth"
             },
             "scroll-behavior: {value};",
+            false,
             sortSeed
         );
         
@@ -252,12 +259,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-margin: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-margin: {value};",
+            false,
             sortSeed
         );
         
@@ -295,6 +304,7 @@ public static class InteractivityCollection
             scroll-margin-left: {value};
             scroll-margin-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -304,6 +314,7 @@ public static class InteractivityCollection
             scroll-margin-left: {value};
             scroll-margin-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -341,6 +352,7 @@ public static class InteractivityCollection
             scroll-margin-top: {value};
             scroll-margin-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -350,6 +362,7 @@ public static class InteractivityCollection
             scroll-margin-top: {value};
             scroll-margin-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -377,12 +390,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-margin-inline-start: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-margin-inline-start: {value};",
+            false,
             sortSeed
         );
         
@@ -410,12 +425,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-margin-inline-end: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-margin-inline-end: {value};",
+            false,
             sortSeed
         );
         
@@ -443,12 +460,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-margin-top: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-margin-top: {value};",
+            false,
             sortSeed
         );
         
@@ -476,12 +495,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-margin-right: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-margin-right: {value};",
+            false,
             sortSeed
         );
         
@@ -509,12 +530,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-margin-bottom: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-margin-bottom: {value};",
+            false,
             sortSeed
         );
         
@@ -542,12 +565,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-margin-left: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-margin-left: {value};",
+            false,
             sortSeed
         );
         
@@ -580,12 +605,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-padding: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-padding: {value};",
+            false,
             sortSeed
         );
         
@@ -623,6 +650,7 @@ public static class InteractivityCollection
             scroll-padding-left: {value};
             scroll-padding-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -632,6 +660,7 @@ public static class InteractivityCollection
             scroll-padding-left: {value};
             scroll-padding-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -669,6 +698,7 @@ public static class InteractivityCollection
             scroll-padding-top: {value};
             scroll-padding-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -678,6 +708,7 @@ public static class InteractivityCollection
             scroll-padding-top: {value};
             scroll-padding-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -705,12 +736,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-padding-inline-start: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-padding-inline-start: {value};",
+            false,
             sortSeed
         );
         
@@ -738,12 +771,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-padding-inline-end: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-padding-inline-end: {value};",
+            false,
             sortSeed
         );
         
@@ -771,12 +806,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-padding-top: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-padding-top: {value};",
+            false,
             sortSeed
         );
         
@@ -804,12 +841,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-padding-right: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-padding-right: {value};",
+            false,
             sortSeed
         );
         
@@ -837,12 +876,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-padding-bottom: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-padding-bottom: {value};",
+            false,
             sortSeed
         );
         
@@ -870,12 +911,14 @@ public static class InteractivityCollection
                 ["px"] = "1px",
             },
             "scroll-padding-left: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "scroll-padding-left: {value};",
+            false,
             sortSeed
         );
         
@@ -902,6 +945,7 @@ public static class InteractivityCollection
                 ["align-none"] = "none"
             },
             "scroll-snap-align: {value};",
+            false,
             sortSeed
         );
         
@@ -912,6 +956,7 @@ public static class InteractivityCollection
                 ["always"] = "always"
             },
             "scroll-snap-stop: {value};",
+            false,
             sortSeed
         );
 
@@ -924,6 +969,7 @@ public static class InteractivityCollection
                 ["both"] = "both var(--sf-scroll-snap-strictness)"
             },
             "scroll-snap-type: {value};",
+            false,
             sortSeed
         );
 
@@ -965,6 +1011,7 @@ public static class InteractivityCollection
                 ["manipulation"] = "manipulation"
             },
             "touch-action: {value};",
+            false,
             sortSeed
         );
         
@@ -984,6 +1031,7 @@ public static class InteractivityCollection
                 ["auto"] = "auto"
             },
             "user-select: {value};",
+            false,
             sortSeed
         );
         
@@ -1008,6 +1056,7 @@ public static class InteractivityCollection
                 ["transform"] = "transform"
             },
             "will-change: {value};",
+            false,
             sortSeed
         );
         

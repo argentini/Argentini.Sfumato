@@ -62,6 +62,7 @@ public static class TypographyCollection
                 ["mono"] = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"JetBrains Mono\", \"Liberation Mono\", \"Courier New\", monospace"
             },
             "font-family: {value};",
+            false,
             sortSeed
         );
         
@@ -76,6 +77,7 @@ public static class TypographyCollection
                 ["not-italic"] = "normal"
             },
             "font-style: {value};",
+            false,
             sortSeed
         );
         
@@ -97,6 +99,7 @@ public static class TypographyCollection
                 ["black"] = "900"
             },
             "font-weight: {value};",
+            false,
             sortSeed
         );
         
@@ -118,6 +121,7 @@ public static class TypographyCollection
                 ["stacked-fractions"] = "stacked-fractions"
             },
             "font-variant-numeric: {value};",
+            false,
             sortSeed
         );
         
@@ -183,6 +187,7 @@ public static class TypographyCollection
                 ["widest"] = "0.1em"
             },
             "letter-spacing: {value};",
+            false,
             sortSeed
         );
         
@@ -209,7 +214,7 @@ public static class TypographyCollection
             -webkit-box-orient: vertical;
             """,
             sortSeed
-            );
+        );
 
         #endregion
         
@@ -224,6 +229,7 @@ public static class TypographyCollection
             -webkit-box-orient: horizontal;
             -webkit-line-clamp: none;
             """,
+            false,
             sortSeed
         );
         
@@ -256,12 +262,14 @@ public static class TypographyCollection
                 ["loose"] = "2"
             },
             "line-height: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(3m, 10m, 1m),
             "line-height: {value};",
+            false,
             sortSeed
         );
         
@@ -290,6 +298,7 @@ public static class TypographyCollection
                 ["none"] = "none"
             },
             "list-style-image: {value};",
+            false,
             sortSeed
         );
         
@@ -300,6 +309,7 @@ public static class TypographyCollection
                 ["outside"] = "outside"
             },
             "list-style-position: {value};",
+            false,
             sortSeed
         );
         
@@ -311,6 +321,7 @@ public static class TypographyCollection
                 ["decimal"] = "decimal"
             },
             "list-style-type: {value};",
+            false,
             sortSeed
         );
         
@@ -356,6 +367,7 @@ public static class TypographyCollection
                     [size.Key] = size.Value
                 },
                 "font-size: {value};",
+                false,
                 sortSeed
             );
 
@@ -370,6 +382,7 @@ public static class TypographyCollection
                     font-size: {value};
                     line-height: {{leading.Value}};
                     """,
+                    true,
                     sortSeed
                 );
             }
@@ -387,6 +400,7 @@ public static class TypographyCollection
                 ["mono"] = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"JetBrains Mono\", \"Liberation Mono\", \"Courier New\", monospace"
             },
             "font-family: {value};",
+            false,
             sortSeed
         );
         
@@ -401,6 +415,7 @@ public static class TypographyCollection
                 ["not-italic"] = "normal"
             },
             "font-style: {value};",
+            false,
             sortSeed
         );
         
@@ -422,6 +437,7 @@ public static class TypographyCollection
                 ["black"] = "900"
             },
             "font-weight: {value};",
+            false,
             sortSeed
         );
         
@@ -443,6 +459,7 @@ public static class TypographyCollection
                 ["stacked-fractions"] = "stacked-fractions"
             },
             "font-variant-numeric: {value};",
+            false,
             sortSeed
         );
         
@@ -461,6 +478,7 @@ public static class TypographyCollection
                 ["end"] = "end"
             },
             "text-align: {value};",
+            false,
             sortSeed
         );
         
@@ -471,6 +489,7 @@ public static class TypographyCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "color: {value};",
+            false,
             sortSeed
         );
             
@@ -518,6 +537,7 @@ public static class TypographyCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "text-decoration-color: {value};",
+            false,
             sortSeed
         );
             
@@ -535,6 +555,7 @@ public static class TypographyCollection
                 ["wavy"] = "wavy"
             },
             "text-decoration-style: {value};",
+            false,
             sortSeed
         );
         
@@ -554,6 +575,7 @@ public static class TypographyCollection
                 ["8"] = 8.PxToRem()
             },
             "text-decoration-thickness: {value};",
+            false,
             sortSeed
         );
         
@@ -588,6 +610,7 @@ public static class TypographyCollection
                 ["8"] = 8.PxToRem()
             },
             "text-decoration-style: {value};",
+            false,
             sortSeed
         );
         
@@ -669,12 +692,14 @@ public static class TypographyCollection
                 ["px"] = "1px"
             },
             "text-indent: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "text-indent: {value};",
+            false,
             sortSeed
         );
 
@@ -709,6 +734,7 @@ public static class TypographyCollection
                 ["super"] = "super"
             },
             "vertical-align: {value};",
+            false,
             sortSeed
         );
 
@@ -736,6 +762,7 @@ public static class TypographyCollection
                 ["break-spaces"] = "break-spaces"
             },
             "white-space: {value};",
+            false,
             sortSeed
         );
 
@@ -781,6 +808,7 @@ public static class TypographyCollection
                 ["keep"] = "keep-all"
             },
             "word-break: {value};",
+            false,
             sortSeed
         );
         
@@ -804,6 +832,7 @@ public static class TypographyCollection
                 ["auto"] = "auto"
             },
             "hyphens: {value};",
+            false,
             sortSeed
         );
         
@@ -831,6 +860,7 @@ public static class TypographyCollection
                 ["none"] = "none",
             },
             "content: {value};",
+            false,
             sortSeed
         );
 

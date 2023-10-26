@@ -63,6 +63,7 @@ public static class FiltersCollection
                 ["3xl"] = 64.PxToRem(),
             },
             "filter: blur({value});",
+            false,
             sortSeed
         );
         
@@ -87,6 +88,7 @@ public static class FiltersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: brightness({value});",
+            false,
             sortSeed
         );
         
@@ -111,6 +113,7 @@ public static class FiltersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: contrast({value});",
+            false,
             sortSeed
         );
         
@@ -144,6 +147,7 @@ public static class FiltersCollection
                 ["none"] = "drop-shadow(0 0 #0000)"
             },
             "filter: {value};",
+            false,
             sortSeed
         );
         
@@ -172,6 +176,7 @@ public static class FiltersCollection
                 ["0"] = "0"
             },
             "filter: grayscale({value});",
+            false,
             sortSeed
         );
         
@@ -204,6 +209,7 @@ public static class FiltersCollection
                 ["180"] = "180deg"
             },
             "filter: hue-rotate({value});",
+            false,
             sortSeed
         );
         
@@ -232,6 +238,7 @@ public static class FiltersCollection
                 ["0"] = "0"
             },
             "filter: invert({value});",
+            false,
             sortSeed
         );
         
@@ -256,6 +263,7 @@ public static class FiltersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "filter: saturate({value});",
+            false,
             sortSeed
         );
         
@@ -284,6 +292,7 @@ public static class FiltersCollection
                 ["0"] = "0"
             },
             "filter: sepia({value});",
+            false,
             sortSeed
         );
         
@@ -318,6 +327,7 @@ public static class FiltersCollection
                 ["3xl"] = 64.PxToRem(),
             },
             "backdrop-filter: blur({value});",
+            false,
             sortSeed
         );
         
@@ -342,6 +352,7 @@ public static class FiltersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: brightness({value});",
+            false,
             sortSeed
         );
         
@@ -366,6 +377,7 @@ public static class FiltersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: contrast({value});",
+            false,
             sortSeed
         );
         
@@ -394,6 +406,7 @@ public static class FiltersCollection
                 ["0"] = "0"
             },
             "backdrop-filter: grayscale({value});",
+            false,
             sortSeed
         );
         
@@ -426,6 +439,7 @@ public static class FiltersCollection
                 ["180"] = "180deg"
             },
             "backdrop-filter: hue-rotate({value});",
+            false,
             sortSeed
         );
         
@@ -454,6 +468,7 @@ public static class FiltersCollection
                 ["0"] = "0"
             },
             "backdrop-filter: invert({value});",
+            false,
             sortSeed
         );
         
@@ -478,6 +493,7 @@ public static class FiltersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 200),
             "backdrop-filter: saturate({value});",
+            false,
             sortSeed
         );
         
@@ -506,6 +522,7 @@ public static class FiltersCollection
                 ["0"] = "0"
             },
             "backdrop-filter: sepia({value});",
+            false,
             sortSeed
         );
         
@@ -530,6 +547,7 @@ public static class FiltersCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
             "backdrop-filter: opacity({value});",
+            false,
             sortSeed
         );
         

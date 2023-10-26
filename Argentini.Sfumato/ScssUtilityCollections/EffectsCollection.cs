@@ -51,12 +51,14 @@ public static class EffectsCollection
                 ["none"] = "0 0 #0000"
             },
             "box-shadow: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "--sf-shadow-color: {value};",
+            false,
             sortSeed
         );
         
@@ -81,6 +83,7 @@ public static class EffectsCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddOneBasedPercentagesClassesAsync(0, 100),
             "opacity: {value};",
+            false,
             sortSeed
         );
         
@@ -99,6 +102,7 @@ public static class EffectsCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.BlendModeOptions,
             "mix-blend-mode: {value};",
+            false,
             sortSeed
         );
         
@@ -112,6 +116,7 @@ public static class EffectsCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.BlendModeOptions,
             "background-blend-mode: {value};",
+            false,
             sortSeed
         );
         

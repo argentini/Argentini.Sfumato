@@ -48,6 +48,7 @@ public static class BackgroundsCollection
                 ["no-repeat"] = "no-repeat"
             },
             "background-repeat: {value};",
+            false,
             sortSeed
         );
         
@@ -60,6 +61,7 @@ public static class BackgroundsCollection
                 ["repeat-space"] = "space"
             },
             "background-repeat: {value};",
+            false,
             sortSeed
         );
         
@@ -70,6 +72,7 @@ public static class BackgroundsCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "background-color: {value};",
+            false,
             sortSeed
         );
             
@@ -85,6 +88,7 @@ public static class BackgroundsCollection
                 ["origin-content"] = "content-box"
             },
             "background-origin: {value};",
+            false,
             sortSeed
         );
         
@@ -100,6 +104,7 @@ public static class BackgroundsCollection
                 ["scroll"] = "scroll"
             },
             "background-attachment: {value};",
+            false,
             sortSeed
         );
 
@@ -116,6 +121,7 @@ public static class BackgroundsCollection
                 ["text"] = "text"
             },
             "background-clip: {value};",
+            false,
             sortSeed
         );
 
@@ -137,6 +143,7 @@ public static class BackgroundsCollection
                 ["top"] = "top"
             },
             "background-position: {value};",
+            false,
             sortSeed
         );
 
@@ -152,6 +159,7 @@ public static class BackgroundsCollection
                 ["contain"] = "contain"
             },
             "background-size: {value};",
+            false,
             sortSeed
         );
 
@@ -165,6 +173,7 @@ public static class BackgroundsCollection
                 ["none"] = "none"
             },
             "background-image: {value};",
+            false,
             sortSeed
         );
         
@@ -185,6 +194,7 @@ public static class BackgroundsCollection
                 ["gradient-to-tl"] = "background-image: linear-gradient(to top left, var(--sf-gradient-stops))"
             },
             "{value};",
+            false,
             sortSeed
         );
 
@@ -231,6 +241,7 @@ public static class BackgroundsCollection
                               """
             },
             "{value}",
+            false,
             sortSeed);
 
         #endregion
@@ -244,6 +255,7 @@ public static class BackgroundsCollection
             --sf-gradient-to: transparent var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
             """,
+            false,
             sortSeed
         );
         
@@ -304,6 +316,7 @@ public static class BackgroundsCollection
             --sf-gradient-to: rgb(255 255 255 / 0)  var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), inherit var(--sf-gradient-via-position), var(--sf-gradient-to);
             """,
+            false,
             sortSeed
             );
 
@@ -317,6 +330,7 @@ public static class BackgroundsCollection
             --sf-gradient-to: transparent  var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
             """,
+            false,
             sortSeed
         );
 
@@ -367,6 +381,7 @@ public static class BackgroundsCollection
                               
             },
             "--sf-gradient-to: inherit var(--sf-gradient-to-position);",
+            false,
             sortSeed
         );
         
@@ -377,6 +392,7 @@ public static class BackgroundsCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "--sf-gradient-to: {value} var(--sf-gradient-to-position);",
+            false,
             sortSeed
         );
         

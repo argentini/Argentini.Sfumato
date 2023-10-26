@@ -51,6 +51,7 @@ public static class LayoutCollection
                 ["screen"] = "4/3"
             },
             "aspect-ratio: {value};",
+            false,
             sortSeed
         );
 
@@ -132,12 +133,14 @@ public static class LayoutCollection
                 ["7xl"] = "80rem"
             },
             "columns: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24),
             "columns: {value};",
+            false,
             sortSeed
         );
 
@@ -168,6 +171,7 @@ public static class LayoutCollection
                 ["column"] = "column"
             },
             "break-after: {value};",
+            false,
             sortSeed
         );
 
@@ -195,6 +199,7 @@ public static class LayoutCollection
                 ["column"] = "column"
             },
             "break-before: {value};",
+            false,
             sortSeed
         );
 
@@ -218,6 +223,7 @@ public static class LayoutCollection
                 ["avoid-column"] = "avoid-column"
             },
             "break-inside: {value};",
+            false,
             sortSeed
         );
 
@@ -239,6 +245,7 @@ public static class LayoutCollection
                 ["slice"] = "slice"
             },
             "box-decoration-break: {value};",
+            false,
             sortSeed
         );
 
@@ -263,6 +270,7 @@ public static class LayoutCollection
                 ["content"] = "content-box"
             },
             "box-sizing: {value};",
+            false,
             sortSeed
         );
 
@@ -322,6 +330,7 @@ public static class LayoutCollection
                 ["none"] = "none"
             },
             "float: {value};",
+            false,
             sortSeed
         );
 
@@ -345,6 +354,7 @@ public static class LayoutCollection
                 ["none"] = "none"
             },
             "clear: {value};",
+            false,
             sortSeed
         );
 
@@ -389,6 +399,7 @@ public static class LayoutCollection
                 ["scale-down"] = "scale-down"
             },
             "object-fit: {value};",
+            false,
             sortSeed
         );
 
@@ -406,6 +417,7 @@ public static class LayoutCollection
                 ["top"] = "top"
             },
             "object-position: {value};",
+            false,
             sortSeed
         );
         
@@ -435,6 +447,7 @@ public static class LayoutCollection
                 ["scroll"] = "scroll"
             },
             "overflow: {value};",
+            false,
             sortSeed
         );
 
@@ -459,6 +472,7 @@ public static class LayoutCollection
                 ["scroll"] = "scroll"
             },
             "overflow-x: {value};",
+            false,
             sortSeed
         );
 
@@ -483,6 +497,7 @@ public static class LayoutCollection
                 ["scroll"] = "scroll"
             },
             "overflow-y: {value};",
+            false,
             sortSeed
         );
 
@@ -505,6 +520,7 @@ public static class LayoutCollection
                 ["none"] = "none"
             },
             "overscroll-behavior: {value};",
+            false,
             sortSeed
         );
 
@@ -527,6 +543,7 @@ public static class LayoutCollection
                 ["none"] = "none"
             },
             "overscroll-behavior-x: {value};",
+            false,
             sortSeed
         );
 
@@ -549,6 +566,7 @@ public static class LayoutCollection
                 ["none"] = "none"
             },
             "overscroll-behavior-y: {value};",
+            false,
             sortSeed
         );
 
@@ -600,18 +618,21 @@ public static class LayoutCollection
                 ["auto"] = "auto"
             },
             "top: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "top: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "top: {value};",
+            false,
             sortSeed
         );
         
@@ -640,18 +661,21 @@ public static class LayoutCollection
                 ["auto"] = "auto"
             },
             "right: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "right: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "right: {value};",
+            false,
             sortSeed
         );
         
@@ -680,18 +704,21 @@ public static class LayoutCollection
                 ["auto"] = "auto"
             },
             "bottom: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "bottom: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "bottom: {value};",
+            false,
             sortSeed
         );
         
@@ -720,18 +747,21 @@ public static class LayoutCollection
                 ["auto"] = "auto"
             },
             "left: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "left: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "left: {value};",
+            false,
             sortSeed
         );
         
@@ -760,18 +790,21 @@ public static class LayoutCollection
                 ["auto"] = "auto"
             },
             "inset: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "inset: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "inset: {value};",
+            false,
             sortSeed
         );
         
@@ -809,6 +842,7 @@ public static class LayoutCollection
             left: {value};
             right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -818,6 +852,7 @@ public static class LayoutCollection
             left: {value};
             right: {value};
             """,
+            false,
             sortSeed
         );
 
@@ -827,6 +862,7 @@ public static class LayoutCollection
             left: {value};
             right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -864,6 +900,7 @@ public static class LayoutCollection
             top: {value};
             bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -873,6 +910,7 @@ public static class LayoutCollection
             top: {value};
             bottom: {value};
             """,
+            false,
             sortSeed
         );
 
@@ -882,6 +920,7 @@ public static class LayoutCollection
             top: {value};
             bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -913,18 +952,21 @@ public static class LayoutCollection
                 ["auto"] = "auto"
             },
             "inset-inline-start: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "inset-inline-start: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "inset-inline-start: {value};",
+            false,
             sortSeed
         );
         
@@ -957,18 +999,21 @@ public static class LayoutCollection
                 ["auto"] = "auto"
             },
             "inset-inline-end: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "inset-inline-end: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "inset-inline-end: {value};",
+            false,
             sortSeed
         );
         
@@ -1023,6 +1068,7 @@ public static class LayoutCollection
                 ["50"] = "50"
             },
             "z-index: {value};",
+            false,
             sortSeed
         );
         

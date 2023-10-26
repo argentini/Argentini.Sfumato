@@ -12,13 +12,14 @@ public sealed class ScssUtilityClassGroup
     /// <param name="classes"></param>
     /// <param name="scssTemplate"></param>
     /// <param name="sortSeed"></param>
-    public async Task<int> AddClassesAsync(Dictionary<string,string> classes, string scssTemplate, int sortSeed)
+    public async Task<int> AddClassesAsync(Dictionary<string,string> classes, string scssTemplate, bool usesModifier, int sortSeed)
     {
         foreach (var (key, value) in classes)
         {
             Classes.Add(new ScssUtilityClass
             {
                 Selector = $"{SelectorPrefix}{(string.IsNullOrEmpty(key) ? string.Empty : $"-{key}")}",
+                UsesModifier = usesModifier,
                 CoreSegment = key,
                 SortOrder = sortSeed++,
                 Category = Category,
@@ -52,6 +53,7 @@ public sealed class ScssUtilityClassGroup
                     [""] = value
                 },
                 scssTemplate,
+                false,
                 sortSeed
             );
 
@@ -95,6 +97,7 @@ public sealed class ScssUtilityClassGroup
         {
             Selector = $"{SelectorPrefix}{(string.IsNullOrEmpty(suffix) ? string.Empty : $"-{suffix}")}/",
             CoreSegment = suffix,
+            UsesModifier = true,
             SortOrder = sortSeed++,
             Category = Category,
             ArbitraryValueTypes = valueTypes.Split(','),

@@ -273,35 +273,41 @@ public sealed class CssSelector
 		
 		foreach (var (_, scssUtilityClassGroup) in matches)
 		{
-			var matchingTypes = new List<ScssUtilityClass>();
+			ScssUtilityClass? scssUtilityClass = null;
 			
 			if (HasArbitraryValue)
 			{
 				if (ArbitraryValueType != string.Empty)
-					matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains(ArbitraryValueType)).ToList();
+					scssUtilityClass = scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains(ArbitraryValueType));
 				else
-					matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains("raw")).ToList();
-				
-				if (matchingTypes.Count == 0)
-					matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Length == 0).ToList();
+					scssUtilityClass = scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains("raw"));
+
+				scssUtilityClass ??= scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Length == 0);
 			}
 			
 			else
 			{
-				matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets).ToList();
+				scssUtilityClass = scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets);
+
+				if (scssUtilityClass?.UsesModifier == false)
+				{
+					UsesModifier = false;
+					ModifierSegment = string.Empty;
+					ModifierValueType = string.Empty;
+					ModifierValue = string.Empty;
+				}
 			}
 
-			if (matchingTypes.Count == 0)
+			if (scssUtilityClass is null)
 				continue;
 
-			var scssUtilityClass = matchingTypes.First();
-				
 			PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
-			CoreSegment = (UsesModifier ? scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) : scssUtilityClass.CoreSegment) ?? string.Empty;
+			CoreSegment = (scssUtilityClass.UsesModifier ? scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) : scssUtilityClass.CoreSegment) ?? string.Empty;
 			ScssUtilityClass = new ScssUtilityClass
 			{
 				Selector = scssUtilityClass.Selector,
 				CoreSegment = scssUtilityClass.CoreSegment,
+				UsesModifier = scssUtilityClass.UsesModifier,
 				Category = scssUtilityClass.Category,
 				ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
 				SortOrder = scssUtilityClass.SortOrder,

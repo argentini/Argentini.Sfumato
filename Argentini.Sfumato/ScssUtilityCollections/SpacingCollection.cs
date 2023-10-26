@@ -44,12 +44,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "padding: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "padding: {value};",
+            false,
             sortSeed
         );
         
@@ -87,6 +89,7 @@ public static class SpacingCollection
             padding-left: {value};
             padding-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -96,6 +99,7 @@ public static class SpacingCollection
             padding-left: {value};
             padding-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -133,6 +137,7 @@ public static class SpacingCollection
             padding-top: {value};
             padding-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -142,6 +147,7 @@ public static class SpacingCollection
             padding-top: {value};
             padding-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -173,12 +179,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "padding-inline-start: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "padding-inline-start: {value};",
+            false,
             sortSeed
         );
         
@@ -210,12 +218,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "padding-inline-end: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "padding-inline-end: {value};",
+            false,
             sortSeed
         );
         
@@ -247,12 +257,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "padding-top: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "padding-top: {value};",
+            false,
             sortSeed
         );
         
@@ -284,12 +296,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "padding-right: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "padding-right: {value};",
+            false,
             sortSeed
         );
         
@@ -321,12 +335,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "padding-bottom: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "padding-bottom: {value};",
+            false,
             sortSeed
         );
         
@@ -358,12 +374,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "padding-left: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "padding-left: {value};",
+            false,
             sortSeed
         );
         
@@ -397,12 +415,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "margin: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "margin: {value};",
+            false,
             sortSeed
         );
         
@@ -441,6 +461,7 @@ public static class SpacingCollection
             margin-left: {value};
             margin-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -450,6 +471,7 @@ public static class SpacingCollection
             margin-left: {value};
             margin-right: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -488,6 +510,7 @@ public static class SpacingCollection
             margin-top: {value};
             margin-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -497,6 +520,7 @@ public static class SpacingCollection
             margin-top: {value};
             margin-bottom: {value};
             """,
+            false,
             sortSeed
         );
         
@@ -528,12 +552,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "margin-inline-start: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "margin-inline-start: {value};",
+            false,
             sortSeed
         );
         
@@ -566,12 +592,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "margin-inline-end: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "margin-inline-end: {value};",
+            false,
             sortSeed
         );
         
@@ -604,12 +632,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "margin-top: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "margin-top: {value};",
+            false,
             sortSeed
         );
         
@@ -642,12 +672,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "margin-right: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "margin-right: {value};",
+            false,
             sortSeed
         );
         
@@ -680,12 +712,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "margin-bottom: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "margin-bottom: {value};",
+            false,
             sortSeed
         );
         
@@ -718,12 +752,14 @@ public static class SpacingCollection
                 ["px"] = "1px"
             },
             "margin-left: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "margin-left: {value};",
+            false,
             sortSeed
         );
         
@@ -768,6 +804,7 @@ public static class SpacingCollection
                 margin-left: {value};
             }
             """,
+            false,
             sortSeed
         );
         
@@ -778,6 +815,7 @@ public static class SpacingCollection
                 margin-left: {value};
             }
             """,
+            false,
             sortSeed
         );
         
@@ -817,6 +855,7 @@ public static class SpacingCollection
                 margin-top: {value};
             }
             """,
+            false,
             sortSeed
         );
         
@@ -827,6 +866,7 @@ public static class SpacingCollection
                 margin-top: {value};
             }
             """,
+            false,
             sortSeed
         );
         

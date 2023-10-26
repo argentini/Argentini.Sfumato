@@ -41,12 +41,14 @@ public static class SvgCollection
                 ["none"] = "none"
             },
             "fill: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "fill: {value};",
+            false,
             sortSeed
         );
 
@@ -74,6 +76,7 @@ public static class SvgCollection
                 ["none"] = "none"
             },
             "stroke: {value};",
+            false,
             sortSeed
         );
         
@@ -85,12 +88,14 @@ public static class SvgCollection
                 ["2"] = "2"
             },
             "stroke-width: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             SfumatoScss.Colors,
             "stroke: {value};",
+            false,
             sortSeed
         );
         

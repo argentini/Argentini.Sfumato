@@ -48,18 +48,21 @@ public static class SizingCollection
                 ["fit"] = "fit-content"
             },
             "width: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "width: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "width: {value};",
+            false,
             sortSeed
         );
         
@@ -91,6 +94,7 @@ public static class SizingCollection
                 ["fit"] = "fit-content"
             },
             "min-width: {value};",
+            false,
             sortSeed
         );
         
@@ -141,6 +145,7 @@ public static class SizingCollection
                 ["screen-elas"] = "#{$tabp-breakpoint}"
             },
             "max-width: {value};",
+            false,
             sortSeed
         );
         
@@ -178,18 +183,21 @@ public static class SizingCollection
                 ["fit"] = "fit-content"
             },
             "height: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "height: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "height: {value};",
+            false,
             sortSeed
         );
         
@@ -221,6 +229,7 @@ public static class SizingCollection
                 ["fit"] = "fit-content"
             },
             "min-height: {value};",
+            false,
             sortSeed
         );
         
@@ -254,12 +263,14 @@ public static class SizingCollection
                 ["fit"] = "fit-content"
             },
             "max-height: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "max-height: {value};",
+            false,
             sortSeed
         );
         

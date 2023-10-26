@@ -57,12 +57,14 @@ public static class TablesCollection
                 ["px"] = "1px"
             },
             "border-spacing: {value} {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "border-spacing: {value} {value};",
+            false,
             sortSeed
         );
         
@@ -90,12 +92,14 @@ public static class TablesCollection
                 ["px"] = "1px"
             },
             "border-spacing: {value} var(--sf-border-spacing-y);",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "border-spacing: {value} var(--sf-border-spacing-y);",
+            false,
             sortSeed
         );
         
@@ -123,12 +127,14 @@ public static class TablesCollection
                 ["px"] = "1px"
             },
             "border-spacing: var(--sf-border-spacing-x) {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "border-spacing: var(--sf-border-spacing-x) {value};",
+            false,
             sortSeed
         );
         
@@ -150,6 +156,7 @@ public static class TablesCollection
                 ["fixed"] = "fixed"
             },
             "table-layout: {value};",
+            false,
             sortSeed
         );
         
@@ -171,6 +178,7 @@ public static class TablesCollection
                 ["bottom"] = "bottom"
             },
             "caption-side: {value};",
+            false,
             sortSeed
         );
         

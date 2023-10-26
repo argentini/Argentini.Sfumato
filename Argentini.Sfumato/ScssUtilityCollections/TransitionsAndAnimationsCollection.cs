@@ -50,6 +50,7 @@ public static class TransitionsAndAnimationsCollection
                 ["150"] = "1.5"
             },
             "transform: scale({value});",
+            false,
             sortSeed
         );
         
@@ -85,6 +86,7 @@ public static class TransitionsAndAnimationsCollection
                 ["150"] = "1.5"
             },
             "transform: scaleX({value});",
+            false,
             sortSeed
         );
         
@@ -120,6 +122,7 @@ public static class TransitionsAndAnimationsCollection
                 ["150"] = "1.5"
             },
             "transform: scaleY({value});",
+            false,
             sortSeed
         );
         
@@ -154,6 +157,7 @@ public static class TransitionsAndAnimationsCollection
                 ["180"] = "180deg"
             },
             "transform: rotate({value});",
+            false,
             sortSeed
         );
         
@@ -181,18 +185,21 @@ public static class TransitionsAndAnimationsCollection
                 ["px"] = "1px"
             },
             "transform: translateX({value});",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "transform: translateX({value});",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "transform: translateX({value});",
+            false,
             sortSeed
         );
         
@@ -220,18 +227,21 @@ public static class TransitionsAndAnimationsCollection
                 ["px"] = "1px"
             },
             "transform: translateY({value});",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "transform: translateY({value});",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddFractionsClassesAsync(),
             "transform: translateY({value});",
+            false,
             sortSeed
         );
         
@@ -266,6 +276,7 @@ public static class TransitionsAndAnimationsCollection
                 ["180"] = "180deg"
             },
             "transform: skewX({value});",
+            false,
             sortSeed
         );
         
@@ -300,6 +311,7 @@ public static class TransitionsAndAnimationsCollection
                 ["180"] = "180deg"
             },
             "transform: skewY({value});",
+            false,
             sortSeed
         );
         
@@ -334,6 +346,7 @@ public static class TransitionsAndAnimationsCollection
                 ["top-left"] = "top left"
             },
             "transform-origin: {value};",
+            false,
             sortSeed
         );
         

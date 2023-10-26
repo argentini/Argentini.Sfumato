@@ -76,12 +76,14 @@ public static class FlexboxAndGridCollection
                 ["full"] = "100%"
             },
             "flex-basis: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "flex-basis: {value};",
+            false,
             sortSeed
         );
         
@@ -111,6 +113,7 @@ public static class FlexboxAndGridCollection
                 [""] = "",
             },
             "display: flex;",
+            false,
             sortSeed
         );
         
@@ -123,6 +126,7 @@ public static class FlexboxAndGridCollection
                 ["col-reverse"] = "column-reverse"
             },
             "flex-direction: {value};",
+            false,
             sortSeed
         );
         
@@ -134,6 +138,7 @@ public static class FlexboxAndGridCollection
                 ["nowrap"] = "nowrap"
             },
             "flex-wrap: {value};",
+            false,
             sortSeed
         );
 
@@ -146,6 +151,7 @@ public static class FlexboxAndGridCollection
                 ["none"] = "none"
             },
             "flex: {value};",
+            false,
             sortSeed
         );
         
@@ -156,6 +162,7 @@ public static class FlexboxAndGridCollection
                 ["grow-0"] = "0"
             },
             "flex-grow: {value};",
+            false,
             sortSeed
         );
         
@@ -166,6 +173,7 @@ public static class FlexboxAndGridCollection
                 ["shrink-0"] = "0"
             },
             "flex-shrink: {value};",
+            false,
             sortSeed
         );
         
@@ -228,12 +236,14 @@ public static class FlexboxAndGridCollection
                 ["none"] = "0"
             },
             "order: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24),
             "order: {value};",
+            false,
             sortSeed
         );
 
@@ -257,6 +267,7 @@ public static class FlexboxAndGridCollection
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, true),
             "order: {value};",
+            false,
             sortSeed
         );
         
@@ -288,12 +299,14 @@ public static class FlexboxAndGridCollection
                 ["none"] = "none"
             },
             "grid-template-columns: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "repeat({value}, minmax(0, 1fr))"),
             "grid-template-columns: {value};",
+            false,
             sortSeed
         );
 
@@ -330,12 +343,14 @@ public static class FlexboxAndGridCollection
                 ["full"] = "1 / -1"
             },
             "grid-column: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "span {value} / span {value}"),
             "grid-column: {value};",
+            false,
             sortSeed
         );
 
@@ -362,12 +377,14 @@ public static class FlexboxAndGridCollection
                 ["auto"] = "auto"
             },
             "grid-column-start: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
             "grid-column-start: {value};",
+            false,
             sortSeed
         );
 
@@ -394,12 +411,14 @@ public static class FlexboxAndGridCollection
                 ["auto"] = "auto"
             },
             "grid-column-end: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
             "grid-column-end: {value};",
+            false,
             sortSeed
         );
 
@@ -426,12 +445,14 @@ public static class FlexboxAndGridCollection
                 ["none"] = "none"
             },
             "grid-template-rows: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "repeat({value}, minmax(0, 1fr))"),
             "grid-template-rows: {value};",
+            false,
             sortSeed
         );
 
@@ -468,12 +489,14 @@ public static class FlexboxAndGridCollection
                 ["full"] = "1 / -1"
             },
             "grid-row: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 24, false, "span {value} / span {value}"),
             "grid-row: {value};",
+            false,
             sortSeed
         );
 
@@ -500,12 +523,14 @@ public static class FlexboxAndGridCollection
                 ["auto"] = "auto"
             },
             "grid-row-start: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
             "grid-row-start: {value};",
+            false,
             sortSeed
         );
 
@@ -532,12 +557,14 @@ public static class FlexboxAndGridCollection
                 ["auto"] = "auto"
             },
             "grid-row-end: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
             "grid-row-end: {value};",
+            false,
             sortSeed
         );
 
@@ -562,12 +589,14 @@ public static class FlexboxAndGridCollection
                 ["col-dense"] = "column dense"
             },
             "grid-auto-flow: {value};",
+            false,
             sortSeed
         );
 
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedClassesAsync(1, 25),
             "grid-row-end: {value};",
+            false,
             sortSeed
         );
 
@@ -597,6 +626,7 @@ public static class FlexboxAndGridCollection
                 ["fr"] = "minmax(0, 1fr)"
             },
             "grid-auto-columns: {value};",
+            false,
             sortSeed
         );
 
@@ -626,6 +656,7 @@ public static class FlexboxAndGridCollection
                 ["fr"] = "minmax(0, 1fr)"
             },
             "grid-auto-rows: {value};",
+            false,
             sortSeed
         );
 
@@ -653,12 +684,14 @@ public static class FlexboxAndGridCollection
                 ["px"] = "1px",
             },
             "gap: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "gap: {value};",
+            false,
             sortSeed
         );
         
@@ -686,12 +719,14 @@ public static class FlexboxAndGridCollection
                 ["px"] = "1px",
             },
             "column-gap: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "column-gap: {value};",
+            false,
             sortSeed
         );
         
@@ -719,12 +754,14 @@ public static class FlexboxAndGridCollection
                 ["px"] = "1px",
             },
             "row-gap: {value};",
+            false,
             sortSeed
         );
         
         sortSeed = await scssUtilityClassGroup.AddClassesAsync(
             await CollectionBase.AddNumberedRemUnitsClassesAsync(0.5m, 96m),
             "row-gap: {value};",
+            false,
             sortSeed
         );
         
@@ -757,6 +794,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "justify-content: {value};",
+            false,
             sortSeed
         );
 
@@ -780,6 +818,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "justify-items: {value};",
+            false,
             sortSeed
         );
 
@@ -804,6 +843,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "justify-self: {value};",
+            false,
             sortSeed
         );
 
@@ -837,6 +877,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "align-content: {value};",
+            false,
             sortSeed
         );
 
@@ -861,6 +902,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "align-items: {value};",
+            false,
             sortSeed
         );
 
@@ -886,6 +928,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "align-self: {value};",
+            false,
             sortSeed
         );
 
@@ -918,6 +961,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "place-content: {value};",
+            false,
             sortSeed
         );
 
@@ -942,6 +986,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "place-items: {value};",
+            false,
             sortSeed
         );
 
@@ -966,6 +1011,7 @@ public static class FlexboxAndGridCollection
                 ["stretch"] = "stretch"
             },
             "place-self: {value};",
+            false,
             sortSeed
         );
 

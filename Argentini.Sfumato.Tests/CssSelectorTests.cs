@@ -222,7 +222,7 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "text-base/3");
+        var selector = new CssSelector(appState, "text-base/5");
 
         await selector.ProcessSelector();
         
@@ -231,10 +231,10 @@ public class CssSelectorTests
         Assert.Empty(selector.PseudoClassVariants);
         Assert.Equal(selector.Selector, selector.FixedSelector);
         Assert.Equal("base", selector.CoreSegment);
-        Assert.Equal("/3", selector.ModifierSegment);
-        Assert.Equal("3", selector.ModifierValue);
+        Assert.Equal("/5", selector.ModifierSegment);
+        Assert.Equal("5", selector.ModifierValue);
         Assert.Equal(string.Empty, selector.ArbitraryValue);
-        Assert.Equal("text-base\\/3", selector.EscapedSelector);
+        Assert.Equal("text-base\\/5", selector.EscapedSelector);
     }
     
     [Fact]
@@ -499,6 +499,45 @@ public class CssSelectorTests
         Assert.Equal("", selector.VariantSegment);
         Assert.Equal("text", selector.PrefixSegment);
         Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("", selector.ModifierSegment);
+
+        Assert.Equal("", selector.ArbitraryValue);
+        Assert.Equal("", selector.ArbitraryValueType);
+        Assert.Equal("", selector.ModifierValue);
+        Assert.Equal("", selector.ModifierValueType);
+    }
+
+    [Fact]
+    public async Task BaseUtilityWithSlashInName()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "w-1/2");
+
+        await selector.ProcessSelector();
+
+        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.Equal("width: 50%;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        
+        Assert.False(selector.IsInvalid);
+        Assert.False(selector.IsArbitraryCss);
+        Assert.False(selector.IsImportant);
+        Assert.False(selector.UsesModifier);
+        Assert.False(selector.HasModifierValue);
+        Assert.False(selector.HasArbitraryValue);
+
+        Assert.Empty(selector.MediaQueryVariants);
+        Assert.Empty(selector.PseudoClassVariants);
+        
+        Assert.Equal("w-1/2", selector.Selector);
+        Assert.Equal("w-1\\/2", selector.EscapedSelector);
+        Assert.Equal("w-1/2", selector.FixedSelector);
+
+        Assert.Equal("", selector.VariantSegment);
+        Assert.Equal("w", selector.PrefixSegment);
+        Assert.Equal("1/2", selector.CoreSegment);
         Assert.Equal("", selector.ModifierSegment);
 
         Assert.Equal("", selector.ArbitraryValue);
