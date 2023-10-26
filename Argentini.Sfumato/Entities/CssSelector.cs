@@ -269,7 +269,7 @@ public sealed class CssSelector
 	    if (ArbitraryValue.StartsWith("--"))
 		    ArbitraryValue = $"var({ArbitraryValue})";
 	    
-	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroup>>()).ToList();
+	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroup>>()).OrderByDescending(c => c.Key).ToList();
 		
 		foreach (var (_, scssUtilityClassGroup) in matches)
 		{
