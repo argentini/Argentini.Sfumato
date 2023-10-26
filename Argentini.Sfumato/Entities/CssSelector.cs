@@ -38,16 +38,6 @@ public sealed class CssSelector
 	 * tabp:focus:bg-rose/50
 	 * dark:tabp:hover:!text-base/5
 	 * 
-	 * Parsing order:
-	 * --------------
-	 * 1. Process variants
-	 * 2. Identify optional important flag
-	 * 3. Identify arbitrary CSS
-	 * 4. Identify prefix segment from UtilityClassIndex; if not, SKIP
-	 * 5. Identify core segment from UtilityClassIndex; if not, SKIP
-	 * 6. Find "/[" and "]" and arbitrary modifier value
-	 * 7. Find "[" and "]" and arbitrary value
-	 * 
 	 */
 	
     #region Properties
@@ -109,12 +99,6 @@ public sealed class CssSelector
     public bool IsInvalid { get; private set; }
 
     #endregion
-    
-    #region Legacy Properties
-    
-    public string RootClassSegment { get; private set; } = string.Empty;
-    
-    #endregion
 
     #endregion
     
@@ -141,7 +125,6 @@ public sealed class CssSelector
 	    AllVariants.Clear();
 
 	    FixedSelector = Selector;
-	    RootClassSegment = string.Empty;
 	    EscapedSelector = string.Empty;
 
 	    VariantSegment = string.Empty;
@@ -176,15 +159,12 @@ public sealed class CssSelector
 		    return;
 	    }
 	    
-	    RootClassSegment = Selector;
-	    
 	    if (indexOfBracket > -1)
 	    {
 		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
 		    
 		    rootSegment = Selector[..indexOfBracket];
 		    selectorNoVariantsNoBrackets = rootSegment;
-		    RootClassSegment = rootSegment;
 	    }
 	    
 	    var indexOfLastColon = rootSegment.LastIndexOf(':');
@@ -201,7 +181,6 @@ public sealed class CssSelector
 		    rootSegment = rootSegment[(indexOfLastColon + 1)..];
 		    rightOfVariants = Selector[(indexOfLastColon + 1)..];
 		    selectorNoVariantsNoBrackets = rootSegment;
-		    RootClassSegment = rootSegment;
 	    }
 
 	    if (rootSegment.StartsWith('!'))
@@ -209,7 +188,6 @@ public sealed class CssSelector
 		    IsImportant = true;
 		    rootSegment = rootSegment.TrimStart('!');
 		    selectorNoVariantsNoBrackets = rootSegment;
-		    RootClassSegment = RootClassSegment.TrimStart('!');
 	    }
 
 	    if (IsArbitraryCss == false)
@@ -277,10 +255,7 @@ public sealed class CssSelector
 	    }
 
 	    if (IsArbitraryCss)
-	    {
-		    RootClassSegment = string.Empty;
 		    return;
-	    }
 
 	    ModifierValueType = SetCustomValueType(ModifierValue);
 	    ArbitraryValueType = SetCustomValueType(ArbitraryValue);
@@ -322,10 +297,11 @@ public sealed class CssSelector
 			var scssUtilityClass = matchingTypes.First();
 				
 			PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
-			CoreSegment = scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) ?? string.Empty;
+			CoreSegment = (UsesModifier ? scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) : scssUtilityClass.CoreSegment) ?? string.Empty;
 			ScssUtilityClass = new ScssUtilityClass
 			{
 				Selector = scssUtilityClass.Selector,
+				CoreSegment = scssUtilityClass.CoreSegment,
 				Category = scssUtilityClass.Category,
 				ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
 				SortOrder = scssUtilityClass.SortOrder,
@@ -340,8 +316,6 @@ public sealed class CssSelector
 				break;
 		}
 
-		RootClassSegment = rootSegment + (HasModifierValue ? "/" : string.Empty);
-		
 		await Task.CompletedTask;
     }
 
