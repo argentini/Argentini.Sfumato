@@ -260,17 +260,24 @@ public sealed class CssSelector
 	    ModifierValueType = SetCustomValueType(ModifierValue, AppState);
 	    ArbitraryValueType = SetCustomValueType(ArbitraryValue, AppState);
 
-	    if (HasModifierValue && ModifierValueType != string.Empty)
-		    ModifierValue = ModifierValue.TrimStart($"{ModifierValueType}:") ?? string.Empty;
+	    if (HasModifierValue)
+	    {
+		    if (ModifierValueType != string.Empty)
+			    ModifierValue = ModifierValue.TrimStart($"{ModifierValueType}:") ?? string.Empty;
 
-	    if (HasArbitraryValue && ArbitraryValueType != string.Empty)
-		    ArbitraryValue = ArbitraryValue.TrimStart($"{ArbitraryValueType}:") ?? string.Empty;
+		    else if (ArbitraryValueType != string.Empty)
+			    ArbitraryValue = ArbitraryValue.TrimStart($"{ArbitraryValueType}:") ?? string.Empty;
+	    }
 
-	    if (ArbitraryValue.StartsWith("--"))
-		    ArbitraryValue = $"var({ArbitraryValue})";
-		else if (ArbitraryValueType == "url" && ArbitraryValue.StartsWith("url(") == false)
-		    ArbitraryValue = $"url({ArbitraryValue})";
-	    
+	    if (HasArbitraryValue)
+	    {
+		    if (ArbitraryValue.StartsWith("--"))
+			    ArbitraryValue = $"var({ArbitraryValue})";
+
+		    else if (ArbitraryValueType == "url" && ArbitraryValue.StartsWith("url(") == false)
+			    ArbitraryValue = $"url({ArbitraryValue})";
+	    }
+
 	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroupBase>>()).OrderByDescending(c => c.Key).ToList();
 
 	    if (matches.Count == 0)
