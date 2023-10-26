@@ -27,7 +27,7 @@ public class UsedScssClass
     public UsedScssClass(SfumatoAppState appState, string selector, bool isArbitraryCss = false)
     {
         CssSelector = new CssSelector(appState, selector, isArbitraryCss);
-        _ = CssSelector.ProcessValue();
+        _ = CssSelector.ProcessSelector();
     }
 
     public void BuildPrefixSortOrder()

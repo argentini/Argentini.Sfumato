@@ -335,7 +335,7 @@ public static class TypographyCollection
         {
             sortSeed = await scssUtilityClassGroup.AddAbitrarySlashValueClassAsync(
                 size.Key,
-                "length,percentage,number",
+                "length,percentage,number,integer",
                 $$"""
                 font-size: {{size.Value}};
                 line-height: {value};

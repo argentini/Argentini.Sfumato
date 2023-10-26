@@ -18,7 +18,7 @@ public class SfumatoRunnerTests
                                        <link rel="stylesheet" href="css/sfumato.css">
                                    </head>
                                    <body class="text-base/5 desk:text-base/[3rem]">
-                                       <div id="test-home" class="text-[1rem] note:text-[1.25rem] bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233] desk:text-[red] desk:text-[--my-color-var] desk:text-[var(--my-color-var)]">
+                                       <div id="test-home" class="text-[1rem] note:text-[1.25rem] bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233] desk:text-[red] desk:text-[color:--my-color-var] desk:text-[color:var(--my-color-var)]">
                                            <p class="[font-weight:900] tabp:[font-weight:900]">Placeholder</p>
                                            <p class="[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]">Invalid Classes</p>
                                        </div>
@@ -88,7 +88,7 @@ public class SfumatoRunnerTests
         Assert.Equal(".text-base\\/5 { font-size: 1rem; line-height: 1.25rem; }".CompactCss(), result.CompactCss());
         
         var cssSelector = new CssSelector(appState, "text-base/[3rem]");
-        await cssSelector.ProcessValue();
+        await cssSelector.ProcessSelector();
 
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(
             new UsedScssClass
@@ -261,17 +261,17 @@ public class SfumatoRunnerTests
                          }
                      }
                      @include sf-media($from: desk) {
-                         .desk\:text-\[--my-color-var\] {
-                             font-size: var(--my-color-var);
-                         }
                          .desk\:text-\[\#112233\] {
-                             font-size: #112233;
+                             color: #112233;
+                         }
+                         .desk\:text-\[color\:--my-color-var\] {
+                             color: var(--my-color-var);
+                         }
+                         .desk\:text-\[color\:var\(--my-color-var\)\] {
+                             color: var(--my-color-var);
                          }
                          .desk\:text-\[red\] {
-                             font-size: red;
-                         }
-                         .desk\:text-\[var\(--my-color-var\)\] {
-                             font-size: var(--my-color-var);
+                             color: red;
                          }
                          .desk\:text-base\/\[3rem\] {
                              font-size: 1rem;
@@ -294,7 +294,7 @@ public class SfumatoRunnerTests
                              background-color: rgb(240,171,252);
                          }
                          .dark\:text-\[length\:1rem\] {
-                             font-size: length:1rem;
+                             font-size: 1rem;
                          }
                      }
                      """.CompactCss(), scss.CompactCss());

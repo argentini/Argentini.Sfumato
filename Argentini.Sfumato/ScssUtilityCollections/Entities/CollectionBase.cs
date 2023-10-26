@@ -3,32 +3,6 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Entities;
 public static class CollectionBase
 {
     /// <summary>
-    /// Return matching core utility classes.
-    /// </summary>
-    /// <param name="collection"></param>
-    /// <param name="cssSelector"></param>
-    /// <returns></returns>
-    public static async Task<List<ScssUtilityClass>> GetMatchingClassesAsync(this ConcurrentDictionary<string,ScssUtilityClassGroup> collection, CssSelector cssSelector)
-    {
-        var result = new List<ScssUtilityClass>();
-        var groups = collection.Where(g => cssSelector.RootClassSegment.StartsWith(g.Key, StringComparison.Ordinal)).ToList();
-
-        if (string.IsNullOrEmpty(cssSelector.ArbitraryValue))
-            foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment));
-        
-        else if (string.IsNullOrEmpty(cssSelector.ArbitraryValueType) == false && string.IsNullOrEmpty(cssSelector.ArbitraryValueType) == false)
-            foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment && c.ArbitraryValueTypes.Contains(cssSelector.ArbitraryValueType)));
-
-        else if (string.IsNullOrEmpty(cssSelector.ArbitraryValueType))
-            foreach (var (_, group) in groups)
-                result.AddRange(group.Classes.Where(c => c.Selector == cssSelector.RootClassSegment && c.ArbitraryValueTypes.Contains("raw")));
-        
-        return await Task.FromResult(result);
-    }
-    
-    /// <summary>
     /// Return numbered rem size classes (e.g. basis-0.5, basis-1.5, etc.).
     /// </summary>
     public static async Task<Dictionary<string,string>> AddNumberedRemUnitsClassesAsync(decimal minValue, decimal maxValue, decimal step = 0.5m)

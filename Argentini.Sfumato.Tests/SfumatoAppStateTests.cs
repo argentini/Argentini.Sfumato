@@ -123,77 +123,77 @@ public class SfumatoAppStateTests
         await collection.AddAllTypographyClassesAsync();
 
         var selector = new CssSelector(appState, "bg-slate-100");
-        await selector.ProcessValue();
+        await selector.ProcessSelector();
         Assert.NotNull(selector.ScssUtilityClass);
 
         selector = new CssSelector(appState, "dark:tabp:hover:bg-slate-100");
-        await selector.ProcessValue();
+        await selector.ProcessSelector();
         Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
-        await selector.ProcessValue();
+        await selector.ProcessSelector();
         Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "break-after-auto");
-        await selector.ProcessValue();
+        await selector.ProcessSelector();
         Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
-        await selector.ProcessValue();
+        await selector.ProcessSelector();
         Assert.NotNull(selector.ScssUtilityClass);
         
         selector = new CssSelector(appState, "text-base/5");
-        await selector.ProcessValue();
+        await selector.ProcessSelector();
         Assert.NotNull(selector.ScssUtilityClass);
     }
 
     [Fact]
     public void GetUserClassValueType()
     {
-        Assert.Equal(string.Empty, "".GetUserClassValueType());
-        Assert.Equal(string.Empty, "[width:3rem]".GetUserClassValueType());
-        Assert.Equal("length", "[3rem]".GetUserClassValueType());
-        Assert.Equal("flex", "[3fr]".GetUserClassValueType());
-        Assert.Equal("percentage", "[3%]".GetUserClassValueType());
-        Assert.Equal("percentage", "[3.5%]".GetUserClassValueType());
-        Assert.Equal("integer", "[3]".GetUserClassValueType());
-        Assert.Equal("number", "[0.5]".GetUserClassValueType());
-        Assert.Equal("number", "[3.0]".GetUserClassValueType());
-        Assert.Equal("color", "[#123]".GetUserClassValueType());
-        Assert.Equal("color", "[#123f]".GetUserClassValueType());
-        Assert.Equal("color", "[#aa1122]".GetUserClassValueType());
-        Assert.Equal("color", "[#aa1122ff]".GetUserClassValueType());
-        Assert.Equal("color", "[rgb(1,2,3)]".GetUserClassValueType());
-        Assert.Equal("color", "[rgba(1,2,3,0.5)]".GetUserClassValueType());
-        Assert.Equal("string", "['hello_world!']".GetUserClassValueType());
-        Assert.Equal("url", "[url(http://image.src)]".GetUserClassValueType());
-        Assert.Equal("url", "[http://sfumato.org/images/file.jpg]".GetUserClassValueType());
-        Assert.Equal("url", "[https://sfumato.org/images/file.jpg]".GetUserClassValueType());
-        Assert.Equal("url", "[url(/images/file.jpg)]".GetUserClassValueType());
-        Assert.Equal("url", "[/images/file.jpg]".GetUserClassValueType());
+        Assert.Equal(string.Empty, CssSelector.SetCustomValueType(""));
+        Assert.Equal(string.Empty, CssSelector.SetCustomValueType("[width:3rem]"));
+        Assert.Equal("length", CssSelector.SetCustomValueType("[3rem]"));
+        Assert.Equal("flex", CssSelector.SetCustomValueType("[3fr]"));
+        Assert.Equal("percentage", CssSelector.SetCustomValueType("[3%]"));
+        Assert.Equal("percentage", CssSelector.SetCustomValueType("[3.5%]"));
+        Assert.Equal("integer", CssSelector.SetCustomValueType("[3]"));
+        Assert.Equal("number", CssSelector.SetCustomValueType("[0.5]"));
+        Assert.Equal("number", CssSelector.SetCustomValueType("[3.0]"));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#123]"));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#123f]"));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#aa1122]"));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#aa1122ff]"));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[rgb(1,2,3)]"));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[rgba(1,2,3,0.5)]"));
+        Assert.Equal("string", CssSelector.SetCustomValueType("['hello_world!']"));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[url(http://image.src)]"));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[http://sfumato.org/images/file.jpg]"));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[https://sfumato.org/images/file.jpg]"));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[url(/images/file.jpg)]"));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[/images/file.jpg]"));
         
         foreach (var unit in SfumatoScss.CssAngleUnits)
         {
-            Assert.Equal("angle", $"[1{unit}]".GetUserClassValueType());
+            Assert.Equal("angle", CssSelector.SetCustomValueType($"[1{unit}]"));
         }
 
         foreach (var unit in SfumatoScss.CssTimeUnits)
         {
-            Assert.Equal("time", $"[100{unit}]".GetUserClassValueType());
+            Assert.Equal("time", CssSelector.SetCustomValueType($"[100{unit}]"));
         }
 
         foreach (var unit in SfumatoScss.CssFrequencyUnits)
         {
-            Assert.Equal("frequency", $"[1{unit}]".GetUserClassValueType());
+            Assert.Equal("frequency", CssSelector.SetCustomValueType($"[1{unit}]"));
         }
 
         foreach (var unit in SfumatoScss.CssResolutionUnits)
         {
-            Assert.Equal("resolution", $"[1024{unit}]".GetUserClassValueType());
+            Assert.Equal("resolution", CssSelector.SetCustomValueType($"[1024{unit}]"));
         }
         
-        Assert.Equal("ratio", "[1/2]".GetUserClassValueType());
-        Assert.Equal("ratio", "[1_/_2]".GetUserClassValueType());
+        Assert.Equal("ratio", CssSelector.SetCustomValueType("[1/2]"));
+        Assert.Equal("ratio", CssSelector.SetCustomValueType("[1_/_2]"));
     }
     
     [Fact]

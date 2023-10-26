@@ -672,7 +672,7 @@ public sealed class SfumatoAppState
 
 		if (cssSelector.IsInvalid == false)
 			if (collection.TryAdd(value, cssSelector))
-				await cssSelector.ProcessValue();
+				await cssSelector.ProcessSelector();
 
 		await Task.CompletedTask;
 	}

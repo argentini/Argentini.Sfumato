@@ -134,7 +134,7 @@ public sealed class CssSelector
     /// <summary>
     /// Establish all property values from parsing the Value property.
     /// </summary>
-    public async Task ProcessValue()
+    public async Task ProcessSelector()
     {
 	    MediaQueryVariants.Clear();
 	    PseudoClassVariants.Clear();
@@ -181,9 +181,6 @@ public sealed class CssSelector
 	    if (indexOfBracket > -1)
 	    {
 		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
-
-		    if (ArbitraryValue.StartsWith("--"))
-			    ArbitraryValue = $"var({ArbitraryValue})";
 		    
 		    rootSegment = Selector[..indexOfBracket];
 		    selectorNoVariantsNoBrackets = rootSegment;
@@ -285,74 +282,66 @@ public sealed class CssSelector
 		    return;
 	    }
 
+	    ModifierValueType = SetCustomValueType(ModifierValue);
+	    ArbitraryValueType = SetCustomValueType(ArbitraryValue);
+
+	    if (HasModifierValue && ModifierValueType != string.Empty)
+		    ModifierValue = ModifierValue.TrimStart($"{ModifierValueType}:") ?? string.Empty;
+
+	    if (HasArbitraryValue && ArbitraryValueType != string.Empty)
+		    ArbitraryValue = ArbitraryValue.TrimStart($"{ArbitraryValueType}:") ?? string.Empty;
+
+	    if (ArbitraryValue.StartsWith("--"))
+		    ArbitraryValue = $"var({ArbitraryValue})";
+	    
 	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroup>>()).ToList();
 		
 		foreach (var (_, scssUtilityClassGroup) in matches)
 		{
-			foreach (var scssUtilityClass in scssUtilityClassGroup.Classes)
+			var matchingTypes = new List<ScssUtilityClass>();
+			
+			if (HasArbitraryValue)
 			{
-				if (scssUtilityClass.Selector != selectorNoVariantsNoBrackets)
-					continue;
+				if (ArbitraryValueType != string.Empty)
+					matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains(ArbitraryValueType)).ToList();
+				else
+					matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains("raw")).ToList();
 				
-				PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
-				CoreSegment = scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) ?? string.Empty;
-				ScssUtilityClass = new ScssUtilityClass
-				{
-					Selector = scssUtilityClass.Selector,
-					Category = scssUtilityClass.Category,
-					ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
-					SortOrder = scssUtilityClass.SortOrder,
-					ScssTemplate = scssUtilityClass.ScssTemplate,
-					Value = scssUtilityClass.Value
-				};
-				
-				if (string.IsNullOrEmpty(ArbitraryValue) == false)
-					ScssUtilityClass.Value = ArbitraryValue;
-					
-				break;
+				if (matchingTypes.Count == 0)
+					matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Length == 0).ToList();
 			}
+			
+			else
+			{
+				matchingTypes = scssUtilityClassGroup.Classes.Where(c => c.Selector == selectorNoVariantsNoBrackets).ToList();
+			}
+
+			if (matchingTypes.Count == 0)
+				continue;
+
+			var scssUtilityClass = matchingTypes.First();
+				
+			PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
+			CoreSegment = scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) ?? string.Empty;
+			ScssUtilityClass = new ScssUtilityClass
+			{
+				Selector = scssUtilityClass.Selector,
+				Category = scssUtilityClass.Category,
+				ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
+				SortOrder = scssUtilityClass.SortOrder,
+				ScssTemplate = scssUtilityClass.ScssTemplate,
+				Value = scssUtilityClass.Value
+			};
+
+			if (string.IsNullOrEmpty(ArbitraryValue) == false)
+				ScssUtilityClass.Value = ArbitraryValue;
 			
 			if (ScssUtilityClass is not null)
 				break;
 		}
 
-		if (ScssUtilityClass is null)
-		{
-			foreach (var (_, scssUtilityClassGroup) in matches)
-			{
-				foreach (var scssUtilityClass in scssUtilityClassGroup.Classes)
-				{
-					if (scssUtilityClass.Selector.TrimEnd('/') != rootSegment)
-						continue;
-
-					PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
-					CoreSegment = scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) ?? string.Empty;
-					ScssUtilityClass = new ScssUtilityClass
-					{
-						Selector = scssUtilityClass.Selector,
-						Category = scssUtilityClass.Category,
-						ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
-						SortOrder = scssUtilityClass.SortOrder,
-						ScssTemplate = scssUtilityClass.ScssTemplate,
-						Value = scssUtilityClass.Value
-					};
-
-					if (string.IsNullOrEmpty(ArbitraryValue) == false)
-						ScssUtilityClass.Value = ArbitraryValue;
-					
-					break;
-				}
-			
-				if (ScssUtilityClass is not null)
-					break;
-			}
-		}
-
 		RootClassSegment = rootSegment + (HasModifierValue ? "/" : string.Empty);
 		
-		ModifierValueType = SetCustomValueType(ModifierValue);
-		ArbitraryValueType = SetCustomValueType(ArbitraryValue);
-
 		await Task.CompletedTask;
     }
 
@@ -360,20 +349,20 @@ public sealed class CssSelector
     /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <returns></returns>
-    public static string SetCustomValueType(string value)
+    public static string SetCustomValueType(string arbitraryValue)
     {
-	    if (string.IsNullOrEmpty(value))
+	    if (string.IsNullOrEmpty(arbitraryValue))
 		    return string.Empty;
+
+	    var value = arbitraryValue.TrimStart('[').TrimEnd(']');
 	    
 	    if (value.Contains(':'))
 	    {
 		    var segments = value.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
 		    if (segments.Length > 1)
-		    {
 			    if (SfumatoScss.ArbitraryValueTypes.Contains(segments[0]))
 				    return segments[0];
-		    }
 	    }
 
 	    // Determine value type based on value (e.g. text-[red])

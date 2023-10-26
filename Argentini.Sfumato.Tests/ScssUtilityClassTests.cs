@@ -45,32 +45,26 @@ public class ScssUtilityClassTests
         await backgrounds.AddAllBackgroundClassesAsync();
 
         var cssSelector = new CssSelector(appState, "bg-white");
-        await cssSelector.ProcessValue();
+        await cssSelector.ProcessSelector();
         
-        var matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
-        
-        Assert.Single(matches);
+        Assert.NotNull(cssSelector.ScssUtilityClass);
 
         cssSelector = new CssSelector(appState, "bg-[#aabbcc]");
-        await cssSelector.ProcessValue();
+        await cssSelector.ProcessSelector();
         
-        matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
+        Assert.NotNull(cssSelector.ScssUtilityClass);
         
-        Assert.Single(matches);
+        cssSelector.ScssUtilityClass.Value = cssSelector.ArbitraryValue;
         
-        matches[0].Value = cssSelector.ArbitraryValue;
-        
-        Assert.Equal("background-color: #aabbcc;", matches[0].ScssMarkup);
+        Assert.Equal("background-color: #aabbcc;", cssSelector.ScssUtilityClass.ScssMarkup);
 
         cssSelector = new CssSelector(appState, "bg-[top_center]");
-        await cssSelector.ProcessValue();
+        await cssSelector.ProcessSelector();
         
-        matches = await backgrounds.GetMatchingClassesAsync(cssSelector);
+        Assert.NotNull(cssSelector.ScssUtilityClass);
         
-        Assert.Single(matches);
+        cssSelector.ScssUtilityClass.Value = cssSelector.ArbitraryValue;
         
-        matches[0].Value = cssSelector.ArbitraryValue;
-        
-        Assert.Equal("background-position: top center;", matches[0].ScssMarkup);
+        Assert.Equal("background-position: top center;", cssSelector.ScssUtilityClass.ScssMarkup);
     }
 }
