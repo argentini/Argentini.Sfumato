@@ -43,7 +43,7 @@ public sealed class CssSelector
     #region Properties
 
     public SfumatoAppState? AppState { get; set; }
-    public ScssUtilityClass? ScssUtilityClass { get; set; }
+    public ScssUtilityClassGroupBase? ScssUtilityClassGroup { get; set; }
 
     #region Selector
     
@@ -221,7 +221,7 @@ public sealed class CssSelector
 		    {
 			    var lastType = string.Empty;
 
-			    foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes.Where(p => segments.Contains(p.Prefix)).OrderBy(k => k.PrefixOrder))
+			    foreach (var breakpoint in AppState?.MediaQueryPrefixes.Where(p => segments.Contains(p.Prefix)).OrderBy(k => k.PrefixOrder) ?? Enumerable.Empty<CssMediaQuery>())
 			    {
 				    if (breakpoint.PrefixType == lastType)
 					    continue;
@@ -233,7 +233,7 @@ public sealed class CssSelector
 
 			    foreach (var segment in segments)
 			    {
-				    if (SfumatoScss.PseudoclassPrefixes.ContainsKey(segment) == false)
+				    if (AppState?.PseudoclassPrefixes.ContainsKey(segment) == false)
 					    continue;
 
 				    PseudoClassVariants.Add(segment);
@@ -257,8 +257,8 @@ public sealed class CssSelector
 	    if (IsArbitraryCss)
 		    return;
 
-	    ModifierValueType = SetCustomValueType(ModifierValue);
-	    ArbitraryValueType = SetCustomValueType(ArbitraryValue);
+	    ModifierValueType = SetCustomValueType(ModifierValue, AppState);
+	    ArbitraryValueType = SetCustomValueType(ArbitraryValue, AppState);
 
 	    if (HasModifierValue && ModifierValueType != string.Empty)
 		    ModifierValue = ModifierValue.TrimStart($"{ModifierValueType}:") ?? string.Empty;
@@ -268,59 +268,20 @@ public sealed class CssSelector
 
 	    if (ArbitraryValue.StartsWith("--"))
 		    ArbitraryValue = $"var({ArbitraryValue})";
+		else if (ArbitraryValueType == "url" && ArbitraryValue.StartsWith("url(") == false)
+		    ArbitraryValue = $"url({ArbitraryValue})";
 	    
-	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroup>>()).OrderByDescending(c => c.Key).ToList();
-		
-		foreach (var (_, scssUtilityClassGroup) in matches)
-		{
-			ScssUtilityClass? scssUtilityClass = null;
-			
-			if (HasArbitraryValue)
-			{
-				if (ArbitraryValueType != string.Empty)
-					scssUtilityClass = scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains(ArbitraryValueType));
-				else
-					scssUtilityClass = scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Contains("raw"));
+	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroupBase>>()).OrderByDescending(c => c.Key).ToList();
 
-				scssUtilityClass ??= scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets && c.ArbitraryValueTypes.Length == 0);
-			}
-			
-			else
-			{
-				scssUtilityClass = scssUtilityClassGroup.Classes.FirstOrDefault(c => c.Selector == selectorNoVariantsNoBrackets);
-
-				if (scssUtilityClass?.UsesModifier == false)
-				{
-					UsesModifier = false;
-					ModifierSegment = string.Empty;
-					ModifierValueType = string.Empty;
-					ModifierValue = string.Empty;
-				}
-			}
-
-			if (scssUtilityClass is null)
-				continue;
-
-			PrefixSegment = scssUtilityClassGroup.SelectorPrefix;
-			CoreSegment = (scssUtilityClass.UsesModifier ? scssUtilityClass.CoreSegment.TrimEnd(ModifierSegment) : scssUtilityClass.CoreSegment) ?? string.Empty;
-			ScssUtilityClass = new ScssUtilityClass
-			{
-				Selector = scssUtilityClass.Selector,
-				CoreSegment = scssUtilityClass.CoreSegment,
-				UsesModifier = scssUtilityClass.UsesModifier,
-				Category = scssUtilityClass.Category,
-				ArbitraryValueTypes = scssUtilityClass.ArbitraryValueTypes,
-				SortOrder = scssUtilityClass.SortOrder,
-				ScssTemplate = scssUtilityClass.ScssTemplate,
-				Value = scssUtilityClass.Value
-			};
-
-			if (string.IsNullOrEmpty(ArbitraryValue) == false)
-				ScssUtilityClass.Value = ArbitraryValue;
-			
-			if (ScssUtilityClass is not null)
-				break;
-		}
+	    if (matches.Count == 0)
+	    {
+		    IsInvalid = true;
+		    return;
+	    }
+	    
+	    ScssUtilityClassGroup = matches.First().Value;
+		PrefixSegment = ScssUtilityClassGroup.SelectorPrefix;
+		CoreSegment = selectorNoVariantsNoBrackets.TrimStart(ScssUtilityClassGroup.SelectorPrefix)?.TrimStart('-') ?? string.Empty;
 
 		await Task.CompletedTask;
     }
@@ -329,7 +290,7 @@ public sealed class CssSelector
     /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <returns></returns>
-    public static string SetCustomValueType(string arbitraryValue)
+    public static string SetCustomValueType(string arbitraryValue, SfumatoAppState? appState)
     {
 	    if (string.IsNullOrEmpty(arbitraryValue))
 		    return string.Empty;
@@ -341,7 +302,7 @@ public sealed class CssSelector
 		    var segments = value.Split(':', StringSplitOptions.RemoveEmptyEntries);
 
 		    if (segments.Length > 1)
-			    if (SfumatoScss.ArbitraryValueTypes.Contains(segments[0]))
+			    if (appState?.ArbitraryValueTypes.Contains(segments[0]) ?? false)
 				    return segments[0];
 	    }
 
@@ -360,7 +321,7 @@ public sealed class CssSelector
 	    
 	    var unitless = string.Empty;
 
-	    foreach (var unit in SfumatoScss.CssUnits)
+	    foreach (var unit in appState?.CssUnits ?? Enumerable.Empty<string>())
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -376,7 +337,7 @@ public sealed class CssSelector
 	    if (value.EndsWith("fr") && double.TryParse(value.TrimEnd("fr"), out _))
 		    return "flex";
 
-	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || SfumatoScss.CssNamedColors.Contains(value))
+	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || (appState?.CssNamedColors ?? Enumerable.Empty<string>()).Contains(value))
 		    return "color";
 
 	    if (value.StartsWith('\'') && value.EndsWith('\''))
@@ -389,7 +350,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in SfumatoScss.CssAngleUnits)
+	    foreach (var unit in appState?.CssAngleUnits ?? Enumerable.Empty<string>())
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -406,7 +367,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in SfumatoScss.CssTimeUnits)
+	    foreach (var unit in appState?.CssTimeUnits ?? Enumerable.Empty<string>())
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -423,7 +384,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in SfumatoScss.CssFrequencyUnits)
+	    foreach (var unit in appState?.CssFrequencyUnits ?? Enumerable.Empty<string>())
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -440,7 +401,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in SfumatoScss.CssResolutionUnits)
+	    foreach (var unit in appState?.CssResolutionUnits ?? Enumerable.Empty<string>())
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -493,5 +454,14 @@ public sealed class CssSelector
         }
 
         return value.ToString();
+    }
+
+    /// <summary>
+    /// Convenience method for getting styles from the utility class group.
+    /// </summary>
+    /// <returns></returns>
+    public string GetStyles()
+    {
+	    return ScssUtilityClassGroup?.GetStyles(this) ?? string.Empty;
     }
 }

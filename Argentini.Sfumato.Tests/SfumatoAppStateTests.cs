@@ -1,8 +1,5 @@
-using System.Collections.Concurrent;
 using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Extensions;
-using Argentini.Sfumato.ScssUtilityCollections;
-using Argentini.Sfumato.ScssUtilityCollections.Entities;
 
 namespace Argentini.Sfumato.Tests;
 
@@ -100,13 +97,13 @@ public class SfumatoAppStateTests
     }
 
     [Fact]
-    public async Task GetAllByClassNamePrep()
+    public async Task LoadUtilityClasses()
     {
         var appState = new SfumatoAppState();
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        Assert.True(appState.UtilityClassCount > 0);
+        Assert.True(appState.UtilityClassCollection.Count > 0);
     }
 
     [Fact]
@@ -114,86 +111,80 @@ public class SfumatoAppStateTests
     {
         var appState = new SfumatoAppState();
 
-        await appState.InitializeAsync(Array.Empty<string>());
-        
-        var collection = new ConcurrentDictionary<string, ScssUtilityClassGroup>();
-
-        await collection.AddAllBackgroundClassesAsync();
-        await collection.AddAllLayoutClassesAsync();
-        await collection.AddAllTypographyClassesAsync();
-
         var selector = new CssSelector(appState, "bg-slate-100");
         await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
 
         selector = new CssSelector(appState, "dark:tabp:hover:bg-slate-100");
         await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
         
         selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
         await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
         
         selector = new CssSelector(appState, "break-after-auto");
         await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
         
         selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
         await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
         
         selector = new CssSelector(appState, "text-base/5");
         await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClass);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
     }
 
     [Fact]
     public void GetUserClassValueType()
     {
-        Assert.Equal(string.Empty, CssSelector.SetCustomValueType(""));
-        Assert.Equal(string.Empty, CssSelector.SetCustomValueType("[width:3rem]"));
-        Assert.Equal("length", CssSelector.SetCustomValueType("[3rem]"));
-        Assert.Equal("flex", CssSelector.SetCustomValueType("[3fr]"));
-        Assert.Equal("percentage", CssSelector.SetCustomValueType("[3%]"));
-        Assert.Equal("percentage", CssSelector.SetCustomValueType("[3.5%]"));
-        Assert.Equal("integer", CssSelector.SetCustomValueType("[3]"));
-        Assert.Equal("number", CssSelector.SetCustomValueType("[0.5]"));
-        Assert.Equal("number", CssSelector.SetCustomValueType("[3.0]"));
-        Assert.Equal("color", CssSelector.SetCustomValueType("[#123]"));
-        Assert.Equal("color", CssSelector.SetCustomValueType("[#123f]"));
-        Assert.Equal("color", CssSelector.SetCustomValueType("[#aa1122]"));
-        Assert.Equal("color", CssSelector.SetCustomValueType("[#aa1122ff]"));
-        Assert.Equal("color", CssSelector.SetCustomValueType("[rgb(1,2,3)]"));
-        Assert.Equal("color", CssSelector.SetCustomValueType("[rgba(1,2,3,0.5)]"));
-        Assert.Equal("string", CssSelector.SetCustomValueType("['hello_world!']"));
-        Assert.Equal("url", CssSelector.SetCustomValueType("[url(http://image.src)]"));
-        Assert.Equal("url", CssSelector.SetCustomValueType("[http://sfumato.org/images/file.jpg]"));
-        Assert.Equal("url", CssSelector.SetCustomValueType("[https://sfumato.org/images/file.jpg]"));
-        Assert.Equal("url", CssSelector.SetCustomValueType("[url(/images/file.jpg)]"));
-        Assert.Equal("url", CssSelector.SetCustomValueType("[/images/file.jpg]"));
+        var appState = new SfumatoAppState();
         
-        foreach (var unit in SfumatoScss.CssAngleUnits)
+        Assert.Equal(string.Empty, CssSelector.SetCustomValueType("", appState));
+        Assert.Equal(string.Empty, CssSelector.SetCustomValueType("[width:3rem]", appState));
+        Assert.Equal("length", CssSelector.SetCustomValueType("[3rem]", appState));
+        Assert.Equal("flex", CssSelector.SetCustomValueType("[3fr]", appState));
+        Assert.Equal("percentage", CssSelector.SetCustomValueType("[3%]", appState));
+        Assert.Equal("percentage", CssSelector.SetCustomValueType("[3.5%]", appState));
+        Assert.Equal("integer", CssSelector.SetCustomValueType("[3]", appState));
+        Assert.Equal("number", CssSelector.SetCustomValueType("[0.5]", appState));
+        Assert.Equal("number", CssSelector.SetCustomValueType("[3.0]", appState));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#123]", appState));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#123f]", appState));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#aa1122]", appState));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[#aa1122ff]", appState));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[rgb(1,2,3)]", appState));
+        Assert.Equal("color", CssSelector.SetCustomValueType("[rgba(1,2,3,0.5)]", appState));
+        Assert.Equal("string", CssSelector.SetCustomValueType("['hello_world!']", appState));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[url(http://image.src)]", appState));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[http://sfumato.org/images/file.jpg]", appState));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[https://sfumato.org/images/file.jpg]", appState));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[url(/images/file.jpg)]", appState));
+        Assert.Equal("url", CssSelector.SetCustomValueType("[/images/file.jpg]", appState));
+        
+        foreach (var unit in appState.CssAngleUnits)
         {
-            Assert.Equal("angle", CssSelector.SetCustomValueType($"[1{unit}]"));
+            Assert.Equal("angle", CssSelector.SetCustomValueType($"[1{unit}]", appState));
         }
 
-        foreach (var unit in SfumatoScss.CssTimeUnits)
+        foreach (var unit in appState.CssTimeUnits)
         {
-            Assert.Equal("time", CssSelector.SetCustomValueType($"[100{unit}]"));
+            Assert.Equal("time", CssSelector.SetCustomValueType($"[100{unit}]", appState));
         }
 
-        foreach (var unit in SfumatoScss.CssFrequencyUnits)
+        foreach (var unit in appState.CssFrequencyUnits)
         {
-            Assert.Equal("frequency", CssSelector.SetCustomValueType($"[1{unit}]"));
+            Assert.Equal("frequency", CssSelector.SetCustomValueType($"[1{unit}]", appState));
         }
 
-        foreach (var unit in SfumatoScss.CssResolutionUnits)
+        foreach (var unit in appState.CssResolutionUnits)
         {
-            Assert.Equal("resolution", CssSelector.SetCustomValueType($"[1024{unit}]"));
+            Assert.Equal("resolution", CssSelector.SetCustomValueType($"[1024{unit}]", appState));
         }
         
-        Assert.Equal("ratio", CssSelector.SetCustomValueType("[1/2]"));
-        Assert.Equal("ratio", CssSelector.SetCustomValueType("[1_/_2]"));
+        Assert.Equal("ratio", CssSelector.SetCustomValueType("[1/2]", appState));
+        Assert.Equal("ratio", CssSelector.SetCustomValueType("[1_/_2]", appState));
     }
     
     [Fact]

@@ -149,7 +149,7 @@ public sealed class SfumatoRunner
 
 			foreach (var prefix in prefixes)
 			{
-				if (IsPseudoclassPrefix(prefix) == false)
+				if (IsPseudoclassPrefix(prefix, usedScssClass.CssSelector.AppState) == false)
 					continue;
 				
 				if (renderedClassName == false)
@@ -159,9 +159,9 @@ public sealed class SfumatoRunner
 					level++;
 				}
 
-				var pseudoClass = SfumatoScss.PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+				var pseudoClass = usedScssClass.CssSelector.AppState?.PseudoclassPrefixes.First(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 					
-				scssResult.Append($"{Indent(level)}{pseudoClass.Value}\n");
+				scssResult.Append($"{Indent(level)}{pseudoClass?.Value}\n");
 				level++;
 			}
 		}
@@ -175,7 +175,7 @@ public sealed class SfumatoRunner
 		if (usedScssClass.CssSelector.IsArbitraryCss)
 			scssResult.Append($"{usedScssClass.CssSelector.ArbitraryValue.Indent(level * IndentationSpaces)}{(usedScssClass.CssSelector.IsImportant ? " !important" : string.Empty)};\n");
 		else
-			scssResult.Append($"{usedScssClass.CssSelector.ScssUtilityClass?.ScssMarkup.Replace(";", (usedScssClass.CssSelector.IsImportant ? " !important;" : ";")).Indent(level * IndentationSpaces)}\n");
+			scssResult.Append($"{usedScssClass.CssSelector.ScssUtilityClassGroup?.GetStyles(usedScssClass.CssSelector).Replace(";", (usedScssClass.CssSelector.IsImportant ? " !important;" : ";")).Indent(level * IndentationSpaces)}\n");
 			
 		while (level > 0)
 		{
@@ -207,7 +207,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 
-		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.CssSelector?.Depth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Value.SortOrder).ThenBy(c => c.Key))
+		foreach (var (_, scssClass) in AppState.UsedClasses.OrderBy(c => c.Value.CssSelector?.Depth).ThenBy(c => c.Value.PrefixSortOrder).ThenBy(c => c.Key))
 		{
 			if (scssClass.CssSelector is null)
 				continue;
@@ -226,7 +226,7 @@ public sealed class SfumatoRunner
 
 				foreach (var prefix in scssClass.CssSelector.AllVariants)
 				{
-					if (IsMediaQueryPrefix(prefix) == false)
+					if (IsMediaQueryPrefix(prefix, scssClass.CssSelector.AppState) == false)
 						break;
 					
 					prefixPath += $"{prefix}:";
@@ -290,7 +290,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 			
-			if (usedClass.CssSelector.ScssUtilityClass?.Category == "gradients")
+			if (usedClass.CssSelector.ScssUtilityClassGroup?.Category == "gradients")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 
@@ -308,7 +308,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 
-			if (usedClass.CssSelector.ScssUtilityClass?.Category == "ring")
+			if (usedClass.CssSelector.ScssUtilityClassGroup?.Category == "ring")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 
@@ -326,7 +326,7 @@ public sealed class SfumatoRunner
 			if (usedClass.CssSelector is null)
 				continue;
 
-			if (usedClass.CssSelector.ScssUtilityClass?.Category == "shadow")
+			if (usedClass.CssSelector.ScssUtilityClassGroup?.Category == "shadow")
 				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedClass.CssSelector.EscapedSelector}");
 		}
 
@@ -357,7 +357,7 @@ public sealed class SfumatoRunner
 			if (prefix.Equals("auto-dark", StringComparison.Ordinal))
 				prefix = "dark";
 			
-			var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.First(p => p.Prefix.Equals(prefix));
+			var mediaQueryPrefix = AppState.MediaQueryPrefixes.First(p => p.Prefix.Equals(prefix));
 
 			if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
 			{
@@ -563,10 +563,11 @@ public sealed class SfumatoRunner
 	/// Determine if a prefix is a media query prefix.
 	/// </summary>
 	/// <param name="prefix"></param>
+	/// <param name="appState"></param>
 	/// <returns></returns>
-	public static bool IsMediaQueryPrefix(string prefix)
+	public static bool IsMediaQueryPrefix(string prefix, SfumatoAppState? appState)
 	{
-		var mediaQueryPrefix = SfumatoScss.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix.Equals(prefix, StringComparison.Ordinal));
+		var mediaQueryPrefix = appState?.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix.Equals(prefix, StringComparison.Ordinal));
 		return string.IsNullOrEmpty(mediaQueryPrefix?.Prefix) == false;
 	}
 
@@ -574,11 +575,13 @@ public sealed class SfumatoRunner
 	/// Determine if a prefix is a pseudoclass prefix.
 	/// </summary>
 	/// <param name="prefix"></param>
+	/// <param name="appState"></param>
 	/// <returns></returns>
-	public static bool IsPseudoclassPrefix(string prefix)
+	public static bool IsPseudoclassPrefix(string prefix, SfumatoAppState? appState)
 	{
-		var pseudoclassPrefix = SfumatoScss.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
-		return string.IsNullOrEmpty(pseudoclassPrefix.Key) == false;
+		var pseudoclassPrefix = appState?.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		
+		return string.IsNullOrEmpty(pseudoclassPrefix?.Key) == false;
 	}
 	
 	#endregion

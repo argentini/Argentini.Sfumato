@@ -46,6 +46,20 @@ public class CssSelectorTests
         
         Assert.True(selector.IsInvalid);
     }
+
+    [Fact]
+    public async Task InvalidTrailingSlash()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "text-base/");
+
+        await selector.ProcessSelector();
+
+        Assert.True(selector.IsInvalid);
+    }
     
     [Fact]
     public async Task BaseClass()
@@ -196,120 +210,6 @@ public class CssSelectorTests
     }
     
     [Fact]
-    public async Task BaseClassCustomValue()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "text-[3rem]");
-
-        await selector.ProcessSelector();
-        
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("3rem", selector.ArbitraryValue);
-        Assert.Equal("text-\\[3rem\\]", selector.EscapedSelector);
-        Assert.Equal("length", selector.ArbitraryValueType);
-    }
-    
-    [Fact]
-    public async Task BaseClassSlashCustomValue()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "text-base/5");
-
-        await selector.ProcessSelector();
-        
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("base", selector.CoreSegment);
-        Assert.Equal("/5", selector.ModifierSegment);
-        Assert.Equal("5", selector.ModifierValue);
-        Assert.Equal(string.Empty, selector.ArbitraryValue);
-        Assert.Equal("text-base\\/5", selector.EscapedSelector);
-    }
-    
-    [Fact]
-    public async Task BaseClassCustomValueWithPrefixes()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "dark:tabp:hover:text-[3rem]");
-
-        await selector.ProcessSelector();
-        
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Equal(2, selector.MediaQueryVariants.Count);
-        Assert.Equal("dark", selector.MediaQueryVariants[0]);
-        Assert.Equal("tabp", selector.MediaQueryVariants[1]);
-        Assert.Single(selector.PseudoClassVariants);
-        Assert.Equal("hover", selector.PseudoClassVariants[0]);
-        Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("3rem", selector.ArbitraryValue);
-        Assert.Equal("dark\\:tabp\\:hover\\:text-\\[3rem\\]", selector.EscapedSelector);
-    }
-    
-    [Fact]
-    public async Task BaseClassSlashCustomValueWithPrefixes()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "dark:tabp:hover:text-base/3");
-
-        await selector.ProcessSelector();
-        
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Equal(2, selector.MediaQueryVariants.Count);
-        Assert.Equal("dark", selector.MediaQueryVariants[0]);
-        Assert.Equal("tabp", selector.MediaQueryVariants[1]);
-        Assert.Single(selector.PseudoClassVariants);
-        Assert.Equal("hover", selector.PseudoClassVariants[0]);
-        Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("base", selector.CoreSegment);
-        Assert.Equal("/3", selector.ModifierSegment);
-        Assert.Equal("3", selector.ModifierValue);
-        Assert.Equal(string.Empty, selector.ArbitraryValue);
-        Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/3", selector.EscapedSelector);
-    }
-    
-    [Fact]
-    public async Task BaseClassSlashWithCustomValueWithPrefixes()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "dark:tabp:hover:text-base/[3]");
-
-        await selector.ProcessSelector();
-        
-        Assert.False(selector.IsArbitraryCss);
-        Assert.Equal(2, selector.MediaQueryVariants.Count);
-        Assert.Equal("dark", selector.MediaQueryVariants[0]);
-        Assert.Equal("tabp", selector.MediaQueryVariants[1]);
-        Assert.Single(selector.PseudoClassVariants);
-        Assert.Equal("hover", selector.PseudoClassVariants[0]);
-        Assert.Equal(selector.Selector, selector.FixedSelector);
-        Assert.Equal("base", selector.CoreSegment);
-        Assert.Equal("/", selector.ModifierSegment);
-        Assert.Equal("3", selector.ArbitraryValue);
-        Assert.Equal("dark\\:tabp\\:hover\\:text-base\\/\\[3\\]", selector.EscapedSelector);
-        Assert.Equal("integer", selector.ArbitraryValueType);
-    }
-    
-    [Fact]
     public async Task ArbitraryCss()
     {
         var appState = new SfumatoAppState();
@@ -367,20 +267,6 @@ public class CssSelectorTests
         Assert.Equal("padding:1rem 2rem", selector.ArbitraryValue);
         Assert.Equal("tabp\\:\\[padding\\:1rem_2rem\\]", selector.EscapedSelector);
     }
-
-    [Fact]
-    public async Task TrailingSlash()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "text-base/");
-
-        await selector.ProcessSelector();
-
-        Assert.True(selector.IsInvalid);
-    }
     
     [Fact]
     public async Task IsImportant()
@@ -389,7 +275,7 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "!text-base");
+        var selector = new CssSelector(appState, "!bg-rose-100");
         await selector.ProcessSelector();
         
         Assert.False(selector.IsArbitraryCss);
@@ -397,7 +283,7 @@ public class CssSelectorTests
         Assert.Empty(selector.PseudoClassVariants);
         Assert.True(selector.IsImportant);
         
-        selector = new CssSelector(appState, "tabp:focus:!text-base");
+        selector = new CssSelector(appState, "tabp:focus:!bg-rose-100");
         await selector.ProcessSelector();
         
         Assert.False(selector.IsArbitraryCss);
@@ -405,29 +291,29 @@ public class CssSelectorTests
         Assert.Single(selector.PseudoClassVariants);
         Assert.True(selector.IsImportant);
         
-        selector = new CssSelector(appState, "tabp:focus:!text-base/3");
+        selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/50");
         await selector.ProcessSelector();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
-        Assert.Equal("text", selector.PrefixSegment);
-        Assert.Equal("base", selector.CoreSegment);
-        Assert.Equal("/3", selector.ModifierSegment);
-        Assert.Equal("3", selector.ModifierValue);
+        Assert.Equal("bg", selector.PrefixSegment);
+        Assert.Equal("rose-100/50", selector.CoreSegment);
+        Assert.Equal("/50", selector.ModifierSegment);
+        Assert.Equal("50", selector.ModifierValue);
         Assert.Equal("integer", selector.ModifierValueType);
         Assert.True(selector.IsImportant);
         
-        selector = new CssSelector(appState, "tabp:focus:!text-base/[3]");
+        selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/[50]");
         await selector.ProcessSelector();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
-        Assert.Equal("text", selector.PrefixSegment);
-        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("bg", selector.PrefixSegment);
+        Assert.Equal("rose-100/", selector.CoreSegment);
         Assert.Equal("/", selector.ModifierSegment);
-        Assert.Equal("3", selector.ArbitraryValue);
+        Assert.Equal("50", selector.ArbitraryValue);
         Assert.Equal("integer", selector.ArbitraryValueType);
         Assert.True(selector.IsImportant);
     }
@@ -475,12 +361,12 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "text-base");
+        var selector = new CssSelector(appState, "bg-rose-100");
 
         await selector.ProcessSelector();
 
-        Assert.NotNull(selector.ScssUtilityClass);
-        Assert.Equal("font-size: 1rem;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("background-color: rgb(255,228,230);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -492,13 +378,13 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         
-        Assert.Equal("text-base", selector.Selector);
-        Assert.Equal("text-base", selector.EscapedSelector);
-        Assert.Equal("text-base", selector.FixedSelector);
+        Assert.Equal("bg-rose-100", selector.Selector);
+        Assert.Equal("bg-rose-100", selector.EscapedSelector);
+        Assert.Equal("bg-rose-100", selector.FixedSelector);
 
         Assert.Equal("", selector.VariantSegment);
-        Assert.Equal("text", selector.PrefixSegment);
-        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("bg", selector.PrefixSegment);
+        Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("", selector.ModifierSegment);
 
         Assert.Equal("", selector.ArbitraryValue);
@@ -518,8 +404,8 @@ public class CssSelectorTests
 
         await selector.ProcessSelector();
 
-        Assert.NotNull(selector.ScssUtilityClass);
-        Assert.Equal("width: 50%;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("width: 50%;".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -553,12 +439,12 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "text-base/5");
+        var selector = new CssSelector(appState, "bg-rose-100/50");
 
         await selector.ProcessSelector();
 
-        Assert.NotNull(selector.ScssUtilityClass);
-        Assert.Equal("font-size: 1rem; line-height: 1.25rem;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("background-color: rgba(255,228,230,0.50);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -570,34 +456,73 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         
-        Assert.Equal("text-base/5", selector.Selector);
-        Assert.Equal("text-base\\/5", selector.EscapedSelector);
-        Assert.Equal("text-base/5", selector.FixedSelector);
+        Assert.Equal("bg-rose-100/50", selector.Selector);
+        Assert.Equal("bg-rose-100\\/50", selector.EscapedSelector);
+        Assert.Equal("bg-rose-100/50", selector.FixedSelector);
 
         Assert.Equal("", selector.VariantSegment);
-        Assert.Equal("text", selector.PrefixSegment);
-        Assert.Equal("base", selector.CoreSegment);
-        Assert.Equal("/5", selector.ModifierSegment);
+        Assert.Equal("bg", selector.PrefixSegment);
+        Assert.Equal("rose-100/50", selector.CoreSegment);
+        Assert.Equal("/50", selector.ModifierSegment);
 
         Assert.Equal("", selector.ArbitraryValue);
         Assert.Equal("", selector.ArbitraryValueType);
-        Assert.Equal("5", selector.ModifierValue);
+        Assert.Equal("50", selector.ModifierValue);
         Assert.Equal("integer", selector.ModifierValueType);
     }
     
     [Fact]
-    public async Task BaseUtilityWithModifierArbitraryValue()
+    public async Task BaseUtilityWithArbitraryValue()
     {
         var appState = new SfumatoAppState();
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "text-base/[3rem]");
+        var selector = new CssSelector(appState, "bg-[#aabbcc]");
 
         await selector.ProcessSelector();
 
-        Assert.NotNull(selector.ScssUtilityClass);
-        Assert.Equal("font-size: 1rem; line-height: 3rem;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("background-color: #aabbcc;".CompactCss(), selector.GetStyles().CompactCss());
+        
+        Assert.False(selector.IsInvalid);
+        Assert.False(selector.IsArbitraryCss);
+        Assert.False(selector.IsImportant);
+        Assert.False(selector.UsesModifier);
+        Assert.False(selector.HasModifierValue);
+        Assert.True(selector.HasArbitraryValue);
+
+        Assert.Empty(selector.MediaQueryVariants);
+        Assert.Empty(selector.PseudoClassVariants);
+        
+        Assert.Equal("bg-[#aabbcc]", selector.Selector);
+        Assert.Equal("bg-\\[\\#aabbcc\\]", selector.EscapedSelector);
+        Assert.Equal("bg-[#aabbcc]", selector.FixedSelector);
+
+        Assert.Equal("", selector.VariantSegment);
+        Assert.Equal("bg", selector.PrefixSegment);
+        Assert.Equal("", selector.CoreSegment);
+        Assert.Equal("", selector.ModifierSegment);
+
+        Assert.Equal("#aabbcc", selector.ArbitraryValue);
+        Assert.Equal("color", selector.ArbitraryValueType);
+        Assert.Equal("", selector.ModifierValue);
+        Assert.Equal("", selector.ModifierValueType);
+    }
+    
+    [Fact]
+    public async Task BaseUtilityWithArbitrarySlashValue()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "bg-rose-100/[50]");
+
+        await selector.ProcessSelector();
+
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("background-color: rgba(255,228,230,0.50);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -609,95 +534,17 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         
-        Assert.Equal("text-base/[3rem]", selector.Selector);
-        Assert.Equal("text-base\\/\\[3rem\\]", selector.EscapedSelector);
-        Assert.Equal("text-base/[3rem]", selector.FixedSelector);
+        Assert.Equal("bg-rose-100/[50]", selector.Selector);
+        Assert.Equal("bg-rose-100\\/\\[50\\]", selector.EscapedSelector);
+        Assert.Equal("bg-rose-100/[50]", selector.FixedSelector);
 
         Assert.Equal("", selector.VariantSegment);
-        Assert.Equal("text", selector.PrefixSegment);
-        Assert.Equal("base", selector.CoreSegment);
+        Assert.Equal("bg", selector.PrefixSegment);
+        Assert.Equal("rose-100/", selector.CoreSegment);
         Assert.Equal("/", selector.ModifierSegment);
 
-        Assert.Equal("3rem", selector.ArbitraryValue);
-        Assert.Equal("length", selector.ArbitraryValueType);
-        Assert.Equal("", selector.ModifierValue);
-        Assert.Equal("", selector.ModifierValueType);
-    }
-    
-    [Fact]
-    public async Task BaseUtilityWithArbitraryValue()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "text-[3rem]");
-
-        await selector.ProcessSelector();
-
-        Assert.NotNull(selector.ScssUtilityClass);
-        Assert.Equal("font-size: 3rem;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
-        
-        Assert.False(selector.IsInvalid);
-        Assert.False(selector.IsArbitraryCss);
-        Assert.False(selector.IsImportant);
-        Assert.False(selector.UsesModifier);
-        Assert.False(selector.HasModifierValue);
-        Assert.True(selector.HasArbitraryValue);
-
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        
-        Assert.Equal("text-[3rem]", selector.Selector);
-        Assert.Equal("text-\\[3rem\\]", selector.EscapedSelector);
-        Assert.Equal("text-[3rem]", selector.FixedSelector);
-
-        Assert.Equal("", selector.VariantSegment);
-        Assert.Equal("text", selector.PrefixSegment);
-        Assert.Equal("", selector.CoreSegment);
-        Assert.Equal("", selector.ModifierSegment);
-
-        Assert.Equal("3rem", selector.ArbitraryValue);
-        Assert.Equal("length", selector.ArbitraryValueType);
-        Assert.Equal("", selector.ModifierValue);
-        Assert.Equal("", selector.ModifierValueType);
-    }
-    
-    [Fact]
-    public async Task BaseUtilityWithArbitraryValue2()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "text-[#abcdef]");
-
-        await selector.ProcessSelector();
-
-        Assert.NotNull(selector.ScssUtilityClass);
-        Assert.Equal("color: #abcdef;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
-        
-        Assert.False(selector.IsInvalid);
-        Assert.False(selector.IsArbitraryCss);
-        Assert.False(selector.IsImportant);
-        Assert.False(selector.UsesModifier);
-        Assert.False(selector.HasModifierValue);
-        Assert.True(selector.HasArbitraryValue);
-
-        Assert.Empty(selector.MediaQueryVariants);
-        Assert.Empty(selector.PseudoClassVariants);
-        
-        Assert.Equal("text-[#abcdef]", selector.Selector);
-        Assert.Equal("text-\\[\\#abcdef\\]", selector.EscapedSelector);
-        Assert.Equal("text-[#abcdef]", selector.FixedSelector);
-
-        Assert.Equal("", selector.VariantSegment);
-        Assert.Equal("text", selector.PrefixSegment);
-        Assert.Equal("", selector.CoreSegment);
-        Assert.Equal("", selector.ModifierSegment);
-
-        Assert.Equal("#abcdef", selector.ArbitraryValue);
-        Assert.Equal("color", selector.ArbitraryValueType);
+        Assert.Equal("50", selector.ArbitraryValue);
+        Assert.Equal("integer", selector.ArbitraryValueType);
         Assert.Equal("", selector.ModifierValue);
         Assert.Equal("", selector.ModifierValueType);
     }
@@ -709,12 +556,12 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "text-[color:#abcdef]");
+        var selector = new CssSelector(appState, "bg-[color:#abcdef]");
 
         await selector.ProcessSelector();
 
-        Assert.NotNull(selector.ScssUtilityClass);
-        Assert.Equal("color: #abcdef;".CompactCss(), selector.ScssUtilityClass.ScssMarkup.CompactCss());
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("background-color: #abcdef;".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -726,12 +573,12 @@ public class CssSelectorTests
         Assert.Empty(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         
-        Assert.Equal("text-[color:#abcdef]", selector.Selector);
-        Assert.Equal("text-\\[color\\:\\#abcdef\\]", selector.EscapedSelector);
-        Assert.Equal("text-[color:#abcdef]", selector.FixedSelector);
+        Assert.Equal("bg-[color:#abcdef]", selector.Selector);
+        Assert.Equal("bg-\\[color\\:\\#abcdef\\]", selector.EscapedSelector);
+        Assert.Equal("bg-[color:#abcdef]", selector.FixedSelector);
 
         Assert.Equal("", selector.VariantSegment);
-        Assert.Equal("text", selector.PrefixSegment);
+        Assert.Equal("bg", selector.PrefixSegment);
         Assert.Equal("", selector.CoreSegment);
         Assert.Equal("", selector.ModifierSegment);
 

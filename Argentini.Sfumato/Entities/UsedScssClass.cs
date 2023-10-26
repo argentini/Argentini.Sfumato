@@ -1,5 +1,3 @@
-using Argentini.Sfumato.ScssUtilityCollections.Entities;
-
 namespace Argentini.Sfumato.Entities;
 
 public class UsedScssClass
@@ -17,7 +15,6 @@ public class UsedScssClass
         }
     }
     public int PrefixSortOrder { get; set; }
-    public int SortOrder { get; set; }
     
     #endregion
     
@@ -37,7 +34,7 @@ public class UsedScssClass
         if (CssSelector is null)
             return;
         
-        foreach (var breakpoint in SfumatoScss.MediaQueryPrefixes)
+        foreach (var breakpoint in CssSelector.AppState?.MediaQueryPrefixes ?? Array.Empty<CssMediaQuery>())
             if (CssSelector.MediaQueryVariants.Contains(breakpoint.Prefix))
                 PrefixSortOrder += breakpoint.Priority;    
     }

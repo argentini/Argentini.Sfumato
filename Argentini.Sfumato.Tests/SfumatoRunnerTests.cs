@@ -47,19 +47,23 @@ public class SfumatoRunnerTests
     [Fact]
     public void IsMediaQueryPrefix()
     {
-        Assert.True(SfumatoRunner.IsMediaQueryPrefix("tabp"));
-        Assert.True(SfumatoRunner.IsMediaQueryPrefix("dark"));
-        Assert.False(SfumatoRunner.IsMediaQueryPrefix("hover"));
-        Assert.False(SfumatoRunner.IsMediaQueryPrefix("focus"));
+        var appState = new SfumatoAppState();
+
+        Assert.True(SfumatoRunner.IsMediaQueryPrefix("tabp", appState));
+        Assert.True(SfumatoRunner.IsMediaQueryPrefix("dark", appState));
+        Assert.False(SfumatoRunner.IsMediaQueryPrefix("hover", appState));
+        Assert.False(SfumatoRunner.IsMediaQueryPrefix("focus", appState));
     }
     
     [Fact]
     public void IsPseudoclassPrefix()
     {
-        Assert.False(SfumatoRunner.IsPseudoclassPrefix("tabp"));
-        Assert.False(SfumatoRunner.IsPseudoclassPrefix("dark"));
-        Assert.True(SfumatoRunner.IsPseudoclassPrefix("hover"));
-        Assert.True(SfumatoRunner.IsPseudoclassPrefix("focus"));
+        var appState = new SfumatoAppState();
+        
+        Assert.False(SfumatoRunner.IsPseudoclassPrefix("tabp", appState));
+        Assert.False(SfumatoRunner.IsPseudoclassPrefix("dark", appState));
+        Assert.True(SfumatoRunner.IsPseudoclassPrefix("hover", appState));
+        Assert.True(SfumatoRunner.IsPseudoclassPrefix("focus", appState));
     }
 
     [Fact]
