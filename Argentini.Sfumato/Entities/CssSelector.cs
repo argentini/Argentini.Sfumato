@@ -139,6 +139,7 @@ public sealed class CssSelector
 	    
 	    IsImportant = false;
 	    IsInvalid = false;
+	    UsesModifier = false;
 
 	    if (string.IsNullOrEmpty(Selector))
 	    {
@@ -203,9 +204,8 @@ public sealed class CssSelector
 		    if (indexOfLastSlash > 0)
 		    {
 			    UsesModifier = true;
-
 			    ModifierSegment = rootSegment[indexOfLastSlash..];
-				    
+
 			    if (ArbitraryValue == string.Empty)
 				    ModifierValue = rootSegment[(indexOfLastSlash + 1)..];
 
