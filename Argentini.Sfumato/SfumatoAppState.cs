@@ -1353,20 +1353,31 @@ public sealed class SfumatoAppState
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
 
         #region Load Utility Classes
-        
-        foreach (var scssUtilityClassGroup in typeof(ScssUtilityClassGroupBase).GetInheritedTypes().OrderBy(o => o.Name))
-        {
-	        if (Activator.CreateInstance(scssUtilityClassGroup) is not ScssUtilityClassGroupBase utilityClassGroup) 
-		        throw new Exception($"Could not instantiate ScssUtilityClassGroupBase object for {scssUtilityClassGroup.Name}");
 
-	        if (UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup) == false)
-		        throw new Exception($"Could not add utility class group {utilityClassGroup.SelectorPrefix}");
-        }
+		var tasks = new List<Task>();
+		
+		foreach (var scssUtilityClassGroup in typeof(ScssUtilityClassGroupBase).GetInheritedTypes().OrderBy(o => o.Name).ToList())
+		{
+		    tasks.Add(AddUtilityClassToCollection(scssUtilityClassGroup));
+		}
+		
+		await Task.WhenAll(tasks);
         
         #endregion
         
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1", $"Loaded {UtilityClassCollection.Count} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
+    }
+
+    private async Task AddUtilityClassToCollection(Type scssUtilityClassGroup)
+    {
+	    if (Activator.CreateInstance(scssUtilityClassGroup) is not ScssUtilityClassGroupBase utilityClassGroup) 
+		    throw new Exception($"Could not instantiate ScssUtilityClassGroupBase object for {scssUtilityClassGroup.Name}");
+
+	    if (UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup) == false)
+		    throw new Exception($"Could not add utility class group {utilityClassGroup.SelectorPrefix}");
+
+	    await Task.CompletedTask;
     }
     
     #endregion
