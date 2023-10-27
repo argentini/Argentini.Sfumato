@@ -3,6 +3,7 @@ using Argentini.Sfumato.ScssUtilityCollections.Accessibility;
 using Argentini.Sfumato.ScssUtilityCollections.Backgrounds;
 using Argentini.Sfumato.ScssUtilityCollections.Borders;
 using Argentini.Sfumato.ScssUtilityCollections.Effects;
+using Argentini.Sfumato.ScssUtilityCollections.Filters;
 
 namespace Argentini.Sfumato;
 
@@ -493,6 +494,18 @@ public sealed class SfumatoAppState
 	    ["plus-lighter"] = "plus-lighter"
     };
 
+    public Dictionary<string, string> FilterSizeOptions { get; } = new()
+    {
+	    [""] = 8.PxToRem(),
+	    ["none"] = "0",
+	    ["sm"] = 4.PxToRem(),
+	    ["md"] = 12.PxToRem(),
+	    ["lg"] = 16.PxToRem(),
+	    ["xl"] = 24.PxToRem(),
+	    ["2xl"] = 40.PxToRem(),
+	    ["3xl"] = 64.PxToRem(),
+    };
+    
     public Dictionary<string, string> LayoutRemUnitOptions { get; set; } = new();
     public Dictionary<string, string> LayoutWholeNumberOptions { get; set; } = new();
     public Dictionary<string, string> TypographyRemUnitOptions { get; set; } = new();
@@ -1483,6 +1496,64 @@ public sealed class SfumatoAppState
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
 
         utilityClassGroup = new BgBlend();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        #endregion
+        
+        #region Load Filter Classes
+        
+        utilityClassGroup = new Blur();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new Brightness();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Contrast();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new DropShadow();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Grayscale();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new HueRotate();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Invert();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Saturate();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Sepia();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new BackdropBlur();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new BackdropBrightness();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BackdropContrast();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new BackdropGrayscale();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BackdropHueRotate();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BackdropInvert();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BackdropSaturate();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BackdropSepia();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new BackdropOpacity();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
         #endregion
