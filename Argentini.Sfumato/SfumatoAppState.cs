@@ -507,7 +507,7 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> EffectsFiltersOneBasedPercentageOptions { get; set; } = new();
     public Dictionary<string, string> FlexboxAndGridWholeNumberOptions { get; set; } = new();
     public Dictionary<string, string> FlexboxAndGridNegativeWholeNumberOptions { get; set; } = new();
-    public Dictionary<string, string> VerbatrimFractionOptions { get; set; } = new();
+    public Dictionary<string, string> VerbatimFractionOptions { get; set; } = new();
     public Dictionary<string, string> PercentageOptions { get; set; } = new();
     
     #endregion
@@ -1174,7 +1174,7 @@ public sealed class SfumatoAppState
 	    EffectsFiltersOneBasedPercentageOptions.AddOneBasedPercentageOptions(0m, 200m);
 	    FlexboxAndGridWholeNumberOptions.AddWholeNumberOptions(1, 25);
 	    FlexboxAndGridNegativeWholeNumberOptions.AddWholeNumberOptions(1, 25, true);
-	    VerbatrimFractionOptions.AddVerbatimFractionOptions(FractionOptions);
+	    VerbatimFractionOptions.AddVerbatimFractionOptions(FractionOptions);
 	    PercentageOptions.AddPercentageOptions(0, 100);
 	    
 	    #endregion
@@ -1342,7 +1342,8 @@ public sealed class SfumatoAppState
 	        if (Activator.CreateInstance(scssUtilityClassGroup) is not ScssUtilityClassGroupBase utilityClassGroup) 
 		        throw new Exception($"Could not instantiate ScssUtilityClassGroupBase object for {scssUtilityClassGroup.Name}");
 
-	        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+	        if (UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup) == false)
+		        throw new Exception($"Could not add utility class group {utilityClassGroup.SelectorPrefix}");
         }
         
         #endregion
