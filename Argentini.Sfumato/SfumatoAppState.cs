@@ -1707,6 +1707,32 @@ public sealed class SfumatoAppState
         utilityClassGroup = new ScrollMy();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
 
+        utilityClassGroup = new ScrollP();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPb();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPe();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPl();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPr();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPs();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPt();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPx();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollPy();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
         
 
