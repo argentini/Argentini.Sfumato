@@ -446,7 +446,7 @@ public static class Strings
 	/// <returns></returns>
 	public static string PxToRem(this decimal pixels)
 	{
-		return $"{(pixels / 16m):#.######}rem";
+		return $"{(pixels / 16m):#0.######}rem";
 	}
 
 	/// <summary>
@@ -456,7 +456,7 @@ public static class Strings
 	/// <returns></returns>
 	public static string PxToRem(this int pixels)
 	{
-		return $"{(pixels / 16m):#.######}rem";
+		return $"{(pixels / 16m):#0.######}rem";
 	}
 	
 	/// <summary>
@@ -469,7 +469,7 @@ public static class Strings
 		if (decimal.TryParse(pixelVal.Trim().TrimEnd("px")?.Trim(), out var pixels) == false)
 			return "0rem";
 		
-		return $"{(pixels / 16):#.######}rem";
+		return $"{(pixels / 16):#0.######}rem";
 	}
 
 	#endregion

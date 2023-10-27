@@ -2,8 +2,8 @@ namespace Argentini.Sfumato.ScssUtilityCollections;
 
 public abstract class ScssUtilityClassGroupBase
 {
-    public virtual string SelectorPrefix => string.Empty;
-    public virtual string Category => string.Empty;
+    public virtual string SelectorPrefix { get; set; } = string.Empty;
+    public virtual string Category { get; set; } = string.Empty;
 
     public virtual string GetStyles(CssSelector cssSelector)
     {

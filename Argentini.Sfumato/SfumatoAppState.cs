@@ -1,6 +1,7 @@
 using Argentini.Sfumato.ScssUtilityCollections;
 using Argentini.Sfumato.ScssUtilityCollections.Accessibility;
 using Argentini.Sfumato.ScssUtilityCollections.Backgrounds;
+using Argentini.Sfumato.ScssUtilityCollections.Borders;
 
 namespace Argentini.Sfumato;
 
@@ -1349,6 +1350,109 @@ public sealed class SfumatoAppState
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
 
         utilityClassGroup = new To();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        #endregion
+        
+        #region Load Rounded Classes
+
+        utilityClassGroup = new Rounded();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new RoundedB();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedBl();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new RoundedBr();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedE();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedEe();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedEs();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedL();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedR();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedS();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedSe();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedSs();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedT();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedTl();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RoundedTr();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        #endregion
+        
+        #region Load Border Classes
+
+        utilityClassGroup = new Border();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new BorderB();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BorderE();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BorderL();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BorderR();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BorderS();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BorderT();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BorderX();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BorderY();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        #endregion
+        
+        #region Load Divide Classes
+
+        utilityClassGroup = new Divide();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new DivideX();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new DivideY();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        #endregion
+        
+        #region Load Outline Classes
+        
+        utilityClassGroup = new Outline();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new OutlineOffset();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
         #endregion
