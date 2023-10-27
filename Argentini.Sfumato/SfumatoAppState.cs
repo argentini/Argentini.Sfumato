@@ -1734,13 +1734,17 @@ public sealed class SfumatoAppState
         utilityClassGroup = new ScrollPy();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
+        utilityClassGroup = new Snap();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
+        utilityClassGroup = new Touch();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
 
+        utilityClassGroup = new Select();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
-        
-        
-        
-        
+        utilityClassGroup = new WillChange();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
         #endregion
         
