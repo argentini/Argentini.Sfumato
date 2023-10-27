@@ -1627,8 +1627,15 @@ public sealed class SfumatoAppState
         utilityClassGroup = new GapY();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
 
+        utilityClassGroup = new Justify();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
-        
+        utilityClassGroup = new JustifyItems();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new JustifySelf();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
 
         
         
