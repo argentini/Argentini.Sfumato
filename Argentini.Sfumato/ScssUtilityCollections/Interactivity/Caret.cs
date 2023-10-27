@@ -19,18 +19,17 @@ public class Caret : ScssUtilityClassGroupBase
         
         #region Modifier Utilities
         
-        // Color with opacity modifier (e.g. bg-rose-100/25, bg-rose-100/[25])
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out var colorWithOpacity))
+        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
         {
             var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            var value = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
             
-            if (valueType != "integer")
-                return string.Empty;
-
-            var opacity = int.Parse(value) / 100m;
-            
-            return $"caret-color: {colorWithOpacity.Replace(",1.0)", $",{opacity:F2})")};";
+            if (valueType == "integer")
+            {
+                var value = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+                var opacity = int.Parse(value) / 100m;
+                
+                return $"caret-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
+            }
         }
 
         #endregion

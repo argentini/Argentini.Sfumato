@@ -419,6 +419,23 @@ public sealed class SfumatoAppState
 	    ["9xl"] = "8rem"
     };
 
+    public Dictionary<string,string> TextSizeLeadingOptions { get; } = new()
+    {
+	    ["xs"] = "1rem",
+	    ["sm"] = "1.25rem",
+	    ["base"] = "1.5rem",
+	    ["lg"] = "1.75rem",
+	    ["xl"] = "1.75rem",
+	    ["2xl"] = "2rem",
+	    ["3xl"] = "2.25rem",
+	    ["4xl"] = "2.5rem",
+	    ["5xl"] = "1",
+	    ["6xl"] = "1",
+	    ["7xl"] = "1",
+	    ["8xl"] = "1",
+	    ["9xl"] = "1"
+    };
+    
     public Dictionary<string,string> LeadingOptions { get; } = new()
     {
 	    ["3"] = "0.75rem",

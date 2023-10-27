@@ -21,7 +21,6 @@ public class From : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        // Static utilities (e.g. bg-no-repeat)
         if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
             return styles;
         
@@ -29,7 +28,6 @@ public class From : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. bg-rose-100)
         if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
             return $"""
                    --sf-gradient-from: {color} var(--sf-gradient-from-position);

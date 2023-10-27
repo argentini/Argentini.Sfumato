@@ -52,7 +52,6 @@ public class Bg : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        // Static utilities (e.g. bg-no-repeat)
         if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
             return styles;
         
@@ -60,7 +59,6 @@ public class Bg : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. bg-rose-100)
         if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
             return $"background-color: {color};";
         
@@ -68,18 +66,17 @@ public class Bg : ScssUtilityClassGroupBase
         
         #region Modifier Utilities
         
-        // Color with opacity modifier (e.g. bg-rose-100/25, bg-rose-100/[25])
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out var colorWithOpacity))
+        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
         {
             var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            var value = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
             
-            if (valueType != "integer")
-                return string.Empty;
+            if (valueType == "integer")
+            {
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+                var opacity = int.Parse(modifierValue) / 100m;
 
-            var opacity = int.Parse(value) / 100m;
-            
-            return $"background-color: {colorWithOpacity.Replace(",1.0)", $",{opacity:F2})")};";
+                return $"background-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
+            }
         }
 
         #endregion

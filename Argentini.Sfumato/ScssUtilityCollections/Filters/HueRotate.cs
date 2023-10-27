@@ -21,7 +21,6 @@ public class HueRotate : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        // Static utilities (e.g. bg-no-repeat)
         if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
             return styles;
         
