@@ -24,7 +24,7 @@
     >
       <!-- Desktop sidebar -->
       <aside
-        class="z-20 flex-shrink-0 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 tabp:block"
+        class="z-20 flex-shrink-0 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 tabl:block"
       >
         <div class="py-4 text-gray-500 dark:text-gray-400">
           <a
@@ -293,10 +293,10 @@
         x-transition:leave="transition ease-in-out duration-150"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-10 flex items-end bg-black/50 phab:items-center phab:justify-center"
+        class="fixed inset-0 z-10 flex items-end bg-black/50 tabp:items-center tabp:justify-center"
       ></div>
       <aside
-        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 tabp:hidden"
+        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 tabl:hidden"
         x-show="isSideMenuOpen"
         x-transition:enter="transition ease-in-out duration-150"
         x-transition:enter-start="opacity-0 transform -translate-x-20"
@@ -571,7 +571,7 @@
           >
             <!-- Mobile hamburger -->
             <button
-              class="p-1 mr-5 -ml-1 rounded-md tabp:hidden focus:outline-none focus:shadow-outline-purple"
+              class="p-1 mr-5 -ml-1 rounded-md tabl:hidden focus:outline-none focus:shadow-outline-purple"
               @click="toggleSideMenu"
               aria-label="Menu"
             >
@@ -589,7 +589,7 @@
               </svg>
             </button>
             <!-- Search input -->
-            <div class="flex justify-center flex-1 tabl:mr-32">
+            <div class="flex justify-center flex-1 note:mr-32">
               <div
                 class="relative w-full max-w-xl mr-6 focus-within:text-purple-500"
               >
@@ -892,7 +892,7 @@
       x-transition:leave="transition ease-in duration-150"
       x-transition:leave-start="opacity-100"
       x-transition:leave-end="opacity-0"
-      class="fixed inset-0 z-30 flex items-end bg-black/50 phab:items-center phab:justify-center"
+      class="fixed inset-0 z-30 flex items-end bg-black/50 tabp:items-center tabp:justify-center"
     >
       <!-- Modal -->
       <div
@@ -905,7 +905,7 @@
         x-transition:leave-end="opacity-0  transform translate-y-1/2"
         @click.away="closeModal"
         @keydown.escape="closeModal"
-        class="w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 phab:rounded-lg phab:m-4 phab:max-w-xl"
+        class="w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 tabp:rounded-lg tabp:m-4 tabp:max-w-xl"
         role="dialog"
         id="modal"
       >
@@ -946,16 +946,16 @@
           </p>
         </div>
         <footer
-          class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 phab:space-y-0 phab:space-x-6 phab:flex-row bg-gray-50 dark:bg-gray-800"
+          class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 tabp:space-y-0 tabp:space-x-6 tabp:flex-row bg-gray-50 dark:bg-gray-800"
         >
           <button
             @click="closeModal"
-            class="w-full px-5 py-3 text-sm font-medium leading-5 text-white text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 phab:px-4 phab:py-2 phab:w-auto active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:outline-none focus:shadow-outline-gray"
+            class="w-full px-5 py-3 text-sm font-medium leading-5 text-white text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 tabp:px-4 tabp:py-2 tabp:w-auto active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:outline-none focus:shadow-outline-gray"
           >
             Cancel
           </button>
           <button
-            class="w-full px-5 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg phab:w-auto phab:px-4 phab:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+            class="w-full px-5 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg tabp:w-auto tabp:px-4 tabp:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
           >
             Accept
           </button>
