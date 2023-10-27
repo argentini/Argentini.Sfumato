@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Interactivity;
 
 public class Accent : ScssUtilityClassGroupBase 
 {
-    public override string SelectorPrefix => "bg";
+    public override string SelectorPrefix => "accent";
 
     public override string GetStyles(CssSelector cssSelector)
     {

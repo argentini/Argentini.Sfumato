@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Accessibility;
 
 public class NotSrOnly : ScssUtilityClassGroupBase 
 {
-    public override string SelectorPrefix => "sr-only";
+    public override string SelectorPrefix => "not-sr-only";
 
     public override string GetStyles(CssSelector cssSelector)
     {
