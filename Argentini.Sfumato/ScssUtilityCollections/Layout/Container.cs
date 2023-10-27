@@ -8,7 +8,9 @@ public class Container : ScssUtilityClassGroupBase
     {
         [""] = """
                width: 100%;
-
+               margin-left: auto;
+               margin-right: auto;
+               
                @include sf-media($from: phab) {
                   max-width: $phab-breakpoint;
                }
