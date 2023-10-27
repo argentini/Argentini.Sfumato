@@ -1,4 +1,5 @@
 using Argentini.Sfumato.ScssUtilityCollections;
+using Argentini.Sfumato.ScssUtilityCollections.Accessibility;
 using Argentini.Sfumato.ScssUtilityCollections.Backgrounds;
 
 namespace Argentini.Sfumato;
@@ -1325,7 +1326,17 @@ public sealed class SfumatoAppState
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
         
         ScssUtilityClassGroupBase utilityClassGroup;
+
+        #region Load Accessibility Classes
         
+        utilityClassGroup = new SrOnly();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new NotSrOnly();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+		#endregion
+		
         #region Load Background Classes
         
         utilityClassGroup = new Bg();
