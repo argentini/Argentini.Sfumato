@@ -2,6 +2,7 @@ using Argentini.Sfumato.ScssUtilityCollections;
 using Argentini.Sfumato.ScssUtilityCollections.Accessibility;
 using Argentini.Sfumato.ScssUtilityCollections.Backgrounds;
 using Argentini.Sfumato.ScssUtilityCollections.Borders;
+using Argentini.Sfumato.ScssUtilityCollections.Effects;
 
 namespace Argentini.Sfumato;
 
@@ -1466,6 +1467,22 @@ public sealed class SfumatoAppState
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
 
         utilityClassGroup = new RingOffset();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        #endregion
+
+        #region Load Effects Classes
+        
+        utilityClassGroup = new Shadow();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new Opacity();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new MixBlend();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new BgBlend();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
         #endregion
