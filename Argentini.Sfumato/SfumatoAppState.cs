@@ -1456,6 +1456,19 @@ public sealed class SfumatoAppState
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
         #endregion
+
+        #region Load Ring Classes
+        
+        utilityClassGroup = new Ring();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new RingInset();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new RingOffset();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        #endregion
         
         if (DiagnosticMode)
 	        DiagnosticOutput.TryAdd("init1", $"Loaded utility classes in {timer.FormatTimer()}{Environment.NewLine}");
