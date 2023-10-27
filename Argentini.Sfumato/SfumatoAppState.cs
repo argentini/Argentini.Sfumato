@@ -1645,9 +1645,14 @@ public sealed class SfumatoAppState
         utilityClassGroup = new Self();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
+        utilityClassGroup = new PlaceContent();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new PlaceItems();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
-        
-        
+        utilityClassGroup = new PlaceSelf();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
         
         #endregion
         
