@@ -11,7 +11,6 @@ public class RoundedBr : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Value preset (e.g. rounded-lg)
         if (cssSelector.AppState.RoundedOptions.TryGetValue(cssSelector.CoreSegment, out var size))
             return $"border-bottom-right-radius: {size};";
         

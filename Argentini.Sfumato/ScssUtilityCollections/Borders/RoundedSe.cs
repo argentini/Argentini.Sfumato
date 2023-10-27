@@ -11,7 +11,6 @@ public class RoundedSe : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Value preset (e.g. rounded-lg)
         if (cssSelector.AppState.RoundedOptions.TryGetValue(cssSelector.CoreSegment, out var size))
             return $"border-start-end-radius: {size};";
         
