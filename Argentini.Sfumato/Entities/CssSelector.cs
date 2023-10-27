@@ -286,6 +286,16 @@ public sealed class CssSelector
 
 	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroupBase>>()).OrderByDescending(c => c.Key).ToList();
 
+		if (matches.Count > 1)
+		{
+			// Address issues with conflicts like "rounded-lg" matching "rounded-l" and "rounded" (should choose "rounded")
+			foreach (var match in matches.ToList())
+		    {
+			    if (selectorNoVariantsNoBrackets.Length > match.Key.Length && selectorNoVariantsNoBrackets[match.Key.Length] != '-')
+				    matches.Remove(match);
+		    }
+		}
+	    
 	    if (matches.Count == 0)
 	    {
 		    IsInvalid = true;
