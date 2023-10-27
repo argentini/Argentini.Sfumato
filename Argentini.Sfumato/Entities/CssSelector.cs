@@ -44,6 +44,8 @@ public sealed class CssSelector
 
     public SfumatoAppState? AppState { get; set; }
     public ScssUtilityClassGroupBase? ScssUtilityClassGroup { get; set; }
+    public string ScssMarkup { get; set; } = string.Empty;
+    public int VariantSortOrder { get; set; }
 
     #region Selector
     
@@ -93,10 +95,10 @@ public sealed class CssSelector
     public int Depth => AllVariants.Count;
     public bool HasModifierValue => ModifierValue.Length > 0;
     public bool HasArbitraryValue  => ArbitraryValue.Length > 0;
-    public bool UsesModifier { get; private set; }
-    public bool IsImportant { get; private set; }
+    public bool UsesModifier { get; set; }
+    public bool IsImportant { get; set; }
     public bool IsArbitraryCss { get; set; }
-    public bool IsInvalid { get; private set; }
+    public bool IsInvalid { get; set; }
 
     #endregion
 
@@ -136,6 +138,8 @@ public sealed class CssSelector
 	    ArbitraryValueType = string.Empty;
 	    ModifierValue = string.Empty;
 	    ModifierValueType = string.Empty;
+
+	    VariantSortOrder = 0;
 	    
 	    IsImportant = false;
 	    IsInvalid = false;
@@ -252,6 +256,8 @@ public sealed class CssSelector
                 
 		    AllVariants.AddRange(MediaQueryVariants);
 		    AllVariants.AddRange(PseudoClassVariants);
+
+		    BuildVariantSortOrder();
 	    }
 
 	    if (IsArbitraryCss)
@@ -464,11 +470,28 @@ public sealed class CssSelector
     }
 
     /// <summary>
+    /// Create a sorting number from variants.
+    /// </summary>
+    public void BuildVariantSortOrder()
+    {
+	    VariantSortOrder = 0;
+
+	    foreach (var breakpoint in AppState?.MediaQueryPrefixes ?? Array.Empty<CssMediaQuery>())
+		    if (MediaQueryVariants.Contains(breakpoint.Prefix))
+			    VariantSortOrder += breakpoint.Priority;    
+    }
+    
+    /// <summary>
     /// Convenience method for getting styles from the utility class group.
     /// </summary>
     /// <returns></returns>
     public string GetStyles()
     {
-	    return ScssUtilityClassGroup?.GetStyles(this) ?? string.Empty;
+	    ScssMarkup = ScssUtilityClassGroup?.GetStyles(this) ?? string.Empty;
+	    
+	    if (IsArbitraryCss == false && ScssMarkup.Length == 0)
+		    IsInvalid = true;
+
+	    return ScssMarkup;
     }
 }

@@ -1127,7 +1127,7 @@ public sealed class SfumatoAppState
     public List<string> CliArguments { get; } = new();
     public ConcurrentDictionary<string,WatchedFile> WatchedFiles { get; } = new();
     public ConcurrentDictionary<string,WatchedScssFile> WatchedScssFiles { get; } = new();
-    public ConcurrentDictionary<string,UsedScssClass> UsedClasses { get; } = new();
+    public ConcurrentDictionary<string,CssSelector> UsedClasses { get; } = new();
     public ConcurrentDictionary<string,ScssUtilityClassGroupBase> UtilityClassCollection { get; } = new();
     
     #endregion
@@ -1643,9 +1643,9 @@ public sealed class SfumatoAppState
 			DiagnosticOutput.TryAdd("init0c", $"{Strings.TriangleRight} ExamineWatchedFilesForUsedClassesAsync => {timer.FormatTimer()}{Environment.NewLine}");
 		
 		if (WatchedFiles.IsEmpty)
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified no used classes");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified no watched files");
 		else
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified {WatchedFiles.Count:N0} file{(WatchedFiles.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count:N0} classes in {totalTimer.FormatTimer()}");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified {WatchedFiles.Count:N0} watched file{(WatchedFiles.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count(u => u.Value.IsInvalid == false):N0} classes in {totalTimer.FormatTimer()}");
 	}
 	
 	/// <summary>
@@ -1764,9 +1764,11 @@ public sealed class SfumatoAppState
 	{
 		var cssSelector = new CssSelector(appState, value, isArbitraryCss);
 
+		_ = cssSelector.ProcessSelector();
+		_ = cssSelector.GetStyles();
+
 		if (cssSelector.IsInvalid == false)
-			if (collection.TryAdd(value, cssSelector))
-				await cssSelector.ProcessSelector();
+			collection.TryAdd(value, cssSelector);
 
 		await Task.CompletedTask;
 	}
@@ -1801,12 +1803,7 @@ public sealed class SfumatoAppState
 			if (cssSelector.ScssUtilityClassGroup is null)
 				continue;
 
-			var usedScssClass = new UsedScssClass
-			{
-				CssSelector = cssSelector
-			};
-
-			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedSelector, usedScssClass);
+			UsedClasses.TryAdd(cssSelector.FixedSelector, cssSelector);
 		}
 
 		foreach (var cssSelector in watchedFile.ArbitraryCssMatches.Values)
@@ -1814,12 +1811,7 @@ public sealed class SfumatoAppState
 			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))
 				continue;
 
-			var usedScssClass = new UsedScssClass
-			{
-				CssSelector = cssSelector
-			};
-
-			UsedClasses.TryAdd(usedScssClass.CssSelector.FixedSelector, usedScssClass);
+			UsedClasses.TryAdd(cssSelector.FixedSelector, cssSelector);
 		}
 
 		await Task.CompletedTask;

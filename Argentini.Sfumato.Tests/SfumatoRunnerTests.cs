@@ -74,7 +74,7 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new UsedScssClass(appState, "text-base"), pool, string.Empty);
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new CssSelector(appState, "text-base"), pool, string.Empty);
 
         Assert.Equal(".text-base { font-size: 1rem; }", result.CompactCss());
     }
@@ -87,23 +87,18 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new UsedScssClass(appState, "text-base/5"), pool, string.Empty);
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new CssSelector(appState, "text-base/5"), pool, string.Empty);
         
         Assert.Equal(".text-base\\/5 { font-size: 1rem; line-height: 1.25rem; }".CompactCss(), result.CompactCss());
         
         var cssSelector = new CssSelector(appState, "text-base/[3rem]");
         await cssSelector.ProcessSelector();
 
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(
-            new UsedScssClass
-            {
-                CssSelector = cssSelector,
-                
-            }, pool, string.Empty);
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
 
         Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
 
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new UsedScssClass(appState, "tabp:text-base/[3rem]"), pool, "tabp:");
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new CssSelector(appState, "tabp:text-base/[3rem]"), pool, "tabp:");
         
         Assert.Equal(".tabp\\:text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
     }
@@ -116,19 +111,19 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
         
-        var scssClass = new UsedScssClass(appState, "[width:10rem]", true);
+        var scssClass = new CssSelector(appState, "[width:10rem]", true);
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
 
         Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new UsedScssClass(appState, "tabp:[width:10rem]", true);
+        scssClass = new CssSelector(appState, "tabp:[width:10rem]", true);
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
         Assert.Equal(".tabp\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new UsedScssClass(appState, "tabp:hover:[width:10rem]", true);
+        scssClass = new CssSelector(appState, "tabp:hover:[width:10rem]", true);
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
