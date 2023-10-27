@@ -5,6 +5,7 @@ using Argentini.Sfumato.ScssUtilityCollections.Borders;
 using Argentini.Sfumato.ScssUtilityCollections.Effects;
 using Argentini.Sfumato.ScssUtilityCollections.Filters;
 using Argentini.Sfumato.ScssUtilityCollections.FlexboxAndGrid;
+using Argentini.Sfumato.ScssUtilityCollections.Interactivity;
 
 namespace Argentini.Sfumato;
 
@@ -1653,6 +1654,67 @@ public sealed class SfumatoAppState
         
         utilityClassGroup = new PlaceSelf();
         UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        #endregion
+        
+        #region Load Interactivity Classes
+        
+        utilityClassGroup = new Accent();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+        
+        utilityClassGroup = new Appearance();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Caret();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Cursor();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new PointerEvents();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Resize();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new Scroll();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollM();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMb();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMe();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMl();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMr();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMs();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMt();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMx();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        utilityClassGroup = new ScrollMy();
+        UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup);
+
+        
+        
+
+        
+        
+        
+        
+        
         
         #endregion
         
