@@ -1,0 +1,711 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1" />
+    <!-- STYLING (COMPILED) -->
+    <link href="../styles/sfumato.css" rel="stylesheet" />
+<link href="../styles/input.css" rel="stylesheet" />
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Poppins:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body class="static font-serif">
+    <!-- FOR EXAMPLE ONLY -->
+
+    <header class="py-8 px-[6rem] absolute inset-x-0 top-0">
+      <div class="flex justify-between max-w-[1440px] mx-auto text-white">
+        <h1 id="finch-logo">
+          <a href="../home/index.html" class="block" style="height: 100%;">
+            <span>finch</span>
+          </a>
+        </h1>
+        <nav
+          role="navigation"
+          class="flex items-center font-display uppercase tracking-wider text-xs"
+        >
+          <button id="toggle" aria-expanded="false" class="hidden">Menu</button>
+          <ul
+            id="menu"
+            class="flex"
+            x-data="{links: [
+            {
+            href: '../how-we-rate/index.html',
+            title: 'How We Rate',
+            },
+            {
+            href: '../wise-guides/index.html',
+            title: 'Wise Guides',
+            },
+            {
+            href: '../about-us/index.html',
+            title: 'About Us',
+            },
+            {
+            href: '../blog/index.html',
+            title: 'Blog',
+            },
+            ]}"
+          >
+            <!-- TODO: Dropdown for Wise Guides -->
+            <!-- TODO: Mobile/Responsiveness -->
+            <template x-for="link in links">
+              <li class="px-3">
+                <a x-bind:href="link.href" x-text="link.title"></a>
+              </li>
+            </template>
+            <li class="px-3">
+              <a href="/search" aria-valuetext="Search">🔎</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Splash -->
+    <section class="bg-orange-400 pt-[7rem]">
+      <div class="max-w-[1440px] py-[6rem] px-[0.5rem] tabp:px-[6rem]">
+        <div class="grid tabp:grid-cols-12 gap-8">
+          <div class="col-span-7">
+            <!-- rotation-div-main -->
+            <div class="relative mx-auto min-h-[650] max-w-[80%]">
+              <!-- rotation-holder -->
+              <div class="absolute inline">
+                <span class="sr-only">Real science, real reviews</span>
+                <img
+                  src="../assets/hero-text.png"
+                  class="motion-safe:animate-[spin_18s_linear_infinite] absolute max-w-full z-10"
+                  alt=""
+                />
+                <img
+                  src="../assets/hero-image.png"
+                  class="max-h-[600] mt-12 text-center mx-auto text-finch-grey"
+                  alt="Illustration of two stylish humans with arms over each other, holding cleaning products"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-span-5 px-[1rem]">
+            <h2 class="text-blue-700 text-xl pb-5">
+              Product insights based on science
+            </h2>
+            <p class="text-white text-md pb-[1rem]">
+              Finch is a tool that educates people on the ins and outs of
+              sustainability by turning complex scientific facts into simple,
+              actionable insights.
+            </p>
+            <p class="text-white text-md pb-[1rem]">
+              Get the intel you need to make informed choices — straight to your
+              inbox.
+            </p>
+            <!-- TODO: Hook up form -->
+            <form>
+              <label for="email" class="block text-white font-sans mb-2">
+                Email *
+              </label>
+              <!-- TODO: focus/active border on input -->
+              <input type="email" id="email" class="block w-full p-2 mb-5" />
+              <input
+                type="submit"
+                value="Subscribe"
+                class="rounded-lg px-7 py-[1rem] bg-cyan-400 hover:opacity-75 text-white font-display uppercase tracking-wider"
+              />
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Read the latest -->
+    <section class="max-w-6xl mx-auto py-[3rem] px-[0.5rem] tabp:px-[6rem]">
+      <div class="text-center pb-[6rem]">
+        <h2 class="font-heading text-finch-forest pb-[3rem]">Read the latest</h2>
+        <p class="font-display uppercase tracking-wider pb-[3rem]">
+          The breakdown on what it all means & why it matters
+        </p>
+        <a
+          href="/blog/index.html"
+          class="rounded-lg px-7 py-[1rem] font-display uppercase tracking-wider bg-finch-green hover:opacity-75 text-white"
+        >
+          Visit the blog
+        </a>
+      </div>
+      <ul
+        class="flex flex-wrap my-14"
+        x-data="{blogs: [
+          {
+            slug: '../a-guide-to-more-sustainable-gifts-for-every-zodiac-sign',
+            title: 'A Guide to More Sustainable Gifts for Every Zodiac Sign',
+            imageUrl: 'https://images.squarespace-cdn.com/content/v1/5fceef94ad06677b0d28c5ce/1638572534885-DLY592V7TDPZ1RTFQGQ8/A+Guide+to+More+Sustainable+Gifts+for+Every+Zodiac+Sign.jpg',
+            category: 'Gift Guide'
+          },
+          {
+            slug: '../dinner-table-talks',
+            title: 'Dinner Table Talks — How to Talk About Climate Change with Different Personality Types',
+            imageUrl: 'https://images.squarespace-cdn.com/content/v1/5fceef94ad06677b0d28c5ce/1638326516645-LKECOJ8KVPJEJDWMMAR0/CLIMATE.jpg',
+            category: 'How-to'
+          },
+          {
+            slug: '../amazon-we-love-to-hate',
+            title: 'The Company We Love to Hate — Is it Possible to Shop on Amazon and Avoid Eco-Guilt?',
+            imageUrl: 'https://images.squarespace-cdn.com/content/v1/5fceef94ad06677b0d28c5ce/1637628547161-IQMPIJ3J1HRLIJ4BZ4KP/Untitled+design+%281%29.jpg',
+            category: 'Founder’s Eye View'
+          },
+          {
+            slug: '../how-to-clean-out-your-fridge',
+            title: 'How to Clean Out Your Fridge',
+            imageUrl: 'https://images.squarespace-cdn.com/content/v1/5fceef94ad06677b0d28c5ce/1637080669490-PAOWEHR6PGS65ZHULC2U/Untitled+design.jpg?format=750w',
+            category: 'How-to'
+          },
+        ]}"
+      >
+        <template x-for="blog in blogs">
+          <div class="basis-1/3 p-[1rem]">
+            <img x-bind:src="blog.imageUrl" aria-hidden="true" class="mb-2" />
+            <span
+              x-text="blog.category"
+              class="font-display text-finch-blue uppercase tracking-wider text-xs"
+            ></span>
+            <p x-text="blog.title" class="font-heading text-md"></p>
+          </div>
+        </template>
+      </ul>
+    </section>
+
+    <!-- Support logos -->
+    <section class="bg-orange-200 text-center py-[1rem]">
+      <p class="font-display tracking-wide text-sm uppercase">
+        With the support of
+      </p>
+      <ul class="flex flex-nowrap justify-center">
+        <li class="phab:basis-1/2 tabp:basis-1/4">
+          <img src="../assets/logos/techstars-logo.png" alt="Techstars" />
+        </li>
+        <li class="phab:basis-1/2 tabp:basis-1/4">
+          <img
+            src="../assets/logos/thenatureconservatory-logo.png"
+            alt="The Nature Conservancy"
+          />
+        </li>
+      </ul>
+    </section>
+
+    <!-- As seen in -->
+    <section class="bg-rose-400 text-center py-[3rem] text-white">
+      <p class="font-display tracking-wide text-sm uppercase pb-[1rem]">
+        As seen in
+      </p>
+      <ul
+        class="flex justify-center flex-row max-w-4xl mx-auto flex-wrap tabp:flex-nowrap"
+        x-data="{outlets: [
+        {
+          name: 'Treehugger',
+          article: 'https://www.treehugger.com/browser-extension-ranks-sustainability-household-products-5184553',
+          logo: 'treehugger-logo.png'
+        },
+        {
+          name: 'Fast Company',
+          article: 'https://www.fastcompany.com/90637596/this-browser-extension-helps-you-buy-more-sustainable-products-on-amazon',
+          logo: 'fastcompany-logo.png'
+        },
+        {
+          name: 'GreenBiz',
+          article: 'https://www.greenbiz.com/article/want-data-about-products-sustainability-theres-browser-extension',
+          logo: 'greenbiz-logo.png'
+        },
+        {
+          name: 'Apartment Therapy',
+          article: 'https://www.apartmenttherapy.com/eco-friendly-cleaning-companies-36949182',
+          logo: 'apartmenttherapy-logo.png'
+        },
+        {
+          name: 'Cheddar News',
+          article: 'https://cheddar.com/media/finch-is-using-science-to-help-customers-discover-sustainable-goods-online',
+          logo: 'cheddarnews-logo.png'
+        },
+        ]}"
+      >
+        <template x-for="outlet in outlets">
+          <li class="basis-1/3 tabp:basis-1/8 p-[1rem]">
+            <!-- TODO: fallback if no logo -->
+            <a x-bind:href="outlet.article">
+              <img
+                x-bind:src="'../assets/logos/' + outlet.logo"
+                x-bind:alt="outlet.name"
+              />
+            </a>
+          </li>
+        </template>
+      </ul>
+    </section>
+
+    <!-- Wise Guides -->
+    <section class="max-w-6xl mx-auto py-[3rem] px-[0.5rem] tabp:px-[6rem]">
+      <h2 class="text-blue-700 text-xxl pb-[3rem]">Wise Guides</h2>
+      <p class="font-display pb-[1rem] uppercase tracking-wider">
+        Find the best of the best
+      </p>
+      <p>
+        Check out our Wise Guides for the reliably simple and efficient intel
+        you need to make informed choices when shopping. We believe that
+        understanding the science of sustainability gives control back to you as
+        a citizen, not just as a consumer.
+      </p>
+      <div
+        class="flex justify-center flex-wrap"
+        x-data="{guides: [
+        {
+          name: 'Baby Wipes',
+          key: 'baby-wipes',
+        },
+        {
+          name: 'Diapers',
+          key: 'diapers',
+        },
+        {
+          name: 'Laundry Detergent',
+          key: 'laundry-detergent',
+        },
+        {
+          name: 'Mattresses',
+          key: 'mattresses',
+        },
+        {
+          name: 'Paper Towels',
+          key: 'paper-towels',
+        },
+        {
+          name: 'Shampoo & Conditioner',
+          key: 'shampoo-conditioner',
+        },
+        {
+          name: 'Sheets',
+          key: 'sheets',
+        },
+        {
+          name: 'Toilet Paper',
+          key: 'toilet-paper',
+        },
+      ]}"
+      >
+        <template x-for="guide in guides">
+          <figure class="basis-1/4 tabp:basis=1/4 px-[1rem] py-[3rem] text-center">
+            <a x-bind:href="'../wise-guides/' + guide.key">
+              <img
+                x-bind:src="'../assets/wise-guides/' + guide.key + '.png' "
+                x-bind:alt="guide.name"
+              />
+              <figcaption
+                x-text="guide.name"
+                class="font-display uppercase tracking-wider"
+              ></figcaption>
+            </a>
+          </figure>
+        </template>
+      </div>
+      <div class="text-white text-center py-[3rem]">
+        <a
+          class="rounded-lg px-7 py-[1rem] font-display uppercase tracking-wider bg-finch-green"
+          href="../wise-guides/index.html"
+        >
+          Browse all wide guides
+        </a>
+      </div>
+    </section>
+
+    <!-- Science Backed -->
+    <section
+      class="py-[6rem] px-[0.5rem] tabp:px-[3rem] tabl:px-[6rem] bg-section-pattern bg-cover bg-center"
+    >
+      <div class="max-w-6xl mx-auto text-center">
+        <h2 class="text-blue-700 pb-[6rem]">
+          Putting our products through the wringer
+        </h2>
+        <div class="flex flex-wrap tabp:flex-nowrap text-white px-10 tabp:px-0">
+          <div class="tabp:basis-1/3 p-[1rem]">
+            <h3 class="font-display tracking-wider uppercase text-base pb-[1rem]">
+              Top-tier engineers
+            </h3>
+            <p>
+              Our word is only as good as the data we provide, so we are
+              rigorous about our research and point to primary sources at every
+              step.
+            </p>
+          </div>
+          <div class="tabp:basis-1/3 p-[1rem]">
+            <h3 class="font-display tracking-wider uppercase text-base pb-[1rem]">
+              Reliable Recommendations
+            </h3>
+            <p>
+              Our crystal-clear ratings decode products’ environmental and
+              social impacts and highlight functionality to make sure you get
+              the right intel at the right time.
+            </p>
+          </div>
+          <div class="tabp:basis-1/3 p-[1rem]">
+            <h3 class="font-display tracking-wider uppercase text-base pb-[1rem]">
+              Focus on real life
+            </h3>
+            <p>
+              No one should be beholden to “sustainable,” “clean,” or “green”
+              restrictions. We’re here to support your choices and point you in
+              the right direction so you can focus on what matters.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Choose wisely -->
+    <section class="py-[6rem] px-[3rem] tabl:px-[6rem] bg-orange-200">
+      <div class="max-w-5xl mx-auto overflow-hidden">
+        <div
+          class="relative pb-[1rem] text-md text-blue-700 whitespace-nowrap motion-safe:animate-[scroll_15s_linear_infinite]"
+        >
+          <span class="pr-[3rem]">Get on the list</span>
+          <span class="pr-[3rem]">Get on the list</span>
+          <span class="pr-[3rem]">Get on the list</span>
+          <span class="pr-[3rem]">Get on the list</span>
+          <span class="pr-[3rem]">Get on the list</span>
+          <span class="pr-[3rem]">Get on the list</span>
+        </div>
+        <div class="flex justify-between flex-wrap tabp:flex-nowrap">
+          <div class="tabp:basis-2/5">
+            <h2 class="text-blue-700 py-[1rem]">
+              Choose wisely
+            </h2>
+            <p class="font-display uppercase tracking-wide py-[1rem]">
+              There’s no magical sustainability button...yet.
+            </p>
+            <p class="text-md pb-[1rem]">
+              The data experts at Finch pinpoint the stuff you’re actually going
+              to use, the stuff that doesn’t suck, and the stuff that’s better
+              for the world around us all in one tool.
+            </p>
+            <p class="text-md pb-[1rem]">
+              Be one of the first to get our browser extension and simple,
+              actionable insights on all your favorite consumer goods.
+            </p>
+            <!-- TODO: Hook up form -->
+            <form>
+              <label for="email" class="block text-finch-green font-sans mb-2">
+                Email *
+              </label>
+              <!-- TODO: focus/active border on input -->
+              <input type="email" id="email" class="block w-full p-2 mb-5" />
+              <div class="text-center">
+                <input
+                  type="submit"
+                  value="Join the waitlist"
+                  class="rounded-lg px-7 py-[1rem] bg-pink-400 hover:opacity-75 text-white font-display uppercase tracking-wider"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="tabp:basis-3/5 flex items-center">
+            <img
+              src="../assets/finch-rating-browser-extension-tool.png"
+              alt="Graphic of laptop with Finch ratings flowing from the screen"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How we rate -->
+    <section class="py-[6rem] px-[3rem] tabl:px-[6rem] bg-cyan-400">
+      <div class="max-w-4xl mx-auto text-white">
+        <h2 class="text-finch-forest pb-[1rem]">How we rate</h2>
+        <p class="font-display uppercase py-[1rem]">
+          Behind-the-scenes (of our bullsh*t detector)
+        </p>
+        <p class="text-p pb-[3rem]">
+          Finch is powered by a proprietary algorithm that assesses what
+          products are made of, how they’re created, how long they last, and
+          everything in between. We simplify the science and decode why it
+          matters, category by category.
+        </p>
+        <div
+          class="grid grid-cols-2 tabp:grid-cols-3 text-center"
+          x-data="{categories: [
+          {
+            title: 'Making it',
+            description: 'The download on materials, manufacturing, and company intel.',
+            illo: 'making-it.png', 
+          },
+          {
+            title: 'Moving it',
+            description: 'The travel diary of each item from origin to last-mile.',
+            illo: 'moving-it.png', 
+          },
+          {
+            title: 'Buying it',
+            description: 'The accessibility of goods and how much you have to shell out to bring it home.',
+            illo: 'buying-it.png', 
+          },
+          {
+            title: 'Using it',
+            description: 'The 411 on product lifespan and quality, including real reviews. The way products get used counts too.',
+            illo: 'using-it.png', 
+          },
+          {
+            title: 'Ditching it',
+            description: 'The things that happen at the end whether it’s recycled, reused, or retired. ',
+            illo: 'ditching-it.png', 
+          },
+        ]}"
+        >
+          <template x-for="category in categories">
+            <div class="px-[1rem] py-[3rem] text-center">
+              <img
+                class="mx-auto pb-[1rem]"
+                x-bind:src="'../assets/how/' + category.illo"
+                alt=""
+              />
+              <p class="font-display py-[1rem]" x-text="category.title"></p>
+              <p class="text-p" x-text="category.description"></p>
+            </div>
+          </template>
+          <div class="p-[1rem] text-center flex items-center justify-center">
+            <a
+              class="rounded-lg px-7 py-[1rem] font-display uppercase tracking-wider bg-finch-green"
+              href="../how-we-rate/index.html"
+            >
+              Learn more
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feedback -->
+    <section class="py-[6rem] px-[3rem] tabl:px-[6rem] bg-purple-600">
+      <div class="max-w-3xl mx-auto text-white flex flex-wrap tabp:flex-nowrap">
+        <div class="basis-1/2"></div>
+        <div class="basis-1/2">
+          <h2 class="text-pink-400 pb-[1rem]">Tell us what you really think</h2>
+          <p class="font-display uppercase text-p py-[1rem]">
+            Give candid feedback on the goods you use in real life
+          </p>
+          <p class="text-p pb-[1rem]">
+            Technically, a flock of finches is called a “charm”
+            <em>…how charming</em>
+            .
+          </p>
+          <p class="text-p pb-[3rem]">
+            Finches, like us, are inherently social creatures that like to learn
+            from one another. Brands say a lot of sales-y stuff, so we’d rather
+            hear from you on what products work and which don’t in real life.
+            We’ll take care of the rest.
+          </p>
+          <p>
+            <a
+              class="rounded-lg px-7 py-[1rem] font-display uppercase tracking-wider bg-cyan-400 hover:opacity-75 text-finch-grape"
+              href="https://www.surveymonkey.com/r/82V68LV"
+            >
+              Join the charm
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ask us anything -->
+    <section
+      class="py-[6rem] px-[1rem] tabl:px-[6rem] bg-emerald-600 bg-faq-section bg-cover bg-center bg-[url(../assets/faq-pattern-finch.png)]"
+    >
+      <div class="max-w-6xl mx-auto text-white flex">
+        <div class="basis-1/2">
+          <h2 class="text-white pb-[1rem]">Ask us anything</h2>
+          <p class="font-display uppercase pb-[3rem] pt-[1rem]">
+            We love a good question.
+            <br />
+            Here are some answers that might help.
+          </p>
+          <p>
+            <a
+              class="rounded-lg px-7 py-[1rem] font-display uppercase tracking-wider text-finch-forest bg-cyan-400"
+              href="../faqs/index.html"
+            >
+              Browse FAQs
+            </a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <svg style="display: none;">
+      <defs>
+        <symbol id="instagram" viewBox="0 0 64 64">
+          <title>Instagram</title>
+          <path
+            d="M46.91,25.816c-0.073-1.597-0.326-2.687-0.697-3.641c-0.383-0.986-0.896-1.823-1.73-2.657c-0.834-0.834-1.67-1.347-2.657-1.73c-0.954-0.371-2.045-0.624-3.641-0.697C36.585,17.017,36.074,17,32,17s-4.585,0.017-6.184,0.09c-1.597,0.073-2.687,0.326-3.641,0.697c-0.986,0.383-1.823,0.896-2.657,1.73c-0.834,0.834-1.347,1.67-1.73,2.657c-0.371,0.954-0.624,2.045-0.697,3.641C17.017,27.415,17,27.926,17,32c0,4.074,0.017,4.585,0.09,6.184c0.073,1.597,0.326,2.687,0.697,3.641c0.383,0.986,0.896,1.823,1.73,2.657c0.834,0.834,1.67,1.347,2.657,1.73c0.954,0.371,2.045,0.624,3.641,0.697C27.415,46.983,27.926,47,32,47s4.585-0.017,6.184-0.09c1.597-0.073,2.687-0.326,3.641-0.697c0.986-0.383,1.823-0.896,2.657-1.73c0.834-0.834,1.347-1.67,1.73-2.657c0.371-0.954,0.624-2.045,0.697-3.641C46.983,36.585,47,36.074,47,32S46.983,27.415,46.91,25.816z M44.21,38.061c-0.067,1.462-0.311,2.257-0.516,2.785c-0.272,0.7-0.597,1.2-1.122,1.725c-0.525,0.525-1.025,0.85-1.725,1.122c-0.529,0.205-1.323,0.45-2.785,0.516c-1.581,0.072-2.056,0.087-6.061,0.087s-4.48-0.015-6.061-0.087c-1.462-0.067-2.257-0.311-2.785-0.516c-0.7-0.272-1.2-0.597-1.725-1.122c-0.525-0.525-0.85-1.025-1.122-1.725c-0.205-0.529-0.45-1.323-0.516-2.785c-0.072-1.582-0.087-2.056-0.087-6.061s0.015-4.48,0.087-6.061c0.067-1.462,0.311-2.257,0.516-2.785c0.272-0.7,0.597-1.2,1.122-1.725c0.525-0.525,1.025-0.85,1.725-1.122c0.529-0.205,1.323-0.45,2.785-0.516c1.582-0.072,2.056-0.087,6.061-0.087s4.48,0.015,6.061,0.087c1.462,0.067,2.257,0.311,2.785,0.516c0.7,0.272,1.2,0.597,1.725,1.122c0.525,0.525,0.85,1.025,1.122,1.725c0.205,0.529,0.45,1.323,0.516,2.785c0.072,1.582,0.087,2.056,0.087,6.061S44.282,36.48,44.21,38.061z M32,24.297c-4.254,0-7.703,3.449-7.703,7.703c0,4.254,3.449,7.703,7.703,7.703c4.254,0,7.703-3.449,7.703-7.703C39.703,27.746,36.254,24.297,32,24.297z M32,37c-2.761,0-5-2.239-5-5c0-2.761,2.239-5,5-5s5,2.239,5,5C37,34.761,34.761,37,32,37z M40.007,22.193c-0.994,0-1.8,0.806-1.8,1.8c0,0.994,0.806,1.8,1.8,1.8c0.994,0,1.8-0.806,1.8-1.8C41.807,22.999,41.001,22.193,40.007,22.193z"
+          />
+        </symbol>
+        <symbol id="facebook" viewBox="0 0 64 64">
+          <title>Facebook</title>
+          <path
+            d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z"
+          />
+        </symbol>
+        <symbol id="twitter" viewBox="0 0 64 64">
+          <title>Twitter</title>
+          <path
+            d="M0,0v64h64V0H0z M44.7,25.5c0,0.3,0,0.6,0,0.8C44.7,35,38.1,45,26.1,45c-3.7,0-7.2-1.1-10.1-2.9 c0.5,0.1,1,0.1,1.6,0.1c3.1,0,5.9-1,8.2-2.8c-2.9-0.1-5.3-2-6.1-4.6c0.4,0.1,0.8,0.1,1.2,0.1c0.6,0,1.2-0.1,1.7-0.2 c-3-0.6-5.3-3.3-5.3-6.4c0,0,0-0.1,0-0.1c0.9,0.5,1.9,0.8,3,0.8c-1.8-1.2-2.9-3.2-2.9-5.5c0-1.2,0.3-2.3,0.9-3.3 c3.2,4,8.1,6.6,13.5,6.9c-0.1-0.5-0.2-1-0.2-1.5c0-3.6,2.9-6.6,6.6-6.6c1.9,0,3.6,0.8,4.8,2.1c1.5-0.3,2.9-0.8,4.2-1.6 c-0.5,1.5-1.5,2.8-2.9,3.6c1.3-0.2,2.6-0.5,3.8-1C47.1,23.4,46,24.5,44.7,25.5z"
+          />
+        </symbol>
+        <symbol id="linkedin" viewBox="0 0 64 64">
+          <title>LinkedIn</title>
+          <path
+            d="M0,0v64h64V0H0z M25.8,44h-5.4V26.6h5.4V44z M23.1,24.3c-1.7,0-3.1-1.4-3.1-3.1c0-1.7,1.4-3.1,3.1-3.1 c1.7,0,3.1,1.4,3.1,3.1C26.2,22.9,24.8,24.3,23.1,24.3z M46,44h-5.4v-8.4c0-2,0-4.6-2.8-4.6c-2.8,0-3.2,2.2-3.2,4.5V44h-5.4V26.6 h5.2V29h0.1c0.7-1.4,2.5-2.8,5.1-2.8c5.5,0,6.5,3.6,6.5,8.3V44z"
+          />
+        </symbol>
+      </defs>
+    </svg>
+    <section class="py-[3rem] px-[3rem] bg-orange-200">
+      <div class="max-w-full flex flex-wrap justify-between tabl:flex-nowrap">
+        <div class="basis-2/3 tabl:basis-1/3 tabl:max-w-xs pr-[3rem] pb-[3rem]">
+          <img class="pb-[1rem]" src="../assets/finch-logo-footer.png" alt="Finch" />
+          <!-- TODO: Better contrast on social buttons -->
+          <ul class="flex stroke-transparent fill-black pb-[1rem]">
+            <li class="bg-cyan-400 rounded-full h-10 w-10 mr-2">
+              <a href="http://instagram.com/choosefinch">
+                <svg class="h-10 w-10 fill-white stroke-transparent">
+                  <use xlink:href="#instagram"></use>
+                </svg>
+              </a>
+            </li>
+            <li class="bg-cyan-400 rounded-full h-10 w-10 mr-2">
+              <a href="https://www.facebook.com/choosefinch">
+                <svg class="h-10 w-10 fill-white stroke-transparent">
+                  <use xlink:href="#facebook"></use>
+                </svg>
+              </a>
+            </li>
+            <li class="bg-white rounded-full h-10 w-10 mr-2">
+              <a href="http://twitter.com/choosefinch">
+                <svg class="h-10 w-10 rounded-full fill-finch-blue">
+                  <use xlink:href="#twitter"></use>
+                </svg>
+              </a>
+            </li>
+            <li class="bg-white rounded-full h-10 w-10 mr-2">
+              <a href="https://www.linkedin.com/company/choosefinch/">
+                <svg class="h-10 w-10 rounded-full fill-finch-blue">
+                  <use xlink:href="#linkedin"></use>
+                </svg>
+              </a>
+            </li>
+          </ul>
+          <p class="font-heading font-bold text-p pb-[1rem]">hey@choosefinch.com</p>
+          <p
+            class="text-finch-peach underline underline-offset-4 pb-[1rem] font-sm"
+          >
+            <a href="/terms-of-use-privacy-policy">
+              Privacy Policy & Terms of Use
+            </a>
+          </p>
+          <p class="text-sm">© 2021 Finch Insights, Inc</p>
+        </div>
+        <div class="basis-1/3 tabl:basis-1/6 pb-[3rem]">
+          <nav role="navigation" aria-describedby="#nav-info">
+            <p id="nav-info" class="font-heading text-p pb-[1rem]">Info</p>
+            <ul
+              id="menu"
+              class="font-display underline underline-offset-4 uppercase text-finch-peach tracking-widest"
+              x-data="{links: [
+              {
+              href: '../about-us/index.html',
+              title: 'About us',
+              },
+              {
+              href: '../how-we-rate/index.html',
+              title: 'How we rate',
+              },
+              {
+              href: '../blog/index.html',
+              title: 'Blog',
+              },
+              {
+              href: '../faqs/index.html',
+              title: 'FAQs',
+              },
+              ]}"
+            >
+              <template x-for="link in links">
+                <li class="pb-3">
+                  <a x-bind:href="link.href" x-text="link.title"></a>
+                </li>
+              </template>
+            </ul>
+          </nav>
+        </div>
+        <div class="basis-1/3 tabl:basis-1/6 pb-[3rem]">
+          <nav role="navigation" aria-describedby="#nav-about">
+            <p id="nav-about" class="font-heading text-p pb-[1rem]">About</p>
+            <ul
+              id="menu"
+              class="font-display underline underline-offset-4 uppercase text-finch-peach tracking-widest"
+              x-data="{links: [
+              {
+              href: '../wise-guides/index.html',
+              title: 'Wise Guides',
+              },
+              {
+              href: 'https://www.surveymonkey.com/r/82V68LV',
+              title: 'Join the charm',
+              },
+              {
+              href: '../join/index.html',
+              title: 'Join the waitlist',
+              },
+              {
+              href: '../for-brands',
+              title: 'For brands',
+              },
+              ]}"
+            >
+              <template x-for="link in links">
+                <li class="pb-3">
+                  <a x-bind:href="link.href" x-text="link.title"></a>
+                </li>
+              </template>
+            </ul>
+          </nav>
+        </div>
+        <div class="basis-2/3 tabl:basis-1/3 tabl:max-w-sm text-right pl-[3rem] pb-[3rem]">
+          <h6
+            class="font-display uppercase text-finch-peach tracking-widest pb-[1rem]"
+          >
+            Stay in the know
+          </h6>
+          <p class="text-p pb-[3rem]">
+            Sign up for our weekly newsletter and get the intel on what it all
+            means and why it matters:
+          </p>
+          <!-- TODO: Hook up form -->
+          <form>
+            <label for="email" class="block font-sans mb-2">
+              Email *
+            </label>
+            <!-- TODO: focus/active border on input -->
+            <input type="email" id="email" class="block w-full p-2 mb-5" />
+            <input
+              type="submit"
+              value="Sign up"
+              class="rounded-lg px-7 py-[1rem] bg-orange-400 hover:opacity-75 text-white font-display uppercase tracking-wider"
+            />
+          </form>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

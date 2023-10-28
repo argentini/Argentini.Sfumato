@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1" />
+    <!-- STYLING (COMPILED) -->
+    <link href="../styles/sfumato.css" rel="stylesheet" />
+<link href="../styles/input.css" rel="stylesheet" />
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Poppins:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body class="static font-serif">
+    <!-- BEGIN SECTION -->
+
+    <main class="py-[6rem] px-[3rem] tabl:px-[6rem] bg-cyan-400">
+      <div class="max-w-4xl mx-auto text-white">
+        <h2 class="text-finch-forest pb-[1rem]">How we compile our insights</h2>
+        <p class="font-display uppercase py-[1rem] tracking-wider">
+          Combining function and scientific fact is how we find the best of the
+          best
+        </p>
+        <p class="text-p pb-[3rem]">
+          Finch is powered by a proprietary algorithm that puts products through
+          the wringer by assessing what they’re made of, how they’re created,
+          how long they last, and everything in between.
+        </p>
+        <p class="text-p pb-[3rem]">
+          Our custom technology cuts through the greenwash of today’s consumer
+          products, analyzing company-level and product-level data and
+          accounting for a variety of interconnected environmental and social
+          factors across five key areas. Instead of just saying one product is
+          more “sustainable” than another, we simplify the science, category by
+          category. No jargon, no blanket claims or wishy-washy statements.
+        </p>
+        <div
+          class="flex flex-wrap text-center justify-center"
+          x-data="{categories: [
+          {
+            title: 'Making it',
+            description: 'The download on materials, manufacturing, and company intel.',
+            illo: 'making-it.png',
+            example: '(ex: Manufacturing, Ingredients, Materials)',
+          },
+          {
+            title: 'Moving it',
+            description: 'The travel diary of each item from origin to last-mile.',
+            illo: 'moving-it.png', 
+            example: '(ex: Shipping Method, Processing Location)',
+          },
+          {
+            title: 'Buying it',
+            description: 'The accessibility of goods and how much you have to shell out to bring it home.',
+            illo: 'buying-it.png', 
+            example: '(ex: MSRP, BIPOC-Ownership)',
+          },
+          {
+            title: 'Using it',
+            description: 'The 411 on product lifespan and quality, including real reviews. The way products get used counts too.',
+            illo: 'using-it.png', 
+            example: '(ex: Use Phase, Charm Reviews)',
+          },
+          {
+            title: 'Ditching it',
+            description: 'The things that happen at the end whether it’s recycled, reused, or retired. ',
+            illo: 'ditching-it.png', 
+            example: '(ex: Circularity, Reverse Logistics)',
+          },
+        ]}"
+        >
+          <template x-for="category in categories">
+            <div class="tabp:basis-1/2 tabl:basis-1/3 px-[1rem] py-[3rem] text-center">
+              <img
+                class="mx-auto pb-[1rem]"
+                x-bind:src="'../assets/how/' + category.illo"
+                alt=""
+              />
+              <p class="font-display py-[1rem]" x-text="category.title"></p>
+              <p class="text-p pb-[1rem]" x-text="category.description"></p>
+              <p class="text-p italic" x-text="category.example"></p>
+            </div>
+          </template>
+        </div>
+        <div class="border-t border-finch-forest pt-[6rem] tabp:px-[3rem] tabl:px-[6rem] text-center">
+          <p class="font-display uppercase py-[1rem] tracking-wider pb-[3rem]">
+            If you want to get in the weeds with us, download our rating system
+            cheat sheet, including a full list of our sources.
+          </p>
+          <a class="rounded-lg px-7 py-[1rem] font-display uppercase tracking-wider bg-finch-green" href="/downloads/Finch_Rating-System-Cheat-Sheet.pdf" />
+            Download cheat sheet
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- END SECTION -->
+  </body>
+</html>

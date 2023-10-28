@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1" />
+    <!-- STYLING (COMPILED) -->
+    <link href="../styles/sfumato.css" rel="stylesheet" />
+<link href="../styles/input.css" rel="stylesheet" />
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=EB+Garamond:wght@500&family=Poppins:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body class="static font-serif">
+    <!-- BEGIN SECTION -->
+    <header class="py-8 px-[6rem] absolute inset-x-0 top-0">
+      <div class="flex justify-between max-w-[1440px] mx-auto text-white">
+        <h1 id="finch-logo">
+          <a href="../home/index.html" class="block" style="height: 100%;">
+            <span>finch</span>
+          </a>
+        </h1>
+        <nav
+          role="navigation"
+          class="flex items-center font-display uppercase tracking-wider text-xs"
+        >
+          <button id="toggle" aria-expanded="false" class="hidden">Menu</button>
+          <ul
+            id="menu"
+            class="flex"
+            x-data="{links: [
+            {
+            href: '../how-we-rate/index.html',
+            title: 'How We Rate',
+            },
+            {
+            href: '../wise-guides/index.html',
+            title: 'Wise Guides',
+            },
+            {
+            href: '../about-us/index.html',
+            title: 'About Us',
+            },
+            {
+            href: '../blog/index.html',
+            title: 'Blog',
+            },
+            ]}"
+          >
+            <!-- TODO: Dropdown for Wise Guides -->
+            <!-- TODO: Mobile/Responsiveness -->
+            <template x-for="link in links">
+              <li class="px-3">
+                <a x-bind:href="link.href" x-text="link.title"></a>
+              </li>
+            </template>
+            <li class="px-3">
+              <a href="/search" aria-valuetext="Search">🔎</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="bg-finch-azure pt-first">
+      <div class="py-2xl px-4 border-t-2 text-white text-center font-serif">
+        <h3>
+          Background of the header is determined by the next section background.
+        </h3>
+        <ul class="font-sans">
+          <li>&lt;body&gt; needs class="static" globally</li>
+          <li>first section on the page should have class="pt-first"</li>
+        </ul>
+      </div>
+    </div>
+    <!-- END SECTION -->
+  </body>
+</html>

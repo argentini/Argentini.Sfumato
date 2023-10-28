@@ -1,0 +1,98 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1" />
+    <!-- STYLING (COMPILED) -->
+    <link href="../styles/sfumato.css" rel="stylesheet" />
+<link href="../styles/input.css" rel="stylesheet" />
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Poppins:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body class="static font-serif">
+    <!-- BEGIN SECTION -->
+
+    <section class="max-w-6xl mx-auto py-[3rem] px-[0.5rem] tabp:px-[6rem]">
+      <h2 class="text-blue-700 text-xxl pb-[3rem]">Wise Guides</h2>
+      <p class="font-display pb-[1rem] uppercase tracking-wider">
+        Find the best of the best
+      </p>
+      <p>
+        Check out our Wise Guides for the reliably simple and efficient intel
+        you need to make informed choices when shopping. We believe that
+        understanding the science of sustainability gives control back to you as
+        a citizen, not just as a consumer.
+      </p>
+      <div
+        class="flex justify-center flex-wrap"
+        x-data="{guides: [
+        {
+          name: 'Baby Wipes',
+          key: 'baby-wipes',
+        },
+        {
+          name: 'Diapers',
+          key: 'diapers',
+        },
+        {
+          name: 'Laundry Detergent',
+          key: 'laundry-detergent',
+        },
+        {
+          name: 'Mattresses',
+          key: 'mattresses',
+        },
+        {
+          name: 'Paper Towels',
+          key: 'paper-towels',
+        },
+        {
+          name: 'Shampoo & Conditioner',
+          key: 'shampoo-conditioner',
+        },
+        {
+          name: 'Sheets',
+          key: 'sheets',
+        },
+        {
+          name: 'Toilet Paper',
+          key: 'toilet-paper',
+        },
+      ]}"
+      >
+        <template x-for="guide in guides">
+          <figure class="basis-1/4 tabp:basis=1/4 px-[1rem] py-[3rem] text-center">
+            <a x-bind:href="'../wise-guides/' + guide.key">
+              <img
+                x-bind:src="'../assets/wise-guides/' + guide.key + '.png' "
+                x-bind:alt="guide.name"
+              />
+              <figcaption
+                x-text="guide.name"
+                class="font-display uppercase tracking-wider"
+              ></figcaption>
+            </a>
+          </figure>
+        </template>
+      </div>
+      <div class="text-white text-center py-[3rem]">
+        <a
+          class="rounded-lg px-7 py-[1rem] font-display uppercase tracking-wider bg-finch-green"
+          href="../wise-guides/index.html"
+        >
+          Browse all wide guides
+        </a>
+      </div>
+    </section>
+
+    <!-- END SECTION -->
+  </body>
+</html>
