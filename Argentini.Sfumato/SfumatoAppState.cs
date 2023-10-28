@@ -1761,26 +1761,23 @@ public sealed class SfumatoAppState
 		watchedFile.ArbitraryCssMatches.Clear();
 		
 		var tasks = new List<Task>();
-		var matches = CoreClassRegex.Matches(watchedFile.Markup);
+		var matches = CoreClassRegex.Matches(watchedFile.Markup).Distinct().ToList();
 
 		if (matches.Count > 0)
 		{
-			foreach (Match match in matches)
+			foreach (var match in matches)
 				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, this, match.Value));
-
-			await Task.WhenAll(tasks);
-			tasks.Clear();
 		}
 
-		matches = ArbitraryCssRegex.Matches(watchedFile.Markup);
+		matches = ArbitraryCssRegex.Matches(watchedFile.Markup).Distinct().ToList();
 
 		if (matches.Count > 0)
 		{
-			foreach (Match match in matches)
+			foreach (var match in matches)
 				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, this, match.Value, true));
-
-			await Task.WhenAll(tasks);
 		}
+		
+		await Task.WhenAll(tasks);
 	}
 
 	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, SfumatoAppState appState, string value, bool isArbitraryCss = false)
@@ -1791,10 +1788,12 @@ public sealed class SfumatoAppState
 		var cssSelector = new CssSelector(appState, value, isArbitraryCss);
 
 		_ = cssSelector.ProcessSelector();
-		_ = cssSelector.GetStyles();
 
 		if (cssSelector.IsInvalid == false)
+		{
+			cssSelector.GetStyles();
 			collection.TryAdd(value, cssSelector);
+		}
 
 		await Task.CompletedTask;
 	}

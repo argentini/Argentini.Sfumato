@@ -284,14 +284,14 @@ public sealed class CssSelector
 			    ArbitraryValue = $"url({ArbitraryValue})";
 	    }
 
-	    var matches = (AppState?.UtilityClassCollection.Where(c => selectorNoVariantsNoBrackets.StartsWith(c.Key)) ?? Enumerable.Empty<KeyValuePair<string,ScssUtilityClassGroupBase>>()).OrderByDescending(c => c.Key).ToList();
+	    var matches = (AppState?.UtilityClassCollection.Keys.Where(c => selectorNoVariantsNoBrackets.StartsWith(c)) ?? Enumerable.Empty<string>()).OrderByDescending(c => c).ToList();
 
 		if (matches.Count > 1)
 		{
 			// Address issues with conflicts like "rounded-lg" matching "rounded-l" and "rounded" (should choose "rounded")
 			foreach (var match in matches.ToList())
 		    {
-			    if (selectorNoVariantsNoBrackets.Length > match.Key.Length && selectorNoVariantsNoBrackets[match.Key.Length] != '-')
+			    if (selectorNoVariantsNoBrackets.Length > match.Length && selectorNoVariantsNoBrackets[match.Length] != '-')
 				    matches.Remove(match);
 		    }
 		}
@@ -302,7 +302,14 @@ public sealed class CssSelector
 		    return;
 	    }
 	    
-	    ScssUtilityClassGroup = matches.First().Value;
+	    ScssUtilityClassGroup = AppState?.UtilityClassCollection[matches.First()];
+	    
+	    if (ScssUtilityClassGroup is null)
+	    {
+		    IsInvalid = true;
+		    return;
+	    }
+	    
 		PrefixSegment = ScssUtilityClassGroup.SelectorPrefix;
 		CoreSegment = selectorNoVariantsNoBrackets.TrimStart(ScssUtilityClassGroup.SelectorPrefix)?.TrimStart('-') ?? string.Empty;
 
