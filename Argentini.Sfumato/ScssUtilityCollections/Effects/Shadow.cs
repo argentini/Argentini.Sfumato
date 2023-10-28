@@ -3,6 +3,7 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Effects;
 public class Shadow : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "shadow";
+    public override string Category => "shadow";
 
     public readonly Dictionary<string, string> StaticUtilities = new()
     {
