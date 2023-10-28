@@ -11,9 +11,13 @@ public class Mx : ScssUtilityClassGroupBase
                 margin-right: 0px;
                 """,
         ["px"] = """
-                 margin-left: 1px;
-                 margin-right: 1px;
-                 """,
+                   margin-left: 1px;
+                   margin-right: 1px;
+                   """,
+        ["auto"] = """
+                   margin-left: auto;
+                   margin-right: auto;
+                   """,
     }; 
     
     public override void Initialize(SfumatoAppState appState)

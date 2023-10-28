@@ -14,6 +14,10 @@ public class My : ScssUtilityClassGroupBase
                  margin-top: 1px;
                  margin-bottom: 1px;
                  """,
+        ["auto"] = """
+                 margin-top: auto;
+                 margin-bottom: auto;
+                 """,
     }; 
     public override void Initialize(SfumatoAppState appState)
     {

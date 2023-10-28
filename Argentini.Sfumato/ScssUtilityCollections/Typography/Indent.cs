@@ -17,7 +17,7 @@ public class Indent : ScssUtilityClassGroupBase
         foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
             Selectors.Add($"{SelectorPrefix}-{corePrefix}");
 
-        foreach (var corePrefix in appState.TypographyRemUnitOptions.Keys)
+        foreach (var corePrefix in appState.LayoutRemUnitOptions.Keys)
             Selectors.Add($"{SelectorPrefix}-{corePrefix}");
     }
     
@@ -35,7 +35,7 @@ public class Indent : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (cssSelector.AppState.TypographyRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
+        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
             return $"text-indent: {unit};";
 
         #endregion

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Argentini.Sfumato.ScssUtilityCollections;
 
 namespace Argentini.Sfumato.Entities;
@@ -116,6 +115,200 @@ public sealed class CssSelector
 	    AppState = appState;
 	    IsArbitraryCss = isArbitraryCss;
         Selector = selector;
+    }
+
+    /// <summary>
+    /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
+    /// </summary>
+    /// <returns></returns>
+    public static ArbitraryValuePackage SetCustomValueType(string arbitraryValue, SfumatoAppState? appState)
+    {
+	    var result = new ArbitraryValuePackage
+	    {
+			Value = arbitraryValue
+	    };
+	    
+	    if (string.IsNullOrEmpty(arbitraryValue))
+		    return result;
+
+	    var value = arbitraryValue.TrimStart('[').TrimEnd(']');
+	    
+	    if (value.Contains(':'))
+	    {
+		    var segments = value.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+		    if (segments.Length > 1)
+			    if (appState?.ArbitraryValueTypes.Contains(segments[0]) ?? false)
+			    {
+				    result.ValueType = segments[0];
+				    result.Value = segments[1];
+				    return result;
+			    }
+	    }
+
+	    // Determine value type based on value (e.g. text-[red])
+
+	    if (value.EndsWith('%') && double.TryParse(value.TrimEnd('%'), out _))
+	    {
+		    result.ValueType = "percentage";
+		    return result;
+	    }
+
+	    if (value.Contains('.') == false && int.TryParse(value, out _))
+	    {
+		    result.ValueType = "integer";
+		    return result;
+	    }
+
+	    if (double.TryParse(value, out _))
+	    {
+		    result.ValueType = "number";
+		    return result;
+	    }
+
+	    #region length
+	    
+	    var unitless = string.Empty;
+
+	    foreach (var unit in appState?.CssUnits ?? Enumerable.Empty<string>())
+	    {
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (value.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    result.ValueType = "length";
+		    return result;
+	    }
+
+	    #endregion
+
+	    if (value.EndsWith("fr") && double.TryParse(value.TrimEnd("fr"), out _))
+	    {
+		    result.ValueType = "flex";
+		    return result;
+	    }
+
+	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || (appState?.CssNamedColors ?? Enumerable.Empty<string>()).Contains(value))
+	    {
+		    result.ValueType = "color";
+		    return result;
+	    }
+
+	    if (value.StartsWith('\'') && value.EndsWith('\''))
+	    {
+		    result.ValueType = "string";
+		    return result;
+	    }
+
+	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')') || (value.StartsWith('/') && Uri.TryCreate(value, UriKind.Relative, out _)) || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
+	    {
+		    result.ValueType = "url";
+		    return result;
+	    }
+	    
+	    #region angle
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in appState?.CssAngleUnits ?? Enumerable.Empty<string>())
+	    {
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (value.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    result.ValueType = "angle";
+		    return result;
+	    }
+
+	    #endregion
+
+	    #region time
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in appState?.CssTimeUnits ?? Enumerable.Empty<string>())
+	    {
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (value.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    result.ValueType = "time";
+		    return result;
+	    }
+
+	    #endregion
+
+	    #region frequency
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in appState?.CssFrequencyUnits ?? Enumerable.Empty<string>())
+	    {
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (value.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    result.ValueType = "frequency";
+		    return result;
+	    }
+
+	    #endregion
+
+	    #region resolution
+
+	    unitless = string.Empty;
+
+	    foreach (var unit in appState?.CssResolutionUnits ?? Enumerable.Empty<string>())
+	    {
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (value.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+	    {
+		    result.ValueType = "resolution";
+		    return result;
+	    }
+
+	    #endregion
+	    
+	    #region ratio
+	    
+	    if (value.Length < 3 || value.IndexOf('/') < 1 || value.IndexOf('/') == value.Length - 1)
+		    return result;
+	    
+	    var customValues = value.Replace('_', ' ').Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+	    if (customValues.Length != 2)
+		    return result;
+
+	    if (double.TryParse(customValues[0], out _) && double.TryParse(customValues[1], out _))
+	    {
+		    result.ValueType = "ratio";
+		    return result;
+	    }
+
+	    #endregion
+
+	    return result;
     }
 
     /// <summary>
@@ -264,8 +457,15 @@ public sealed class CssSelector
 	    if (IsArbitraryCss)
 		    return;
 
-	    ModifierValueType = SetCustomValueType(ModifierValue, AppState);
-	    ArbitraryValueType = SetCustomValueType(ArbitraryValue, AppState);
+	    var valueTypePackage = SetCustomValueType(ModifierValue, AppState);
+	    
+	    ModifierValueType = valueTypePackage.ValueType;
+	    ModifierValue = valueTypePackage.Value;
+	    
+	    valueTypePackage = SetCustomValueType(ArbitraryValue, AppState);
+	    
+	    ArbitraryValueType = valueTypePackage.ValueType;
+	    ArbitraryValue = valueTypePackage.Value;
 
 	    if (HasModifierValue)
 	    {
@@ -288,167 +488,21 @@ public sealed class CssSelector
 	    if (AppState?.UtilityClassCollection.TryGetValue(rootSegment.TrimEnd('-'), out var scssUtilityClassGroup) ?? false)
 		    ScssUtilityClassGroup = scssUtilityClassGroup;
 	    else
-			if (AppState?.UtilityClassCollection.TryGetValue(selectorNoVariantsNoBrackets, out scssUtilityClassGroup) ?? false)
-				ScssUtilityClassGroup = scssUtilityClassGroup;
+	    if (AppState?.UtilityClassCollection.TryGetValue(selectorNoVariantsNoBrackets, out scssUtilityClassGroup) ?? false)
+		    ScssUtilityClassGroup = scssUtilityClassGroup;
 
 	    if (ScssUtilityClassGroup is null)
 	    {
 		    IsInvalid = true;
 		    return;
 	    }
-	    
-		PrefixSegment = ScssUtilityClassGroup.SelectorPrefix;
-		CoreSegment = selectorNoVariantsNoBrackets.TrimStart(ScssUtilityClassGroup.SelectorPrefix)?.TrimStart('-') ?? string.Empty;
 
-		await Task.CompletedTask;
+	    PrefixSegment = ScssUtilityClassGroup.SelectorPrefix;
+	    CoreSegment = selectorNoVariantsNoBrackets.TrimStart(ScssUtilityClassGroup.SelectorPrefix)?.TrimStart('-') ?? string.Empty;
+
+	    await Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
-    /// </summary>
-    /// <returns></returns>
-    public static string SetCustomValueType(string arbitraryValue, SfumatoAppState? appState)
-    {
-	    if (string.IsNullOrEmpty(arbitraryValue))
-		    return string.Empty;
-
-	    var value = arbitraryValue.TrimStart('[').TrimEnd(']');
-	    
-	    if (value.Contains(':'))
-	    {
-		    var segments = value.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-		    if (segments.Length > 1)
-			    if (appState?.ArbitraryValueTypes.Contains(segments[0]) ?? false)
-				    return segments[0];
-	    }
-
-	    // Determine value type based on value (e.g. text-[red])
-
-	    if (value.EndsWith('%') && double.TryParse(value.TrimEnd('%'), out _))
-		    return "percentage";
-
-	    if (value.Contains('.') == false && int.TryParse(value, out _))
-		    return "integer";
-
-	    if (double.TryParse(value, out _))
-		    return "number";
-
-	    #region length
-	    
-	    var unitless = string.Empty;
-
-	    foreach (var unit in appState?.CssUnits ?? Enumerable.Empty<string>())
-	    {
-		    unitless = value.TrimEnd(unit) ?? string.Empty;
-		    
-		    if (value.Length != unitless.Length)
-			    break;
-	    }
-
-	    if (double.TryParse(unitless, out _))
-		    return "length";
-
-	    #endregion
-
-	    if (value.EndsWith("fr") && double.TryParse(value.TrimEnd("fr"), out _))
-		    return "flex";
-
-	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || (appState?.CssNamedColors ?? Enumerable.Empty<string>()).Contains(value))
-		    return "color";
-
-	    if (value.StartsWith('\'') && value.EndsWith('\''))
-		    return "string";
-
-	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')') || (value.StartsWith('/') && Uri.TryCreate(value, UriKind.Relative, out _)) || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
-		    return "url";
-	    
-	    #region angle
-
-	    unitless = string.Empty;
-
-	    foreach (var unit in appState?.CssAngleUnits ?? Enumerable.Empty<string>())
-	    {
-		    unitless = value.TrimEnd(unit) ?? string.Empty;
-		    
-		    if (value.Length != unitless.Length)
-			    break;
-	    }
-
-	    if (double.TryParse(unitless, out _))
-		    return "angle";
-
-	    #endregion
-
-	    #region time
-
-	    unitless = string.Empty;
-
-	    foreach (var unit in appState?.CssTimeUnits ?? Enumerable.Empty<string>())
-	    {
-		    unitless = value.TrimEnd(unit) ?? string.Empty;
-		    
-		    if (value.Length != unitless.Length)
-			    break;
-	    }
-
-	    if (double.TryParse(unitless, out _))
-		    return "time";
-
-	    #endregion
-
-	    #region frequency
-
-	    unitless = string.Empty;
-
-	    foreach (var unit in appState?.CssFrequencyUnits ?? Enumerable.Empty<string>())
-	    {
-		    unitless = value.TrimEnd(unit) ?? string.Empty;
-		    
-		    if (value.Length != unitless.Length)
-			    break;
-	    }
-
-	    if (double.TryParse(unitless, out _))
-		    return "frequency";
-
-	    #endregion
-
-	    #region resolution
-
-	    unitless = string.Empty;
-
-	    foreach (var unit in appState?.CssResolutionUnits ?? Enumerable.Empty<string>())
-	    {
-		    unitless = value.TrimEnd(unit) ?? string.Empty;
-		    
-		    if (value.Length != unitless.Length)
-			    break;
-	    }
-
-	    if (double.TryParse(unitless, out _))
-		    return "resolution";
-
-	    #endregion
-	    
-	    #region ratio
-	    
-	    if (value.Length < 3 || value.IndexOf('/') < 1 || value.IndexOf('/') == value.Length - 1)
-		    return string.Empty;
-	    
-	    var customValues = value.Replace('_', ' ').Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-	    if (customValues.Length != 2)
-		    return string.Empty;
-
-	    if (double.TryParse(customValues[0], out _) && double.TryParse(customValues[1], out _))
-		    return "ratio";
-
-	    #endregion
-
-	    return string.Empty;
-    }
-    
     /// <summary>
     /// Escape the CSS class name to be used in a CSS selector.
     /// </summary>
@@ -498,4 +552,10 @@ public sealed class CssSelector
 
 	    return ScssMarkup;
     }
+}
+
+public sealed class ArbitraryValuePackage
+{
+	public string ValueType { get; set; } = string.Empty;
+	public string Value { get; set; } = string.Empty;
 }

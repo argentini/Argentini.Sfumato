@@ -74,9 +74,12 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new CssSelector(appState, "text-base"), pool, string.Empty);
+        var cssSelector = new CssSelector(appState, "text-base");
+        await cssSelector.ProcessSelector();
 
-        Assert.Equal(".text-base { font-size: 1rem; }", result.CompactCss());
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
+
+        Assert.Equal(".text-base { font-size: 1rem; line-height: 1.5rem; }", result.CompactCss());
     }
 
     [Fact]
@@ -87,18 +90,24 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(new CssSelector(appState, "text-base/5"), pool, string.Empty);
+        var cssSelector = new CssSelector(appState, "text-base/5");
+        await cssSelector.ProcessSelector();
+        
+        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
         
         Assert.Equal(".text-base\\/5 { font-size: 1rem; line-height: 1.25rem; }".CompactCss(), result.CompactCss());
         
-        var cssSelector = new CssSelector(appState, "text-base/[3rem]");
+        cssSelector = new CssSelector(appState, "text-base/[3rem]");
         await cssSelector.ProcessSelector();
 
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
 
         Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
 
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(new CssSelector(appState, "tabp:text-base/[3rem]"), pool, "tabp:");
+        cssSelector = new CssSelector(appState, "tabp:text-base/[3rem]");
+        await cssSelector.ProcessSelector();
+
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, "tabp:");
         
         Assert.Equal(".tabp\\:text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
     }
@@ -112,18 +121,21 @@ public class SfumatoRunnerTests
         await appState.InitializeAsync(Array.Empty<string>());
         
         var scssClass = new CssSelector(appState, "[width:10rem]", true);
+        await scssClass.ProcessSelector();
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
 
         Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new CssSelector(appState, "tabp:[width:10rem]", true);
+        await scssClass.ProcessSelector();
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
         Assert.Equal(".tabp\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new CssSelector(appState, "tabp:hover:[width:10rem]", true);
+        await scssClass.ProcessSelector();
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
@@ -149,7 +161,7 @@ public class SfumatoRunnerTests
         await runner.AppState.ProcessFileMatchesAsync(watchedFile);
         await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
         
-        Assert.Equal(28, runner.AppState.UsedClasses.Count);
+        Assert.Equal(30, runner.AppState.UsedClasses.Count);
     }
 
     [Fact]
@@ -174,20 +186,37 @@ public class SfumatoRunnerTests
         var scss = await runner.GenerateScssObjectTreeAsync();
 
         Assert.Equal("""
-                     .bg-emerald-900 {
-                         background-color: rgb(6,78,59);
+                     .\[font-weight\:600\] {
+                         font-weight:600;
                      }
-                     .bg-emerald-950 {
-                         background-color: rgb(2,44,34);
+                     .\[font-weight\:700\] {
+                         font-weight:700;
                      }
-                     .bg-fuchsia-500 {
-                         background-color: rgb(217,70,239);
+                     .\[font-weight\:900\] {
+                         font-weight:900;
                      }
                      .aspect-screen {
                          aspect-ratio: 4/3;
                      }
+                     .bg-emerald-900 {
+                         background-color: rgba(6,78,59,1.0);
+                     }
+                     .bg-emerald-950 {
+                         background-color: rgba(2,44,34,1.0);
+                     }
+                     .bg-fuchsia-500 {
+                         background-color: rgba(217,70,239,1.0);
+                     }
+                     .block {
+                         display: block;
+                     }
+                     .break-after-auto {
+                         break-after: auto;
+                     }
                      .container {
                          width: 100%;
+                         margin-left: auto;
+                         margin-right: auto;
                          
                          @include sf-media($from: phab) {
                             max-width: $phab-breakpoint;
@@ -213,15 +242,6 @@ public class SfumatoRunnerTests
                             max-width: $elas-breakpoint;
                          }
                      }
-                     .break-after-auto {
-                         break-after: auto;
-                     }
-                     .block {
-                         display: block;
-                     }
-                     .top-8 {
-                         top: 2rem;
-                     }
                      .invisible {
                          visibility: hidden;
                      }
@@ -232,14 +252,8 @@ public class SfumatoRunnerTests
                          font-size: 1rem;
                          line-height: 1.25rem;
                      }
-                     .\[font-weight\:600\] {
-                         font-weight:600;
-                     }
-                     .\[font-weight\:700\] {
-                         font-weight:700;
-                     }
-                     .\[font-weight\:900\] {
-                         font-weight:900;
+                     .top-8 {
+                         top: 2rem;
                      }
                      @include sf-media($from: tabp) {
                          .tabp\:\[font-weight\:900\] {
@@ -252,11 +266,11 @@ public class SfumatoRunnerTests
                          }
                      }
                      @include sf-media($from: note) {
-                         .note\:text-\[1\.25rem\] {
-                             font-size: 1.25rem;
-                         }
                          .note\:\[font-weight\:600\] {
                              font-weight:600;
+                         }
+                         .note\:text-\[1\.25rem\] {
+                             font-size: 1.25rem;
                          }
                      }
                      @include sf-media($from: desk) {
@@ -276,10 +290,13 @@ public class SfumatoRunnerTests
                              font-size: 1rem;
                              line-height: 3rem;
                          }
-                         .desk\:text-slate\[\#112233\] {
-                             color: #112233;
-                         }
                          .desk\:text-slate-50\[\#112233\] {
+                             color: rgba(248,250,252,1.0);
+                         }
+                         .desk\:text-slate\[\#112233\] {
+                             color: rgba(203,213,225,1.0);
+                         }
+                         .desk\:text\[\#112233\] {
                              color: #112233;
                          }
                      }
@@ -290,7 +307,7 @@ public class SfumatoRunnerTests
                      }
                      @media (prefers-color-scheme: dark) {
                          .dark\:bg-fuchsia-300 {
-                             background-color: rgb(240,171,252);
+                             background-color: rgba(240,171,252,1.0);
                          }
                          .dark\:text-\[length\:1rem\] {
                              font-size: 1rem;

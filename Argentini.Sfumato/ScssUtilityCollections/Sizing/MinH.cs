@@ -39,7 +39,7 @@ public class MinH : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
+        if (cssSelector.ArbitraryValueType is "integer" or "length" or "percentage")
             return $"min-height: {cssSelector.ArbitraryValue};";
       
         #endregion

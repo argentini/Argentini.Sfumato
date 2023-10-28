@@ -216,7 +216,14 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "[font-size:1rem]", true);
+        var selector = new CssSelector(appState, "p-[1rem]");
+
+        await selector.ProcessSelector();
+        selector.GetStyles();
+        
+        Assert.Equal("padding: 1rem;", selector.ScssMarkup);
+        
+        selector = new CssSelector(appState, "[font-size:1rem]", true);
 
         await selector.ProcessSelector();
         
@@ -366,7 +373,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgb(255,228,230);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -410,8 +417,8 @@ public class CssSelectorTests
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
         Assert.False(selector.IsImportant);
-        Assert.False(selector.UsesModifier);
-        Assert.False(selector.HasModifierValue);
+        Assert.True(selector.UsesModifier);
+        Assert.True(selector.HasModifierValue);
         Assert.False(selector.HasArbitraryValue);
 
         Assert.Empty(selector.MediaQueryVariants);
@@ -424,12 +431,12 @@ public class CssSelectorTests
         Assert.Equal("", selector.VariantSegment);
         Assert.Equal("w", selector.PrefixSegment);
         Assert.Equal("1/2", selector.CoreSegment);
-        Assert.Equal("", selector.ModifierSegment);
+        Assert.Equal("/2", selector.ModifierSegment);
 
         Assert.Equal("", selector.ArbitraryValue);
         Assert.Equal("", selector.ArbitraryValueType);
-        Assert.Equal("", selector.ModifierValue);
-        Assert.Equal("", selector.ModifierValueType);
+        Assert.Equal("2", selector.ModifierValue);
+        Assert.Equal("integer", selector.ModifierValueType);
     }
     
     [Fact]

@@ -4,24 +4,11 @@ public class Leading : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "leading";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["none"] = "line-height: 1;",
-        ["tight"] = "line-height: 1.25;",
-        ["snug"] = "line-height: 1.375;",
-        ["normal"] = "line-height: 1.5;",
-        ["relaxed"] = "line-height: 1.625;",
-        ["loose"] = "line-height: 2;",
-    }; 
-    
     public override void Initialize(SfumatoAppState appState)
     {
         Selectors.Add(SelectorPrefix);
 
-        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
-
-        foreach (var corePrefix in appState.TypographyRemUnitOptions.Keys)
+        foreach (var corePrefix in appState.LeadingOptions.Keys)
             Selectors.Add($"{SelectorPrefix}-{corePrefix}");
     }
 
@@ -30,16 +17,9 @@ public class Leading : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
-        #region Static Utilities
-        
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
-        
-        #endregion
-        
         #region Calculated Utilities
         
-        if (cssSelector.AppState.TypographyRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
+        if (cssSelector.AppState.LeadingOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
             return $"line-height: {unit};";
 
         #endregion

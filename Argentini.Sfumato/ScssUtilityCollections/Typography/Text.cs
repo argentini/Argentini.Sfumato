@@ -61,7 +61,7 @@ public class Text : ScssUtilityClassGroupBase
             {
                 var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
 
-                if (valueType is "length" or "percentage" or "number" or "integer")
+                if (valueType is "length" or "percentage")
                 {
                     var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
 
@@ -69,6 +69,27 @@ public class Text : ScssUtilityClassGroupBase
                             font-size: {fontSize};
                             line-height: {modifierValue};
                             """;
+                }
+                
+                if (valueType is "integer" or "number" or "")
+                {
+                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
+                    if (valueType is "integer" or "" && cssSelector.AppState.LeadingOptions.TryGetValue(modifierValue, out var option))
+                    {
+                        return $"""
+                                font-size: {fontSize};
+                                line-height: {option};
+                                """;
+                    }
+
+                    if (valueType is "integer" or "number")
+                    {
+                        return $"""
+                                font-size: {fontSize};
+                                line-height: {modifierValue};
+                                """;
+                    }
                 }
             }
             

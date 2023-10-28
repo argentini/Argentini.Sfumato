@@ -172,7 +172,12 @@ public sealed class SfumatoRunner
 		if (cssSelector.IsArbitraryCss)
 			scssResult.Append($"{cssSelector.ArbitraryValue.Indent(level * IndentationSpaces)}{(cssSelector.IsImportant ? " !important" : string.Empty)};\n");
 		else
+		{
+			if (cssSelector.ScssMarkup == string.Empty)
+				cssSelector.GetStyles();
+
 			scssResult.Append($"{cssSelector.ScssMarkup.Replace(";", cssSelector.IsImportant ? " !important;" : ";").Indent(level * IndentationSpaces)}\n");
+		}
 			
 		while (level > 0)
 		{
@@ -209,7 +214,7 @@ public sealed class SfumatoRunner
 			if (usedCssSelector.IsInvalid)
 				continue;
 			
-			if (usedCssSelector.IsArbitraryCss == false && usedCssSelector.ScssMarkup == string.Empty)
+			if (usedCssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
 			{
 				usedCssSelector.IsInvalid = true;
 				continue;

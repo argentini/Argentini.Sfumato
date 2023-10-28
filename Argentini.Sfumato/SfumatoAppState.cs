@@ -43,6 +43,22 @@ public sealed class SfumatoAppState
 		new CssMediaQuery
 		{
 			PrefixOrder = 5,
+			Priority = 1024,
+			Prefix = "motion-safe",
+			PrefixType = "animation",
+			Statement = "@media (prefers-reduced-motion: no-preference) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 6,
+			Priority = 2048,
+			Prefix = "motion-reduced",
+			PrefixType = "animation",
+			Statement = "@media (prefers-reduced-motion: reduce) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 7,
 			Priority = 1,
 			Prefix = "zero",
 			PrefixType = "breakpoint",
@@ -50,7 +66,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 6,
+			PrefixOrder = 8,
 			Priority = 2,
 			Prefix = "phab",
 			PrefixType = "breakpoint",
@@ -58,7 +74,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 7,
+			PrefixOrder = 9,
 			Priority = 4,
 			Prefix = "tabp",
 			PrefixType = "breakpoint",
@@ -66,7 +82,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 8,
+			PrefixOrder = 10,
 			Priority = 8,
 			Prefix = "tabl",
 			PrefixType = "breakpoint",
@@ -74,7 +90,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 9,
+			PrefixOrder = 11,
 			Priority = 16,
 			Prefix = "note",
 			PrefixType = "breakpoint",
@@ -82,7 +98,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 10,
+			PrefixOrder = 12,
 			Priority = 32,
 			Prefix = "desk",
 			PrefixType = "breakpoint",
@@ -90,7 +106,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 11,
+			PrefixOrder = 13,
 			Priority = 64,
 			Prefix = "elas",
 			PrefixType = "breakpoint",
@@ -521,7 +537,7 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> LayoutRemUnitOptions { get; set; } = new();
     public Dictionary<string, string> FlexRemUnitOptions { get; set; } = new();
     public Dictionary<string, string> LayoutWholeNumberOptions { get; set; } = new();
-    public Dictionary<string, string> TypographyRemUnitOptions { get; set; } = new();
+
     public Dictionary<string, string> EffectsFiltersOneBasedPercentageOptions { get; set; } = new();
     public Dictionary<string, string> FlexboxAndGridWholeNumberOptions { get; set; } = new();
     public Dictionary<string, string> FlexboxAndGridNegativeWholeNumberOptions { get; set; } = new();
@@ -1199,7 +1215,6 @@ public sealed class SfumatoAppState
 	    LayoutRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
 	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 3.5m);
 	    LayoutWholeNumberOptions.AddWholeNumberOptions(1, 24);
-	    TypographyRemUnitOptions.AddNumberedRemUnitOptions(3m, 10m, 1m);
 	    EffectsFiltersOneBasedPercentageOptions.AddOneBasedPercentageOptions(0m, 200m);
 	    FlexboxAndGridWholeNumberOptions.AddWholeNumberOptions(1, 25);
 	    FlexboxAndGridNegativeWholeNumberOptions.AddWholeNumberOptions(1, 25, true);
@@ -1223,7 +1238,7 @@ public sealed class SfumatoAppState
 (?<=[\s"'`])
 ({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
 (
-	([\!]{0,1}[a-z\-][a-z0-9\-\.%]{2,100})
+	([\!]{0,1}[a-z\-][a-z0-9\-\.%]{1,100})
 	(
 		(/[a-z0-9\-\.]{1,100})|([/]{0,1}\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1}
 	)
