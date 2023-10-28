@@ -785,7 +785,7 @@ img {
   background-color: rgb(31 152 105 / var(--tw-bg-opacity));
 }
 
-.bg-finch-yellow {
+.bg-orange-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 193 0 / var(--tw-bg-opacity));
 }
@@ -941,7 +941,7 @@ img {
   padding: 0.5rem;
 }
 
-.p-lg {
+.p-[6rem] {
   padding: 6rem;
 }
 
@@ -1027,7 +1027,7 @@ img {
   padding-bottom: 3rem;
 }
 
-.pt-first {
+.pt-[7rem] {
   padding-top: 7rem;
 }
 
@@ -1331,7 +1331,7 @@ img {
     background-image: url("../assets/faq-pattern-finch.png");
   }
 
-  .md\:p-lg {
+  .md\:p-[6rem] {
     padding: 6rem;
   }
 

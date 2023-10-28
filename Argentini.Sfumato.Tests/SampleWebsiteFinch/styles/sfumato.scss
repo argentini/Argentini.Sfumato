@@ -898,8 +898,14 @@ body {
 .basis-2\/3 {
     flex-basis: 66.666667%;
 }
+.bg-\[url\(\.\.\/assets\/blog-header-pattern-finch\.png\)\] {
+    background-image: url(../assets/blog-header-pattern-finch.png);
+}
 .bg-\[url\(\.\.\/assets\/faq-pattern-finch\.png\)\] {
     background-image: url(../assets/faq-pattern-finch.png);
+}
+.bg-amber-400 {
+    background-color: rgba(251,191,36,1.0);
 }
 .bg-center {
     background-position: center;
@@ -913,6 +919,9 @@ body {
 .bg-emerald-600 {
     background-color: rgba(5,150,105,1.0);
 }
+.bg-indigo-900\/85 {
+    background-color: rgba(49,46,129,0.85);
+}
 .bg-no-repeat {
     background-repeat: no-repeat;
 }
@@ -922,6 +931,9 @@ body {
 .bg-orange-400 {
     background-color: rgba(251,146,60,1.0);
 }
+.bg-orange-600 {
+    background-color: rgba(234,88,12,1.0);
+}
 .bg-pink-400 {
     background-color: rgba(244,114,182,1.0);
 }
@@ -930,6 +942,9 @@ body {
 }
 .bg-rose-400 {
     background-color: rgba(251,113,133,1.0);
+}
+.bg-sky-300 {
+    background-color: rgba(125,211,252,1.0);
 }
 .bg-white {
     background-color: rgba(255,255,255,1.0);
@@ -1092,6 +1107,9 @@ body {
 }
 .p-\[1rem\] {
     padding: 1rem;
+}
+.p-\[6rem\] {
+    padding: 6rem;
 }
 .p-2 {
     padding: 0.5rem;
@@ -1280,6 +1298,78 @@ body {
 .z-10 {
     z-index: 10;
 }
+.phab\:basis-1\/2 {
+    flex-basis: 50%;
+}
+.tabp\:basis-1\/3 {
+    flex-basis: 33.333333%;
+}
+.tabp\:basis-1\/4 {
+    flex-basis: 25%;
+}
+.tabp\:basis-2\/3 {
+    flex-basis: 66.666667%;
+}
+.tabp\:flex-nowrap {
+    flex-wrap: nowrap;
+}
+.tabp\:grid-cols-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+.tabp\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.tabp\:p-\[10rem\] {
+    padding: 10rem;
+}
+.tabp\:p-\[6rem\] {
+    padding: 6rem;
+}
+.tabp\:pl-\[3rem\] {
+    padding-left: 3rem;
+}
+.tabp\:pr-0 {
+    padding-right: 0px;
+}
+.tabp\:pt-0 {
+    padding-top: 0px;
+}
+.tabp\:px-\[6rem\] {
+    padding-left: 6rem;
+    padding-right: 6rem;
+}
+.tabp\:px-0 {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.tabp\:py-\[6rem\] {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+.tabl\:basis-2\/5 {
+    flex-basis: 40%;
+}
+.tabl\:basis-3\/5 {
+    flex-basis: 60%;
+}
+.tabl\:px-\[10rem\] {
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+.tabl\:px-\[6rem\] {
+    padding-left: 6rem;
+    padding-right: 6rem;
+}
+.tabl\:text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+.motion-safe\:animate-\[scroll_15s_linear_infinite\] {
+    animation: scroll 15s linear infinite;
+}
+.motion-safe\:animate-\[spin_18s_linear_infinite\] {
+    animation: spin 18s linear infinite;
+}
 .hover\:cursor-pointer {
     &:hover {
         cursor: pointer;
@@ -1290,23 +1380,9 @@ body {
         opacity: 0.75;
     }
 }
-@include sf-media($from: phab) {
-    .phab\:basis-1\/2 {
-        flex-basis: 50%;
-    }
-}
 @include sf-media($from: tabp) {
     .tabp\:basis-1\/2 {
         flex-basis: 50%;
-    }
-    .tabp\:basis-1\/3 {
-        flex-basis: 33.333333%;
-    }
-    .tabp\:basis-1\/4 {
-        flex-basis: 25%;
-    }
-    .tabp\:basis-2\/3 {
-        flex-basis: 66.666667%;
     }
     .tabp\:basis-2\/5 {
         flex-basis: 40%;
@@ -1314,39 +1390,9 @@ body {
     .tabp\:basis-3\/5 {
         flex-basis: 60%;
     }
-    .tabp\:flex-nowrap {
-        flex-wrap: nowrap;
-    }
-    .tabp\:grid-cols-12 {
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-    .tabp\:grid-cols-3 {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .tabp\:pl-\[3rem\] {
-        padding-left: 3rem;
-    }
-    .tabp\:pr-0 {
-        padding-right: 0px;
-    }
-    .tabp\:pt-0 {
-        padding-top: 0px;
-    }
     .tabp\:px-\[3rem\] {
         padding-left: 3rem;
         padding-right: 3rem;
-    }
-    .tabp\:px-\[6rem\] {
-        padding-left: 6rem;
-        padding-right: 6rem;
-    }
-    .tabp\:px-0 {
-        padding-left: 0px;
-        padding-right: 0px;
-    }
-    .tabp\:py-\[6rem\] {
-        padding-top: 6rem;
-        padding-bottom: 6rem;
     }
 }
 @include sf-media($from: tabl) {
@@ -1358,12 +1404,6 @@ body {
     }
     .tabl\:basis-2\/3 {
         flex-basis: 66.666667%;
-    }
-    .tabl\:basis-2\/5 {
-        flex-basis: 40%;
-    }
-    .tabl\:basis-3\/5 {
-        flex-basis: 60%;
     }
     .tabl\:flex-nowrap {
         flex-wrap: nowrap;
@@ -1380,28 +1420,8 @@ body {
     .tabl\:pr-\[6rem\] {
         padding-right: 6rem;
     }
-    .tabl\:px-\[10rem\] {
-        padding-left: 10rem;
-        padding-right: 10rem;
-    }
-    .tabl\:px-\[6rem\] {
-        padding-left: 6rem;
-        padding-right: 6rem;
-    }
     .tabl\:py-\[3rem\] {
         padding-top: 3rem;
         padding-bottom: 3rem;
-    }
-    .tabl\:text-lg {
-        font-size: 1.125rem;
-        line-height: 1.75rem;
-    }
-}
-@media (prefers-reduced-motion: no-preference) {
-    .motion-safe\:animate-\[scroll_15s_linear_infinite\] {
-        animation: scroll 15s linear infinite;
-    }
-    .motion-safe\:animate-\[spin_18s_linear_infinite\] {
-        animation: spin 18s linear infinite;
     }
 }
