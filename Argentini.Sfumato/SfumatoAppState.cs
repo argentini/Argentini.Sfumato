@@ -1640,10 +1640,6 @@ public sealed class SfumatoAppState
 		await Task.WhenAll(tasks);
 		
 		tasks.Clear();
-
-		if (DiagnosticMode)
-			DiagnosticOutput.TryAdd("init0a", $"{Strings.TriangleRight} RecurseProjectPathAsync => {timer.FormatTimer()}{Environment.NewLine}");
-
 		timer.Restart();
 		
 		// Add matches to files lists
@@ -1653,18 +1649,12 @@ public sealed class SfumatoAppState
 		
 		await Task.WhenAll(tasks);
 
-		if (DiagnosticMode)
-			DiagnosticOutput.TryAdd("init0b", $"{Strings.TriangleRight} ProcessFileMatchesAsync => {timer.FormatTimer()}{Environment.NewLine}");
-
 		timer.Restart();
 		
 		// Generate used classes list
 
 		await ExamineWatchedFilesForUsedClassesAsync();
 
-		if (DiagnosticMode)
-			DiagnosticOutput.TryAdd("init0c", $"{Strings.TriangleRight} ExamineWatchedFilesForUsedClassesAsync => {timer.FormatTimer()}{Environment.NewLine}");
-		
 		if (WatchedFiles.IsEmpty)
 			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified no watched files");
 		else
