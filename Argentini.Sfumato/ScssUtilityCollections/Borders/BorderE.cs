@@ -45,6 +45,13 @@ public class BorderE : ScssUtilityClassGroupBase
 
                 return $"border-inline-end-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
             }
+
+            if (valueType == "number")
+            {
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
+                return $"border-inline-end-color: {color.Replace(",1.0)", $",{modifierValue})")};";
+            }
         }
 
         #endregion

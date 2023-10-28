@@ -52,6 +52,13 @@ public class Fill : ScssUtilityClassGroupBase
 
                 return $"fill: {color.Replace(",1.0)", $",{opacity:F2})")};";
             }
+        
+            if (valueType == "number")
+            {
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
+                return $"fill: {color.Replace(",1.0)", $",{modifierValue})")};";
+            }
         }
 
         #endregion

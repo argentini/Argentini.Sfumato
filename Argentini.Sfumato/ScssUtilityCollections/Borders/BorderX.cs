@@ -54,6 +54,16 @@ public class BorderX : ScssUtilityClassGroupBase
                         border-right-color: {color.Replace(",1.0)", $",{opacity:F2})")};
                         """;
             }
+            
+            if (valueType == "number")
+            {
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
+                return $"""
+                        border-left-color: {color.Replace(",1.0)", $",{modifierValue})")};
+                        border-right-color: {color.Replace(",1.0)", $",{modifierValue})")};
+                        """;
+            }
         }
 
         #endregion

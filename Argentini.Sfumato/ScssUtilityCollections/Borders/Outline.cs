@@ -64,6 +64,13 @@ public class Outline : ScssUtilityClassGroupBase
 
                 return $"outline-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
             }
+
+            if (valueType == "number")
+            {
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
+                return $"outline-color: {color.Replace(",1.0)", $",{modifierValue})")};";
+            }
         }
 
         #endregion

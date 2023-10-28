@@ -55,6 +55,16 @@ public class RingOffset : ScssUtilityClassGroupBase
                         box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
                         """;
             }
+
+            if (valueType == "number")
+            {
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
+                return $"""
+                        --sf-ring-offset-color: {color.Replace(",1.0)", $",{modifierValue})")};
+                        box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
+                        """;
+            }
         }
 
         #endregion
