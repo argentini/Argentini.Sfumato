@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Argentini.Sfumato.ScssUtilityCollections;
 
 namespace Argentini.Sfumato.Entities;
@@ -284,26 +285,12 @@ public sealed class CssSelector
 			    ArbitraryValue = $"url({ArbitraryValue})";
 	    }
 
-	    var matches = (AppState?.UtilityClassCollection.Keys.Where(c => selectorNoVariantsNoBrackets.StartsWith(c)) ?? Enumerable.Empty<string>()).ToList();
+	    if (AppState?.UtilityClassCollection.TryGetValue(rootSegment.TrimEnd('-'), out var scssUtilityClassGroup) ?? false)
+		    ScssUtilityClassGroup = scssUtilityClassGroup;
+	    else
+			if (AppState?.UtilityClassCollection.TryGetValue(selectorNoVariantsNoBrackets, out scssUtilityClassGroup) ?? false)
+				ScssUtilityClassGroup = scssUtilityClassGroup;
 
-		if (matches.Count > 1)
-		{
-			// Address issues with conflicts like "rounded-lg" matching "rounded-l" and "rounded" (should choose "rounded")
-			foreach (var match in matches.ToList())
-		    {
-			    if (selectorNoVariantsNoBrackets.Length > match.Length && selectorNoVariantsNoBrackets[match.Length] != '-')
-				    matches.Remove(match);
-		    }
-		}
-	    
-	    if (matches.Count == 0)
-	    {
-		    IsInvalid = true;
-		    return;
-	    }
-	    
-	    ScssUtilityClassGroup = AppState?.UtilityClassCollection[matches.First()];
-	    
 	    if (ScssUtilityClassGroup is null)
 	    {
 		    IsInvalid = true;

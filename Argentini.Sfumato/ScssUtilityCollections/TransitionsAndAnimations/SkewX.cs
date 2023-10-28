@@ -15,8 +15,16 @@ public class SkewX : ScssUtilityClassGroupBase
         ["45"] = "transform: skewX(45deg);",
         ["90"] = "transform: skewX(90deg);",
         ["180"] = "transform: skewX(180deg);"
-    }; 
+    };
     
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)

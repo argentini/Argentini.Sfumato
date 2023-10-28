@@ -9,6 +9,14 @@ public class Invert : ScssUtilityClassGroupBase
         [""] = "filter: invert(100%);",
         ["0"] = "filter: invert(0);"
     }; 
+
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
     
     public override string GetStyles(CssSelector cssSelector)
     {

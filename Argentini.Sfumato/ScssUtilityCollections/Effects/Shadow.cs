@@ -5,6 +5,17 @@ public class Shadow : ScssUtilityClassGroupBase
     public override string SelectorPrefix => "shadow";
     public override string Category => "shadow";
 
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    
+        foreach (var corePrefix in appState.ColorOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+
     public readonly Dictionary<string, string> StaticUtilities = new()
     {
         [""] = $"box-shadow: 0 1px {3.PxToRem()} 0 rgb(0 0 0 / 0.1), 0 1px {2.PxToRem()} -1px rgb(0 0 0 / 0.1);",

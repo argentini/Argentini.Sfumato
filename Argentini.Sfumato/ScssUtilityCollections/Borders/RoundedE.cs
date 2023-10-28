@@ -3,6 +3,14 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Borders;
 public class RoundedE : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix { get; set; } = "rounded-e";
+
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.RoundedOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
     
     public override string GetStyles(CssSelector cssSelector)
     {

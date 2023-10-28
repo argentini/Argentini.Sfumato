@@ -4,6 +4,14 @@ public class Blur : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "blur";
 
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.FilterSizeOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+    
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)

@@ -4,6 +4,17 @@ public class Basis : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "basis";
 
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.FlexRemUnitOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+
+        foreach (var corePrefix in appState.FractionOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)
@@ -12,7 +23,7 @@ public class Basis : ScssUtilityClassGroupBase
         #region Calculated Utilities
         
         // Value preset (e.g. basis-0.5)
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
+        if (cssSelector.AppState.FlexRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
             return $"flex-basis: {unit};";
         
         // Value preset (e.g. basis-1/2)

@@ -16,8 +16,16 @@ public class ScaleY : ScssUtilityClassGroupBase
         ["110"] = "transform: scaleY(1.1);",
         ["125"] = "transform: scaleY(1.25);",
         ["150"] = "transform: scaleY(1.5);"
-    }; 
+    };
     
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)

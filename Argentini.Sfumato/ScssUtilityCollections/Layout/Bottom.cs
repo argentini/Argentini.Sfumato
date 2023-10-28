@@ -9,8 +9,22 @@ public class Bottom : ScssUtilityClassGroupBase
         ["0"] = "bottom: 0px;",
         ["px"] = "bottom: 1px;",
         ["auto"] = "bottom: auto;",
-    }; 
+    };
     
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+
+        foreach (var corePrefix in appState.LayoutRemUnitOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+
+        foreach (var corePrefix in appState.VerbatimFractionOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)

@@ -4,6 +4,14 @@ public class BackdropOpacity : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "backdrop-opacity";
 
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.EffectsFiltersOneBasedPercentageOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)

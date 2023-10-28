@@ -4,6 +4,11 @@ public class SrOnly : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "sr-only";
 
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+    }
+    
     public override string GetStyles(CssSelector cssSelector)
     {
         return """

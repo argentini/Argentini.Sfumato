@@ -519,6 +519,7 @@ public sealed class SfumatoAppState
     };
     
     public Dictionary<string, string> LayoutRemUnitOptions { get; set; } = new();
+    public Dictionary<string, string> FlexRemUnitOptions { get; set; } = new();
     public Dictionary<string, string> LayoutWholeNumberOptions { get; set; } = new();
     public Dictionary<string, string> TypographyRemUnitOptions { get; set; } = new();
     public Dictionary<string, string> EffectsFiltersOneBasedPercentageOptions { get; set; } = new();
@@ -529,7 +530,17 @@ public sealed class SfumatoAppState
     
     #endregion
     
-    #region CSS Constants
+    #region Constants
+    
+    public IEnumerable<string> ClassMatchEndingExclusions { get; } = new[]
+    {
+	    "/",
+	    ".css",
+	    ".htm",
+	    ".html",
+	    ".js",
+	    ".json",
+    };
     
 	public IEnumerable<string> ArbitraryValueTypes { get; } = new[]
 	{
@@ -1155,7 +1166,7 @@ public sealed class SfumatoAppState
     public ConcurrentDictionary<string,WatchedFile> WatchedFiles { get; } = new();
     public ConcurrentDictionary<string,WatchedScssFile> WatchedScssFiles { get; } = new();
     public ConcurrentDictionary<string,CssSelector> UsedClasses { get; } = new();
-    public Dictionary<string,ScssUtilityClassGroupBase> UtilityClassCollection { get; private set; } = new();
+    public Dictionary<string,ScssUtilityClassGroupBase> UtilityClassCollection { get; } = new();
     
     #endregion
     
@@ -1186,6 +1197,7 @@ public sealed class SfumatoAppState
 	    #region Establish Theme Dictionaries
 
 	    LayoutRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
+	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 3.5m);
 	    LayoutWholeNumberOptions.AddWholeNumberOptions(1, 24);
 	    TypographyRemUnitOptions.AddNumberedRemUnitOptions(3m, 10m, 1m);
 	    EffectsFiltersOneBasedPercentageOptions.AddOneBasedPercentageOptions(0m, 200m);
@@ -1354,11 +1366,11 @@ public sealed class SfumatoAppState
 
         #region Load Utility Classes
 
-        var orderedDictionary = new ConcurrentDictionary<string,ScssUtilityClassGroupBase>();
+		var orderedDictionary = new ConcurrentDictionary<string,ScssUtilityClassGroupBase>();
 		var tasks = new List<Task>();
 		
 		foreach (var scssUtilityClassGroup in typeof(ScssUtilityClassGroupBase).GetInheritedTypes().OrderBy(o => o.Name).ToList())
-		    tasks.Add(AddUtilityClassToCollection(scssUtilityClassGroup, orderedDictionary));
+			tasks.Add(AddUtilityClassToCollection(scssUtilityClassGroup, orderedDictionary));
 
 		await Task.WhenAll(tasks);
 
@@ -1371,13 +1383,16 @@ public sealed class SfumatoAppState
 	        DiagnosticOutput.TryAdd("init1", $"Loaded {UtilityClassCollection.Count} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
     }
 
-    private static async Task AddUtilityClassToCollection(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
+    private async Task AddUtilityClassToCollection(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
     {
 	    if (Activator.CreateInstance(scssUtilityClassGroup) is not ScssUtilityClassGroupBase utilityClassGroup) 
 		    throw new Exception($"Could not instantiate ScssUtilityClassGroupBase object for {scssUtilityClassGroup.Name}");
 
-	    if (dictionary.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup) == false)
-		    throw new Exception($"Could not add utility class group {utilityClassGroup.SelectorPrefix}");
+	    utilityClassGroup.Initialize(this);
+		
+	    foreach (var selector in utilityClassGroup.Selectors)
+		    if (dictionary.TryAdd(selector, utilityClassGroup) == false)
+			    throw new Exception($"Could not add utility class group {selector}");
 
 	    await Task.CompletedTask;
     }
@@ -1758,7 +1773,7 @@ public sealed class SfumatoAppState
 		if (matches.Count > 0)
 		{
 			foreach (var match in matches)
-				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, this, match.Value));
+				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, match.Value));
 		}
 
 		matches = ArbitraryCssRegex.Matches(watchedFile.Markup).Distinct().ToList();
@@ -1766,18 +1781,22 @@ public sealed class SfumatoAppState
 		if (matches.Count > 0)
 		{
 			foreach (var match in matches)
-				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, this, match.Value, true));
+				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, match.Value, true));
 		}
 		
 		await Task.WhenAll(tasks);
 	}
 
-	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, SfumatoAppState appState, string value, bool isArbitraryCss = false)
+	public async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value, bool isArbitraryCss = false)
 	{
 		if (collection.ContainsKey(value))
 			return;
+
+		foreach (var exclusion in ClassMatchEndingExclusions)
+			if (value.EndsWith(exclusion))
+				return;
 		
-		var cssSelector = new CssSelector(appState, value, isArbitraryCss);
+		var cssSelector = new CssSelector(this, value, isArbitraryCss);
 
 		_ = cssSelector.ProcessSelector();
 

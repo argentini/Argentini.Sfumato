@@ -5,22 +5,21 @@ public class To : ScssUtilityClassGroupBase
     public override string SelectorPrefix => "to";
     public override string Category => "gradients";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
+    public override void Initialize(SfumatoAppState appState)
     {
-        ["inherit"] = "--sf-gradient-to: inherit var(--sf-gradient-to-position);",
-    }; 
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.ColorOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+        
+        foreach (var corePrefix in appState.PercentageOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
     
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)
             return string.Empty;
-        
-        #region Static Utilities
-        
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
-        
-        #endregion
         
         #region Calculated Utilities
         

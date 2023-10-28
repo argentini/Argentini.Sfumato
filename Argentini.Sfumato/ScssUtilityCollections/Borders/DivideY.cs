@@ -9,6 +9,17 @@ public class DivideY : ScssUtilityClassGroupBase
         ["reverse"] = "--sf-divide-y-reverse: 1;"
     }; 
     
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+        
+        foreach (var corePrefix in appState.DivideWidthOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+    
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)

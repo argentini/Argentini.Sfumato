@@ -4,6 +4,14 @@ public class BackdropSaturate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "backdrop-saturate";
 
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.EffectsFiltersOneBasedPercentageOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)
@@ -11,7 +19,6 @@ public class BackdropSaturate : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. brightness-1.0)
         if (cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions.TryGetValue(cssSelector.CoreSegment, out var value))
             return $"backdrop-filter: saturate({value});";
 

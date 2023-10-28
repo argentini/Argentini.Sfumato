@@ -4,6 +4,14 @@ public class MixBlend : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "mix-blend";
 
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.BlendModeOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+    
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)

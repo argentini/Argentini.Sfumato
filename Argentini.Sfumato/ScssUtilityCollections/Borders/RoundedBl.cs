@@ -3,6 +3,14 @@ namespace Argentini.Sfumato.ScssUtilityCollections.Borders;
 public class RoundedBl : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix { get; set; } = "rounded-bl";
+
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in appState.RoundedOptions.Keys)
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
     
     public override string GetStyles(CssSelector cssSelector)
     {

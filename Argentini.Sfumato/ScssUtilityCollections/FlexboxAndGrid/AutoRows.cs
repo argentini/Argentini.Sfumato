@@ -12,6 +12,14 @@ public class AutoRows : ScssUtilityClassGroupBase
         ["fr"] = "grid-auto-rows: minmax(0, 1fr);"
     }; 
     
+    public override void Initialize(SfumatoAppState appState)
+    {
+        Selectors.Add(SelectorPrefix);
+
+        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
+            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+    }
+    
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)
