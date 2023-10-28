@@ -284,7 +284,7 @@ public sealed class CssSelector
 			    ArbitraryValue = $"url({ArbitraryValue})";
 	    }
 
-	    var matches = (AppState?.UtilityClassCollection.Keys.Where(c => selectorNoVariantsNoBrackets.StartsWith(c)) ?? Enumerable.Empty<string>()).OrderByDescending(c => c).ToList();
+	    var matches = (AppState?.UtilityClassCollection.Keys.Where(c => selectorNoVariantsNoBrackets.StartsWith(c)) ?? Enumerable.Empty<string>()).ToList();
 
 		if (matches.Count > 1)
 		{

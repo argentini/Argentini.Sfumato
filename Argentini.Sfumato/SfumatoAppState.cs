@@ -1155,7 +1155,7 @@ public sealed class SfumatoAppState
     public ConcurrentDictionary<string,WatchedFile> WatchedFiles { get; } = new();
     public ConcurrentDictionary<string,WatchedScssFile> WatchedScssFiles { get; } = new();
     public ConcurrentDictionary<string,CssSelector> UsedClasses { get; } = new();
-    public ConcurrentDictionary<string,ScssUtilityClassGroupBase> UtilityClassCollection { get; } = new();
+    public Dictionary<string,ScssUtilityClassGroupBase> UtilityClassCollection { get; private set; } = new();
     
     #endregion
     
@@ -1354,14 +1354,16 @@ public sealed class SfumatoAppState
 
         #region Load Utility Classes
 
+        var orderedDictionary = new ConcurrentDictionary<string,ScssUtilityClassGroupBase>();
 		var tasks = new List<Task>();
 		
 		foreach (var scssUtilityClassGroup in typeof(ScssUtilityClassGroupBase).GetInheritedTypes().OrderBy(o => o.Name).ToList())
-		{
-		    tasks.Add(AddUtilityClassToCollection(scssUtilityClassGroup));
-		}
-		
+		    tasks.Add(AddUtilityClassToCollection(scssUtilityClassGroup, orderedDictionary));
+
 		await Task.WhenAll(tasks);
+
+		foreach (var item in orderedDictionary.OrderByDescending(c => c.Key))
+			UtilityClassCollection.Add(item.Key, item.Value);		
         
         #endregion
         
@@ -1369,12 +1371,12 @@ public sealed class SfumatoAppState
 	        DiagnosticOutput.TryAdd("init1", $"Loaded {UtilityClassCollection.Count} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
     }
 
-    private async Task AddUtilityClassToCollection(Type scssUtilityClassGroup)
+    private static async Task AddUtilityClassToCollection(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
     {
 	    if (Activator.CreateInstance(scssUtilityClassGroup) is not ScssUtilityClassGroupBase utilityClassGroup) 
 		    throw new Exception($"Could not instantiate ScssUtilityClassGroupBase object for {scssUtilityClassGroup.Name}");
 
-	    if (UtilityClassCollection.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup) == false)
+	    if (dictionary.TryAdd(utilityClassGroup.SelectorPrefix, utilityClassGroup) == false)
 		    throw new Exception($"Could not add utility class group {utilityClassGroup.SelectorPrefix}");
 
 	    await Task.CompletedTask;
