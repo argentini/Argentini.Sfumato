@@ -27,6 +27,26 @@ public class BorderY : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
+        {
+            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
+            
+            if (valueType == "integer")
+            {
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+                var opacity = int.Parse(modifierValue) / 100m;
+
+                return $"""
+                        border-top-color: {color.Replace(",1.0)", $",{opacity:F2})")};
+                        border-bottom-color: {color.Replace(",1.0)", $",{opacity:F2})")};
+                        """;
+            }
+        }
+
+        #endregion
+        
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
