@@ -1785,6 +1785,9 @@ public sealed class SfumatoAppState
 
 	public static async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, SfumatoAppState appState, string value, bool isArbitraryCss = false)
 	{
+		if (collection.ContainsKey(value))
+			return;
+		
 		var cssSelector = new CssSelector(appState, value, isArbitraryCss);
 
 		_ = cssSelector.ProcessSelector();
