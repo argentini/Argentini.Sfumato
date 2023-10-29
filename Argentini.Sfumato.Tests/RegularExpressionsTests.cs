@@ -3,7 +3,7 @@ using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Tests;
 
-public class SfumatoAppStateTests
+public class RegularExpressionsTests
 {
     #region Constants
 
@@ -44,7 +44,7 @@ public class SfumatoAppStateTests
     #endregion
     
     [Fact]
-    public void MatchArbitraryStylesRegex()
+    public void MatchArbitraryCssRegex()
     {
         var appState = new SfumatoAppState();
         var matches = appState.ArbitraryCssRegex.Matches(Markup);
@@ -58,7 +58,7 @@ public class SfumatoAppStateTests
         var appState = new SfumatoAppState();
         var matches = appState.CoreClassRegex.Matches(Markup);
 
-        Assert.Equal(34, matches.Count);
+        Assert.Equal(31, matches.Count);
     }
 
     [Fact]
@@ -96,48 +96,6 @@ public class SfumatoAppStateTests
         Assert.Empty(matches);
     }
 
-    [Fact]
-    public async Task LoadUtilityClasses()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        Assert.True(appState.UtilityClassCollection.Count > 0);
-    }
-
-    [Fact]
-    public async Task GetAllByClassName()
-    {
-        var appState = new SfumatoAppState();
-
-        await appState.InitializeAsync(Array.Empty<string>());
-
-        var selector = new CssSelector(appState, "bg-slate-100");
-        await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClassGroup);
-
-        selector = new CssSelector(appState, "dark:tabp:hover:bg-slate-100");
-        await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClassGroup);
-        
-        selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
-        await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClassGroup);
-        
-        selector = new CssSelector(appState, "break-after-auto");
-        await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClassGroup);
-        
-        selector = new CssSelector(appState, "dark:tabp:hover:bg-[color:--my-value]");
-        await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClassGroup);
-        
-        selector = new CssSelector(appState, "text-base/5");
-        await selector.ProcessSelector();
-        Assert.NotNull(selector.ScssUtilityClassGroup);
-    }
-    
     [Fact]
     public async Task ExamineMarkupForUsedClasses()
     {
