@@ -58,7 +58,7 @@ public class SfumatoAppStateTests
         var appState = new SfumatoAppState();
         var matches = appState.CoreClassRegex.Matches(Markup);
 
-        Assert.Equal(31, matches.Count);
+        Assert.Equal(34, matches.Count);
     }
 
     [Fact]

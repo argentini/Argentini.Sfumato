@@ -169,7 +169,7 @@ public sealed class SfumatoRunner
 			level++;
 		}
 		
-		if (cssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
+		if (cssSelector is { ScssMarkup: "" })
 			cssSelector.GetStyles();
 
 		scssResult.Append($"{cssSelector.ScssMarkup.Indent(level * IndentationSpaces)}\n");
