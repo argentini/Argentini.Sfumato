@@ -198,15 +198,19 @@ public sealed class CssSelector
 		    return result;
 	    }
 
+	    if (
+		    (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')'))
+		    || ((value.StartsWith('/') || value.StartsWith("./") || value.StartsWith("../")) && Uri.TryCreate(value, UriKind.Relative, out _))
+		    || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+	    )
+	    {
+		    result.ValueType = "url";
+		    return result;
+	    }
+	    
 	    if (value.StartsWith('\'') && value.EndsWith('\''))
 	    {
 		    result.ValueType = "string";
-		    return result;
-	    }
-
-	    if (value.StartsWith("url(", StringComparison.Ordinal) && value.EndsWith(')') || (value.StartsWith('/') && Uri.TryCreate(value, UriKind.Relative, out _)) || (Uri.TryCreate(value, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps)))
-	    {
-		    result.ValueType = "url";
 		    return result;
 	    }
 	    
@@ -307,7 +311,7 @@ public sealed class CssSelector
 	    }
 
 	    #endregion
-
+	    
 	    return result;
     }
 
