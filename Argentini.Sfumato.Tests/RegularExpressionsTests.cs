@@ -47,18 +47,37 @@ public class RegularExpressionsTests
     public void MatchArbitraryCssRegex()
     {
         var appState = new SfumatoAppState();
-        var matches = appState.ArbitraryCssRegex.Matches(Markup);
+        var matches = appState.ArbitraryCssRegex.Matches(Markup).Distinct().ToList();
 
+        Assert.Equal(8, matches.Count);
+        
+        appState.FilterArbitraryCssMatches(matches);
+        
         Assert.Equal(6, matches.Count);
     }
 
     [Fact]
-    public void MatchCoreClassesRegex()
+    public async Task MatchCoreClassesRegex()
     {
         var appState = new SfumatoAppState();
-        var matches = appState.CoreClassRegex.Matches(Markup);
+        var matches = appState.CoreClassRegex.Matches(Markup).Distinct().ToList();
 
-        Assert.Equal(31, matches.Count);
+        Assert.Equal(34, matches.Count);
+        
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        appState.FilterCoreClassMatches(matches);
+        
+        Assert.Equal(24, matches.Count);
+        
+        matches = appState.CoreClassRegex.Matches("<div class=\"!px-0\"></div>").Distinct().ToList();
+
+        if (matches.Count > 0)
+        {
+            appState.FilterCoreClassMatches(matches);
+			
+            Assert.Single(matches);
+        }
     }
 
     [Fact]

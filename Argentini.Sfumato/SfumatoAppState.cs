@@ -1198,7 +1198,7 @@ public sealed class SfumatoAppState
     public string SassCliPath { get; set; } = string.Empty;
     public string ScssPath { get; set; } = string.Empty;
     public string SfumatoScssOutputPath { get; set; } = string.Empty;
-    public List<string> AllPrefixes { get; } = new();
+    public List<string> AllVariants { get; } = new();
     public StringBuilder ScssCoreInjectable { get; } = new();
     public StringBuilder ScssSharedInjectable { get; } = new();
     
@@ -1206,9 +1206,9 @@ public sealed class SfumatoAppState
 
     public SfumatoAppState()
     {
-	    AllPrefixes.Clear();
-	    AllPrefixes.AddRange(MediaQueryPrefixes.Select(p => p.Prefix));
-	    AllPrefixes.AddRange(PseudoclassPrefixes.Select(p => p.Key));
+	    AllVariants.Clear();
+	    AllVariants.AddRange(MediaQueryPrefixes.Select(p => p.Prefix));
+	    AllVariants.AddRange(PseudoclassPrefixes.Select(p => p.Key));
 	    
 	    #region Establish Theme Dictionaries
 
@@ -1225,20 +1225,20 @@ public sealed class SfumatoAppState
 	    
 	    #region Regular Expressions
 	    
-	    var arbitraryCssExpression = $$"""
+	    var arbitraryCssExpression = """
 (?<=[\s"'`])
-({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
-([\!]{0,1}\[({{string.Join("|", CssPropertyNames)}})\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
+([a-z]{1,25}(\-[a-z]{0,25}){0,5}\:){0,10}
+([\!]{0,1}\[(([a-z]{1,25}(\-[a-z]{0,25}){0,5}){0,10})\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])
 (?=[\s"'`])
 """;
 	    
 	    ArbitraryCssRegex = new Regex(arbitraryCssExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 	    
-	    var coreClassExpression = $$"""
+	    var coreClassExpression = """
 (?<=[\s"'`])
-({{string.Join("\\:|", AllPrefixes) + "\\:"}}){0,10}
+([a-z]{1,25}(\-[a-z]{0,25}){0,5}\:){0,10}
 (
-	([\!\-]{0,1}[a-z][a-z0-9\-\.%]{2,100})
+	([\!\-]{0,1}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
 	(
 		(/[a-z0-9\-\.]{1,100})|([/]{0,1}\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\]){0,1}
 	)
@@ -1787,6 +1787,8 @@ public sealed class SfumatoAppState
 
 		if (matches.Count > 0)
 		{
+			FilterCoreClassMatches(matches);
+			
 			foreach (var match in matches)
 				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, match.Value));
 		}
@@ -1795,22 +1797,152 @@ public sealed class SfumatoAppState
 
 		if (matches.Count > 0)
 		{
+			FilterArbitraryCssMatches(matches);
+
 			foreach (var match in matches)
+			{
 				tasks.Add(AddCssSelectorToCollection(watchedFile.ArbitraryCssMatches, match.Value, true));
+			}
 		}
 		
 		await Task.WhenAll(tasks);
 	}
 
+	/// <summary>
+	/// Verifuy a string of colon-separated variants.
+	/// </summary>
+	/// <param name="variantsList"></param>
+	/// <returns></returns>
+	public bool VariantsAreValid(string variantsList)
+	{
+		var variants = variantsList.TrimEnd(':').Split(':');
+		
+		foreach (var variant in variants)
+			if (AllVariants.Contains(variant) == false)
+				return false;
+
+		return true;
+	}
+
+	/// <summary>
+	/// Remove invalid utility class matches from a list of regex matches.
+	/// </summary>
+	/// <param name="matches"></param>
+	public void FilterCoreClassMatches(List<Match> matches)
+	{
+		foreach (var match in matches.ToList())
+		{
+			var value = match.Value;
+			var invalidEnding = false;
+
+			foreach (var exclusion in ClassMatchEndingExclusions)
+				if (value.EndsWith(exclusion))
+				{
+					invalidEnding = true;
+					break;
+				}
+
+			if (invalidEnding)
+			{
+				matches.Remove(match);
+				continue;
+			}
+			
+			var variants = string.Empty;
+			var indexOfBracket = value.IndexOf('[');
+
+			if (indexOfBracket > -1)
+				value = value[..indexOfBracket].TrimEnd('-').TrimEnd('/');
+			
+			var indexOfColon = value.LastIndexOf(':');
+
+			if (indexOfColon > 1 && indexOfColon < value.Length - 1)
+			{
+				variants = value[..(indexOfColon + 1)];
+				value = value[(indexOfColon + 1)..];
+
+				if (VariantsAreValid(variants) == false)
+				{
+					matches.Remove(match);
+					continue;
+				}
+			}
+
+			value = value.TrimStart('!');
+
+			var indexOfSlash = value.LastIndexOf('/');
+
+			if (indexOfSlash > -1)
+				value = value[..indexOfSlash];
+			
+			if (UtilityClassCollection.ContainsKey(value))
+				continue;
+
+			matches.Remove(match);
+		}
+	}
+
+	/// <summary>
+	/// Remove invalid arbitrary CSS matches from a list of regex matches.
+	/// </summary>
+	/// <param name="matches"></param>
+	public void FilterArbitraryCssMatches(List<Match> matches)
+	{
+		foreach (var match in matches.ToList())
+		{
+			var value = match.Value;
+			var variants = string.Empty;
+			var indexOfBracket = value.IndexOf('[');
+
+			if (indexOfBracket == -1)
+			{
+				matches.Remove(match);
+				continue;
+			}
+			
+			if (indexOfBracket > 1)
+			{
+				variants = value[..indexOfBracket];
+				value = value[indexOfBracket..];
+
+				if (VariantsAreValid(variants) == false)
+				{
+					matches.Remove(match);
+					continue;
+				}
+			}
+
+			value = value.TrimStart('!').TrimStart('[').TrimEnd(']');
+			
+			var indexOfColon = value.IndexOf(':');
+
+			if (indexOfColon == -1)
+			{
+				matches.Remove(match);
+				continue;
+			}
+
+			var segments = value.Split(':');
+			
+			if (CssPropertyNames.Contains(segments[0]))
+				continue;
+
+			matches.Remove(match);
+		}
+	}
+
+	/// <summary>
+	/// Create a new CssSelector and add to a collection.
+	/// 
+	/// </summary>
+	/// <param name="collection"></param>
+	/// <param name="value"></param>
+	/// <param name="isArbitraryCss"></param>
 	public async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value, bool isArbitraryCss = false)
 	{
 		if (collection.ContainsKey(value))
 			return;
 
-		foreach (var exclusion in ClassMatchEndingExclusions)
-			if (value.EndsWith(exclusion))
-				return;
-		
 		var cssSelector = new CssSelector(this, value, isArbitraryCss);
 
 		_ = cssSelector.ProcessSelector();
