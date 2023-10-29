@@ -38,18 +38,19 @@ public class My : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
-        
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"""
-                   margin-top: {unit};
-                   margin-bottom: {unit};
-                   """;
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector,
+            """
+            margin-top: {value};
+            margin-bottom: {value};
+            """, out Result))
+            return Result;
 
         #endregion
         
@@ -58,11 +59,12 @@ public class My : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"""
-                   margin-top: {cssSelector.ArbitraryValue};
-                   margin-bottom: {cssSelector.ArbitraryValue};
-                   """;
+        if (ProcessArbitraryValues("length,percentage", cssSelector,
+            """
+            margin-top: {value};
+            margin-bottom: {value};
+            """, out Result))
+            return Result;
       
         #endregion
 

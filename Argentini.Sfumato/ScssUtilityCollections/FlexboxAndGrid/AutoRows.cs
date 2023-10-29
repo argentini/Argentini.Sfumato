@@ -27,9 +27,8 @@ public class AutoRows : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        // Static utilities (e.g. flex)
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -38,8 +37,8 @@ public class AutoRows : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"grid-auto-rows: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "grid-auto-rows: {value};", out Result))
+            return Result;
       
         #endregion
 

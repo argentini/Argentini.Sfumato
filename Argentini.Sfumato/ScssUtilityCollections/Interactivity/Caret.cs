@@ -19,33 +19,15 @@ public class Caret : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. caret-rose-100)
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"caret-color: {color};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "caret-color: {value};", out Result))
+            return Result;
         
         #endregion
         
         #region Modifier Utilities
-        
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-        {
-            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            
-            if (valueType == "integer")
-            {
-                var value = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                var opacity = int.Parse(value) / 100m;
-                
-                return $"caret-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
-            }
 
-            if (valueType == "number")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                return $"caret-color: {color.Replace(",1.0)", $",{modifierValue})")};";
-            }
-        }
+        if (ProcessColorModifierOptions(cssSelector, "caret-color: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -54,8 +36,8 @@ public class Caret : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"caret-color: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "caret-color: {value};", out Result))
+            return Result;
 
         #endregion
 

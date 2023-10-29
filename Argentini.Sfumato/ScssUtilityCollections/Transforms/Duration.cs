@@ -32,8 +32,8 @@ public class Duration : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -42,8 +42,8 @@ public class Duration : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "time")
-            return $"transition-duration: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("time", cssSelector, "transition-duration: {value};", out Result))
+            return Result;
       
         #endregion
 

@@ -19,8 +19,8 @@ public class RoundedSs : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.RoundedOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $"border-start-start-radius: {size};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.RoundedOptions, cssSelector, "border-start-start-radius: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -29,8 +29,8 @@ public class RoundedSs : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"border-start-start-radius: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-start-start-radius: {value};", out Result))
+            return Result;
         
         #endregion
 

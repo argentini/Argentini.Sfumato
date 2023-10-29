@@ -32,18 +32,18 @@ public class Start : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"inset-inline-start: {unit};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "inset-inline-start: {value};", out Result))
+            return Result;
 
-        if (cssSelector.AppState.VerbatimFractionOptions.TryGetValue(cssSelector.CoreSegment, out var fraction))
-            return $"inset-inline-start: {fraction};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "inset-inline-start: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -52,8 +52,8 @@ public class Start : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"inset-inline-start: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "inset-inline-start: {value};", out Result))
+            return Result;
       
         #endregion
 

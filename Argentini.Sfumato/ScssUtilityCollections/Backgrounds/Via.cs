@@ -23,15 +23,15 @@ public class Via : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"""
-                   --sf-gradient-to: transparent  var(--sf-gradient-to-position);
-                   --sf-gradient-stops: var(--sf-gradient-from), {color} var(--sf-gradient-via-position), var(--sf-gradient-to);
-                   """;
-
-        // Color stops from percentages (e.g. from-50%)
-        if (cssSelector.AppState.PercentageOptions.TryGetValue(cssSelector.CoreSegment, out var colorStop))
-            return $"--sf-gradient-via-position: {colorStop};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector,
+                """
+                --sf-gradient-to: transparent var(--sf-gradient-to-position);
+                --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
+                """, out Result))
+            return Result;
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-via-position: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -39,12 +39,13 @@ public class Via : ScssUtilityClassGroupBase
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
-        
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"""
-                   --sf-gradient-to: transparent  var(--sf-gradient-to-position);
-                   --sf-gradient-stops: var(--sf-gradient-from), {cssSelector.ArbitraryValue} var(--sf-gradient-via-position), var(--sf-gradient-to);
-                   """;
+
+        if (ProcessArbitraryValues("color", cssSelector,
+            """
+            --sf-gradient-to: transparent var(--sf-gradient-to-position);
+            --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
+            """, out Result))
+            return Result;
         
         #endregion
 

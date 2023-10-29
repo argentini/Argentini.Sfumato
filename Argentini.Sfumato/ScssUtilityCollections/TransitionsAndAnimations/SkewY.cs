@@ -32,8 +32,8 @@ public class SkewY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -41,9 +41,9 @@ public class SkewY : ScssUtilityClassGroupBase
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
-        
-        if (cssSelector.ArbitraryValueType == "angle")
-            return $"transform: skewY({cssSelector.ArbitraryValue});";
+
+        if (ProcessArbitraryValues("angle", cssSelector, "transform: skewY({value});", out Result))
+            return Result;
       
         #endregion
 

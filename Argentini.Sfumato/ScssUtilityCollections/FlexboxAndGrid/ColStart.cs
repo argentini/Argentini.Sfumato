@@ -27,17 +27,15 @@ public class ColStart : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        // Static utilities (e.g. flex)
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        // Value preset (e.g. col-start-1)
-        if (cssSelector.AppState.FlexboxAndGridWholeNumberOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"grid-column-start: {unit};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-column-start: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -46,8 +44,8 @@ public class ColStart : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "integer")
-            return $"grid-column-start: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer", cssSelector, "grid-column-start: {value};", out Result))
+            return Result;
       
         #endregion
 

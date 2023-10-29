@@ -38,44 +38,35 @@ public class Decoration : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
 
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"text-decoration-color: {color};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "text-decoration-color: {value};", out Result))
+            return Result;
         
         #endregion
 
-        if (cssSelector.HasModifierValue || cssSelector.HasArbitraryValue)
-        {
-            if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-            {
-                var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-
-                if (valueType == "integer")
-                {
-                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                    var opacity = int.Parse(modifierValue) / 100m;
-
-                    return $"text-decoration-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
-                }
-            }
-        }
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "text-decoration-color: {value};", out Result))
+            return Result;
+        
+        #endregion
         
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"text-decoration-color: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "text-decoration-color: {value};", out Result))
+            return Result;
 
-        if (cssSelector.ArbitraryValueType == "length")
-            return $"text-decoration-thickness: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length", cssSelector, "text-decoration-thickness: {value};", out Result))
+            return Result;
         
         #endregion
 

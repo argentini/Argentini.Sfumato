@@ -29,8 +29,8 @@ public class MinH : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -39,8 +39,8 @@ public class MinH : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "integer" or "length" or "percentage")
-            return $"min-height: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "min-height: {value};", out Result))
+            return Result;
       
         #endregion
 

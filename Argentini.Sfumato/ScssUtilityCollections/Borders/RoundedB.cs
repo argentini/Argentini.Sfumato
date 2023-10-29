@@ -19,12 +19,13 @@ public class RoundedB : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.RoundedOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $"""
-                   border-bottom-left-radius: {size};
-                   border-bottom-right-radius: {size};
-                   """;
-        
+        if (ProcessDictionaryOptions(cssSelector.AppState.RoundedOptions, cssSelector,
+            """
+            border-bottom-left-radius: {value};
+            border-bottom-right-radius: {value};
+            """, out Result))
+            return Result;
+
         #endregion
         
         #region Arbitrary Values
@@ -32,11 +33,12 @@ public class RoundedB : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"""
-                    border-bottom-left-radius: {cssSelector.ArbitraryValue};
-                    border-bottom-right-radius: {cssSelector.ArbitraryValue};
-                    """;
+        if (ProcessArbitraryValues("length,percentage", cssSelector,
+                """
+                border-bottom-left-radius: {value};
+                border-bottom-right-radius: {value};
+                """, out Result))
+            return Result;
         
         #endregion
 

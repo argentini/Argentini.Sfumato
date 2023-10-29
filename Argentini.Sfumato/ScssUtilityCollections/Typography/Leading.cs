@@ -19,8 +19,8 @@ public class Leading : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LeadingOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"line-height: {unit};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.LeadingOptions, cssSelector, "line-height: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -29,8 +29,8 @@ public class Leading : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "integer" or "number")
-            return $"line-height: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,integer,number", cssSelector, "line-height: {value};", out Result))
+            return Result;
 
         #endregion
 

@@ -32,8 +32,8 @@ public class Rotate : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -42,8 +42,8 @@ public class Rotate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "angle")
-            return $"transform: rotate({cssSelector.ArbitraryValue});";
+        if (ProcessArbitraryValues("angle", cssSelector, "transform: rotate({value});", out Result))
+            return Result;
       
         #endregion
 

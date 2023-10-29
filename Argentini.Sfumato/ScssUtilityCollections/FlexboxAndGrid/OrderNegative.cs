@@ -19,9 +19,8 @@ public class OrderNegative : ScssUtilityClassGroupBase
 
         #region Calculated Utilities
         
-        // Value preset (e.g. -order-1)
-        if (cssSelector.AppState.FlexboxAndGridNegativeWholeNumberOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"order: {unit};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridNegativeWholeNumberOptions, cssSelector, "order: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -30,8 +29,8 @@ public class OrderNegative : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "integer")
-            return $"order: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer", cssSelector, "order: {value};", out Result))
+            return Result;
       
         #endregion
 

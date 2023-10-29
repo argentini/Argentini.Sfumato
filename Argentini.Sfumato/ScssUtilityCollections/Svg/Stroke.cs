@@ -30,15 +30,15 @@ public class Stroke : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"stroke: {color};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "stroke: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -47,11 +47,11 @@ public class Stroke : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"stroke: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "stroke: {value};", out Result))
+            return Result;
 
-        if (cssSelector.ArbitraryValueType is "length" or "integer" or "number" or "percentage")
-            return $"stroke-width: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer,length,percentage,number", cssSelector, "stroke-width: {value};", out Result))
+            return Result;
         
         #endregion
 

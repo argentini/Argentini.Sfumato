@@ -22,13 +22,12 @@ public class To : ScssUtilityClassGroupBase
             return string.Empty;
         
         #region Calculated Utilities
-        
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"--sf-gradient-to: {color} var(--sf-gradient-to-position);";
 
-        // Color stops from percentages (e.g. from-50%)
-        if (cssSelector.AppState.PercentageOptions.TryGetValue(cssSelector.CoreSegment, out var colorStop))
-            return $"--sf-gradient-to-position: {colorStop};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "--sf-gradient-to: {value} var(--sf-gradient-to-position);", out Result))
+            return Result;
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-to-position: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -37,11 +36,11 @@ public class To : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"--sf-gradient-to: {cssSelector.ArbitraryValue} var(--sf-gradient-to-position);";
-        
-        if (cssSelector.ArbitraryValueType == "percentage")
-            return $"--sf-gradient-to-position: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "--sf-gradient-to: {value} var(--sf-gradient-to-position);", out Result))
+            return Result;
+
+        if (ProcessArbitraryValues("percentage", cssSelector, "--sf-gradient-to-position: {value};", out Result))
+            return Result;
 
         #endregion
 

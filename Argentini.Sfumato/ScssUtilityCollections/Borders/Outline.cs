@@ -34,44 +34,25 @@ public class Outline : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        // Color preset (e.g. border-rose-100)
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"outline-color: {color};";
-
-        // Value preset (e.g. border-2)
-        if (cssSelector.AppState.BorderWidthOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $"outline-width: {size};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "outline-color: {value};", out Result))
+            return Result;
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "outline-width: {value};", out Result))
+            return Result;
         
         #endregion
         
         #region Modifier Utilities
         
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-        {
-            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            
-            if (valueType == "integer")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                var opacity = int.Parse(modifierValue) / 100m;
-
-                return $"outline-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
-            }
-
-            if (valueType == "number")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                return $"outline-color: {color.Replace(",1.0)", $",{modifierValue})")};";
-            }
-        }
+        if (ProcessColorModifierOptions(cssSelector, "outline-color: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -80,14 +61,14 @@ public class Outline : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"outline-color: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "outline-color: {value};", out Result))
+            return Result;
 
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"outline-width: {cssSelector.ArbitraryValue};";
-        
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"outline-style: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "outline-width: {value};", out Result))
+            return Result;
+
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "outline-style: {value};", out Result))
+            return Result;
         
         #endregion
 

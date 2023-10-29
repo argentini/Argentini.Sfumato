@@ -19,9 +19,8 @@ public class OutlineOffset : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Value preset (e.g. outline-offset-2)
-        if (cssSelector.AppState.BorderWidthOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $"outline-offset: {size};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "outline-offset: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -30,8 +29,8 @@ public class OutlineOffset : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"outline-offset: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "outline-offset: {value};", out Result))
+            return Result;
         
         #endregion
 

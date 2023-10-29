@@ -51,53 +51,33 @@ public class Divide : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        // Color preset (e.g. divide-rose-100)
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $$"""
-                   & > * + * {
-                       border-color: {{color}};
-                   }
-                   """;
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, 
+                """
+                & > * + * {
+                    border-color: {value};
+                }
+                """, out Result))
+            return Result;
         
         #endregion
         
         #region Modifier Utilities
         
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-        {
-            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            
-            if (valueType == "integer")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                var opacity = int.Parse(modifierValue) / 100m;
-
-                return $$"""
-                       & > * + * {
-                           border-color: {{color.Replace(",1.0)", $",{opacity:F2})")}};
-                       }
-                       """;
-            }
-            
-            if (valueType == "number")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                return $$"""
-                       & > * + * {
-                           border-color: {{color.Replace(",1.0)", $",{modifierValue})")}};
-                       }
-                       """;
-            }
-        }
-
+        if (ProcessColorModifierOptions(cssSelector,
+                """
+                & > * + * {
+                    border-color: {value};
+                }
+                """, out Result))
+            return Result;
+        
         #endregion
         
         #region Arbitrary Values
@@ -105,12 +85,13 @@ public class Divide : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $$"""
-                   & > * + * {
-                       border-color: {{cssSelector.ArbitraryValue}};
-                   }
-                   """;
+        if (ProcessArbitraryValues("color", cssSelector,
+                """
+                & > * + * {
+                    border-color: {value};
+                }
+                """, out Result))
+            return Result;
 
         #endregion
 

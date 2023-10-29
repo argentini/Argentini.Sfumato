@@ -28,15 +28,15 @@ public class ScrollPs : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"scroll-padding-inline-start: {unit};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "scroll-padding-inline-start: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -45,8 +45,8 @@ public class ScrollPs : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"scroll-padding-inline-start: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "scroll-padding-inline-start: {value};", out Result))
+            return Result;
         
         #endregion
 

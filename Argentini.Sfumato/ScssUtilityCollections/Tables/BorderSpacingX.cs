@@ -28,15 +28,15 @@ public class BorderSpacingX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"border-spacing: {unit} var(--sf-border-spacing-y);";
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "border-spacing: {value} var(--sf-border-spacing-y);", out Result))
+            return Result;
 
         #endregion
         
@@ -45,8 +45,8 @@ public class BorderSpacingX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"border-spacing: {cssSelector.ArbitraryValue} var(--sf-border-spacing-y);";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-spacing: {value} var(--sf-border-spacing-y);", out Result))
+            return Result;
       
         #endregion
 

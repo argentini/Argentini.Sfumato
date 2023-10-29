@@ -19,8 +19,8 @@ public class Shrink : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "integer" or "number")
-            return $"flex-shrink: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer,number", cssSelector, "flex-shrink: {value};", out Result))
+            return Result;
       
         #endregion
 

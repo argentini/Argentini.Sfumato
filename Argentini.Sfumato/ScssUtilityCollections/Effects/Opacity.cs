@@ -19,9 +19,8 @@ public class Opacity : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. opacity-10)
-        if (cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions.TryGetValue(cssSelector.CoreSegment, out var value))
-            return $"opacity: {value};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "opacity: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -30,8 +29,8 @@ public class Opacity : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "number")
-            return $"opacity: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("number", cssSelector, "opacity: {value};", out Result))
+            return Result;
         
         #endregion
 

@@ -18,34 +18,17 @@ public class Accent : ScssUtilityClassGroupBase
             return string.Empty;
         
         #region Calculated Utilities
-        
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"accent-color: {color};";
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "accent-color: {value};", out Result))
+            return Result;
         
         #endregion
         
         #region Modifier Utilities
         
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-        {
-            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-
-            if (valueType == "integer")
-            {
-                var value = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                var opacity = int.Parse(value) / 100m;
-                
-                return $"accent-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
-            }
-
-            if (valueType == "number")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                return $"accent-color: {color.Replace(",1.0)", $",{modifierValue})")};";
-            }
-        }
-
+        if (ProcessColorModifierOptions(cssSelector, "accent-color: {value};", out Result))
+            return Result;
+        
         #endregion
         
         #region Arbitrary Values
@@ -53,8 +36,8 @@ public class Accent : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"accent-color: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "accent-color: {value};", out Result))
+            return Result;
 
         #endregion
 

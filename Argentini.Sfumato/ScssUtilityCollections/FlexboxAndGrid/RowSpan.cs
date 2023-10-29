@@ -27,17 +27,15 @@ public class RowSpan : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        // Static utilities (e.g. flex)
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
-        
-        // Value preset (e.g. basis-0.5)
-        if (cssSelector.AppState.FlexboxAndGridWholeNumberOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"grid-row: span {unit} / span {unit};";
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-row: span {value} / span {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -46,9 +44,9 @@ public class RowSpan : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"grid-row: {cssSelector.ArbitraryValue};";
-      
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "grid-row: {value};", out Result))
+            return Result;
+
         #endregion
 
         return string.Empty;

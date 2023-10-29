@@ -25,8 +25,8 @@ public class Sepia : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -35,8 +35,8 @@ public class Sepia : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "percentage")
-            return $"filter: sepia({cssSelector.ArbitraryValue});";
+        if (ProcessArbitraryValues("percentage", cssSelector, "filter: sepia({value});", out Result))
+            return Result;
         
         #endregion
 

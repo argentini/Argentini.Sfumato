@@ -59,8 +59,8 @@ public class LineClamp : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -69,13 +69,14 @@ public class LineClamp : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "integer")
-            return $"""
-                   -webkit-line-clamp: {cssSelector.ArbitraryValue};
-                   overflow: hidden;
-                   display: -webkit-box;
-                   -webkit-box-orient: vertical;
-                   """;
+        if (ProcessArbitraryValues("integer", cssSelector,
+            """
+            -webkit-line-clamp: {value};
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            """, out Result))
+            return Result;
 
         #endregion
 

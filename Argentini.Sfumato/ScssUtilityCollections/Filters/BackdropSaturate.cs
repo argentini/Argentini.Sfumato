@@ -19,8 +19,8 @@ public class BackdropSaturate : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions.TryGetValue(cssSelector.CoreSegment, out var value))
-            return $"backdrop-filter: saturate({value});";
+        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "backdrop-filter: saturate({value});", out Result))
+            return Result;
 
         #endregion
         
@@ -28,9 +28,9 @@ public class BackdropSaturate : ScssUtilityClassGroupBase
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
-        
-        if (cssSelector.ArbitraryValueType is "number")
-            return $"backdrop-filter: saturate({cssSelector.ArbitraryValue});";
+
+        if (ProcessArbitraryValues("number", cssSelector, "backdrop-filter: saturate({value});", out Result))
+            return Result;
         
         #endregion
 

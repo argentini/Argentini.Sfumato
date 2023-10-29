@@ -35,84 +35,37 @@ public class Text : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
 
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"color: {color};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "color: {value};", out Result))
+            return Result;
 
         if (cssSelector.AppState.TextSizeOptions.TryGetValue(cssSelector.CoreSegment, out var fontSize))
-            return $"""
-                   font-size: {fontSize};
-                   line-height: {cssSelector.AppState.TextSizeLeadingOptions[cssSelector.CoreSegment]};
-                   """; 
+            if (ProcessDictionaryOptions(cssSelector.AppState.TextSizeLeadingOptions, cssSelector,
+                $$"""
+                 font-size: {{fontSize}};
+                 line-height: {value};
+                 """, out Result))
+                return Result;
         
         #endregion
         
         #region Modifier Utilities
 
-        if (cssSelector.HasModifierValue || cssSelector.HasArbitraryValue)
-        {
-            if (cssSelector.AppState.TextSizeOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out fontSize))
-            {
-                var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-
-                if (valueType is "length" or "percentage")
-                {
-                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                    return $"""
-                            font-size: {fontSize};
-                            line-height: {modifierValue};
-                            """;
-                }
-                
-                if (valueType is "integer" or "number" or "")
-                {
-                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                    if (valueType is "integer" or "" && cssSelector.AppState.LeadingOptions.TryGetValue(modifierValue, out var option))
-                    {
-                        return $"""
-                                font-size: {fontSize};
-                                line-height: {option};
-                                """;
-                    }
-
-                    if (valueType is "integer" or "number")
-                    {
-                        return $"""
-                                font-size: {fontSize};
-                                line-height: {modifierValue};
-                                """;
-                    }
-                }
-            }
+        if (ProcessTextSizeLeadingModifierOptions(cssSelector,
+                """
+                font-size: {fontSize};
+                line-height: {value};
+                """, out Result))
+            return Result;
             
-            if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-            {
-                var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-
-                if (valueType == "integer")
-                {
-                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                    var opacity = int.Parse(modifierValue) / 100m;
-
-                    return $"color: {color.Replace(",1.0)", $",{opacity:F2})")};";
-                }
-
-                if (valueType == "number")
-                {
-                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                    return $"color: {color.Replace(",1.0)", $",{modifierValue})")};";
-                }
-            }
-        }
+        if (ProcessColorModifierOptions(cssSelector, "color: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -120,12 +73,12 @@ public class Text : ScssUtilityClassGroupBase
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
-        
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"color: {cssSelector.ArbitraryValue};";
 
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"font-size: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "color: {value};", out Result))
+            return Result;
+
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "font-size: {value};", out Result))
+            return Result;
 
         #endregion
 

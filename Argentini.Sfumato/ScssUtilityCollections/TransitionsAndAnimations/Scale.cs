@@ -33,8 +33,8 @@ public class Scale : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -43,8 +43,8 @@ public class Scale : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "number")
-            return $"transform: scale({cssSelector.ArbitraryValue});";
+        if (ProcessArbitraryValues("number", cssSelector, "transform: scale({value});", out Result))
+            return Result;
       
         #endregion
 

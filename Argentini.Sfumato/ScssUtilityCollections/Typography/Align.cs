@@ -31,8 +31,8 @@ public class Align : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -41,8 +41,8 @@ public class Align : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length")
-            return $"vertical-align: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length", cssSelector, "vertical-align: {value};", out Result))
+            return Result;
 
         #endregion
 

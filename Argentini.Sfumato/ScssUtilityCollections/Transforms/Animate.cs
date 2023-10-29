@@ -72,8 +72,8 @@ public class Animate : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -82,8 +82,8 @@ public class Animate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"animation: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "animation: {value};", out Result))
+            return Result;
       
         #endregion
 

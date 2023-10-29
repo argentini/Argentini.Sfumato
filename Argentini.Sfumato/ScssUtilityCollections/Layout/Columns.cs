@@ -40,15 +40,15 @@ public class Columns : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutWholeNumberOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $"columns: {size};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutWholeNumberOptions, cssSelector, "columns: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -57,8 +57,8 @@ public class Columns : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage" or "integer")
-            return $"columns: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "columns: {value};", out Result))
+            return Result;
         
         #endregion
 

@@ -24,8 +24,8 @@ public class ListImage : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -34,9 +34,9 @@ public class ListImage : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "url")
-            return $"list-style-image: {cssSelector.ArbitraryValue};";
-        
+        if (ProcessArbitraryValues("url", cssSelector, "list-style-image: {value};", out Result))
+            return Result;
+
         #endregion
 
         return string.Empty;

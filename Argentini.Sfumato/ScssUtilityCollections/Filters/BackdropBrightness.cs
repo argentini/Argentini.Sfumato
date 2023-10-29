@@ -19,9 +19,8 @@ public class BackdropBrightness : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. brightness-1.0)
-        if (cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions.TryGetValue(cssSelector.CoreSegment, out var value))
-            return $"backdrop-filter: brightness({value});";
+        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "backdrop-filter: brightness({value});", out Result))
+            return Result;
 
         #endregion
         
@@ -29,10 +28,10 @@ public class BackdropBrightness : ScssUtilityClassGroupBase
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
-        
-        if (cssSelector.ArbitraryValueType is "number")
-            return $"backdrop-filter: brightness({cssSelector.ArbitraryValue});";
-        
+
+        if (ProcessArbitraryValues("number", cssSelector, "backdrop-filter: brightness({value});", out Result))
+            return Result;
+
         #endregion
 
         return string.Empty;

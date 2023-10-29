@@ -19,9 +19,8 @@ public class Blur : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. blur-xl)
-        if (cssSelector.AppState.FilterSizeOptions.TryGetValue(cssSelector.CoreSegment, out var value))
-            return $"filter: blur({value});";
+        if (ProcessDictionaryOptions(cssSelector.AppState.FilterSizeOptions, cssSelector, "filter: blur({value});", out Result))
+            return Result;
 
         #endregion
         
@@ -30,8 +29,8 @@ public class Blur : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"filter: blur({cssSelector.ArbitraryValue});";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "filter: blur({value});", out Result))
+            return Result;
         
         #endregion
 

@@ -59,8 +59,8 @@ public class Cursor : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -69,8 +69,8 @@ public class Cursor : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"cursor: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "cursor: {value};", out Result))
+            return Result;
         
         #endregion
 

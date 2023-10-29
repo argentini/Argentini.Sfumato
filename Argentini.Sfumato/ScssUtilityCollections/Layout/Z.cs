@@ -32,9 +32,8 @@ public class Z : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        // Static utilities (e.g. flex)
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -43,8 +42,8 @@ public class Z : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "integer")
-            return $"z-index: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer", cssSelector, "z-index: {value};", out Result))
+            return Result;
       
         #endregion
 

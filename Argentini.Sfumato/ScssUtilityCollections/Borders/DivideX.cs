@@ -27,21 +27,21 @@ public class DivideX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        // Color preset (e.g. divide-rose-100)
-        if (cssSelector.AppState.DivideWidthOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $$"""
-                   & > * + * {
-                       border-right-width: 0px;
-                       border-left-width: {{size}};
-                   }
-                   """;
+        if (ProcessDictionaryOptions(cssSelector.AppState.DivideWidthOptions, cssSelector,
+            """
+            & > * + * {
+                border-right-width: 0px;
+                border-left-width: {value};
+            }
+            """, out Result))
+            return Result;
         
         #endregion
         
@@ -50,13 +50,14 @@ public class DivideX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $$"""
-                   & > * + * {
-                       border-right-width: 0px;
-                       border-left-width: {{cssSelector.ArbitraryValue}};
-                   }
-                   """;
+        if (ProcessArbitraryValues("length,percentage", cssSelector,
+            """
+            & > * + * {
+                border-right-width: 0px;
+                border-left-width: {value};
+            }
+            """, out Result))
+            return Result;
 
         #endregion
 

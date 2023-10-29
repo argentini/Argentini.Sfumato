@@ -29,17 +29,15 @@ public class Order : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        // Static utilities (e.g. flex)
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
-        
-        // Value preset (e.g. order-1)
-        if (cssSelector.AppState.FlexboxAndGridWholeNumberOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"order: {unit};";
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "order: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -48,8 +46,8 @@ public class Order : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "integer")
-            return $"order: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer", cssSelector, "order: {value};", out Result))
+            return Result;
       
         #endregion
 

@@ -27,39 +27,22 @@ public class Fill : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"fill: {color};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "fill: {value};", out Result))
+            return Result;
 
         #endregion
 
         #region Modifier Utilities
         
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-        {
-            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            
-            if (valueType == "integer")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                var opacity = int.Parse(modifierValue) / 100m;
-
-                return $"fill: {color.Replace(",1.0)", $",{opacity:F2})")};";
-            }
-        
-            if (valueType == "number")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                return $"fill: {color.Replace(",1.0)", $",{modifierValue})")};";
-            }
-        }
+        if (ProcessColorModifierOptions(cssSelector, "fill: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -68,8 +51,8 @@ public class Fill : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"fill: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "fill: {value};", out Result))
+            return Result;
       
         #endregion
 

@@ -19,9 +19,8 @@ public class BgBlend : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. mix-blend-normal)
-        if (cssSelector.AppState.BlendModeOptions.TryGetValue(cssSelector.CoreSegment, out var value))
-            return $"background-blend-mode: {value};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.BlendModeOptions, cssSelector, "background-blend-mode: {value};", out Result))
+            return Result;
 
         #endregion
 

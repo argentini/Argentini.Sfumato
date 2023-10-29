@@ -22,13 +22,11 @@ public class Basis : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Value preset (e.g. basis-0.5)
-        if (cssSelector.AppState.FlexRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"flex-basis: {unit};";
-        
-        // Value preset (e.g. basis-1/2)
-        if (cssSelector.AppState.FractionOptions.TryGetValue(cssSelector.CoreSegment, out var fraction))
-            return $"flex-basis: {fraction};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexRemUnitOptions, cssSelector, "flex-basis: {value};", out Result))
+            return Result;
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.FractionOptions, cssSelector, "flex-basis: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -37,8 +35,8 @@ public class Basis : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"flex-basis: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "flex-basis: {value};", out Result))
+            return Result;
       
         #endregion
 

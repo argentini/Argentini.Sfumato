@@ -27,8 +27,8 @@ public class Aspect : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -37,8 +37,8 @@ public class Aspect : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "ratio")
-            return $"aspect-ratio: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("ratio", cssSelector, "aspect-ratio: {value};", out Result))
+            return Result;
         
         #endregion
 

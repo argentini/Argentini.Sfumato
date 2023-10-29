@@ -35,44 +35,25 @@ public class Border : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
-        
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
+
         #endregion
         
         #region Calculated Utilities
-        
-        // Color preset (e.g. border-rose-100)
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"border-color: {color};";
 
-        // Value preset (e.g. border-2)
-        if (cssSelector.AppState.BorderWidthOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $"border-width: {size};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-color: {value};", out Result))
+            return Result;
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-width: {value};", out Result))
+            return Result;
         
         #endregion
         
         #region Modifier Utilities
-        
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-        {
-            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            
-            if (valueType == "integer")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                var opacity = int.Parse(modifierValue) / 100m;
 
-                return $"border-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
-            }
-            
-            if (valueType == "number")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                return $"border-color: {color.Replace(",1.0)", $",{modifierValue})")};";
-            }
-        }
+        if (ProcessColorModifierOptions(cssSelector, "border-color: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -81,14 +62,14 @@ public class Border : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"border-color: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "border-color: {value};", out Result))
+            return Result;
 
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"border-width: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-width: {value};", out Result))
+            return Result;
 
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"border-style: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "border-style: {value};", out Result))
+            return Result;
         
         #endregion
 

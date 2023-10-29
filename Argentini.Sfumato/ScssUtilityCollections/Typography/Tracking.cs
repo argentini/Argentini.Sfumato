@@ -29,8 +29,8 @@ public class Tracking : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -39,8 +39,8 @@ public class Tracking : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "length")
-            return $"letter-spacing: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length", cssSelector, "letter-spacing: {value};", out Result))
+            return Result;
 
         #endregion
 

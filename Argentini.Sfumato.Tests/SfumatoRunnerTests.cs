@@ -290,12 +290,6 @@ public class SfumatoRunnerTests
                              font-size: 1rem;
                              line-height: 3rem;
                          }
-                         .desk\:text-slate-50\[\#112233\] {
-                             color: rgba(248,250,252,1.0);
-                         }
-                         .desk\:text-slate\[\#112233\] {
-                             color: rgba(203,213,225,1.0);
-                         }
                          .desk\:text\[\#112233\] {
                              color: #112233;
                          }

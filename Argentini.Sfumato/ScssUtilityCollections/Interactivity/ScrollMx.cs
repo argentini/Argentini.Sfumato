@@ -34,18 +34,19 @@ public class ScrollMx : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"""
-                   scroll-margin-left: {unit};
-                   scroll-margin-right: {unit};
-                   """;
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector,
+            """
+            scroll-margin-left: {value};
+            scroll-margin-right: {value};
+            """, out Result))
+            return Result;
         
         #endregion
         
@@ -54,11 +55,12 @@ public class ScrollMx : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"""
-                   scroll-margin-left: {cssSelector.ArbitraryValue};
-                   scroll-margin-right: {cssSelector.ArbitraryValue};
-                   """;
+        if (ProcessArbitraryValues("length,percentage", cssSelector,
+            """
+            scroll-margin-left: {value};
+            scroll-margin-right: {value};
+            """, out Result))
+            return Result;
         
         #endregion
 

@@ -48,8 +48,8 @@ public class MaxW : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -58,8 +58,8 @@ public class MaxW : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "integer" or "length" or "percentage")
-            return $"max-width: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "max-width: {value};", out Result))
+            return Result;
       
         #endregion
 

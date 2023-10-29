@@ -31,18 +31,18 @@ public class TranslateY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"transform: translateY({unit});";
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "transform: translateY({value});", out Result))
+            return Result;
 
-        if (cssSelector.AppState.VerbatimFractionOptions.TryGetValue(cssSelector.CoreSegment, out var fraction))
-            return $"transform: translateY({fraction});";
+        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "transform: translateY({value});", out Result))
+            return Result;
         
         #endregion
         
@@ -51,8 +51,8 @@ public class TranslateY : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"transform: translateY({cssSelector.ArbitraryValue});";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "transform: translateY({value});", out Result))
+            return Result;
       
         #endregion
 

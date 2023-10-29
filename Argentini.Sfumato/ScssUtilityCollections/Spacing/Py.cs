@@ -34,18 +34,19 @@ public class Py : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"""
-                   padding-top: {unit};
-                   padding-bottom: {unit};
-                   """;
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector,
+            """
+            padding-top: {value};
+            padding-bottom: {value};
+            """, out Result))
+            return Result;
 
         #endregion
         
@@ -54,11 +55,12 @@ public class Py : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"""
-                   padding-top: {cssSelector.ArbitraryValue};
-                   padding-bottom: {cssSelector.ArbitraryValue};
-                   """;
+        if (ProcessArbitraryValues("length,percentage", cssSelector,
+            """
+            padding-top: {value};
+            padding-bottom: {value};
+            """, out Result))
+            return Result;
       
         #endregion
 

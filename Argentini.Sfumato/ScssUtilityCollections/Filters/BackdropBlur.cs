@@ -19,9 +19,8 @@ public class BackdropBlur : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        // Color preset (e.g. blur-xl)
-        if (cssSelector.AppState.FilterSizeOptions.TryGetValue(cssSelector.CoreSegment, out var value))
-            return $"backdrop-filter: blur({value});";
+        if (ProcessDictionaryOptions(cssSelector.AppState.FilterSizeOptions, cssSelector, "backdrop-filter: blur({value});", out Result))
+            return Result;
 
         #endregion
         
@@ -30,8 +29,8 @@ public class BackdropBlur : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "length")
-            return $"backdrop-filter: blur({cssSelector.ArbitraryValue});";
+        if (ProcessArbitraryValues("length", cssSelector, "backdrop-filter: blur({value});", out Result))
+            return Result;
         
         #endregion
 

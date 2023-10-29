@@ -27,17 +27,15 @@ public class GridCols : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        // Static utilities (e.g. flex)
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        // Value preset (e.g. grid-cols-1)
-        if (cssSelector.AppState.FlexboxAndGridWholeNumberOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"grid-template-columns: repeat({unit}, minmax(0, 1fr));";
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-template-columns: repeat({value}, minmax(0, 1fr));", out Result))
+            return Result;
         
         #endregion
         
@@ -45,9 +43,9 @@ public class GridCols : ScssUtilityClassGroupBase
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
-        
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"grid-template-columns: {cssSelector.ArbitraryValue};";
+
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "grid-template-columns: {value};", out Result))
+            return Result;
       
         #endregion
 

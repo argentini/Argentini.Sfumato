@@ -34,18 +34,19 @@ public class ScrollPx : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.LayoutRemUnitOptions.TryGetValue(cssSelector.CoreSegment, out var unit))
-            return $"""
-                   scroll-padding-left: {unit};
-                   scroll-padding-right: {unit};
-                   """;
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector,
+            """
+            scroll-padding-left: {value};
+            scroll-padding-right: {value};
+            """, out Result))
+            return Result;
         
         #endregion
         
@@ -54,11 +55,12 @@ public class ScrollPx : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"""
-                   scroll-padding-left: {cssSelector.ArbitraryValue};
-                   scroll-padding-right: {cssSelector.ArbitraryValue};
-                   """;
+        if (ProcessArbitraryValues("length,percentage", cssSelector,
+            """
+            scroll-padding-left: {value};
+            scroll-padding-right: {value};
+            """, out Result))
+            return Result;
         
         #endregion
 

@@ -36,8 +36,8 @@ public class Font : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -46,11 +46,11 @@ public class Font : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "integer")
-            return $"font-weight: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer", cssSelector, "font-weight: {value};", out Result))
+            return Result;
 
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"font-family: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "font-family: {value};", out Result))
+            return Result;
         
         #endregion
 

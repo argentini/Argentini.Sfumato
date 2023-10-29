@@ -19,8 +19,8 @@ public class Grow : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "integer" or "number")
-            return $"flex-grow: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer,number", cssSelector, "flex-grow: {value};", out Result))
+            return Result;
       
         #endregion
 

@@ -29,8 +29,8 @@ public class MinW : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -39,8 +39,8 @@ public class MinW : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "integer" or "length" or "percentage")
-            return $"min-width: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "min-width: {value};", out Result))
+            return Result;
       
         #endregion
 

@@ -36,40 +36,22 @@ public class Shadow : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
         #region Calculated Utilities
-        
-        // Color preset (e.g. border-rose-100)
-        if (cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment, out var color))
-            return $"--sf-shadow-color: {color};";
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "--sf-shadow-color: {value};", out Result))
+            return Result;
 
         #endregion
         
         #region Modifier Utilities
         
-        if ((cssSelector.HasModifierValue || cssSelector.HasArbitraryValue) && cssSelector.AppState.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out color))
-        {
-            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-            
-            if (valueType == "integer")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                var opacity = int.Parse(modifierValue) / 100m;
-
-                return $"--sf-shadow-color: {color.Replace(",1.0)", $",{opacity:F2})")};";
-            }
-
-            if (valueType == "number")
-            {
-                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-
-                return $"--sf-shadow-color: {color.Replace(",1.0)", $",{modifierValue})")};";
-            }
-        }
+        if (ProcessColorModifierOptions(cssSelector, "--sf-shadow-color: {value};", out Result))
+            return Result;
 
         #endregion
         
@@ -78,11 +60,11 @@ public class Shadow : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "color")
-            return $"--sf-shadow-color: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("color", cssSelector, "--sf-shadow-color: {value};", out Result))
+            return Result;
 
-        if (cssSelector.ArbitraryValueType == string.Empty)
-            return $"box-shadow: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "box-shadow: {value};", out Result))
+            return Result;
         
         #endregion
 

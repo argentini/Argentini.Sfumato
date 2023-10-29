@@ -29,8 +29,8 @@ public class BackdropHueRotate : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (StaticUtilities.TryGetValue(cssSelector.CoreSegment, out var styles))
-            return styles;
+        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+            return Result;
         
         #endregion
         
@@ -39,8 +39,8 @@ public class BackdropHueRotate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType == "angle")
-            return $"backdrop-filter: hue-rotate({cssSelector.ArbitraryValue});";
+        if (ProcessArbitraryValues("angle", cssSelector, "backdrop-filter: hue-rotate({value});", out Result))
+            return Result;
         
         #endregion
 

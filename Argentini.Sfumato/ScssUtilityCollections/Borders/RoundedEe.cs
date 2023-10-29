@@ -19,8 +19,8 @@ public class RoundedEe : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (cssSelector.AppState.RoundedOptions.TryGetValue(cssSelector.CoreSegment, out var size))
-            return $"border-end-end-radius: {size};";
+        if (ProcessDictionaryOptions(cssSelector.AppState.RoundedOptions, cssSelector, "border-end-end-radius: {value};", out Result))
+            return Result;
         
         #endregion
         
@@ -29,8 +29,8 @@ public class RoundedEe : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (cssSelector.ArbitraryValueType is "length" or "percentage")
-            return $"border-end-end-radius: {cssSelector.ArbitraryValue};";
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-end-end-radius: {value};", out Result))
+            return Result;
         
         #endregion
 
