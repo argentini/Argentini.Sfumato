@@ -1,4 +1,3 @@
-using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Tests;
@@ -71,6 +70,15 @@ public class RegularExpressionsTests
         Assert.Equal(24, matches.Count);
         
         matches = appState.CoreClassRegex.Matches("<div class=\"!px-0\"></div>").Distinct().ToList();
+
+        if (matches.Count > 0)
+        {
+            appState.FilterCoreClassMatches(matches);
+			
+            Assert.Single(matches);
+        }
+        
+        matches = appState.CoreClassRegex.Matches("<div class=\"-order-1\"></div>").Distinct().ToList();
 
         if (matches.Count > 0)
         {
