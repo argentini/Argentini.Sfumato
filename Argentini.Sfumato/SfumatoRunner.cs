@@ -169,15 +169,10 @@ public sealed class SfumatoRunner
 			level++;
 		}
 		
-		if (cssSelector.IsArbitraryCss)
-			scssResult.Append($"{cssSelector.ArbitraryValue.Indent(level * IndentationSpaces)}{(cssSelector.IsImportant ? " !important" : string.Empty)};\n");
-		else
-		{
-			if (cssSelector.ScssMarkup == string.Empty)
-				cssSelector.GetStyles();
+		if (cssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
+			cssSelector.GetStyles();
 
-			scssResult.Append($"{cssSelector.ScssMarkup.Replace(";", cssSelector.IsImportant ? " !important;" : ";").Indent(level * IndentationSpaces)}\n");
-		}
+		scssResult.Append($"{cssSelector.ScssMarkup.Indent(level * IndentationSpaces)}\n");
 			
 		while (level > 0)
 		{

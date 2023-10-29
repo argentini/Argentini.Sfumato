@@ -6,10 +6,10 @@ public class Leading : ScssUtilityClassGroupBase
 
     public override void Initialize(SfumatoAppState appState)
     {
-        Selectors.Add(SelectorPrefix);
+        SelectorIndex.Add(SelectorPrefix);
 
         foreach (var corePrefix in appState.LeadingOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
     }
 
     public override string GetStyles(CssSelector cssSelector)

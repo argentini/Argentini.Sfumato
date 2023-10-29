@@ -6,10 +6,10 @@ public class Brightness : ScssUtilityClassGroupBase
 
     public override void Initialize(SfumatoAppState appState)
     {
-        Selectors.Add(SelectorPrefix);
+        SelectorIndex.Add(SelectorPrefix);
 
         foreach (var corePrefix in appState.EffectsFiltersOneBasedPercentageOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
     }
 
     public override string GetStyles(CssSelector cssSelector)

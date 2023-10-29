@@ -1405,7 +1405,7 @@ public sealed class SfumatoAppState
 
 	    utilityClassGroup.Initialize(this);
 		
-	    foreach (var selector in utilityClassGroup.Selectors)
+	    foreach (var selector in utilityClassGroup.SelectorIndex)
 		    if (dictionary.TryAdd(selector, utilityClassGroup) == false)
 			    throw new Exception($"Could not add utility class group {selector}");
 

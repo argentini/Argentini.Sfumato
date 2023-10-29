@@ -6,10 +6,10 @@ public class BgBlend : ScssUtilityClassGroupBase
 
     public override void Initialize(SfumatoAppState appState)
     {
-        Selectors.Add(SelectorPrefix);
+        SelectorIndex.Add(SelectorPrefix);
 
         foreach (var corePrefix in appState.BlendModeOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
     }
 
     public override string GetStyles(CssSelector cssSelector)

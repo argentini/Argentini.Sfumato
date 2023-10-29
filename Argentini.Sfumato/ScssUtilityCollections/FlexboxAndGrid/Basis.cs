@@ -6,13 +6,13 @@ public class Basis : ScssUtilityClassGroupBase
 
     public override void Initialize(SfumatoAppState appState)
     {
-        Selectors.Add(SelectorPrefix);
+        SelectorIndex.Add(SelectorPrefix);
 
         foreach (var corePrefix in appState.FlexRemUnitOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
 
         foreach (var corePrefix in appState.FractionOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
     }
 
     public override string GetStyles(CssSelector cssSelector)

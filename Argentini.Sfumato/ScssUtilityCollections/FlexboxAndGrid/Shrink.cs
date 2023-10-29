@@ -6,7 +6,7 @@ public class Shrink : ScssUtilityClassGroupBase
 
     public override void Initialize(SfumatoAppState appState)
     {
-        Selectors.Add(SelectorPrefix);
+        SelectorIndex.Add(SelectorPrefix);
     }
 
     public override string GetStyles(CssSelector cssSelector)

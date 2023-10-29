@@ -6,10 +6,10 @@ public class RoundedTr : ScssUtilityClassGroupBase
     
     public override void Initialize(SfumatoAppState appState)
     {
-        Selectors.Add(SelectorPrefix);
+        SelectorIndex.Add(SelectorPrefix);
 
         foreach (var corePrefix in appState.RoundedOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
     }
 
     public override string GetStyles(CssSelector cssSelector)

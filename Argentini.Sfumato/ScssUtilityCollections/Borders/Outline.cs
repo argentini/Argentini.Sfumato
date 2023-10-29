@@ -15,16 +15,16 @@ public class Outline : ScssUtilityClassGroupBase
     
     public override void Initialize(SfumatoAppState appState)
     {
-        Selectors.Add(SelectorPrefix);
+        SelectorIndex.Add(SelectorPrefix);
 
         foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
         
         foreach (var corePrefix in appState.ColorOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
         
         foreach (var corePrefix in appState.BorderWidthOptions.Keys)
-            Selectors.Add($"{SelectorPrefix}-{corePrefix}");
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
     }
     
     public override string GetStyles(CssSelector cssSelector)

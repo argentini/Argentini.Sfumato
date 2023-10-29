@@ -545,10 +545,15 @@ public sealed class CssSelector
     /// <returns></returns>
     public string GetStyles()
     {
-	    ScssMarkup = ScssUtilityClassGroup?.GetStyles(this) ?? string.Empty;
-	    
-	    if (IsArbitraryCss == false && ScssMarkup.Length == 0)
-		    IsInvalid = true;
+	    if (IsArbitraryCss)
+		    ScssMarkup = ArbitraryValue + (IsImportant ? " !important;" : ";");
+	    else
+	    {
+		    ScssMarkup = ScssUtilityClassGroup?.GetStyles(this).Replace(";", IsImportant ? " !important;" : ";") ?? string.Empty;
+
+		    if (ScssMarkup.Length == 0)
+			    IsInvalid = true;
+	    }
 
 	    return ScssMarkup;
     }
