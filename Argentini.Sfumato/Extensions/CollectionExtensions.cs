@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.ScssUtilityCollections;
+namespace Argentini.Sfumato.Extensions;
 
 public static class CollectionExtensions
 {
