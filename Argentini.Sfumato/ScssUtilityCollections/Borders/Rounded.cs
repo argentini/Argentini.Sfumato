@@ -4,12 +4,11 @@ public class Rounded : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix { get; set; } = "rounded";
     
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in appState.RoundedOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.RoundedOptions);
     }
     
     public override string GetStyles(CssSelector cssSelector)

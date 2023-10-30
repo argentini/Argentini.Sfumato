@@ -13,12 +13,11 @@ public class Truncate : ScssUtilityClassGroupBase
                """,
     }; 
     
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(StaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)

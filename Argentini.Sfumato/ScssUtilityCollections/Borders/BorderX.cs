@@ -4,15 +4,13 @@ public class BorderX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border-x";
 
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in appState.ColorOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.ColorOptions);
         
-        foreach (var corePrefix in appState.BorderWidthOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.BorderWidthOptions);
     }
     
     public override string GetStyles(CssSelector cssSelector)

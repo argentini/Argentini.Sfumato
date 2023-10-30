@@ -1381,6 +1381,8 @@ public sealed class SfumatoAppState
 
         #region Load Utility Classes
 
+        timer.Restart();
+        
 		var orderedDictionary = new ConcurrentDictionary<string,ScssUtilityClassGroupBase>();
 		var tasks = new List<Task>();
 		
@@ -1403,7 +1405,7 @@ public sealed class SfumatoAppState
 	    if (Activator.CreateInstance(scssUtilityClassGroup) is not ScssUtilityClassGroupBase utilityClassGroup) 
 		    throw new Exception($"Could not instantiate ScssUtilityClassGroupBase object for {scssUtilityClassGroup.Name}");
 
-	    utilityClassGroup.Initialize(this);
+	    await utilityClassGroup.InitializeAsync(this);
 		
 	    foreach (var selector in utilityClassGroup.SelectorIndex)
 		    if (dictionary.TryAdd(selector, utilityClassGroup) == false)

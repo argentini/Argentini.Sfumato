@@ -10,15 +10,12 @@ public class Indent : ScssUtilityClassGroupBase
         ["px"] = "text-indent: 1px;",
     }; 
     
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
-
-        foreach (var corePrefix in appState.LayoutRemUnitOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
     
     public override string GetStyles(CssSelector cssSelector)

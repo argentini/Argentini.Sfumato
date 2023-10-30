@@ -9,15 +9,13 @@ public class DivideX : ScssUtilityClassGroupBase
         ["reverse"] = "--sf-divide-x-reverse: 1;"
     }; 
     
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(StaticUtilities);
         
-        foreach (var corePrefix in appState.DivideWidthOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.DivideWidthOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)

@@ -22,15 +22,13 @@ public class Columns : ScssUtilityClassGroupBase
         ["7xl"] = "columns: 80rem;"
     }; 
     
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(StaticUtilities);
 
-        foreach (var corePrefix in appState.LayoutWholeNumberOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.LayoutWholeNumberOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)

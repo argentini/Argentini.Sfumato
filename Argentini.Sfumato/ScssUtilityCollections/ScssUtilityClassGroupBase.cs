@@ -7,13 +7,26 @@ public abstract class ScssUtilityClassGroupBase
     public virtual List<string> SelectorIndex { get; set; } = new();
     protected string Result = string.Empty;
 
-    public virtual void Initialize(SfumatoAppState appState)
+    public virtual Task InitializeAsync(SfumatoAppState appState)
     {
+        return Task.CompletedTask;
     }
     
     public virtual string GetStyles(CssSelector cssSelector)
     {
         return string.Empty;
+    }
+
+    /// <summary>
+    /// Add items to the selector index in a utility class's Initialize() method.
+    /// </summary>
+    /// <param name="dictionary"></param>
+    protected async ValueTask AddToIndexAsync(Dictionary<string,string> dictionary)
+    {
+        foreach (var corePrefix in dictionary.Keys.Where(k => k != string.Empty))
+            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+
+        await Task.CompletedTask;
     }
 
     /// <summary>

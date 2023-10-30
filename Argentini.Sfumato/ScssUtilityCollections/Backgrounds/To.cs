@@ -5,15 +5,12 @@ public class To : ScssUtilityClassGroupBase
     public override string SelectorPrefix => "to";
     public override string Category => "gradients";
 
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in appState.ColorOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
-        
-        foreach (var corePrefix in appState.PercentageOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.ColorOptions);
+        await AddToIndexAsync(appState.PercentageOptions);
     }
     
     public override string GetStyles(CssSelector cssSelector)

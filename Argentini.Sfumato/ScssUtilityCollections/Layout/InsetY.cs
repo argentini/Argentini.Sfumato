@@ -20,18 +20,15 @@ public class InsetY : ScssUtilityClassGroupBase
                    """,
     };
     
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in StaticUtilities.Keys.Where(k => k != string.Empty))
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(StaticUtilities);
 
-        foreach (var corePrefix in appState.LayoutRemUnitOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        foreach (var corePrefix in appState.VerbatimFractionOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.VerbatimFractionOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)

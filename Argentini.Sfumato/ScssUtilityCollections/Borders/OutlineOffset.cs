@@ -4,12 +4,11 @@ public class OutlineOffset : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "outline-offset";
 
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in appState.BorderWidthOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.BorderWidthOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)

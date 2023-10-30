@@ -4,12 +4,11 @@ public class Caret : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "caret";
 
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in appState.ColorOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.ColorOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)

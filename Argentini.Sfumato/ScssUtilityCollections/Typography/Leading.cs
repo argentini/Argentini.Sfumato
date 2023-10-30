@@ -4,12 +4,11 @@ public class Leading : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "leading";
 
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in appState.LeadingOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.LeadingOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)

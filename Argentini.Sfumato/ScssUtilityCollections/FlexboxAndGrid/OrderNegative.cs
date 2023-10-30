@@ -4,12 +4,11 @@ public class OrderNegative : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "-order";
 
-    public override void Initialize(SfumatoAppState appState)
+    public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        foreach (var corePrefix in appState.FlexboxAndGridNegativeWholeNumberOptions.Keys)
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        await AddToIndexAsync(appState.FlexboxAndGridNegativeWholeNumberOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
