@@ -472,6 +472,124 @@ public static class Strings
 		return $"{(pixels / 16):#0.######}rem";
 	}
 
+	/// <summary>
+	/// Convert a web color to an rgba() value.
+	/// Handles rgb() and hex colors.
+	/// Optionally set a new opacity value (0-100).
+	/// </summary>
+	/// <param name="color"></param>
+	/// <param name="opacity"></param>
+	/// <returns>rgba() value, or rgba(0,0,0,0) on error</returns>
+	public static string WebColorToRgba(this string color, int opacity)
+	{
+		return color.WebColorToRgba(opacity / 100m);
+	}
+
+	/// <summary>
+	/// Convert a web color to an rgba() value.
+	/// Handles rgb() and hex colors.
+	/// Optionally set a new opacity value (0-1.0).
+	/// </summary>
+	/// <param name="color"></param>
+	/// <param name="opacity"></param>
+	/// <returns>rgba() value, or rgba(0,0,0,0) on error</returns>
+	public static string WebColorToRgba(this string color, double opacity)
+	{
+		return color.WebColorToRgba((decimal)opacity);
+	}
+	
+	/// <summary>
+	/// Convert a web color to an rgba() value.
+	/// Handles rgb() and hex colors.
+	/// Optionally set a new opacity value (0-1.0).
+	/// </summary>
+	/// <param name="color"></param>
+	/// <param name="opacity"></param>
+	/// <returns>rgba() value, or rgba(0,0,0,0) on error</returns>
+	public static string WebColorToRgba(this string color, decimal? opacity = null)
+	{
+		const string errorValue = "rgba(0,0,0,0)";
+
+		if (opacity > 1)
+			opacity = 1;
+
+		if (opacity < 0)
+			opacity = 0;
+		
+		color = color.Replace(" ", string.Empty);
+		
+		var rgbIndex = color.IndexOf("rgb", StringComparison.Ordinal);
+
+		if (rgbIndex == 0)
+		{
+			color = color.TrimStart("rgb(") ?? string.Empty;
+			color = color.TrimStart("rgba(") ?? string.Empty;
+			color = color.TrimEnd(';');
+			color = color.TrimEnd(')');
+
+			var segments = color.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+			if (segments.Length != 3 && segments.Length != 4)
+				return errorValue;
+
+			if (int.TryParse(segments[0], out var red) == false)
+				return errorValue;
+			
+			if (int.TryParse(segments[1], out var green) == false)
+				return errorValue;
+
+			if (int.TryParse(segments[2], out var blue) == false)
+				return errorValue;
+
+			if (red < 0 || green < 0 || blue < 0)
+				return errorValue;
+
+			if (red > 255 || green > 255 || blue > 255)
+				return errorValue;
+			
+			var alpha = 1m;
+
+			if (segments.Length == 4)
+				_ = decimal.TryParse(segments[3], out alpha);
+
+			if (alpha < 0)
+				alpha = 0;
+
+			if (alpha > 1)
+				alpha = 1;
+
+			return $"rgba({red},{green},{blue},{(opacity is null ? $"{alpha:0.0#}" : $"{opacity:0.0#}")})";
+		}
+
+		if (color.StartsWith('#'))
+			color = color[1..];
+
+		if (color.Length is not (3 or 4 or 6 or 8))
+			return errorValue;
+	
+		if (color.Length is 3)
+			color = color[0].ToString() + color[0] + color[1] + color[1] + color[2] + color[2];
+
+		if (color.Length is 4)
+			color = color[0].ToString() + color[0] + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+
+		var r = Convert.ToInt32(color[..2], 16);
+		var g = Convert.ToInt32(color.Substring(2, 2), 16);
+		var b = Convert.ToInt32(color.Substring(4, 2), 16);
+		var a = 1m;
+
+		if (color.Length == 8)
+		{
+			var alpha = Convert.ToInt32(color[6..], 16);
+			a = Math.Round((decimal)alpha / 255, 2);
+		}
+
+		if (opacity is null)
+			return $"rgba({r},{g},{b},{a:0.0#})";
+
+		return $"rgba({r},{g},{b},{opacity:0.0#})";
+	}
+	
 	#endregion
 	
 	#region Time
