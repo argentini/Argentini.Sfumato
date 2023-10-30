@@ -4,9 +4,6 @@ internal class Program
 {
 	private static async Task Main(string[] args)
 	{
-		var fileWatchers = new List<FileSystemWatcher>();
-		var rebuildProjectQueue = new ConcurrentDictionary<long, FileChangeRequest>();
-		var scssTranspileQueue = new ConcurrentDictionary<long, FileChangeRequest>();
 		var cancellationTokenSource = new CancellationTokenSource();
 		
 		var totalTimer = new Stopwatch();
@@ -108,11 +105,23 @@ internal class Program
 
 		if (runner.AppState.WatchMode)
 		{
+			var fileWatchers = new List<FileSystemWatcher>();
+			var restartAppQueue = new ConcurrentDictionary<long, FileChangeRequest>();
+			var rebuildProjectQueue = new ConcurrentDictionary<long, FileChangeRequest>();
+			var scssTranspileQueue = new ConcurrentDictionary<long, FileChangeRequest>();
+
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync($"Started watching for changes at {DateTime.Now:HH:mm:ss.fff}");
 			await Console.Out.WriteLineAsync();
 			
 			#region Create Watchers
+			
+			fileWatchers.Add(await CreateFileChangeWatcherAsync(restartAppQueue, new ProjectPath
+			{
+				Path = runner.AppState.SettingsFilePath.TrimEnd("sfumato.json") ?? string.Empty,
+				FileSpec = "sfumato.json"
+				
+			}, false));
 			
 			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
 			{
@@ -236,6 +245,20 @@ internal class Program
 
 					scssTranspileQueue.Clear();
 					
+					processedFiles = true;
+				}
+				
+				else if (restartAppQueue.IsEmpty == false)
+				{
+					await Console.Out.WriteLineAsync($"Modified sfumato.json at {DateTime.Now:HH:mm:ss.fff}");
+					await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Restart app and rebuild");
+
+					await runner.InitializeAsync(args);
+					await runner.AppState.GatherWatchedFilesAsync();
+					await runner.PerformFullBuildAsync();
+					
+					restartAppQueue.Clear();
+
 					processedFiles = true;
 				}
 				

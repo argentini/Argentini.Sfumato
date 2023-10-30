@@ -1210,19 +1210,6 @@ public sealed class SfumatoAppState
 	    AllVariants.AddRange(MediaQueryPrefixes.Select(p => p.Prefix));
 	    AllVariants.AddRange(PseudoclassPrefixes.Select(p => p.Key));
 	    
-	    #region Establish Theme Dictionaries
-
-	    LayoutRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
-	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 3.5m);
-	    LayoutWholeNumberOptions.AddWholeNumberOptions(1, 24);
-	    EffectsFiltersOneBasedPercentageOptions.AddOneBasedPercentageOptions(0m, 200m);
-	    FlexboxAndGridWholeNumberOptions.AddWholeNumberOptions(1, 25);
-	    FlexboxAndGridNegativeWholeNumberOptions.AddWholeNumberOptions(1, 25, true);
-	    VerbatimFractionOptions.AddVerbatimFractionOptions(FractionOptions);
-	    PercentageOptions.AddPercentageOptions(0, 100);
-	    
-	    #endregion
-	    
 	    #region Regular Expressions
 	    
 	    var arbitraryCssExpression = """
@@ -1268,6 +1255,38 @@ public sealed class SfumatoAppState
 
 	    timer.Start();
 
+	    #region Establish Theme Dictionaries
+
+	    LayoutRemUnitOptions.Clear();
+	    LayoutRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
+
+	    FlexRemUnitOptions.Clear();
+	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 3.5m);
+
+	    LayoutWholeNumberOptions.Clear();
+	    LayoutWholeNumberOptions.AddWholeNumberOptions(1, 24);
+	    
+	    EffectsFiltersOneBasedPercentageOptions.Clear();
+	    EffectsFiltersOneBasedPercentageOptions.AddOneBasedPercentageOptions(0m, 200m);
+
+	    FlexboxAndGridWholeNumberOptions.Clear();
+	    FlexboxAndGridWholeNumberOptions.AddWholeNumberOptions(1, 25);
+
+	    FlexboxAndGridNegativeWholeNumberOptions.Clear();
+	    FlexboxAndGridNegativeWholeNumberOptions.AddWholeNumberOptions(1, 25, true);
+
+	    VerbatimFractionOptions.Clear();
+	    VerbatimFractionOptions.AddVerbatimFractionOptions(FractionOptions);
+
+	    PercentageOptions.Clear();
+	    PercentageOptions.AddPercentageOptions(0, 100);
+	    
+	    #endregion
+	    
+	    WatchedFiles.Clear();
+	    WatchedScssFiles.Clear();
+	    DiagnosticOutput.Clear();
+	    
 	    await ProcessCliArgumentsAsync(args);
 
 	    if (VersionMode || HelpMode)
@@ -1382,6 +1401,8 @@ public sealed class SfumatoAppState
         #region Load Utility Classes
 
         timer.Restart();
+
+        UtilityClassCollection.Clear();
         
 		var orderedDictionary = new ConcurrentDictionary<string,ScssUtilityClassGroupBase>();
 		var tasks = new List<Task>();

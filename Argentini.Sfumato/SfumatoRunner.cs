@@ -434,6 +434,9 @@ public sealed class SfumatoRunner
 	/// <param name="filePath"></param>
 	public async Task DeleteWatchedScssFile(string filePath)
 	{
+		if (filePath.Equals(AppState.SfumatoScssOutputPath, StringComparison.OrdinalIgnoreCase))
+			return;
+
         _ = AppState.WatchedScssFiles.TryRemove(filePath, out _);
 
         var cssFilePath =
@@ -457,6 +460,9 @@ public sealed class SfumatoRunner
 	/// <param name="cancellationTokenSource"></param>
 	public async Task AddUpdateWatchedScssFile(string filePath, CancellationTokenSource cancellationTokenSource)
 	{
+		if (filePath.Equals(AppState.SfumatoScssOutputPath, StringComparison.OrdinalIgnoreCase))
+			return;
+		
 		var timer = new Stopwatch();
 
 		timer.Start();
@@ -493,6 +499,12 @@ public sealed class SfumatoRunner
 	/// <param name="filePath"></param>
 	public async Task DeleteWatchedFile(string filePath)
 	{
+		if (filePath.Equals(AppState.SettingsFilePath, StringComparison.OrdinalIgnoreCase))
+			return;
+
+		if (filePath.Equals(AppState.SfumatoScssOutputPath.TrimEnd(".scss") + ".css", StringComparison.OrdinalIgnoreCase))
+			return;
+		
 		_ = AppState.WatchedFiles.TryRemove(filePath, out _);
 								
 		await Task.CompletedTask;
@@ -505,6 +517,12 @@ public sealed class SfumatoRunner
 	/// <param name="cancellationTokenSource"></param>
 	public async Task AddUpdateWatchedFile(string filePath, CancellationTokenSource cancellationTokenSource)
 	{
+		if (filePath.Equals(AppState.SettingsFilePath, StringComparison.OrdinalIgnoreCase))
+			return;
+
+		if (filePath.Equals(AppState.SfumatoScssOutputPath.TrimEnd(".scss") + ".css", StringComparison.OrdinalIgnoreCase))
+			return;
+
 		var markup = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
 
 		if (AppState.WatchedFiles.TryGetValue(filePath, out var watchedFile))
