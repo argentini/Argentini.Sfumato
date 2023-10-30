@@ -28,7 +28,7 @@ public class BorderTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("border-color: rgba(255,228,230,1.0);", selector.GetStyles().CompactCss());
+        Assert.Equal("border-color: rgba(255,228,230,1);", selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "border-2");
         await selector.ProcessSelector();
@@ -47,7 +47,7 @@ public class BorderTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("border-color: rgba(255,228,230,0.50);", selector.GetStyles().CompactCss());
+        Assert.Equal("border-color: rgba(255,228,230,0.5);", selector.GetStyles().CompactCss());
     }
 
     [Fact]

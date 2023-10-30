@@ -39,7 +39,7 @@ public class TextTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "text-lg");
 
@@ -61,14 +61,14 @@ public class TextTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("color: rgba(255,228,230,0.50);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "text-rose-100/[50]");
 
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("color: rgba(255,228,230,0.50);".CompactCss(), selector.GetStyles().CompactCss());        
+        Assert.Equal("color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());        
 
         selector = new CssSelector(appState, "text-rose-100/[0.75]");
 

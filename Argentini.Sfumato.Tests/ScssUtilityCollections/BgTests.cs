@@ -39,7 +39,7 @@ public class BgTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class BgTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,0.50);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "bg-rose-100/[0.5]");
 
@@ -68,7 +68,7 @@ public class BgTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,.5);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());
     }
     
     [Fact]

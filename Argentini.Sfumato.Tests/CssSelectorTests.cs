@@ -164,7 +164,7 @@ public class CssSelectorTests
         Assert.True(selector.IsImportant);
         
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0) !important;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1) !important;".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "tabp:focus:!bg-rose-100");
         await selector.ProcessSelector();
@@ -175,7 +175,7 @@ public class CssSelectorTests
         Assert.True(selector.IsImportant);
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0) !important;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1) !important;".CompactCss(), selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/50");
         await selector.ProcessSelector();
@@ -191,7 +191,7 @@ public class CssSelectorTests
         Assert.True(selector.IsImportant);
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,0.50) !important;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,0.5) !important;".CompactCss(), selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/[50]");
         await selector.ProcessSelector();
@@ -207,7 +207,7 @@ public class CssSelectorTests
         Assert.True(selector.IsImportant);
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,0.50) !important;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,0.5) !important;".CompactCss(), selector.GetStyles().CompactCss());
     }
     
     #endregion
@@ -226,7 +226,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -304,7 +304,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,0.50);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -382,7 +382,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,0.50);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -460,7 +460,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -499,7 +499,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -538,7 +538,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -579,7 +579,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
@@ -618,7 +618,7 @@ public class CssSelectorTests
         await selector.ProcessSelector();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("background-color: rgba(255,228,230,1.0);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);

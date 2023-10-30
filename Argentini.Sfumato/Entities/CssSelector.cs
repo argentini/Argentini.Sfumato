@@ -192,7 +192,7 @@ public sealed class CssSelector
 		    return result;
 	    }
 
-	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || (appState?.CssNamedColors ?? Enumerable.Empty<string>()).Contains(value))
+	    if (value.IsValidWebHexColor() || value.StartsWith("rgb(") || value.StartsWith("rgba(") || Strings.CssNamedColors.ContainsKey(value))
 	    {
 		    result.ValueType = "color";
 		    return result;

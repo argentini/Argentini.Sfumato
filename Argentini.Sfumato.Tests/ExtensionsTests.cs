@@ -80,31 +80,37 @@ public class ExtensionsTests
         #region Convert as-is
         
         color = "#fff";
-        Assert.Equal("rgba(255,255,255,1.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(255,255,255,1)", color.WebColorToRgba());
 
         color = "#fff0";
-        Assert.Equal("rgba(255,255,255,0.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(255,255,255,0)", color.WebColorToRgba());
         
         color = "#000000";
-        Assert.Equal("rgba(0,0,0,1.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,1)", color.WebColorToRgba());
         
         color = "#000000ff";
-        Assert.Equal("rgba(0,0,0,1.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,1)", color.WebColorToRgba());
         
         color = "#00000000";
-        Assert.Equal("rgba(0,0,0,0.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
         
         color = "rgb(50, 100, 200)";
-        Assert.Equal("rgba(50,100,200,1.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(50,100,200,1)", color.WebColorToRgba());
         
         color = "rgb(50,100,200)";
-        Assert.Equal("rgba(50,100,200,1.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(50,100,200,1)", color.WebColorToRgba());
         
         color = "rgba(50,100,200)";
-        Assert.Equal("rgba(50,100,200,1.0)", color.WebColorToRgba());
+        Assert.Equal("rgba(50,100,200,1)", color.WebColorToRgba());
         
         color = "rgba(50,100,200,0.5)";
         Assert.Equal("rgba(50,100,200,0.5)", color.WebColorToRgba());
+
+        color = "transparent";
+        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+
+        color = "aliceblue";
+        Assert.Equal("rgba(240,248,255,1)", color.WebColorToRgba());
         
         #endregion
         
@@ -120,10 +126,10 @@ public class ExtensionsTests
         Assert.Equal("rgba(0,0,0,0.75)", color.WebColorToRgba(0.75m));
         
         color = "#000000ff";
-        Assert.Equal("rgba(0,0,0,1.0)", color.WebColorToRgba(200));
+        Assert.Equal("rgba(0,0,0,1)", color.WebColorToRgba(200));
         
         color = "#00000000";
-        Assert.Equal("rgba(0,0,0,1.0)", color.WebColorToRgba(2.0m));
+        Assert.Equal("rgba(0,0,0,1)", color.WebColorToRgba(2.0m));
         
         color = "rgb(50, 100, 200)";
         Assert.Equal("rgba(50,100,200,0.75)", color.WebColorToRgba(75));

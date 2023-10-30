@@ -199,13 +199,13 @@ public class SfumatoRunnerTests
                          aspect-ratio: 4/3;
                      }
                      .bg-emerald-900 {
-                         background-color: rgba(6,78,59,1.0);
+                         background-color: rgba(6,78,59,1);
                      }
                      .bg-emerald-950 {
-                         background-color: rgba(2,44,34,1.0);
+                         background-color: rgba(2,44,34,1);
                      }
                      .bg-fuchsia-500 {
-                         background-color: rgba(217,70,239,1.0);
+                         background-color: rgba(217,70,239,1);
                      }
                      .block {
                          display: block;
@@ -301,7 +301,7 @@ public class SfumatoRunnerTests
                      }
                      @media (prefers-color-scheme: dark) {
                          .dark\:bg-fuchsia-300 {
-                             background-color: rgba(240,171,252,1.0);
+                             background-color: rgba(240,171,252,1);
                          }
                          .dark\:text-\[length\:1rem\] {
                              font-size: 1rem;
