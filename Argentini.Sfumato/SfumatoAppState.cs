@@ -605,6 +605,7 @@ public sealed class SfumatoAppState
 	
 	public IEnumerable<string> CssNamedColors { get; } = new[]
 	{
+		"currentColor",
 	    "aliceblue",
 	    "antiquewhite",
 	    "aqua",
@@ -746,6 +747,7 @@ public sealed class SfumatoAppState
 	    "teal",
 	    "thistle",
 	    "tomato",
+	    "transparent",
 	    "turquoise",
 	    "violet",
 	    "wheat",
