@@ -88,22 +88,28 @@ public abstract class ScssUtilityClassGroupBase
         {
             if (cssSelector.AppState?.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out var color) ?? false)
             {
+                if (string.IsNullOrEmpty(color))
+                {
+                    result = string.Empty;
+                    return false;
+                }
+
                 var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
-                
+                var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
                 if (valueType == "integer")
                 {
-                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
-                    var opacity = int.Parse(modifierValue) / 100m;
+                    color = color.WebColorToRgba(int.Parse(modifierValue));
+                    result = propertyTemplate.Replace("{value}", color);
 
-                    result = propertyTemplate.Replace("{value}", color.Replace(",1.0)", $",{opacity:F2})"));
                     return true;
                 }
-                
+
                 if (valueType == "number")
                 {
-                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+                    color = color.WebColorToRgba(decimal.Parse(modifierValue));
+                    result = propertyTemplate.Replace("{value}", color);
 
-                    result = propertyTemplate.Replace("{value}", color.Replace(",1.0)", $",{modifierValue})"));
                     return true;
                 }
             }
