@@ -11,7 +11,7 @@ public sealed class SfumatoAppState
 		new CssMediaQuery
 		{
 			PrefixOrder = 1,
-			Priority = 1024,
+			Priority = int.MaxValue,
 			Prefix = "dark",
 			PrefixType = "theme",
 			Statement = "@media (prefers-color-scheme: dark) {"
