@@ -1397,7 +1397,7 @@ public sealed class SfumatoAppState
         #endregion
         
         if (DiagnosticMode)
-	        DiagnosticOutput.TryAdd("init1", $"{Strings.TriangleRight} Loaded {UtilityClassCollection.Count} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
+	        DiagnosticOutput.TryAdd("init1", $"{Strings.TriangleRight} Loaded {UtilityClassCollection.Count:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
     }
 
     private async Task AddUtilityClassToCollection(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
@@ -1410,8 +1410,6 @@ public sealed class SfumatoAppState
 	    foreach (var selector in utilityClassGroup.SelectorIndex)
 		    if (dictionary.TryAdd(selector, utilityClassGroup) == false)
 			    throw new Exception($"Could not add utility class group {selector}");
-
-	    await Task.CompletedTask;
     }
     
     #endregion

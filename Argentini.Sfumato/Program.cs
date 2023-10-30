@@ -95,12 +95,10 @@ internal class Program
 		if (runner.AppState.DiagnosticMode)
 			runner.AppState.DiagnosticOutput.TryAdd("init000", $"Initialized app in {totalTimer.FormatTimer()}{Environment.NewLine}");
 		
+		totalTimer.Restart();
+
 		await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
 
-		// var timer = new Stopwatch();
-		//
-		// timer.Start();
-		
 		await runner.AppState.GatherWatchedFilesAsync();
         await runner.PerformFullBuildAsync();
 
