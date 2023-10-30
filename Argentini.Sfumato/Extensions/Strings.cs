@@ -632,7 +632,7 @@ public static class Strings
 	/// </summary>
 	/// <param name="color"></param>
 	/// <param name="opacity"></param>
-	/// <returns>rgba() value, or rgba(0,0,0,0) on error</returns>
+	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
 	public static string WebColorToRgba(this string color, int opacity)
 	{
 		return color.WebColorToRgba(opacity / 100m);
@@ -645,7 +645,7 @@ public static class Strings
 	/// </summary>
 	/// <param name="color"></param>
 	/// <param name="opacity"></param>
-	/// <returns>rgba() value, or rgba(0,0,0,0) on error</returns>
+	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
 	public static string WebColorToRgba(this string color, double opacity)
 	{
 		return color.WebColorToRgba((decimal)opacity);
@@ -658,10 +658,10 @@ public static class Strings
 	/// </summary>
 	/// <param name="color"></param>
 	/// <param name="opacity"></param>
-	/// <returns>rgba() value, or rgba(0,0,0,0) on error</returns>
+	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
 	public static string WebColorToRgba(this string color, decimal? opacity = null)
 	{
-		const string errorValue = "rgba(0,0,0,0)";
+		const string errorValue = "rgba(0,0,0,-0)";
 
 		if (opacity > 1)
 			opacity = 1;
@@ -695,13 +695,13 @@ public static class Strings
 			if (segments.Length != 3 && segments.Length != 4)
 				return errorValue;
 
-			if (int.TryParse(segments[0], out var red) == false)
+			if (int.TryParse(segments[0].Trim('-'), out var red) == false)
 				return errorValue;
 			
-			if (int.TryParse(segments[1], out var green) == false)
+			if (int.TryParse(segments[1].Trim('-'), out var green) == false)
 				return errorValue;
 
-			if (int.TryParse(segments[2], out var blue) == false)
+			if (int.TryParse(segments[2].Trim('-'), out var blue) == false)
 				return errorValue;
 
 			if (red < 0 || green < 0 || blue < 0)
@@ -713,7 +713,7 @@ public static class Strings
 			var alpha = 1m;
 
 			if (segments.Length == 4)
-				_ = decimal.TryParse(segments[3], out alpha);
+				_ = decimal.TryParse(segments[3].Trim('-'), out alpha);
 
 			if (alpha < 0)
 				alpha = 0;
@@ -724,8 +724,10 @@ public static class Strings
 			return $"rgba({red},{green},{blue},{(opacity is null ? $"{alpha:0.##}" : $"{opacity:0.##}")})";
 		}
 
-		if (hexIndex == 0)
-			color = color[1..];
+		if (hexIndex != 0)
+			return errorValue;
+			
+		color = color[1..];
 
 		if (color.Length is not (3 or 4 or 6 or 8))
 			return errorValue;

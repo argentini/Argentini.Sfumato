@@ -49,31 +49,31 @@ public class ExtensionsTests
         #region Invalid colors
 
         var color = string.Empty;
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
         
         color = "#";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
 
         color = "#abcde";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
 
         color = "#ab";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
         
         color = "rgba(50,100,200,300,400)";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
 
         color = "rgb(50,100,200,300,400)";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
 
         color = "rgba(50,100)";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
         
         color = "rgb(50,100)";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
 
         color = "nbasvfbnasdfvasfsvl,hjfvasdjlfvs,vcsvbdhj";
-        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
+        Assert.Equal("rgba(0,0,0,-0)", color.WebColorToRgba());
         
         #endregion
 
@@ -81,6 +81,9 @@ public class ExtensionsTests
         
         color = "#fff";
         Assert.Equal("rgba(255,255,255,1)", color.WebColorToRgba());
+
+        color = "#0000";
+        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba());
 
         color = "#fff0";
         Assert.Equal("rgba(255,255,255,0)", color.WebColorToRgba());
