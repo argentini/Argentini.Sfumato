@@ -75,7 +75,7 @@ public class SfumatoRunnerTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var cssSelector = new CssSelector(appState, "text-base");
-        await cssSelector.ProcessSelector();
+        await cssSelector.ProcessSelectorAsync();
 
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
 
@@ -91,21 +91,21 @@ public class SfumatoRunnerTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var cssSelector = new CssSelector(appState, "text-base/5");
-        await cssSelector.ProcessSelector();
+        await cssSelector.ProcessSelectorAsync();
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
         
         Assert.Equal(".text-base\\/5 { font-size: 1rem; line-height: 1.25rem; }".CompactCss(), result.CompactCss());
         
         cssSelector = new CssSelector(appState, "text-base/[3rem]");
-        await cssSelector.ProcessSelector();
+        await cssSelector.ProcessSelectorAsync();
 
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
 
         Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
 
         cssSelector = new CssSelector(appState, "tabp:text-base/[3rem]");
-        await cssSelector.ProcessSelector();
+        await cssSelector.ProcessSelectorAsync();
 
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, "tabp:");
         
@@ -121,21 +121,21 @@ public class SfumatoRunnerTests
         await appState.InitializeAsync(Array.Empty<string>());
         
         var scssClass = new CssSelector(appState, "[width:10rem]", true);
-        await scssClass.ProcessSelector();
+        await scssClass.ProcessSelectorAsync();
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
 
         Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new CssSelector(appState, "tabp:[width:10rem]", true);
-        await scssClass.ProcessSelector();
+        await scssClass.ProcessSelectorAsync();
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
         Assert.Equal(".tabp\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new CssSelector(appState, "tabp:hover:[width:10rem]", true);
-        await scssClass.ProcessSelector();
+        await scssClass.ProcessSelectorAsync();
         
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
 
@@ -308,5 +308,41 @@ public class SfumatoRunnerTests
                          }
                      }
                      """.CompactCss(), scss.CompactCss());
+    }
+    
+    [Fact]
+    public async Task InjectCoreAndStyles()
+    {
+        var appState = new SfumatoAppState();
+        const string scss = """
+                            @apply sfumato-core;
+
+                            @include sf-media($from: tabp) {
+                            
+                                h1 {
+                                    @apply text-2xl/[1.75] font-bold;
+                                    color: black;
+                                }
+                            }
+                            """;
+
+        await appState.InitializeAsync(Array.Empty<string>());
+        
+        var css = await SfumatoScss.TranspileScss("test.scss", scss, appState);
+
+        css = css.Contains("/*") == false
+            ? css
+            : css[..css.IndexOf("/*", StringComparison.Ordinal)];
+        
+        Assert.Equal("""
+                     @media screen and (min-width: 540px) {
+                       h1 {
+                         font-size: 1.5rem;
+                         line-height: 1.75;
+                         font-weight: 700;
+                         color: black;
+                       }
+                     }
+                     """.CompactCss(), css.CompactCss());
     }
 }

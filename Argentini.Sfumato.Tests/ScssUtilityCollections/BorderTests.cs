@@ -12,7 +12,7 @@ public class BorderTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "border-solid");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("border-style: solid;", selector.GetStyles().CompactCss());
@@ -25,13 +25,13 @@ public class BorderTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "border-rose-100");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("border-color: rgba(255,228,230,1);", selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "border-2");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("border-width: 0.125rem;", selector.GetStyles().CompactCss());
@@ -44,7 +44,7 @@ public class BorderTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "border-rose-100/50");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("border-color: rgba(255,228,230,0.5);", selector.GetStyles().CompactCss());
@@ -57,19 +57,19 @@ public class BorderTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "border-[#aabbcc]");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("border-color: #aabbcc;", selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "border-[2px]");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("border-width: 2px;", selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "border-[dotted]");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("border-style: dotted;", selector.GetStyles().CompactCss());

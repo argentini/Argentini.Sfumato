@@ -1010,7 +1010,7 @@ public sealed class SfumatoAppState
     
     public Regex ArbitraryCssRegex { get; }
     public Regex CoreClassRegex { get; }
-    public Regex SfumatoScssIncludesRegex { get; }
+    public Regex SfumatoScssApplyRegex { get; }
     
     #endregion
     
@@ -1083,9 +1083,20 @@ public sealed class SfumatoAppState
 	    
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 
-	    const string sfumatoScssIncludesRegexExpression = @"^\s*@sfumato\s+((core)|(base))[\s]{0,};\r?\n";
+	    const string sfumatoScssApplyRegexExpression = """
+(?<=^|[\s])
+(@apply[\s]{1,})
+(
+	([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
+	(
+		(/[a-z0-9\-\.]{1,100})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])?
+	)
+	(([\s]{1,})|([\s]{0,};))
+){1,}
+(?=[\s])
+""";
 	    
-	    SfumatoScssIncludesRegex = new Regex(sfumatoScssIncludesRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
+	    SfumatoScssApplyRegex = new Regex(sfumatoScssApplyRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 	    
 	    #endregion
    }
@@ -1686,7 +1697,7 @@ public sealed class SfumatoAppState
 
 		return true;
 	}
-
+	
 	/// <summary>
 	/// Remove invalid utility class matches from a list of regex matches.
 	/// </summary>
@@ -1695,56 +1706,60 @@ public sealed class SfumatoAppState
 	{
 		foreach (var match in matches.ToList())
 		{
-			var value = match.Value;
-			var invalidEnding = false;
-
-			foreach (var exclusion in ClassMatchEndingExclusions)
-				if (value.EndsWith(exclusion))
-				{
-					invalidEnding = true;
-					break;
-				}
-
-			if (invalidEnding)
-			{
+			if (IsValidCoreClassSelector(match.Value) == false)
 				matches.Remove(match);
-				continue;
-			}
-			
-			var variants = string.Empty;
-			var indexOfBracket = value.IndexOf('[');
-
-			if (indexOfBracket > -1)
-				value = value[..indexOfBracket].TrimEnd('-').TrimEnd('/');
-			
-			var indexOfColon = value.LastIndexOf(':');
-
-			if (indexOfColon > 1 && indexOfColon < value.Length - 1)
-			{
-				variants = value[..(indexOfColon + 1)];
-				value = value[(indexOfColon + 1)..];
-
-				if (VariantsAreValid(variants) == false)
-				{
-					matches.Remove(match);
-					continue;
-				}
-			}
-
-			value = value.TrimStart('!');
-
-			var indexOfSlash = value.LastIndexOf('/');
-
-			if (indexOfSlash > -1)
-				value = value[..indexOfSlash];
-			
-			if (UtilityClassCollection.ContainsKey(value))
-				continue;
-
-			matches.Remove(match);
 		}
 	}
 
+	/// <summary>
+	/// Determine if a selector is a valid core class.
+	/// </summary>
+	/// <param name="selector"></param>
+	/// <returns></returns>
+	public bool IsValidCoreClassSelector(string selector)
+	{
+		var invalidEnding = false;
+
+		foreach (var exclusion in ClassMatchEndingExclusions)
+			if (selector.EndsWith(exclusion))
+			{
+				invalidEnding = true;
+				break;
+			}
+
+		if (invalidEnding)
+			return false;
+			
+		var variants = string.Empty;
+		var indexOfBracket = selector.IndexOf('[');
+
+		if (indexOfBracket > -1)
+			selector = selector[..indexOfBracket].TrimEnd('-').TrimEnd('/');
+			
+		var indexOfColon = selector.LastIndexOf(':');
+
+		if (indexOfColon > 1 && indexOfColon < selector.Length - 1)
+		{
+			variants = selector[..(indexOfColon + 1)];
+			selector = selector[(indexOfColon + 1)..];
+
+			if (VariantsAreValid(variants) == false)
+				return false;
+		}
+
+		selector = selector.TrimStart('!');
+
+		var indexOfSlash = selector.LastIndexOf('/');
+
+		if (indexOfSlash > -1)
+			selector = selector[..indexOfSlash];
+
+		if (UtilityClassCollection.ContainsKey(selector))
+			return true;
+			
+		return false;
+	}
+	
 	/// <summary>
 	/// Remove invalid arbitrary CSS matches from a list of regex matches.
 	/// </summary>
@@ -1808,7 +1823,7 @@ public sealed class SfumatoAppState
 
 		var cssSelector = new CssSelector(this, value, isArbitraryCss);
 
-		_ = cssSelector.ProcessSelector();
+		_ = cssSelector.ProcessSelectorAsync();
 
 		if (cssSelector.IsInvalid == false)
 		{

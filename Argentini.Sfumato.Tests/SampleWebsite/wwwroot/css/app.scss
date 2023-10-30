@@ -1,5 +1,9 @@
-@sfumato core;
+@apply sfumato-core;
 
-.app {
-    font-size: 1rem;
+@include sf-media($from: tabp) {
+
+    h1 {
+        @apply text-2xl/[1.75] font-bold;
+        color: black;
+    }
 }

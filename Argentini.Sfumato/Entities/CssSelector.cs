@@ -318,7 +318,7 @@ public sealed class CssSelector
     /// <summary>
     /// Establish all property values from parsing the Value property.
     /// </summary>
-    public async Task ProcessSelector()
+    public async Task ProcessSelectorAsync()
     {
 	    MediaQueryVariants.Clear();
 	    PseudoClassVariants.Clear();

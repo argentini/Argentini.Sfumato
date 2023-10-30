@@ -56,7 +56,9 @@ public static class SfumatoScss
 		sb.Append(initScss);
 
 		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n');
-		
+
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_extras.scss"))).Trim() + '\n');
+
 		diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
@@ -145,21 +147,64 @@ public static class SfumatoScss
 			arguments.Add(cssOutputPath);
 			
 			var scss = appState.StringBuilderPool.Get();
-			var matches = appState.SfumatoScssIncludesRegex.Matches(rawScss);
+			var matches = appState.SfumatoScssApplyRegex.Matches(rawScss);
 			var startIndex = 0;
 
-			foreach (Match match in matches)
+			while (matches.Count > 0)
 			{
+				var match = matches[0];
+				
 				if (match.Index + match.Value.Length > startIndex)
 					startIndex = match.Index + match.Value.Length;
 
-				if (match.Value.Trim().EndsWith("core;"))
+				if (match.Value.CompactCss().TrimEnd(';').EndsWith("sfumato-core"))
 				{
 					scss.Append(appState.ScssSharedInjectable);
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
 				}
+
+				else
+				{
+					var classes = (match.Value.Trim().TrimEnd(';').CompactCss().TrimStart("@apply ")?.Split(' ') ?? Array.Empty<string>()).ToList();
+
+					foreach (var selector in classes.ToList())
+					{
+						if (appState.IsValidCoreClassSelector(selector) == false)
+							classes.Remove(selector);
+					}
+
+					if (classes.Count == 0)
+					{
+						rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					}
+					
+					else
+					{
+						var styles = appState.StringBuilderPool.Get();
+
+						foreach (var selector in classes)
+						{
+							var cssSelector = new CssSelector(appState, selector);
+
+							await cssSelector.ProcessSelectorAsync();
+
+							if (cssSelector.IsInvalid == false)
+							{
+								styles.Append(cssSelector.GetStyles());
+							}
+						}
+						
+						rawScss = rawScss.Remove(match.Index, match.Value.Length);
+						rawScss = rawScss.Insert(match.Index, styles.ToString());
+						
+						appState.StringBuilderPool.Return(styles);
+					}
+				}
+				
+				matches = appState.SfumatoScssApplyRegex.Matches(rawScss);
 			}
 			
-			scss.Append(rawScss[startIndex..]);
+			scss.Append(rawScss);
 			
 			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(appState.SassCliPath)
 				.WithArguments(args =>

@@ -16,7 +16,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.True(selector.IsInvalid);
     }
@@ -30,7 +30,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "]dsfdfsfsd[");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.True(selector.IsInvalid);
     }
@@ -44,7 +44,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "pages/index.html");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.True(selector.IsInvalid);
     }
@@ -58,7 +58,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "dsfdfsfsd[]");
         
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.True(selector.IsInvalid);
     }
@@ -72,7 +72,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "text-base/");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.True(selector.IsInvalid);
     }
@@ -90,14 +90,14 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "p-[1rem]");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         selector.GetStyles();
         
         Assert.Equal("padding: 1rem;", selector.ScssMarkup);
         
         selector = new CssSelector(appState, "[font-size:1rem]", true);
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.Null(selector.ScssUtilityClassGroup);
         Assert.True(selector.IsArbitraryCss);
@@ -114,7 +114,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "tabp:[font-size:1rem]", true);
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.Null(selector.ScssUtilityClassGroup);
         Assert.True(selector.IsArbitraryCss);
@@ -136,7 +136,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "[font-size:_1rem]", true);
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.Null(selector.ScssUtilityClassGroup);
         Assert.True(selector.IsArbitraryCss);
@@ -156,7 +156,7 @@ public class CssSelectorTests
         await appState.InitializeAsync(Array.Empty<string>());
 
         var selector = new CssSelector(appState, "!bg-rose-100");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Empty(selector.MediaQueryVariants);
@@ -167,7 +167,7 @@ public class CssSelectorTests
         Assert.Equal("background-color: rgba(255,228,230,1) !important;".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "tabp:focus:!bg-rose-100");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -178,7 +178,7 @@ public class CssSelectorTests
         Assert.Equal("background-color: rgba(255,228,230,1) !important;".CompactCss(), selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/50");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -194,7 +194,7 @@ public class CssSelectorTests
         Assert.Equal("background-color: rgba(255,228,230,0.5) !important;".CompactCss(), selector.GetStyles().CompactCss());
 
         selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/[50]");
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
         
         Assert.False(selector.IsArbitraryCss);
         Assert.Single(selector.MediaQueryVariants);
@@ -223,7 +223,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "bg-rose-100");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
@@ -262,7 +262,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "w-1/2");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("width: 50%;".CompactCss(), selector.GetStyles().CompactCss());
@@ -301,7 +301,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "bg-rose-100/50");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());
@@ -340,7 +340,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "bg-[#aabbcc]");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: #aabbcc;".CompactCss(), selector.GetStyles().CompactCss());
@@ -379,7 +379,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "bg-rose-100/[50]");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,0.5);".CompactCss(), selector.GetStyles().CompactCss());
@@ -418,7 +418,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "bg-[color:#abcdef]");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: #abcdef;".CompactCss(), selector.GetStyles().CompactCss());
@@ -457,7 +457,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "tabp:bg-rose-100");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
@@ -496,7 +496,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "tabp:hover:bg-rose-100");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
@@ -535,7 +535,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "tabp:hover:dark:bg-rose-100");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
@@ -576,7 +576,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "focus:bg-rose-100");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());
@@ -615,7 +615,7 @@ public class CssSelectorTests
 
         var selector = new CssSelector(appState, "hover:focus:bg-rose-100");
 
-        await selector.ProcessSelector();
+        await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1);".CompactCss(), selector.GetStyles().CompactCss());

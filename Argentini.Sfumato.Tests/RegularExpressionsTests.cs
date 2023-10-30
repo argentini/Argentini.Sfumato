@@ -89,38 +89,60 @@ public class RegularExpressionsTests
     }
 
     [Fact]
-    public void ScssIncludeSfumatoRegex()
+    public void ScssApplySfumatoRegex()
     {
         var appState = new SfumatoAppState();
-        var matches = appState.SfumatoScssIncludesRegex.Matches(@"@sfumato core;
+        var matches = appState.SfumatoScssApplyRegex.Matches(@"@apply sfumato-core;
 ");
 
         Assert.Single(matches);
         
-        matches = appState.SfumatoScssIncludesRegex.Matches(@"
-@sfumato core;
+        matches = appState.SfumatoScssApplyRegex.Matches(@"
+@apply sfumato-core;
 ");
 
         Assert.Single(matches);
         
-        matches = appState.SfumatoScssIncludesRegex.Matches(@"
-@sfumato     core;
+        matches = appState.SfumatoScssApplyRegex.Matches(@"
+@apply      sfumato-core;
 ");
 
         Assert.Single(matches);
         
-        matches = appState.SfumatoScssIncludesRegex.Matches(@"
-@sfumato     core ;
+        matches = appState.SfumatoScssApplyRegex.Matches(@"
+@apply sfumato-core ;
 ");
 
         Assert.Single(matches);
         
-        matches = appState.SfumatoScssIncludesRegex.Matches(@"
+        matches = appState.SfumatoScssApplyRegex.Matches(@"
 /* This is a test */
-@sfumato     core ;
+@apply sfumato-core ;
 ");
 
-        Assert.Empty(matches);
+        Assert.Single(matches);
+        
+        matches = appState.SfumatoScssApplyRegex.Matches(@"
+/* This is a test */
+@apply sfumato-core;
+
+h1 {
+    @apply text-2xl font-bold;
+}
+");
+
+        Assert.Equal(2, matches.Count);
+        
+        matches = appState.SfumatoScssApplyRegex.Matches(@"
+/* This is a test */
+@apply    sfumato-core   ;
+
+h1 {
+    @apply   text-2xl   font-bold     ;
+}
+");
+
+        Assert.Equal(2, matches.Count);
     }
 
     [Fact]
