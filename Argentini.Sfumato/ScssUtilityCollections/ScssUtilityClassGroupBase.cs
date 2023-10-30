@@ -65,6 +65,9 @@ public abstract class ScssUtilityClassGroupBase
         {
             if (dictionary?.TryGetValue(cssSelector.CoreSegment, out var value) ?? false)
             {
+                if (dictionary == cssSelector.AppState?.ColorOptions)
+                    value = value.WebColorToRgba();
+                
                 result = propertyTemplate.Replace("{value}", value);
                 return true;
             }
