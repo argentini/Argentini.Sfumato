@@ -191,32 +191,54 @@ public static class Identify
     #region Color
 
     /// <summary>
-    /// Determine if a string is a valid web hex color (e.g. "#abc", "#abcf", "#abc123", "#112233ff").
+    /// Determine if a string is a valid web color (e.g. "#abc", "#abcf", "#abc123", "#112233ff", rgb(...), rgba(...), aliceblue, etc.)
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
-    public static bool IsValidWebHexColor(this string color)
+    public static bool IsValidWebColor(this string color)
     {
-        if (string.IsNullOrEmpty(color) || color.Length < 4)
+        if (string.IsNullOrEmpty(color))
             return false;
+        
+        var hashIndex = color.IndexOf('#');
 
-        if (color[0] != '#')
-            return false;
-
-        // Get the length excluding the '#'
-        var length = color.Length - 1;
-
-        // Ensure the length is 3, 6, 9, or 12
-        if (length != 3 && length != 4 && length != 6 && length != 8)
-            return false;
-
-        for (var i = 1; i < color.Length; i++)
+        if (hashIndex == 0)
         {
-            var c = color[i];
-
-            if (c is >= '0' and <= '9' or >= 'a' and <= 'f' or >= 'A' and <= 'F' == false)
+            if (color.Length is not (4 or 5 or 7 or 9))
                 return false;
+
+            for (var i = 1; i < color.Length; i++)
+            {
+                if ((color[i] >= '0' && color[i] <= '9') || (color[i] >= 'a' && color[i] <= 'f'))
+                    continue;
+                    
+                return false;
+            }
+
+            return true;
         }
+
+        var rgbIndex = color.IndexOf("rgb", StringComparison.Ordinal);
+
+        if (rgbIndex != 0)
+        {
+            if (Strings.CssNamedColors.ContainsKey(color))
+                return true;
+            
+            return false;
+        }
+
+        if (color.Contains('(') == false || color.Contains(')') == false)
+            return false;
+
+        var segments = (color.Replace(" ", string.Empty).TrimStart("rgba(").TrimStart("rgb(")?.TrimEnd(')') ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries);
+            
+        if (segments.Length is < 3 or > 4)
+            return false;
+
+        foreach (var segment in segments)
+            if (decimal.TryParse(segment, out _) == false)
+                return false;
 
         return true;
     }
