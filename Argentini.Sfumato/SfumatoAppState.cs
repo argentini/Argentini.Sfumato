@@ -1371,7 +1371,7 @@ public sealed class SfumatoAppState
         SfumatoScssOutputPath = Path.Combine(Settings.CssOutputPath, "sfumato.scss");
         
         if (DiagnosticMode)
-			DiagnosticOutput.TryAdd("init0", $"Initialized settings in {timer.FormatTimer()}{Environment.NewLine}");
+			DiagnosticOutput.TryAdd("init001", $"{Strings.TriangleRight} Processed settings in {timer.FormatTimer()}{Environment.NewLine}");
 
         ScssCoreInjectable.Clear();
         ScssCoreInjectable.Append(await SfumatoScss.GetCoreScssAsync(this, DiagnosticOutput));
@@ -1395,7 +1395,7 @@ public sealed class SfumatoAppState
         #endregion
         
         if (DiagnosticMode)
-	        DiagnosticOutput.TryAdd("init1", $"Loaded {UtilityClassCollection.Count} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
+	        DiagnosticOutput.TryAdd("init1", $"{Strings.TriangleRight} Loaded {UtilityClassCollection.Count} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
     }
 
     private async Task AddUtilityClassToCollection(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
@@ -1649,7 +1649,6 @@ public sealed class SfumatoAppState
 	/// <param name="runner"></param>
 	public async Task GatherWatchedFilesAsync()
 	{
-		var timer = new Stopwatch();
 		var totalTimer = new Stopwatch();
 
 		totalTimer.Start();
@@ -1662,8 +1661,6 @@ public sealed class SfumatoAppState
 		
 		var tasks = new List<Task>();
 
-		timer.Start();
-		
 		// Gather files lists
 		
 		foreach (var projectPath in Settings.ProjectPaths)
@@ -1672,7 +1669,6 @@ public sealed class SfumatoAppState
 		await Task.WhenAll(tasks);
 		
 		tasks.Clear();
-		timer.Restart();
 		
 		// Add matches to files lists
 
@@ -1681,8 +1677,6 @@ public sealed class SfumatoAppState
 		
 		await Task.WhenAll(tasks);
 
-		timer.Restart();
-		
 		// Generate used classes list
 
 		await ExamineWatchedFilesForUsedClassesAsync();

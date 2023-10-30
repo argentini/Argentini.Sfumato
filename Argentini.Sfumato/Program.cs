@@ -92,23 +92,26 @@ internal class Program
 
 		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 
-		await Console.Out.WriteLineAsync($"Started {(runner.AppState.WatchMode ? "initial build" : "build")} at {DateTime.Now:HH:mm:ss.fff}");
+		if (runner.AppState.DiagnosticMode)
+			runner.AppState.DiagnosticOutput.TryAdd("init000", $"Initialized app in {totalTimer.FormatTimer()}{Environment.NewLine}");
+		
+		await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
 
-		var timer = new Stopwatch();
-
-		timer.Start();
+		// var timer = new Stopwatch();
+		//
+		// timer.Start();
 		
 		await runner.AppState.GatherWatchedFilesAsync();
         await runner.PerformFullBuildAsync();
 
-        await Console.Out.WriteLineAsync($"Completed {(runner.AppState.WatchMode ? "initial build" : "build")} in {timer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
+        await Console.Out.WriteLineAsync($"Completed build in {totalTimer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
         
 		#region Watcher Mode
 
 		if (runner.AppState.WatchMode)
 		{
 			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync($"Started Watching at {DateTime.Now:HH:mm:ss.fff}");
+			await Console.Out.WriteLineAsync($"Started watching for changes at {DateTime.Now:HH:mm:ss.fff}");
 			await Console.Out.WriteLineAsync();
 			
 			#region Create Watchers

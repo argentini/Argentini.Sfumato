@@ -57,7 +57,7 @@ public static class SfumatoScss
 
 		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n');
 		
-		diagnosticOutput.TryAdd("init2", $"Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
+		diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
 		
@@ -95,7 +95,7 @@ public static class SfumatoScss
 		
 		sb.Append(mediaQueriesScss);
 
-		diagnosticOutput.TryAdd("init3", $"Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
+		diagnosticOutput.TryAdd("init3", $"{Strings.TriangleRight} Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
 		
