@@ -12,7 +12,8 @@ public class H : ScssUtilityClassGroupBase
         ["screen"] = "height: 100vh;",
         ["min"] = "height: min-content;",
         ["max"] = "height: max-content;",
-        ["fit"] = "height: fit-content;"
+        ["fit"] = "height: fit-content;",
+        ["full"] = "height: 100%;"
     }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
@@ -23,7 +24,7 @@ public class H : ScssUtilityClassGroupBase
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        await AddToIndexAsync(appState.VerbatimFractionOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -38,12 +39,19 @@ public class H : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessFractionModifierOptions(cssSelector, "height: {value};", out Result))
+            return Result;
+        
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "height: {value};", out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "height: {value};", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "height: {value};", out Result))
             return Result;
         
         #endregion

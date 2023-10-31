@@ -9,6 +9,7 @@ public class Left : ScssUtilityClassGroupBase
         ["0"] = "left: 0px;",
         ["px"] = "left: 1px;",
         ["auto"] = "left: auto;",
+        ["full"] = "left: 100%;",
     };
     
     public override async Task InitializeAsync(SfumatoAppState appState)
@@ -19,7 +20,7 @@ public class Left : ScssUtilityClassGroupBase
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        await AddToIndexAsync(appState.VerbatimFractionOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -34,12 +35,19 @@ public class Left : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessFractionModifierOptions(cssSelector, "left: {value};", out Result))
+            return Result;
+        
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "left: {value};", out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "left: {value};", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "left: {value};", out Result))
             return Result;
         
         #endregion

@@ -9,6 +9,7 @@ public class Top : ScssUtilityClassGroupBase
         ["0"] = "top: 0px;",
         ["px"] = "top: 1px;",
         ["auto"] = "top: auto;",
+        ["full"] = "top: 100%;",
     }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
@@ -19,7 +20,7 @@ public class Top : ScssUtilityClassGroupBase
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        await AddToIndexAsync(appState.VerbatimFractionOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
     
     public override string GetStyles(CssSelector cssSelector)
@@ -34,12 +35,19 @@ public class Top : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessFractionModifierOptions(cssSelector, "top: {value};", out Result))
+            return Result;
+        
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "top: {value};", out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "top: {value};", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "top: {value};", out Result))
             return Result;
         
         #endregion

@@ -39,16 +39,16 @@ public class Shadow : ScssUtilityClassGroupBase
         
         #endregion
         
-        #region Calculated Utilities
-
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "--sf-shadow-color: {value};", out Result))
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "--sf-shadow-color: {value};", out Result))
             return Result;
 
         #endregion
         
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector, "--sf-shadow-color: {value};", out Result))
+        #region Calculated Utilities
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "--sf-shadow-color: {value};", out Result))
             return Result;
 
         #endregion

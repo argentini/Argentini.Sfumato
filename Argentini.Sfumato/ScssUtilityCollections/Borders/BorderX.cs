@@ -18,6 +18,17 @@ public class BorderX : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector,
+                """
+                border-left-color: {value};
+                border-right-color: {value};
+                """, out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
 
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector,
@@ -36,17 +47,6 @@ public class BorderX : ScssUtilityClassGroupBase
         
         #endregion
 
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector,
-                """
-                border-left-color: {value};
-                border-right-color: {value};
-                """, out Result))
-            return Result;
-
-        #endregion
-        
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })

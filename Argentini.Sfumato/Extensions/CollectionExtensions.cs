@@ -49,19 +49,9 @@ public static class CollectionExtensions
     /// Add whole number percentage number options that end with '%' e.g. ["50%"] = "50%".
     /// Used by inherited classes.
     /// </summary>
-    public static void AddPercentageOptions(this Dictionary<string,string> dictionary, int minValue, int maxValue)
+    public static void AddPercentageOptions(this Dictionary<string, string> dictionary, int minValue, int maxValue)
     {
         for (var x = minValue; x <= maxValue; x++)
             dictionary.TryAdd($"{x}%", $"{x}%");
-    }
-    
-    /// <summary>
-    /// Add options for fractions from 1/2 up through 11/12, and "full" =&gt; 100%.
-    /// Used by inherited classes.
-    /// </summary>
-    public static void AddVerbatimFractionOptions(this Dictionary<string,string> dictionary, Dictionary<string,string> fractionOptions)
-    {
-        foreach (var percentage in fractionOptions)
-            dictionary.TryAdd(percentage.Key, percentage.Value);
     }
 }

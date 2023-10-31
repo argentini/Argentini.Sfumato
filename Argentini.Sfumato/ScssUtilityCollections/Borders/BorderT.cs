@@ -18,6 +18,13 @@ public class BorderT : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "border-top-color: {value};", out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
 
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-top-color: {value};", out Result))
@@ -26,13 +33,6 @@ public class BorderT : ScssUtilityClassGroupBase
         if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-top-width: {value};", out Result))
             return Result;
         
-        #endregion
-
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector, "border-top-color: {value};", out Result))
-            return Result;
-
         #endregion
         
         #region Arbitrary Values

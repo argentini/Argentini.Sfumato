@@ -36,6 +36,13 @@ public class Border : ScssUtilityClassGroupBase
             return Result;
 
         #endregion
+
+        #region Modifier Utilities
+
+        if (ProcessColorModifierOptions(cssSelector, "border-color: {value};", out Result))
+            return Result;
+
+        #endregion
         
         #region Calculated Utilities
 
@@ -45,13 +52,6 @@ public class Border : ScssUtilityClassGroupBase
         if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-width: {value};", out Result))
             return Result;
         
-        #endregion
-        
-        #region Modifier Utilities
-
-        if (ProcessColorModifierOptions(cssSelector, "border-color: {value};", out Result))
-            return Result;
-
         #endregion
         
         #region Arbitrary Values

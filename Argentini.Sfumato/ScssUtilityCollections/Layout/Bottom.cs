@@ -9,6 +9,7 @@ public class Bottom : ScssUtilityClassGroupBase
         ["0"] = "bottom: 0px;",
         ["px"] = "bottom: 1px;",
         ["auto"] = "bottom: auto;",
+        ["full"] = "100%"
     };
     
     public override async Task InitializeAsync(SfumatoAppState appState)
@@ -19,7 +20,7 @@ public class Bottom : ScssUtilityClassGroupBase
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        await AddToIndexAsync(appState.VerbatimFractionOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -34,12 +35,19 @@ public class Bottom : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessFractionModifierOptions(cssSelector, "bottom: {value};", out Result))
+            return Result;
+        
+        #endregion
+
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "bottom: {value};", out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "bottom: {value};", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "bottom: {value};", out Result))
             return Result;
         
         #endregion

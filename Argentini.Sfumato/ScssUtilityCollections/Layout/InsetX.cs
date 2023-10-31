@@ -18,6 +18,10 @@ public class InsetX : ScssUtilityClassGroupBase
                    left: auto;
                    right: auto;
                    """,
+        ["full"] = """
+                   left: 100%;
+                   right: 100%;
+                   """,
     };
     
     public override async Task InitializeAsync(SfumatoAppState appState)
@@ -28,7 +32,7 @@ public class InsetX : ScssUtilityClassGroupBase
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        await AddToIndexAsync(appState.VerbatimFractionOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -43,6 +47,17 @@ public class InsetX : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessFractionModifierOptions(cssSelector,
+                """
+                left: {value};
+                right: {value};
+                """, out Result))
+            return Result;
+        
+        #endregion
+
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector,
@@ -52,7 +67,7 @@ public class InsetX : ScssUtilityClassGroupBase
             """, out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector,
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector,
             """
             left: {value};
             right: {value};

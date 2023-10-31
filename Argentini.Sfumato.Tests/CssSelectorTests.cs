@@ -184,7 +184,7 @@ public class CssSelectorTests
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
         Assert.Equal("bg", selector.PrefixSegment);
-        Assert.Equal("rose-100/50", selector.CoreSegment);
+        Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("/50", selector.ModifierSegment);
         Assert.Equal("50", selector.ModifierValue);
         Assert.Equal("integer", selector.ModifierValueType);
@@ -200,7 +200,7 @@ public class CssSelectorTests
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
         Assert.Equal("bg", selector.PrefixSegment);
-        Assert.Equal("rose-100/", selector.CoreSegment);
+        Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("/", selector.ModifierSegment);
         Assert.Equal("50", selector.ArbitraryValue);
         Assert.Equal("integer", selector.ArbitraryValueType);
@@ -283,7 +283,7 @@ public class CssSelectorTests
 
         Assert.Equal("", selector.VariantSegment);
         Assert.Equal("w", selector.PrefixSegment);
-        Assert.Equal("1/2", selector.CoreSegment);
+        Assert.Equal("1", selector.CoreSegment);
         Assert.Equal("/2", selector.ModifierSegment);
 
         Assert.Equal("", selector.ArbitraryValue);
@@ -322,7 +322,7 @@ public class CssSelectorTests
 
         Assert.Equal("", selector.VariantSegment);
         Assert.Equal("bg", selector.PrefixSegment);
-        Assert.Equal("rose-100/50", selector.CoreSegment);
+        Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("/50", selector.ModifierSegment);
 
         Assert.Equal("", selector.ArbitraryValue);
@@ -400,7 +400,7 @@ public class CssSelectorTests
 
         Assert.Equal("", selector.VariantSegment);
         Assert.Equal("bg", selector.PrefixSegment);
-        Assert.Equal("rose-100/", selector.CoreSegment);
+        Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("/", selector.ModifierSegment);
 
         Assert.Equal("50", selector.ArbitraryValue);

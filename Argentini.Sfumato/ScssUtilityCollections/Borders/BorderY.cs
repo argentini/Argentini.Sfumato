@@ -18,6 +18,17 @@ public class BorderY : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
+        #region Modifier Utilities
+
+        if (ProcessColorModifierOptions(cssSelector,
+                """
+                border-top-color: {value};
+                border-bottom-color: {value};
+                """, out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
 
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector,
@@ -34,17 +45,6 @@ public class BorderY : ScssUtilityClassGroupBase
                 """, out Result))
             return Result;
         
-        #endregion
-        
-        #region Modifier Utilities
-
-        if (ProcessColorModifierOptions(cssSelector,
-                """
-                border-top-color: {value};
-                border-bottom-color: {value};
-                """, out Result))
-            return Result;
-
         #endregion
         
         #region Arbitrary Values

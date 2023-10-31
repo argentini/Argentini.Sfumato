@@ -18,6 +18,13 @@ public class BorderS : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "border-inline-start-color: {value};", out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-inline-start-color: {value};", out Result))
@@ -28,13 +35,6 @@ public class BorderS : ScssUtilityClassGroupBase
         
         #endregion
 
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector, "border-inline-start-color: {value};", out Result))
-            return Result;
-
-        #endregion
-        
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })

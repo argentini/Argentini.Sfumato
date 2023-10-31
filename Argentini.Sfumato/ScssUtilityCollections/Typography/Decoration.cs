@@ -40,13 +40,6 @@ public class Decoration : ScssUtilityClassGroupBase
         
         #endregion
         
-        #region Calculated Utilities
-
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "text-decoration-color: {value};", out Result))
-            return Result;
-        
-        #endregion
-
         #region Modifier Utilities
         
         if (ProcessColorModifierOptions(cssSelector, "text-decoration-color: {value};", out Result))
@@ -54,6 +47,13 @@ public class Decoration : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Calculated Utilities
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "text-decoration-color: {value};", out Result))
+            return Result;
+        
+        #endregion
+
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })

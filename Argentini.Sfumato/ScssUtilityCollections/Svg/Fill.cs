@@ -30,13 +30,6 @@ public class Fill : ScssUtilityClassGroupBase
         
         #endregion
         
-        #region Calculated Utilities
-        
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "fill: {value};", out Result))
-            return Result;
-
-        #endregion
-
         #region Modifier Utilities
         
         if (ProcessColorModifierOptions(cssSelector, "fill: {value};", out Result))
@@ -44,6 +37,13 @@ public class Fill : ScssUtilityClassGroupBase
 
         #endregion
         
+        #region Calculated Utilities
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "fill: {value};", out Result))
+            return Result;
+
+        #endregion
+
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })

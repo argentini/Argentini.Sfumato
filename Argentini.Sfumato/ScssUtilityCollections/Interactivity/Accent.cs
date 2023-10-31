@@ -16,16 +16,16 @@ public class Accent : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
-        #region Calculated Utilities
-
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "accent-color: {value};", out Result))
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "accent-color: {value};", out Result))
             return Result;
         
         #endregion
         
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector, "accent-color: {value};", out Result))
+        #region Calculated Utilities
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "accent-color: {value};", out Result))
             return Result;
         
         #endregion

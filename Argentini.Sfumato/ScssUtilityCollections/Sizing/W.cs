@@ -12,7 +12,8 @@ public class W : ScssUtilityClassGroupBase
         ["screen"] = "width: 100vw;",
         ["min"] = "width: min-content;",
         ["max"] = "width: max-content;",
-        ["fit"] = "width: fit-content;"
+        ["fit"] = "width: fit-content;",
+        ["full"] = "width: 100%;"
     }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
@@ -23,7 +24,7 @@ public class W : ScssUtilityClassGroupBase
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        await AddToIndexAsync(appState.VerbatimFractionOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -38,12 +39,19 @@ public class W : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessFractionModifierOptions(cssSelector, "width: {value};", out Result))
+            return Result;
+        
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "width: {value};", out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "width: {value};", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "width: {value};", out Result))
             return Result;
         
         #endregion

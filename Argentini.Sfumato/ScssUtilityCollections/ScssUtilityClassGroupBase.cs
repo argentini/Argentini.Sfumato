@@ -24,7 +24,29 @@ public abstract class ScssUtilityClassGroupBase
     protected async ValueTask AddToIndexAsync(Dictionary<string,string> dictionary)
     {
         foreach (var corePrefix in dictionary.Keys.Where(k => k != string.Empty))
-            SelectorIndex.Add($"{SelectorPrefix}-{corePrefix}");
+        {
+            var key = $"{SelectorPrefix}-{corePrefix}";
+            
+            if (SelectorIndex.Contains(key) == false)
+                SelectorIndex.Add(key);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Add items to the selector index in a utility class's Initialize() method.
+    /// </summary>
+    /// <param name="list"></param>
+    protected async ValueTask AddToIndexAsync(IEnumerable<string> list)
+    {
+        foreach (var corePrefix in list.Where(k => k != string.Empty))
+        {
+            var key = $"{SelectorPrefix}-{corePrefix}";
+            
+            if (SelectorIndex.Contains(key) == false)
+                SelectorIndex.Add(key);
+        }
 
         await Task.CompletedTask;
     }
@@ -78,6 +100,29 @@ public abstract class ScssUtilityClassGroupBase
     }
 
     /// <summary>
+    /// Process a dictionary (calculated) option in a utility class's GetStyles() method.
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="cssSelector"></param>
+    /// <param name="propertyTemplate"></param>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    protected static bool ProcessListOptions(List<string>? list, CssSelector cssSelector, string propertyTemplate, out string result)
+    {
+        if (cssSelector.HasArbitraryValue == false)
+        {
+            if (list?.Contains(cssSelector.CoreSegment) ?? false)
+            {
+                result = propertyTemplate.Replace("{value}", cssSelector.CoreSegment);
+                return true;
+            }
+        }
+
+        result = string.Empty;
+        return false;
+    }
+
+    /// <summary>
     /// Process a color modifier in a utility class's GetStyles() method.
     /// 
     /// </summary>
@@ -122,6 +167,40 @@ public abstract class ScssUtilityClassGroupBase
         return false;
     }
 
+    /// <summary>
+    /// Process a fraction modifier in a utility class's GetStyles() method.
+    /// 
+    /// </summary>
+    /// <param name="cssSelector"></param>
+    /// <param name="propertyTemplate"></param>
+    /// <param name="result"></param>
+    /// <returns></returns>
+    protected static bool ProcessFractionModifierOptions(CssSelector cssSelector, string propertyTemplate, out string result)
+    {
+        if (cssSelector.HasModifierValue || cssSelector.HasArbitraryValue)
+        {
+            var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
+
+            if (valueType == "integer")
+            {
+                if (decimal.TryParse(cssSelector.CoreSegment, out var dividend))
+                {
+                    var modifierValue = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
+
+                    if (decimal.TryParse(modifierValue, out var divisor))
+                    {
+                        result = propertyTemplate.Replace("{value}", $"{((dividend / divisor) * 100):0.##}%");
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        result = string.Empty;
+        return false;
+    }
+    
     /// <summary>
     /// Process a font line height modifier in a utility class's GetStyles() method.
     /// </summary>

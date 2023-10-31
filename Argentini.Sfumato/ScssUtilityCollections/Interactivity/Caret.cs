@@ -16,18 +16,18 @@ public class Caret : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
-        #region Calculated Utilities
-        
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "caret-color: {value};", out Result))
-            return Result;
-        
-        #endregion
-        
         #region Modifier Utilities
 
         if (ProcessColorModifierOptions(cssSelector, "caret-color: {value};", out Result))
             return Result;
 
+        #endregion
+        
+        #region Calculated Utilities
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "caret-color: {value};", out Result))
+            return Result;
+        
         #endregion
         
         #region Arbitrary Values

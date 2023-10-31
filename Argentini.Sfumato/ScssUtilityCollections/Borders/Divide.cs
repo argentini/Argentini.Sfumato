@@ -54,9 +54,9 @@ public class Divide : ScssUtilityClassGroupBase
         
         #endregion
         
-        #region Calculated Utilities
+        #region Modifier Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, 
+        if (ProcessColorModifierOptions(cssSelector,
                 """
                 & > * + * {
                     border-color: {value};
@@ -66,9 +66,9 @@ public class Divide : ScssUtilityClassGroupBase
         
         #endregion
         
-        #region Modifier Utilities
+        #region Calculated Utilities
         
-        if (ProcessColorModifierOptions(cssSelector,
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, 
                 """
                 & > * + * {
                     border-color: {value};

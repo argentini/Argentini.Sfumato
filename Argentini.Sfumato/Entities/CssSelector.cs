@@ -351,7 +351,6 @@ public sealed class CssSelector
 
 	    var rightOfVariants = Selector;
 	    var rootSegment = Selector;
-	    var selectorNoVariantsNoBrackets = Selector;
 	    
 	    var indexOfBracket = rootSegment.IndexOf('[');
 	    var indexOfBracketClose = rootSegment.LastIndexOf(']');
@@ -367,7 +366,6 @@ public sealed class CssSelector
 		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
 		    
 		    rootSegment = Selector[..indexOfBracket];
-		    selectorNoVariantsNoBrackets = rootSegment;
 	    }
 	    
 	    var indexOfLastColon = rootSegment.LastIndexOf(':');
@@ -383,14 +381,12 @@ public sealed class CssSelector
 		    VariantSegment = rootSegment[..(indexOfLastColon + 1)];
 		    rootSegment = rootSegment[(indexOfLastColon + 1)..];
 		    rightOfVariants = Selector[(indexOfLastColon + 1)..];
-		    selectorNoVariantsNoBrackets = rootSegment;
 	    }
 
 	    if (rootSegment.StartsWith('!'))
 	    {
 		    IsImportant = true;
 		    rootSegment = rootSegment.TrimStart('!');
-		    selectorNoVariantsNoBrackets = rootSegment;
 	    }
 
 	    if (IsArbitraryCss == false)
@@ -482,6 +478,9 @@ public sealed class CssSelector
 
 	    if (HasArbitraryValue)
 	    {
+		    if (ArbitraryValueType != string.Empty)
+			    ArbitraryValue = ArbitraryValue.TrimStart($"{ArbitraryValueType}:") ?? string.Empty;
+
 		    if (ArbitraryValue.StartsWith("--"))
 			    ArbitraryValue = $"var({ArbitraryValue})";
 
@@ -492,7 +491,7 @@ public sealed class CssSelector
 	    if (AppState?.UtilityClassCollection.TryGetValue(rootSegment.TrimEnd('-'), out var scssUtilityClassGroup) ?? false)
 		    ScssUtilityClassGroup = scssUtilityClassGroup;
 	    else
-	    if (AppState?.UtilityClassCollection.TryGetValue(selectorNoVariantsNoBrackets, out scssUtilityClassGroup) ?? false)
+	    if (AppState?.UtilityClassCollection.TryGetValue(rootSegment, out scssUtilityClassGroup) ?? false)
 		    ScssUtilityClassGroup = scssUtilityClassGroup;
 
 	    if (ScssUtilityClassGroup is null)
@@ -502,7 +501,7 @@ public sealed class CssSelector
 	    }
 
 	    PrefixSegment = ScssUtilityClassGroup.SelectorPrefix;
-	    CoreSegment = selectorNoVariantsNoBrackets.TrimStart(ScssUtilityClassGroup.SelectorPrefix)?.TrimStart('-') ?? string.Empty;
+	    CoreSegment = rootSegment.TrimStart(ScssUtilityClassGroup.SelectorPrefix)?.TrimStart('-') ?? string.Empty;
 
 	    await Task.CompletedTask;
     }

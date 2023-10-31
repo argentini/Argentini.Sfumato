@@ -19,6 +19,13 @@ public class Ring : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "--sf-ring-color: {value};", out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
 
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "--sf-ring-color: {value};", out Result))
@@ -29,13 +36,6 @@ public class Ring : ScssUtilityClassGroupBase
         
         #endregion
 
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector, "--sf-ring-color: {value};", out Result))
-            return Result;
-
-        #endregion
-        
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })

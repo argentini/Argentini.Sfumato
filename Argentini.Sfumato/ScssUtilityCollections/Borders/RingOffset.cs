@@ -19,6 +19,17 @@ public class RingOffset : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
         
+        #region Modifier Utilities
+
+        if (ProcessColorModifierOptions(cssSelector,
+                """
+                --sf-ring-offset-color: {value};
+                box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
+                """, out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
 
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector,
@@ -35,17 +46,6 @@ public class RingOffset : ScssUtilityClassGroupBase
                 """, out Result))
             return Result;
         
-        #endregion
-        
-        #region Modifier Utilities
-
-        if (ProcessColorModifierOptions(cssSelector,
-                """
-                --sf-ring-offset-color: {value};
-                box-shadow: 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color), var(--sf-ring-shadow);
-                """, out Result))
-            return Result;
-
         #endregion
         
         #region Arbitrary Values

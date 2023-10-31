@@ -9,6 +9,7 @@ public class Start : ScssUtilityClassGroupBase
         ["0"] = "inset-inline-start: 0px;",
         ["px"] = "inset-inline-start: 1px;",
         ["auto"] = "inset-inline-start: auto;",
+        ["full"] = "inset-inline-start: 100%;",
     }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
@@ -19,7 +20,7 @@ public class Start : ScssUtilityClassGroupBase
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
-        await AddToIndexAsync(appState.VerbatimFractionOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -34,12 +35,19 @@ public class Start : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessFractionModifierOptions(cssSelector, "inset-inline-start: {value};", out Result))
+            return Result;
+        
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "inset-inline-start: {value};", out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.VerbatimFractionOptions, cssSelector, "inset-inline-start: {value};", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "inset-inline-start: {value};", out Result))
             return Result;
         
         #endregion

@@ -65,16 +65,16 @@ public class Bg : ScssUtilityClassGroupBase
         
         #endregion
         
-        #region Calculated Utilities
-
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "background-color: {value};", out Result))
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "background-color: {value};", out Result))
             return Result;
         
         #endregion
         
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector, "background-color: {value};", out Result))
+        #region Calculated Utilities
+
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "background-color: {value};", out Result))
             return Result;
         
         #endregion

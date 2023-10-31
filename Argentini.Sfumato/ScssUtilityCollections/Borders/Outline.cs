@@ -36,6 +36,13 @@ public class Outline : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+        
+        if (ProcessColorModifierOptions(cssSelector, "outline-color: {value};", out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "outline-color: {value};", out Result))
@@ -44,13 +51,6 @@ public class Outline : ScssUtilityClassGroupBase
         if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "outline-width: {value};", out Result))
             return Result;
         
-        #endregion
-        
-        #region Modifier Utilities
-        
-        if (ProcessColorModifierOptions(cssSelector, "outline-color: {value};", out Result))
-            return Result;
-
         #endregion
         
         #region Arbitrary Values

@@ -35,6 +35,20 @@ public class Text : ScssUtilityClassGroupBase
         
         #endregion
         
+        #region Modifier Utilities
+
+        if (ProcessTextSizeLeadingModifierOptions(cssSelector,
+                """
+                font-size: {fontSize};
+                line-height: {value};
+                """, out Result))
+            return Result;
+            
+        if (ProcessColorModifierOptions(cssSelector, "color: {value};", out Result))
+            return Result;
+
+        #endregion
+        
         #region Calculated Utilities
 
         if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "color: {value};", out Result))
@@ -48,20 +62,6 @@ public class Text : ScssUtilityClassGroupBase
                  """, out Result))
                 return Result;
         
-        #endregion
-        
-        #region Modifier Utilities
-
-        if (ProcessTextSizeLeadingModifierOptions(cssSelector,
-                """
-                font-size: {fontSize};
-                line-height: {value};
-                """, out Result))
-            return Result;
-            
-        if (ProcessColorModifierOptions(cssSelector, "color: {value};", out Result))
-            return Result;
-
         #endregion
         
         #region Arbitrary Values
