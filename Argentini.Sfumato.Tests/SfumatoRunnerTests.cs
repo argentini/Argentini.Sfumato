@@ -320,7 +320,7 @@ public class SfumatoRunnerTests
                             @include sf-media($from: tabp) {
                             
                                 h1 {
-                                    @apply text-2xl/[1.75] font-bold;
+                                    @apply text-2xl/[1.75] !font-bold;
                                     color: black;
                                 }
                             }
@@ -339,7 +339,7 @@ public class SfumatoRunnerTests
                        h1 {
                          font-size: 1.5rem;
                          line-height: 1.75;
-                         font-weight: 700;
+                         font-weight: 700 !important;
                          color: black;
                        }
                      }
