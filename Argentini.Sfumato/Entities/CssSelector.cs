@@ -123,13 +123,13 @@ public sealed class CssSelector
     /// <returns></returns>
     public static ArbitraryValuePackage SetCustomValueType(string arbitraryValue, SfumatoAppState? appState)
     {
+	    if (string.IsNullOrEmpty(arbitraryValue))
+		    return new ArbitraryValuePackage();
+
 	    var result = new ArbitraryValuePackage
 	    {
 			Value = arbitraryValue
 	    };
-	    
-	    if (string.IsNullOrEmpty(arbitraryValue))
-		    return result;
 
 	    var value = arbitraryValue.TrimStart('[').TrimEnd(']');
 	    
@@ -361,34 +361,33 @@ public sealed class CssSelector
 		    return;
 	    }
 	    
+	    #region Process Arbitrary Value
+	    
 	    if (indexOfBracket > -1)
 	    {
 		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
 		    
-		    rootSegment = Selector[..indexOfBracket];
+		    rootSegment = Selector[..indexOfBracket].TrimEnd('-');
+
+		    if (IsArbitraryCss == false)
+		    {
+			    var valueTypePackage = SetCustomValueType(ArbitraryValue, AppState);
+
+			    ArbitraryValueType = valueTypePackage.ValueType;
+			    ArbitraryValue = valueTypePackage.Value;
+
+			    if (ArbitraryValue.StartsWith("--"))
+				    ArbitraryValue = $"var({ArbitraryValue})";
+
+			    else if (ArbitraryValueType == "url" && ArbitraryValue.StartsWith("url(") == false)
+				    ArbitraryValue = $"url({ArbitraryValue})";
+		    }
 	    }
 	    
-	    var indexOfLastColon = rootSegment.LastIndexOf(':');
-
-	    if (indexOfLastColon == 0)
-	    {
-		    IsInvalid = true;
-		    return;
-	    }
+	    #endregion
 	    
-	    if (indexOfLastColon > 0)
-	    {
-		    VariantSegment = rootSegment[..(indexOfLastColon + 1)];
-		    rootSegment = rootSegment[(indexOfLastColon + 1)..];
-		    rightOfVariants = Selector[(indexOfLastColon + 1)..];
-	    }
-
-	    if (rootSegment.StartsWith('!'))
-	    {
-		    IsImportant = true;
-		    rootSegment = rootSegment.TrimStart('!');
-	    }
-
+	    #region Process Modifier Value
+	    
 	    if (IsArbitraryCss == false)
 	    {
 		    var indexOfLastSlash = rootSegment.LastIndexOf('/');
@@ -408,9 +407,33 @@ public sealed class CssSelector
 				    ModifierValue = rootSegment[(indexOfLastSlash + 1)..];
 
 			    rootSegment = rootSegment[..indexOfLastSlash];
+			    
+			    var valueTypePackage = SetCustomValueType(ModifierValue, AppState);
+	    
+			    ModifierValueType = valueTypePackage.ValueType;
+			    ModifierValue = valueTypePackage.Value;
 		    }
 	    }
+	    
+	    #endregion
 
+	    #region Process Variants
+
+	    var indexOfLastColon = rootSegment.LastIndexOf(':');
+
+	    if (indexOfLastColon == 0)
+	    {
+		    IsInvalid = true;
+		    return;
+	    }
+	    
+	    if (indexOfLastColon > 0)
+	    {
+		    VariantSegment = rootSegment[..(indexOfLastColon + 1)];
+		    rootSegment = rootSegment[(indexOfLastColon + 1)..];
+		    rightOfVariants = Selector[(indexOfLastColon + 1)..];
+	    }
+	    
 	    if (VariantSegment.Length > 0)
 	    {
 		    var segments = VariantSegment.Split(':', StringSplitOptions.RemoveEmptyEntries);
@@ -454,44 +477,22 @@ public sealed class CssSelector
 		    BuildVariantSortOrder();
 	    }
 
+	    #endregion
+	    
+	    #region Process Important Override
+	    
+	    if (rootSegment.StartsWith('!'))
+	    {
+		    IsImportant = true;
+		    rootSegment = rootSegment.TrimStart('!');
+	    }
+	    
+	    #endregion
+	    
 	    if (IsArbitraryCss)
 		    return;
 
-	    var valueTypePackage = SetCustomValueType(ModifierValue, AppState);
-	    
-	    ModifierValueType = valueTypePackage.ValueType;
-	    ModifierValue = valueTypePackage.Value;
-	    
-	    valueTypePackage = SetCustomValueType(ArbitraryValue, AppState);
-	    
-	    ArbitraryValueType = valueTypePackage.ValueType;
-	    ArbitraryValue = valueTypePackage.Value;
-
-	    if (HasModifierValue)
-	    {
-		    if (ModifierValueType != string.Empty)
-			    ModifierValue = ModifierValue.TrimStart($"{ModifierValueType}:") ?? string.Empty;
-
-		    else if (ArbitraryValueType != string.Empty)
-			    ArbitraryValue = ArbitraryValue.TrimStart($"{ArbitraryValueType}:") ?? string.Empty;
-	    }
-
-	    if (HasArbitraryValue)
-	    {
-		    if (ArbitraryValueType != string.Empty)
-			    ArbitraryValue = ArbitraryValue.TrimStart($"{ArbitraryValueType}:") ?? string.Empty;
-
-		    if (ArbitraryValue.StartsWith("--"))
-			    ArbitraryValue = $"var({ArbitraryValue})";
-
-		    else if (ArbitraryValueType == "url" && ArbitraryValue.StartsWith("url(") == false)
-			    ArbitraryValue = $"url({ArbitraryValue})";
-	    }
-
-	    if (AppState?.UtilityClassCollection.TryGetValue(rootSegment.TrimEnd('-'), out var scssUtilityClassGroup) ?? false)
-		    ScssUtilityClassGroup = scssUtilityClassGroup;
-	    else
-	    if (AppState?.UtilityClassCollection.TryGetValue(rootSegment, out scssUtilityClassGroup) ?? false)
+	    if (AppState?.UtilityClassCollection.TryGetValue(rootSegment, out var scssUtilityClassGroup) ?? false)
 		    ScssUtilityClassGroup = scssUtilityClassGroup;
 
 	    if (ScssUtilityClassGroup is null)
