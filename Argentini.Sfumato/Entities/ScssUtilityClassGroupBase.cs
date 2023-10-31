@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.ScssUtilityCollections;
+namespace Argentini.Sfumato.Entities;
 
 public abstract class ScssUtilityClassGroupBase
 {
