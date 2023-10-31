@@ -132,7 +132,7 @@ public abstract class ScssUtilityClassGroupBase
     /// <returns></returns>
     protected static bool ProcessColorModifierOptions(CssSelector cssSelector, string propertyTemplate, out string result)
     {
-        if (cssSelector.HasModifierValue || cssSelector.HasArbitraryValue)
+        if (cssSelector.UsesModifier)
         {
             if (cssSelector.AppState?.ColorOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out var color) ?? false)
             {
@@ -177,7 +177,7 @@ public abstract class ScssUtilityClassGroupBase
     /// <returns></returns>
     protected static bool ProcessFractionModifierOptions(CssSelector cssSelector, string propertyTemplate, out string result)
     {
-        if (cssSelector.HasModifierValue || cssSelector.HasArbitraryValue)
+        if (cssSelector.UsesModifier)
         {
             var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
 
@@ -210,7 +210,7 @@ public abstract class ScssUtilityClassGroupBase
     /// <returns></returns>
     protected static bool ProcessTextSizeLeadingModifierOptions(CssSelector cssSelector, string propertyTemplate, out string result)
     {
-        if (cssSelector.HasModifierValue || cssSelector.HasArbitraryValue)
+        if (cssSelector.UsesModifier)
         {
             if (cssSelector.AppState?.TextSizeOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out var fontSize) ?? false)
             {
