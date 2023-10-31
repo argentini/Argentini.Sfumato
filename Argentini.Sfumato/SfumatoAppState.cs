@@ -1,5 +1,3 @@
-using Argentini.Sfumato.ScssUtilityCollections;
-
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoAppState
