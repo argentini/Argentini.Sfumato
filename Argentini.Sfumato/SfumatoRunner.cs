@@ -26,16 +26,16 @@ public sealed class SfumatoRunner
 
 	public SfumatoRunner()
 	{
-		TypeAdapterConfig<CssSelector,CssSelector>
-			.NewConfig()
-			.Ignore(dest => dest.AppState!)
-			.Ignore(dest => dest.ScssUtilityClassGroup!)
-			.AfterMapping((src, dest) => 
-			{
-				dest.AllVariants = src.AllVariants.Adapt<List<string>>();
-				dest.MediaQueryVariants = src.MediaQueryVariants.Adapt<List<string>>();
-				dest.PseudoClassVariants = src.PseudoClassVariants.Adapt<List<string>>();
-			});
+		// TypeAdapterConfig<CssSelector,CssSelector>
+		// 	.NewConfig()
+		// 	.Ignore(dest => dest.AppState!)
+		// 	.Ignore(dest => dest.ScssUtilityClassGroup!)
+		// 	.AfterMapping((src, dest) => 
+		// 	{
+		// 		dest.AllVariants = src.AllVariants.Adapt<List<string>>();
+		// 		dest.MediaQueryVariants = src.MediaQueryVariants.Adapt<List<string>>();
+		// 		dest.PseudoClassVariants = src.PseudoClassVariants.Adapt<List<string>>();
+		// 	});
 #if DEBUG
 		AppState.DiagnosticMode = true;
 #endif		
@@ -311,9 +311,13 @@ public sealed class SfumatoRunner
 	{
 		foreach (var cssSelector in sourceNode.Classes)
 		{
-			var newCssSelector = cssSelector.Adapt<CssSelector>();
-			newCssSelector.AppState = cssSelector.AppState;
-			newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
+			var newCssSelector = new CssSelector(AppState, cssSelector.Selector, cssSelector.IsArbitraryCss);
+			await newCssSelector.ProcessSelectorAsync();
+			newCssSelector.GetStyles();
+			
+			// var newCssSelector = cssSelector.Adapt<CssSelector>();
+			// newCssSelector.AppState = cssSelector.AppState;
+			// newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
 			
 			destinationNode.Classes.Add(newCssSelector);
 		}

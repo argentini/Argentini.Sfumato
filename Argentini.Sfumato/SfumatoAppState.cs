@@ -1866,9 +1866,13 @@ public sealed class SfumatoAppState
 			if (cssSelector.ScssUtilityClassGroup is null)
 				continue;
 
-			var newCssSelector = cssSelector.Adapt<CssSelector>();
-			newCssSelector.AppState = cssSelector.AppState;
-			newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
+			var newCssSelector = new CssSelector(this, cssSelector.Selector, cssSelector.IsArbitraryCss);
+			await newCssSelector.ProcessSelectorAsync();
+			newCssSelector.GetStyles();
+
+			// var newCssSelector = cssSelector.Adapt<CssSelector>();
+			// newCssSelector.AppState = cssSelector.AppState;
+			// newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
 			
 			UsedClasses.TryAdd(cssSelector.FixedSelector, newCssSelector);
 		}
@@ -1878,9 +1882,13 @@ public sealed class SfumatoAppState
 			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))
 				continue;
 
-			var newCssSelector = cssSelector.Adapt<CssSelector>();
-			newCssSelector.AppState = cssSelector.AppState;
-			newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
+			var newCssSelector = new CssSelector(this, cssSelector.Selector, cssSelector.IsArbitraryCss);
+			await newCssSelector.ProcessSelectorAsync();
+			newCssSelector.GetStyles();
+
+			// var newCssSelector = cssSelector.Adapt<CssSelector>();
+			// newCssSelector.AppState = cssSelector.AppState;
+			// newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
 
 			UsedClasses.TryAdd(cssSelector.FixedSelector, newCssSelector);
 		}
