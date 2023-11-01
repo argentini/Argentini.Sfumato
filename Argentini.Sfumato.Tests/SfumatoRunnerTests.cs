@@ -313,9 +313,12 @@ public class SfumatoRunnerTests
     [Fact]
     public async Task InjectCoreAndStyles()
     {
-        var appState = new SfumatoAppState();
+        var runner = new SfumatoRunner();
+
+        await runner.InitializeAsync();
+
         const string scss = """
-                            @apply sfumato-core;
+                            @sfumato shared;
 
                             @include sf-media($from: tabp) {
                             
@@ -326,9 +329,7 @@ public class SfumatoRunnerTests
                             }
                             """;
 
-        await appState.InitializeAsync(Array.Empty<string>());
-        
-        var css = await SfumatoScss.TranspileScss("test.scss", scss, appState);
+        var css = await SfumatoScss.TranspileScss("test.scss", scss, runner);
 
         css = css.Contains("/*") == false
             ? css

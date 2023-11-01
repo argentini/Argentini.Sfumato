@@ -26,14 +26,6 @@ public sealed class SfumatoRunner
 
 	public SfumatoRunner()
 	{
-		TypeAdapterConfig<ScssNode, ScssNode>.NewConfig()
-			.PreserveReference(true)
-			.AfterMapping((src, dest) => 
-			{
-				dest.Classes = src.Classes.Adapt<List<CssSelector>>();
-				dest.Nodes = src.Nodes.Adapt<List<ScssNode>>();
-			});
-		
 #if DEBUG
 		AppState.DiagnosticMode = true;
 #endif		
@@ -50,71 +42,66 @@ public sealed class SfumatoRunner
 	}
 	
 	/// <summary>
-	/// Perform a full build of sfumato.css and project SCSS.
-	/// </summary>
-	public async Task PerformFullBuildAsync()
-	{
-		await Task.WhenAll(PerformCoreBuildAsync(), PerformProjectScssBuildAsync());		
-	}
-	
-	/// <summary>
 	/// Build sfumato.css based on watched project files.
 	/// </summary>
-	public async Task PerformCoreBuildAsync()
+	/// <param name="timer"></param>
+	/// <param name="onlyFilesUsingBaseAndUtilities"></param>
+	public async Task PerformCoreBuildAsync(Stopwatch timer, bool onlyFilesUsingBaseAndUtilities = false)
 	{
-		var timer = new Stopwatch();
-		var totalTimer = new Stopwatch();
-		
-		#region Generate Global CSS
-		
-		timer.Start();
-		totalTimer.Start();
-
-		var projectScss = AppState.StringBuilderPool.Get();
-
-		projectScss.Append(AppState.ScssCoreInjectable);
-		projectScss.Append(await GenerateScssObjectTreeAsync());
-
-		await File.WriteAllTextAsync(AppState.SfumatoScssOutputPath, projectScss.ToString());
-
-		if (AppState.DiagnosticMode)
-			AppState.DiagnosticOutput.TryAdd("init4", $"Generated sfumato.scss ({projectScss.Length.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
-		
-		timer.Restart();
-
-		var css = await SfumatoScss.TranspileScss(AppState.SfumatoScssOutputPath, projectScss.ToString(), AppState);
-		
-		await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated sfumato.css ({css.Length.FormatBytes()}{(AppState.Minify ? ", minified" : string.Empty)}) in {totalTimer.FormatTimer()}");
-
-		if (AppState.DiagnosticMode)
-			AppState.DiagnosticOutput.TryAdd("init5", $"Generated sfumato.css ({css.Length.FormatBytes()}) in {timer.FormatTimer()}{Environment.NewLine}");
-
-		#endregion
-		
-		AppState.StringBuilderPool.Return(projectScss);
-	}
-	
-	/// <summary>
-	/// Build the project's CSS and write to storage.
-	/// </summary>
-	public async Task PerformProjectScssBuildAsync()
-	{
-		var timer = new Stopwatch();
-		
-		timer.Start();
-
-		var fileStats = new FileResults();
+		var fileResults = new FileResults();
 		var tasks = new List<Task>();
 
-		foreach (var watchedFile in AppState.WatchedScssFiles)
-			tasks.Add(TranspileScssFileAsync(AppState, watchedFile.Value, fileStats));
-		
+		foreach (var watchedFile in AppState.WatchedScssFiles.Values)
+		{
+			var matches = AppState.SfumatoScssRegex.Matches(watchedFile.Scss);
+
+			if (onlyFilesUsingBaseAndUtilities == false || (onlyFilesUsingBaseAndUtilities && matches.Any(m => m.Value.Contains("base") || m.Value.Contains("utilities"))))
+			{
+				tasks.Add(TranspileAsync(watchedFile.FilePath, fileResults));
+			}
+		}
+
 		await Task.WhenAll(tasks);
+
+		await Console.Out.WriteLineAsync($"Completed build of {fileResults.FileCount:N0} CSS file{(fileResults.FileCount != 1 ? "s" : string.Empty)} ({fileResults.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
+	}
+
+	public async Task<FileResults> RecurseScssFilesForCoreBuild(string? sourcePath, bool onlyFilesUsingBaseAndUtilities, FileResults fileResults)
+	{
+		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
+			return fileResults;
+
+		FileInfo[] files = null!;
+		DirectoryInfo[] dirs = null!;
+	
+		var dir = new DirectoryInfo(sourcePath);
+
+		if (dir.Exists == false)
+		{
+			await Console.Out.WriteLineAsync($"Source directory does not exist or could not be found: {sourcePath}");
+			Environment.Exit(1);
+		}
+
+		dirs = dir.GetDirectories();
+		files = dir.GetFiles().Where(f => f.Name.StartsWith('_') == false && f.Name.EndsWith(".scss")).ToArray();
+
+		var tasks = new List<Task>();
+
+		foreach (var projectFile in files)
+			tasks.Add(TranspileAsync(projectFile.FullName, fileResults));
+
+		await Task.WhenAll(tasks);
+
+		foreach (var subDir in dirs.OrderBy(d => d.Name))
+			await RecurseScssFilesForCoreBuild(subDir.FullName, onlyFilesUsingBaseAndUtilities, fileResults);
 		
-		if (fileStats.FileCount == 0)
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} No project SCSS files found");
-		else
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {fileStats.FileCount:N0} project CSS file{(fileStats.FileCount == 1 ? string.Empty : "s")} ({fileStats.TotalBytes.FormatBytes()}{(AppState.Minify ? ", minified" : string.Empty)}) in {timer.FormatTimer()}");
+		return fileResults;
+	}
+
+	public async Task TranspileAsync(string filePath, FileResults fileResults)
+	{
+		fileResults.FileCount++;
+		fileResults.TotalBytes += (await SfumatoScss.TranspileScss(filePath, string.Empty, this)).Length;
 	}
 	
 	#endregion
@@ -204,7 +191,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 
-		foreach (var (_, usedCssSelector) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Key))
+		foreach (var (_, usedCssSelector) in AppState.UsedClasses.Where(u => u.Value.IsInvalid == false).OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Key))
 		{
 			if (usedCssSelector.IsInvalid)
 				continue;
@@ -274,10 +261,10 @@ public sealed class SfumatoRunner
 				{
 					Prefix = "auto-dark",
 					PrefixPath = node.PrefixPath,
-					Level = node.Level,
-					Classes = node.Classes,
-					Nodes = node.Nodes
+					Level = node.Level
 				};
+
+				await RecurseNodeCloneAsync(node, newNode);
 				
 				hierarchy.Nodes.Add(newNode);
 			}
@@ -342,6 +329,33 @@ public sealed class SfumatoRunner
 		
 		return scss;
 	}
+
+	private async Task RecurseNodeCloneAsync(ScssNode sourceNode, ScssNode destinationNode)
+	{
+		foreach (var childClass in sourceNode.Classes)
+		{
+			var selector = new CssSelector(AppState, childClass.Selector, childClass.IsArbitraryCss);
+
+			await selector.ProcessSelectorAsync();
+					
+			destinationNode.Classes.Add(selector);
+		}
+
+		foreach (var childNode in sourceNode.Nodes)
+		{
+			var newNode = new ScssNode
+			{
+				Prefix = childNode.Prefix,
+				PrefixPath = childNode.PrefixPath,
+				Level = childNode.Level
+			};
+			
+			destinationNode.Nodes.Add(newNode);
+
+			await RecurseNodeCloneAsync(childNode, newNode);
+		}
+	}
+	
 	public async Task GenerateScssFromObjectTreeAsync(ScssNode scssNode, StringBuilder sb)
 	{
 		if (string.IsNullOrEmpty(scssNode.Prefix) == false)
@@ -398,31 +412,6 @@ public sealed class SfumatoRunner
 		}
 	}
 	
-	/// <summary>
-	/// Transpile a SCSS file in-place.
-	/// </summary>
-	/// <param name="appState"></param>
-	/// <param name="watchedFile"></param>
-	/// <param name="fileStats"></param>
-	/// <returns></returns>
-	public static async Task TranspileScssFileAsync(SfumatoAppState appState, WatchedScssFile watchedFile, FileResults fileStats)
-	{
-		if (File.Exists(watchedFile.FilePath) == false)
-			return;
-		
-		fileStats.FileCount++;
-
-		var css = await SfumatoScss.TranspileScss(watchedFile.FilePath, watchedFile.Scss, appState);
-
-		if (string.IsNullOrEmpty(css))
-			return;
-		
-		fileStats.TotalBytes += css.Length;
-
-		if (appState.DiagnosticMode)
-			appState.DiagnosticOutput.TryAdd("init6" + Guid.NewGuid(), $"Generated {ShortenPathForOutput(watchedFile.FilePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", appState)} ({css.Length.FormatBytes()}){Environment.NewLine}");
-	}
-	
 	#endregion
 	
 	#region SCSS Watcher Methods
@@ -432,11 +421,8 @@ public sealed class SfumatoRunner
 	/// Remove any associated CSS file from storage.
 	/// </summary>
 	/// <param name="filePath"></param>
-	public async Task DeleteWatchedScssFile(string filePath)
+	public async Task DeleteWatchedScssFileAsync(string filePath)
 	{
-		if (filePath.Equals(AppState.SfumatoScssOutputPath, StringComparison.OrdinalIgnoreCase))
-			return;
-
         _ = AppState.WatchedScssFiles.TryRemove(filePath, out _);
 
         var cssFilePath =
@@ -458,17 +444,10 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="filePath"></param>
 	/// <param name="cancellationTokenSource"></param>
-	public async Task AddUpdateWatchedScssFile(string filePath, CancellationTokenSource cancellationTokenSource)
+	public async Task AddUpdateWatchedScssFileAsync(string filePath, CancellationTokenSource cancellationTokenSource)
 	{
-		if (filePath.Equals(AppState.SfumatoScssOutputPath, StringComparison.OrdinalIgnoreCase))
-			return;
-		
-		var timer = new Stopwatch();
-
-		timer.Start();
-		
 		var scss = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
-		var css = await SfumatoScss.TranspileScss(filePath, scss, AppState);
+		var css = await SfumatoScss.TranspileScss(filePath, scss, this);
 
 		if (AppState.WatchedScssFiles.TryGetValue(filePath, out var watchedFile))
 		{
@@ -485,8 +464,6 @@ public sealed class SfumatoRunner
 				Scss = scss
 			});
 		}
-							
-		await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", AppState)} ({css.Length.FormatBytes()}) in {timer.FormatTimer()}");
 	}
 	
 	#endregion
@@ -497,14 +474,11 @@ public sealed class SfumatoRunner
 	/// Remove a watched file from the watched files collection.
 	/// </summary>
 	/// <param name="filePath"></param>
-	public async Task DeleteWatchedFile(string filePath)
+	public async Task DeleteWatchedFileAsync(string filePath)
 	{
 		if (filePath.Equals(AppState.SettingsFilePath, StringComparison.OrdinalIgnoreCase))
 			return;
 
-		if (filePath.Equals(AppState.SfumatoScssOutputPath.TrimEnd(".scss") + ".css", StringComparison.OrdinalIgnoreCase))
-			return;
-		
 		_ = AppState.WatchedFiles.TryRemove(filePath, out _);
 								
 		await Task.CompletedTask;
@@ -515,12 +489,9 @@ public sealed class SfumatoRunner
 	/// </summary>
 	/// <param name="filePath"></param>
 	/// <param name="cancellationTokenSource"></param>
-	public async Task AddUpdateWatchedFile(string filePath, CancellationTokenSource cancellationTokenSource)
+	public async Task AddUpdateWatchedFileAsync(string filePath, CancellationTokenSource cancellationTokenSource)
 	{
 		if (filePath.Equals(AppState.SettingsFilePath, StringComparison.OrdinalIgnoreCase))
-			return;
-
-		if (filePath.Equals(AppState.SfumatoScssOutputPath.TrimEnd(".scss") + ".css", StringComparison.OrdinalIgnoreCase))
 			return;
 
 		var markup = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
@@ -540,9 +511,8 @@ public sealed class SfumatoRunner
 				Markup = markup
 			};
 
-			await AppState.ProcessFileMatchesAsync(newWatchedFile);        
-			
-			AppState.WatchedFiles.TryAdd(filePath, newWatchedFile);
+			if (AppState.WatchedFiles.TryAdd(filePath, newWatchedFile))
+				await AppState.ProcessFileMatchesAsync(newWatchedFile);
 		}
 	}
 	

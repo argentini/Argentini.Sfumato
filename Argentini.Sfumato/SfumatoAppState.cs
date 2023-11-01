@@ -992,6 +992,7 @@ public sealed class SfumatoAppState
     
     public Regex ArbitraryCssRegex { get; }
     public Regex CoreClassRegex { get; }
+    public Regex SfumatoScssRegex { get; }
     public Regex SfumatoScssApplyRegex { get; }
     
     #endregion
@@ -1027,9 +1028,8 @@ public sealed class SfumatoAppState
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
     public string ScssPath { get; set; } = string.Empty;
-    public string SfumatoScssOutputPath { get; set; } = string.Empty;
     public List<string> AllVariants { get; } = new();
-    public StringBuilder ScssCoreInjectable { get; } = new();
+    public StringBuilder ScssBaseInjectable { get; } = new();
     public StringBuilder ScssSharedInjectable { get; } = new();
     
     #endregion
@@ -1065,6 +1065,21 @@ public sealed class SfumatoAppState
 	    
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 
+	    const string sfumatoScssRegexExpression = """
+(?<=^|[\s])
+(@sfumato[\s]{1,})
+(
+	([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
+	(
+		(/[a-z0-9\-\.]{1,100})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,100}\])?
+	)
+	(([\s]{1,})|([\s]{0,};))
+){1,}
+(?=[\s])
+""";
+	    
+	    SfumatoScssRegex = new Regex(sfumatoScssRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
+	    
 	    const string sfumatoScssApplyRegexExpression = """
 (?<=^|[\s])
 (@apply[\s]{1,})
@@ -1168,14 +1183,6 @@ public sealed class SfumatoAppState
             
             #region Import settings
             
-            Settings.CssOutputPath = Path.Combine(WorkingPath, jsonSettings.CssOutputPath.SetNativePathSeparators());
-        
-            if (Directory.Exists(Settings.CssOutputPath) == false)
-            {
-                await Console.Out.WriteLineAsync($"{CliErrorPrefix}Could not find CSS output path: {Settings.CssOutputPath}");
-                Environment.Exit(1);
-            }
-        
             Settings.ThemeMode = jsonSettings.ThemeMode switch
             {
                 "system" => "system",
@@ -1197,7 +1204,7 @@ public sealed class SfumatoAppState
 	            
                 projectPath.Path = Path.Combine(WorkingPath, projectPath.Path.SetNativePathSeparators());
                 
-                if (projectPath.FileSpec.Contains('.') && projectPath.FileSpec.StartsWith("*", StringComparison.Ordinal) == false)
+                if (projectPath.FileSpec.Contains('.') && projectPath.FileSpec.StartsWith('*') == false)
                 {
 	                projectPath.IsFilePath = true;
 	                Settings.ProjectPaths.Add(projectPath);
@@ -1213,6 +1220,13 @@ public sealed class SfumatoAppState
                 Settings.ProjectPaths.Add(projectPath);
             }
 
+            Settings.ProjectPaths.Add(new ProjectPath
+            {
+	            Path = WorkingPath,
+	            FileSpec = "*.scss",
+	            Recurse = true
+            });
+
             jsonSettings.Breakpoints.Adapt(Settings.Breakpoints);
             jsonSettings.FontSizeUnits.Adapt(Settings.FontSizeUnits);
             
@@ -1225,13 +1239,12 @@ public sealed class SfumatoAppState
             Environment.Exit(1);
         }
 
-        SfumatoScssOutputPath = Path.Combine(Settings.CssOutputPath, "sfumato.scss");
-        
         if (DiagnosticMode)
 			DiagnosticOutput.TryAdd("init001", $"{Strings.TriangleRight} Processed settings in {timer.FormatTimer()}{Environment.NewLine}");
 
-        ScssCoreInjectable.Clear();
-        ScssCoreInjectable.Append(await SfumatoScss.GetCoreScssAsync(this, DiagnosticOutput));
+        ScssBaseInjectable.Clear();
+        ScssBaseInjectable.Append($"/* SFUMATO BROWSER RESET */{Environment.NewLine}{Environment.NewLine}");
+        ScssBaseInjectable.Append(await SfumatoScss.GetBaseScssAsync(this, DiagnosticOutput));
 
         ScssSharedInjectable.Clear();
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
@@ -1543,7 +1556,7 @@ public sealed class SfumatoAppState
 		if (WatchedFiles.IsEmpty)
 			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified no watched files");
 		else
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified {WatchedFiles.Count:N0} watched file{(WatchedFiles.Count == 1 ? string.Empty : "s")} using {UsedClasses.Count(u => u.Value.IsInvalid == false):N0} classes in {totalTimer.FormatTimer()}");
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Identified {UsedClasses.Count(u => u.Value.IsInvalid == false):N0} utilities used by {WatchedFiles.Count:N0} project file{(WatchedFiles.Count == 1 ? string.Empty : "s")} in {totalTimer.FormatTimer()}");
 	}
 	
 	/// <summary>
@@ -1605,6 +1618,12 @@ public sealed class SfumatoAppState
 	/// <param name="fileSpec"></param>
 	public async Task AddProjectFileToCollection(FileInfo projectFile, string fileSpec)
 	{
+		if (projectFile.FullName.EndsWith("sfumato.json", StringComparison.OrdinalIgnoreCase))
+			return;
+
+		if (fileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) && projectFile.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+			return;
+		
 		var markup = await File.ReadAllTextAsync(projectFile.FullName);
 
 		if (fileSpec.EndsWith(".scss"))

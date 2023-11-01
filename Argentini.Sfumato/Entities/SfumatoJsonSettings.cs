@@ -2,8 +2,6 @@ namespace Argentini.Sfumato.Entities;
 
 public class SfumatoJsonSettings
 {
-    public string CssOutputPath { get; set; } = string.Empty;
-
     public List<ProjectPath> ProjectPaths { get; set;  } = new();
 
     public string ThemeMode { get; set; } = "system";

@@ -1,5 +1,4 @@
 {
-    "cssOutputPath": "styles/",
     "projectPaths": [
         {
             "fileSpec": "*.html",
@@ -18,16 +17,6 @@
             "desk": 1440,
             "elas": 1600
         },
-    "xxxfontSizeUnits":
-    {
-        "zero": "4.35vw",
-        "phab": "4vw",
-        "tabp": "1.6vw",
-        "tabl": "1vw",
-        "note": "1vw",
-        "desk": "1vw",
-        "elas": "1vw"
-    },
     "fontSizeUnits":
     {
         "zero": "16px",

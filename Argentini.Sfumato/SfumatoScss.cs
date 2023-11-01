@@ -3,15 +3,14 @@ namespace Argentini.Sfumato;
 public static class SfumatoScss
 {
 	#region Core Shared SCSS
-	
+
 	/// <summary>
-	/// Get all Sfumato core SCSS include files (e.g. mixins) and return as a single string.
-	/// Used as a prefix for the global CSS file (sfumato.css).
+	/// Get all Sfumato base SCSS include files (e.g. browser reset, static element styles) and return as a single string.
 	/// </summary>
 	/// <param name="appState"></param>
 	/// <param name="diagnosticOutput"></param>
 	/// <returns></returns>
-	public static async Task<string> GetCoreScssAsync(SfumatoAppState appState, ConcurrentDictionary<string,string> diagnosticOutput)
+	public static async Task<string> GetBaseScssAsync(SfumatoAppState appState, ConcurrentDictionary<string,string> diagnosticOutput)
 	{
 		var timer = new Stopwatch();
 
@@ -57,9 +56,7 @@ public static class SfumatoScss
 
 		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n');
 
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_extras.scss"))).Trim() + '\n');
-
-		diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS Core for output injection in {timer.FormatTimer()}{Environment.NewLine}");
+		diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS base for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
 		
@@ -67,7 +64,7 @@ public static class SfumatoScss
 
 		return result;
 	}
-
+	
 	/// <summary>
 	/// Get all Sfumato core SCSS include files (e.g. mixins) and return as a single string.
 	/// Used as a prefix for transpile in-place project SCSS files.
@@ -115,22 +112,35 @@ public static class SfumatoScss
 	/// </summary>
 	/// <param name="filePath"></param>
 	/// <param name="rawScss"></param>
-	/// <param name="appState"></param>
+	/// <param name="runner"></param>
+	/// <param name="showOutput"></param>
 	/// <returns>Generated CSS file</returns>
-	public static async Task<string> TranspileScss(string filePath, string rawScss, SfumatoAppState appState)
+	public static async Task<string> TranspileScss(string filePath, string rawScss, SfumatoRunner runner, bool showOutput = true)
 	{
-		var sb = appState.StringBuilderPool.Get();
+		var sb = runner.AppState.StringBuilderPool.Get();
 
 		try
 		{
+			if (string.IsNullOrEmpty(rawScss))
+				rawScss = await File.ReadAllTextAsync(filePath);
+
+			if (string.IsNullOrEmpty(rawScss))
+				return string.Empty;
+			
 			var arguments = new List<string>();
 			var cssOutputPath = filePath.TrimEnd(".scss") + ".css"; 
-			var cssMapOutputPath = cssOutputPath + ".map"; 
-			
+			var cssMapOutputPath = cssOutputPath + ".map";
+			var includesBase = false;
+			var includesUtilities = false;
+			var includesShared = false;
+			var timer = new Stopwatch();
+
+			timer.Start();
+
 			if (File.Exists(cssMapOutputPath))
 				File.Delete(cssMapOutputPath);
 
-			if (appState.Minify == false)
+			if (runner.AppState.Minify == false)
 			{
 				arguments.Add("--style=expanded");
 				arguments.Add("--embed-sources");
@@ -140,14 +150,17 @@ public static class SfumatoScss
 			{
 				arguments.Add("--style=compressed");
 				arguments.Add("--no-source-map");
-	            
 			}
 
+			arguments.Add($"--load-path={filePath[..filePath.LastIndexOf(Path.DirectorySeparatorChar)]}");
 			arguments.Add("--stdin");
 			arguments.Add(cssOutputPath);
 			
-			var scss = appState.StringBuilderPool.Get();
-			var matches = appState.SfumatoScssApplyRegex.Matches(rawScss);
+			var scss = runner.AppState.StringBuilderPool.Get();
+			
+			#region Process @sfumato directives
+			
+			var matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
 			var startIndex = 0;
 
 			while (matches.Count > 0)
@@ -157,56 +170,96 @@ public static class SfumatoScss
 				if (match.Index + match.Value.Length > startIndex)
 					startIndex = match.Index + match.Value.Length;
 
-				if (match.Value.CompactCss().TrimEnd(';').EndsWith("sfumato-core"))
+				var matchValue = match.Value.CompactCss().TrimEnd(';');
+				
+				if (matchValue.EndsWith(" shared"))
 				{
-					scss.Append(appState.ScssSharedInjectable);
 					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					rawScss = rawScss.Insert(match.Index, runner.AppState.ScssSharedInjectable.ToString());
+					includesShared = true;
 				}
 
-				else
+				else if (matchValue.EndsWith(" base"))
 				{
-					var classes = (match.Value.Trim().TrimEnd(';').CompactCss().TrimStart("@apply ")?.Split(' ') ?? Array.Empty<string>()).ToList();
-
-					foreach (var selector in classes.ToList())
-					{
-						if (appState.IsValidCoreClassSelector(selector) == false)
-							classes.Remove(selector);
-					}
-
-					if (classes.Count == 0)
-					{
-						rawScss = rawScss.Remove(match.Index, match.Value.Length);
-					}
-					
-					else
-					{
-						var styles = appState.StringBuilderPool.Get();
-
-						foreach (var selector in classes)
-						{
-							var cssSelector = new CssSelector(appState, selector);
-
-							await cssSelector.ProcessSelectorAsync();
-
-							if (cssSelector.IsInvalid == false)
-							{
-								styles.Append(cssSelector.GetStyles());
-							}
-						}
-						
-						rawScss = rawScss.Remove(match.Index, match.Value.Length);
-						rawScss = rawScss.Insert(match.Index, styles.ToString());
-						
-						appState.StringBuilderPool.Return(styles);
-					}
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					rawScss = rawScss.Insert(match.Index, runner.AppState.ScssBaseInjectable.ToString());
+					includesBase = true;
 				}
 				
-				matches = appState.SfumatoScssApplyRegex.Matches(rawScss);
+				else if (matchValue.EndsWith(" utilities"))
+				{
+					var preamble = $"{Environment.NewLine}{Environment.NewLine}/* SFUMATO UTILITY CLASSES */{Environment.NewLine}{Environment.NewLine}";
+
+					var utilitiesScss = await runner.GenerateScssObjectTreeAsync();
+					
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					rawScss = rawScss.Insert(match.Index, preamble + utilitiesScss);
+
+					includesUtilities = true;
+				}
+				
+				matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
 			}
+			
+			#endregion
+			
+			#region Process @apply directives
+			
+			matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
+			startIndex = 0;
+
+			while (matches.Count > 0)
+			{
+				var match = matches[0];
+				
+				if (match.Index + match.Value.Length > startIndex)
+					startIndex = match.Index + match.Value.Length;
+
+				var matchValue = match.Value.Trim().TrimEnd(';').CompactCss().TrimStart("@apply ");
+
+				var classes = (matchValue?.Split(' ') ?? Array.Empty<string>()).ToList();
+
+				foreach (var selector in classes.ToList())
+				{
+					if (runner.AppState.IsValidCoreClassSelector(selector) == false)
+						classes.Remove(selector);
+				}
+
+				if (classes.Count == 0)
+				{
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+				}
+				
+				else
+				{
+					var styles = runner.AppState.StringBuilderPool.Get();
+
+					foreach (var selector in classes)
+					{
+						var cssSelector = new CssSelector(runner.AppState, selector);
+
+						await cssSelector.ProcessSelectorAsync();
+
+						if (cssSelector.IsInvalid == false)
+						{
+							styles.Append(cssSelector.GetStyles());
+						}
+					}
+					
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					rawScss = rawScss.Insert(match.Index, styles.ToString());
+					
+					runner.AppState.StringBuilderPool.Return(styles);
+				}
+				
+				matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
+			}
+
+			#endregion
 			
 			scss.Append(rawScss);
 			
-			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(appState.SassCliPath)
+			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(runner.AppState.SassCliPath)
 				.WithArguments(args =>
 				{
 					foreach (var arg in arguments)
@@ -218,10 +271,33 @@ public static class SfumatoScss
 
 			await cmd.ExecuteAsync();
 			
-			appState.StringBuilderPool.Return(sb);
-			appState.StringBuilderPool.Return(scss);
+			runner.AppState.StringBuilderPool.Return(sb);
+			runner.AppState.StringBuilderPool.Return(scss);
 
-			return await File.ReadAllTextAsync(cssOutputPath);
+			var css = await File.ReadAllTextAsync(cssOutputPath);
+
+			if (showOutput == false)
+				return css;
+			
+			var details = runner.AppState.StringBuilderPool.Get();
+				
+			if (includesBase)
+				details.Append(", +base");
+				
+			if (includesUtilities)
+				details.Append($", +{runner.AppState.UsedClasses.Count(u => u.Value.IsInvalid == false):N0} utilities");
+
+			if (includesShared)
+				details.Append(", +shared");
+
+			if (runner.AppState.Minify)
+				details.Append(", minified");
+				
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {SfumatoRunner.ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({css.Length.FormatBytes()}{details}) in {timer.FormatTimer()}");
+
+			runner.AppState.StringBuilderPool.Return(details);
+
+			return css;
 		}
 
 		catch (Exception e)
@@ -233,7 +309,7 @@ public static class SfumatoScss
 
 			await Console.Out.WriteLineAsync(sb.ToString());
 
-			appState.StringBuilderPool.Return(sb);
+			runner.AppState.StringBuilderPool.Return(sb);
 
 			Environment.Exit(1);
 

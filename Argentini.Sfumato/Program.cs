@@ -61,7 +61,6 @@ internal class Program
 		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "OS Dark/Light Mode" : "CSS Classes")}");
 		await Console.Out.WriteLineAsync($"Transpile        :  {(runner.AppState.Minify ? "Minify" : "Expanded")}");
 		await Console.Out.WriteLineAsync($"Project Path     :  {runner.AppState.WorkingPath}");
-		await Console.Out.WriteLineAsync($"CSS Output Path  :  .{runner.AppState.Settings.CssOutputPath.TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}sfumato.css");
 
 		if (runner.AppState.Settings.ProjectPaths.Count > 0)
 		{
@@ -72,14 +71,7 @@ internal class Program
 				if (paths.Length > 0)
 					paths.Append("                 :  ");
 
-				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{path.FileSpec}");
-				
-				if (path.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
-					paths.Append(" (transpile in-place)");
-				else
-					paths.Append(" (audit used classes)");
-
-				paths.Append($"{Environment.NewLine}");
+				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{path.FileSpec}{Environment.NewLine}");
 			}
 	        
 			await Console.Out.WriteLineAsync($"Watch Path(s)    :  {paths.ToString().TrimEnd()}");
@@ -97,10 +89,8 @@ internal class Program
 		await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
 
 		await runner.AppState.GatherWatchedFilesAsync();
-        await runner.PerformFullBuildAsync();
+        await runner.PerformCoreBuildAsync(totalTimer);
 
-        await Console.Out.WriteLineAsync($"Completed build in {totalTimer.FormatTimer()} at {DateTime.Now:HH:mm:ss.fff}");
-        
 		#region Watcher Mode
 
 		if (runner.AppState.WatchMode)
@@ -147,7 +137,7 @@ internal class Program
 
 				if (rebuildProjectQueue.IsEmpty == false)
 				{
-					await Console.Out.WriteLineAsync($"Started sfumato.css rebuild at {DateTime.Now:HH:mm:ss.fff}");
+					await Console.Out.WriteLineAsync($"Project file changes detected at {DateTime.Now:HH:mm:ss.fff}");
 
 					foreach (var fileChangeRequest in rebuildProjectQueue.OrderBy(f => f.Key))
 					{
@@ -160,19 +150,19 @@ internal class Program
 						if (eventArgs.ChangeType == WatcherChangeTypes.Deleted)
 						{
 							await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Deleted {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.DeleteWatchedFile(eventArgs.FullPath);
+							await runner.DeleteWatchedFileAsync(eventArgs.FullPath);
 						}
 
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Changed)
 						{
 							await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Updated {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.AddUpdateWatchedFile(eventArgs.FullPath, cancellationTokenSource);
+							await runner.AddUpdateWatchedFileAsync(eventArgs.FullPath, cancellationTokenSource);
 						}
 						
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Created)
 						{
 							await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Added {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.AddUpdateWatchedFile(eventArgs.FullPath, cancellationTokenSource);
+							await runner.AddUpdateWatchedFileAsync(eventArgs.FullPath, cancellationTokenSource);
 						}
 						
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Renamed)
@@ -181,18 +171,24 @@ internal class Program
 							var oldFilePath = SfumatoRunner.ShortenPathForOutput(renamedEventArgs.OldFullPath, runner.AppState);
 
 							await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Renamed {oldFilePath} => {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.DeleteWatchedFile(renamedEventArgs.OldFullPath);
+							await runner.DeleteWatchedFileAsync(renamedEventArgs.OldFullPath);
 							
 							if (renamedEventArgs.Name?.EndsWith(fileChangeRequest.Value.FileSpec.TrimStart('*')) ?? false)
-								await runner.AddUpdateWatchedFile(renamedEventArgs.FullPath, cancellationTokenSource);
+								await runner.AddUpdateWatchedFileAsync(renamedEventArgs.FullPath, cancellationTokenSource);
 						}
 					}					
 					
 					rebuildProjectQueue.Clear();
 
-					await runner.AppState.ExamineWatchedFilesForUsedClassesAsync();
+					var timer = new Stopwatch();
+
+					timer.Start();
 					
-					await runner.PerformCoreBuildAsync();
+					foreach (var watchedFile in runner.AppState.WatchedFiles)
+						await runner.AppState.ProcessFileMatchesAsync(watchedFile.Value);
+
+					await runner.AppState.ExamineWatchedFilesForUsedClassesAsync();
+					await runner.PerformCoreBuildAsync(timer, true);
 
 					processedFiles = true;
 				}
@@ -205,28 +201,29 @@ internal class Program
 							break;
 
 						var eventArgs = fileChangeRequest.Value.FileSystemEventArgs;
-						var filePath = SfumatoRunner.ShortenPathForOutput(eventArgs.FullPath, runner.AppState);
 
-						if (eventArgs.FullPath.Equals(runner.AppState.SfumatoScssOutputPath, StringComparison.OrdinalIgnoreCase))
-							continue;
+						if (Path.GetFileName(eventArgs.FullPath).StartsWith('_'))
+							break;
+						
+						var filePath = SfumatoRunner.ShortenPathForOutput(eventArgs.FullPath, runner.AppState);
 
 						if (eventArgs.ChangeType == WatcherChangeTypes.Deleted)
 						{
 							await Console.Out.WriteLineAsync($"Deleted {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.DeleteWatchedScssFile(eventArgs.FullPath);
+							await runner.DeleteWatchedScssFileAsync(eventArgs.FullPath);
 							await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Deleted {filePath.TrimEnd(".scss")}.css/map");
 						}
 
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Changed)
 						{
 							await Console.Out.WriteLineAsync($"Updated {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.AddUpdateWatchedScssFile(eventArgs.FullPath, cancellationTokenSource);
+							await runner.AddUpdateWatchedScssFileAsync(eventArgs.FullPath, cancellationTokenSource);
 						}
 						
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Created)
 						{
 							await Console.Out.WriteLineAsync($"Added {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.AddUpdateWatchedScssFile(eventArgs.FullPath, cancellationTokenSource);
+							await runner.AddUpdateWatchedScssFileAsync(eventArgs.FullPath, cancellationTokenSource);
 						}
 						
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Renamed)
@@ -235,11 +232,11 @@ internal class Program
 							var oldFilePath = SfumatoRunner.ShortenPathForOutput(renamedEventArgs.OldFullPath, runner.AppState);
 							
 							await Console.Out.WriteLineAsync($"Renamed {oldFilePath} => {filePath} at {DateTime.Now:HH:mm:ss.fff}");
-							await runner.DeleteWatchedScssFile(renamedEventArgs.OldFullPath);
+							await runner.DeleteWatchedScssFileAsync(renamedEventArgs.OldFullPath);
 							await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Deleted {oldFilePath.TrimEnd(".scss")}.css");
 
 							if (renamedEventArgs.Name?.EndsWith(".scss") ?? false)
-								await runner.AddUpdateWatchedScssFile(renamedEventArgs.FullPath, cancellationTokenSource);
+								await runner.AddUpdateWatchedScssFileAsync(renamedEventArgs.FullPath, cancellationTokenSource);
 						}
 					}
 
@@ -253,9 +250,13 @@ internal class Program
 					await Console.Out.WriteLineAsync($"Modified sfumato.json at {DateTime.Now:HH:mm:ss.fff}");
 					await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Restart app and rebuild");
 
+					var timer = new Stopwatch();
+
+					timer.Start();
+
 					await runner.InitializeAsync(args);
 					await runner.AppState.GatherWatchedFilesAsync();
-					await runner.PerformFullBuildAsync();
+					await runner.PerformCoreBuildAsync(timer);
 					
 					restartAppQueue.Clear();
 
