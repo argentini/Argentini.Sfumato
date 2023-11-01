@@ -28,7 +28,7 @@
         "desk": "16px",
         "elas": "16px"
     },
-    "xxxfontSizeUnits":
+    "disabled_fontSizeUnits":
     {
         "zero": "4.35vw",
         "phab": "4vw",
