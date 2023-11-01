@@ -14,7 +14,7 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "");
+        var selector = new CssSelector(appState, string.Empty);
 
         await selector.ProcessSelectorAsync();
         

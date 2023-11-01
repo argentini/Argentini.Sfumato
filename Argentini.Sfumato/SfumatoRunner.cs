@@ -313,12 +313,11 @@ public sealed class SfumatoRunner
 		{
 			var newCssSelector = new CssSelector(AppState, cssSelector.Selector, cssSelector.IsArbitraryCss);
 			await newCssSelector.ProcessSelectorAsync();
+
+			if (newCssSelector.IsInvalid)
+				continue;
+			
 			newCssSelector.GetStyles();
-			
-			// var newCssSelector = cssSelector.Adapt<CssSelector>();
-			// newCssSelector.AppState = cssSelector.AppState;
-			// newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
-			
 			destinationNode.Classes.Add(newCssSelector);
 		}
 

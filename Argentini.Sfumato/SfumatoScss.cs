@@ -152,7 +152,11 @@ public static class SfumatoScss
 				arguments.Add("--no-source-map");
 			}
 
-			arguments.Add($"--load-path={filePath[..filePath.LastIndexOf(Path.DirectorySeparatorChar)]}");
+			if (filePath.Contains(Path.DirectorySeparatorChar))
+				arguments.Add($"--load-path={filePath[..filePath.LastIndexOf(Path.DirectorySeparatorChar)]}");
+			else
+				arguments.Add($"--load-path={runner.AppState.WorkingPath}");
+			
 			arguments.Add("--stdin");
 			arguments.Add(cssOutputPath);
 			
@@ -236,14 +240,14 @@ public static class SfumatoScss
 
 					foreach (var selector in classes)
 					{
-						var cssSelector = new CssSelector(runner.AppState, selector);
+						var newCssSelector = new CssSelector(runner.AppState, selector);
 
-						await cssSelector.ProcessSelectorAsync();
+						await newCssSelector.ProcessSelectorAsync();
 
-						if (cssSelector.IsInvalid == false)
-						{
-							styles.Append(cssSelector.GetStyles());
-						}
+						if (newCssSelector.IsInvalid)
+							continue;
+
+						styles.Append(newCssSelector.GetStyles());
 					}
 					
 					rawScss = rawScss.Remove(match.Index, match.Value.Length);

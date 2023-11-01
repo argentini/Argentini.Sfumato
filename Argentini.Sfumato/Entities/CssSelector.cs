@@ -1,3 +1,5 @@
+using Argentini.Sfumato.Entities.ScssUtilityCollections;
+
 namespace Argentini.Sfumato.Entities;
 
 public sealed class CssSelector
