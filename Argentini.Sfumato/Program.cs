@@ -93,7 +93,7 @@ internal class Program
 
 		#region Watcher Mode
 
-		if (runner.AppState.WatchMode)
+		if (runner.AppState.WatchMode || true)
 		{
 			var fileWatchers = new List<FileSystemWatcher>();
 			var restartAppQueue = new ConcurrentDictionary<long, FileChangeRequest>();
@@ -184,9 +184,6 @@ internal class Program
 
 					timer.Start();
 					
-					foreach (var watchedFile in runner.AppState.WatchedFiles)
-						await runner.AppState.ProcessFileMatchesAsync(watchedFile.Value);
-
 					await runner.AppState.ExamineWatchedFilesForUsedClassesAsync();
 					await runner.PerformCoreBuildAsync(timer, true);
 
@@ -203,7 +200,7 @@ internal class Program
 						var eventArgs = fileChangeRequest.Value.FileSystemEventArgs;
 
 						if (Path.GetFileName(eventArgs.FullPath).StartsWith('_'))
-							break;
+							continue;
 						
 						var filePath = SfumatoRunner.ShortenPathForOutput(eventArgs.FullPath, runner.AppState);
 

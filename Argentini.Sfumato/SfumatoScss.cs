@@ -115,7 +115,7 @@ public static class SfumatoScss
 	/// <param name="runner"></param>
 	/// <param name="showOutput"></param>
 	/// <returns>Generated CSS file</returns>
-	public static async Task<string> TranspileScss(string filePath, string rawScss, SfumatoRunner runner, bool showOutput = true)
+	public static async Task<string> TranspileScssAsync(string filePath, string rawScss, SfumatoRunner runner, bool showOutput = true)
 	{
 		var sb = runner.AppState.StringBuilderPool.Get();
 
@@ -190,7 +190,7 @@ public static class SfumatoScss
 				{
 					var preamble = $"{Environment.NewLine}{Environment.NewLine}/* SFUMATO UTILITY CLASSES */{Environment.NewLine}{Environment.NewLine}";
 
-					var utilitiesScss = await runner.GenerateScssObjectTreeAsync();
+					var utilitiesScss = await runner.GenerateUtilityScssAsync();
 					
 					rawScss = rawScss.Remove(match.Index, match.Value.Length);
 					rawScss = rawScss.Insert(match.Index, preamble + utilitiesScss);

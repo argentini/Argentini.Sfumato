@@ -47,9 +47,9 @@ public sealed class CssSelector
 
     #region Selector
     
-    public string Selector { get; private set; } = string.Empty;
+    public string Selector { get; set; } = string.Empty;
 
-    public string FixedSelector { get; private set; } = string.Empty;
+    public string FixedSelector { get; set; } = string.Empty;
     
     private string _escapedSelector = string.Empty;
     public string EscapedSelector
@@ -69,22 +69,22 @@ public sealed class CssSelector
     
     #region Variants
     
-    public List<string> MediaQueryVariants { get; } = new();
-    public List<string> PseudoClassVariants { get; } = new();
-    public List<string> AllVariants { get; } = new();
+    public List<string> MediaQueryVariants { get; set; } = new();
+    public List<string> PseudoClassVariants { get; set; } = new();
+    public List<string> AllVariants { get; set; } = new();
     
     #endregion
 
     #region Segments
     
-    public string VariantSegment { get; private set; } = string.Empty;
-    public string PrefixSegment { get; private set; } = string.Empty;
-    public string CoreSegment { get; private set; } = string.Empty;
-    public string ModifierSegment { get; private set; } = string.Empty;
-    public string ModifierValue { get; private set; } = string.Empty;
-    public string ModifierValueType { get; private set; } = string.Empty;
-    public string ArbitraryValue { get; private set; } = string.Empty;
-    public string ArbitraryValueType { get; private set; } = string.Empty;
+    public string VariantSegment { get; set; } = string.Empty;
+    public string PrefixSegment { get; set; } = string.Empty;
+    public string CoreSegment { get; set; } = string.Empty;
+    public string ModifierSegment { get; set; } = string.Empty;
+    public string ModifierValue { get; set; } = string.Empty;
+    public string ModifierValueType { get; set; } = string.Empty;
+    public string ArbitraryValue { get; set; } = string.Empty;
+    public string ArbitraryValueType { get; set; } = string.Empty;
     
 	#endregion    
 
@@ -101,7 +101,11 @@ public sealed class CssSelector
     #endregion
 
     #endregion
-    
+
+    public CssSelector()
+    {
+    }
+
     public CssSelector(SfumatoAppState appState, bool isArbitraryCss = false)
     {
 	    AppState = appState;

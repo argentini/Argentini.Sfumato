@@ -1259,7 +1259,7 @@ public sealed class SfumatoAppState
 		var tasks = new List<Task>();
 		
 		foreach (var scssUtilityClassGroup in typeof(ScssUtilityClassGroupBase).GetInheritedTypes().OrderBy(o => o.Name).ToList())
-			tasks.Add(AddUtilityClassToCollection(scssUtilityClassGroup, orderedDictionary));
+			tasks.Add(AddUtilityClassToCollectionAsync(scssUtilityClassGroup, orderedDictionary));
 
 		await Task.WhenAll(tasks);
 
@@ -1272,7 +1272,7 @@ public sealed class SfumatoAppState
 	        DiagnosticOutput.TryAdd("init1", $"{Strings.TriangleRight} Loaded {UtilityClassCollection.Count:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
     }
 
-    private async Task AddUtilityClassToCollection(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
+    private async Task AddUtilityClassToCollectionAsync(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
     {
 	    if (Activator.CreateInstance(scssUtilityClassGroup) is not ScssUtilityClassGroupBase utilityClassGroup) 
 		    throw new Exception($"Could not instantiate ScssUtilityClassGroupBase object for {scssUtilityClassGroup.Name}");
@@ -1599,7 +1599,7 @@ public sealed class SfumatoAppState
 		
 		foreach (var projectFile in files)
 		{
-			tasks.Add(AddProjectFileToCollection(projectFile, fileSpec));
+			tasks.Add(AddProjectFileToCollectionAsync(projectFile, fileSpec));
 		}
 
 		await Task.WhenAll(tasks);
@@ -1616,7 +1616,7 @@ public sealed class SfumatoAppState
 	/// </summary>
 	/// <param name="projectFile"></param>
 	/// <param name="fileSpec"></param>
-	public async Task AddProjectFileToCollection(FileInfo projectFile, string fileSpec)
+	public async Task AddProjectFileToCollectionAsync(FileInfo projectFile, string fileSpec)
 	{
 		if (projectFile.FullName.EndsWith("sfumato.json", StringComparison.OrdinalIgnoreCase))
 			return;
@@ -1665,6 +1665,10 @@ public sealed class SfumatoAppState
 				tasks.Add(AddCssSelectorToCollection(watchedFile.CoreClassMatches, match.Value));
 		}
 
+		await Task.WhenAll(tasks);
+
+		tasks.Clear();
+		
 		matches = ArbitraryCssRegex.Matches(watchedFile.Markup).Distinct().ToList();
 
 		if (matches.Count > 0)
@@ -1680,6 +1684,31 @@ public sealed class SfumatoAppState
 		await Task.WhenAll(tasks);
 	}
 
+	/// <summary>
+	/// Create a new CssSelector and add to a collection.
+	/// 
+	/// </summary>
+	/// <param name="collection"></param>
+	/// <param name="value"></param>
+	/// <param name="isArbitraryCss"></param>
+	public async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value, bool isArbitraryCss = false)
+	{
+		if (collection.ContainsKey(value))
+			return;
+
+		var cssSelector = new CssSelector(this, value, isArbitraryCss);
+
+		await cssSelector.ProcessSelectorAsync();
+
+		if (cssSelector.IsInvalid == false)
+		{
+			cssSelector.GetStyles();
+			collection.TryAdd(value, cssSelector);
+		}
+
+		await Task.CompletedTask;
+	}
+	
 	/// <summary>
 	/// Verifuy a string of colon-separated variants.
 	/// </summary>
@@ -1806,31 +1835,6 @@ public sealed class SfumatoAppState
 			matches.Remove(match);
 		}
 	}
-
-	/// <summary>
-	/// Create a new CssSelector and add to a collection.
-	/// 
-	/// </summary>
-	/// <param name="collection"></param>
-	/// <param name="value"></param>
-	/// <param name="isArbitraryCss"></param>
-	public async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value, bool isArbitraryCss = false)
-	{
-		if (collection.ContainsKey(value))
-			return;
-
-		var cssSelector = new CssSelector(this, value, isArbitraryCss);
-
-		_ = cssSelector.ProcessSelectorAsync();
-
-		if (cssSelector.IsInvalid == false)
-		{
-			cssSelector.GetStyles();
-			collection.TryAdd(value, cssSelector);
-		}
-
-		await Task.CompletedTask;
-	}
 	
 	/// <summary>
 	/// Examine all watched files for used classes.
@@ -1862,7 +1866,11 @@ public sealed class SfumatoAppState
 			if (cssSelector.ScssUtilityClassGroup is null)
 				continue;
 
-			UsedClasses.TryAdd(cssSelector.FixedSelector, cssSelector);
+			var newCssSelector = cssSelector.Adapt<CssSelector>();
+			newCssSelector.AppState = cssSelector.AppState;
+			newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
+			
+			UsedClasses.TryAdd(cssSelector.FixedSelector, newCssSelector);
 		}
 
 		foreach (var cssSelector in watchedFile.ArbitraryCssMatches.Values)
@@ -1870,7 +1878,11 @@ public sealed class SfumatoAppState
 			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))
 				continue;
 
-			UsedClasses.TryAdd(cssSelector.FixedSelector, cssSelector);
+			var newCssSelector = cssSelector.Adapt<CssSelector>();
+			newCssSelector.AppState = cssSelector.AppState;
+			newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
+
+			UsedClasses.TryAdd(cssSelector.FixedSelector, newCssSelector);
 		}
 
 		await Task.CompletedTask;

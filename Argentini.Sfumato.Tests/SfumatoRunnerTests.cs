@@ -183,7 +183,7 @@ public class SfumatoRunnerTests
         await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
         await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
 
-        var scss = await runner.GenerateScssObjectTreeAsync();
+        var scss = await runner.GenerateUtilityScssAsync();
 
         Assert.Equal("""
                      .\[font-weight\:600\] {
@@ -329,7 +329,7 @@ public class SfumatoRunnerTests
                             }
                             """;
 
-        var css = await SfumatoScss.TranspileScss("test.scss", scss, runner);
+        var css = await SfumatoScss.TranspileScssAsync("test.scss", scss, runner);
 
         css = css.Contains("/*") == false
             ? css

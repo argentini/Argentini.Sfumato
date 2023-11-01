@@ -26,6 +26,16 @@ public sealed class SfumatoRunner
 
 	public SfumatoRunner()
 	{
+		TypeAdapterConfig<CssSelector,CssSelector>
+			.NewConfig()
+			.Ignore(dest => dest.AppState!)
+			.Ignore(dest => dest.ScssUtilityClassGroup!)
+			.AfterMapping((src, dest) => 
+			{
+				dest.AllVariants = src.AllVariants.Adapt<List<string>>();
+				dest.MediaQueryVariants = src.MediaQueryVariants.Adapt<List<string>>();
+				dest.PseudoClassVariants = src.PseudoClassVariants.Adapt<List<string>>();
+			});
 #if DEBUG
 		AppState.DiagnosticMode = true;
 #endif		
@@ -57,7 +67,7 @@ public sealed class SfumatoRunner
 
 			if (onlyFilesUsingBaseAndUtilities == false || (onlyFilesUsingBaseAndUtilities && matches.Any(m => m.Value.Contains("base") || m.Value.Contains("utilities"))))
 			{
-				tasks.Add(TranspileAsync(watchedFile.FilePath, fileResults));
+				tasks.Add(TranspileAsync(watchedFile, fileResults));
 			}
 		}
 
@@ -66,42 +76,10 @@ public sealed class SfumatoRunner
 		await Console.Out.WriteLineAsync($"Completed build of {fileResults.FileCount:N0} CSS file{(fileResults.FileCount != 1 ? "s" : string.Empty)} ({fileResults.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
 	}
 
-	public async Task<FileResults> RecurseScssFilesForCoreBuild(string? sourcePath, bool onlyFilesUsingBaseAndUtilities, FileResults fileResults)
-	{
-		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
-			return fileResults;
-
-		FileInfo[] files = null!;
-		DirectoryInfo[] dirs = null!;
-	
-		var dir = new DirectoryInfo(sourcePath);
-
-		if (dir.Exists == false)
-		{
-			await Console.Out.WriteLineAsync($"Source directory does not exist or could not be found: {sourcePath}");
-			Environment.Exit(1);
-		}
-
-		dirs = dir.GetDirectories();
-		files = dir.GetFiles().Where(f => f.Name.StartsWith('_') == false && f.Name.EndsWith(".scss")).ToArray();
-
-		var tasks = new List<Task>();
-
-		foreach (var projectFile in files)
-			tasks.Add(TranspileAsync(projectFile.FullName, fileResults));
-
-		await Task.WhenAll(tasks);
-
-		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			await RecurseScssFilesForCoreBuild(subDir.FullName, onlyFilesUsingBaseAndUtilities, fileResults);
-		
-		return fileResults;
-	}
-
-	public async Task TranspileAsync(string filePath, FileResults fileResults)
+	public async Task TranspileAsync(WatchedScssFile watchedFile, FileResults fileResults)
 	{
 		fileResults.FileCount++;
-		fileResults.TotalBytes += (await SfumatoScss.TranspileScss(filePath, string.Empty, this)).Length;
+		fileResults.TotalBytes += (await SfumatoScss.TranspileScssAsync(watchedFile.FilePath, watchedFile.Scss, this)).Length;
 	}
 	
 	#endregion
@@ -176,12 +154,11 @@ public sealed class SfumatoRunner
 	
 	/// <summary>
 	/// Iterate used classes and build a tree to consolidate descendants.
-	/// Serializing this tree into SCSS markup will prevent
-	/// duplication of media queries, etc. to keep the file size down.
+	/// Returns generated SCSS markup.
 	/// </summary>
 	/// <param name="config"></param>
 	/// <returns></returns>
-	public async Task<string> GenerateScssObjectTreeAsync()
+	public async Task<string> GenerateUtilityScssAsync()
 	{
 		var hierarchy = new ScssNode
 		{
@@ -191,7 +168,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 
-		foreach (var (_, usedCssSelector) in AppState.UsedClasses.Where(u => u.Value.IsInvalid == false).OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Key))
+		foreach (var (_, usedCssSelector) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Key))
 		{
 			if (usedCssSelector.IsInvalid)
 				continue;
@@ -332,13 +309,13 @@ public sealed class SfumatoRunner
 
 	private async Task RecurseNodeCloneAsync(ScssNode sourceNode, ScssNode destinationNode)
 	{
-		foreach (var childClass in sourceNode.Classes)
+		foreach (var cssSelector in sourceNode.Classes)
 		{
-			var selector = new CssSelector(AppState, childClass.Selector, childClass.IsArbitraryCss);
-
-			await selector.ProcessSelectorAsync();
-					
-			destinationNode.Classes.Add(selector);
+			var newCssSelector = cssSelector.Adapt<CssSelector>();
+			newCssSelector.AppState = cssSelector.AppState;
+			newCssSelector.ScssUtilityClassGroup = cssSelector.ScssUtilityClassGroup;
+			
+			destinationNode.Classes.Add(newCssSelector);
 		}
 
 		foreach (var childNode in sourceNode.Nodes)
@@ -356,7 +333,7 @@ public sealed class SfumatoRunner
 		}
 	}
 	
-	public async Task GenerateScssFromObjectTreeAsync(ScssNode scssNode, StringBuilder sb)
+	private async Task GenerateScssFromObjectTreeAsync(ScssNode scssNode, StringBuilder sb)
 	{
 		if (string.IsNullOrEmpty(scssNode.Prefix) == false)
 		{
@@ -446,13 +423,15 @@ public sealed class SfumatoRunner
 	/// <param name="cancellationTokenSource"></param>
 	public async Task AddUpdateWatchedScssFileAsync(string filePath, CancellationTokenSource cancellationTokenSource)
 	{
-		var scss = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
-		var css = await SfumatoScss.TranspileScss(filePath, scss, this);
+		await AppState.ExamineWatchedFilesForUsedClassesAsync();
 
-		if (AppState.WatchedScssFiles.TryGetValue(filePath, out var watchedFile))
+		var scss = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
+		var css = await SfumatoScss.TranspileScssAsync(filePath, scss, this);
+
+		if (AppState.WatchedScssFiles.TryGetValue(filePath, out var watchedScssFile))
 		{
-			watchedFile.Css = css;
-			watchedFile.Scss = scss;
+			watchedScssFile.Css = css;
+			watchedScssFile.Scss = scss;
 		}
 
 		else
