@@ -9,16 +9,26 @@
     "themeMode": "class",
     "useAutoTheme": true,
     "breakpoints":
-        {
-            "zero": 0,
-            "phab": 400,
-            "tabp": 540,
-            "tabl": 800,
-            "note": 1280,
-            "desk": 1440,
-            "elas": 1600
-        },
+    {
+        "zero": 0,
+        "phab": 400,
+        "tabp": 540,
+        "tabl": 800,
+        "note": 1280,
+        "desk": 1440,
+        "elas": 1600
+    },
     "fontSizeUnits":
+    {
+        "zero": "16px",
+        "phab": "16px",
+        "tabp": "16px",
+        "tabl": "16px",
+        "note": "16px",
+        "desk": "16px",
+        "elas": "16px"
+    },
+    "xxxfontSizeUnits":
     {
         "zero": "4.35vw",
         "phab": "4vw",
