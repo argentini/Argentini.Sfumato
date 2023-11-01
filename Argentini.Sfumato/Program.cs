@@ -93,7 +93,7 @@ internal class Program
 
 		#region Watcher Mode
 
-		if (runner.AppState.WatchMode || true)
+		if (runner.AppState.WatchMode)
 		{
 			var fileWatchers = new List<FileSystemWatcher>();
 			var restartAppQueue = new ConcurrentDictionary<long, FileChangeRequest>();
