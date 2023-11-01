@@ -1,0 +1,12 @@
+@sfumato base;
+@sfumato utilities;
+
+@import "partials/manifest";
+
+@include sf-media($from: tabp) {
+
+    h1 {
+        @apply text-2xl/[1.75] font-bold;
+        color: black;
+    }
+}
