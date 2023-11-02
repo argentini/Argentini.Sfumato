@@ -1,6 +1,4 @@
-﻿using Argentini.Sfumato.Entities.SfumatoSettings;
-
-namespace Argentini.Sfumato;
+﻿namespace Argentini.Sfumato;
 
 internal class Program
 {
