@@ -1152,22 +1152,6 @@ public sealed class SfumatoAppState
 	    
 	    #endregion
 	    
-	    #region Find sfumato.json file
-
-        if (string.IsNullOrEmpty(WorkingPathOverride) == false)
-            WorkingPath = WorkingPathOverride;
-        
-        SettingsFilePath = Path.Combine(WorkingPath, "sfumato.json");
-
-        if (File.Exists(SettingsFilePath) == false)
-        {
-            await Console.Out.WriteLineAsync($"Could not find sfumato.json settings file at path {WorkingPath}");
-            await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
-            Environment.Exit(1);
-        }
-
-        #endregion
-
         await Settings.LoadJsonSettingsAsync(this);
         
         if (DiagnosticMode)
