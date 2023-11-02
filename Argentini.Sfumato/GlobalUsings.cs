@@ -12,8 +12,9 @@ global using System.Threading;
 global using System.Threading.Tasks;
 
 global using Argentini.Sfumato.Entities;
+global using Argentini.Sfumato.Entities.SfumatoSettings;
+global using Argentini.Sfumato.Entities.ScssUtilityCollections;
 global using Argentini.Sfumato.Extensions;
 
 global using CliWrap;
-global using Mapster;
 global using Microsoft.Extensions.ObjectPool;

@@ -1,25 +1,6 @@
-namespace Argentini.Sfumato.Entities;
+namespace Argentini.Sfumato.Entities.SfumatoSettings;
 
-public class SfumatoJsonSettings
-{
-    public List<ProjectPath> ProjectPaths { get; set;  } = new();
-
-    public string ThemeMode { get; set; } = "system";
-    public bool UseAutoTheme { get; set; }
-
-    public Breakpoints? Breakpoints { get; set; } = new();
-    public FontSizeUnits? FontSizeUnits { get; set; } = new();
-}
-
-public sealed class ProjectPath
-{
-    public string Path { get; set; } = string.Empty;
-    public string FileSpec { get; set; } = "*.html";
-    public bool Recurse { get; set; } = false;
-    public bool IsFilePath { get; set; }
-}
-
-public sealed class Breakpoints
+public sealed class MediaBreakpoints
 {
     private int _zero;
     public int Zero
@@ -112,15 +93,4 @@ public sealed class Breakpoints
             };
         }
     }
-}
-
-public sealed class FontSizeUnits
-{
-    public string Zero { get; set; } = "4.35vw";
-    public string Phab { get; set; } = "4vw";
-    public string Tabp { get; set; } = "1.6vw";
-    public string Tabl { get; set; } = "1vw";
-    public string Note { get; set; } = "1vw";
-    public string Desk { get; set; } = "1vw";
-    public string Elas { get; set; } = "1vw";
 }

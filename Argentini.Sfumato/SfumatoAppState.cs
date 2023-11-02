@@ -1,5 +1,3 @@
-using Argentini.Sfumato.Entities.ScssUtilityCollections;
-
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoAppState
@@ -1023,7 +1021,7 @@ public sealed class SfumatoAppState
 
     public static string CliErrorPrefix => "Sfumato => ";
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-    public SfumatoJsonSettings Settings { get; set; } = new();
+    public SfumatoSettings Settings { get; set; } = new();
     public ConcurrentDictionary<string,string> DiagnosticOutput { get; set; } = new();
     public string WorkingPathOverride { get; set; } = string.Empty;
     public string SettingsFilePath { get; set; } = string.Empty;
@@ -1146,6 +1144,13 @@ public sealed class SfumatoAppState
 
 	    if (VersionMode || HelpMode)
 		    return;
+
+	    #region Find Embedded Resources (Sass, SCSS)
+	    
+	    SassCliPath = await GetEmbeddedSassPathAsync();
+	    ScssPath = await GetEmbeddedScssPathAsync();
+	    
+	    #endregion
 	    
 	    #region Find sfumato.json file
 
@@ -1162,85 +1167,9 @@ public sealed class SfumatoAppState
         }
 
         #endregion
+
+        await Settings.LoadJsonSettingsAsync(this);
         
-        try
-        {
-            #region Load sfumato.json file
-
-            var json = await File.ReadAllTextAsync(SettingsFilePath);
-            var jsonSettings = JsonSerializer.Deserialize<SfumatoJsonSettings>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                AllowTrailingCommas = true,
-                IncludeFields = true
-            });
-		
-            if (jsonSettings is null)
-            {
-                await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid settings file at path {SettingsFilePath}");
-                Environment.Exit(1);
-            }
-            
-            #endregion
-            
-            #region Import settings
-            
-            Settings.ThemeMode = jsonSettings.ThemeMode switch
-            {
-                "system" => "system",
-                "class" => "class",
-                _ => "system"
-            };
-
-            Settings.UseAutoTheme = jsonSettings.UseAutoTheme;
-            
-            SassCliPath = await GetEmbeddedSassPathAsync();
-            ScssPath = await GetEmbeddedScssPathAsync();
-
-            Settings.ProjectPaths.Clear();
-        
-            foreach (var projectPath in jsonSettings.ProjectPaths)
-            {
-	            if (string.IsNullOrEmpty(projectPath.FileSpec))
-		            continue;
-	            
-                projectPath.Path = Path.Combine(WorkingPath, projectPath.Path.SetNativePathSeparators());
-                
-                if (projectPath.FileSpec.Contains('.') && projectPath.FileSpec.StartsWith('*') == false)
-                {
-	                projectPath.IsFilePath = true;
-	                Settings.ProjectPaths.Add(projectPath);
-
-	                continue;
-                }
-                
-                var tempFileSpec = projectPath.FileSpec.Replace("*", string.Empty).Replace(".", string.Empty);
-
-                if (string.IsNullOrEmpty(tempFileSpec) == false)
-                    projectPath.FileSpec = $"*.{tempFileSpec}";
-            
-                Settings.ProjectPaths.Add(projectPath);
-            }
-
-            Settings.ProjectPaths.Add(new ProjectPath
-            {
-	            Path = WorkingPath,
-	            FileSpec = "*.scss",
-	            Recurse = true
-            });
-
-            jsonSettings.Breakpoints.Adapt(Settings.Breakpoints);
-            jsonSettings.FontSizeUnits.Adapt(Settings.FontSizeUnits);
-            
-            #endregion
-        }
-
-        catch
-        {
-            await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid settings file at path {SettingsFilePath}");
-            Environment.Exit(1);
-        }
-
         if (DiagnosticMode)
 			DiagnosticOutput.TryAdd("init001", $"{Strings.TriangleRight} Processed settings in {timer.FormatTimer()}{Environment.NewLine}");
 

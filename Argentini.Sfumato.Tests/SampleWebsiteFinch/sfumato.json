@@ -5,9 +5,10 @@
             "recurse": true
         }
     ],
-    "themeMode": "class",
+    "darkMode": "class",
     "useAutoTheme": true,
-    "breakpoints":
+    "theme": {
+        "mediaBreakpoints":
         {
             "zero": 0,
             "phab": 400,
@@ -17,14 +18,15 @@
             "desk": 1440,
             "elas": 1600
         },
-    "fontSizeUnits":
-    {
-        "zero": "16px",
-        "phab": "16px",
-        "tabp": "16px",
-        "tabl": "16px",
-        "note": "16px",
-        "desk": "16px",
-        "elas": "16px"
+        "fontSizeUnits":
+        {
+            "zero": "16px",
+            "phab": "16px",
+            "tabp": "16px",
+            "tabl": "16px",
+            "note": "16px",
+            "desk": "16px",
+            "elas": "16px"
+        }
     }
 }

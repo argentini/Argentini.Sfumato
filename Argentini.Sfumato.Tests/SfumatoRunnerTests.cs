@@ -150,7 +150,7 @@ public class SfumatoRunnerTests
         await runner.InitializeAsync();
 
         runner.AppState.Minify = true;
-        runner.AppState.Settings.ThemeMode = "system";
+        runner.AppState.Settings.DarkMode = "media";
         
         var watchedFile = new WatchedFile
         {
@@ -172,7 +172,7 @@ public class SfumatoRunnerTests
         await runner.InitializeAsync();
 
         runner.AppState.Minify = true;
-        runner.AppState.Settings.ThemeMode = "system";
+        runner.AppState.Settings.DarkMode = "media";
         
         var watchedFile = new WatchedFile
         {

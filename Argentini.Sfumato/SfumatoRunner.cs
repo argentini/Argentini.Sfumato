@@ -26,16 +26,6 @@ public sealed class SfumatoRunner
 
 	public SfumatoRunner()
 	{
-		// TypeAdapterConfig<CssSelector,CssSelector>
-		// 	.NewConfig()
-		// 	.Ignore(dest => dest.AppState!)
-		// 	.Ignore(dest => dest.ScssUtilityClassGroup!)
-		// 	.AfterMapping((src, dest) => 
-		// 	{
-		// 		dest.AllVariants = src.AllVariants.Adapt<List<string>>();
-		// 		dest.MediaQueryVariants = src.MediaQueryVariants.Adapt<List<string>>();
-		// 		dest.PseudoClassVariants = src.PseudoClassVariants.Adapt<List<string>>();
-		// 	});
 #if DEBUG
 		AppState.DiagnosticMode = true;
 #endif		
@@ -224,7 +214,7 @@ public sealed class SfumatoRunner
 		
 		#endregion
 
-		if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase))
+		if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase))
 		{
 			// Search first level nodes for "dark" prefix and add additional nodes to support "theme-auto";
 			// Light mode will work without any CSS since removing "theme-dark" and "theme-auto" from the
@@ -347,12 +337,12 @@ public sealed class SfumatoRunner
 			
 			var mediaQueryPrefix = AppState.MediaQueryPrefixes.First(p => p.Prefix.Equals(prefix));
 
-			if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
+			if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
 			{
 				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-dark {{\n");
 			}
 
-			else if (AppState.Settings.ThemeMode.Equals("class", StringComparison.OrdinalIgnoreCase) && AppState.Settings.UseAutoTheme && scssNode.Prefix == "auto-dark")
+			else if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase) && AppState.Settings.UseAutoTheme && scssNode.Prefix == "auto-dark")
 			{
 				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-auto {{ {mediaQueryPrefix.Statement}\n");
 			}

@@ -1,4 +1,6 @@
-﻿namespace Argentini.Sfumato;
+﻿using Argentini.Sfumato.Entities.SfumatoSettings;
+
+namespace Argentini.Sfumato;
 
 internal class Program
 {
@@ -58,7 +60,7 @@ internal class Program
 			Environment.Exit(0);
 		}
 
-		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.ThemeMode.Equals("system", StringComparison.OrdinalIgnoreCase) ? "OS Dark/Light Mode" : "CSS Classes")}");
+		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "OS Dark/Light Mode" : "CSS Classes")}");
 		await Console.Out.WriteLineAsync($"Transpile        :  {(runner.AppState.Minify ? "Minify" : "Expanded")}");
 		await Console.Out.WriteLineAsync($"Project Path     :  {runner.AppState.WorkingPath}");
 
@@ -245,7 +247,7 @@ internal class Program
 				else if (restartAppQueue.IsEmpty == false)
 				{
 					await Console.Out.WriteLineAsync($"Modified sfumato.json at {DateTime.Now:HH:mm:ss.fff}");
-					await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Restart app and rebuild");
+					await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Reload settings and rebuild");
 
 					var timer = new Stopwatch();
 
