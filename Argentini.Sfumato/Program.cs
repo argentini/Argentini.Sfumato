@@ -34,8 +34,26 @@ internal class Program
 		if (runner.AppState.HelpMode)
 		{
 			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("Usage:");
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Usage:".Length));
+			await Console.Out.WriteLineAsync("Sfumato will recursively scan your project directory for SCSS files and");
+			await Console.Out.WriteLineAsync("transpile them. It will also inject Sfumato styles into your generated CSS");
+			await Console.Out.WriteLineAsync("wherever the appropriate Sfumato directive is found:");
+			await Console.Out.WriteLineAsync();
+			await Console.Out.WriteLineAsync("Directives:");
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Directives:".Length));
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@sfumato base;`");
+			await Console.Out.WriteLineAsync("  Embed brower reset and base element styles");
+			await Console.Out.WriteLineAsync();
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@sfumato utilities;`");
+			await Console.Out.WriteLineAsync("  Embed utility classes based on which ones are being used in your project");
+			await Console.Out.WriteLineAsync("  files (configurable in a `sfumato.json` settings file)");
+			await Console.Out.WriteLineAsync();
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@apply [class name] [...];`");
+			await Console.Out.WriteLineAsync("  Embed the styles for a specific utility class within your own classes;");
+			await Console.Out.WriteLineAsync("  used to create custom classes with one or more utility class styles");
+			await Console.Out.WriteLineAsync("  (e.g. `.heading { @apply text-2xl/5 bold }`)");
+			await Console.Out.WriteLineAsync();
+			await Console.Out.WriteLineAsync("Command Line Usage:");
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Command Line Usage:".Length));
 			await Console.Out.WriteLineAsync("sfumato [help|version]");
 			await Console.Out.WriteLineAsync("sfumato [build|watch] [options]");
 			await Console.Out.WriteLineAsync();

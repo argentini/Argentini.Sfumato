@@ -1142,6 +1142,28 @@ public sealed class SfumatoAppState
 	    
 	    await ProcessCliArgumentsAsync(args);
 
+	    #region Load Utility Classes
+
+	    timer.Restart();
+
+	    UtilityClassCollection.Clear();
+        
+	    var orderedDictionary = new ConcurrentDictionary<string,ScssUtilityClassGroupBase>();
+	    var tasks = new List<Task>();
+		
+	    foreach (var scssUtilityClassGroup in typeof(ScssUtilityClassGroupBase).GetInheritedTypes().OrderBy(o => o.Name).ToList())
+		    tasks.Add(AddUtilityClassToCollectionAsync(scssUtilityClassGroup, orderedDictionary));
+
+	    await Task.WhenAll(tasks);
+
+	    foreach (var item in orderedDictionary.OrderByDescending(c => c.Key))
+		    UtilityClassCollection.Add(item.Key, item.Value);		
+    
+	    if (DiagnosticMode)
+		    DiagnosticOutput.TryAdd("init1", $"{Strings.TriangleRight} Loaded {UtilityClassCollection.Count:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
+		
+	    #endregion
+	    
 	    if (VersionMode || HelpMode)
 		    return;
 
@@ -1163,28 +1185,6 @@ public sealed class SfumatoAppState
 
         ScssSharedInjectable.Clear();
         ScssSharedInjectable.Append(await SfumatoScss.GetSharedScssAsync(this, DiagnosticOutput));
-
-        #region Load Utility Classes
-
-        timer.Restart();
-
-        UtilityClassCollection.Clear();
-        
-		var orderedDictionary = new ConcurrentDictionary<string,ScssUtilityClassGroupBase>();
-		var tasks = new List<Task>();
-		
-		foreach (var scssUtilityClassGroup in typeof(ScssUtilityClassGroupBase).GetInheritedTypes().OrderBy(o => o.Name).ToList())
-			tasks.Add(AddUtilityClassToCollectionAsync(scssUtilityClassGroup, orderedDictionary));
-
-		await Task.WhenAll(tasks);
-
-		foreach (var item in orderedDictionary.OrderByDescending(c => c.Key))
-			UtilityClassCollection.Add(item.Key, item.Value);		
-        
-        #endregion
-        
-        if (DiagnosticMode)
-	        DiagnosticOutput.TryAdd("init1", $"{Strings.TriangleRight} Loaded {UtilityClassCollection.Count:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
     }
 
     private async Task AddUtilityClassToCollectionAsync(Type scssUtilityClassGroup, ConcurrentDictionary<string,ScssUtilityClassGroupBase> dictionary)
