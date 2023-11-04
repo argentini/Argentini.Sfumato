@@ -1108,9 +1108,15 @@ public sealed class SfumatoAppState
     public async Task InitializeAsync(IEnumerable<string> args)
     {
 	    var timer = new Stopwatch();
-
+	    
+	    WatchedFiles.Clear();
+	    WatchedScssFiles.Clear();
+	    DiagnosticOutput.Clear();
+	    
+	    await ProcessCliArgumentsAsync(args);
+	    
 	    timer.Start();
-
+	    
 	    #region Establish Theme Dictionaries
 
 	    LayoutRemUnitOptions.Clear();
@@ -1136,12 +1142,6 @@ public sealed class SfumatoAppState
 	    
 	    #endregion
 	    
-	    WatchedFiles.Clear();
-	    WatchedScssFiles.Clear();
-	    DiagnosticOutput.Clear();
-	    
-	    await ProcessCliArgumentsAsync(args);
-
 	    #region Load Utility Classes
 
 	    timer.Restart();
