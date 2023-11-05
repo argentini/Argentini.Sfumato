@@ -4,19 +4,11 @@ public class Ms : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "ms";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "margin-inline-start: auto;",
-        ["0"] = "margin-inline-start: 0px;",
-        ["px"] = "margin-inline-start: 1px;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.MsStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
@@ -27,7 +19,7 @@ public class Ms : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,7 +4,7 @@ public abstract class ScssUtilityClassGroupBase
 {
     public virtual string SelectorPrefix { get; set; } = string.Empty;
     public virtual string Category { get; set; } = string.Empty;
-    public virtual List<string> SelectorIndex { get; set; } = new();
+    public List<string> SelectorIndex { get; set; } = new();
     protected string Result = string.Empty;
 
     public virtual Task InitializeAsync(SfumatoAppState appState)

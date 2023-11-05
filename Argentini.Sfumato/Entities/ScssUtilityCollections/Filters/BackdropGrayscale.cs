@@ -3,18 +3,12 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class BackdropGrayscale : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "backdrop-grayscale";
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "backdrop-filter: grayscale(100%);",
-        ["0"] = "backdrop-filter: grayscale(0);"
-    }; 
-
+    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.BackdropGrayscaleStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -24,7 +18,7 @@ public class BackdropGrayscale : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BackdropGrayscaleStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

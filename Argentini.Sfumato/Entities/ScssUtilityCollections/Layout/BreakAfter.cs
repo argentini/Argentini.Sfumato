@@ -4,23 +4,11 @@ public class BreakAfter : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "break-after";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "break-after: auto;",
-        ["avoid"] = "break-after: avoid;",
-        ["all"] = "break-after: all;",
-        ["avoid-page"] = "break-after: avoid-page;",
-        ["page"] = "break-after: page;",
-        ["left"] = "break-after: left;",
-        ["right"] = "break-after: right;",
-        ["column"] = "break-after: column;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.BreakAfterStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -30,7 +18,7 @@ public class BreakAfter : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakAfterStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

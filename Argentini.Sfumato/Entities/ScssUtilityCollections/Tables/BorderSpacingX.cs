@@ -4,18 +4,11 @@ public class BorderSpacingX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border-spacing-x";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "border-spacing: 0px var(--sf-border-spacing-y);",
-        ["px"] = "border-spacing: 1px var(--sf-border-spacing-y);",
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.BorderSpacingXStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
@@ -26,7 +19,7 @@ public class BorderSpacingX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderSpacingXStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,16 +4,11 @@ public class SlashedZero : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "slashed-zero";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "font-variant-numeric: slashed-zero;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.SlashedZeroStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class SlashedZero : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SlashedZeroStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

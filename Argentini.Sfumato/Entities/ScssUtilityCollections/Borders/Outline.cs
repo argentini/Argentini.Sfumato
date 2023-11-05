@@ -3,21 +3,12 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Borders;
 public class Outline : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "outline";
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "outline-style: solid;",
-        ["dashed"] = "outline-style: dashed;",
-        ["dotted"] = "outline-style: dotted;",
-        ["double"] = "outline-style: double;",
-        ["none"] = "outline-style: none;"
-    }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.OutlineStaticUtilities);
         
         await AddToIndexAsync(appState.ColorOptions);
         
@@ -31,7 +22,7 @@ public class Outline : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OutlineStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

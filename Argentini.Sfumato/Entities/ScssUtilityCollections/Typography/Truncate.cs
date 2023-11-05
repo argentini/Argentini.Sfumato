@@ -4,20 +4,11 @@ public class Truncate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "truncate";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = """
-               overflow: hidden;
-               text-overflow: ellipsis;
-               white-space: nowrap;
-               """,
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.TruncateStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -27,7 +18,7 @@ public class Truncate : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TruncateStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

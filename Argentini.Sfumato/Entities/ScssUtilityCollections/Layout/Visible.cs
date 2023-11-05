@@ -4,16 +4,11 @@ public class Visible : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "visible";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "visibility: visible;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.VisibleStaticUtilities);
     }
     
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class Visible : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.VisibleStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

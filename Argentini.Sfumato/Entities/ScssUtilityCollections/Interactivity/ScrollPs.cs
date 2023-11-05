@@ -4,18 +4,11 @@ public class ScrollPs : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll-ps";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "scroll-padding-inline-start: 0;",
-        ["px"] = "scroll-padding-inline-start: 1px;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.ScrollPsStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
@@ -26,7 +19,7 @@ public class ScrollPs : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollPsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

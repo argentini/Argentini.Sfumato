@@ -4,27 +4,11 @@ public class Decoration : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "decoration";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["solid"] = "text-decoration-style: solid;",
-        ["double"] = "text-decoration-style: double;",
-        ["dotted"] = "text-decoration-style: dotted;",
-        ["dashed"] = "text-decoration-style: dashed;",
-        ["wavy"] = "text-decoration-style: wavy;",
-        ["auto"] = "text-decoration-thickness: auto;",
-        ["from-font"] = "text-decoration-thickness: from-font;",
-        ["0"] = "text-decoration-thickness: 0px;",
-        ["1"] = "text-decoration-thickness: 1px;",
-        ["2"] = $"text-decoration-thickness: {2.PxToRem()};",
-        ["4"] = $"text-decoration-thickness: {4.PxToRem()};",
-        ["8"] = $"text-decoration-thickness: {8.PxToRem()};"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DecorationStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
     }
     
@@ -35,7 +19,7 @@ public class Decoration : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DecorationStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

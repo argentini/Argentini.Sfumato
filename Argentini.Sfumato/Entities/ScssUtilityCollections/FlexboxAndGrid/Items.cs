@@ -4,20 +4,11 @@ public class Items : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "items";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["start"] = "align-items: flex-start;",
-        ["end"] = "align-items: flex-end;",
-        ["center"] = "align-items: center;",
-        ["baseline"] = "align-items: baseline;",
-        ["stretch"] = "align-items: stretch;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ItemsStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -27,7 +18,7 @@ public class Items : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ItemsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

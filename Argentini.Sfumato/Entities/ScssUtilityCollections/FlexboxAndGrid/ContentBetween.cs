@@ -4,16 +4,11 @@ public class ContentBetween : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content-between";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "align-content: space-between;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ContentBetweenStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class ContentBetween : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentBetweenStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

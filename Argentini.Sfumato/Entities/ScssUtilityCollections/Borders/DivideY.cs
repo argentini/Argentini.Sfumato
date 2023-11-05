@@ -4,16 +4,11 @@ public class DivideY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "divide-y";
     
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["reverse"] = "--sf-divide-y-reverse: 1;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DivideYStaticUtilities);
         
         await AddToIndexAsync(appState.DivideWidthOptions);
     }
@@ -25,7 +20,7 @@ public class DivideY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideYStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

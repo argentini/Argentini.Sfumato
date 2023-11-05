@@ -4,20 +4,11 @@ public class Stroke : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "stroke";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["none"] = "stroke: none;",
-        ["0"] = "stroke-width: 0;",
-        ["1"] = "stroke-width: 1;",
-        ["2"] = "stroke-width: 2;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.StrokeStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
     }
 
@@ -28,7 +19,7 @@ public class Stroke : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.StrokeStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

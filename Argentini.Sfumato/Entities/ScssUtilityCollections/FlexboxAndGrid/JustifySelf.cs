@@ -4,20 +4,11 @@ public class JustifySelf : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "justify-self";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "justify-self: auto;",
-        ["start"] = "justify-self: start;",
-        ["end"] = "justify-self: end;",
-        ["center"] = "justify-self: center;",
-        ["stretch"] = "justify-self: stretch;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.JustifySelfStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -27,7 +18,7 @@ public class JustifySelf : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.JustifySelfStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

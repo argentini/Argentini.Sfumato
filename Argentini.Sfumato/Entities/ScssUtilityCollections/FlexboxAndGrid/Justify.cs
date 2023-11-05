@@ -4,23 +4,11 @@ public class Justify : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "justify";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["normal"] = "justify-content: normal;",
-        ["start"] = "justify-content: flex-start;",
-        ["end"] = "justify-content: flex-end;",
-        ["center"] = "justify-content: center;",
-        ["between"] = "justify-content: space-between;",
-        ["around"] = "justify-content: space-around;",
-        ["evenly"] = "justify-content: space-evenly;",
-        ["stretch"] = "justify-content: stretch;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.JustifyStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -30,7 +18,7 @@ public class Justify : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.JustifyStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,6 +4,8 @@ public sealed class SfumatoAppState
 {
 	#region Theme Options
 
+	#region Shared Options
+
 	public IEnumerable<CssMediaQuery> MediaQueryPrefixes { get; } = new[]
 	{
 		new CssMediaQuery
@@ -525,6 +527,2049 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> FlexboxAndGridWholeNumberOptions { get; set; } = new();
     public Dictionary<string, string> FlexboxAndGridNegativeWholeNumberOptions { get; set; } = new();
     public Dictionary<string, string> PercentageOptions { get; set; } = new();
+    
+    #endregion
+
+    #region Static Class Options
+
+    #region Backgrounds
+
+    public Dictionary<string, string> BgStaticUtilities { get; } = new()
+    {
+        ["repeat"] = "background-repeat: repeat;",
+        ["no-repeat"] = "background-repeat: no-repeat;",
+        ["repeat-x"] = "background-repeat: border-box;",
+        ["repeat-y"] = "background-repeat: padding-box;",
+        ["repeat-round"] = "background-repeat: round;",
+        ["repeat-space"] = "background-repeat: space;",
+        ["origin-border"] = "background-origin: border-box;",
+        ["origin-padding"] = "background-origin: padding-box;",
+        ["origin-content"] = "background-origin: content-box;",
+        ["fixed"] = "background-attachment: fixed;",
+        ["local"] = "background-attachment: local;",
+        ["scroll"] = "background-attachment: scroll;",
+        ["border"] = "background-clip: border-box;",
+        ["padding"] = "background-clip: padding-box;",
+        ["content"] = "background-clip: content-box;",
+        ["text"] = "background-clip: text;",
+        ["bottom"] = "background-position: bottom;",
+        ["center"] = "background-position: center;",
+        ["left"] = "background-position: left;",
+        ["left-bottom"] = "background-position: left bottom;",
+        ["left-top"] = "background-position: left top;",
+        ["right"] = "background-position: right;",
+        ["right-bottom"] = "background-position: right bottom;",
+        ["right-top"] = "background-position: right top;",
+        ["top"] = "background-position: top;",
+        ["auto"] = "background-size: auto;",
+        ["cover"] = "background-size: cover;",
+        ["contain"] = "background-size: contain;",
+        ["none"] = "background-image: none;",
+        ["gradient-to-t"] = "background-image: linear-gradient(to top, var(--sf-gradient-stops));",
+        ["gradient-to-tr"] = "background-image: linear-gradient(to top right, var(--sf-gradient-stops));",
+        ["gradient-to-r"] = "background-image: linear-gradient(to right, var(--sf-gradient-stops));",
+        ["gradient-to-br"] = "background-image: linear-gradient(to bottom right, var(--sf-gradient-stops));",
+        ["gradient-to-b"] = "background-image: linear-gradient(to bottom, var(--sf-gradient-stops));",
+        ["gradient-to-bl"] = "background-image: linear-gradient(to bottom left, var(--sf-gradient-stops));",
+        ["gradient-to-l"] = "background-image: linear-gradient(to left, var(--sf-gradient-stops));",
+        ["gradient-to-tl"] = "background-image: linear-gradient(to top left, var(--sf-gradient-stops));"
+    };
+    
+    #endregion
+    
+    #region Borders
+
+    public Dictionary<string, string> BorderStaticUtilities { get; } = new()
+    {
+	    ["solid"] = "border-style: solid;",
+	    ["dashed"] = "border-style: dashed;",
+	    ["dotted"] = "border-style: dotted;",
+	    ["double"] = "border-style: double;",
+	    ["hidden"] = "border-style: hidden;",
+	    ["none"] = "border-style: none;"
+    }; 
+
+    public Dictionary<string, string> DivideStaticUtilities { get; } = new()
+    {
+	    ["solid"] = """
+	                & > * + * {
+	                    border-style: solid;
+	                }
+	                """,
+	    ["dashed"] = """
+	                 & > * + * {
+	                     border-style: dashed;
+	                 }
+	                 """,
+	    ["dotted"] = """
+	                 & > * + * {
+	                     border-style: dotted;
+	                 }
+	                 """,
+	    ["double"] = """
+	                 & > * + * {
+	                     border-style: double;
+	                 }
+	                 """,
+	    ["none"] = """
+	               & > * + * {
+	                   border-style: none;
+	               }
+	               """
+    }; 
+    
+    public Dictionary<string, string> DivideXStaticUtilities { get; } = new()
+    {
+	    ["reverse"] = "--sf-divide-x-reverse: 1;"
+    }; 
+
+    public Dictionary<string, string> DivideYStaticUtilities { get; } = new()
+    {
+	    ["reverse"] = "--sf-divide-y-reverse: 1;"
+    }; 
+    
+    public Dictionary<string, string> OutlineStaticUtilities { get; } = new()
+    {
+	    [""] = "outline-style: solid;",
+	    ["dashed"] = "outline-style: dashed;",
+	    ["dotted"] = "outline-style: dotted;",
+	    ["double"] = "outline-style: double;",
+	    ["none"] = "outline-style: none;"
+    }; 
+
+    public Dictionary<string, string> RingInsetStaticUtilities { get; } = new()
+    {
+	    [""] = "--sf-ring-inset: inset;",
+    }; 
+
+    #endregion
+    
+    #region Effects
+    
+    public Dictionary<string, string> ShadowStaticUtilities { get; } = new()
+    {
+	    [""] = $"box-shadow: 0 1px {3.PxToRem()} 0 rgb(0 0 0 / 0.1), 0 1px {2.PxToRem()} -1px rgb(0 0 0 / 0.1);",
+	    ["xs"] = "box-shadow: 0 0 0 1px rgb(0 0 0 / 0.05);",
+	    ["sm"] = $"box-shadow: 0 1px {2.PxToRem()} 0 rgb(0 0 0 / 0.05);",
+	    ["md"] = $"box-shadow: 0 {4.PxToRem()} {6.PxToRem()} -1px rgb(0 0 0 / 0.1), 0 {2.PxToRem()} {4.PxToRem()} -{2.PxToRem()} rgb(0 0 0 / 0.1);",
+	    ["lg"] = $"box-shadow: 0 {10.PxToRem()} {15.PxToRem()} -{3.PxToRem()} rgb(0 0 0 / 0.1), 0 {4.PxToRem()} {6.PxToRem()} -{4.PxToRem()} rgb(0 0 0 / 0.1);",
+	    ["xl"] = $"box-shadow: 0 {20.PxToRem()} {25.PxToRem()} -{5.PxToRem()} rgb(0 0 0 / 0.1), 0 {8.PxToRem()} {10.PxToRem()} -{6.PxToRem()} rgb(0 0 0 / 0.1);",
+	    ["2xl"] = $"box-shadow: 0 {25.PxToRem()} {50.PxToRem()} -{12.PxToRem()} rgb(0 0 0 / 0.25);",
+	    ["inner"] = $"box-shadow: inset 0 {2.PxToRem()} {4.PxToRem()} 0 rgb(0 0 0 / 0.05);",
+	    ["none"] = "box-shadow: 0 0 #0000;"
+    }; 
+
+    #endregion
+    
+    #region Filters
+    
+    public Dictionary<string, string> BackdropGrayscaleStaticUtilities { get; } = new()
+    {
+	    [""] = "backdrop-filter: grayscale(100%);",
+	    ["0"] = "backdrop-filter: grayscale(0);"
+    }; 
+    
+    public Dictionary<string, string> BackdropHueRotateStaticUtilities { get; } = new()
+    {
+	    ["0"] = "backdrop-filter: hue-rotate(0deg);",
+	    ["15"] = "backdrop-filter: hue-rotate(15deg);",
+	    ["30"] = "backdrop-filter: hue-rotate(30deg);",
+	    ["60"] = "backdrop-filter: hue-rotate(60deg);",
+	    ["90"] = "backdrop-filter: hue-rotate(90deg);",
+	    ["180"] = "backdrop-filter: hue-rotate(180deg);"
+    }; 
+    
+    public Dictionary<string, string> BackdropInvertStaticUtilities { get; } = new()
+    {
+	    [""] = "backdrop-filter: invert(100%);",
+	    ["0"] = "backdrop-filter: invert(0);"
+    }; 
+
+    public Dictionary<string, string> BackdropSepiaStaticUtilities { get; } = new()
+    {
+	    [""] = "backdrop-filter: sepia(100%);",
+	    ["0"] = "backdrop-filter: sepia(0);"
+    }; 
+
+    public Dictionary<string, string> DropShadowStaticUtilities { get; } = new()
+    {
+	    [""] = $"filter: drop-shadow(0 1px {2.PxToRem()} rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));",
+	    ["sm"] = "filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));",
+	    ["md"] = $"filter: drop-shadow(0 {4.PxToRem()} {3.PxToRem()} rgb(0 0 0 / 0.07)) drop-shadow(0 {2.PxToRem()} {2.PxToRem()} rgb(0 0 0 / 0.06));",
+	    ["lg"] = $"filter: drop-shadow(0 {10.PxToRem()} {8.PxToRem()} rgb(0 0 0 / 0.04)) drop-shadow(0 {4.PxToRem()} {3.PxToRem()} rgb(0 0 0 / 0.1));",
+	    ["xl"] = $"filter: drop-shadow(0 {20.PxToRem()} {13.PxToRem()} rgb(0 0 0 / 0.03)) drop-shadow(0 {8.PxToRem()} {5.PxToRem()} rgb(0 0 0 / 0.08));",
+	    ["2xl"] = $"filter: drop-shadow(0 {25.PxToRem()} {25.PxToRem()} rgb(0 0 0 / 0.15));",
+	    ["none"] = "filter: drop-shadow(0 0 #0000);"
+    }; 
+    
+    public Dictionary<string, string> GrayscaleStaticUtilities { get; } = new()
+    {
+	    [""] = "filter: grayscale(100%);",
+	    ["0"] = "filter: grayscale(0);"
+    }; 
+
+    public Dictionary<string, string> HueRotateStaticUtilities { get; } = new()
+    {
+	    ["0"] = "filter: hue-rotate(0deg);",
+	    ["15"] = "filter: hue-rotate(15deg);",
+	    ["30"] = "filter: hue-rotate(30deg);",
+	    ["60"] = "filter: hue-rotate(60deg);",
+	    ["90"] = "filter: hue-rotate(90deg);",
+	    ["180"] = "filter: hue-rotate(180deg);"
+    }; 
+    
+    public Dictionary<string, string> InvertStaticUtilities { get; } = new()
+    {
+	    [""] = "filter: invert(100%);",
+	    ["0"] = "filter: invert(0);"
+    }; 
+    
+    public Dictionary<string, string> SepiaStaticUtilities { get; } = new()
+    {
+	    [""] = "filter: sepia(100%);",
+	    ["0"] = "filter: sepia(0);"
+    }; 
+    
+    #endregion
+    
+    #region Flexbox and Grid
+    
+    public Dictionary<string, string> AutoColsStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "grid-auto-columns: auto;",
+	    ["min"] = "grid-auto-columns: min-content;",
+	    ["max"] = "grid-auto-columns: max-content;",
+	    ["fr"] = "grid-auto-columns: minmax(0, 1fr);"
+    }; 
+
+    public Dictionary<string, string> AutoRowsStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "grid-auto-rows: auto;",
+	    ["min"] = "grid-auto-rows: min-content;",
+	    ["max"] = "grid-auto-rows: max-content;",
+	    ["fr"] = "grid-auto-rows: minmax(0, 1fr);"
+    }; 
+
+    public Dictionary<string, string> BasisStaticUtilities { get; } = new()
+    {
+	    ["full"] = "100%"
+    };
+    
+    public Dictionary<string, string> ColAutoStaticUtilities { get; } = new()
+    {
+	    [""] = "grid-column: auto;",
+    };
+    
+    public Dictionary<string, string> ColEndStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "grid-column-end: auto;",
+    }; 
+
+    public Dictionary<string, string> ColSpanStaticUtilities { get; } = new()
+    {
+	    ["full"] = "grid-column: 1 / -1;",
+    }; 
+
+    public Dictionary<string, string> ColStartStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "grid-column-start: auto;",
+    }; 
+
+    public Dictionary<string, string> ContentAroundStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: space-around;",
+    }; 
+
+    public Dictionary<string, string> ContentBaselineStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: baseline;",
+    }; 
+
+    public Dictionary<string, string> ContentBetweenStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: space-between;",
+    }; 
+
+    public Dictionary<string, string> ContentCenterStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: center;",
+    }; 
+
+    public Dictionary<string, string> ContentEndStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: flex-end;",
+    }; 
+
+    public Dictionary<string, string> ContentEvenlyStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: space-evenly;",
+    }; 
+
+    public Dictionary<string, string> ContentNormalStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: normal;",
+    }; 
+
+    public Dictionary<string, string> ContentStartStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: flex-start;",
+    }; 
+
+    public Dictionary<string, string> ContentStretchStaticUtilities { get; } = new()
+    {
+	    [""] = "align-content: stretch;"
+    }; 
+
+    public Dictionary<string, string> FlexStaticUtilities { get; } = new()
+    {
+	    [""] = "display: flex;",
+
+	    ["row"] = "flex-direction: row;",
+	    ["row-reverse"] = "flex-direction: row-reverse;",
+	    ["col"] = "flex-direction: column;",
+	    ["col-reverse"] = "flex-direction: column-reverse;",
+        
+	    ["wrap"] = "flex-wrap: wrap;",
+	    ["wrap-reverse"] = "flex-wrap: wrap-reverse;",
+	    ["nowrap"] = "flex-wrap: nowrap;",
+        
+	    ["1"] = "flex: 1 1 0%;",
+	    ["auto"] = "flex: 1 1 auto;",
+	    ["initial"] = "flex: 0 1 auto;",
+	    ["none"] = "flex: none;",
+        
+	    ["grow"] = "flex-grow: 1;",
+	    ["grow-0"] = "flex-grow: 0;",
+	    ["shrink"] = "flex-shrink: 1;",
+	    ["shrink-0"] = "flex-shrink: 0;"
+    }; 
+
+    public Dictionary<string, string> GapStaticUtilities { get; } = new()
+    {
+	    ["0"] = "gap: auto;",
+	    ["px"] = "gap: min-content;",
+    }; 
+
+    public Dictionary<string, string> GapXStaticUtilities { get; } = new()
+    {
+	    ["0"] = "column-gap: auto;",
+	    ["px"] = "column-gap: min-content;",
+    }; 
+
+    public Dictionary<string, string> GapYStaticUtilities { get; } = new()
+    {
+	    ["0"] = "row-gap: auto;",
+	    ["px"] = "row-gap: min-content;",
+    }; 
+
+    public Dictionary<string, string> GridColsStaticUtilities { get; } = new()
+    {
+	    ["none"] = "grid-template-columns: none;",
+    }; 
+
+    public Dictionary<string, string> GridFlowStaticUtilities { get; } = new()
+    {
+	    ["row"] = "grid-auto-flow: row;",
+	    ["col"] = "grid-auto-flow: column;",
+	    ["dense"] = "grid-auto-flow: dense;",
+	    ["row-dense"] = "grid-auto-flow: row dense;",
+	    ["col-dense"] = "grid-auto-flow: column dense;"
+    }; 
+
+    public Dictionary<string, string> GridRowsStaticUtilities { get; } = new()
+    {
+	    ["none"] = "grid-template-rows: none;",
+    }; 
+
+    public Dictionary<string, string> ItemsStaticUtilities { get; } = new()
+    {
+	    ["start"] = "align-items: flex-start;",
+	    ["end"] = "align-items: flex-end;",
+	    ["center"] = "align-items: center;",
+	    ["baseline"] = "align-items: baseline;",
+	    ["stretch"] = "align-items: stretch;"
+    }; 
+
+    public Dictionary<string, string> JustifyStaticUtilities { get; } = new()
+    {
+	    ["normal"] = "justify-content: normal;",
+	    ["start"] = "justify-content: flex-start;",
+	    ["end"] = "justify-content: flex-end;",
+	    ["center"] = "justify-content: center;",
+	    ["between"] = "justify-content: space-between;",
+	    ["around"] = "justify-content: space-around;",
+	    ["evenly"] = "justify-content: space-evenly;",
+	    ["stretch"] = "justify-content: stretch;"
+    }; 
+
+    public Dictionary<string, string> JustifyItemsStaticUtilities { get; } = new()
+    {
+	    ["start"] = "justify-items: start;",
+	    ["end"] = "justify-items: end;",
+	    ["center"] = "justify-items: center;",
+	    ["stretch"] = "justify-items: stretch;"
+    }; 
+
+    public Dictionary<string, string> JustifySelfStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "justify-self: auto;",
+	    ["start"] = "justify-self: start;",
+	    ["end"] = "justify-self: end;",
+	    ["center"] = "justify-self: center;",
+	    ["stretch"] = "justify-self: stretch;"
+    }; 
+
+    public Dictionary<string, string> OrderStaticUtilities { get; } = new()
+    {
+	    ["first"] = $"order: {int.MinValue.ToString()};",
+	    ["last"] = $"order: {int.MaxValue.ToString()};",
+	    ["none"] = "order: 0;"
+    }; 
+
+    public Dictionary<string, string> PlaceContentStaticUtilities { get; } = new()
+    {
+	    ["start"] = "place-content: start;",
+	    ["end"] = "place-content: end;",
+	    ["center"] = "place-content: center;",
+	    ["between"] = "place-content: space-between;",
+	    ["around"] = "place-content: space-around;",
+	    ["evenly"] = "place-content: space-evenly;",
+	    ["baseline"] = "place-content: baseline;",
+	    ["stretch"] = "place-content: stretch;"
+    }; 
+
+    public Dictionary<string, string> PlaceItemsStaticUtilities { get; } = new()
+    {
+	    ["start"] = "place-items: start;",
+	    ["end"] = "place-items: end;",
+	    ["center"] = "place-items: center;",
+	    ["baseline"] = "place-items: baseline;",
+	    ["stretch"] = "place-items: stretch;"
+    }; 
+
+    public Dictionary<string, string> PlaceSelfStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "place-self: auto;",
+	    ["start"] = "place-self: start;",
+	    ["end"] = "place-self: end;",
+	    ["center"] = "place-self: center;",
+	    ["stretch"] = "place-self: stretch;"
+    }; 
+
+    public Dictionary<string, string> RowAutoStaticUtilities { get; } = new()
+    {
+	    [""] = "grid-row: auto;",
+    }; 
+
+    public Dictionary<string, string> RowEndStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "grid-row-end: auto;",
+    }; 
+
+    public Dictionary<string, string> RowSpanStaticUtilities { get; } = new()
+    {
+	    ["full"] = "grid-row: 1 / -1;",
+    }; 
+
+    public Dictionary<string, string> RowStartStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "grid-row-start: auto;",
+    };
+
+    public Dictionary<string, string> SelfStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "align-self: auto;",
+	    ["start"] = "align-self: flex-start;",
+	    ["end"] = "align-self: flex-end;",
+	    ["center"] = "align-self: center;",
+	    ["baseline"] = "align-self: baseline;",
+	    ["stretch"] = "align-self: stretch;"
+    }; 
+    
+    #endregion
+
+    #region Interactivity
+    
+    public Dictionary<string, string> AppearanceStaticUtilities { get; } = new()
+    {
+	    ["none"] = "appearance: none;",
+    };
+
+    public Dictionary<string, string> CursorStaticUtilities { get; } = new()
+    {
+	    ["alias"] = "cursor: alias;",
+	    ["all-scroll"] = "cursor: all-scroll;",
+	    ["auto"] = "cursor: auto;",
+	    ["cell"] = "cursor: cell;",
+	    ["context-menu"] = "cursor: context-menu;",
+	    ["col-resize"] = "cursor: col-resize;",
+	    ["copy"] = "cursor: copy;",
+	    ["crosshair"] = "cursor: crosshair;",
+	    ["default"] = "cursor: default;",
+	    ["e-resize"] = "cursor: e-resize;",
+	    ["ew-resize"] = "cursor: ew-resize;",
+	    ["grab"] = "cursor: grab;",
+	    ["grabbing"] = "cursor: grabbing;",
+	    ["help"] = "cursor: help;",
+	    ["move"] = "cursor: move;",
+	    ["n-resize"] = "cursor: n-resize;",
+	    ["ne-resize"] = "cursor: ne-resize;",
+	    ["nesw-resize"] = "cursor: nesw-resize;",
+	    ["ns-resize"] = "cursor: ns-resize;",
+	    ["nw-resize"] = "cursor: nw-resize;",
+	    ["nwse-resize"] = "cursor: nwse-resize;",
+	    ["no-drop"] = "cursor: no-drop;",
+	    ["none"] = "cursor: none;",
+	    ["not-allowed"] = "cursor: not-allowed;",
+	    ["pointer"] = "cursor: pointer;",
+	    ["progress"] = "cursor: progress;",
+	    ["row-resize"] = "cursor: row-resize;",
+	    ["s-resize"] = "cursor: s-resize;",
+	    ["se-resize"] = "cursor: se-resize;",
+	    ["sw-resize"] = "cursor: sw-resize;",
+	    ["text"] = "cursor: text;",
+	    ["vertical-text"] = "cursor: vertical-text;",
+	    ["w-resize"] = "cursor: w-resize;",
+	    ["wait"] = "cursor: wait;",
+	    ["zoom-in"] = "cursor: zoom-in;",
+	    ["zoom-out"] = "cursor: zoom-out;"
+    };
+
+    public Dictionary<string, string> PointerEventsStaticUtilities { get; } = new()
+    {
+	    ["none"] = "pointer-events: none;",
+	    ["auto"] = "pointer-events: auto;",
+    }; 
+
+    public Dictionary<string, string> ResizeStaticUtilities { get; } = new()
+    {
+	    [""] = "resize: both;",
+	    ["none"] = "resize: none;",
+	    ["y"] = "resize: vertical;",
+	    ["x"] = "resize: horizontal;"
+    }; 
+
+    public Dictionary<string, string> ScrollStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "scroll-behavior: auto;",
+	    ["smooth"] = "scroll-behavior: smooth;",
+    };
+
+    public Dictionary<string, string> ScrollMStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-margin: 0;",
+	    ["px"] = "scroll-margin: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollMbStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-margin-bottom: 0;",
+	    ["px"] = "scroll-margin-bottom: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollMeStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-margin-inline-end: 0;",
+	    ["px"] = "scroll-margin-inline-end: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollMlStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-margin-left: 0;",
+	    ["px"] = "scroll-margin-left: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollMrStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-margin-right: 0;",
+	    ["px"] = "scroll-margin-right: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollMsStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-margin-inline-start: 0;",
+	    ["px"] = "scroll-margin-inline-start: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollMtStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-margin-top: 0;",
+	    ["px"] = "scroll-margin-top: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollMxStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            scroll-margin-left: 0;
+	            scroll-margin-right: 0;
+	            """,
+	    ["px"] = """
+	             scroll-margin-left: 1px;
+	             scroll-margin-right: 1px;
+	             """,
+    };
+
+    public Dictionary<string, string> ScrollMyStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            scroll-margin-top: 0;
+	            scroll-margin-bottom: 0;
+	            """,
+	    ["px"] = """
+	             scroll-margin-top: 1px;
+	             scroll-margin-bottom: 1px;
+	             """,
+    };
+
+    public Dictionary<string, string> ScrollPStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-padding: 0;",
+	    ["px"] = "scroll-padding: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollPbStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-padding-bottom: 0;",
+	    ["px"] = "scroll-padding-bottom: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollPeStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-padding-inline-end: 0;",
+	    ["px"] = "scroll-padding-inline-end: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollPlStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-padding-left: 0;",
+	    ["px"] = "scroll-padding-left: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollPrStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-padding-right: 0;",
+	    ["px"] = "scroll-padding-right: 1px;",
+    };
+
+    public Dictionary<string, string> ScrollPsStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-padding-inline-start: 0;",
+	    ["px"] = "scroll-padding-inline-start: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollPtStaticUtilities { get; } = new()
+    {
+	    ["0"] = "scroll-padding-top: 0;",
+	    ["px"] = "scroll-padding-top: 1px;",
+    }; 
+
+    public Dictionary<string, string> ScrollPxStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            scroll-padding-left: 0;
+	            scroll-padding-right: 0;
+	            """,
+	    ["px"] = """
+	             scroll-padding-left: 1px;
+	             scroll-padding-right: 1px;
+	             """,
+    }; 
+
+    public Dictionary<string, string> ScrollPyStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            scroll-padding-top: 0;
+	            scroll-padding-bottom: 0;
+	            """,
+	    ["px"] = """
+	             scroll-padding-top: 1px;
+	             scroll-padding-bottom: 1px;
+	             """,
+    }; 
+
+    public Dictionary<string, string> SelectStaticUtilities { get; } = new()
+    {
+	    ["none"] = "user-select: none;",
+	    ["text"] = "user-select: text;",
+	    ["all"] = "user-select: all;",
+	    ["auto"] = "user-select: auto;"
+    }; 
+
+    public Dictionary<string, string> SnapStaticUtilities { get; } = new()
+    {
+	    ["start"] = "scroll-snap-align: start;",
+	    ["end"] = "scroll-snap-align: end;",
+	    ["center"] = "scroll-snap-align: center;",
+	    ["align-none"] = "scroll-snap-align: none;",
+	    ["normal"] = "scroll-snap-stop: normal;",
+	    ["always"] = "scroll-snap-stop: always;",
+	    ["none"] = "scroll-snap-type: none;",
+	    ["x"] = "scroll-snap-type: x var(--sf-scroll-snap-strictness);",
+	    ["y"] = "scroll-snap-type: y var(--sf-scroll-snap-strictness);",
+	    ["both"] = "scroll-snap-type: both var(--sf-scroll-snap-strictness);",
+	    ["mandatory"] = "--sf-scroll-snap-strictness: mandatory;",
+	    ["proximity"] = "--sf-scroll-snap-strictness: proximity;"
+    }; 
+
+    public Dictionary<string, string> TouchStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "touch-action: auto;",
+	    ["none"] = "touch-action: none;",
+	    ["pan-x"] = "touch-action: pan-x;",
+	    ["pan-left"] = "touch-action: pan-left;",
+	    ["pan-right"] = "touch-action: pan-right;",
+	    ["pan-y"] = "touch-action: pan-y;",
+	    ["pan-up"] = "touch-action: pan-up;",
+	    ["pan-down"] = "touch-action: pan-down;",
+	    ["pinch-zoom"] = "touch-action: pinch-zoom;",
+	    ["manipulation"] = "touch-action: manipulation;"
+    }; 
+
+    public Dictionary<string, string> WillChangeStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "will-change: auto;",
+	    ["scroll"] = "will-change: scroll-position;",
+	    ["contents"] = "will-change: contents;",
+	    ["transform"] = "will-change: transform;"
+    }; 
+
+    #endregion
+    
+    #region Layout
+    public Dictionary<string, string> AbsoluteStaticUtilities { get; } = new()
+    {
+	    [""] = "position: absolute;",
+    }; 
+
+    public Dictionary<string, string> AspectStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "aspect-ratio: auto;",
+	    ["square"] = "aspect-ratio: 1/1;",
+	    ["video"] = "aspect-ratio: 16/9;",
+	    ["screen"] = "aspect-ratio: 4/3;"
+    }; 
+
+    public Dictionary<string, string> BottomStaticUtilities { get; } = new()
+    {
+	    ["0"] = "bottom: 0px;",
+	    ["px"] = "bottom: 1px;",
+	    ["auto"] = "bottom: auto;",
+	    ["full"] = "100%"
+    };
+
+    public Dictionary<string, string> BoxStaticUtilities { get; } = new()
+    {
+	    ["border"] = "box-sizing: border-box;",
+	    ["content"] = "box-sizing: content-box;",
+    }; 
+
+    public Dictionary<string, string> BoxDecorationStaticUtilities { get; } = new()
+    {
+	    ["clone"] = "box-decoration-break: clone;",
+	    ["slice"] = "box-decoration-break: slice;",
+    }; 
+
+    public Dictionary<string, string> BreakAfterStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "break-after: auto;",
+	    ["avoid"] = "break-after: avoid;",
+	    ["all"] = "break-after: all;",
+	    ["avoid-page"] = "break-after: avoid-page;",
+	    ["page"] = "break-after: page;",
+	    ["left"] = "break-after: left;",
+	    ["right"] = "break-after: right;",
+	    ["column"] = "break-after: column;"
+    }; 
+
+    public Dictionary<string, string> BreakBeforeStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "break-before: auto;",
+	    ["avoid"] = "break-before: avoid;",
+	    ["all"] = "break-before: all;",
+	    ["avoid-page"] = "break-before: avoid-page;",
+	    ["page"] = "break-before: page;",
+	    ["left"] = "break-before: left;",
+	    ["right"] = "break-before: right;",
+	    ["column"] = "break-before: column;"
+    }; 
+
+    public Dictionary<string, string> BreakInsideStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "break-inside: auto;",
+	    ["avoid"] = "break-inside: avoid;",
+	    ["avoid-page"] = "break-inside: avoid-page;",
+	    ["avoid-column"] = "break-inside: column;"
+    }; 
+
+    public Dictionary<string, string> ClearStaticUtilities { get; } = new()
+    {
+	    ["right"] = "clear: right;",
+	    ["left"] = "clear: left;",
+	    ["both"] = "clear: both;",
+	    ["none"] = "clear: none;",
+    }; 
+
+    public Dictionary<string, string> CollapseStaticUtilities { get; } = new()
+    {
+	    [""] = "visibility: collapse;",
+    }; 
+
+    public Dictionary<string, string> ColumnsStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "columns: auto;",
+	    ["3xs"] = "columns: 16rem;",
+	    ["2xs"] = "columns: 18rem;",
+	    ["xs"] = "columns: 20rem;",
+	    ["sm"] = "columns: 24rem;",
+	    ["md"] = "columns: 28rem;",
+	    ["lg"] = "columns: 32rem;",
+	    ["xl"] = "columns: 36rem;",
+	    ["2xl"] = "columns: 42rem;",
+	    ["3xl"] = "columns: 48rem;",
+	    ["4xl"] = "columns: 56rem;",
+	    ["5xl"] = "columns: 64rem;",
+	    ["6xl"] = "columns: 72rem;",
+	    ["7xl"] = "columns: 80rem;"
+    }; 
+
+    public Dictionary<string, string> ContainerStaticUtilities { get; } = new()
+    {
+	    [""] = """
+	           width: 100%;
+	           margin-left: auto;
+	           margin-right: auto;
+
+	           @include sf-media($from: phab) {
+	              max-width: $phab-breakpoint;
+	           }
+
+	           @include sf-media($from: tabp) {
+	              max-width: $tabp-breakpoint;
+	           }
+
+	           @include sf-media($from: tabl) {
+	              max-width: $tabl-breakpoint;
+	           }
+
+	           @include sf-media($from: note) {
+	              max-width: $note-breakpoint;
+	           }
+
+	           @include sf-media($from: desk) {
+	              max-width: $desk-breakpoint;
+	           }
+
+	           @include sf-media($from: elas) {
+	              max-width: $elas-breakpoint;
+	           }
+	           """,
+    }; 
+
+    public Dictionary<string, string> DisplayBlockStaticUtilities { get; } = new()
+    {
+	    [""] = "display: block;"
+    }; 
+
+    public Dictionary<string, string> DisplayContentsStaticUtilities { get; } = new()
+    {
+	    [""] = "display: contents;"
+    }; 
+
+    public Dictionary<string, string> DisplayFlowRootStaticUtilities { get; } = new()
+    {
+	    [""] = "display: flow-root;"
+    }; 
+
+    public Dictionary<string, string> DisplayGridStaticUtilities { get; } = new()
+    {
+	    [""] = "display: grid;"
+    }; 
+
+    public Dictionary<string, string> DisplayHiddenStaticUtilities { get; } = new()
+    {
+	    [""] = "display: none;"
+    }; 
+
+    public Dictionary<string, string> DisplayInlineStaticUtilities { get; } = new()
+    {
+	    [""] = "display: inline;"
+    }; 
+
+    public Dictionary<string, string> DisplayInlineBlockStaticUtilities { get; } = new()
+    {
+	    [""] = "display: inline-block;"
+    }; 
+
+    public Dictionary<string, string> DisplayInlineFlexStaticUtilities { get; } = new()
+    {
+	    [""] = "display: inline-flex;"
+    }; 
+
+    public Dictionary<string, string> DisplayInlineGridStaticUtilities { get; } = new()
+    {
+	    [""] = "display: inline-grid;"
+    }; 
+
+    public Dictionary<string, string> DisplayInlineTableStaticUtilities { get; } = new()
+    {
+	    [""] = "display: inline-table;"
+    }; 
+
+    public Dictionary<string, string> DisplayListItemStaticUtilities { get; } = new()
+    {
+	    [""] = "display: list-item;"
+    };
+
+    public Dictionary<string, string> DisplayTableStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table;"
+    };
+
+    public Dictionary<string, string> DisplayTableCaptionStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-caption;"
+    };
+
+    public Dictionary<string, string> DisplayTableCellStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-cell;"
+    }; 
+
+    public Dictionary<string, string> DisplayTableColumnStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-column;"
+    }; 
+
+    public Dictionary<string, string> DisplayTableColumnGroupStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-column-group;"
+    };
+
+    public Dictionary<string, string> DisplayTableFooterGroupStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-footer-group;"
+    }; 
+
+    public Dictionary<string, string> DisplayTableHeaderGroupStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-header-group;"
+    }; 
+
+    public Dictionary<string, string> DisplayTableRowStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-row;"
+    }; 
+
+    public Dictionary<string, string> DisplayTableRowGroupStaticUtilities { get; } = new()
+    {
+	    [""] = "display: table-row-group;"
+    }; 
+
+    public Dictionary<string, string> EndStaticUtilities { get; } = new()
+    {
+	    ["0"] = "inset-inline-end: 0px;",
+	    ["px"] = "inset-inline-end: 1px;",
+	    ["auto"] = "inset-inline-end: auto;",
+	    ["full"] = "inset-inline-end: 100%;",
+    };
+
+    public Dictionary<string, string> FixedStaticUtilities { get; } = new()
+    {
+	    [""] = "position: fixed;",
+    };
+
+    public Dictionary<string, string> FloatStaticUtilities { get; } = new()
+    {
+	    ["right"] = "float: right;",
+	    ["left"] = "float: left;",
+	    ["none"] = "float: none;",
+    }; 
+
+    public Dictionary<string, string> InsetStaticUtilities { get; } = new()
+    {
+	    ["0"] = "inset: 0px;",
+	    ["px"] = "inset: 1px;",
+	    ["auto"] = "inset: auto;",
+	    ["full"] = "inset: 100%;",
+    }; 
+
+    public Dictionary<string, string> InsetXStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            left: 0px;
+	            right: 0px;
+	            """,
+	    ["px"] = """
+	             left: 1px;
+	             right: 1px;
+	             """,
+	    ["auto"] = """
+	               left: auto;
+	               right: auto;
+	               """,
+	    ["full"] = """
+	               left: 100%;
+	               right: 100%;
+	               """,
+    };
+
+    public Dictionary<string, string> InsetYStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            top: 0px;
+	            bottom: 0px;
+	            """,
+	    ["px"] = """
+	             top: 1px;
+	             bottom: 1px;
+	             """,
+	    ["auto"] = """
+	               top: auto;
+	               bottom: auto;
+	               """,
+	    ["full"] = """
+	               top: 100%;
+	               bottom: 100%;
+	               """,
+    };
+
+    public Dictionary<string, string> InvisibleStaticUtilities { get; } = new()
+    {
+	    [""] = "visibility: hidden;",
+    };
+
+    public Dictionary<string, string> IsolateStaticUtilities { get; } = new()
+    {
+	    [""] = "isolation: isolate;",
+    };
+
+    public Dictionary<string, string> IsolationAutoStaticUtilities { get; } = new()
+    {
+	    [""] = "isolation: isolate;",
+    };
+
+    public Dictionary<string, string> LeftStaticUtilities { get; } = new()
+    {
+	    ["0"] = "left: 0px;",
+	    ["px"] = "left: 1px;",
+	    ["auto"] = "left: auto;",
+	    ["full"] = "left: 100%;",
+    };
+
+    public Dictionary<string, string> ObjectStaticUtilities { get; } = new()
+    {
+	    ["contain"] = "object-fit: contain;",
+	    ["cover"] = "object-fit: cover;",
+	    ["fill"] = "object-fit: fill;",
+	    ["none"] = "object-fit: none;",
+	    ["scale-down"] = "object-fit: scale-down;",
+	    ["bottom"] = "object-position: bottom;",
+	    ["center"] = "object-position: center;",
+	    ["left"] = "object-position: left;",
+	    ["left-bottom"] = "object-position: left bottom;",
+	    ["left-top"] = "object-position: left top;",
+	    ["right"] = "object-position: right;",
+	    ["right-bottom"] = "object-position: right bottom;",
+	    ["right-top"] = "object-position: right top;",
+	    ["top"] = "object-position: top;"
+    };
+
+    public Dictionary<string, string> OverflowStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "overflow: auto;",
+	    ["hidden"] = "overflow: hidden;",
+	    ["clip"] = "overflow: clip;",
+	    ["visible"] = "overflow: visible;",
+	    ["scroll"] = "overflow: scroll;"
+    };
+
+    public Dictionary<string, string> OverflowXStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "overflow-x: auto;",
+	    ["hidden"] = "overflow-x: hidden;",
+	    ["clip"] = "overflow-x: clip;",
+	    ["visible"] = "overflow-x: visible;",
+	    ["scroll"] = "overflow-x: scroll;"
+    }; 
+
+    public Dictionary<string, string> OverflowYStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "overflow-y: auto;",
+	    ["hidden"] = "overflow-y: hidden;",
+	    ["clip"] = "overflow-y: clip;",
+	    ["visible"] = "overflow-y: visible;",
+	    ["scroll"] = "overflow-y: scroll;"
+    };
+
+    public Dictionary<string, string> OverscrollStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "overscroll-behavior: auto;",
+	    ["contain"] = "overscroll-behavior: contain;",
+	    ["none"] = "overscroll-behavior: none;",
+    }; 
+
+    public Dictionary<string, string> OverscrollXStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "overscroll-behavior-x: auto;",
+	    ["contain"] = "overscroll-behavior-x: contain;",
+	    ["none"] = "overscroll-behavior-x: none;",
+    }; 
+
+    public Dictionary<string, string> OverscrollYStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "overscroll-behavior-y: auto;",
+	    ["contain"] = "overscroll-behavior-y: contain;",
+	    ["none"] = "overscroll-behavior-y: none;",
+    }; 
+
+    public Dictionary<string, string> RelativeStaticUtilities { get; } = new()
+    {
+	    [""] = "position: relative;",
+    }; 
+
+    public Dictionary<string, string> RightStaticUtilities { get; } = new()
+    {
+	    ["0"] = "right: 0px;",
+	    ["px"] = "right: 1px;",
+	    ["auto"] = "right: auto;",
+	    ["full"] = "right: 100%;",
+    };
+
+    public Dictionary<string, string> StartStaticUtilities { get; } = new()
+    {
+	    ["0"] = "inset-inline-start: 0px;",
+	    ["px"] = "inset-inline-start: 1px;",
+	    ["auto"] = "inset-inline-start: auto;",
+	    ["full"] = "inset-inline-start: 100%;",
+    }; 
+
+    public Dictionary<string, string> StaticStaticUtilities { get; } = new()
+    {
+	    [""] = "position: static;",
+    }; 
+
+    public Dictionary<string, string> StickyStaticUtilities { get; } = new()
+    {
+	    [""] = "position: sticky;",
+    }; 
+
+    public Dictionary<string, string> TopStaticUtilities { get; } = new()
+    {
+	    ["0"] = "top: 0px;",
+	    ["px"] = "top: 1px;",
+	    ["auto"] = "top: auto;",
+	    ["full"] = "top: 100%;",
+    }; 
+
+    public Dictionary<string, string> VisibleStaticUtilities { get; } = new()
+    {
+	    [""] = "visibility: visible;",
+    }; 
+
+    public Dictionary<string, string> ZStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "z-index: auto;",
+	    ["top"] = $"z-index: {int.MaxValue.ToString()};",
+	    ["bottom"] = $"z-index: {int.MinValue.ToString()};",
+	    ["0"] = "z-index: 0;",
+	    ["10"] = "z-index: 10;",
+	    ["20"] = "z-index: 20;",
+	    ["30"] = "z-index: 30;",
+	    ["40"] = "z-index: 40;",
+	    ["50"] = "z-index: 50;"
+    }; 
+    
+    #endregion
+    
+    #region Sizing
+    
+    public Dictionary<string, string> HStaticUtilities { get; } = new()
+    {
+	    ["0"] = "height: 0px;",
+	    ["px"] = "height: 1px;",
+	    ["auto"] = "height: auto;",
+	    ["screen"] = "height: 100vh;",
+	    ["min"] = "height: min-content;",
+	    ["max"] = "height: max-content;",
+	    ["fit"] = "height: fit-content;",
+	    ["full"] = "height: 100%;"
+    }; 
+
+    public Dictionary<string, string> MaxHStaticUtilities { get; } = new()
+    {
+	    ["0"] = "max-height: 0px;",
+	    ["px"] = "max-height: 1px;",
+	    ["none"] = "max-height: none;",
+	    ["full"] = "max-height: 100%;",
+	    ["screen"] = "max-height: 100vh;",
+	    ["min"] = "max-height: min-content;",
+	    ["max"] = "max-height: max-content;",
+	    ["fit"] = "max-height: fit-content;",
+    }; 
+
+    public Dictionary<string, string> MaxWStaticUtilities { get; } = new()
+    {
+	    ["0"] = "max-width: 0px;",
+	    ["none"] = "max-width: none;",
+	    ["xs"] = "max-width: 20rem;",
+	    ["sm"] = "max-width: 24rem;",
+	    ["md"] = "max-width: 28rem;",
+	    ["lg"] = "max-width: 32rem;",
+	    ["xl"] = "max-width: 36rem;",
+	    ["2xl"] = "max-width: 42rem;",
+	    ["3xl"] = "max-width: 48rem;",
+	    ["4xl"] = "max-width: 56rem;",
+	    ["5xl"] = "max-width: 64rem;",
+	    ["6xl"] = "max-width: 72rem;",
+	    ["7xl"] = "max-width: 80rem;",
+	    ["full"] = "max-width: 100%;",
+	    ["min"] = "max-width: min-content;",
+	    ["max"] = "max-width: max-content;",
+	    ["fit"] = "max-width: fit-content;",
+	    ["prose"] = "max-width: 65ch;",
+	    ["screen-zero"] = "max-width: calc(#{$phab-breakpoint} - 1px);",
+	    ["screen-phab"] = "max-width: #{$tabp-breakpoint};",
+	    ["screen-tabp"] = "max-width: #{$tabl-breakpoint};",
+	    ["screen-tabl"] = "max-width: #{$note-breakpoint};",
+	    ["screen-note"] = "max-width: #{$desk-breakpoint};",
+	    ["screen-desk"] = "max-width: #{$elas-breakpoint};",
+	    ["screen-elas"] = "max-width: #{$tabp-breakpoint};"
+    }; 
+
+    public Dictionary<string, string> MinHStaticUtilities { get; } = new()
+    {
+	    ["0"] = "min-height: 0px;",
+	    ["full"] = "min-height: 100%;",
+	    ["screen"] = "min-height: 100vh;",
+	    ["min"] = "min-height: min-content;",
+	    ["max"] = "min-height: max-content;",
+	    ["fit"] = "min-height: fit-content;"
+    }; 
+
+    public Dictionary<string, string> MinWStaticUtilities { get; } = new()
+    {
+	    ["0"] = "min-width: 0px;",
+	    ["px"] = "min-width: 1px;",
+	    ["screen"] = "min-width: 100vw;",
+	    ["min"] = "min-width: min-content;",
+	    ["max"] = "min-width: max-content;",
+	    ["fit"] = "min-width: fit-content;"
+    }; 
+
+    public Dictionary<string, string> WStaticUtilities { get; } = new()
+    {
+	    ["0"] = "width: 0px;",
+	    ["px"] = "width: 1px;",
+	    ["auto"] = "width: auto;",
+	    ["screen"] = "width: 100vw;",
+	    ["min"] = "width: min-content;",
+	    ["max"] = "width: max-content;",
+	    ["fit"] = "width: fit-content;",
+	    ["full"] = "width: 100%;"
+    }; 
+    
+    #endregion
+    
+    #region Spacing
+    
+    public Dictionary<string, string> MStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "margin: auto;",
+	    ["0"] = "margin: 0px;",
+	    ["px"] = "margin: 1px;",
+    }; 
+
+    public Dictionary<string, string> MbStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "margin-bottom: auto;",
+	    ["0"] = "margin-bottom: 0px;",
+	    ["px"] = "margin-bottom: 1px;",
+    }; 
+
+    public Dictionary<string, string> MeStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "margin-inline-end: auto;",
+	    ["0"] = "margin-inline-end: 0px;",
+	    ["px"] = "margin-inline-end: 1px;",
+    }; 
+
+    public Dictionary<string, string> MlStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "margin-left: auto;",
+	    ["0"] = "margin-left: 0px;",
+	    ["px"] = "margin-left: 1px;",
+    }; 
+
+    public Dictionary<string, string> MrStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "margin-right: auto;",
+	    ["0"] = "margin-right: 0px;",
+	    ["px"] = "margin-right: 1px;",
+    }; 
+
+    public Dictionary<string, string> MsStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "margin-inline-start: auto;",
+	    ["0"] = "margin-inline-start: 0px;",
+	    ["px"] = "margin-inline-start: 1px;",
+    }; 
+
+    public Dictionary<string, string> MtStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "margin-top: auto;",
+	    ["0"] = "margin-top: 0px;",
+	    ["px"] = "margin-top: 1px;",
+    }; 
+
+    public Dictionary<string, string> MxStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            margin-left: 0px;
+	            margin-right: 0px;
+	            """,
+	    ["px"] = """
+	             margin-left: 1px;
+	             margin-right: 1px;
+	             """,
+	    ["auto"] = """
+	               margin-left: auto;
+	               margin-right: auto;
+	               """,
+    }; 
+
+    public Dictionary<string, string> MyStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            margin-top: 0px;
+	            margin-bottom: 0px;
+	            """,
+	    ["px"] = """
+	             margin-top: 1px;
+	             margin-bottom: 1px;
+	             """,
+	    ["auto"] = """
+	               margin-top: auto;
+	               margin-bottom: auto;
+	               """,
+    }; 
+
+    public Dictionary<string, string> PStaticUtilities { get; } = new()
+    {
+	    ["0"] = "padding: 0px;",
+	    ["px"] = "padding: 1px;",
+    }; 
+
+    public Dictionary<string, string> PbStaticUtilities { get; } = new()
+    {
+	    ["0"] = "padding-bottom: 0px;",
+	    ["px"] = "padding-bottom: 1px;",
+    }; 
+
+    public Dictionary<string, string> PeStaticUtilities { get; } = new()
+    {
+	    ["0"] = "padding-inline-end: 0px;",
+	    ["px"] = "padding-inline-end: 1px;",
+    }; 
+
+    public Dictionary<string, string> PlStaticUtilities { get; } = new()
+    {
+	    ["0"] = "padding-left: 0px;",
+	    ["px"] = "padding-left: 1px;",
+    };
+
+    public Dictionary<string, string> PrStaticUtilities { get; } = new()
+    {
+	    ["0"] = "padding-right: 0px;",
+	    ["px"] = "padding-right: 1px;",
+    }; 
+
+    public Dictionary<string, string> PsStaticUtilities { get; } = new()
+    {
+	    ["0"] = "padding-inline-start: 0px;",
+	    ["px"] = "padding-inline-start: 1px;",
+    }; 
+
+    public Dictionary<string, string> PtStaticUtilities { get; } = new()
+    {
+	    ["0"] = "padding-top: 0px;",
+	    ["px"] = "padding-top: 1px;",
+    }; 
+
+    public Dictionary<string, string> PxStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            padding-left: 0px;
+	            padding-right: 0px;
+	            """,
+	    ["px"] = """
+	             padding-left: 1px;
+	             padding-right: 1px;
+	             """,
+    }; 
+
+    public Dictionary<string, string> PyStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            padding-top: 0px;
+	            padding-bottom: 0px;
+	            """,
+	    ["px"] = """
+	             padding-top: 1px;
+	             padding-bottom: 1px;
+	             """,
+    }; 
+
+    public Dictionary<string, string> SpaceXStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            & > * + * {
+	                margin-left: 0px;
+	            }
+	            """,
+	    ["px"] = """
+	             & > * + * {
+	                 margin-left: 1px;
+	             }
+	             """,
+    }; 
+
+    public Dictionary<string, string> SpaceYStaticUtilities { get; } = new()
+    {
+	    ["0"] = """
+	            & > * + * {
+	                margin-top: 0px;
+	            }
+	            """,
+	    ["px"] = """
+	             & > * + * {
+	                 margin-top: 1px;
+	             }
+	             """,
+    }; 
+    
+    #endregion
+    
+    #region SVG
+    
+    public Dictionary<string, string> FillStaticUtilities { get; } = new()
+    {
+	    ["none"] = "fill: none;",
+    }; 
+
+    public Dictionary<string, string> StrokeStaticUtilities { get; } = new()
+    {
+	    ["none"] = "stroke: none;",
+	    ["0"] = "stroke-width: 0;",
+	    ["1"] = "stroke-width: 1;",
+	    ["2"] = "stroke-width: 2;",
+    }; 
+
+    #endregion
+    
+    #region Tables
+
+    public Dictionary<string, string> BorderCollapseStaticUtilities { get; } = new()
+    {
+	    [""] = "border-collapse: collapse;"
+    }; 
+
+    public Dictionary<string, string> BorderSeparateStaticUtilities { get; } = new()
+    {
+	    [""] = "border-collapse: separate;"
+    }; 
+
+    public Dictionary<string, string> BorderSpacingStaticUtilities { get; } = new()
+    {
+	    ["0"] = "border-spacing: 0px;",
+	    ["px"] = "border-spacing: 1px;",
+    };
+
+    public Dictionary<string, string> BorderSpacingXStaticUtilities { get; } = new()
+    {
+	    ["0"] = "border-spacing: 0px var(--sf-border-spacing-y);",
+	    ["px"] = "border-spacing: 1px var(--sf-border-spacing-y);",
+    };
+
+    public Dictionary<string, string> BorderSpacingYStaticUtilities { get; } = new()
+    {
+	    ["0"] = "border-spacing: var(--sf-border-spacing-x) 0px;",
+	    ["px"] = "border-spacing: var(--sf-border-spacing-x) 1px;",
+    }; 
+
+    public Dictionary<string, string> CaptionStaticUtilities { get; } = new()
+    {
+	    ["top"] = "caption-side: top;",
+	    ["bottom"] = "caption-side: bottom;",
+    }; 
+
+    public Dictionary<string, string> TableAutoStaticUtilities { get; } = new()
+    {
+	    [""] = "table-layout: auto;",
+    }; 
+
+    public Dictionary<string, string> TabledFixedStaticUtilities { get; } = new()
+    {
+	    [""] = "table-layout: fixed;",
+    }; 
+
+    #endregion
+    
+    #region Transforms
+    
+    public Dictionary<string, string> AnimateStaticUtilities { get; } = new()
+    {
+	    ["none"] = "animation: none;",
+	    ["spin"] = """
+	               animation: spin 1s linear infinite;
+
+	               @keyframes spin {
+	                  from {
+	                      transform: rotate(0deg);
+	                   }
+	                   to {
+	                      transform: rotate(360deg);
+	                   }
+	               }
+	               """,
+	    ["ping"] = """
+	               animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+	               @keyframes ping {
+	                   75%, 100% {
+	                       transform: scale(2);
+	                       opacity: 0;
+	                   }
+	               }
+	               """,
+	    ["pulse"] = """
+	                animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+	                @keyframes pulse {
+	                    0%, 100% {
+	                        opacity: 1;
+	                    }
+	                    50% {
+	                        opacity: .5;
+	                    }
+	                }
+	                """,
+	    ["bounce"] = """
+	                 animation: bounce 1s infinite;
+
+	                 @keyframes bounce {
+	                     0%, 100% {
+	                         transform: translateY(-25%);
+	                         animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+	                     }
+	                     50% {
+	                         transform: translateY(0);
+	                         animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+	                     }
+	                 }
+	                 """,
+    };
+    
+    public Dictionary<string, string> DelayStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transition-delay: 0s;",
+	    ["75"] = "transition-delay: 75ms;",
+	    ["100"] = "transition-delay: 100ms;",
+	    ["150"] = "transition-delay: 150ms;",
+	    ["200"] = "transition-delay: 200ms;",
+	    ["300"] = "transition-delay: 300ms;",
+	    ["500"] = "transition-delay: 500ms;",
+	    ["700"] = "transition-delay: 700ms;",
+	    ["1000"] = "transition-delay: 1000ms;"
+    }; 
+
+    public Dictionary<string, string> DurationStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transition-duration: 0s;",
+	    ["75"] = "transition-duration: 75ms;",
+	    ["100"] = "transition-duration: 100ms;",
+	    ["150"] = "transition-duration: 150ms;",
+	    ["200"] = "transition-duration: 200ms;",
+	    ["300"] = "transition-duration: 300ms;",
+	    ["500"] = "transition-duration: 500ms;",
+	    ["700"] = "transition-duration: 700ms;",
+	    ["1000"] = "transition-duration: 1000ms;"
+    }; 
+
+    public Dictionary<string, string> EaseStaticUtilities { get; } = new()
+    {
+	    ["linear"] = "transition-timing-function: linear;",
+	    ["in"] = "transition-timing-function: cubic-bezier(0.4, 0, 1, 1);",
+	    ["out"] = "transition-timing-function: cubic-bezier(0, 0, 0.2, 1);",
+	    ["in-out"] = "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);",
+    }; 
+
+    public Dictionary<string, string> TransitionStaticUtilities { get; } = new()
+    {
+	    [""] = """
+	           transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+	           transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	           transition-duration: 150ms;
+	           """,
+	    ["none"] = """
+	               transition-property: none;
+	               transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	               transition-duration: 150ms;
+	               """,
+	    ["all"] = """
+	              transition-property: all;
+	              transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	              transition-duration: 150ms;
+	              """,
+	    ["colors"] = """
+	                 transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+	                 transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	                 transition-duration: 150ms;
+	                 """,
+	    ["opacity"] = """
+	                  transition-property: opacity;
+	                  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	                  transition-duration: 150ms;
+	                  """,
+	    ["shadow"] = """
+	                 transition-property: box-shadow;
+	                 transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	                 transition-duration: 150ms;
+	                 """,
+	    ["transform"] = """
+	                    transition-property: transform;
+	                    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	                    transition-duration: 150ms;
+	                    """
+    }; 
+    
+    #endregion
+    
+    #region Transitions and Animations
+    
+    public Dictionary<string, string> OriginStaticUtilities { get; } = new()
+    {
+	    ["center"] = "transform-origin: center;",
+	    ["top"] = "transform-origin: top;",
+	    ["top-right"] = "transform-origin: top right;",
+	    ["right"] = "transform-origin: right;",
+	    ["bottom-right"] = "transform-origin: bottom right;",
+	    ["bottom"] = "transform-origin: bottom;",
+	    ["bottom-left"] = "transform-origin: bottom left;",
+	    ["left"] = "transform-origin: left;",
+	    ["top-left"] = "transform-origin: top left;"
+    }; 
+
+    public Dictionary<string, string> RotateStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: rotate(0deg);",
+	    ["1"] = "transform: rotate(1deg);",
+	    ["2"] = "transform: rotate(2deg);",
+	    ["3"] = "transform: rotate(3deg);",
+	    ["6"] = "transform: rotate(6deg);",
+	    ["12"] = "transform: rotate(12deg);",
+	    ["45"] = "transform: rotate(45deg);",
+	    ["90"] = "transform: rotate(90deg);",
+	    ["180"] = "transform: rotate(180deg);"
+    }; 
+
+    public Dictionary<string, string> ScaleStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: scale(0);",
+	    ["50"] = "transform: scale(0.5);",
+	    ["75"] = "transform: scale(0.75);",
+	    ["90"] = "transform: scale(0.90);",
+	    ["95"] = "transform: scale(0.95);",
+	    ["100"] = "transform: scale(1.0);",
+	    ["105"] = "transform: scale(1.05);",
+	    ["110"] = "transform: scale(1.1);",
+	    ["125"] = "transform: scale(1.25);",
+	    ["150"] = "transform: scale(1.5);"
+    }; 
+
+    public Dictionary<string, string> ScaleXStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: scaleX(0);",
+	    ["50"] = "transform: scaleX(0.5);",
+	    ["75"] = "transform: scaleX(0.75);",
+	    ["90"] = "transform: scaleX(0.90);",
+	    ["95"] = "transform: scaleX(0.95);",
+	    ["100"] = "transform: scaleX(1.0);",
+	    ["105"] = "transform: scaleX(1.05);",
+	    ["110"] = "transform: scaleX(1.1);",
+	    ["125"] = "transform: scaleX(1.25);",
+	    ["150"] = "transform: scaleX(1.5);"
+    }; 
+
+    public Dictionary<string, string> ScaleYStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: scaleY(0);",
+	    ["50"] = "transform: scaleY(0.5);",
+	    ["75"] = "transform: scaleY(0.75);",
+	    ["90"] = "transform: scaleY(0.90);",
+	    ["95"] = "transform: scaleY(0.95);",
+	    ["100"] = "transform: scaleY(1.0);",
+	    ["105"] = "transform: scaleY(1.05);",
+	    ["110"] = "transform: scaleY(1.1);",
+	    ["125"] = "transform: scaleY(1.25);",
+	    ["150"] = "transform: scaleY(1.5);"
+    };
+
+    public Dictionary<string, string> SkewXStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: skewX(0deg);",
+	    ["1"] = "transform: skewX(1deg);",
+	    ["2"] = "transform: skewX(2deg);",
+	    ["3"] = "transform: skewX(3deg);",
+	    ["6"] = "transform: skewX(6deg);",
+	    ["12"] = "transform: skewX(12deg);",
+	    ["45"] = "transform: skewX(45deg);",
+	    ["90"] = "transform: skewX(90deg);",
+	    ["180"] = "transform: skewX(180deg);"
+    };
+
+    public Dictionary<string, string> SkewYStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: skewY(0deg);",
+	    ["1"] = "transform: skewY(1deg);",
+	    ["2"] = "transform: skewY(2deg);",
+	    ["3"] = "transform: skewY(3deg);",
+	    ["6"] = "transform: skewY(6deg);",
+	    ["12"] = "transform: skewY(12deg);",
+	    ["45"] = "transform: skewY(45deg);",
+	    ["90"] = "transform: skewY(90deg);",
+	    ["180"] = "transform: skewY(180deg);"
+    };
+
+    public Dictionary<string, string> TranslateXStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: translateX(0px);",
+	    ["px"] = "transform: translateX(1px);",
+	    ["full"] = "transform: translateX(100%);"
+    }; 
+
+    public Dictionary<string, string> TranslateYStaticUtilities { get; } = new()
+    {
+	    ["0"] = "transform: translateY(0px);",
+	    ["px"] = "transform: translateY(1px);",
+	    ["full"] = "transform: translateY(100%);"
+    }; 
+    
+    #endregion
+    
+    #region Typography
+    
+    public Dictionary<string, string> AlignStaticUtilities { get; } = new()
+    {
+	    ["baseline"] = "vertical-align: baseline;",
+	    ["top"] = "vertical-align: top;",
+	    ["middle"] = "vertical-align: middle;",
+	    ["bottom"] = "vertical-align: bottom;",
+	    ["text-top"] = "vertical-align: text-top;",
+	    ["text-bottom"] = "vertical-align: text-bottom;",
+	    ["sub"] = "vertical-align: sub;",
+	    ["super"] = "vertical-align: super;"
+    }; 
+
+    public Dictionary<string, string> AntialiasedStaticUtilities { get; } = new()
+    {
+	    [""] = """
+	           -webkit-font-smoothing: antialiased;
+	           -moz-osx-font-smoothing: grayscale;
+	           """,
+    }; 
+
+    public Dictionary<string, string> BreakStaticUtilities { get; } = new()
+    {
+	    ["all"] = "word-break: break-all;",
+	    ["keep"] = "word-break: keep-all;",
+    }; 
+
+    public Dictionary<string, string> BreakNormalStaticUtilities { get; } = new()
+    {
+	    [""] = """
+	           overflow-wrap: normal;
+	           word-break: normal;
+	           """,
+    }; 
+
+    public Dictionary<string, string> BreakWordsStaticUtilities { get; } = new()
+    {
+	    [""] = "overflow-wrap: break-word;",
+    };
+
+    public Dictionary<string, string> CapitalizeStaticUtilities { get; } = new()
+    {
+	    [""] = "text-transform: capitalize;",
+    }; 
+
+    public Dictionary<string, string> ContentStaticUtilities { get; } = new()
+    {
+	    ["none"] = "content: none;",
+    }; 
+
+    public Dictionary<string, string> DecorationStaticUtilities { get; } = new()
+    {
+	    ["solid"] = "text-decoration-style: solid;",
+	    ["double"] = "text-decoration-style: double;",
+	    ["dotted"] = "text-decoration-style: dotted;",
+	    ["dashed"] = "text-decoration-style: dashed;",
+	    ["wavy"] = "text-decoration-style: wavy;",
+	    ["auto"] = "text-decoration-thickness: auto;",
+	    ["from-font"] = "text-decoration-thickness: from-font;",
+	    ["0"] = "text-decoration-thickness: 0px;",
+	    ["1"] = "text-decoration-thickness: 1px;",
+	    ["2"] = $"text-decoration-thickness: {2.PxToRem()};",
+	    ["4"] = $"text-decoration-thickness: {4.PxToRem()};",
+	    ["8"] = $"text-decoration-thickness: {8.PxToRem()};"
+    }; 
+
+    public Dictionary<string, string> DiagonalFractionsStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: diagonal-fractions;",
+    }; 
+
+    public Dictionary<string, string> FontStaticUtilities { get; } = new()
+    {
+	    ["sans"] = "font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Aptos\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\";",
+	    ["serif"] = "font-family: ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif;",
+	    ["mono"] = "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"JetBrains Mono\", \"Liberation Mono\", \"Courier New\", monospace;",
+        
+	    ["thin"] = "font-weight: 100;",
+	    ["extralight"] = "font-weight: 200;",
+	    ["light"] = "font-weight: 300;",
+	    ["normal"] = "font-weight: 400;",
+	    ["medium"] = "font-weight: 500;",
+	    ["semibold"] = "font-weight: 600;",
+	    ["bold"] = "font-weight: 700;",
+	    ["extrabold"] = "font-weight: 800;",
+	    ["black"] = "font-weight: 900;"
+    }; 
+
+    public Dictionary<string, string> HyphensStaticUtilities { get; } = new()
+    {
+	    ["none"] = "hyphens: none;",
+	    ["manual"] = "hyphens: manual;",
+	    ["auto"] = "hyphens: auto;",
+    }; 
+
+    public Dictionary<string, string> IndentStaticUtilities { get; } = new()
+    {
+	    ["0"] = "text-indent: 0px;",
+	    ["px"] = "text-indent: 1px;",
+    }; 
+
+    public Dictionary<string, string> ItalicStaticUtilities { get; } = new()
+    {
+	    [""] = "font-style: italic;",
+    }; 
+
+    public Dictionary<string, string> LineClampStaticUtilities { get; } = new()
+    {
+	    ["none"] = """
+	               overflow: visible;
+	               display: block;
+	               -webkit-box-orient: horizontal;
+	               -webkit-line-clamp: none;
+	               """,
+	    ["1"] = """
+	            -webkit-line-clamp: 1;
+	            overflow: hidden;
+	            display: -webkit-box;
+	            -webkit-box-orient: vertical;
+	            """,
+	    ["2"] = """
+	            -webkit-line-clamp: 2;
+	            overflow: hidden;
+	            display: -webkit-box;
+	            -webkit-box-orient: vertical;
+	            """,
+	    ["3"] = """
+	            -webkit-line-clamp: 3;
+	            overflow: hidden;
+	            display: -webkit-box;
+	            -webkit-box-orient: vertical;
+	            """,
+	    ["4"] = """
+	            -webkit-line-clamp: 4;
+	            overflow: hidden;
+	            display: -webkit-box;
+	            -webkit-box-orient: vertical;
+	            """,
+	    ["5"] = """
+	            -webkit-line-clamp: 5;
+	            overflow: hidden;
+	            display: -webkit-box;
+	            -webkit-box-orient: vertical;
+	            """,
+    }; 
+
+    public Dictionary<string, string> LineThroughStaticUtilities { get; } = new()
+    {
+	    [""] = "text-decoration-line: line-through;",
+    }; 
+
+    public Dictionary<string, string> LiningNumsStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: lining-nums;",
+    }; 
+
+    public Dictionary<string, string> ListStaticUtilities { get; } = new()
+    {
+	    ["inside"] = "list-style-position: inside;",
+	    ["outside"] = "list-style-position: outside;",
+        
+	    ["none"] = "list-style-type: none;",
+	    ["disc"] = "list-style-type: disc;",
+	    ["decimal"] = "list-style-type: decimal;",
+        
+    }; 
+
+    public Dictionary<string, string> ListImageStaticUtilities { get; } = new()
+    {
+	    ["none"] = "list-style-image: none;",
+    }; 
+
+    public Dictionary<string, string> LowercaseStaticUtilities { get; } = new()
+    {
+	    [""] = "text-transform: lowercase;",
+    }; 
+
+    public Dictionary<string, string> NonItalicStaticUtilities { get; } = new()
+    {
+	    [""] = "font-style: normal;",
+    };
+
+    public Dictionary<string, string> NormalCaseStaticUtilities { get; } = new()
+    {
+	    [""] = "text-transform: none;",
+    }; 
+
+    public Dictionary<string, string> NormalNumsStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: normal;",
+    }; 
+
+    public Dictionary<string, string> NoUnderlineStaticUtilities { get; } = new()
+    {
+	    [""] = "text-decoration-line: none;",
+    }; 
+
+    public Dictionary<string, string> OldStyleNumsStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: oldstyle-nums;",
+    }; 
+
+    public Dictionary<string, string> OrdinalStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: ordinal;",
+    }; 
+
+    public Dictionary<string, string> OverlineStaticUtilities { get; } = new()
+    {
+	    [""] = "text-decoration-line: overline;",
+    }; 
+
+    public Dictionary<string, string> ProportionalNumsStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: proportional-nums;",
+    }; 
+
+    public Dictionary<string, string> SlashedZeroStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: slashed-zero;",
+    }; 
+
+    public Dictionary<string, string> StackedFractionsStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: stacked-fractions;",
+    }; 
+
+    public Dictionary<string, string> SubpixelAntialiasedStaticUtilities { get; } = new()
+    {
+	    [""] = """
+	           -webkit-font-smoothing: auto;
+	           -moz-osx-font-smoothing: auto;
+	           """,
+    }; 
+
+    public Dictionary<string, string> TabularNumsStaticUtilities { get; } = new()
+    {
+	    [""] = "font-variant-numeric: tabular-nums;",
+    }; 
+
+    public Dictionary<string, string> TextStaticUtilities { get; } = new()
+    {
+	    ["left"] = "text-align: left;",
+	    ["center"] = "text-align: center;",
+	    ["right"] = "text-align: right;",
+	    ["justify"] = "text-align: justify;",
+	    ["start"] = "text-align: start;",
+	    ["end"] = "text-align: end;"
+    }; 
+
+    public Dictionary<string, string> TextClipStaticUtilities { get; } = new()
+    {
+	    [""] = "text-overflow: clip;",
+    }; 
+
+    public Dictionary<string, string> TextEllipsisStaticUtilities { get; } = new()
+    {
+	    [""] = "text-overflow: ellipsis;",
+    }; 
+
+    public Dictionary<string, string> TrackingStaticUtilities { get; } = new()
+    {
+	    ["tighter"] = "letter-spacing: -0.05em;",
+	    ["tight"] = "letter-spacing: -0.025em;",
+	    ["normal"] = "letter-spacing: 0em;",
+	    ["wide"] = "letter-spacing: 0.025em;",
+	    ["wider"] = "letter-spacing: 0.05em;",
+	    ["widest"] = "letter-spacing: 0.1em;"
+    }; 
+
+    public Dictionary<string, string> TruncateStaticUtilities { get; } = new()
+    {
+	    [""] = """
+	           overflow: hidden;
+	           text-overflow: ellipsis;
+	           white-space: nowrap;
+	           """,
+    }; 
+
+    public Dictionary<string, string> UnderlineStaticUtilities { get; } = new()
+    {
+	    [""] = "text-decoration-line: underline;",
+    }; 
+
+    public Dictionary<string, string> UnderlineOffsetStaticUtilities { get; } = new()
+    {
+	    ["auto"] = "text-underline-offset: auto;",
+	    ["0"] = "text-underline-offset: 0px;",
+	    ["1"] = "text-underline-offset: 1px;",
+	    ["2"] = $"text-underline-offset: {2.PxToRem()};",
+	    ["4"] = $"text-underline-offset: {4.PxToRem()};",
+	    ["8"] = $"text-underline-offset: {8.PxToRem()};"
+    }; 
+
+    public Dictionary<string, string> UppercaseStaticUtilities { get; } = new()
+    {
+	    [""] = "text-transform: uppercase;",
+    };
+
+    public Dictionary<string, string> WhitespaceStaticUtilities { get; } = new()
+    {
+	    ["normal"] = "white-space: normal;",
+	    ["nowrap"] = "white-space: nowrap;",
+	    ["no-wrap"] = "white-space: nowrap;",
+	    ["pre"] = "white-space: pre;",
+	    ["pre-line"] = "white-space: pre-line;",
+	    ["pre-wrap"] = "white-space: pre-wrap;",
+	    ["break-spaces"] = "white-space: break-spaces;"
+    };
+
+    #endregion
+    
+    #endregion
     
     #endregion
     
@@ -1141,10 +3186,10 @@ public sealed class SfumatoAppState
 	    PercentageOptions.AddPercentageOptions(0, 100);
 	    
 	    #endregion
-
+	    
 	    if (VersionMode == false && HelpMode == false)
 		    await Settings.LoadJsonSettingsAsync(this);
-
+	    
 	    #region Load Utility Classes
 
 	    timer.Restart();
@@ -1164,7 +3209,7 @@ public sealed class SfumatoAppState
     
 	    if (DiagnosticMode)
 		    DiagnosticOutput.TryAdd("init1", $"{Strings.TriangleRight} Loaded {UtilityClassCollection.Count:N0} utility classes in {timer.FormatTimer()}{Environment.NewLine}");
-		
+	    
 	    #endregion
 	    
 	    if (VersionMode || HelpMode)

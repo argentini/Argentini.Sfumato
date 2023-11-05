@@ -3,20 +3,13 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.FlexboxAndGrid;
 public class Basis : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "basis";
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["full"] = "100%"
-    };
-
+    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-        
+        await AddToIndexAsync(appState.BasisStaticUtilities);
         await AddToIndexAsync(appState.FlexRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -32,6 +25,13 @@ public class Basis : ScssUtilityClassGroupBase
         
         #endregion
 
+        #region Static Utilities
+        
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BasisStaticUtilities, cssSelector, out Result))
+            return Result;
+        
+        #endregion
+        
         #region Calculated Utilities
         
         if (ProcessDictionaryOptions(cssSelector.AppState.FlexRemUnitOptions, cssSelector, "flex-basis: {value};", out Result))

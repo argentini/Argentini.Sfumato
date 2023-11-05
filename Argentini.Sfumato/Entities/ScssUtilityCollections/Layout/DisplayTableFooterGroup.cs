@@ -4,16 +4,11 @@ public class DisplayTableFooterGroup : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-footer-group";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "display: table-footer-group;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DisplayTableFooterGroupStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class DisplayTableFooterGroup : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableFooterGroupStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,21 +4,11 @@ public class MinW : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "min-w";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "min-width: 0px;",
-        ["px"] = "min-width: 1px;",
-        ["screen"] = "min-width: 100vw;",
-        ["min"] = "min-width: min-content;",
-        ["max"] = "min-width: max-content;",
-        ["fit"] = "min-width: fit-content;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.MinWStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -28,7 +18,7 @@ public class MinW : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MinWStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

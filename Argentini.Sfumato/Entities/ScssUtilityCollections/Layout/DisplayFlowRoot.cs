@@ -4,16 +4,11 @@ public class DisplayFlowRoot : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "flow-root";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "display: flow-root;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DisplayFlowRootStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class DisplayFlowRoot : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayFlowRootStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

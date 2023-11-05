@@ -3,17 +3,12 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.FlexboxAndGrid;
 public class ColSpan : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "col-span";
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["full"] = "grid-column: 1 / -1;",
-    }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ColSpanStaticUtilities);
 
         await AddToIndexAsync(appState.FlexboxAndGridWholeNumberOptions);
     }
@@ -25,7 +20,7 @@ public class ColSpan : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ColSpanStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

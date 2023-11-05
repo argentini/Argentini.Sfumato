@@ -4,19 +4,11 @@ public class Clear : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "clear";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["right"] = "clear: right;",
-        ["left"] = "clear: left;",
-        ["both"] = "clear: both;",
-        ["none"] = "clear: none;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ClearStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class Clear : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ClearStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

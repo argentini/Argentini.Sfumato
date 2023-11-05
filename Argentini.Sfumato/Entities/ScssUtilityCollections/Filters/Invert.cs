@@ -3,18 +3,12 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class Invert : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "invert";
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "filter: invert(100%);",
-        ["0"] = "filter: invert(0);"
-    }; 
-
+    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.InvertStaticUtilities);
     }
     
     public override string GetStyles(CssSelector cssSelector)
@@ -24,7 +18,7 @@ public class Invert : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InvertStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

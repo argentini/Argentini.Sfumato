@@ -4,16 +4,11 @@ public class NormalCase : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "normal-case";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "text-transform: none;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.NormalCaseStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class NormalCase : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.NormalCaseStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

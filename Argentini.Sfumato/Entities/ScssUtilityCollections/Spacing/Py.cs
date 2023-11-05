@@ -4,24 +4,11 @@ public class Py : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "py";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = """
-                padding-top: 0px;
-                padding-bottom: 0px;
-                """,
-        ["px"] = """
-                 padding-top: 1px;
-                 padding-bottom: 1px;
-                 """,
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.PyStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
@@ -32,7 +19,7 @@ public class Py : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PyStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

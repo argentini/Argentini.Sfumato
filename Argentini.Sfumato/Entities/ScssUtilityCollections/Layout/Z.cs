@@ -4,24 +4,11 @@ public class Z : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "z";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "z-index: auto;",
-        ["top"] = $"z-index: {int.MaxValue.ToString()};",
-        ["bottom"] = $"z-index: {int.MinValue.ToString()};",
-        ["0"] = "z-index: 0;",
-        ["10"] = "z-index: 10;",
-        ["20"] = "z-index: 20;",
-        ["30"] = "z-index: 30;",
-        ["40"] = "z-index: 40;",
-        ["50"] = "z-index: 50;"
-    }; 
-
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ZStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -31,7 +18,7 @@ public class Z : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ZStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

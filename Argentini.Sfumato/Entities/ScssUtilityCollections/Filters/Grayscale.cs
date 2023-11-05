@@ -3,18 +3,12 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class Grayscale : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "grayscale";
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "filter: grayscale(100%);",
-        ["0"] = "filter: grayscale(0);"
-    }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.GrayscaleStaticUtilities);
     }
     
     public override string GetStyles(CssSelector cssSelector)
@@ -24,7 +18,7 @@ public class Grayscale : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GrayscaleStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

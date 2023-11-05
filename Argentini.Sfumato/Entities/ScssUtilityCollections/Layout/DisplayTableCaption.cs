@@ -4,16 +4,11 @@ public class DisplayTableCaption : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-caption";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "display: table-caption;"
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DisplayTableCaptionStaticUtilities);
     }
     
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class DisplayTableCaption : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableCaptionStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

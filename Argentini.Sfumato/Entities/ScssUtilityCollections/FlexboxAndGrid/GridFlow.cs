@@ -4,20 +4,11 @@ public class GridFlow : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "grid-flow";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["row"] = "grid-auto-flow: row;",
-        ["col"] = "grid-auto-flow: column;",
-        ["dense"] = "grid-auto-flow: dense;",
-        ["row-dense"] = "grid-auto-flow: row dense;",
-        ["col-dense"] = "grid-auto-flow: column dense;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.GridFlowStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -27,7 +18,7 @@ public class GridFlow : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GridFlowStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

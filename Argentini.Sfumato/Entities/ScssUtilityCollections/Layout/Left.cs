@@ -4,22 +4,12 @@ public class Left : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "left";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "left: 0px;",
-        ["px"] = "left: 1px;",
-        ["auto"] = "left: auto;",
-        ["full"] = "left: 100%;",
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.LeftStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -30,7 +20,7 @@ public class Left : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LeftStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

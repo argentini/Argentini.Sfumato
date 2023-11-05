@@ -4,29 +4,11 @@ public class Columns : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "columns";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "columns: auto;",
-        ["3xs"] = "columns: 16rem;",
-        ["2xs"] = "columns: 18rem;",
-        ["xs"] = "columns: 20rem;",
-        ["sm"] = "columns: 24rem;",
-        ["md"] = "columns: 28rem;",
-        ["lg"] = "columns: 32rem;",
-        ["xl"] = "columns: 36rem;",
-        ["2xl"] = "columns: 42rem;",
-        ["3xl"] = "columns: 48rem;",
-        ["4xl"] = "columns: 56rem;",
-        ["5xl"] = "columns: 64rem;",
-        ["6xl"] = "columns: 72rem;",
-        ["7xl"] = "columns: 80rem;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ColumnsStaticUtilities);
 
         await AddToIndexAsync(appState.LayoutWholeNumberOptions);
     }
@@ -38,7 +20,7 @@ public class Columns : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ColumnsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

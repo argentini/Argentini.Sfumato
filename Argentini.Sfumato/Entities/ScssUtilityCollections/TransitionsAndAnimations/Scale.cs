@@ -4,25 +4,11 @@ public class Scale : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scale";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "transform: scale(0);",
-        ["50"] = "transform: scale(0.5);",
-        ["75"] = "transform: scale(0.75);",
-        ["90"] = "transform: scale(0.90);",
-        ["95"] = "transform: scale(0.95);",
-        ["100"] = "transform: scale(1.0);",
-        ["105"] = "transform: scale(1.05);",
-        ["110"] = "transform: scale(1.1);",
-        ["125"] = "transform: scale(1.25);",
-        ["150"] = "transform: scale(1.5);"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ScaleStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -32,7 +18,7 @@ public class Scale : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScaleStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

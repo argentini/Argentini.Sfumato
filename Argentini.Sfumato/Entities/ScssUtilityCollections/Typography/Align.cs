@@ -4,23 +4,11 @@ public class Align : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "align";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["baseline"] = "vertical-align: baseline;",
-        ["top"] = "vertical-align: top;",
-        ["middle"] = "vertical-align: middle;",
-        ["bottom"] = "vertical-align: bottom;",
-        ["text-top"] = "vertical-align: text-top;",
-        ["text-bottom"] = "vertical-align: text-bottom;",
-        ["sub"] = "vertical-align: sub;",
-        ["super"] = "vertical-align: super;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.AlignStaticUtilities);
     }
     
     public override string GetStyles(CssSelector cssSelector)
@@ -30,7 +18,7 @@ public class Align : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AlignStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

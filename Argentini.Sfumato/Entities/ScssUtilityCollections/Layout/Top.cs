@@ -4,22 +4,12 @@ public class Top : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "top";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "top: 0px;",
-        ["px"] = "top: 1px;",
-        ["auto"] = "top: auto;",
-        ["full"] = "top: 100%;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.TopStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
     
@@ -30,7 +20,7 @@ public class Top : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TopStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

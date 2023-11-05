@@ -4,16 +4,11 @@ public class ProportionalNums : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "proportional-nums";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "font-variant-numeric: proportional-nums;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ProportionalNumsStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class ProportionalNums : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ProportionalNumsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

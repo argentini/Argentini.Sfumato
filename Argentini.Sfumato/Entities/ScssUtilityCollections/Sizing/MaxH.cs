@@ -4,23 +4,11 @@ public class MaxH : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "max-h";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "max-height: 0px;",
-        ["px"] = "max-height: 1px;",
-        ["none"] = "max-height: none;",
-        ["full"] = "max-height: 100%;",
-        ["screen"] = "max-height: 100vh;",
-        ["min"] = "max-height: min-content;",
-        ["max"] = "max-height: max-content;",
-        ["fit"] = "max-height: fit-content;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.MaxHStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -30,7 +18,7 @@ public class MaxH : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MaxHStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

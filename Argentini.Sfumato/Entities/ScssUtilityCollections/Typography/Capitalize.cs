@@ -4,16 +4,11 @@ public class Capitalize : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "capitalize";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "text-transform: capitalize;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.CapitalizeStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class Capitalize : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.CapitalizeStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

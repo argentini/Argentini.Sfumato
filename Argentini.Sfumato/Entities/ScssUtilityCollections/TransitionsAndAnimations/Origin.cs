@@ -4,24 +4,11 @@ public class Origin : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "origin";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["center"] = "transform-origin: center;",
-        ["top"] = "transform-origin: top;",
-        ["top-right"] = "transform-origin: top right;",
-        ["right"] = "transform-origin: right;",
-        ["bottom-right"] = "transform-origin: bottom right;",
-        ["bottom"] = "transform-origin: bottom;",
-        ["bottom-left"] = "transform-origin: bottom left;",
-        ["left"] = "transform-origin: left;",
-        ["top-left"] = "transform-origin: top left;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.OriginStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -31,7 +18,7 @@ public class Origin : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OriginStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

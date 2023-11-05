@@ -4,17 +4,11 @@ public class BoxDecoration : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "box-decoration";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["clone"] = "box-decoration-break: clone;",
-        ["slice"] = "box-decoration-break: slice;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.BoxDecorationStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -24,7 +18,7 @@ public class BoxDecoration : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BoxDecorationStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

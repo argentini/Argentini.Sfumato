@@ -4,51 +4,11 @@ public class LineClamp : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "line-clamp";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["none"] = """
-                   overflow: visible;
-                   display: block;
-                   -webkit-box-orient: horizontal;
-                   -webkit-line-clamp: none;
-                   """,
-        ["1"] = """
-                -webkit-line-clamp: 1;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                """,
-        ["2"] = """
-                -webkit-line-clamp: 2;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                """,
-        ["3"] = """
-                -webkit-line-clamp: 3;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                """,
-        ["4"] = """
-                -webkit-line-clamp: 4;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                """,
-        ["5"] = """
-                -webkit-line-clamp: 5;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                """,
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.LineClampStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -58,7 +18,7 @@ public class LineClamp : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LineClampStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

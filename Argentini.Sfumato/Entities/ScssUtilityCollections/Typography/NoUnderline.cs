@@ -4,16 +4,11 @@ public class NoUnderline : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "no-underline";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "text-decoration-line: none;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.NoUnderlineStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class NoUnderline : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.NoUnderlineStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

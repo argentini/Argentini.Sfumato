@@ -4,21 +4,11 @@ public class Tracking : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "tracking";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["tighter"] = "letter-spacing: -0.05em;",
-        ["tight"] = "letter-spacing: -0.025em;",
-        ["normal"] = "letter-spacing: 0em;",
-        ["wide"] = "letter-spacing: 0.025em;",
-        ["wider"] = "letter-spacing: 0.05em;",
-        ["widest"] = "letter-spacing: 0.1em;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.TrackingStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -28,7 +18,7 @@ public class Tracking : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TrackingStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

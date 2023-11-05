@@ -4,17 +4,11 @@ public class Fill : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "fill";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["none"] = "fill: none;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.FillStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
     }
 
@@ -25,7 +19,7 @@ public class Fill : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FillStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

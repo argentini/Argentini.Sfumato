@@ -4,24 +4,11 @@ public class Rotate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "rotate";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "transform: rotate(0deg);",
-        ["1"] = "transform: rotate(1deg);",
-        ["2"] = "transform: rotate(2deg);",
-        ["3"] = "transform: rotate(3deg);",
-        ["6"] = "transform: rotate(6deg);",
-        ["12"] = "transform: rotate(12deg);",
-        ["45"] = "transform: rotate(45deg);",
-        ["90"] = "transform: rotate(90deg);",
-        ["180"] = "transform: rotate(180deg);"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.RotateStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -31,7 +18,7 @@ public class Rotate : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RotateStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

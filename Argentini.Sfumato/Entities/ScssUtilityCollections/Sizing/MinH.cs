@@ -4,21 +4,11 @@ public class MinH : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "min-h";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "min-height: 0px;",
-        ["full"] = "min-height: 100%;",
-        ["screen"] = "min-height: 100vh;",
-        ["min"] = "min-height: min-content;",
-        ["max"] = "min-height: max-content;",
-        ["fit"] = "min-height: fit-content;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.MinHStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -28,7 +18,7 @@ public class MinH : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MinHStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

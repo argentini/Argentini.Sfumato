@@ -4,24 +4,11 @@ public class SkewY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "skew-y";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "transform: skewY(0deg);",
-        ["1"] = "transform: skewY(1deg);",
-        ["2"] = "transform: skewY(2deg);",
-        ["3"] = "transform: skewY(3deg);",
-        ["6"] = "transform: skewY(6deg);",
-        ["12"] = "transform: skewY(12deg);",
-        ["45"] = "transform: skewY(45deg);",
-        ["90"] = "transform: skewY(90deg);",
-        ["180"] = "transform: skewY(180deg);"
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.SkewYStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -31,7 +18,7 @@ public class SkewY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SkewYStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

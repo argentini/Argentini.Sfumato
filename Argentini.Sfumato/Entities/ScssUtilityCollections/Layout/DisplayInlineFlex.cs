@@ -4,16 +4,11 @@ public class DisplayInlineFlex : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "inline-flex";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "display: inline-flex;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DisplayInlineFlexStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class DisplayInlineFlex : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayInlineFlexStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

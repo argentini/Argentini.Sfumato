@@ -4,19 +4,11 @@ public class M : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "m";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "margin: auto;",
-        ["0"] = "margin: 0px;",
-        ["px"] = "margin: 1px;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.MStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
@@ -27,7 +19,7 @@ public class M : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

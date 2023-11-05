@@ -4,16 +4,11 @@ public class TabularNums : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "tabular-nums";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "font-variant-numeric: tabular-nums;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.TabularNumsStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class TabularNums : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TabularNumsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

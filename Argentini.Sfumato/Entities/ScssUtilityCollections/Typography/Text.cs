@@ -4,21 +4,11 @@ public class Text : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "text";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["left"] = "text-align: left;",
-        ["center"] = "text-align: center;",
-        ["right"] = "text-align: right;",
-        ["justify"] = "text-align: justify;",
-        ["start"] = "text-align: start;",
-        ["end"] = "text-align: end;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.TextStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
         await AddToIndexAsync(appState.TextSizeOptions);
     }
@@ -30,7 +20,7 @@ public class Text : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

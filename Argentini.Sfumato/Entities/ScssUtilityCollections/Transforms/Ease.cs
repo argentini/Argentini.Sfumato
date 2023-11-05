@@ -4,19 +4,11 @@ public class Ease : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "ease";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["linear"] = "transition-timing-function: linear;",
-        ["in"] = "transition-timing-function: cubic-bezier(0.4, 0, 1, 1);",
-        ["out"] = "transition-timing-function: cubic-bezier(0, 0, 0.2, 1);",
-        ["in-out"] = "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.EaseStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class Ease : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.EaseStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

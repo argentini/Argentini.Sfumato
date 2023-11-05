@@ -3,20 +3,12 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.FlexboxAndGrid;
 public class AutoRows : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "auto-rows";
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "grid-auto-rows: auto;",
-        ["min"] = "grid-auto-rows: min-content;",
-        ["max"] = "grid-auto-rows: max-content;",
-        ["fr"] = "grid-auto-rows: minmax(0, 1fr);"
-    }; 
     
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.AutoRowsStaticUtilities);
     }
     
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class AutoRows : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AutoRowsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

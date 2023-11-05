@@ -4,16 +4,11 @@ public class DisplayTableHeaderGroup : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-header-group";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "display: table-header-group;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DisplayTableHeaderGroupStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class DisplayTableHeaderGroup : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableHeaderGroupStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

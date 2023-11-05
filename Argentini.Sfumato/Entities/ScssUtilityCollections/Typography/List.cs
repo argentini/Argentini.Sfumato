@@ -4,22 +4,11 @@ public class List : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "list";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["inside"] = "list-style-position: inside;",
-        ["outside"] = "list-style-position: outside;",
-        
-        ["none"] = "list-style-type: none;",
-        ["disc"] = "list-style-type: disc;",
-        ["decimal"] = "list-style-type: decimal;",
-        
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ListStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -29,7 +18,7 @@ public class List : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ListStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

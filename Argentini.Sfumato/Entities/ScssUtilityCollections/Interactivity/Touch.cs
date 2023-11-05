@@ -4,25 +4,11 @@ public class Touch : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "touch";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "touch-action: auto;",
-        ["none"] = "touch-action: none;",
-        ["pan-x"] = "touch-action: pan-x;",
-        ["pan-left"] = "touch-action: pan-left;",
-        ["pan-right"] = "touch-action: pan-right;",
-        ["pan-y"] = "touch-action: pan-y;",
-        ["pan-up"] = "touch-action: pan-up;",
-        ["pan-down"] = "touch-action: pan-down;",
-        ["pinch-zoom"] = "touch-action: pinch-zoom;",
-        ["manipulation"] = "touch-action: manipulation;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.TouchStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -32,7 +18,7 @@ public class Touch : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TouchStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

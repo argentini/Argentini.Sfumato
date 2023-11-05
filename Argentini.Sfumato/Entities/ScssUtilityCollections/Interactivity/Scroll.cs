@@ -4,17 +4,11 @@ public class Scroll : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "scroll-behavior: auto;",
-        ["smooth"] = "scroll-behavior: smooth;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ScrollStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -24,7 +18,7 @@ public class Scroll : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

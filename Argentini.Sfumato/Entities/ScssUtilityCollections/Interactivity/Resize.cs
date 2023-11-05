@@ -4,19 +4,11 @@ public class Resize : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "resize";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "resize: both;",
-        ["none"] = "resize: none;",
-        ["y"] = "resize: vertical;",
-        ["x"] = "resize: horizontal;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ResizeStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class Resize : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ResizeStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,19 +4,11 @@ public class Aspect : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "aspect";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "aspect-ratio: auto;",
-        ["square"] = "aspect-ratio: 1/1;",
-        ["video"] = "aspect-ratio: 16/9;",
-        ["screen"] = "aspect-ratio: 4/3;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.AspectStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class Aspect : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AspectStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

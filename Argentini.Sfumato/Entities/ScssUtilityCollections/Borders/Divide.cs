@@ -8,39 +8,10 @@ public class Divide : ScssUtilityClassGroupBase
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DivideStaticUtilities);
         
         await AddToIndexAsync(appState.ColorOptions);
     }
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["solid"] = """
-                    & > * + * {
-                        border-style: solid;
-                    }
-                    """,
-        ["dashed"] = """
-                     & > * + * {
-                         border-style: dashed;
-                     }
-                     """,
-        ["dotted"] = """
-                     & > * + * {
-                         border-style: dotted;
-                     }
-                     """,
-        ["double"] = """
-                     & > * + * {
-                         border-style: double;
-                     }
-                     """,
-        ["none"] = """
-                   & > * + * {
-                       border-style: none;
-                   }
-                   """
-    }; 
     
     public override string GetStyles(CssSelector cssSelector)
     {
@@ -49,7 +20,7 @@ public class Divide : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,21 +4,11 @@ public class Border : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["solid"] = "border-style: solid;",
-        ["dashed"] = "border-style: dashed;",
-        ["dotted"] = "border-style: dotted;",
-        ["double"] = "border-style: double;",
-        ["hidden"] = "border-style: hidden;",
-        ["none"] = "border-style: none;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.BorderStaticUtilities);
         
         await AddToIndexAsync(appState.ColorOptions);
         
@@ -32,7 +22,7 @@ public class Border : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderStaticUtilities, cssSelector, out Result))
             return Result;
 
         #endregion

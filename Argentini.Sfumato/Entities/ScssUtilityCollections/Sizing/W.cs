@@ -4,26 +4,12 @@ public class W : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "w";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "width: 0px;",
-        ["px"] = "width: 1px;",
-        ["auto"] = "width: auto;",
-        ["screen"] = "width: 100vw;",
-        ["min"] = "width: min-content;",
-        ["max"] = "width: max-content;",
-        ["fit"] = "width: fit-content;",
-        ["full"] = "width: 100%;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.WStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -34,7 +20,7 @@ public class W : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.WStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,17 +4,11 @@ public class PointerEvents : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "pointer-events";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["none"] = "pointer-events: none;",
-        ["auto"] = "pointer-events: auto;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.PointerEventsStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -24,7 +18,7 @@ public class PointerEvents : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PointerEventsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

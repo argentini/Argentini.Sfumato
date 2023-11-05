@@ -9,13 +9,8 @@ public class RingInset : ScssUtilityClassGroupBase
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.RingInsetStaticUtilities);
     }
-
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "--sf-ring-inset: inset;",
-    }; 
     
     public override string GetStyles(CssSelector cssSelector)
     {
@@ -24,7 +19,7 @@ public class RingInset : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RingInsetStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

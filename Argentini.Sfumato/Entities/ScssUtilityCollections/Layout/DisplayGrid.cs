@@ -4,16 +4,11 @@ public class DisplayGrid : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "grid";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "display: grid;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DisplayGridStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class DisplayGrid : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayGridStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

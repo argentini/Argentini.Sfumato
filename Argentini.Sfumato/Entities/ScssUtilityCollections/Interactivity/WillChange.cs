@@ -4,19 +4,11 @@ public class WillChange : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "will-change";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "will-change: auto;",
-        ["scroll"] = "will-change: scroll-position;",
-        ["contents"] = "will-change: contents;",
-        ["transform"] = "will-change: transform;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.WillChangeStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class WillChange : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.WillChangeStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

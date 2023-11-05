@@ -4,16 +4,11 @@ public class ContentNormal : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content-normal";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "align-content: normal;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ContentNormalStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class ContentNormal : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentNormalStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

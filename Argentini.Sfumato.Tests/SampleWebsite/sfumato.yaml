@@ -13,6 +13,20 @@ DarkMode: class
 UseAutoTheme: true
 
 Theme:
+    
+    Animation:
+        
+        spin: |
+            animation: spin 10s linear infinite;
+                
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
 
     MediaBreakpoints:
         Zero: 0

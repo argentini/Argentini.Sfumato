@@ -4,16 +4,11 @@ public class Sticky : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "sticky";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "position: sticky;",
-    }; 
-        
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.StickyStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class Sticky : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.StickyStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

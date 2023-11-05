@@ -4,17 +4,11 @@ public class Caption : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "caption";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["top"] = "caption-side: top;",
-        ["bottom"] = "caption-side: bottom;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.CaptionStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -24,7 +18,7 @@ public class Caption : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.CaptionStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

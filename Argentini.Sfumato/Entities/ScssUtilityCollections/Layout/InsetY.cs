@@ -4,34 +4,12 @@ public class InsetY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "inset-y";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = """
-                top: 0px;
-                bottom: 0px;
-                """,
-        ["px"] = """
-                 top: 1px;
-                 bottom: 1px;
-                 """,
-        ["auto"] = """
-                   top: auto;
-                   bottom: auto;
-                   """,
-        ["full"] = """
-                   top: 100%;
-                   bottom: 100%;
-                   """,
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.InsetYStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -42,7 +20,7 @@ public class InsetY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InsetYStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

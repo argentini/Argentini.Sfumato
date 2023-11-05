@@ -4,16 +4,11 @@ public class Relative : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "relative";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "position: relative;",
-    }; 
-        
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.RelativeStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class Relative : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RelativeStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

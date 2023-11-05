@@ -4,21 +4,11 @@ public class UnderlineOffset : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "underline-offset";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "text-underline-offset: auto;",
-        ["0"] = "text-underline-offset: 0px;",
-        ["1"] = "text-underline-offset: 1px;",
-        ["2"] = $"text-underline-offset: {2.PxToRem()};",
-        ["4"] = $"text-underline-offset: {4.PxToRem()};",
-        ["8"] = $"text-underline-offset: {8.PxToRem()};"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.UnderlineOffsetStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -28,7 +18,7 @@ public class UnderlineOffset : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.UnderlineOffsetStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

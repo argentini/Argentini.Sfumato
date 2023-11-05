@@ -4,19 +4,11 @@ public class Order : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "order";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["first"] = $"order: {int.MinValue.ToString()};",
-        ["last"] = $"order: {int.MaxValue.ToString()};",
-        ["none"] = "order: 0;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.OrderStaticUtilities);
         await AddToIndexAsync(appState.FlexboxAndGridWholeNumberOptions);
     }
 
@@ -27,7 +19,7 @@ public class Order : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OrderStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,24 +4,11 @@ public class Px : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "px";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = """
-                padding-left: 0px;
-                padding-right: 0px;
-                """,
-        ["px"] = """
-                 padding-left: 1px;
-                 padding-right: 1px;
-                 """,
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.PxStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
@@ -32,7 +19,7 @@ public class Px : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PxStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

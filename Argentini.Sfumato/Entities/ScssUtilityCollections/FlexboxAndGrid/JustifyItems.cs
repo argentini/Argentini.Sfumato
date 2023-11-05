@@ -4,19 +4,11 @@ public class JustifyItems : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "justify-items";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["start"] = "justify-items: start;",
-        ["end"] = "justify-items: end;",
-        ["center"] = "justify-items: center;",
-        ["stretch"] = "justify-items: stretch;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.JustifyItemsStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class JustifyItems : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.JustifyItemsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

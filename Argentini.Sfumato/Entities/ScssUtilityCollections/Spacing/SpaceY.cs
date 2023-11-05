@@ -4,26 +4,11 @@ public class SpaceY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "space-y";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = """
-                & > * + * {
-                    margin-top: 0px;
-                }
-                """,
-        ["px"] = """
-                 & > * + * {
-                     margin-top: 1px;
-                 }
-                 """,
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.SpaceYStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
@@ -34,7 +19,7 @@ public class SpaceY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SpaceYStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

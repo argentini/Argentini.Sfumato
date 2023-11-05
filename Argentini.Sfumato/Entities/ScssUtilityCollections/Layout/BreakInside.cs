@@ -4,19 +4,11 @@ public class BreakInside : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "break-inside";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["auto"] = "break-inside: auto;",
-        ["avoid"] = "break-inside: avoid;",
-        ["avoid-page"] = "break-inside: avoid-page;",
-        ["avoid-column"] = "break-inside: column;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.BreakInsideStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class BreakInside : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakInsideStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

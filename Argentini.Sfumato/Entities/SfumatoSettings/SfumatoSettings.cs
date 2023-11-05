@@ -1,3 +1,4 @@
+using Mapster;
 using YamlDotNet.Serialization;
 
 namespace Argentini.Sfumato.Entities.SfumatoSettings;
@@ -35,10 +36,12 @@ public sealed class SfumatoSettings
             var json = await File.ReadAllTextAsync(appState.SettingsFilePath);
             var deserializer = new DeserializerBuilder().Build();
             var jsonSettings = deserializer.Deserialize<SfumatoSettings>(json);
-		
+
+            jsonSettings.Adapt(this);
+            
             #region Dark Mode
             
-            DarkMode = jsonSettings.DarkMode.ToLower() switch
+            DarkMode = DarkMode.ToLower() switch
             {
                 "media" => "media",
                 "system" => "media",
@@ -54,66 +57,56 @@ public sealed class SfumatoSettings
 
             var invalidExtensions = new[] { "css", "map", "scss" };
 
-            ProjectPaths.Clear();
-        
-            ProjectPaths.Add(new ProjectPath
+            if (jsonSettings.ProjectPaths.Count == 0)
+            {
+                jsonSettings.ProjectPaths.Add(new ProjectPath());
+            }
+            
+            foreach (var projectPath in ProjectPaths.ToList())
+            {
+                projectPath.Path = Path.Combine(appState.WorkingPath, projectPath.Path.SetNativePathSeparators());
+
+                if (projectPath.ExtensionsList.Count > 0)
+                    projectPath.Extensions = string.Join(',', projectPath.ExtensionsList);
+
+                if (string.IsNullOrEmpty(projectPath.Extensions) || invalidExtensions.Contains(projectPath.Extensions))
+                    ProjectPaths.Remove(projectPath);
+            }
+
+            ProjectPaths.Insert(0, new ProjectPath
             {
                 Path = appState.WorkingPath,
                 Extensions = "scss",
                 Recurse = true
             });
 
-            if (jsonSettings.ProjectPaths.Count == 0)
-            {
-                jsonSettings.ProjectPaths.Add(new ProjectPath());
-            }
-            
-            foreach (var projectPath in jsonSettings.ProjectPaths)
-            {
-                projectPath.Path = Path.Combine(appState.WorkingPath, projectPath.Path.SetNativePathSeparators());
-
-                var extensions = new List<string>();
-
-                foreach (var extension in projectPath.Extensions.ToLower().Split(',', StringSplitOptions.RemoveEmptyEntries))
-                {
-                    var ext = extension.TrimStart('.').Trim();
-                    
-                    if (extensions.Contains(ext) == false)
-                        extensions.Add(ext);
-                }
-
-                if (extensions.Count > 0)
-                    projectPath.Extensions = string.Join(',', extensions);
-
-                if (string.IsNullOrEmpty(projectPath.Extensions) || invalidExtensions.Contains(projectPath.Extensions) || ProjectPaths.Any(p => p.Extensions == projectPath.Extensions && p.Path == projectPath.Path))
-                    continue;
-                
-                ProjectPaths.Add(projectPath);
-            }
-            
             #endregion
-
-            Theme.MediaBreakpoints = jsonSettings.Theme.MediaBreakpoints;
-            Theme.FontSizeUnits = jsonSettings.Theme.FontSizeUnits;
-            Theme.Colors = jsonSettings.Theme.Colors;
 
             #endregion
             
             #region Merge Settings
-
+            
             foreach (var color in Theme.Colors)
                 appState.ColorOptions.TryAddUpdate(color);
                 
-                
-                
-                
+            foreach (var animation in Theme.Animation)
+                appState.AnimateStaticUtilities.TryAddUpdate(animation);
+
+
             
+            
+            
+            
+            
+
+
             #endregion
         }
 
-        catch
+        catch (Exception e)
         {
             await Console.Out.WriteLineAsync($"{SfumatoAppState.CliErrorPrefix}Invalid settings in file: {appState.SettingsFilePath}");
+            await Console.Out.WriteLineAsync(e.Message);
             Environment.Exit(1);
         }
     }

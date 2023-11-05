@@ -4,22 +4,12 @@ public class End : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "end";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "inset-inline-end: 0px;",
-        ["px"] = "inset-inline-end: 1px;",
-        ["auto"] = "inset-inline-end: auto;",
-        ["full"] = "inset-inline-end: 100%;",
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.EndStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -30,7 +20,7 @@ public class End : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.EndStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,34 +4,12 @@ public class InsetX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "inset-x";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = """
-                left: 0px;
-                right: 0px;
-                """,
-        ["px"] = """
-                 left: 1px;
-                 right: 1px;
-                 """,
-        ["auto"] = """
-                   left: auto;
-                   right: auto;
-                   """,
-        ["full"] = """
-                   left: 100%;
-                   right: 100%;
-                   """,
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.InsetXStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -42,7 +20,7 @@ public class InsetX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InsetXStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

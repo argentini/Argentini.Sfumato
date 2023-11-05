@@ -4,16 +4,11 @@ public class Collapse : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "collapse";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "visibility: collapse;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.CollapseStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class Collapse : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.CollapseStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

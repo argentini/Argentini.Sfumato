@@ -4,22 +4,12 @@ public class Bottom : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "bottom";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "bottom: 0px;",
-        ["px"] = "bottom: 1px;",
-        ["auto"] = "bottom: auto;",
-        ["full"] = "100%"
-    };
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.BottomStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -30,7 +20,7 @@ public class Bottom : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BottomStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

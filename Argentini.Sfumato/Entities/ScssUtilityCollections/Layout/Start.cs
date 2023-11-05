@@ -4,22 +4,12 @@ public class Start : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "start";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "inset-inline-start: 0px;",
-        ["px"] = "inset-inline-start: 1px;",
-        ["auto"] = "inset-inline-start: auto;",
-        ["full"] = "inset-inline-start: 100%;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
-
+        await AddToIndexAsync(appState.StartStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
-
         await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
@@ -30,7 +20,7 @@ public class Start : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.StartStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

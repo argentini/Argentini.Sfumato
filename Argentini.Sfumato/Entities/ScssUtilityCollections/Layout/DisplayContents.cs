@@ -4,16 +4,11 @@ public class DisplayContents : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "contents";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "display: contents;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.DisplayContentsStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class DisplayContents : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayContentsStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

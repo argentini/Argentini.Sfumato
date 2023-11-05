@@ -4,22 +4,11 @@ public class Whitespace : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "whitespace";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["normal"] = "white-space: normal;",
-        ["nowrap"] = "white-space: nowrap;",
-        ["no-wrap"] = "white-space: nowrap;",
-        ["pre"] = "white-space: pre;",
-        ["pre-line"] = "white-space: pre-line;",
-        ["pre-wrap"] = "white-space: pre-wrap;",
-        ["break-spaces"] = "white-space: break-spaces;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.WhitespaceStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -29,7 +18,7 @@ public class Whitespace : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.WhitespaceStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

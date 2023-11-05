@@ -4,19 +4,11 @@ public class Select : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "select";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["none"] = "user-select: none;",
-        ["text"] = "user-select: text;",
-        ["all"] = "user-select: all;",
-        ["auto"] = "user-select: auto;"
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.SelectStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -26,7 +18,7 @@ public class Select : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SelectStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -4,16 +4,11 @@ public class Lowercase : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "lowercase";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "text-transform: lowercase;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.LowercaseStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class Lowercase : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LowercaseStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

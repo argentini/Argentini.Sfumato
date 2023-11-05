@@ -4,19 +4,11 @@ public class Inset : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "inset";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["0"] = "inset: 0px;",
-        ["px"] = "inset: 1px;",
-        ["auto"] = "inset: auto;",
-        ["full"] = "inset: 100%;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.InsetStaticUtilities);
 
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
 
@@ -30,7 +22,7 @@ public class Inset : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InsetStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

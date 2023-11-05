@@ -4,16 +4,11 @@ public class ContentCenter : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content-center";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        [""] = "align-content: center;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ContentCenterStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class ContentCenter : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentCenterStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

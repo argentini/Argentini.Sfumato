@@ -4,16 +4,11 @@ public class ListImage : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "list-image";
 
-    public readonly Dictionary<string, string> StaticUtilities = new()
-    {
-        ["none"] = "list-style-image: none;",
-    }; 
-    
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(StaticUtilities);
+        await AddToIndexAsync(appState.ListImageStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -23,7 +18,7 @@ public class ListImage : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(StaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ListImageStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion
