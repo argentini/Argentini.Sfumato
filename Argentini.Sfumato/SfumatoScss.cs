@@ -118,6 +118,7 @@ public static class SfumatoScss
 	public static async Task<string> TranspileScssAsync(string filePath, string rawScss, SfumatoRunner runner, bool showOutput = true)
 	{
 		var sb = runner.AppState.StringBuilderPool.Get();
+		var scss = runner.AppState.StringBuilderPool.Get();
 
 		try
 		{
@@ -159,8 +160,6 @@ public static class SfumatoScss
 			
 			arguments.Add("--stdin");
 			arguments.Add(cssOutputPath);
-			
-			var scss = runner.AppState.StringBuilderPool.Get();
 			
 			#region Process @sfumato directives
 			
@@ -304,18 +303,19 @@ public static class SfumatoScss
 			return css;
 		}
 
-		catch (Exception e)
+		catch
 		{
-			sb.AppendLine($"{Strings.TriangleRight} ERROR: {e.Message.Trim()}");
-			sb.AppendLine(string.Empty);
-			sb.AppendLine(e.StackTrace?.Trim());
-			sb.AppendLine(string.Empty);
+			var error = sb.ToString();
 
-			await Console.Out.WriteLineAsync(sb.ToString());
+			if (error.IndexOf($"Command:{Environment.NewLine}", StringComparison.OrdinalIgnoreCase) > -1)
+			{
+				error = error[..error.IndexOf($"Command:{Environment.NewLine}", StringComparison.OrdinalIgnoreCase)].Trim();
+			}
+			
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} {SfumatoRunner.ShortenPathForOutput(filePath, runner.AppState)} => {error}");
 
 			runner.AppState.StringBuilderPool.Return(sb);
-
-			Environment.Exit(1);
+			runner.AppState.StringBuilderPool.Return(scss);
 
 			return string.Empty;
 		}

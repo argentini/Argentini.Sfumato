@@ -1,13 +1,19 @@
 ProjectPaths:
+
     - Path: wwwroot
-      Extension: html
+      Extensions: html,htm
+      Recurse: false
+
+    - Path: wwwroot/pages
+      Extensions: html,htm
       Recurse: true
-    - Path: wwwroot
-      Extension: htm
-      Recurse: true
+
 DarkMode: class
+
 UseAutoTheme: true
+
 Theme:
+
     MediaBreakpoints:
         Zero: 0
         Phab: 400
@@ -16,6 +22,7 @@ Theme:
         Note: 1280
         Desk: 1440
         Elas: 1600
+
     FontSizeUnits:
         Zero: 16px
         Phab: 16px
@@ -24,6 +31,7 @@ Theme:
         Note: 16px
         Desk: 16px
         Elas: 16px
+
     Colors:
         dr05a: "#af2e1b"
         dr05b: "#cc6324"

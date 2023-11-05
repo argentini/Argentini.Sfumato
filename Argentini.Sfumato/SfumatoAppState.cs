@@ -1452,7 +1452,7 @@ public sealed class SfumatoAppState
 		// Gather files lists
 		
 		foreach (var projectPath in Settings.ProjectPaths)
-			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.Extension, projectPath.Recurse));
+			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.ExtensionsList, projectPath.Recurse));
 
 		await Task.WhenAll(tasks);
 		
@@ -1479,11 +1479,11 @@ public sealed class SfumatoAppState
 	/// Recurse a project path to collect all matching files.
 	/// </summary>
 	/// <param name="sourcePath"></param>
-	/// <param name="extension"></param>
+	/// <param name="extensionsList"></param>
 	/// <param name="recurse"></param>
-	public async Task RecurseProjectPathAsync(string? sourcePath, string extension, bool recurse = false)
+	public async Task RecurseProjectPathAsync(string? sourcePath, List<string> extensionsList, bool recurse = false)
 	{
-		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
+		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty() || extensionsList.Count == 0)
 			return;
 
 		FileInfo[] files = null!;
@@ -1498,13 +1498,16 @@ public sealed class SfumatoAppState
 		}
 
 		dirs = dir.GetDirectories();
-		files = dir.GetFiles().Where(f => f.Name.EndsWith(extension)).ToArray();
+		files = dir.GetFiles();
 
 		var tasks = new List<Task>();
 		
 		foreach (var projectFile in files)
 		{
-			tasks.Add(AddProjectFileToCollectionAsync(projectFile, extension));
+			var extension = ProjectPath.GetMatchingFileExtension(projectFile.Name, extensionsList);
+			
+			if (extension != string.Empty)
+				tasks.Add(AddProjectFileToCollectionAsync(projectFile, extension));
 		}
 
 		await Task.WhenAll(tasks);
@@ -1513,7 +1516,7 @@ public sealed class SfumatoAppState
 			return;
 		
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			await RecurseProjectPathAsync(subDir.FullName, extension, recurse);
+			await RecurseProjectPathAsync(subDir.FullName, extensionsList, recurse);
 	}
 
 	/// <summary>

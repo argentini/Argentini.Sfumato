@@ -51,22 +51,41 @@ public sealed class SfumatoSettings
             #endregion
             
             #region Project Paths
-            
+
+            var invalidExtensions = new[] { "css", "map", "scss" };
+
             ProjectPaths.Clear();
         
             ProjectPaths.Add(new ProjectPath
             {
                 Path = appState.WorkingPath,
-                Extension = "scss",
+                Extensions = "scss",
                 Recurse = true
             });
+
+            if (jsonSettings.ProjectPaths.Count == 0)
+            {
+                jsonSettings.ProjectPaths.Add(new ProjectPath());
+            }
             
             foreach (var projectPath in jsonSettings.ProjectPaths)
             {
                 projectPath.Path = Path.Combine(appState.WorkingPath, projectPath.Path.SetNativePathSeparators());
-                projectPath.Extension = projectPath.Extension.TrimStart('.').ToLower();
 
-                if (string.IsNullOrEmpty(projectPath.Extension) || projectPath.Extension == "scss")
+                var extensions = new List<string>();
+
+                foreach (var extension in projectPath.Extensions.ToLower().Split(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var ext = extension.TrimStart('.').Trim();
+                    
+                    if (extensions.Contains(ext) == false)
+                        extensions.Add(ext);
+                }
+
+                if (extensions.Count > 0)
+                    projectPath.Extensions = string.Join(',', extensions);
+
+                if (string.IsNullOrEmpty(projectPath.Extensions) || invalidExtensions.Contains(projectPath.Extensions) || ProjectPaths.Any(p => p.Extensions == projectPath.Extensions && p.Path == projectPath.Path))
                     continue;
                 
                 ProjectPaths.Add(projectPath);

@@ -1,10 +1,6 @@
 ProjectPaths:
     - Path: wwwroot
-      Extension: html
-      Recurse: true
-    - Path: wwwroot
-      Extension: htm
-      Recurse: true
+      Extension: html,htm
 DarkMode: class
 UseAutoTheme: true
 Theme:

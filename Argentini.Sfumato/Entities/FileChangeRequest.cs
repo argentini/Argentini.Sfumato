@@ -1,9 +1,8 @@
-namespace Argentini.Sfumato.Entities.SfumatoSettings;
+namespace Argentini.Sfumato.Entities;
 
-public sealed class ProjectPath
+public sealed class FileChangeRequest
 {
-    public string Path { get; set; } = string.Empty;
-    private string _extensions = "html,htm,shtml,cshtml,razor,js,ts,jsx,tsx,vue,erb,php,tpl,twig,jsp,pug,hbs,handlebars,svelte,gohtml,tmpl,mustache";
+    private string _extensions = string.Empty;
     public string Extensions
     {
         get => _extensions;
@@ -14,13 +13,8 @@ public sealed class ProjectPath
             SetExtensionsList();
         }
     }
-    public bool Recurse { get; set; } = true;
     public List<string> ExtensionsList { get; } = new();
-
-    public ProjectPath()
-    {
-        SetExtensionsList();
-    }
+    public FileSystemEventArgs? FileSystemEventArgs { get; set; }
 
     private void SetExtensionsList()
     {
@@ -34,18 +28,18 @@ public sealed class ProjectPath
                 ExtensionsList.Add(ext);
         }
     }
-    
-    public static string GetMatchingFileExtension(string? fileName, List<string> extensionsList)
+
+    public bool IsMatchingFile(string? fileName)
     {
         if (string.IsNullOrEmpty(fileName))
-            return string.Empty;
+            return false;
             
-        foreach (var extension in extensionsList)
+        foreach (var extension in ExtensionsList)
         {
             if (fileName.EndsWith(extension))
-                return extension;
+                return true;
         }
 
-        return string.Empty;
+        return false;
     }
 }
