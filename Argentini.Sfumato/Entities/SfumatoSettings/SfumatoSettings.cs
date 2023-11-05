@@ -1,4 +1,4 @@
-using Mapster;
+using YamlDotNet.Serialization;
 
 namespace Argentini.Sfumato.Entities.SfumatoSettings;
 
@@ -8,20 +8,20 @@ public sealed class SfumatoSettings
     public string DarkMode { get; set; } = "media";
     public bool UseAutoTheme { get; set; }
 
-    public Theme? Theme { get; set; } = new();
+    public Theme Theme { get; set; } = new();
 
     public async Task LoadJsonSettingsAsync(SfumatoAppState appState)
     {
-        #region Find sfumato.json file
+        #region Find sfumato.yaml file
 
         if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
             appState.WorkingPath = appState.WorkingPathOverride;
         
-        appState.SettingsFilePath = Path.Combine(appState.WorkingPath, "sfumato.json");
+        appState.SettingsFilePath = Path.Combine(appState.WorkingPath, "sfumato.yaml");
 
         if (File.Exists(appState.SettingsFilePath) == false)
         {
-            await Console.Out.WriteLineAsync($"Could not find sfumato.json settings file at path {appState.WorkingPath}");
+            await Console.Out.WriteLineAsync($"Could not find sfumato.yaml settings file at path {appState.WorkingPath}");
             await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
             Environment.Exit(1);
         }
@@ -30,25 +30,15 @@ public sealed class SfumatoSettings
 
         try
         {
-            #region Load sfumato.json file
+            #region Load sfumato.yaml file
 
             var json = await File.ReadAllTextAsync(appState.SettingsFilePath);
-            var jsonSettings = JsonSerializer.Deserialize<SfumatoSettings>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                AllowTrailingCommas = true,
-                IncludeFields = false
-            });
+            var deserializer = new DeserializerBuilder().Build();
+            var jsonSettings = deserializer.Deserialize<SfumatoSettings>(json);
 		
-            if (jsonSettings is null)
-            {
-                await Console.Out.WriteLineAsync($"{SfumatoAppState.CliErrorPrefix}Invalid settings file at path {appState.SettingsFilePath}");
-                Environment.Exit(1);
-            }
-            
             #region Dark Mode
             
-            DarkMode = jsonSettings.DarkMode switch
+            DarkMode = jsonSettings.DarkMode.ToLower() switch
             {
                 "media" => "media",
                 "system" => "media",
@@ -64,66 +54,47 @@ public sealed class SfumatoSettings
             
             ProjectPaths.Clear();
         
-            foreach (var projectPath in jsonSettings.ProjectPaths)
-            {
-	            if (string.IsNullOrEmpty(projectPath.FileSpec))
-		            continue;
-	            
-                projectPath.Path = Path.Combine(appState.WorkingPath, projectPath.Path.SetNativePathSeparators());
-                
-                if (projectPath.FileSpec.Contains('.') && projectPath.FileSpec.StartsWith('*') == false)
-                {
-	                projectPath.IsFilePath = true;
-                    ProjectPaths.Add(projectPath);
-
-	                continue;
-                }
-                
-                var tempFileSpec = projectPath.FileSpec.Replace("*", string.Empty).Replace(".", string.Empty);
-
-                if (string.IsNullOrEmpty(tempFileSpec) == false)
-                    projectPath.FileSpec = $"*.{tempFileSpec}";
-            
-                ProjectPaths.Add(projectPath);
-            }
-
             ProjectPaths.Add(new ProjectPath
             {
-	            Path = appState.WorkingPath,
-	            FileSpec = "*.scss",
-	            Recurse = true
+                Path = appState.WorkingPath,
+                Extension = "scss",
+                Recurse = true
             });
+            
+            foreach (var projectPath in jsonSettings.ProjectPaths)
+            {
+                projectPath.Path = Path.Combine(appState.WorkingPath, projectPath.Path.SetNativePathSeparators());
+                projectPath.Extension = projectPath.Extension.TrimStart('.').ToLower();
 
+                if (string.IsNullOrEmpty(projectPath.Extension) || projectPath.Extension == "scss")
+                    continue;
+                
+                ProjectPaths.Add(projectPath);
+            }
+            
             #endregion
 
-            jsonSettings.Theme?.MediaBreakpoints.Adapt(Theme?.MediaBreakpoints);
-            jsonSettings.Theme?.FontSizeUnits.Adapt(Theme?.FontSizeUnits);
-            jsonSettings.Theme?.Colors.Adapt(Theme?.Colors);
-            
+            Theme.MediaBreakpoints = jsonSettings.Theme.MediaBreakpoints;
+            Theme.FontSizeUnits = jsonSettings.Theme.FontSizeUnits;
+            Theme.Colors = jsonSettings.Theme.Colors;
+
             #endregion
             
             #region Merge Settings
 
-            if (Theme is null)
-                return;
-            
-            if (Theme.Colors is not null)
-            {
-                foreach (var color in Theme.Colors)
-                    appState.ColorOptions.TryAddUpdate(color);
+            foreach (var color in Theme.Colors)
+                appState.ColorOptions.TryAddUpdate(color);
                 
                 
                 
                 
-                
-            }
             
             #endregion
         }
 
         catch
         {
-            await Console.Out.WriteLineAsync($"{SfumatoAppState.CliErrorPrefix}Invalid settings file at path {appState.SettingsFilePath}");
+            await Console.Out.WriteLineAsync($"{SfumatoAppState.CliErrorPrefix}Invalid settings in file: {appState.SettingsFilePath}");
             Environment.Exit(1);
         }
     }

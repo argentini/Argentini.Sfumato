@@ -43,7 +43,7 @@ internal class Program
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@sfumato utilities;`");
 			await Console.Out.WriteLineAsync("  Embed utility classes based on which ones are being used in your project");
-			await Console.Out.WriteLineAsync("  files (configurable in a `sfumato.json` settings file)");
+			await Console.Out.WriteLineAsync("  files (configurable in a `sfumato.yaml` settings file)");
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@apply [class name] [...];`");
 			await Console.Out.WriteLineAsync("  Embed the styles for a specific utility class within your own classes;");
@@ -62,13 +62,13 @@ internal class Program
 			await Console.Out.WriteLineAsync("version   : Show the sfumato version number");
 			await Console.Out.WriteLineAsync("help      : Show this help message");
 			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("* build and watch commands look in the current path for a `sfumato.json`");
+			await Console.Out.WriteLineAsync("* build and watch commands look in the current path for a `sfumato.yaml`");
 			await Console.Out.WriteLineAsync("  settings file unless using the `--path` option; visit https://sfumato.app");
-			await Console.Out.WriteLineAsync("  for more information on creating a sfumato.json settings file");
+			await Console.Out.WriteLineAsync("  for more information on creating a sfumato.yaml settings file");
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync("Options:");
 			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
-			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to your sfumato.json");
+			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to your sfumato.yaml");
 			await Console.Out.WriteLineAsync("            settings file (e.g. `sfumato watch --path Code/MyProject`)");
 			await Console.Out.WriteLineAsync("--minify  : Minify CSS output; use with build and watch commands");
 			await Console.Out.WriteLineAsync();
@@ -89,7 +89,7 @@ internal class Program
 				if (paths.Length > 0)
 					paths.Append("                 :  ");
 
-				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{path.FileSpec}{Environment.NewLine}");
+				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}*.{path.Extension}{(path.Recurse ? " (recurse)" : string.Empty)}{Environment.NewLine}");
 			}
 	        
 			await Console.Out.WriteLineAsync($"Watch Path(s)    :  {paths.ToString().TrimEnd()}");
@@ -126,14 +126,14 @@ internal class Program
 			
 			fileWatchers.Add(await CreateFileChangeWatcherAsync(restartAppQueue, new ProjectPath
 			{
-				Path = runner.AppState.SettingsFilePath.TrimEnd("sfumato.json") ?? string.Empty,
-				FileSpec = "sfumato.json"
+				Path = runner.AppState.SettingsFilePath.TrimEnd("sfumato.yaml") ?? string.Empty,
+				Extension = "yaml"
 				
 			}, false));
 			
 			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
 			{
-				if (projectPath.FileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+				if (projectPath.Extension == "scss")
 					fileWatchers.Add(await CreateFileChangeWatcherAsync(scssTranspileQueue, projectPath, projectPath.Recurse));
 				else
 					fileWatchers.Add(await CreateFileChangeWatcherAsync(rebuildProjectQueue, projectPath, projectPath.Recurse));
@@ -262,20 +262,34 @@ internal class Program
 				
 				else if (restartAppQueue.IsEmpty == false)
 				{
-					await Console.Out.WriteLineAsync($"Modified sfumato.json at {DateTime.Now:HH:mm:ss.fff}");
-					await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Reload settings and rebuild");
+					var triggered = false;
 
-					var timer = new Stopwatch();
+					foreach (var fileChangeRequest in restartAppQueue)
+					{
+						if (fileChangeRequest.Value.FileSystemEventArgs?.Name != "sfumato.yaml")
+							continue;
+						
+						triggered = true;
+						break;
+					}
 
-					timer.Start();
+					if (triggered)
+					{
+						await Console.Out.WriteLineAsync($"Modified sfumato.yaml at {DateTime.Now:HH:mm:ss.fff}");
+						await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Reload settings and rebuild");
 
-					await runner.InitializeAsync(args);
-					await runner.AppState.GatherWatchedFilesAsync();
-					await runner.PerformCoreBuildAsync(timer);
-					
+						var timer = new Stopwatch();
+
+						timer.Start();
+
+						await runner.InitializeAsync(args);
+						await runner.AppState.GatherWatchedFilesAsync();
+						await runner.PerformCoreBuildAsync(timer);
+
+						processedFiles = true;
+					}
+
 					restartAppQueue.Clear();
-
-					processedFiles = true;
 				}
 				
 				if (processedFiles)
@@ -340,11 +354,11 @@ internal class Program
 	    }
 
 	    var filePath = projectPath.Path;
-	    var fileSpec = projectPath.FileSpec;
+	    var extension = projectPath.Extension;
 	    
-	    if (string.IsNullOrEmpty(fileSpec))
+	    if (string.IsNullOrEmpty(extension))
 	    {
-		    await Console.Out.WriteLineAsync("Fatal Error: No watch filespec specified");
+		    await Console.Out.WriteLineAsync("Fatal Error: No watch file extension specified");
 		    Environment.Exit(1);
 	    }
 
@@ -357,12 +371,12 @@ internal class Program
                            | NotifyFilters.Size
         };
 
-        watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, fileSpec);
-        watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, fileSpec);
-        watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, fileSpec);
-        watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, fileSpec);
+        watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, extension);
+        watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, extension);
+        watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, extension);
+        watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, extension);
         
-        watcher.Filter = fileSpec;
+        watcher.Filter = $"*.{extension}";
         watcher.IncludeSubdirectories = recurse;
         watcher.EnableRaisingEvents = true;
 

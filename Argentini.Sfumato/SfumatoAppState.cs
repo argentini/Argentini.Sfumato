@@ -1452,7 +1452,7 @@ public sealed class SfumatoAppState
 		// Gather files lists
 		
 		foreach (var projectPath in Settings.ProjectPaths)
-			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.FileSpec, projectPath.IsFilePath, projectPath.Recurse));
+			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.Extension, projectPath.Recurse));
 
 		await Task.WhenAll(tasks);
 		
@@ -1479,11 +1479,9 @@ public sealed class SfumatoAppState
 	/// Recurse a project path to collect all matching files.
 	/// </summary>
 	/// <param name="sourcePath"></param>
-	/// <param name="fileSpec"></param>
-	/// <param name="isFilePath"></param>
-	/// <param name="watchedFiles"></param>
+	/// <param name="extension"></param>
 	/// <param name="recurse"></param>
-	public async Task RecurseProjectPathAsync(string? sourcePath, string fileSpec, bool isFilePath, bool recurse = false)
+	public async Task RecurseProjectPathAsync(string? sourcePath, string extension, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty())
 			return;
@@ -1491,31 +1489,22 @@ public sealed class SfumatoAppState
 		FileInfo[] files = null!;
 		DirectoryInfo[] dirs = null!;
 		
-		if (isFilePath)
+		var dir = new DirectoryInfo(sourcePath);
+
+		if (dir.Exists == false)
 		{
-			recurse = false;
-			files = new [] { new FileInfo(Path.Combine(sourcePath, fileSpec)) };
+			await Console.Out.WriteLineAsync($"Source directory does not exist or could not be found: {sourcePath}");
+			Environment.Exit(1);
 		}
 
-		else
-		{
-			var dir = new DirectoryInfo(sourcePath);
-
-			if (dir.Exists == false)
-			{
-				await Console.Out.WriteLineAsync($"Source directory does not exist or could not be found: {sourcePath}");
-				Environment.Exit(1);
-			}
-
-			dirs = dir.GetDirectories();
-			files = dir.GetFiles().Where(f => f.Name.EndsWith(fileSpec.TrimStart('*'))).ToArray();
-		}
+		dirs = dir.GetDirectories();
+		files = dir.GetFiles().Where(f => f.Name.EndsWith(extension)).ToArray();
 
 		var tasks = new List<Task>();
 		
 		foreach (var projectFile in files)
 		{
-			tasks.Add(AddProjectFileToCollectionAsync(projectFile, fileSpec));
+			tasks.Add(AddProjectFileToCollectionAsync(projectFile, extension));
 		}
 
 		await Task.WhenAll(tasks);
@@ -1524,25 +1513,25 @@ public sealed class SfumatoAppState
 			return;
 		
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			await RecurseProjectPathAsync(subDir.FullName, fileSpec, isFilePath, recurse);
+			await RecurseProjectPathAsync(subDir.FullName, extension, recurse);
 	}
 
 	/// <summary>
 	/// Read a FileInfo object and add it to the appropriate collection.
 	/// </summary>
 	/// <param name="projectFile"></param>
-	/// <param name="fileSpec"></param>
-	public async Task AddProjectFileToCollectionAsync(FileInfo projectFile, string fileSpec)
+	/// <param name="extension"></param>
+	public async Task AddProjectFileToCollectionAsync(FileInfo projectFile, string extension)
 	{
-		if (projectFile.FullName.EndsWith("sfumato.json", StringComparison.OrdinalIgnoreCase))
+		if (projectFile.FullName.EndsWith("sfumato.yaml", StringComparison.OrdinalIgnoreCase))
 			return;
 
-		if (fileSpec.EndsWith(".scss", StringComparison.OrdinalIgnoreCase) && projectFile.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+		if (extension == "scss" && projectFile.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
 			return;
 		
 		var markup = await File.ReadAllTextAsync(projectFile.FullName);
 
-		if (fileSpec.EndsWith(".scss"))
+		if (extension == "scss")
 		{
 			WatchedScssFiles.TryAdd(projectFile.FullName, new WatchedScssFile
 			{
