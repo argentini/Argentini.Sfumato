@@ -92,7 +92,13 @@ public sealed class SfumatoSettings
             foreach (var animation in Theme.Animation)
                 appState.AnimateStaticUtilities.TryAddUpdate(animation);
 
+            foreach (var ratio in Theme.AspectRatios)
+                appState.AspectStaticUtilities.TryAddUpdate(ratio, "aspect-ratio: ");
 
+            
+            
+            
+            
             
             
             

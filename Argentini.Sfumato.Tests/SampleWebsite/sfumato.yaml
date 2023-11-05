@@ -17,7 +17,7 @@ Theme:
     Animation:
         
         spin: |
-            animation: spin 10s linear infinite;
+            animation: spin 1s linear infinite;
                 
             @keyframes spin {
                 from {
@@ -27,6 +27,13 @@ Theme:
                     transform: rotate(360deg);
                 }
             }
+
+    AspectRatios:
+        
+        auto: auto
+        square: 1 / 1
+        video: 16 / 9
+        screen: 4 / 3
 
     MediaBreakpoints:
         Zero: 0
