@@ -1526,7 +1526,7 @@ public sealed class SfumatoAppState
 	/// <param name="extension"></param>
 	public async Task AddProjectFileToCollectionAsync(FileInfo projectFile, string extension)
 	{
-		if (projectFile.FullName.EndsWith("sfumato.yaml", StringComparison.OrdinalIgnoreCase))
+		if (projectFile.Name.Equals("sfumato.yaml", StringComparison.OrdinalIgnoreCase))
 			return;
 
 		if (extension == "scss" && projectFile.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
