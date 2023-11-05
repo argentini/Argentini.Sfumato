@@ -21,23 +21,23 @@ public class Animate : ScssUtilityClassGroupBase
                    """,
         ["ping"] = """
                    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-                   
-                   @keyframes pulse {
-                       0%, 100% {
-                           opacity: 1;
-                       }
-                       50% {
-                           opacity: .5;
+
+                   @keyframes ping {
+                       75%, 100% {
+                           transform: scale(2);
+                           opacity: 0;
                        }
                    }
                    """,
         ["pulse"] = """
                     animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
                    
-                    @keyframes ping {
-                        75%, 100% {
-                            transform: scale(2);
-                            opacity: 0;
+                    @keyframes pulse {
+                        0%, 100% {
+                            opacity: 1;
+                        }
+                        50% {
+                            opacity: .5;
                         }
                     }
                     """,
