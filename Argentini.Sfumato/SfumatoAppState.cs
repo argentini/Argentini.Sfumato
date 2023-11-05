@@ -1141,7 +1141,10 @@ public sealed class SfumatoAppState
 	    PercentageOptions.AddPercentageOptions(0, 100);
 	    
 	    #endregion
-	    
+
+	    if (VersionMode == false && HelpMode == false)
+		    await Settings.LoadJsonSettingsAsync(this);
+
 	    #region Load Utility Classes
 
 	    timer.Restart();
@@ -1174,8 +1177,6 @@ public sealed class SfumatoAppState
 	    
 	    #endregion
 	    
-        await Settings.LoadJsonSettingsAsync(this);
-        
         if (DiagnosticMode)
 			DiagnosticOutput.TryAdd("init001", $"{Strings.TriangleRight} Processed settings in {timer.FormatTimer()}{Environment.NewLine}");
 

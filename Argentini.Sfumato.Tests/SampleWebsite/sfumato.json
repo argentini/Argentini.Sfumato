@@ -38,6 +38,13 @@
             "note": "1vw",
             "desk": "1vw",
             "elas": "1vw"
+        },
+        "colors": {
+            "dr05a": "#af2e1b",
+            "dr05b": "#cc6324",
+            "dr05c": "#3b4b59",
+            "dr05d": "#bfa07a",
+            "dr05e": "#d9c3b0"
         }
     }
 }

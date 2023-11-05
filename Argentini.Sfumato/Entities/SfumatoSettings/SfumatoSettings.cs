@@ -46,10 +46,6 @@ public sealed class SfumatoSettings
                 Environment.Exit(1);
             }
             
-            #endregion
-            
-            #region Merge settings
-            
             #region Dark Mode
             
             DarkMode = jsonSettings.DarkMode switch
@@ -63,6 +59,8 @@ public sealed class SfumatoSettings
             UseAutoTheme = jsonSettings.UseAutoTheme;
             
             #endregion
+            
+            #region Project Paths
             
             ProjectPaths.Clear();
         
@@ -96,8 +94,29 @@ public sealed class SfumatoSettings
 	            Recurse = true
             });
 
+            #endregion
+
             jsonSettings.Theme?.MediaBreakpoints.Adapt(Theme?.MediaBreakpoints);
             jsonSettings.Theme?.FontSizeUnits.Adapt(Theme?.FontSizeUnits);
+            jsonSettings.Theme?.Colors.Adapt(Theme?.Colors);
+            
+            #endregion
+            
+            #region Merge Settings
+
+            if (Theme is null)
+                return;
+            
+            if (Theme.Colors is not null)
+            {
+                foreach (var color in Theme.Colors)
+                    appState.ColorOptions.TryAddUpdate(color);
+                
+                
+                
+                
+                
+            }
             
             #endregion
         }
