@@ -22,4 +22,39 @@ public static class Objects
 		
         return types;
     }
+
+    #region Dictionaries
+    
+    /// <summary>
+    /// Add or update a Dictionary<string,string> with a given key/value pair.
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, string key, string value)
+    {
+        if (dictionary.ContainsKey(key) == false)
+            return dictionary.TryAdd(key, value);
+        
+        dictionary[key] = value;
+        return true;
+    }
+    
+    /// <summary>
+    /// Add or update a Dictionary<string,string> with a given key/value pair.
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="kvp"></param>
+    /// <returns></returns>
+    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, KeyValuePair<string,string> kvp)
+    {
+        if (dictionary.ContainsKey(kvp.Key) == false)
+            return dictionary.TryAdd(kvp.Key, kvp.Value);
+        
+        dictionary[kvp.Key] = kvp.Value;
+        return true;
+    }
+    
+    #endregion
 }
