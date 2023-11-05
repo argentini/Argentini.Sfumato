@@ -31,13 +31,14 @@ public static class Objects
     /// <param name="dictionary"></param>
     /// <param name="key"></param>
     /// <param name="value"></param>
+    /// <param name="valueprefix"></param>
     /// <returns></returns>
-    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, string key, string value)
+    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, string key, string value, string valuePrefix = "")
     {
         if (dictionary.ContainsKey(key) == false)
-            return dictionary.TryAdd(key, value);
+            return dictionary.TryAdd(key, valuePrefix + value);
         
-        dictionary[key] = value;
+        dictionary[key] = valuePrefix + value;
         return true;
     }
     
@@ -46,13 +47,14 @@ public static class Objects
     /// </summary>
     /// <param name="dictionary"></param>
     /// <param name="kvp"></param>
+    /// <param name="valueprefix"></param>
     /// <returns></returns>
-    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, KeyValuePair<string,string> kvp)
+    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, KeyValuePair<string,string> kvp, string valuePrefix = "")
     {
         if (dictionary.ContainsKey(kvp.Key) == false)
-            return dictionary.TryAdd(kvp.Key, kvp.Value);
+            return dictionary.TryAdd(kvp.Key, valuePrefix + kvp.Value);
         
-        dictionary[kvp.Key] = kvp.Value;
+        dictionary[kvp.Key] = valuePrefix + kvp.Value;
         return true;
     }
     
