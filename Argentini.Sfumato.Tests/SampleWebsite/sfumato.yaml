@@ -28,14 +28,44 @@ Theme:
                 }
             }
 
-    AspectRatios:
+    AspectRatio:
         
         auto: auto
         square: 1 / 1
         video: 16 / 9
         screen: 4 / 3
 
-    MediaBreakpoints:
+    BackgroundImage:
+      
+        none: none
+        gradient-to-t: linear-gradient(to top, var(--sf-gradient-stops))
+        gradient-to-tr: linear-gradient(to top right, var(--sf-gradient-stops))
+        gradient-to-r: linear-gradient(to right, var(--sf-gradient-stops))
+        gradient-to-br: linear-gradient(to bottom right, var(--sf-gradient-stops))
+        gradient-to-b: linear-gradient(to bottom, var(--sf-gradient-stops))
+        gradient-to-bl: linear-gradient(to bottom left, var(--sf-gradient-stops))
+        gradient-to-l: linear-gradient(to left, var(--sf-gradient-stops))
+        gradient-to-tl: linear-gradient(to top left, var(--sf-gradient-stops))
+
+    BackgroundPosition:
+      
+        bottom: bottom
+        center: center
+        left: left
+        left-bottom: left bottom
+        left-top: left top
+        right: right
+        right-bottom: right bottom
+        right-top: right top
+        top: top
+
+    BackgroundSize:
+      
+        auto: auto
+        cover: cover
+        contain: contain
+
+    MediaBreakpoint:
         Zero: 0
         Phab: 400
         Tabp: 540
@@ -44,7 +74,7 @@ Theme:
         Desk: 1440
         Elas: 1600
 
-    FontSizeUnits:
+    FontSizeUnit:
         Zero: 16px
         Phab: 16px
         Tabp: 16px
@@ -53,7 +83,7 @@ Theme:
         Desk: 16px
         Elas: 16px
 
-    Colors:
+    Color:
         dr05a: "#af2e1b"
         dr05b: "#cc6324"
         dr05c: "#3b4b59"

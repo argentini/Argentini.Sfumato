@@ -86,17 +86,23 @@ public sealed class SfumatoSettings
             
             #region Merge Settings
             
-            foreach (var color in Theme.Colors)
+            foreach (var color in Theme.Color)
                 appState.ColorOptions.TryAddUpdate(color);
                 
             foreach (var animation in Theme.Animation)
                 appState.AnimateStaticUtilities.TryAddUpdate(animation);
 
-            foreach (var ratio in Theme.AspectRatios)
+            foreach (var ratio in Theme.AspectRatio)
                 appState.AspectStaticUtilities.TryAddUpdate(ratio, "aspect-ratio: ");
 
+            foreach (var bgImage in Theme.BackgroundImage)
+                appState.BgStaticUtilities.TryAddUpdate(bgImage, "background-image: ");
             
+            foreach (var bgPosition in Theme.BackgroundPosition)
+                appState.BgStaticUtilities.TryAddUpdate(bgPosition, "background-position: ");
             
+            foreach (var bgSize in Theme.BackgroundSize)
+                appState.BgStaticUtilities.TryAddUpdate(bgSize, "background-size: ");
             
             
             
