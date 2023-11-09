@@ -3074,6 +3074,7 @@ public sealed class SfumatoAppState
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; set; } = string.Empty;
     public string ScssPath { get; set; } = string.Empty;
+    public string YamlPath { get; set; } = string.Empty;
     public List<string> AllVariants { get; } = new();
     public StringBuilder ScssBaseInjectable { get; } = new();
     public StringBuilder ScssSharedInjectable { get; } = new();
@@ -3213,16 +3214,17 @@ public sealed class SfumatoAppState
 	    
 	    #endregion
 	    
-	    if (VersionMode || HelpMode || InitMode)
-		    return;
-
 	    #region Find Embedded Resources (Sass, SCSS)
 	    
 	    SassCliPath = await GetEmbeddedSassPathAsync();
 	    ScssPath = await GetEmbeddedScssPathAsync();
+	    YamlPath = await GetEmbeddedYamlPathAsync();
 	    
 	    #endregion
-	    
+
+	    if (VersionMode || HelpMode || InitMode)
+		    return;
+
         if (DiagnosticMode)
 			DiagnosticOutput.TryAdd("init001", $"{Strings.TriangleRight} Processed settings in {timer.FormatTimer()}{Environment.NewLine}");
 
@@ -3477,6 +3479,42 @@ public sealed class SfumatoAppState
         
 		return workingPath;
 	}
+
+    public static async Task<string> GetEmbeddedYamlPathAsync()
+    {
+	    var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+
+	    while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
+	    {
+		    workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
+            
+#if DEBUG
+		    if (Directory.Exists(Path.Combine(workingPath, "yaml")) == false)
+			    continue;
+
+		    var tempPath = workingPath; 
+			
+		    workingPath = Path.Combine(tempPath, "yaml");
+#else
+			if (Directory.Exists(Path.Combine(workingPath, "contentFiles")) == false)
+				continue;
+		
+			var tempPath = workingPath; 
+
+			workingPath = Path.Combine(tempPath, "contentFiles", "any", "any", "yaml");
+#endif
+		    break;
+	    }
+
+	    // ReSharper disable once InvertIf
+	    if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
+	    {
+		    await Console.Out.WriteLineAsync($"{CliErrorPrefix}Embedded YAML resources cannot be found.");
+		    Environment.Exit(1);
+	    }
+        
+	    return workingPath;
+    }
     
     #endregion
     

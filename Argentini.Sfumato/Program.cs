@@ -31,44 +31,8 @@ internal class Program
 		
 		if (runner.AppState.InitMode)
 		{
-			var yaml = """
-			           ProjectPaths:
-
-			               - Path: wwwroot/pages
-			                 Extensions: html,htm,razor,cshtml
-			                 Recurse: true
-
-			               - Path: wwwroot/scripts
-			                 Extensions: js
-			                 Recurse: true
-			           
-			           DarkMode: class
-			           UseAutoTheme: true
-			           
-			           Theme:
-			           
-			               MediaBreakpoint:
-			                   Zero: 0
-			                   Phab: 400
-			                   Tabp: 540
-			                   Tabl: 800
-			                   Note: 1280
-			                   Desk: 1440
-			                   Elas: 1600
-			           
-			               FontSizeUnit:
-			                   Zero: 4.35vw
-			                   Phab: 4vw
-			                   Tabp: 1.6vw
-			                   Tabl: 1vw
-			                   Note: 1vw
-			                   Desk: 1vw
-			                   Elas: 1vw
-			           
-			               Color:
-			                   logo-red: '#af2e1b'
-			           """.NormalizeLinebreaks(Environment.NewLine);
-
+			var yaml = await File.ReadAllTextAsync(Path.Combine(runner.AppState.YamlPath, "sfumato-complete.yml"), cancellationTokenSource.Token);
+			
 			if (string.IsNullOrEmpty(runner.AppState.WorkingPathOverride) == false)
 				runner.AppState.WorkingPath = runner.AppState.WorkingPathOverride;
 			
