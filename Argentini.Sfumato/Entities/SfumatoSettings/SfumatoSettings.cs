@@ -13,16 +13,16 @@ public sealed class SfumatoSettings
 
     public async Task LoadJsonSettingsAsync(SfumatoAppState appState)
     {
-        #region Find sfumato.yaml file
+        #region Find sfumato.yml file
 
         if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
             appState.WorkingPath = appState.WorkingPathOverride;
         
-        appState.SettingsFilePath = Path.Combine(appState.WorkingPath, "sfumato.yaml");
+        appState.SettingsFilePath = Path.Combine(appState.WorkingPath, "sfumato.yml");
 
         if (File.Exists(appState.SettingsFilePath) == false)
         {
-            await Console.Out.WriteLineAsync($"Could not find sfumato.yaml settings file at path {appState.WorkingPath}");
+            await Console.Out.WriteLineAsync($"Could not find sfumato.yml settings file at path {appState.WorkingPath}");
             await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
             Environment.Exit(1);
         }
@@ -31,7 +31,7 @@ public sealed class SfumatoSettings
 
         try
         {
-            #region Load sfumato.yaml file
+            #region Load sfumato.yml file
 
             var json = await File.ReadAllTextAsync(appState.SettingsFilePath);
             var deserializer = new DeserializerBuilder().Build();

@@ -43,7 +43,7 @@ internal class Program
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@sfumato utilities;`");
 			await Console.Out.WriteLineAsync("  Embed utility classes based on which ones are being used in your project");
-			await Console.Out.WriteLineAsync("  files (configurable in a `sfumato.yaml` settings file)");
+			await Console.Out.WriteLineAsync("  files (configurable in a `sfumato.yml` settings file)");
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@apply [class name] [...];`");
 			await Console.Out.WriteLineAsync("  Embed the styles for a specific utility class within your own classes;");
@@ -62,13 +62,13 @@ internal class Program
 			await Console.Out.WriteLineAsync("version   : Show the sfumato version number");
 			await Console.Out.WriteLineAsync("help      : Show this help message");
 			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("* build and watch commands look in the current path for a `sfumato.yaml`");
+			await Console.Out.WriteLineAsync("* build and watch commands look in the current path for a `sfumato.yml`");
 			await Console.Out.WriteLineAsync("  settings file unless using the `--path` option; visit https://sfumato.app");
-			await Console.Out.WriteLineAsync("  for more information on creating a sfumato.yaml settings file");
+			await Console.Out.WriteLineAsync("  for more information on creating a sfumato.yml settings file");
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync("Options:");
 			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
-			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to your sfumato.yaml");
+			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to your sfumato.yml");
 			await Console.Out.WriteLineAsync("            settings file (e.g. `sfumato watch --path Code/MyProject`)");
 			await Console.Out.WriteLineAsync("--minify  : Minify CSS output; use with build and watch commands");
 			await Console.Out.WriteLineAsync();
@@ -126,7 +126,7 @@ internal class Program
 			
 			fileWatchers.Add(await CreateFileChangeWatcherAsync(restartAppQueue, new ProjectPath
 			{
-				Path = runner.AppState.SettingsFilePath.TrimEnd("sfumato.yaml") ?? string.Empty,
+				Path = runner.AppState.SettingsFilePath.TrimEnd("sfumato.yml") ?? string.Empty,
 				Extensions = "yaml"
 				
 			}, false));
@@ -387,7 +387,7 @@ internal class Program
 
 						if (eventArgs.ChangeType is WatcherChangeTypes.Changed or WatcherChangeTypes.Created)
 						{
-							if (eventArgs.Name != "sfumato.yaml")
+							if (eventArgs.Name != "sfumato.yml")
 								continue;
 							
 							triggered = true;
@@ -399,7 +399,7 @@ internal class Program
 						
 						var renamedEventArgs = (RenamedEventArgs)eventArgs;
 
-						if (renamedEventArgs.OldName == "sfumato.yaml")
+						if (renamedEventArgs.OldName == "sfumato.yml")
 							continue;
 							
 						triggered = true;
@@ -408,7 +408,7 @@ internal class Program
 
 					if (triggered)
 					{
-						await Console.Out.WriteLineAsync($"Modified sfumato.yaml at {DateTime.Now:HH:mm:ss.fff}");
+						await Console.Out.WriteLineAsync($"Modified sfumato.yml at {DateTime.Now:HH:mm:ss.fff}");
 						await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Reload settings and rebuild");
 
 						var timer = new Stopwatch();
