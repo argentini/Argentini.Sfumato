@@ -10,11 +10,13 @@ Sfumato is a lean, modern, utility-based CSS framework generation tool. It is co
 
 ## How To Use
 
-Create one simple "sfumato.json" file for your web-based app or website project and run the Sfumato CLI command. It will watch your project files as you work, keeping track of your markup changes, and generating a custom, tiny CSS library based only on the Sfumato features you use. Any watched `*.scss` files can use Sfumato helpers, like the media breakpoint mixin, are transpiled in-place as part of the build.
+Create one simple "sfumato.yml" file (manually or using the Sfumato "init" command) for your web-based app or website project and run the Sfumato CLI "watch" command. It will watch your project files as you work, keeping track of your markup changes, and will transpile your SCSS files into custom, tiny CSS files based only on the Sfumato features you use.
+
+Use the following command for more information on Sfumato commands and options:
+
+```sfumato help```
 
 ## Installation
-
-**NOTE:** the dotnet tool installation below is not yet available. *This message will be removed once Sfumato launches*.
 
 Install dotnet 8 or later from [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download) and then install Sfumato with the following command:
 
