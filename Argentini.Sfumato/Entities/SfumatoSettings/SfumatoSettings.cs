@@ -86,10 +86,10 @@ public sealed class SfumatoSettings
             
             #region Merge Settings
             
-            foreach (var color in Theme.Color)
+            foreach (var color in Theme.Color ?? new Dictionary<string, string>())
                 appState.ColorOptions.TryAddUpdate(color);
                 
-            foreach (var animation in Theme.Animation)
+            foreach (var animation in Theme.Animation ?? new Dictionary<string, string>())
                 appState.AnimateStaticUtilities.TryAddUpdate(animation);
 
             // foreach (var ratio in Theme.AspectRatio)

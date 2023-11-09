@@ -1,3 +1,5 @@
+using YamlDotNet.Serialization;
+
 namespace Argentini.Sfumato.Entities.SfumatoSettings;
 
 public sealed class ProjectPath
@@ -15,6 +17,8 @@ public sealed class ProjectPath
         }
     }
     public bool Recurse { get; set; } = true;
+    
+    [YamlIgnore]
     public List<string> ExtensionsList { get; } = new();
 
     public ProjectPath()

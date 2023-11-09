@@ -3047,6 +3047,7 @@ public sealed class SfumatoAppState
     public bool Minify { get; set; }
     public bool WatchMode { get; set; }
     public bool VersionMode { get; set; }
+    public bool InitMode { get; set; }
     public bool HelpMode { get; set; }
     public bool DiagnosticMode { get; set; }
 	
@@ -3187,7 +3188,7 @@ public sealed class SfumatoAppState
 	    
 	    #endregion
 	    
-	    if (VersionMode == false && HelpMode == false)
+	    if (VersionMode == false && HelpMode == false && InitMode == false)
 		    await Settings.LoadJsonSettingsAsync(this);
 	    
 	    #region Load Utility Classes
@@ -3212,7 +3213,7 @@ public sealed class SfumatoAppState
 	    
 	    #endregion
 	    
-	    if (VersionMode || HelpMode)
+	    if (VersionMode || HelpMode || InitMode)
 		    return;
 
 	    #region Find Embedded Resources (Sass, SCSS)
@@ -3268,9 +3269,9 @@ public sealed class SfumatoAppState
 
 		else
 		{
-			if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch")
+			if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch" && CliArguments[0] != "init")
 			{
-				await Console.Out.WriteLineAsync("Invalid command specified; must be: help, version, build, or watch");
+				await Console.Out.WriteLineAsync("Invalid command specified; must be: help, init, version, build, or watch");
 				await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
 				Environment.Exit(1);
 			}			
@@ -3291,7 +3292,12 @@ public sealed class SfumatoAppState
 			{
 				WatchMode = true;
 			}
-
+		
+			if (CliArguments[0] == "init")
+			{
+				InitMode = true;
+			}
+			
 			if (CliArguments.Count > 1)
 			{
 				for (var x = 1; x < CliArguments.Count; x++)
@@ -3307,10 +3313,10 @@ public sealed class SfumatoAppState
 							var path = CliArguments[x].SetNativePathSeparators();
 
 							if (path.Contains(Path.DirectorySeparatorChar) == false &&
-							    path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+							    path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
 								continue;
 
-							if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+							if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
 								path = path[..path.LastIndexOf(Path.DirectorySeparatorChar)];
 
 							try

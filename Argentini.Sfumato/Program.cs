@@ -29,6 +29,57 @@ internal class Program
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		
+		if (runner.AppState.InitMode)
+		{
+			var yaml = """
+			           ProjectPaths:
+
+			               - Path: wwwroot/pages
+			                 Extensions: html,htm,razor,cshtml
+			                 Recurse: true
+
+			               - Path: wwwroot/scripts
+			                 Extensions: js
+			                 Recurse: true
+			           
+			           DarkMode: class
+			           UseAutoTheme: true
+			           
+			           Theme:
+			           
+			               MediaBreakpoint:
+			                   Zero: 0
+			                   Phab: 400
+			                   Tabp: 540
+			                   Tabl: 800
+			                   Note: 1280
+			                   Desk: 1440
+			                   Elas: 1600
+			           
+			               FontSizeUnit:
+			                   Zero: 4.35vw
+			                   Phab: 4vw
+			                   Tabp: 1.6vw
+			                   Tabl: 1vw
+			                   Note: 1vw
+			                   Desk: 1vw
+			                   Elas: 1vw
+			           
+			               Color:
+			                   logo-red: '#af2e1b'
+			           """.NormalizeLinebreaks(Environment.NewLine);
+
+			if (string.IsNullOrEmpty(runner.AppState.WorkingPathOverride) == false)
+				runner.AppState.WorkingPath = runner.AppState.WorkingPathOverride;
+			
+			await File.WriteAllTextAsync(Path.Combine(runner.AppState.WorkingPath, "sfumato.yml"), yaml, cancellationTokenSource.Token);			
+			
+			await Console.Out.WriteLineAsync($"Created sfumato.yml file at {runner.AppState.WorkingPath}");
+			await Console.Out.WriteLineAsync();
+			
+			Environment.Exit(0);
+		}
+		
 		if (runner.AppState.HelpMode)
 		{
 			await Console.Out.WriteLineAsync();
@@ -57,6 +108,7 @@ internal class Program
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync("Commands:");
 			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Commands:".Length));
+			await Console.Out.WriteLineAsync("init      : Create a sample sfumato.yml file (can use --path)");
 			await Console.Out.WriteLineAsync("build     : Perform a single complete build");
 			await Console.Out.WriteLineAsync("watch     : Perform a complete build and then watch for changes");
 			await Console.Out.WriteLineAsync("version   : Show the sfumato version number");
@@ -68,7 +120,7 @@ internal class Program
 			await Console.Out.WriteLineAsync();
 			await Console.Out.WriteLineAsync("Options:");
 			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
-			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to your sfumato.yml");
+			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to/for your sfumato.yml");
 			await Console.Out.WriteLineAsync("            settings file (e.g. `sfumato watch --path Code/MyProject`)");
 			await Console.Out.WriteLineAsync("--minify  : Minify CSS output; use with build and watch commands");
 			await Console.Out.WriteLineAsync();

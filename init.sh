@@ -1,0 +1,1 @@
+dotnet run --project Argentini.Sfumato/Argentini.Sfumato.csproj init --path Argentini.Sfumato.Tests/SampleWebsite
