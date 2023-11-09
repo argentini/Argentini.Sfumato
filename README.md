@@ -25,3 +25,9 @@ Install dotnet 8 or later from [https://dotnet.microsoft.com/en-us/download](htt
 Later you can update Sfumato with the following command:
 
 ```dotnet tool update --global argentini.sfumato```
+
+## Uninstall
+
+If you need to completely uninstall Sfumato, use the command below:
+
+```dotnet tool uninstall --global argentini.sfumato```
