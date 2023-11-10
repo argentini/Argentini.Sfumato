@@ -303,6 +303,16 @@ video {
   height: auto;
 }
 
+// 1. Makes missing image alt text look different on-page
+// 2. So low-res image can be the background image
+// 3. Wrapped content margin for floated image
+img {
+  font-style: italic; // 1
+  background-repeat: no-repeat; // 2
+  background-size: cover; // 2
+  shape-margin: 1rem; // 3
+}
+
 // Make elements with the HTML hidden attribute stay hidden by default
 
 [hidden] {
