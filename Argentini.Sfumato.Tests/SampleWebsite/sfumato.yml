@@ -58,7 +58,7 @@ Theme:
 
     # Override font sizes at breakpoints;
     # Default uses viewport width (vw) units to scale content.
-    # For a non-scaling solution use pixel unit values, like "16px".
+    # For a non-scaling solution use em or px unit values, like "1em" or "16px".
     # * These are the default values so this section can be removed.
     FontSizeUnit:
         Zero: 4.35vw
