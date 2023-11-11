@@ -86,23 +86,99 @@ public sealed class SfumatoSettings
             
             #region Merge Settings
             
-            foreach (var color in Theme.Color ?? new Dictionary<string, string>())
-                appState.ColorOptions.TryAddUpdate(color);
-                
-            foreach (var animation in Theme.Animation ?? new Dictionary<string, string>())
-                appState.AnimateStaticUtilities.TryAddUpdate(animation);
+            #region Shared Values
+            
+            foreach (var item in Theme.BorderWidth ?? new Dictionary<string, string>())
+                appState.BorderWidthOptions.TryAddUpdate(item);
 
-            // foreach (var ratio in Theme.AspectRatio)
-            //     appState.AspectStaticUtilities.TryAddUpdate(ratio, "aspect-ratio: ");
-            //
-            // foreach (var bgImage in Theme.BackgroundImage)
-            //     appState.BgStaticUtilities.TryAddUpdate(bgImage, "background-image: ");
-            //
-            // foreach (var bgPosition in Theme.BackgroundPosition)
-            //     appState.BgStaticUtilities.TryAddUpdate(bgPosition, "background-position: ");
-            //
-            // foreach (var bgSize in Theme.BackgroundSize)
-            //     appState.BgStaticUtilities.TryAddUpdate(bgSize, "background-size: ");
+            foreach (var item in Theme.BorderRadius ?? new Dictionary<string, string>())
+                appState.RoundedOptions.TryAddUpdate(item);
+            
+            foreach (var item in Theme.Color ?? new Dictionary<string, string>())
+                appState.ColorOptions.TryAddUpdate(item);
+
+            foreach (var item in Theme.FilterSize ?? new Dictionary<string, string>())
+                appState.FilterSizeOptions.TryAddUpdate(item);
+            
+            #endregion
+            
+            #region Backgrounds
+            
+            foreach (var item in Theme.BackgroundImage ?? new Dictionary<string, string>())
+                appState.BgStaticUtilities.TryAddUpdate(item, "background-image: {value};");
+            
+            foreach (var item in Theme.BackgroundPosition ?? new Dictionary<string, string>())
+                appState.BgStaticUtilities.TryAddUpdate(item, "background-position: {value};");
+            
+            foreach (var item in Theme.BackgroundSize ?? new Dictionary<string, string>())
+                appState.BgStaticUtilities.TryAddUpdate(item, "background-size: {value};");
+
+            foreach (var item in Theme.FromPosition ?? new Dictionary<string, string>())
+                appState.FromStaticUtilities.TryAddUpdate(item, """
+                                                                --sf-gradient-from: {value} var(--sf-gradient-from-position);
+                                                                --sf-gradient-to: transparent var(--sf-gradient-to-position);
+                                                                --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
+                                                                """);
+            
+            foreach (var item in Theme.ToPosition ?? new Dictionary<string, string>())
+                appState.ToStaticUtilities.TryAddUpdate(item, "--sf-gradient-to: {value} var(--sf-gradient-to-position);");
+
+            foreach (var item in Theme.ViaPosition ?? new Dictionary<string, string>())
+                appState.ViaStaticUtilities.TryAddUpdate(item, """
+                                                               --sf-gradient-to: transparent var(--sf-gradient-to-position);
+                                                               --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
+                                                               """);
+
+            #endregion
+            
+            #region Effects
+            
+            foreach (var item in Theme.BoxShadow ?? new Dictionary<string, string>())
+                appState.ShadowStaticUtilities.TryAddUpdate(item, "box-shadow: {value};");
+            
+            #endregion
+
+            #region Filters
+            
+            foreach (var item in Theme.BackdropGrayscale ?? new Dictionary<string, string>())
+                appState.BackdropGrayscaleStaticUtilities.TryAddUpdate(item, "backdrop-filter: grayscale({value});");
+
+            foreach (var item in Theme.BackdropHueRotate ?? new Dictionary<string, string>())
+                appState.BackdropHueRotateStaticUtilities.TryAddUpdate(item, "backdrop-filter: hue-rotate({value});");
+
+            foreach (var item in Theme.BackdropInvert ?? new Dictionary<string, string>())
+                appState.BackdropInvertStaticUtilities.TryAddUpdate(item, "backdrop-filter: invert({value});");
+
+            foreach (var item in Theme.BackdropSepia ?? new Dictionary<string, string>())
+                appState.BackdropSepiaStaticUtilities.TryAddUpdate(item, "backdrop-filter: sepia({value});");
+            
+            foreach (var item in Theme.Grayscale ?? new Dictionary<string, string>())
+                appState.GrayscaleStaticUtilities.TryAddUpdate(item, "filter: grayscale({value});");
+
+            foreach (var item in Theme.HueRotate ?? new Dictionary<string, string>())
+                appState.HueRotateStaticUtilities.TryAddUpdate(item, "filter: hue-rotate({value});");
+
+            foreach (var item in Theme.Invert ?? new Dictionary<string, string>())
+                appState.InvertStaticUtilities.TryAddUpdate(item, "filter: invert({value});");
+
+            foreach (var item in Theme.Sepia ?? new Dictionary<string, string>())
+                appState.SepiaStaticUtilities.TryAddUpdate(item, "filter: sepia({value});");
+            
+            #endregion
+
+            #region Layout
+            
+            foreach (var item in Theme.AspectRatio ?? new Dictionary<string, string>())
+                appState.AspectStaticUtilities.TryAddUpdate(item, "aspect-ratio: {value};");
+
+            #endregion
+            
+            #region Transforms
+            
+            foreach (var item in Theme.Animate ?? new Dictionary<string, string>())
+                appState.AnimateStaticUtilities.TryAddUpdate(item);
+
+            #endregion
             
             #endregion
         }

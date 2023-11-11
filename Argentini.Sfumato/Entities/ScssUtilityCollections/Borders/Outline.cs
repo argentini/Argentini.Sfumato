@@ -9,9 +9,7 @@ public class Outline : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OutlineStaticUtilities);
-        
         await AddToIndexAsync(appState.ColorOptions);
-        
         await AddToIndexAsync(appState.BorderWidthOptions);
     }
     

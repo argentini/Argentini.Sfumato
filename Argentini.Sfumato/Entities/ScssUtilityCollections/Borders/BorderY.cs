@@ -9,7 +9,6 @@ public class BorderY : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColorOptions);
-        
         await AddToIndexAsync(appState.BorderWidthOptions);
     }
 

@@ -6,7 +6,7 @@ public abstract class ScssUtilityClassGroupBase
     public virtual string Category { get; set; } = string.Empty;
     public List<string> SelectorIndex { get; set; } = new();
     protected string Result = string.Empty;
-
+        
     public virtual Task InitializeAsync(SfumatoAppState appState)
     {
         return Task.CompletedTask;

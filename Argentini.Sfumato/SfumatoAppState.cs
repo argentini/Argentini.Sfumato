@@ -574,6 +574,11 @@ public sealed class SfumatoAppState
         ["gradient-to-l"] = "background-image: linear-gradient(to left, var(--sf-gradient-stops));",
         ["gradient-to-tl"] = "background-image: linear-gradient(to top left, var(--sf-gradient-stops));"
     };
+
+    public Dictionary<string, string> FromStaticUtilities { get; } = new();
+
+    public Dictionary<string, string> ToStaticUtilities { get; } = new();
+    public Dictionary<string, string> ViaStaticUtilities { get; } = new();
     
     #endregion
     

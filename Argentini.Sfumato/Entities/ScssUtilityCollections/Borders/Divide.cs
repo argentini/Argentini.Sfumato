@@ -9,7 +9,6 @@ public class Divide : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DivideStaticUtilities);
-        
         await AddToIndexAsync(appState.ColorOptions);
     }
     

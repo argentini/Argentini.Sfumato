@@ -9,7 +9,6 @@ public class DivideX : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DivideXStaticUtilities);
-        
         await AddToIndexAsync(appState.DivideWidthOptions);
     }
 

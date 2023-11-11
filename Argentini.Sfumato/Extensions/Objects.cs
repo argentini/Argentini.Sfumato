@@ -31,14 +31,14 @@ public static class Objects
     /// <param name="dictionary"></param>
     /// <param name="key"></param>
     /// <param name="value"></param>
-    /// <param name="valueprefix"></param>
+    /// <param name="propertyTemplate"></param>
     /// <returns></returns>
-    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, string key, string value, string valuePrefix = "")
+    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, string key, string value, string propertyTemplate = "")
     {
         if (dictionary.ContainsKey(key) == false)
-            return dictionary.TryAdd(key, valuePrefix + value);
+            return dictionary.TryAdd(key, propertyTemplate == string.Empty ? value : propertyTemplate.Replace("{value}", value));
         
-        dictionary[key] = valuePrefix + value;
+        dictionary[key] = propertyTemplate == string.Empty ? value : propertyTemplate.Replace("{value}", value);
         return true;
     }
     
@@ -47,14 +47,14 @@ public static class Objects
     /// </summary>
     /// <param name="dictionary"></param>
     /// <param name="kvp"></param>
-    /// <param name="valueprefix"></param>
+    /// <param name="propertyTemplate"></param>
     /// <returns></returns>
-    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, KeyValuePair<string,string> kvp, string valuePrefix = "")
+    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, KeyValuePair<string,string> kvp, string propertyTemplate = "")
     {
         if (dictionary.ContainsKey(kvp.Key) == false)
-            return dictionary.TryAdd(kvp.Key, valuePrefix + kvp.Value);
+            return dictionary.TryAdd(kvp.Key, propertyTemplate == string.Empty ? kvp.Value : propertyTemplate.Replace("{value}", kvp.Value));
         
-        dictionary[kvp.Key] = valuePrefix + kvp.Value;
+        dictionary[kvp.Key] = propertyTemplate == string.Empty ? kvp.Value : propertyTemplate.Replace("{value}", kvp.Value);
         return true;
     }
     

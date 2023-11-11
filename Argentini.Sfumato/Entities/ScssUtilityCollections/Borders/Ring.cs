@@ -10,7 +10,6 @@ public class Ring : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColorOptions);
-        
         await AddToIndexAsync(appState.BorderWidthOptions);
     }
 

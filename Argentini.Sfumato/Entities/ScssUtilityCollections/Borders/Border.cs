@@ -9,9 +9,7 @@ public class Border : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BorderStaticUtilities);
-        
         await AddToIndexAsync(appState.ColorOptions);
-        
         await AddToIndexAsync(appState.BorderWidthOptions);
     }
     

@@ -9,6 +9,7 @@ public class To : ScssUtilityClassGroupBase
     {
         SelectorIndex.Add(SelectorPrefix);
 
+        await AddToIndexAsync(appState.ToStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
         await AddToIndexAsync(appState.PercentageOptions);
     }
@@ -17,6 +18,13 @@ public class To : ScssUtilityClassGroupBase
     {
         if (cssSelector.AppState is null)
             return string.Empty;
+
+        #region Static Utilities
+        
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ToStaticUtilities, cssSelector, out Result))
+            return Result;
+        
+        #endregion
         
         #region Calculated Utilities
 
