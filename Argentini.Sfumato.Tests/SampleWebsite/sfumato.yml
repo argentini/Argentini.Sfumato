@@ -40,21 +40,21 @@ Theme:
             }
 
     # Override media breakpoint pixel widths;
-    # - Phab => phablet (large phone)
-    # - Tabp => tablet (portrait)
-    # - Tabl => tablet (landscape)
-    # - Note => notebook
-    # - Desk => desktop
-    # - Elas => elastic (stops scaling at this breakpoint)
+    # - Phab => phablet (large phone) - 25em = 400px
+    # - Tabp => tablet (portrait) - 33.75em = 540px
+    # - Tabl => tablet (landscape) - 50em = 800px
+    # - Note => notebook - 80em = 1280px
+    # - Desk => desktop - 90em = 1440px
+    # - Elas => elastic (stops scaling at this breakpoint) - 100em = 1600px
     # * These are the default values so this section can be removed.
     MediaBreakpoint:
-        Zero: 0
-        Phab: 400
-        Tabp: 540
-        Tabl: 800
-        Note: 1280
-        Desk: 1440
-        Elas: 1600
+        Zero: 0em
+        Phab: 25em
+        Tabp: 33.75em
+        Tabl: 50em
+        Note: 80em
+        Desk: 90em
+        Elas: 100em
 
     # Override font sizes at breakpoints;
     # Default uses viewport width (vw) units to scale content.

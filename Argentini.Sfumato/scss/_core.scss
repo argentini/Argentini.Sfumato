@@ -22,7 +22,7 @@
         @warn "Assuming #{$number} to be in pixels, attempting to convert it into pixel blocks.";
         @return ($number * 1px);
 
-    } @else if unit($number) == px {
+    } @else if unit($number) == 'px' {
 
         @return $number;
     }

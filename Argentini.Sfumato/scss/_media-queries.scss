@@ -86,26 +86,40 @@ $media-features: (
     // From: this breakpoint (inclusive)
     @if $from {
 
-        @if type-of($from) == number {
+        @if type-of($from) == 'number' {
 
-            $min-width: sf-number2px($from);
+            $min-width: $from;
 
         } @else if sf-get-breakpoint-width($from) {
 
-            $min-width: sf-number2px(sf-get-breakpoint-width($from));
+            $min-width: sf-get-breakpoint-width($from);
         }
     }
 
     // Upto: that breakpoint (exclusive)
     @if $upto {
 
-        @if type-of($upto) == number {
+        @if type-of($upto) == 'number' {
 
-            $max-width: sf-number2px($upto);
+            $max-width: $upto;
 
         } @else if sf-get-breakpoint-width($upto) {
 
-            $max-width: sf-number2px(sf-get-breakpoint-width($upto)) - 1px;
+            $unit: unit(sf-get-breakpoint-width($upto));
+            $breakpoint: sf-get-breakpoint-width($upto);
+            
+            @if $unit == 'em' {
+
+                $max-width: $breakpoint - 0.0625em;
+                
+            } @else if $unit == 'rem' {
+    
+                $max-width: $breakpoint - 0.0625rem;
+
+            } @else {
+
+                $max-width: $breakpoint - 1px;
+            }
         }
     }
 
