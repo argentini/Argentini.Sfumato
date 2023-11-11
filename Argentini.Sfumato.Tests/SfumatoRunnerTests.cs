@@ -336,7 +336,7 @@ public class SfumatoRunnerTests
             : css[..css.IndexOf("/*", StringComparison.Ordinal)];
         
         Assert.Equal("""
-                     @media screen and (min-width: 540px) {
+                     @media screen and (min-width: 33.75em) {
                        h1 {
                          font-size: 1.5rem;
                          line-height: 1.75;
