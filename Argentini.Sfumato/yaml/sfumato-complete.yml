@@ -332,6 +332,39 @@ Theme:
         # This option does not exist so it will be added 
         topmost: 9999
 
+    Height:
+
+        # This option does not exist so it will be added 
+        banner: 12em
+
+    MaxHeight:
+
+        # This option does not exist so it will be added 
+        banner: 12em
+
+    MaxWidth:
+
+        # This option does not exist so it will be added 
+        banner: 60em
+
+    MinHeight:
+
+        # This option does not exist so it will be added 
+        banner: 12em
+
+    MinWidth:
+
+        # This option does not exist so it will be added 
+        banner: 60em
+
+    Width:
+
+        # This option does not exist so it will be added 
+        banner: 60em
+
+
+
+
     # Override media breakpoints;
     # Using em units is ideal because they are the most reliable across
     # browsers and devices.

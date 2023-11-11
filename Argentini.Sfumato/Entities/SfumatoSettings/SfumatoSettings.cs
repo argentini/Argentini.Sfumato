@@ -343,7 +343,29 @@ public sealed class SfumatoSettings
                 appState.ZStaticUtilities.TryAddUpdate(item, "z-index: {value};");
 
             #endregion
+
+            #region Sizing
             
+            foreach (var item in Theme.Height ?? new Dictionary<string, string>())
+                appState.HStaticUtilities.TryAddUpdate(item, "height: {value};");
+
+            foreach (var item in Theme.MinHeight ?? new Dictionary<string, string>())
+                appState.MinHStaticUtilities.TryAddUpdate(item, "min-height: {value};");
+
+            foreach (var item in Theme.MaxHeight ?? new Dictionary<string, string>())
+                appState.MaxHStaticUtilities.TryAddUpdate(item, "max-height: {value};");
+
+            foreach (var item in Theme.Width ?? new Dictionary<string, string>())
+                appState.WStaticUtilities.TryAddUpdate(item, "width: {value};");
+
+            foreach (var item in Theme.MinWidth ?? new Dictionary<string, string>())
+                appState.MinWStaticUtilities.TryAddUpdate(item, "min-width: {value};");
+
+            foreach (var item in Theme.MaxWidth ?? new Dictionary<string, string>())
+                appState.MaxWStaticUtilities.TryAddUpdate(item, "max-width: {value};");
+
+            #endregion
+
             #region Transforms
             
             foreach (var item in Theme.Animate ?? new Dictionary<string, string>())

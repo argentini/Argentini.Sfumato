@@ -104,6 +104,17 @@ public sealed class Theme
 
     #endregion
 
+    #region Sizing
+
+    public Dictionary<string,string>? Height { get; set; } = new();
+    public Dictionary<string,string>? MinHeight { get; set; } = new();
+    public Dictionary<string,string>? MaxHeight { get; set; } = new();
+    public Dictionary<string,string>? Width { get; set; } = new();
+    public Dictionary<string,string>? MinWidth { get; set; } = new();
+    public Dictionary<string,string>? MaxWidth { get; set; } = new();
+    
+    #endregion
+
     #region Transforms
 
     public Dictionary<string,string>? Animate { get; set; } = new();
