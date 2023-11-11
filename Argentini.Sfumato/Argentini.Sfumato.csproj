@@ -5,13 +5,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.1.0</AssemblyVersion>
-        <FileVersion>5.0.1.0</FileVersion>
+        <AssemblyVersion>5.0.2.0</AssemblyVersion>
+        <FileVersion>5.0.2.0</FileVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>argentini.sfumato</PackageId>
-        <PackageVersion>5.0.1</PackageVersion>
+        <PackageVersion>5.0.2</PackageVersion>
         <Authors>Michael Argentini</Authors>
         <Company>Argentini Unlimited, Ltd.</Company>
         <PackageTags>Sass;SCSS;CSS;CLI;Responsive;HTML;UI;UX;Framework</PackageTags>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Initial release as dotnet tool</PackageReleaseNotes>
+        <PackageReleaseNotes>Added utility class customizations in settings file</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
