@@ -124,6 +124,12 @@ public sealed class Theme
     
     #endregion
 
+    #region SVG
+
+    public Dictionary<string,string>? SvgStroke { get; set; } = new();
+
+    #endregion
+
     #region Transforms
 
     public Dictionary<string,string>? Animate { get; set; } = new();

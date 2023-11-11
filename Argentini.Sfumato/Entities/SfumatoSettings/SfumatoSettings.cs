@@ -422,6 +422,13 @@ public sealed class SfumatoSettings
 
             #endregion
 
+            #region SVG
+            
+            foreach (var item in Theme.SvgStroke ?? new Dictionary<string, string>())
+                appState.StrokeStaticUtilities.TryAddUpdate(item, "stroke: {value};");
+
+            #endregion
+
             #region Transforms
             
             foreach (var item in Theme.Animate ?? new Dictionary<string, string>())

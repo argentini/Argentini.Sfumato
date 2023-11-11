@@ -382,6 +382,10 @@ Theme:
         # This option does not exist so it will be added 
         banner: 1rem
 
+    SvgStroke:
+
+        # This option does not exist so it will be added 
+        button: 0.25em
 
 
 
