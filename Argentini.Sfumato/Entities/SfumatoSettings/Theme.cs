@@ -148,4 +148,18 @@ public sealed class Theme
     public Dictionary<string,string>? TransitionTiming { get; set; } = new();
     
     #endregion
+    
+    #region Transitions And Animations
+
+    public Dictionary<string,string>? Origin { get; set; } = new();
+    public Dictionary<string,string>? Rotate { get; set; } = new();
+    public Dictionary<string,string>? Scale { get; set; } = new();
+    public Dictionary<string,string>? ScaleX { get; set; } = new();
+    public Dictionary<string,string>? ScaleY { get; set; } = new();
+    public Dictionary<string,string>? SkewX { get; set; } = new();
+    public Dictionary<string,string>? SkewY { get; set; } = new();
+    public Dictionary<string,string>? TranslateX { get; set; } = new();
+    public Dictionary<string,string>? TranslateY { get; set; } = new();
+    
+    #endregion
 }

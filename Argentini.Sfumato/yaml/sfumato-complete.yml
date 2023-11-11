@@ -430,6 +430,51 @@ Theme:
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             transition-duration: 150ms;
 
+    Origin:
+
+        # This option does not exist so it will be added 
+        logo: 3em 3em
+
+    Rotate:
+
+        # This option does not exist so it will be added 
+        logo: 15deg
+
+    Scale:
+
+        # This option does not exist so it will be added 
+        logo: 1.25
+
+    ScaleX:
+
+        # This option does not exist so it will be added 
+        logo: 1.25
+
+    ScaleY:
+
+        # This option does not exist so it will be added 
+        logo: 1.25
+
+    SkewX:
+
+        # This option does not exist so it will be added 
+        logo: 15deg
+
+    SkewY:
+
+        # This option does not exist so it will be added 
+        logo: 15deg
+
+    TranslateX:
+
+        # This option does not exist so it will be added 
+        center: 50%
+
+    TranslateY:
+
+        # This option does not exist so it will be added 
+        center: 50%
+
 
 
 

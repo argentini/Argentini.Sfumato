@@ -463,7 +463,38 @@ public sealed class SfumatoSettings
                 appState.EaseStaticUtilities.TryAddUpdate(item, "transition-timing: {value};");
             
             #endregion
+
+            #region Transitions And Animations
             
+            foreach (var item in Theme.Origin ?? new Dictionary<string, string>())
+                appState.OriginStaticUtilities.TryAddUpdate(item, "transform-origin: {value};");
+
+            foreach (var item in Theme.Rotate ?? new Dictionary<string, string>())
+                appState.RotateStaticUtilities.TryAddUpdate(item, "transform: rotate({value});");
+
+            foreach (var item in Theme.Scale ?? new Dictionary<string, string>())
+                appState.ScaleStaticUtilities.TryAddUpdate(item, "transform: scale({value});");
+
+            foreach (var item in Theme.ScaleX ?? new Dictionary<string, string>())
+                appState.ScaleXStaticUtilities.TryAddUpdate(item, "transform: scaleX({value});");
+
+            foreach (var item in Theme.ScaleY ?? new Dictionary<string, string>())
+                appState.ScaleYStaticUtilities.TryAddUpdate(item, "transform: scaleY({value});");
+
+            foreach (var item in Theme.SkewX ?? new Dictionary<string, string>())
+                appState.SkewXStaticUtilities.TryAddUpdate(item, "transform: skewX({value});");
+
+            foreach (var item in Theme.SkewY ?? new Dictionary<string, string>())
+                appState.SkewYStaticUtilities.TryAddUpdate(item, "transform: skewY({value});");
+
+            foreach (var item in Theme.TranslateX ?? new Dictionary<string, string>())
+                appState.TranslateXStaticUtilities.TryAddUpdate(item, "transform: translateX({value});");
+
+            foreach (var item in Theme.TranslateY ?? new Dictionary<string, string>())
+                appState.TranslateYStaticUtilities.TryAddUpdate(item, "transform: translateY({value});");
+
+            #endregion
+
             #endregion
         }
 
