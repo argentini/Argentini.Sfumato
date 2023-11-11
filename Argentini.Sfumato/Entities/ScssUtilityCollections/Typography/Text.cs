@@ -8,7 +8,7 @@ public class Text : ScssUtilityClassGroupBase
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(appState.TextStaticUtilities);
+        await AddToIndexAsync(appState.TextAlignStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
         await AddToIndexAsync(appState.TextSizeOptions);
     }
@@ -20,7 +20,7 @@ public class Text : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextAlignStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

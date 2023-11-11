@@ -162,4 +162,21 @@ public sealed class Theme
     public Dictionary<string,string>? TranslateY { get; set; } = new();
     
     #endregion
+    
+    #region Typography
+
+    public Dictionary<string,string>? DecorationThickness { get; set; } = new();
+    public Dictionary<string,string>? FontFamily { get; set; } = new();
+    public Dictionary<string,string>? FontWeight { get; set; } = new();
+    public Dictionary<string,string>? Leading { get; set; } = new();
+    public Dictionary<string,string>? LineClamp { get; set; } = new();
+    public Dictionary<string,string>? ListStylePosition { get; set; } = new();
+    public Dictionary<string,string>? ListStyleType { get; set; } = new();
+    public Dictionary<string,string>? ListStyleImage { get; set; } = new();
+    public Dictionary<string,string>? TextAlign { get; set; } = new();
+    public Dictionary<string,string>? TextSize { get; set; } = new();
+    public Dictionary<string,string>? Tracking { get; set; } = new();
+    public Dictionary<string,string>? UnderlineOffset { get; set; } = new();
+    
+    #endregion
 }

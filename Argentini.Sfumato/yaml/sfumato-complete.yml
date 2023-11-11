@@ -475,11 +475,65 @@ Theme:
         # This option does not exist so it will be added 
         center: 50%
 
+    DecorationThickness:
 
+        # This option does not exist so it will be added 
+        feature: 1em
 
+    FontFamily:
 
+        # This option does not exist so it will be added 
+        blog: "\"San Francisco\", Helvetica, sans-serif"
 
+    FontWeight:
 
+        # This option does not exist so it will be added 
+        headline: 600
+
+    Leading:
+
+        # This option does not exist so it will be added 
+        headline: 1.25
+
+    LineClamp:
+
+        # This option does not exist so it will be added 
+        headline: 10
+
+    ListStylePosition:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    ListStyleType:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    ListStyleImage:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    TextAlign:
+
+        # This option does not exist so it will be added 
+        justify-all: justify-all
+
+    TextSize:
+
+        # This option does not exist so it will be added 
+        footnote: 0.75rem
+
+    Tracking:
+
+        # This option does not exist so it will be added 
+        footnote: 0.015em
+
+    UnderlineOffset:
+
+        # This option does not exist so it will be added 
+        caption: 3px
 
     # Override media breakpoints;
     # Using em units is ideal because they are the most reliable across

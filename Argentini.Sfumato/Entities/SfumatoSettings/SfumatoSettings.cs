@@ -100,6 +100,12 @@ public sealed class SfumatoSettings
             foreach (var item in Theme.FilterSize ?? new Dictionary<string, string>())
                 appState.FilterSizeOptions.TryAddUpdate(item);
             
+            foreach (var item in Theme.TextSize ?? new Dictionary<string, string>())
+                appState.TextSizeOptions.TryAddUpdate(item);
+
+            foreach (var item in Theme.Leading ?? new Dictionary<string, string>())
+                appState.LeadingOptions.TryAddUpdate(item);
+
             #endregion
             
             #region Backgrounds
@@ -492,6 +498,45 @@ public sealed class SfumatoSettings
 
             foreach (var item in Theme.TranslateY ?? new Dictionary<string, string>())
                 appState.TranslateYStaticUtilities.TryAddUpdate(item, "transform: translateY({value});");
+
+            #endregion
+
+            #region Typography
+            
+            foreach (var item in Theme.DecorationThickness ?? new Dictionary<string, string>())
+                appState.DecorationStaticUtilities.TryAddUpdate(item, "text-decoration-thickness: {value};");
+
+            foreach (var item in Theme.FontFamily ?? new Dictionary<string, string>())
+                appState.FontStaticUtilities.TryAddUpdate(item, "font-family: {value};");
+            
+            foreach (var item in Theme.FontWeight ?? new Dictionary<string, string>())
+                appState.FontStaticUtilities.TryAddUpdate(item, "font-weight: {value};");
+            
+            foreach (var item in Theme.LineClamp ?? new Dictionary<string, string>())
+                appState.LineClampStaticUtilities.TryAddUpdate(item, """
+                                                                     -webkit-line-clamp: {value};
+                                                                     overflow: hidden;
+                                                                     display: -webkit-box;
+                                                                     -webkit-box-orient: vertical;
+                                                                     """);
+            
+            foreach (var item in Theme.ListStylePosition ?? new Dictionary<string, string>())
+                appState.ListStaticUtilities.TryAddUpdate(item, "list-style-position: {value};");
+            
+            foreach (var item in Theme.ListStyleType ?? new Dictionary<string, string>())
+                appState.ListStaticUtilities.TryAddUpdate(item, "list-style-type: {value};");
+            
+            foreach (var item in Theme.ListStyleImage ?? new Dictionary<string, string>())
+                appState.ListImageStaticUtilities.TryAddUpdate(item, "list-style-image: {value};");
+
+            foreach (var item in Theme.TextAlign ?? new Dictionary<string, string>())
+                appState.TextAlignStaticUtilities.TryAddUpdate(item, "text-align: {value};");
+            
+            foreach (var item in Theme.Tracking ?? new Dictionary<string, string>())
+                appState.TrackingStaticUtilities.TryAddUpdate(item, "letter-spacing: {value};");
+
+            foreach (var item in Theme.UnderlineOffset ?? new Dictionary<string, string>())
+                appState.UnderlineOffsetStaticUtilities.TryAddUpdate(item, "text-underline-offset: {value};");
 
             #endregion
 

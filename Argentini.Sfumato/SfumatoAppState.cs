@@ -2504,7 +2504,7 @@ public sealed class SfumatoAppState
 	    [""] = "font-variant-numeric: tabular-nums;",
     }; 
 
-    public Dictionary<string, string> TextStaticUtilities { get; } = new()
+    public Dictionary<string, string> TextAlignStaticUtilities { get; } = new()
     {
 	    ["left"] = "text-align: left;",
 	    ["center"] = "text-align: center;",
