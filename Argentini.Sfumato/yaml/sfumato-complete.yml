@@ -242,10 +242,95 @@ Theme:
         # This option does not exist so it will be added 
         paragraph: revert
 
+    Bottom:
 
+        # This option does not exist so it will be added 
+        tight: 0.5rem
 
+    Box:
 
+        # This option does not exist so it will be added 
+        initial: initial
 
+    BoxDecoration:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    BreakAfter:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    BreakBefore:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    BreakInside:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    Clear:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    Columns:
+
+        # This option does not exist so it will be added 
+        8xl: 100rem
+
+    InsetEnd:
+
+        # This option does not exist so it will be added 
+        margin: 1rem
+
+    InsetStart:
+
+        # This option does not exist so it will be added 
+        margin: 1rem
+
+    Inset:
+
+        # This option does not exist so it will be added 
+        margin: 1rem
+
+    InsetX:
+
+        # This option does not exist so it will be added 
+        margin: 1rem
+
+    InsetY:
+
+        # This option does not exist so it will be added 
+        margin: 1rem
+
+    Isolate:
+
+        # This option does not exist so it will be added 
+        initial: initial
+
+    Left:
+
+        # This option does not exist so it will be added 
+        start: 2rem
+
+    Right:
+
+        # This option does not exist so it will be added 
+        start: 2rem
+
+    Top:
+
+        # This option does not exist so it will be added 
+        start: 2rem
+
+    ZIndex:
+
+        # This option does not exist so it will be added 
+        topmost: 9999
 
     # Override media breakpoints;
     # Using em units is ideal because they are the most reliable across

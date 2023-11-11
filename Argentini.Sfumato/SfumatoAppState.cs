@@ -1242,6 +1242,7 @@ public sealed class SfumatoAppState
     #endregion
     
     #region Layout
+    
     public Dictionary<string, string> AbsoluteStaticUtilities { get; } = new()
     {
 	    [""] = "position: absolute;",
@@ -1551,7 +1552,7 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> IsolationAutoStaticUtilities { get; } = new()
     {
-	    [""] = "isolation: isolate;",
+	    [""] = "isolation: auto;",
     };
 
     public Dictionary<string, string> LeftStaticUtilities { get; } = new()

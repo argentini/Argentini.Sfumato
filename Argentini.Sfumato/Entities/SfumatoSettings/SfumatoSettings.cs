@@ -282,6 +282,66 @@ public sealed class SfumatoSettings
             foreach (var item in Theme.AspectRatio ?? new Dictionary<string, string>())
                 appState.AspectStaticUtilities.TryAddUpdate(item, "aspect-ratio: {value};");
             
+            foreach (var item in Theme.Bottom ?? new Dictionary<string, string>())
+                appState.BottomStaticUtilities.TryAddUpdate(item, "bottom: {value};");
+
+            foreach (var item in Theme.Box ?? new Dictionary<string, string>())
+                appState.BoxStaticUtilities.TryAddUpdate(item, "box-sizing: {value};");
+
+            foreach (var item in Theme.BoxDecoration ?? new Dictionary<string, string>())
+                appState.BoxDecorationStaticUtilities.TryAddUpdate(item, "box-decoration-break: {value};");
+
+            foreach (var item in Theme.BreakAfter ?? new Dictionary<string, string>())
+                appState.BreakAfterStaticUtilities.TryAddUpdate(item, "break-after: {value};");
+
+            foreach (var item in Theme.BreakBefore ?? new Dictionary<string, string>())
+                appState.BreakBeforeStaticUtilities.TryAddUpdate(item, "break-before: {value};");
+
+            foreach (var item in Theme.BreakInside ?? new Dictionary<string, string>())
+                appState.BreakInsideStaticUtilities.TryAddUpdate(item, "break-inside: {value};");
+
+            foreach (var item in Theme.Clear ?? new Dictionary<string, string>())
+                appState.ClearStaticUtilities.TryAddUpdate(item, "clear: {value};");
+
+            foreach (var item in Theme.Columns ?? new Dictionary<string, string>())
+                appState.ColumnsStaticUtilities.TryAddUpdate(item, "columns: {value};");
+
+            foreach (var item in Theme.InsetEnd ?? new Dictionary<string, string>())
+                appState.EndStaticUtilities.TryAddUpdate(item, "inset-inline-end: {value};");
+
+            foreach (var item in Theme.InsetStart ?? new Dictionary<string, string>())
+                appState.StartStaticUtilities.TryAddUpdate(item, "inset-inline-start: {value};");
+
+            foreach (var item in Theme.Inset ?? new Dictionary<string, string>())
+                appState.InsetStaticUtilities.TryAddUpdate(item, "inset: {value};");
+
+            foreach (var item in Theme.InsetX ?? new Dictionary<string, string>())
+                appState.InsetXStaticUtilities.TryAddUpdate(item, """
+                                                                  left: {value};
+                                                                  right: {value};
+                                                                  """);
+
+            foreach (var item in Theme.InsetY ?? new Dictionary<string, string>())
+                appState.InsetYStaticUtilities.TryAddUpdate(item, """
+                                                                  top: {value};
+                                                                  bottom: {value};
+                                                                  """);
+
+            foreach (var item in Theme.Isolate ?? new Dictionary<string, string>())
+                appState.IsolateStaticUtilities.TryAddUpdate(item, "isolation: {value};");
+
+            foreach (var item in Theme.Left ?? new Dictionary<string, string>())
+                appState.LeftStaticUtilities.TryAddUpdate(item, "left: {value};");
+
+            foreach (var item in Theme.Right ?? new Dictionary<string, string>())
+                appState.RightStaticUtilities.TryAddUpdate(item, "right: {value};");
+
+            foreach (var item in Theme.Top ?? new Dictionary<string, string>())
+                appState.TopStaticUtilities.TryAddUpdate(item, "top: {value};");
+
+            foreach (var item in Theme.ZIndex ?? new Dictionary<string, string>())
+                appState.ZStaticUtilities.TryAddUpdate(item, "z-index: {value};");
+
             #endregion
             
             #region Transforms

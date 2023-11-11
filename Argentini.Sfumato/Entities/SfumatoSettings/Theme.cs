@@ -83,9 +83,27 @@ public sealed class Theme
     #region Layout
 
     public Dictionary<string,string>? AspectRatio { get; set; } = new();
+    public Dictionary<string,string>? Bottom { get; set; } = new();
+    public Dictionary<string,string>? Box { get; set; } = new();
+    public Dictionary<string,string>? BoxDecoration { get; set; } = new();
+    public Dictionary<string,string>? BreakAfter { get; set; } = new();
+    public Dictionary<string,string>? BreakBefore { get; set; } = new();
+    public Dictionary<string,string>? BreakInside { get; set; } = new();
+    public Dictionary<string,string>? Clear { get; set; } = new();
+    public Dictionary<string,string>? Columns { get; set; } = new();
+    public Dictionary<string,string>? InsetEnd { get; set; } = new();
+    public Dictionary<string,string>? InsetStart { get; set; } = new();
+    public Dictionary<string,string>? Inset { get; set; } = new();
+    public Dictionary<string,string>? InsetX { get; set; } = new();
+    public Dictionary<string,string>? InsetY { get; set; } = new();
+    public Dictionary<string,string>? Isolate { get; set; } = new();
+    public Dictionary<string,string>? Left { get; set; } = new();
+    public Dictionary<string,string>? Right { get; set; } = new();
+    public Dictionary<string,string>? Top { get; set; } = new();
+    public Dictionary<string,string>? ZIndex { get; set; } = new();
 
     #endregion
-    
+
     #region Transforms
 
     public Dictionary<string,string>? Animate { get; set; } = new();
