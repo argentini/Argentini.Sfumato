@@ -137,10 +137,48 @@ Theme:
         # This option does not exist so it will be added 
         panel: 75%
     
-    
-    
-    
-    
+    AutoCols:
+
+        # This option does not exist so it will be added 
+        hero: minmax(0, 100em)
+
+    AutoRows:
+
+        # This option does not exist so it will be added 
+        hero: minmax(0, 100em)
+
+    Basis:
+
+        # This option does not exist so it will be added 
+        newspaper: 100em
+
+    ColEnd:
+
+        # This option does not exist so it will be added 
+        last: -1
+
+    ColSpan:
+
+        # This option does not exist so it will be added 
+        last: 3 / -1
+
+    ColStart:
+
+        # This option does not exist so it will be added 
+        first: 1
+
+    GridCols:
+
+        # This option does not exist so it will be added 
+        newspaper: 1fr 1fr 1fr
+
+
+
+
+
+
+
+
     # Override media breakpoints;
     # Using em units is ideal because they are the most reliable across
     # browsers and devices.

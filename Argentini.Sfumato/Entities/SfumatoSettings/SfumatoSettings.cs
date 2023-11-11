@@ -166,6 +166,31 @@ public sealed class SfumatoSettings
             
             #endregion
 
+            #region Flexbox And Grid
+
+            foreach (var item in Theme.AutoCols ?? new Dictionary<string, string>())
+                appState.AutoColsStaticUtilities.TryAddUpdate(item, "grid-auto-columns: {value};");
+
+            foreach (var item in Theme.AutoRows ?? new Dictionary<string, string>())
+                appState.AutoRowsStaticUtilities.TryAddUpdate(item, "grid-auto-rows: {value};");
+
+            foreach (var item in Theme.Basis ?? new Dictionary<string, string>())
+                appState.BasisStaticUtilities.TryAddUpdate(item, "flex-basis: {value};");
+
+            foreach (var item in Theme.ColEnd ?? new Dictionary<string, string>())
+                appState.ColEndStaticUtilities.TryAddUpdate(item, "grid-column-end: {value};");
+
+            foreach (var item in Theme.ColSpan ?? new Dictionary<string, string>())
+                appState.ColSpanStaticUtilities.TryAddUpdate(item, "grid-column: {value};");
+
+            foreach (var item in Theme.ColStart ?? new Dictionary<string, string>())
+                appState.ColStartStaticUtilities.TryAddUpdate(item, "grid-column-start: {value};");
+            
+            foreach (var item in Theme.GridCols ?? new Dictionary<string, string>())
+                appState.GridColsStaticUtilities.TryAddUpdate(item, "grid-template-columns: {value};");
+
+            #endregion
+
             #region Layout
             
             foreach (var item in Theme.AspectRatio ?? new Dictionary<string, string>())

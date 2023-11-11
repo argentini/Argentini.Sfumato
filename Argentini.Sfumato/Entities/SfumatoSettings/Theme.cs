@@ -44,6 +44,20 @@ public sealed class Theme
 
     #endregion
     
+    #region Flexbox And Grid
+
+    public Dictionary<string,string>? AutoCols { get; set; } = new();
+    public Dictionary<string,string>? AutoRows { get; set; } = new();
+    public Dictionary<string,string>? Basis { get; set; } = new();
+    public Dictionary<string,string>? ColEnd { get; set; } = new();
+    public Dictionary<string,string>? ColSpan { get; set; } = new();
+    public Dictionary<string,string>? ColStart { get; set; } = new();
+    
+    
+    public Dictionary<string,string>? GridCols { get; set; } = new();
+    
+    #endregion
+    
     #region Layout
 
     public Dictionary<string,string>? AspectRatio { get; set; } = new();
