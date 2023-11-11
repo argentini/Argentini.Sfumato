@@ -387,6 +387,25 @@ Theme:
         # This option does not exist so it will be added 
         button: 0.25em
 
+    BorderSpacing:
+
+        # This option does not exist so it will be added 
+        data-cell: 0.25em
+
+    BorderSpacingX:
+
+        # This option does not exist so it will be added 
+        data-cell: 0.25em
+
+    BorderSpacingY:
+
+        # This option does not exist so it will be added 
+        data-cell: 0.25em
+
+    CaptionSide:
+
+        # This option does not exist so it will be added 
+        initial: initial
 
 
 

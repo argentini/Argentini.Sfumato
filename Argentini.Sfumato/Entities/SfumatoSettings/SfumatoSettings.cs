@@ -429,6 +429,22 @@ public sealed class SfumatoSettings
 
             #endregion
 
+            #region Tables
+            
+            foreach (var item in Theme.BorderSpacing ?? new Dictionary<string, string>())
+                appState.BorderSpacingStaticUtilities.TryAddUpdate(item, "border-spacing: {value}; --sf-border-spacing-x: {value}; --sf-border-spacing-y: {value};");
+
+            foreach (var item in Theme.BorderSpacingX ?? new Dictionary<string, string>())
+                appState.BorderSpacingXStaticUtilities.TryAddUpdate(item, "border-spacing: {value} var(--sf-border-spacing-y); --sf-border-spacing-x: {value};");
+
+            foreach (var item in Theme.BorderSpacingY ?? new Dictionary<string, string>())
+                appState.BorderSpacingYStaticUtilities.TryAddUpdate(item, "border-spacing: var(--sf-border-spacing-x) {value}; --sf-border-spacing-y: {value};");
+
+            foreach (var item in Theme.CaptionSide ?? new Dictionary<string, string>())
+                appState.CaptionStaticUtilities.TryAddUpdate(item, "caption-side: {value};");
+
+            #endregion
+
             #region Transforms
             
             foreach (var item in Theme.Animate ?? new Dictionary<string, string>())

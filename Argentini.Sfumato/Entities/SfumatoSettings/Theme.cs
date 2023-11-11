@@ -130,6 +130,15 @@ public sealed class Theme
 
     #endregion
 
+    #region Tables
+
+    public Dictionary<string,string>? BorderSpacing { get; set; } = new();
+    public Dictionary<string,string>? BorderSpacingX { get; set; } = new();
+    public Dictionary<string,string>? BorderSpacingY { get; set; } = new();
+    public Dictionary<string,string>? CaptionSide { get; set; } = new();
+
+    #endregion
+
     #region Transforms
 
     public Dictionary<string,string>? Animate { get; set; } = new();

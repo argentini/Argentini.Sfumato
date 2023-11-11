@@ -1987,20 +1987,20 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> BorderSpacingStaticUtilities { get; } = new()
     {
-	    ["0"] = "border-spacing: 0px;",
-	    ["px"] = "border-spacing: 1px;",
+	    ["0"] = "border-spacing: 0px; --sf-border-spacing-x: 0px; --sf-border-spacing-y: 0px;",
+	    ["px"] = "border-spacing: 1px; --sf-border-spacing-x: 1px; --sf-border-spacing-y: 1px;",
     };
 
     public Dictionary<string, string> BorderSpacingXStaticUtilities { get; } = new()
     {
-	    ["0"] = "border-spacing: 0px var(--sf-border-spacing-y);",
-	    ["px"] = "border-spacing: 1px var(--sf-border-spacing-y);",
+	    ["0"] = "border-spacing: 0px var(--sf-border-spacing-y); --sf-border-spacing-x: 0px;",
+	    ["px"] = "border-spacing: 1px var(--sf-border-spacing-y); --sf-border-spacing-x: 1px;",
     };
 
     public Dictionary<string, string> BorderSpacingYStaticUtilities { get; } = new()
     {
-	    ["0"] = "border-spacing: var(--sf-border-spacing-x) 0px;",
-	    ["px"] = "border-spacing: var(--sf-border-spacing-x) 1px;",
+	    ["0"] = "border-spacing: var(--sf-border-spacing-x) 0px; --sf-border-spacing-y: 0px;",
+	    ["px"] = "border-spacing: var(--sf-border-spacing-x) 1px; --sf-border-spacing-y: 1px;",
     }; 
 
     public Dictionary<string, string> CaptionStaticUtilities { get; } = new()
