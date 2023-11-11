@@ -362,6 +362,30 @@ Theme:
         # This option does not exist so it will be added 
         banner: 60em
 
+    Margin:
+
+        # This option does not exist so it will be added 
+        banner: 1.25rem
+
+    Padding:
+
+        # This option does not exist so it will be added 
+        banner: 1.5rem
+
+    SpaceX:
+
+        # This option does not exist so it will be added 
+        banner: 1rem
+
+    SpaceY:
+
+        # This option does not exist so it will be added 
+        banner: 1rem
+
+
+
+
+
 
 
 

@@ -115,6 +115,15 @@ public sealed class Theme
     
     #endregion
 
+    #region Spacing
+
+    public Dictionary<string,string>? Margin { get; set; } = new();
+    public Dictionary<string,string>? Padding { get; set; } = new();
+    public Dictionary<string,string>? SpaceX { get; set; } = new();
+    public Dictionary<string,string>? SpaceY { get; set; } = new();
+    
+    #endregion
+
     #region Transforms
 
     public Dictionary<string,string>? Animate { get; set; } = new();

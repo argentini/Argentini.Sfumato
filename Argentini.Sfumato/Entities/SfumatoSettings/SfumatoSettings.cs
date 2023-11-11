@@ -366,6 +366,62 @@ public sealed class SfumatoSettings
 
             #endregion
 
+            #region Spacing
+            
+            foreach (var item in Theme.Margin ?? new Dictionary<string, string>())
+            {
+                appState.MStaticUtilities.TryAddUpdate(item, "margin: {value};");
+                appState.MbStaticUtilities.TryAddUpdate(item, "margin-bottom: {value};");
+                appState.MeStaticUtilities.TryAddUpdate(item, "margin-inline-end: {value};");
+                appState.MlStaticUtilities.TryAddUpdate(item, "margin-left: {value};");
+                appState.MrStaticUtilities.TryAddUpdate(item, "margin-right: {value};");
+                appState.MsStaticUtilities.TryAddUpdate(item, "margin-inline-start: {value};");
+                appState.MtStaticUtilities.TryAddUpdate(item, "margin-top: {value};");
+                appState.MxStaticUtilities.TryAddUpdate(item, """
+                                                                    margin-left: {value};
+                                                                    margin-right: {value};
+                                                                    """);
+                appState.MyStaticUtilities.TryAddUpdate(item, """
+                                                                    margin-top: {value};
+                                                                    margin-bottom: {value};
+                                                                    """);
+            }
+            
+            foreach (var item in Theme.Padding ?? new Dictionary<string, string>())
+            {
+                appState.PStaticUtilities.TryAddUpdate(item, "padding: {value};");
+                appState.PbStaticUtilities.TryAddUpdate(item, "padding-bottom: {value};");
+                appState.PeStaticUtilities.TryAddUpdate(item, "padding-inline-end: {value};");
+                appState.PlStaticUtilities.TryAddUpdate(item, "padding-left: {value};");
+                appState.PrStaticUtilities.TryAddUpdate(item, "padding-right: {value};");
+                appState.PsStaticUtilities.TryAddUpdate(item, "padding-inline-start: {value};");
+                appState.PtStaticUtilities.TryAddUpdate(item, "padding-top: {value};");
+                appState.PxStaticUtilities.TryAddUpdate(item, """
+                                                              padding-left: {value};
+                                                              padding-right: {value};
+                                                              """);
+                appState.PyStaticUtilities.TryAddUpdate(item, """
+                                                              padding-top: {value};
+                                                              padding-bottom: {value};
+                                                              """);
+            }
+
+            foreach (var item in Theme.SpaceX ?? new Dictionary<string, string>())
+                appState.SpaceXStaticUtilities.TryAddUpdate(item, """
+                                                                  & > * + * {
+                                                                      margin-left: {value};
+                                                                  }
+                                                                  """);
+
+            foreach (var item in Theme.SpaceY ?? new Dictionary<string, string>())
+                appState.SpaceYStaticUtilities.TryAddUpdate(item, """
+                                                                  & > * + * {
+                                                                      margin-top: {value};
+                                                                  }
+                                                                  """);
+
+            #endregion
+
             #region Transforms
             
             foreach (var item in Theme.Animate ?? new Dictionary<string, string>())
