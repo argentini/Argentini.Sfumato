@@ -225,7 +225,58 @@ public sealed class SfumatoSettings
                 appState.FlexStaticUtilities.TryAddUpdate(item, "flex-shrink: {value};");
             
             #endregion
+
+            #region Interactivity
             
+            foreach (var item in Theme.Cursor ?? new Dictionary<string, string>())
+                appState.CursorStaticUtilities.TryAddUpdate(item, "cursor: {value};");
+
+            foreach (var item in Theme.PointerEvents ?? new Dictionary<string, string>())
+                appState.PointerEventsStaticUtilities.TryAddUpdate(item, "pointer-events: {value};");
+
+            foreach (var item in Theme.ScrollMargin ?? new Dictionary<string, string>())
+            {
+                appState.ScrollMStaticUtilities.TryAddUpdate(item, "scroll-margin: {value};");
+                appState.ScrollMbStaticUtilities.TryAddUpdate(item, "scroll-margin-bottom: {value};");
+                appState.ScrollMeStaticUtilities.TryAddUpdate(item, "scroll-margin-inline-end: {value};");
+                appState.ScrollMlStaticUtilities.TryAddUpdate(item, "scroll-margin-left: {value};");
+                appState.ScrollMrStaticUtilities.TryAddUpdate(item, "scroll-margin-right: {value};");
+                appState.ScrollMsStaticUtilities.TryAddUpdate(item, "scroll-margin-inline-start: {value};");
+                appState.ScrollMtStaticUtilities.TryAddUpdate(item, "scroll-margin-top: {value};");
+                appState.ScrollMxStaticUtilities.TryAddUpdate(item, """
+                                                                    scroll-margin-left: {value};
+                                                                    scroll-margin-right: {value};
+                                                                    """);
+                appState.ScrollMyStaticUtilities.TryAddUpdate(item, """
+                                                                    scroll-margin-top: {value};
+                                                                    scroll-margin-bottom: {value};
+                                                                    """);
+            }
+
+            foreach (var item in Theme.ScrollPadding ?? new Dictionary<string, string>())
+            {
+                appState.ScrollPStaticUtilities.TryAddUpdate(item, "scroll-padding: {value};");
+                appState.ScrollPbStaticUtilities.TryAddUpdate(item, "scroll-padding-bottom: {value};");
+                appState.ScrollPeStaticUtilities.TryAddUpdate(item, "scroll-padding-inline-end: {value};");
+                appState.ScrollPlStaticUtilities.TryAddUpdate(item, "scroll-padding-left: {value};");
+                appState.ScrollPrStaticUtilities.TryAddUpdate(item, "scroll-padding-right: {value};");
+                appState.ScrollPsStaticUtilities.TryAddUpdate(item, "scroll-padding-inline-start: {value};");
+                appState.ScrollPtStaticUtilities.TryAddUpdate(item, "scroll-padding-top: {value};");
+                appState.ScrollPxStaticUtilities.TryAddUpdate(item, """
+                                                                    scroll-padding-left: {value};
+                                                                    scroll-padding-right: {value};
+                                                                    """);
+                appState.ScrollPyStaticUtilities.TryAddUpdate(item, """
+                                                                    scroll-padding-top: {value};
+                                                                    scroll-padding-bottom: {value};
+                                                                    """);
+            }
+
+            foreach (var item in Theme.UserSelect ?? new Dictionary<string, string>())
+                appState.SelectStaticUtilities.TryAddUpdate(item, "user-select: {value};");
+
+            #endregion
+
             #region Layout
             
             foreach (var item in Theme.AspectRatio ?? new Dictionary<string, string>())

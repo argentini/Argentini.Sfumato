@@ -217,6 +217,32 @@ Theme:
         # This option does not exist so it will be added 
         use-shrink: 1
 
+    Cursor:
+
+        # This option does not exist so it will be added 
+        cat: url(/images/cat.png), 4 12, pointer
+
+    PointerEvents:
+
+        # This option does not exist so it will be added 
+        fill: fill
+
+    ScrollMargin:
+
+        # This option does not exist so it will be added 
+        feature: 2rem
+
+    ScrollPadding:
+
+        # This option does not exist so it will be added 
+        feature: 2rem
+
+    UserSelect:
+
+        # This option does not exist so it will be added 
+        paragraph: revert
+
+
 
 
 

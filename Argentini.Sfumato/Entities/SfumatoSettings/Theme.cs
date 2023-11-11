@@ -69,7 +69,17 @@ public sealed class Theme
     public Dictionary<string,string>? FlexShrink { get; set; } = new();
     
     #endregion
-    
+
+    #region Interactivity
+
+    public Dictionary<string,string>? Cursor { get; set; } = new();
+    public Dictionary<string,string>? PointerEvents { get; set; } = new();
+    public Dictionary<string,string>? ScrollMargin { get; set; } = new();
+    public Dictionary<string,string>? ScrollPadding { get; set; } = new();
+    public Dictionary<string,string>? UserSelect { get; set; } = new();
+
+    #endregion
+
     #region Layout
 
     public Dictionary<string,string>? AspectRatio { get; set; } = new();

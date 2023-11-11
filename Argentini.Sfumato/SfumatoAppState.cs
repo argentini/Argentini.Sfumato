@@ -1044,7 +1044,7 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> PointerEventsStaticUtilities { get; } = new()
     {
 	    ["none"] = "pointer-events: none;",
-	    ["auto"] = "pointer-events: auto;",
+	    ["auto"] = "pointer-events: auto;"
     }; 
 
     public Dictionary<string, string> ResizeStaticUtilities { get; } = new()
