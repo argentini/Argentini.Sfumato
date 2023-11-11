@@ -450,6 +450,18 @@ public sealed class SfumatoSettings
             foreach (var item in Theme.Animate ?? new Dictionary<string, string>())
                 appState.AnimateStaticUtilities.TryAddUpdate(item);
 
+            foreach (var item in Theme.Transition ?? new Dictionary<string, string>())
+                appState.TransitionStaticUtilities.TryAddUpdate(item);
+
+            foreach (var item in Theme.TransitionDelay ?? new Dictionary<string, string>())
+                appState.DelayStaticUtilities.TryAddUpdate(item, "transition-delay: {value};");
+
+            foreach (var item in Theme.TransitionDuration ?? new Dictionary<string, string>())
+                appState.DurationStaticUtilities.TryAddUpdate(item, "transition-duration: {value};");
+
+            foreach (var item in Theme.TransitionTiming ?? new Dictionary<string, string>())
+                appState.EaseStaticUtilities.TryAddUpdate(item, "transition-timing: {value};");
+            
             #endregion
             
             #endregion

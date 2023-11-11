@@ -27,26 +27,6 @@ UseAutoTheme: true
 # * Options use SCSS values
 Theme:
     
-    Animate:
-        
-        # This option exists so it will be replaced 
-        spin: |
-            animation: spin 1s linear infinite;
-            
-            @keyframes spin {
-                from {
-                    transform: rotate(0deg);
-                }
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-    AspectRatio:
-        
-        # This option exists so it will be replaced 
-        video: 16 / 9
-
     BackgroundImage:
         
         # This option exists so it will be replaced 
@@ -242,6 +222,11 @@ Theme:
         # This option does not exist so it will be added 
         paragraph: revert
 
+    AspectRatio:
+        
+        # This option exists so it will be replaced 
+        video: 16 / 9
+
     Bottom:
 
         # This option does not exist so it will be added 
@@ -406,6 +391,45 @@ Theme:
 
         # This option does not exist so it will be added 
         initial: initial
+
+    Animate:
+        
+        # This option exists so it will be replaced 
+        spin: |
+            animation: spin 1s linear infinite;
+            
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+    TransitionDelay:
+
+        # This option does not exist so it will be added 
+        spinner: 10ms
+
+    TransitionDuration:
+
+        # This option does not exist so it will be added 
+        spinner: 500ms
+
+    TransitionTiming:
+
+        # This option does not exist so it will be added 
+        spinner: cubic-bezier(0.4, 0, 1, 1)
+
+    Transition:
+        
+        # This option exists so it will be replaced 
+        color: |
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+
 
 
 

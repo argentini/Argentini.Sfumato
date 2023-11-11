@@ -142,6 +142,10 @@ public sealed class Theme
     #region Transforms
 
     public Dictionary<string,string>? Animate { get; set; } = new();
+    public Dictionary<string,string>? Transition { get; set; } = new();
+    public Dictionary<string,string>? TransitionDelay { get; set; } = new();
+    public Dictionary<string,string>? TransitionDuration { get; set; } = new();
+    public Dictionary<string,string>? TransitionTiming { get; set; } = new();
     
     #endregion
 }
