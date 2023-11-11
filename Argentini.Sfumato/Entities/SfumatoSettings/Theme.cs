@@ -44,17 +44,29 @@ public sealed class Theme
 
     #endregion
     
-    #region Flexbox And Grid
+    #region Grid
 
-    public Dictionary<string,string>? AutoCols { get; set; } = new();
-    public Dictionary<string,string>? AutoRows { get; set; } = new();
-    public Dictionary<string,string>? Basis { get; set; } = new();
-    public Dictionary<string,string>? ColEnd { get; set; } = new();
-    public Dictionary<string,string>? ColSpan { get; set; } = new();
-    public Dictionary<string,string>? ColStart { get; set; } = new();
-    
-    
+    public Dictionary<string,string>? GridAutoCols { get; set; } = new();
+    public Dictionary<string,string>? GridAutoRows { get; set; } = new();
+    public Dictionary<string,string>? GridColEnd { get; set; } = new();
+    public Dictionary<string,string>? GridColSpan { get; set; } = new();
+    public Dictionary<string,string>? GridColStart { get; set; } = new();
+    public Dictionary<string,string>? Gap { get; set; } = new();
     public Dictionary<string,string>? GridCols { get; set; } = new();
+    public Dictionary<string,string>? GridRows { get; set; } = new();
+    public Dictionary<string,string>? Order { get; set; } = new();
+    public Dictionary<string,string>? GridRowEnd { get; set; } = new();
+    public Dictionary<string,string>? GridRowSpan { get; set; } = new();
+    public Dictionary<string,string>? GridRowStart { get; set; } = new();
+
+    #endregion
+
+    #region Flexbox
+    
+    public Dictionary<string,string>? Flex { get; set; } = new();
+    public Dictionary<string,string>? FlexBasis { get; set; } = new();
+    public Dictionary<string,string>? FlexGrow { get; set; } = new();
+    public Dictionary<string,string>? FlexShrink { get; set; } = new();
     
     #endregion
     

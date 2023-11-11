@@ -137,43 +137,85 @@ Theme:
         # This option does not exist so it will be added 
         panel: 75%
     
-    AutoCols:
+    GridAutoCols:
 
         # This option does not exist so it will be added 
         hero: minmax(0, 100em)
 
-    AutoRows:
+    GridAutoRows:
 
         # This option does not exist so it will be added 
         hero: minmax(0, 100em)
 
-    Basis:
-
-        # This option does not exist so it will be added 
-        newspaper: 100em
-
-    ColEnd:
+    GridColEnd:
 
         # This option does not exist so it will be added 
         last: -1
 
-    ColSpan:
+    GridColSpan:
 
         # This option does not exist so it will be added 
         last: 3 / -1
 
-    ColStart:
+    GridColStart:
 
         # This option does not exist so it will be added 
         first: 1
+
+    Gap:
+
+        # This option does not exist so it will be added 
+        newspaper: 1.5rem
 
     GridCols:
 
         # This option does not exist so it will be added 
         newspaper: 1fr 1fr 1fr
 
+    GridRows:
 
+        # This option does not exist so it will be added 
+        newspaper: 1fr 1fr 1fr
 
+    Order:
+
+        # This option does not exist so it will be added 
+        advertisement: 3
+
+    GridRowEnd:
+
+        # This option does not exist so it will be added 
+        last: -1
+
+    GridRowSpan:
+
+        # This option does not exist so it will be added 
+        last: 3 / -1
+
+    GridRowStart:
+
+        # This option does not exist so it will be added 
+        first: 1
+
+    FlexBasis:
+
+        # This option does not exist so it will be added 
+        newspaper: 1fr
+
+    Flex:
+
+        # This option does not exist so it will be added 
+        newspaper: 1
+
+    FlexGrow:
+
+        # This option does not exist so it will be added 
+        use-grow: 1
+
+    FlexShrink:
+
+        # This option does not exist so it will be added 
+        use-shrink: 1
 
 
 

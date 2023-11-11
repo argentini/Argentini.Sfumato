@@ -166,36 +166,71 @@ public sealed class SfumatoSettings
             
             #endregion
 
-            #region Flexbox And Grid
+            #region Grid
 
-            foreach (var item in Theme.AutoCols ?? new Dictionary<string, string>())
+            foreach (var item in Theme.GridAutoCols ?? new Dictionary<string, string>())
                 appState.AutoColsStaticUtilities.TryAddUpdate(item, "grid-auto-columns: {value};");
 
-            foreach (var item in Theme.AutoRows ?? new Dictionary<string, string>())
+            foreach (var item in Theme.GridAutoRows ?? new Dictionary<string, string>())
                 appState.AutoRowsStaticUtilities.TryAddUpdate(item, "grid-auto-rows: {value};");
-
-            foreach (var item in Theme.Basis ?? new Dictionary<string, string>())
-                appState.BasisStaticUtilities.TryAddUpdate(item, "flex-basis: {value};");
-
-            foreach (var item in Theme.ColEnd ?? new Dictionary<string, string>())
+            
+            foreach (var item in Theme.GridColEnd ?? new Dictionary<string, string>())
                 appState.ColEndStaticUtilities.TryAddUpdate(item, "grid-column-end: {value};");
 
-            foreach (var item in Theme.ColSpan ?? new Dictionary<string, string>())
+            foreach (var item in Theme.GridColSpan ?? new Dictionary<string, string>())
                 appState.ColSpanStaticUtilities.TryAddUpdate(item, "grid-column: {value};");
 
-            foreach (var item in Theme.ColStart ?? new Dictionary<string, string>())
+            foreach (var item in Theme.GridColStart ?? new Dictionary<string, string>())
                 appState.ColStartStaticUtilities.TryAddUpdate(item, "grid-column-start: {value};");
             
+            foreach (var item in Theme.Gap ?? new Dictionary<string, string>())
+            {
+                appState.GapStaticUtilities.TryAddUpdate(item, "gap: {value};");
+                appState.GapXStaticUtilities.TryAddUpdate(item, "column-gap: {value};");
+                appState.GapYStaticUtilities.TryAddUpdate(item, "row-gap: {value};");
+            }
+
             foreach (var item in Theme.GridCols ?? new Dictionary<string, string>())
                 appState.GridColsStaticUtilities.TryAddUpdate(item, "grid-template-columns: {value};");
 
+            foreach (var item in Theme.GridRows ?? new Dictionary<string, string>())
+                appState.GridRowsStaticUtilities.TryAddUpdate(item, "grid-template-rows: {value};");
+
+            foreach (var item in Theme.Order ?? new Dictionary<string, string>())
+                appState.OrderStaticUtilities.TryAddUpdate(item, "order: {value};");
+
+            foreach (var item in Theme.GridRowEnd ?? new Dictionary<string, string>())
+                appState.RowEndStaticUtilities.TryAddUpdate(item, "grid-row-end: {value};");
+
+            foreach (var item in Theme.GridRowSpan ?? new Dictionary<string, string>())
+                appState.RowSpanStaticUtilities.TryAddUpdate(item, "grid-row: {value};");
+
+            foreach (var item in Theme.GridRowStart ?? new Dictionary<string, string>())
+                appState.RowStartStaticUtilities.TryAddUpdate(item, "grid-row-start: {value};");
+
             #endregion
 
+            #region Flexbox
+
+            foreach (var item in Theme.FlexBasis ?? new Dictionary<string, string>())
+                appState.BasisStaticUtilities.TryAddUpdate(item, "flex-basis: {value};");
+
+            foreach (var item in Theme.Flex ?? new Dictionary<string, string>())
+                appState.FlexStaticUtilities.TryAddUpdate(item, "flex: {value};");
+
+            foreach (var item in Theme.FlexGrow ?? new Dictionary<string, string>())
+                appState.FlexStaticUtilities.TryAddUpdate(item, "flex-grow: {value};");
+
+            foreach (var item in Theme.FlexShrink ?? new Dictionary<string, string>())
+                appState.FlexStaticUtilities.TryAddUpdate(item, "flex-shrink: {value};");
+            
+            #endregion
+            
             #region Layout
             
             foreach (var item in Theme.AspectRatio ?? new Dictionary<string, string>())
                 appState.AspectStaticUtilities.TryAddUpdate(item, "aspect-ratio: {value};");
-
+            
             #endregion
             
             #region Transforms
