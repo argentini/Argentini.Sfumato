@@ -24,7 +24,7 @@ Sfumato requires that you already have the .NET 8.0 runtime installed, which you
 
 ### 2. Install Sfumato
 
-Install Sfumato with the following command:
+Run the following command in your command line interface (e.g. cmd, PowerShell, Terminal, bash, etc.):
 
 ```dotnet tool install --global argentini.sfumato```
 
