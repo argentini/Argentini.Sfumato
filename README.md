@@ -18,7 +18,13 @@ Use the following command for more information on Sfumato commands and options:
 
 ## Installation
 
-Install dotnet 8 or later from [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download) and then install Sfumato with the following command:
+### 1. Install Microsoft .NET
+
+Sfumato requires that you already have the .NET 8.0 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
+
+### 2. Install Sfumato
+
+Install Sfumato with the following command:
 
 ```dotnet tool install --global argentini.sfumato```
 
