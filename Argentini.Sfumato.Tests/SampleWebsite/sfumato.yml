@@ -44,13 +44,13 @@ Theme:
     # For a non-scaling solution use em or px unit values, like "1em" or "16px".
     # * These are the default values so this section can be removed.
     FontSizeUnit:
-        Zero: 4.35vw
-        Phab: 4vw
-        Tabp: 1.6vw
-        Tabl: 1vw
-        Note: 1vw
-        Desk: 1vw
-        Elas: 1vw
+        Zero: 16px
+        Phab: 16px
+        Tabp: 16px
+        Tabl: 16px
+        Note: 16px
+        Desk: 16px
+        Elas: 16px
 
     Color:
         dr05a: "#af2e1b"

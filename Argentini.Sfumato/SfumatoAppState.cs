@@ -405,31 +405,31 @@ public sealed class SfumatoAppState
 	
     public Dictionary<string,string> TextSizeOptions { get; } = new()
     {
-	    ["xs"] = "0.75rem",
-	    ["sm"] = "0.875rem",
-	    ["base"] = "1rem",
-	    ["lg"] = "1.125rem",
-	    ["xl"] = "1.25rem",
-	    ["2xl"] = "1.5rem",
-	    ["3xl"] = "1.875rem",
-	    ["4xl"] = "2.25rem",
-	    ["5xl"] = "3rem",
-	    ["6xl"] = "3.75rem",
-	    ["7xl"] = "4.5rem",
-	    ["8xl"] = "6rem",
-	    ["9xl"] = "8rem"
+	    ["xs"] = "clamp((0.75rem * 0.875), (4.35vw * 0.75), 0.75rem)",
+	    ["sm"] = "clamp((0.875rem * 0.875), (4.35vw * 0.875), 0.875rem)",
+	    ["base"] = "clamp((1rem * 0.875), (4.35vw * 1), 1rem)",
+	    ["lg"] = "clamp((1.125rem * 0.875), (4.35vw * 1.125), 1.125rem)",
+	    ["xl"] = "clamp((1.25rem * 0.875), (4.35vw * 1.25), 1.25rem)",
+	    ["2xl"] = "clamp((1.5rem * 0.875), (4.35vw * 1.5), 1.5rem)",
+	    ["3xl"] = "clamp((1.875rem * 0.875), (4.35vw * 1.875), 1.875rem)",
+	    ["4xl"] = "clamp((2.25rem * 0.875), (4.35vw * 2.25), 2.25rem)",
+	    ["5xl"] = "clamp((3rem * 0.875), (4.35vw * 3), 3rem)",
+	    ["6xl"] = "clamp((3.75rem * 0.875), (4.35vw * 3.75), 3.75rem)",
+	    ["7xl"] = "clamp((4.5rem * 0.875), (4.35vw * 4.5), 4.5rem)",
+	    ["8xl"] = "clamp((6rem * 0.875), (4.35vw * 6), 6rem)",
+	    ["9xl"] = "clamp((8rem * 0.875), (4.35vw * 8), 8rem)"
     };
 
     public Dictionary<string,string> TextSizeLeadingOptions { get; } = new()
     {
-	    ["xs"] = "1rem",
-	    ["sm"] = "1.25rem",
-	    ["base"] = "1.5rem",
-	    ["lg"] = "1.75rem",
-	    ["xl"] = "1.75rem",
-	    ["2xl"] = "2rem",
-	    ["3xl"] = "2.25rem",
-	    ["4xl"] = "2.5rem",
+	    ["xs"] = "clamp((1rem * 0.875), (4.35vw * 1), 1rem)",
+	    ["sm"] = "clamp((1.25rem * 0.875), (4.35vw * 1.25), 1.25rem)",
+	    ["base"] = "clamp((1.5rem * 0.875), (4.35vw * 1.5), 1.5rem)",
+	    ["lg"] = "clamp((1.75rem * 0.875), (4.35vw * 1.75), 1.75rem)",
+	    ["xl"] = "clamp((1.875rem * 0.875), (4.35vw * 1.875), 1.875rem)",
+	    ["2xl"] = "clamp((2rem * 0.875), (4.35vw * 2), 2rem)",
+	    ["3xl"] = "clamp((2.25rem * 0.875), (4.35vw * 2.25), 2.25rem)",
+	    ["4xl"] = "clamp((2.5rem * 0.875), (4.35vw * 2.5), 2.5rem)",
 	    ["5xl"] = "1",
 	    ["6xl"] = "1",
 	    ["7xl"] = "1",
