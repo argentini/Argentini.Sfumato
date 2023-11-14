@@ -557,17 +557,18 @@ Theme:
         Elas: 100em
 
     # Override breakpoint font sizes;
-    # Default values use viewport width (vw) units to scale content.
-    # Non-scaling solutions can use em or px units, like "1em" or "16px".
+    # Default value for breakpoint base font size is 16px.
+    # Scaling solutions can use vw units, like "4.35vw" or "1vw".
+    # When using vw units, the elastic breakpoint will freeze scaling. 
     # * These are the default values so this section can be removed.
     FontSizeUnit:
-        Zero: 4.35vw
-        Phab: 4vw
-        Tabp: 1.6vw
-        Tabl: 1vw
-        Note: 1vw
-        Desk: 1vw
-        Elas: 1vw
+        Zero: 16px
+        Phab: 16px
+        Tabp: 16px
+        Tabl: 16px
+        Note: 16px
+        Desk: 16px
+        Elas: 16px
 
     # This example is 5 new colors named after the Dieter Rams Braun 05
     # color palette so they will be added as color options.
