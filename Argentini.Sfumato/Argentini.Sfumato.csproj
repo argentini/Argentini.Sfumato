@@ -5,13 +5,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.2.0</AssemblyVersion>
-        <FileVersion>5.0.2.0</FileVersion>
+        <AssemblyVersion>5.0.3.0</AssemblyVersion>
+        <FileVersion>5.0.3.0</FileVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>argentini.sfumato</PackageId>
-        <PackageVersion>5.0.2</PackageVersion>
+        <PackageVersion>5.0.3</PackageVersion>
         <Authors>Michael Argentini</Authors>
         <Company>Argentini Unlimited, Ltd.</Company>
         <PackageTags>Sass;SCSS;CSS;CLI;Responsive;HTML;UI;UX;Framework</PackageTags>
@@ -34,11 +34,11 @@
 
     <ItemGroup>
         <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-rc.2.23479.6" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0-rc.2.23479.6" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0-rc.2.23479.6" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
         <PackageReference Include="CliWrap" Version="3.6.4" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.0-rc.2.23480.2" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.0" />
         <PackageReference Include="YamlDotNet" Version="13.7.1" />
     </ItemGroup>
     
