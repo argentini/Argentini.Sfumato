@@ -46,7 +46,7 @@ public class TextTests
         await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("font-size: 1.125rem; line-height: 1.75rem;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal($"font-size: {appState.TextSizeOptions["lg"]}; line-height: {appState.TextSizeLeadingOptions["lg"]};".CompactCss(), selector.GetStyles().CompactCss());
     }
 
     [Fact]
@@ -82,28 +82,28 @@ public class TextTests
         await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("font-size: 1.125rem; line-height: 0.5;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal($"font-size: {appState.TextSizeOptions["lg"]}; line-height: 0.5;".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "text-lg/[3rem]");
 
         await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("font-size: 1.125rem; line-height: 3rem;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal($"font-size: {appState.TextSizeOptions["lg"]}; line-height: 3rem;".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "text-lg/[110%]");
 
         await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("font-size: 1.125rem; line-height: 110%;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal($"font-size: {appState.TextSizeOptions["lg"]}; line-height: 110%;".CompactCss(), selector.GetStyles().CompactCss());
         
         selector = new CssSelector(appState, "text-lg/loose");
 
         await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("font-size: 1.125rem; line-height: 2;".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal($"font-size: {appState.TextSizeOptions["lg"]}; line-height: 2;".CompactCss(), selector.GetStyles().CompactCss());
     }
     
     [Fact]

@@ -79,7 +79,7 @@ public class SfumatoRunnerTests
 
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
 
-        Assert.Equal(".text-base { font-size: 1rem; line-height: 1.5rem; }", result.CompactCss());
+        Assert.Equal($$""".text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.CompactCss());
     }
 
     [Fact]
@@ -95,21 +95,24 @@ public class SfumatoRunnerTests
         
         var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
         
-        Assert.Equal(".text-base\\/5 { font-size: 1rem; line-height: 1.25rem; }".CompactCss(), result.CompactCss());
+        Assert.Equal(
+            $$""".text-base\/5 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.LeadingOptions["5"]}}; }""".CompactCss(), result.CompactCss());
         
         cssSelector = new CssSelector(appState, "text-base/[3rem]");
         await cssSelector.ProcessSelectorAsync();
 
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
 
-        Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
+        Assert.Equal(
+            $$""".text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
 
         cssSelector = new CssSelector(appState, "tabp:text-base/[3rem]");
         await cssSelector.ProcessSelectorAsync();
 
         result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, "tabp:");
         
-        Assert.Equal(".tabp\\:text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), result.CompactCss());
+        Assert.Equal(
+            $$""".tabp\:text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
     }
     
     [Fact]
@@ -185,7 +188,7 @@ public class SfumatoRunnerTests
 
         var scss = await runner.GenerateUtilityScssAsync();
 
-        Assert.Equal("""
+        Assert.Equal($$"""
                      .\[font-weight\:600\] {
                          font-weight:600;
                      }
@@ -249,8 +252,8 @@ public class SfumatoRunnerTests
                          font-size: 1rem;
                      }
                      .text-base\/5 {
-                         font-size: 1rem;
-                         line-height: 1.25rem;
+                         font-size: {{runner.AppState.TextSizeOptions["base"]}};
+                         line-height: {{runner.AppState.LeadingOptions["5"]}};
                      }
                      .top-8 {
                          top: 2rem;
@@ -287,7 +290,7 @@ public class SfumatoRunnerTests
                              color: red;
                          }
                          .desk\:text-base\/\[3rem\] {
-                             font-size: 1rem;
+                             font-size: {{runner.AppState.TextSizeOptions["base"]}};
                              line-height: 3rem;
                          }
                          .desk\:text\[\#112233\] {
@@ -335,10 +338,10 @@ public class SfumatoRunnerTests
             ? css
             : css[..css.IndexOf("/*", StringComparison.Ordinal)];
         
-        Assert.Equal("""
+        Assert.Equal($$"""
                      @media screen and (min-width: 33.75em) {
                        h1 {
-                         font-size: 1.5rem;
+                         font-size: clamp(1.3125rem, 6.525vw, 1.5rem);
                          line-height: 1.75;
                          font-weight: 700 !important;
                          color: black;

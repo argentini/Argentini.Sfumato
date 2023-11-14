@@ -170,7 +170,7 @@ h1 {
 
         markup = await runner.GenerateUtilityScssAsync();
         
-        Assert.Equal(".text-base\\/5 {\nfont-size: 1rem; line-height: 1.25rem;\n}".CompactCss(), markup.CompactCss());
+        Assert.Equal($$""".text-base\/5 { font-size: {{runner.AppState.TextSizeOptions["base"]}}; line-height: {{runner.AppState.LeadingOptions["5"]}}; }""".CompactCss(), markup.CompactCss());
 
         #endregion
 
@@ -191,7 +191,7 @@ h1 {
 
         markup = await runner.GenerateUtilityScssAsync();
         
-        Assert.Equal(".text-base\\/\\[3rem\\] { font-size: 1rem; line-height: 3rem; }".CompactCss(), markup.CompactCss());
+        Assert.Equal($$""".text-base\/\[3rem\] { font-size: {{runner.AppState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), markup.CompactCss());
         
         #endregion
         
