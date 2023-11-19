@@ -22,7 +22,6 @@
 			padding: 0;
 			margin: 0;
 			font-family: sans-serif;
-			font-weight: 600;
 			font-size: calc(var(--vmin) * 4);
 		}
 
@@ -42,104 +41,59 @@
 		}
 
 		body > div::before {
-			content: 'Zero';
+			content: 'Default';
 		}
 
-		/* Handheld, Portrait */
-
-		@media screen and (orientation: portrait) and (hover: none) and (pointer: coarse) and (max-aspect-ratio: 1.999999999999/3) {
+		/* mobi */
+		@media screen and (max-aspect-ratio: 9.999999999999/16) {
 			body > div::before {
-				content: 'Phone (Portrait)';
+				content: 'mobi';
 			}
 		}
 
-		@media screen and (orientation: portrait) and (hover: none) and (pointer: coarse) and (min-aspect-ratio: 2/3) {
+		/* tabp */
+		@media screen and (min-aspect-ratio: 10/16) and (max-aspect-ratio: 1/1) {
 			body > div::before {
-				content: 'Tablet (Portrait)';
+				content: 'tabp';
 			}
 		}
 
-		/* Handheld, Landscape */
-
-		@media screen and (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-aspect-ratio: 2.5/1) {
+		/* tabl */
+		@media screen and (min-aspect-ratio: 1.000000000001/1) and (max-aspect-ratio: 3/2) {
 			body > div::before {
-				content: 'Phone (Landscape)';
+				content: 'tabl';
 			}
 		}
 
-		@media screen and (orientation: landscape) and (hover: none) and (pointer: coarse) and (min-aspect-ratio: 4/3) and (max-aspect-ratio: 3.25/2) {
+		/* note */
+		@media screen and (min-aspect-ratio: 3.000000000001/2) and (max-aspect-ratio: 16/10) {
 			body > div::before {
-				content: 'Tablet (Landscape)';
+				content: 'note';
 			}
 		}
 
-
-		/* Desktop, Portrait */
-
-		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (max-aspect-ratio: 9/21) {
+		/* desk */
+		@media screen and (min-aspect-ratio: 16.000000000001/10) and (max-aspect-ratio: 16/9) {
 			body > div::before {
-				content: 'Super Ultra Wide (Portrait)';
+				content: 'desk';
 			}
 		}
 
-		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 9.000000000001/21) and (max-aspect-ratio: 9/16) {
+		/* wide */
+		@media screen and (min-aspect-ratio: 16.000000000001/9) and (max-aspect-ratio: 21/9) {
 			body > div::before {
-				content: 'Ultra Wide (Portrait)';
+				content: 'wide';
 			}
 		}
 
-		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 9.000000000001/16) and (max-aspect-ratio: 10/16) {
+		/* vast */
+		@media screen and (min-aspect-ratio: 21.000000000001/9) {
 			body > div::before {
-				content: 'Wide (Portrait)';
+				content: 'vast';
 			}
 		}
 
-		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 10.000000000001/16) and (max-aspect-ratio: 3/3.999999999999) {
-			body > div::before {
-				content: 'HD (Portrait)';
-			}
-		}
-
-		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 3/4) and (max-aspect-ratio: 1/1) {
-			body > div::before {
-				content: 'Desktop (Portrait)';
-			}
-		}
-
-
-		/* Desktop, Landscape */
-
-		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (max-aspect-ratio: 4/3) {
-			body > div::before {
-				content: 'Desktop (Landscape)';
-			}
-		}
-
-		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 4.000000000001/3) and (max-aspect-ratio: 16/10) {
-			body > div::before {
-				content: 'HD (Landscape)';
-			}
-		}
-
-		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 16.000000000001/10) and (max-aspect-ratio: 16/9) {
-			body > div::before {
-				content: 'Wide (Landscape)';
-			}
-		}
-
-		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 16.000000000001/9) and (max-aspect-ratio: 21/9) {
-			body > div::before {
-				content: 'Ultra Wide (Landscape)';
-			}
-		}
-
-		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 21.000000000001/9) {
-			body > div::before {
-				content: 'Super Ultra Wide (Landscape)';
-			}
-		}
-
-	</style>
+</style>
 </head>
 <body>
 	<div></div>
