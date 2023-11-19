@@ -1,0 +1,147 @@
+<html>
+<head>
+	<style>
+
+		@media only screen and (orientation: portrait) {
+		  :root {
+		    --vmin: calc(100vw/100);
+		  }
+		}
+		
+		@media only screen and (orientation: landscape) {
+		  :root {
+		    --vmin: calc(100vh/100);    
+		  }
+		}
+		
+		:root {
+		  --vmin: 1vmin;
+		}
+
+		html,body {
+			padding: 0;
+			margin: 0;
+			font-family: sans-serif;
+			font-weight: 600;
+			font-size: calc(var(--vmin) * 4);
+		}
+
+		body {
+			position: relative;
+			height: 100dvh;
+		}
+
+		body > div {
+			display: inline-block;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			white-space: nowrap;
+			overflow: visible;
+		}
+
+		body > div::before {
+			content: 'Zero';
+		}
+
+		/* Handheld, Portrait */
+
+		@media screen and (orientation: portrait) and (hover: none) and (pointer: coarse) and (max-aspect-ratio: 1.999999999999/3) {
+			body > div::before {
+				content: 'Phone (Portrait)';
+			}
+		}
+
+		@media screen and (orientation: portrait) and (hover: none) and (pointer: coarse) and (min-aspect-ratio: 2/3) {
+			body > div::before {
+				content: 'Tablet (Portrait)';
+			}
+		}
+
+		/* Handheld, Landscape */
+
+		@media screen and (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-aspect-ratio: 2.5/1) {
+			body > div::before {
+				content: 'Phone (Landscape)';
+			}
+		}
+
+		@media screen and (orientation: landscape) and (hover: none) and (pointer: coarse) and (min-aspect-ratio: 4/3) and (max-aspect-ratio: 3.25/2) {
+			body > div::before {
+				content: 'Tablet (Landscape)';
+			}
+		}
+
+
+		/* Desktop, Portrait */
+
+		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (max-aspect-ratio: 9/21) {
+			body > div::before {
+				content: 'Super Ultra Wide (Portrait)';
+			}
+		}
+
+		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 9.000000000001/21) and (max-aspect-ratio: 9/16) {
+			body > div::before {
+				content: 'Ultra Wide (Portrait)';
+			}
+		}
+
+		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 9.000000000001/16) and (max-aspect-ratio: 10/16) {
+			body > div::before {
+				content: 'Wide (Portrait)';
+			}
+		}
+
+		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 10.000000000001/16) and (max-aspect-ratio: 3/3.999999999999) {
+			body > div::before {
+				content: 'HD (Portrait)';
+			}
+		}
+
+		@media screen and (orientation: portrait) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 3/4) and (max-aspect-ratio: 1/1) {
+			body > div::before {
+				content: 'Desktop (Portrait)';
+			}
+		}
+
+
+		/* Desktop, Landscape */
+
+		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (max-aspect-ratio: 4/3) {
+			body > div::before {
+				content: 'Desktop (Landscape)';
+			}
+		}
+
+		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 4.000000000001/3) and (max-aspect-ratio: 16/10) {
+			body > div::before {
+				content: 'HD (Landscape)';
+			}
+		}
+
+		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 16.000000000001/10) and (max-aspect-ratio: 16/9) {
+			body > div::before {
+				content: 'Wide (Landscape)';
+			}
+		}
+
+		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 16.000000000001/9) and (max-aspect-ratio: 21/9) {
+			body > div::before {
+				content: 'Ultra Wide (Landscape)';
+			}
+		}
+
+		@media screen and (orientation: landscape) and (hover: hover) and (pointer: fine) and (min-aspect-ratio: 21.000000000001/9) {
+			body > div::before {
+				content: 'Super Ultra Wide (Landscape)';
+			}
+		}
+
+	</style>
+</head>
+<body>
+	<div></div>
+</body>
+</html>
