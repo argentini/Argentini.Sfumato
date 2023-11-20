@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Update to .NET 8.0.0, using intrinsic design patterns for text size/leading</PackageReleaseNotes>
+        <PackageReleaseNotes>Using Tailwind naming for media breakpoints (sm, md, lg, xl, xxl). Added intrinsic media breakpoints based on aspect ratio (mobi, tabp, tabl, desk, wide, vast).</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
