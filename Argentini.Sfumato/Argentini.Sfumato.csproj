@@ -5,13 +5,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.3.0</AssemblyVersion>
-        <FileVersion>5.0.3.0</FileVersion>
+        <AssemblyVersion>5.0.4.0</AssemblyVersion>
+        <FileVersion>5.0.4.0</FileVersion>
+        <PackageVersion>5.0.4</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>argentini.sfumato</PackageId>
-        <PackageVersion>5.0.3</PackageVersion>
         <Authors>Michael Argentini</Authors>
         <Company>Argentini Unlimited, Ltd.</Company>
         <PackageTags>Sass;SCSS;CSS;CLI;Responsive;HTML;UI;UX;Framework</PackageTags>
