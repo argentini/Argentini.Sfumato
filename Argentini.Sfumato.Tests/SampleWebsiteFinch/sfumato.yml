@@ -4,19 +4,22 @@ ProjectPaths:
 DarkMode: class
 UseAutoTheme: true
 Theme:
-    MediaBreakpoints:
-        Zero: 0
-        Phab: 400
-        Tabp: 540
-        Tabl: 800
-        Note: 1280
-        Desk: 1440
-        Elas: 1600
+    # Override media breakpoint pixel widths;
+    # - Sm => tablet (portrait, small) - 40em = 640px
+    # - Md => tablet (portrait) - 48em = 768px
+    # - Lg => tablet (landscape) - 65em = 1024px
+    # - Xl => desktop - 80em = 1280px
+    # - Xxl => elastic (stops scaling at this breakpoint) - 96em = 1536px
+    # * These are the default values so this section can be removed.
+    MediaBreakpoint:
+        Sm: 40em
+        Md: 48em
+        Lg: 64em
+        Xl: 80em
+        Xxl: 96em
     FontSizeUnits:
-        Zero: 16px
-        Phab: 16px
-        Tabp: 16px
-        Tabl: 16px
-        Note: 16px
-        Desk: 16px
-        Elas: 16px
+        Sm: 16px
+        Md: 16px
+        Lg: 16px
+        Xl: 16px
+        Xxl: 16px

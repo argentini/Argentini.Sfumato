@@ -112,18 +112,18 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "tabp:[font-size:1rem]", true);
+        var selector = new CssSelector(appState, "sm:[font-size:1rem]", true);
 
         await selector.ProcessSelectorAsync();
 
         Assert.Null(selector.ScssUtilityClassGroup);
         Assert.True(selector.IsArbitraryCss);
         Assert.Equal("font-size:1rem", selector.ArbitraryValue);
-        Assert.Equal("tabp\\:\\[font-size\\:1rem\\]", selector.EscapedSelector);
+        Assert.Equal("sm\\:\\[font-size\\:1rem\\]", selector.EscapedSelector);
         Assert.Equal("font-size:1rem;".CompactCss(), selector.GetStyles().CompactCss());
         
         Assert.Single(selector.MediaQueryVariants);
-        Assert.Equal("tabp", selector.MediaQueryVariants[0]);
+        Assert.Equal("sm", selector.MediaQueryVariants[0]);
         Assert.Empty(selector.PseudoClassVariants);
     }
     
@@ -166,7 +166,7 @@ public class CssSelectorTests
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1) !important;".CompactCss(), selector.GetStyles().CompactCss());
         
-        selector = new CssSelector(appState, "tabp:focus:!bg-rose-100");
+        selector = new CssSelector(appState, "sm:focus:!bg-rose-100");
         await selector.ProcessSelectorAsync();
         
         Assert.False(selector.IsArbitraryCss);
@@ -177,7 +177,7 @@ public class CssSelectorTests
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,1) !important;".CompactCss(), selector.GetStyles().CompactCss());
 
-        selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/50");
+        selector = new CssSelector(appState, "sm:focus:!bg-rose-100/50");
         await selector.ProcessSelectorAsync();
         
         Assert.False(selector.IsArbitraryCss);
@@ -193,7 +193,7 @@ public class CssSelectorTests
         Assert.NotNull(selector.ScssUtilityClassGroup);
         Assert.Equal("background-color: rgba(255,228,230,0.5) !important;".CompactCss(), selector.GetStyles().CompactCss());
 
-        selector = new CssSelector(appState, "tabp:focus:!bg-rose-100/[50]");
+        selector = new CssSelector(appState, "sm:focus:!bg-rose-100/[50]");
         await selector.ProcessSelectorAsync();
         
         Assert.False(selector.IsArbitraryCss);
@@ -455,7 +455,7 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "tabp:bg-rose-100");
+        var selector = new CssSelector(appState, "sm:bg-rose-100");
 
         await selector.ProcessSelectorAsync();
 
@@ -472,11 +472,11 @@ public class CssSelectorTests
         Assert.Single(selector.MediaQueryVariants);
         Assert.Empty(selector.PseudoClassVariants);
         
-        Assert.Equal("tabp:bg-rose-100", selector.Selector);
-        Assert.Equal("tabp\\:bg-rose-100", selector.EscapedSelector);
-        Assert.Equal("tabp:bg-rose-100", selector.FixedSelector);
+        Assert.Equal("sm:bg-rose-100", selector.Selector);
+        Assert.Equal("sm\\:bg-rose-100", selector.EscapedSelector);
+        Assert.Equal("sm:bg-rose-100", selector.FixedSelector);
 
-        Assert.Equal("tabp:", selector.VariantSegment);
+        Assert.Equal("sm:", selector.VariantSegment);
         Assert.Equal("bg", selector.PrefixSegment);
         Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("", selector.ModifierSegment);
@@ -494,7 +494,7 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "tabp:hover:bg-rose-100");
+        var selector = new CssSelector(appState, "sm:hover:bg-rose-100");
 
         await selector.ProcessSelectorAsync();
 
@@ -511,11 +511,11 @@ public class CssSelectorTests
         Assert.Single(selector.MediaQueryVariants);
         Assert.Single(selector.PseudoClassVariants);
         
-        Assert.Equal("tabp:hover:bg-rose-100", selector.Selector);
-        Assert.Equal("tabp\\:hover\\:bg-rose-100", selector.EscapedSelector);
-        Assert.Equal("tabp:hover:bg-rose-100", selector.FixedSelector);
+        Assert.Equal("sm:hover:bg-rose-100", selector.Selector);
+        Assert.Equal("sm\\:hover\\:bg-rose-100", selector.EscapedSelector);
+        Assert.Equal("sm:hover:bg-rose-100", selector.FixedSelector);
 
-        Assert.Equal("tabp:hover:", selector.VariantSegment);
+        Assert.Equal("sm:hover:", selector.VariantSegment);
         Assert.Equal("bg", selector.PrefixSegment);
         Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("", selector.ModifierSegment);
@@ -533,7 +533,7 @@ public class CssSelectorTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var selector = new CssSelector(appState, "tabp:hover:dark:bg-rose-100");
+        var selector = new CssSelector(appState, "sm:hover:dark:bg-rose-100");
 
         await selector.ProcessSelectorAsync();
 
@@ -549,14 +549,14 @@ public class CssSelectorTests
 
         Assert.Equal(2, selector.MediaQueryVariants.Count);
         Assert.Equal("dark", selector.MediaQueryVariants[0]);
-        Assert.Equal("tabp", selector.MediaQueryVariants[1]);
+        Assert.Equal("sm", selector.MediaQueryVariants[1]);
         Assert.Single(selector.PseudoClassVariants);
         
-        Assert.Equal("tabp:hover:dark:bg-rose-100", selector.Selector);
-        Assert.Equal("tabp\\:hover\\:dark\\:bg-rose-100", selector.EscapedSelector);
-        Assert.Equal("dark:tabp:hover:bg-rose-100", selector.FixedSelector);
+        Assert.Equal("sm:hover:dark:bg-rose-100", selector.Selector);
+        Assert.Equal("sm\\:hover\\:dark\\:bg-rose-100", selector.EscapedSelector);
+        Assert.Equal("dark:sm:hover:bg-rose-100", selector.FixedSelector);
 
-        Assert.Equal("tabp:hover:dark:", selector.VariantSegment);
+        Assert.Equal("sm:hover:dark:", selector.VariantSegment);
         Assert.Equal("bg", selector.PrefixSegment);
         Assert.Equal("rose-100", selector.CoreSegment);
         Assert.Equal("", selector.ModifierSegment);

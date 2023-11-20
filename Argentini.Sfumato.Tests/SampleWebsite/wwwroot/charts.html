@@ -33,7 +33,7 @@
     >
       <!-- Desktop sidebar -->
       <aside
-        class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 tabl:block flex-shrink-0"
+        class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0"
       >
         <div class="py-4 text-gray-500 dark:text-gray-400">
           <a
@@ -302,10 +302,10 @@
         x-transition:leave="transition ease-in-out duration-150"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-10 flex items-end bg-black/50 tabp:items-center tabp:justify-center"
+        class="fixed inset-0 z-10 flex items-end bg-black/50 sm:items-center sm:justify-center"
       ></div>
       <aside
-        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 tabl:hidden"
+        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 md:hidden"
         x-show="isSideMenuOpen"
         x-transition:enter="transition ease-in-out duration-150"
         x-transition:enter-start="opacity-0 transform -translate-x-20"
@@ -580,7 +580,7 @@
           >
             <!-- Mobile hamburger -->
             <button
-              class="p-1 -ml-1 mr-5 rounded-md tabl:hidden focus:outline-none focus:shadow-outline-purple"
+              class="p-1 -ml-1 mr-5 rounded-md md:hidden focus:outline-none focus:shadow-outline-purple"
               @click="toggleSideMenu"
               aria-label="Menu"
             >
@@ -598,7 +598,7 @@
               </svg>
             </button>
             <!-- Search input -->
-            <div class="flex justify-center flex-1 note:mr-32">
+            <div class="flex justify-center flex-1 lg:mr-32">
               <div
                 class="relative w-full max-w-xl mr-6 focus-within:text-purple-500"
               >
@@ -871,7 +871,7 @@
               examples.
             </p>
 
-            <div class="grid gap-6 mb-8 tabl:grid-cols-2">
+            <div class="grid gap-6 mb-8 md:grid-cols-2">
               <!-- Doughnut/Pie chart -->
               <div
                 class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"

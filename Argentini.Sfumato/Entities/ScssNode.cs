@@ -5,7 +5,7 @@ public sealed class ScssNode
     public string Prefix { get; set; } = string.Empty; // e.g. dark
 
     private string _prefixPathValue = string.Empty;
-    public string PrefixPath // e.g. dark:tabp:
+    public string PrefixPath // e.g. dark:sm:
     {
         get => _prefixPathValue;
 

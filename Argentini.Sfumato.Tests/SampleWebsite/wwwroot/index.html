@@ -26,14 +26,14 @@
     <script src="./assets/js/charts-pie.js" defer></script>
   </head>
   <body>
-    <div class="!px-0 -order-1 text-base/5 text-base/[1.5] [font-style:normal] tabl:[font-style:normal] bg-[#ff0000] bg-no-repeat bg-rose-100/[0.6] bg-[left_top] accent-rose-100/25 motion-safe:animate-scroll"></div>
+    <div class="!px-0 -order-1 text-base/5 text-base/[1.5] [font-style:normal] md:[font-style:normal] bg-[#ff0000] bg-no-repeat bg-rose-100/[0.6] bg-[left_top] accent-rose-100/25 motion-safe:animate-scroll"></div>
     <div
       class="flex h-screen bg-gray-50 dark:bg-gray-900"
       :class="{ 'overflow-hidden': isSideMenuOpen }"
     >
       <!-- Desktop sidebar -->
       <aside
-        class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 tabl:block flex-shrink-0"
+        class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0"
       >
         <div class="py-4 text-gray-500 dark:text-gray-400">
           <a
@@ -302,10 +302,10 @@
         x-transition:leave="transition ease-in-out duration-150"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-10 flex items-end bg-black/50 tabp:items-center tabp:justify-center"
+        class="fixed inset-0 z-10 flex items-end bg-black/50 sm:items-center sm:justify-center"
       ></div>
       <aside
-        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 tabl:hidden"
+        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 md:hidden"
         x-show="isSideMenuOpen"
         x-transition:enter="transition ease-in-out duration-150"
         x-transition:enter-start="opacity-0 transform -translate-x-20"
@@ -580,7 +580,7 @@
           >
             <!-- Mobile hamburger -->
             <button
-              class="p-1 mr-5 -ml-1 rounded-md tabl:hidden focus:outline-none focus:shadow-outline-purple"
+              class="p-1 mr-5 -ml-1 rounded-md md:hidden focus:outline-none focus:shadow-outline-purple"
               @click="toggleSideMenu"
               aria-label="Menu"
             >
@@ -598,7 +598,7 @@
               </svg>
             </button>
             <!-- Search input -->
-            <div class="flex justify-center flex-1 note:mr-32">
+            <div class="flex justify-center flex-1 lg:mr-32">
               <div
                 class="relative w-full max-w-xl mr-6 focus-within:text-purple-500"
               >
@@ -855,7 +855,7 @@
               <span>View more &RightArrow;</span>
             </a>
             <!-- Cards -->
-            <div class="grid gap-6 mb-8 tabl:grid-cols-2 desk:grid-cols-4">
+            <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
               <!-- Card -->
               <div
                 class="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
@@ -988,7 +988,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1029,7 +1029,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1070,7 +1070,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1111,7 +1111,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1152,7 +1152,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1193,7 +1193,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1234,7 +1234,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1275,7 +1275,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1316,7 +1316,7 @@
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div
-                            class="relative hidden w-8 h-8 mr-3 rounded-full tabl:block"
+                            class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                           >
                             <img
                               class="object-cover w-full h-full rounded-full"
@@ -1355,14 +1355,14 @@
                 </table>
               </div>
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 tabp:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
               >
                 <span class="flex items-center col-span-3">
                   Showing 21-30 of 100
                 </span>
                 <span class="col-span-2"></span>
                 <!-- Pagination -->
-                <span class="flex col-span-4 mt-2 tabp:mt-auto tabp:justify-end">
+                <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
                   <nav aria-label="Table navigation">
                     <ul class="inline-flex items-center">
                       <li>
@@ -1458,7 +1458,7 @@
             >
               Charts
             </h2>
-            <div class="grid gap-6 mb-8 tabl:grid-cols-2">
+            <div class="grid gap-6 mb-8 md:grid-cols-2">
               <div
                 class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
               >

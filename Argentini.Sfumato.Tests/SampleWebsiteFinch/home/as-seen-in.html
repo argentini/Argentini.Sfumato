@@ -24,7 +24,7 @@
         As seen in
       </p>
       <ul
-        class="flex justify-center flex-row max-w-4xl mx-auto flex-wrap tabp:flex-nowrap"
+        class="flex justify-center flex-row max-w-4xl mx-auto flex-wrap sm:flex-nowrap"
         x-data="{outlets: [
         {
           name: 'Treehugger',
@@ -54,7 +54,7 @@
         ]}"
       >
         <template x-for="outlet in outlets">
-          <li class="basis-1/3 tabp:basis-1/8 p-sm">
+          <li class="basis-1/3 sm:basis-1/8 p-sm">
             <!-- TODO: fallback if no logo -->
             <a x-bind:href="outlet.article">
               <img

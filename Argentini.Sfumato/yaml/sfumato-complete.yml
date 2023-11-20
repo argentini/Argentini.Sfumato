@@ -538,37 +538,32 @@ Theme:
     # Override media breakpoints;
     # Using em units is ideal because they are the most reliable across
     # browsers and devices.
-    #   - Phab => phablet (large phone) - 25em = 400px
-    #   - Tabp => tablet (portrait)     - 33.75em = 540px
-    #   - Tabl => tablet (landscape)    - 50em = 800px
-    #   - Note => notebook              - 80em = 1280px
-    #   - Desk => desktop               - 90em = 1440px
-    #   - Elas => elastic               - 100em = 1600px
+    #   - Sm => tablet (portrait, small)  - 40em = 640px
+    #   - Md => tablet (portrait)         - 48em = 768px
+    #   - Lg => tablet (landscape)        - 65em = 1024px
+    #   - Xl => desktop                   - 80em = 1280px
+    #   - Xxl => elastic                  - 96em = 1536px
     #     Stops scaling at this breakpoint when using vw font size units
     #     (see FontSizeUnit below)
     # * These are the default values
     MediaBreakpoint:
-        Zero: 0em
-        Phab: 25em
-        Tabp: 33.75em
-        Tabl: 50em
-        Note: 80em
-        Desk: 90em
-        Elas: 100em
+        Sm: 40em
+        Md: 48em
+        Lg: 64em
+        Xl: 80em
+        Xxl: 96em
 
     # Override breakpoint font sizes;
     # Default value for breakpoint base font size is 16px.
     # Scaling solutions can use vw units, like "4.35vw" or "1vw".
-    # When using vw units, the elastic breakpoint will freeze scaling. 
+    # When using vw units, the xxl breakpoint will freeze scaling. 
     # * These are the default values so this section can be removed.
     FontSizeUnit:
-        Zero: 16px
-        Phab: 16px
-        Tabp: 16px
-        Tabl: 16px
-        Note: 16px
-        Desk: 16px
-        Elas: 16px
+        Sm: 16px
+        Md: 16px
+        Lg: 16px
+        Xl: 16px
+        Xxl: 16px
 
     # This example is 5 new colors named after the Dieter Rams Braun 05
     # color palette so they will be added as color options.

@@ -29,8 +29,8 @@ public class DivideY : ScssUtilityClassGroupBase
         if (ProcessDictionaryOptions(cssSelector.AppState.DivideWidthOptions, cssSelector,
                 """
                 & > * + * {
-                    border-top-width: 0px;
-                    border-bottom-width: {value};
+                    border-top-width: {value};
+                    border-bottom-width: 0px;
                 }
                 """, out Result))
             return Result;
@@ -45,8 +45,8 @@ public class DivideY : ScssUtilityClassGroupBase
         if (ProcessArbitraryValues("length,percentage", cssSelector,
                 """
                 & > * + * {
-                   border-top-width: 0px;
-                   border-bottom-width: {value};
+                   border-top-width: {value};
+                   border-bottom-width: 0px;
                 }
                 """, out Result))
             return Result;

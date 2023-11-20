@@ -59,59 +59,91 @@ public sealed class SfumatoAppState
 		new CssMediaQuery
 		{
 			PrefixOrder = 7,
-			Priority = 1,
-			Prefix = "zero",
+			Priority = 4,
+			Prefix = "sm",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: zero) {"
+			Statement = "@include sf-media($from: sm) {"
 		},
 		new CssMediaQuery
 		{
 			PrefixOrder = 8,
-			Priority = 2,
-			Prefix = "phab",
+			Priority = 8,
+			Prefix = "md",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: phab) {"
+			Statement = "@include sf-media($from: md) {"
 		},
 		new CssMediaQuery
 		{
 			PrefixOrder = 9,
-			Priority = 4,
-			Prefix = "tabp",
+			Priority = 16,
+			Prefix = "lg",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: tabp) {"
+			Statement = "@include sf-media($from: lg) {"
 		},
 		new CssMediaQuery
 		{
 			PrefixOrder = 10,
-			Priority = 8,
-			Prefix = "tabl",
+			Priority = 32,
+			Prefix = "xl",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: tabl) {"
+			Statement = "@include sf-media($from: xl) {"
 		},
 		new CssMediaQuery
 		{
 			PrefixOrder = 11,
-			Priority = 16,
-			Prefix = "note",
+			Priority = 64,
+			Prefix = "xxl",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: note) {"
+			Statement = "@include sf-media($from: xxl) {"
 		},
 		new CssMediaQuery
 		{
 			PrefixOrder = 12,
-			Priority = 32,
-			Prefix = "desk",
+			Priority = 128,
+			Prefix = "mobi",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: desk) {"
+			Statement = "@media screen and (max-aspect-ratio: 9.999999999999/16) {"
 		},
 		new CssMediaQuery
 		{
 			PrefixOrder = 13,
-			Priority = 64,
-			Prefix = "elas",
+			Priority = 256,
+			Prefix = "tabp",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: elas) {"
-		}
+			Statement = "@media screen and (min-aspect-ratio: 10/16) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 14,
+			Priority = 512,
+			Prefix = "tabl",
+			PrefixType = "breakpoint",
+			Statement = "@media screen and (min-aspect-ratio: 1/1) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 15,
+			Priority = 1024,
+			Prefix = "desk",
+			PrefixType = "breakpoint",
+			Statement = "@media screen and (min-aspect-ratio: 3/2) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 16,
+			Priority = 2048,
+			Prefix = "wide",
+			PrefixType = "breakpoint",
+			Statement = "@media screen and (min-aspect-ratio: 16/9) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 17,
+			Priority = 4096,
+			Prefix = "vast",
+			PrefixType = "breakpoint",
+			Statement = "@media screen and (min-aspect-ratio: 21/9) {"
+		},
 	};
 	
     public Dictionary<string,string> ColorOptions { get; } = new()
@@ -1346,28 +1378,24 @@ public sealed class SfumatoAppState
 	           margin-left: auto;
 	           margin-right: auto;
 
-	           @include sf-media($from: phab) {
-	              max-width: $phab-breakpoint;
+	           @include sf-media($from: sm) {
+	              max-width: $sm-breakpoint;
 	           }
 
-	           @include sf-media($from: tabp) {
-	              max-width: $tabp-breakpoint;
+	           @include sf-media($from: md) {
+	              max-width: $md-breakpoint;
 	           }
 
-	           @include sf-media($from: tabl) {
-	              max-width: $tabl-breakpoint;
+	           @include sf-media($from: lg) {
+	              max-width: $lg-breakpoint;
 	           }
 
-	           @include sf-media($from: note) {
-	              max-width: $note-breakpoint;
+	           @include sf-media($from: xl) {
+	              max-width: $xl-breakpoint;
 	           }
 
-	           @include sf-media($from: desk) {
-	              max-width: $desk-breakpoint;
-	           }
-
-	           @include sf-media($from: elas) {
-	              max-width: $elas-breakpoint;
+	           @include sf-media($from: xxl) {
+	              max-width: $xxl-breakpoint;
 	           }
 	           """,
     }; 
@@ -1734,13 +1762,11 @@ public sealed class SfumatoAppState
 	    ["max"] = "max-width: max-content;",
 	    ["fit"] = "max-width: fit-content;",
 	    ["prose"] = "max-width: 65ch;",
-	    ["screen-zero"] = "max-width: calc(#{$phab-breakpoint} - 1px);",
-	    ["screen-phab"] = "max-width: #{$tabp-breakpoint};",
-	    ["screen-tabp"] = "max-width: #{$tabl-breakpoint};",
-	    ["screen-tabl"] = "max-width: #{$note-breakpoint};",
-	    ["screen-note"] = "max-width: #{$desk-breakpoint};",
-	    ["screen-desk"] = "max-width: #{$elas-breakpoint};",
-	    ["screen-elas"] = "max-width: #{$tabp-breakpoint};"
+	    ["screen-sm"] = "max-width: #{$sm-breakpoint};",
+	    ["screen-md"] = "max-width: #{$md-breakpoint};",
+	    ["screen-lg"] = "max-width: #{$lg-breakpoint};",
+	    ["screen-xl"] = "max-width: #{$xl-breakpoint};",
+	    ["screen-xxl"] = "max-width: #{$xxl-breakpoint};"
     }; 
 
     public Dictionary<string, string> MinHStaticUtilities { get; } = new()

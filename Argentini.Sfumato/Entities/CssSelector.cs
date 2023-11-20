@@ -1,5 +1,3 @@
-using Argentini.Sfumato.Entities.ScssUtilityCollections;
-
 namespace Argentini.Sfumato.Entities;
 
 public sealed class CssSelector
@@ -35,8 +33,8 @@ public sealed class CssSelector
 	 *
 	 * Selector examples:
 	 * ------------------
-	 * tabp:focus:bg-rose/50
-	 * dark:tabp:hover:!text-base/5
+	 * sm:focus:bg-rose/50
+	 * dark:sm:hover:!text-base/5
 	 * 
 	 */
 	

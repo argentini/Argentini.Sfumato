@@ -23,34 +23,29 @@ UseAutoTheme: true
 Theme:
     
     # Override media breakpoint pixel widths;
-    # - Phab => phablet (large phone) - 25em = 400px
-    # - Tabp => tablet (portrait) - 33.75em = 540px
-    # - Tabl => tablet (landscape) - 50em = 800px
-    # - Note => notebook - 80em = 1280px
-    # - Desk => desktop - 90em = 1440px
-    # - Elas => elastic (stops scaling at this breakpoint) - 100em = 1600px
+    # - Sm => tablet (portrait, small) - 40em = 640px
+    # - Md => tablet (portrait) - 48em = 768px
+    # - Lg => tablet (landscape) - 65em = 1024px
+    # - Xl => desktop - 80em = 1280px
+    # - Xxl => elastic (stops scaling at this breakpoint) - 96em = 1536px
     # * These are the default values so this section can be removed.
     MediaBreakpoint:
-        Zero: 0em
-        Phab: 25em
-        Tabp: 33.75em
-        Tabl: 50em
-        Note: 80em
-        Desk: 90em
-        Elas: 100em
+        Sm: 40em
+        Md: 48em
+        Lg: 64em
+        Xl: 80em
+        Xxl: 96em
 
     # Override font sizes at breakpoints;
     # Default uses viewport width (vw) units to scale content.
     # For a non-scaling solution use em or px unit values, like "1em" or "16px".
     # * These are the default values so this section can be removed.
     FontSizeUnit:
-        Zero: 16px
-        Phab: 16px
-        Tabp: 16px
-        Tabl: 16px
-        Note: 16px
-        Desk: 16px
-        Elas: 16px
+        Sm: 16px
+        Md: 16px
+        Lg: 16px
+        Xl: 16px
+        Xxl: 16px
 
     Color:
         dr05a: "#af2e1b"

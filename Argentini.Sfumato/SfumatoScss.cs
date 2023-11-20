@@ -23,33 +23,30 @@ public static class SfumatoScss
 
 		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + '\n';
 
-		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Zero}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Phab}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabp-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Tabp}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Tabl}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{note-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Note}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{desk-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Desk}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{elas-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Elas}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{sm-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Sm}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{Xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
 		
 		sb.Append(mediaQueriesScss);
 
 		var initScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + '\n';
 		
-		initScss = initScss.Replace("#{zero-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Zero}");
-		initScss = initScss.Replace("#{phab-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Phab}");
-		initScss = initScss.Replace("#{tabp-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Tabp}");
-		initScss = initScss.Replace("#{tabl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Tabl}");
-		initScss = initScss.Replace("#{note-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Note}");
-		initScss = initScss.Replace("#{desk-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Desk}");
+		initScss = initScss.Replace("#{sm-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Sm}");
+		initScss = initScss.Replace("#{md-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Md}");
+		initScss = initScss.Replace("#{lg-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Lg}");
+		initScss = initScss.Replace("#{xl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xl}");
+		initScss = initScss.Replace("#{xxl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xxl}");
 
-		if (appState.Settings.Theme.FontSizeUnit?.Elas.EndsWith("vw", StringComparison.Ordinal) ?? false)
+		if (appState.Settings.Theme.FontSizeUnit?.Xxl.EndsWith("vw", StringComparison.Ordinal) ?? false)
 		{
-			initScss = initScss.Replace("#{elas-font-size}", $"calc(#{{$elas-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Elas})}} / 100))");
+			initScss = initScss.Replace("#{xxl-font-size}", $"calc(#{{xxl-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Xxl})}} / 100))");
 		}
 
 		else
 		{
-			initScss = initScss.Replace("#{elas-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Elas}");
+			initScss = initScss.Replace("#{xxl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xxl}");
 		}
 		
 		sb.Append(initScss);
@@ -84,13 +81,11 @@ public static class SfumatoScss
 
 		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + '\n';
 
-		mediaQueriesScss = mediaQueriesScss.Replace("#{zero-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Zero}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{phab-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Phab}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabp-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Tabp}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{tabl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Tabl}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{note-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Note}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{desk-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Desk}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{elas-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Elas}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{sm-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Sm}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
 		
 		sb.Append(mediaQueriesScss);
 

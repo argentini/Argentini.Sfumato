@@ -2,93 +2,67 @@ namespace Argentini.Sfumato.Entities.SfumatoSettings;
 
 public sealed class MediaBreakpoints
 {
-    private string _zero = "0em";
-    public string Zero
+    private string _sm = "40em"; // 640px
+    public string Sm
     {
-        get => _zero;
+        get => _sm;
         set
         {
-            _zero = value switch
+            _sm = value switch
             {
-                "" => "0em",
+                "" => "40em",
                 _ => value
             };
         }
     }
-    private string _phab = "25em"; // 400px
-    public string Phab
+    private string _md = "48em"; // 768px
+    public string Md
     {
-        get => _phab;
+        get => _md;
         set
         {
-            _phab = value switch
+            _md = value switch
             {
-                "" => "25em",
+                "" => "48em",
                 _ => value
             };
         }
     }
-    private string _tabp = "33.75em"; // 540px
-    public string Tabp
+    private string _lg = "64em"; // 1024px
+    public string Lg
     {
-        get => _tabp;
+        get => _lg;
         set
         {
-            _tabp = value switch
+            _lg = value switch
             {
-                "" => "33.75em",
+                "" => "64em",
                 _ => value
             };
         }
     }
-    private string _tabl = "50em"; // 800px
-    public string Tabl
+    private string _xl = "80em"; // 1280px
+    public string Xl
     {
-        get => _tabl;
+        get => _xl;
         set
         {
-            _tabl = value switch
-            {
-                "" => "50em",
-                _ => value
-            };
-        }
-    }
-    private string _note = "80em"; // 1280px
-    public string Note
-    {
-        get => _note;
-        set
-        {
-            _note = value switch
+            _xl = value switch
             {
                 "" => "80em",
                 _ => value
             };
         }
     }
-    private string _desk = "90em"; // 1440px
-    public string Desk
+    private string _xxl = "96em"; // 1536px
+    public string Xxl
     {
-        get => _desk;
+        get => _xxl;
         set
         {
-            _desk = value switch
+            _xxl = value switch
             {
-                "" => "90em",
-                _ => value
-            };
-        }
-    }
-    private string _elas = "100em"; // 1600px
-    public string Elas
-    {
-        get => _elas;
-        set
-        {
-            _elas = value switch
-            {
-                "" => "100em",
+                "" => "96em",
                 _ => value
             };
         }

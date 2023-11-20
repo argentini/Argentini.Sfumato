@@ -17,12 +17,12 @@ public class SfumatoRunnerTests
                                        <meta name="viewport" content="width=device-width, initial-scale=1">
                                        <link rel="stylesheet" href="css/sfumato.css">
                                    </head>
-                                   <body class="text-base/5 desk:text-base/[3rem]">
-                                       <div id="test-home" class="text-[1rem] note:text-[1.25rem] bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] desk:text-[#112233] desk:text-[red] desk:text-[color:--my-color-var] desk:text-[color:var(--my-color-var)]">
-                                           <p class="[font-weight:900] tabp:[font-weight:900]">Placeholder</p>
-                                           <p class="[fontweight:400] tabp:[fontweight:300] desk:text[#112233] desk:text-slate[#112233] desk:text-slate-50[#112233] desk:text-slate-50-[#112233]">Invalid Classes</p>
+                                   <body class="text-base/5 xl:text-base/[3rem]">
+                                       <div id="test-home" class="text-[1rem] lg:text-[1.25rem] bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] xl:text-[#112233] xl:text-[red] xl:text-[color:--my-color-var] xl:text-[color:var(--my-color-var)]">
+                                           <p class="[font-weight:900] sm:[font-weight:900]">Placeholder</p>
+                                           <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xl:text-slate-50-[#112233]">Invalid Classes</p>
                                        </div>
-                                       <div class="block invisible top-8 break-after-auto container aspect-screen elas:aspect-[8/4]"></div>
+                                       <div class="block invisible top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
                                        <script>
                                            function test() {
                                              let el = document.getElementById('test-element');
@@ -30,11 +30,11 @@ public class SfumatoRunnerTests
                                                    el.classList.add($`
                                                        bg-emerald-900
                                                        [font-weight:700]
-                                                       tabl:[font-weight:700]
+                                                       md:[font-weight:700]
                                                    `);
                                                    el.classList.add(`bg-emerald-950`);
                                                    el.classList.add(`[font-weight:600]`);
-                                                   el.classList.add(`note:[font-weight:600]`);
+                                                   el.classList.add(`lg:[font-weight:600]`);
                                              }
                                            }
                                        </script>
@@ -49,7 +49,7 @@ public class SfumatoRunnerTests
     {
         var appState = new SfumatoAppState();
 
-        Assert.True(SfumatoRunner.IsMediaQueryPrefix("tabp", appState));
+        Assert.True(SfumatoRunner.IsMediaQueryPrefix("sm", appState));
         Assert.True(SfumatoRunner.IsMediaQueryPrefix("dark", appState));
         Assert.False(SfumatoRunner.IsMediaQueryPrefix("hover", appState));
         Assert.False(SfumatoRunner.IsMediaQueryPrefix("focus", appState));
@@ -60,7 +60,7 @@ public class SfumatoRunnerTests
     {
         var appState = new SfumatoAppState();
         
-        Assert.False(SfumatoRunner.IsPseudoclassPrefix("tabp", appState));
+        Assert.False(SfumatoRunner.IsPseudoclassPrefix("sm", appState));
         Assert.False(SfumatoRunner.IsPseudoclassPrefix("dark", appState));
         Assert.True(SfumatoRunner.IsPseudoclassPrefix("hover", appState));
         Assert.True(SfumatoRunner.IsPseudoclassPrefix("focus", appState));
@@ -106,13 +106,13 @@ public class SfumatoRunnerTests
         Assert.Equal(
             $$""".text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
 
-        cssSelector = new CssSelector(appState, "tabp:text-base/[3rem]");
+        cssSelector = new CssSelector(appState, "sm:text-base/[3rem]");
         await cssSelector.ProcessSelectorAsync();
 
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, "tabp:");
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, "sm:");
         
         Assert.Equal(
-            $$""".tabp\:text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
+            $$""".sm\:text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
     }
     
     [Fact]
@@ -130,19 +130,19 @@ public class SfumatoRunnerTests
 
         Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new CssSelector(appState, "tabp:[width:10rem]", true);
+        scssClass = new CssSelector(appState, "sm:[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
         
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "sm:");
 
-        Assert.Equal(".tabp\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
+        Assert.Equal(".sm\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
-        scssClass = new CssSelector(appState, "tabp:hover:[width:10rem]", true);
+        scssClass = new CssSelector(appState, "sm:hover:[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
         
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "tabp:");
+        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "sm:");
 
-        Assert.Equal(".tabp\\:hover\\:\\[width\\:10rem\\] { &:hover { width:10rem; } }", result.CompactCss());
+        Assert.Equal(".sm\\:hover\\:\\[width\\:10rem\\] { &:hover { width:10rem; } }", result.CompactCss());
     }
     
     [Fact]
@@ -220,29 +220,25 @@ public class SfumatoRunnerTests
                          width: 100%;
                          margin-left: auto;
                          margin-right: auto;
-                         
-                         @include sf-media($from: phab) {
-                            max-width: $phab-breakpoint;
+
+                         @include sf-media($from: sm) {
+                             max-width: $sm-breakpoint;
                          }
-                         
-                         @include sf-media($from: tabp) {
-                            max-width: $tabp-breakpoint;
+
+                         @include sf-media($from: md) {
+                             max-width: $md-breakpoint;
                          }
-                         
-                         @include sf-media($from: tabl) {
-                            max-width: $tabl-breakpoint;
+
+                         @include sf-media($from: lg) {
+                             max-width: $lg-breakpoint;
                          }
-                         
-                         @include sf-media($from: note) {
-                            max-width: $note-breakpoint;
+
+                         @include sf-media($from: xl) {
+                             max-width: $xl-breakpoint;
                          }
-                         
-                         @include sf-media($from: desk) {
-                            max-width: $desk-breakpoint;
-                         }
-                         
-                         @include sf-media($from: elas) {
-                            max-width: $elas-breakpoint;
+
+                         @include sf-media($from: xxl) {
+                             max-width: $xxl-breakpoint;
                          }
                      }
                      .invisible {
@@ -258,47 +254,47 @@ public class SfumatoRunnerTests
                      .top-8 {
                          top: 2rem;
                      }
-                     @include sf-media($from: tabp) {
-                         .tabp\:\[font-weight\:900\] {
+                     @include sf-media($from: sm) {
+                         .sm\:\[font-weight\:900\] {
                              font-weight:900;
                          }
                      }
-                     @include sf-media($from: tabl) {
-                         .tabl\:\[font-weight\:700\] {
+                     @include sf-media($from: md) {
+                         .md\:\[font-weight\:700\] {
                              font-weight:700;
                          }
                      }
-                     @include sf-media($from: note) {
-                         .note\:\[font-weight\:600\] {
+                     @include sf-media($from: lg) {
+                         .lg\:\[font-weight\:600\] {
                              font-weight:600;
                          }
-                         .note\:text-\[1\.25rem\] {
+                         .lg\:text-\[1\.25rem\] {
                              font-size: 1.25rem;
                          }
                      }
-                     @include sf-media($from: desk) {
-                         .desk\:text-\[\#112233\] {
+                     @include sf-media($from: xl) {
+                         .xl\:text-\[\#112233\] {
                              color: #112233;
                          }
-                         .desk\:text-\[color\:--my-color-var\] {
+                         .xl\:text-\[color\:--my-color-var\] {
                              color: var(--my-color-var);
                          }
-                         .desk\:text-\[color\:var\(--my-color-var\)\] {
+                         .xl\:text-\[color\:var\(--my-color-var\)\] {
                              color: var(--my-color-var);
                          }
-                         .desk\:text-\[red\] {
+                         .xl\:text-\[red\] {
                              color: red;
                          }
-                         .desk\:text-base\/\[3rem\] {
+                         .xl\:text-base\/\[3rem\] {
                              font-size: {{runner.AppState.TextSizeOptions["base"]}};
                              line-height: 3rem;
                          }
-                         .desk\:text\[\#112233\] {
+                         .xl\:text\[\#112233\] {
                              color: #112233;
                          }
                      }
-                     @include sf-media($from: elas) {
-                         .elas\:aspect-\[8\/4\] {
+                     @include sf-media($from: xxl) {
+                         .xxl\:aspect-\[8\/4\] {
                              aspect-ratio: 8/4;
                          }
                      }
@@ -323,7 +319,7 @@ public class SfumatoRunnerTests
         const string scss = """
                             @sfumato shared;
 
-                            @include sf-media($from: tabp) {
+                            @include sf-media($from: sm) {
                             
                                 h1 {
                                     @apply text-2xl/[1.75] !font-bold;
@@ -339,7 +335,7 @@ public class SfumatoRunnerTests
             : css[..css.IndexOf("/*", StringComparison.Ordinal)];
         
         Assert.Equal($$"""
-                     @media screen and (min-width: 33.75em) {
+                     @media screen and (min-width: 40em) {
                        h1 {
                          font-size: clamp(1.3125rem, 6.525vw, 1.5rem);
                          line-height: 1.75;
