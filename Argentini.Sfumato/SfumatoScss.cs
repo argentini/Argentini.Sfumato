@@ -27,7 +27,7 @@ public static class SfumatoScss
 		mediaQueriesScss = mediaQueriesScss.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
 		mediaQueriesScss = mediaQueriesScss.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
 		mediaQueriesScss = mediaQueriesScss.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{Xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
+		mediaQueriesScss = mediaQueriesScss.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
 		
 		sb.Append(mediaQueriesScss);
 

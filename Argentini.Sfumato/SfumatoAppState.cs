@@ -2273,18 +2273,28 @@ public sealed class SfumatoAppState
 	    ["180"] = "transform: skewY(180deg);"
     };
 
+    public Dictionary<string, string> TranslateStaticUtilities { get; } = new()
+    {
+        ["0"] = "transform: translate(0px,0px);",
+        ["px"] = "transform: translate(1px,1px);",
+        ["full"] = "transform: translate(100%,100%);",
+        ["center"] = "transform: translate(-50%,-50%);"
+    }; 
+
     public Dictionary<string, string> TranslateXStaticUtilities { get; } = new()
     {
 	    ["0"] = "transform: translateX(0px);",
 	    ["px"] = "transform: translateX(1px);",
-	    ["full"] = "transform: translateX(100%);"
+	    ["full"] = "transform: translateX(100%);",
+        ["center"] = "transform: translateX(-50%);",
     }; 
 
     public Dictionary<string, string> TranslateYStaticUtilities { get; } = new()
     {
 	    ["0"] = "transform: translateY(0px);",
 	    ["px"] = "transform: translateY(1px);",
-	    ["full"] = "transform: translateY(100%);"
+	    ["full"] = "transform: translateY(100%);",
+        ["center"] = "transform: translateY(-50%);"
     }; 
     
     #endregion
