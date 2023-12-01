@@ -55,7 +55,7 @@ public sealed class SfumatoSettings
             
             #region Project Paths
 
-            var invalidExtensions = new[] { "css", "map", "scss" };
+            var invalidExtensions = new[] { "css", "map" };
 
             if (jsonSettings.ProjectPaths.Count == 0)
             {
@@ -72,13 +72,6 @@ public sealed class SfumatoSettings
                 if (string.IsNullOrEmpty(projectPath.Extensions) || invalidExtensions.Contains(projectPath.Extensions))
                     ProjectPaths.Remove(projectPath);
             }
-
-            ProjectPaths.Insert(0, new ProjectPath
-            {
-                Path = appState.WorkingPath,
-                Extensions = "scss",
-                Recurse = true
-            });
 
             #endregion
 

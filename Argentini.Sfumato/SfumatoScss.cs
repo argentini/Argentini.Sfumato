@@ -33,11 +33,11 @@ public static class SfumatoScss
 
 		var initScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + '\n';
 		
+        initScss = initScss.Replace("#{zero-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Zero}");
 		initScss = initScss.Replace("#{sm-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Sm}");
 		initScss = initScss.Replace("#{md-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Md}");
 		initScss = initScss.Replace("#{lg-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Lg}");
 		initScss = initScss.Replace("#{xl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xl}");
-		initScss = initScss.Replace("#{xxl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xxl}");
 
 		if (appState.Settings.Theme.FontSizeUnit?.Xxl.EndsWith("vw", StringComparison.Ordinal) ?? false)
 		{

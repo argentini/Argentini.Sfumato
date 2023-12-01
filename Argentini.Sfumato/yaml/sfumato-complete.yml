@@ -12,6 +12,10 @@ ProjectPaths:
       Extensions: html,htm
       Recurse: true
 
+    - Path: wwwroot/stylesheets
+      Extensions: scss
+      Recurse: true
+
 # Dark theme options:
 #   - class: html tag class "theme-dark" triggers dark mode styles
 #   - media: system theme triggers dark mode styles
@@ -556,9 +560,10 @@ Theme:
     # Override breakpoint font sizes;
     # Default value for breakpoint base font size is 16px.
     # Scaling solutions can use vw units, like "4.35vw" or "1vw".
-    # When using vw units, the xxl breakpoint will freeze scaling. 
+    # When using vw units, the xxl breakpoint will freeze scaling.
     # * These are the default values so this section can be removed.
     FontSizeUnit:
+        Zero: 16px
         Sm: 16px
         Md: 16px
         Lg: 16px

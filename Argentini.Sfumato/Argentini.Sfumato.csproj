@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.6.0</AssemblyVersion>
-        <FileVersion>5.0.6.0</FileVersion>
-        <PackageVersion>5.0.6</PackageVersion>
+        <AssemblyVersion>5.0.8.0</AssemblyVersion>
+        <FileVersion>5.0.8.0</FileVersion>
+        <PackageVersion>5.0.8</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added "Translate" classes for specifying both X and Y at once.</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed issue with default font sizes, breakpoint handling.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>

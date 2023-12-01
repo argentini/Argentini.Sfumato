@@ -2,6 +2,7 @@ namespace Argentini.Sfumato.Entities.SfumatoSettings;
 
 public sealed class FontSizeUnits
 {
+    public string Zero { get; set; } = "16px";
     public string Sm { get; set; } = "16px";
     public string Md { get; set; } = "16px";
     public string Lg { get; set; } = "16px";

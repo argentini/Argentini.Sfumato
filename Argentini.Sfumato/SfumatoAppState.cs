@@ -6,7 +6,7 @@ public sealed class SfumatoAppState
 
 	#region Shared Options
 
-	public IEnumerable<CssMediaQuery> MediaQueryPrefixes { get; } = new[]
+	public IEnumerable<CssMediaQuery> MediaQueryPrefixes { get; } = new []
 	{
 		new CssMediaQuery
 		{
@@ -62,7 +62,7 @@ public sealed class SfumatoAppState
 			Priority = 4,
 			Prefix = "sm",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: sm) {"
+			Statement = "@include sf-media($from: $sm-breakpoint) {"
 		},
 		new CssMediaQuery
 		{
@@ -70,7 +70,7 @@ public sealed class SfumatoAppState
 			Priority = 8,
 			Prefix = "md",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: md) {"
+			Statement = "@include sf-media($from: $md-breakpoint) {"
 		},
 		new CssMediaQuery
 		{
@@ -78,7 +78,7 @@ public sealed class SfumatoAppState
 			Priority = 16,
 			Prefix = "lg",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: lg) {"
+			Statement = "@include sf-media($from: $lg-breakpoint) {"
 		},
 		new CssMediaQuery
 		{
@@ -86,7 +86,7 @@ public sealed class SfumatoAppState
 			Priority = 32,
 			Prefix = "xl",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: xl) {"
+			Statement = "@include sf-media($from: $xl-breakpoint) {"
 		},
 		new CssMediaQuery
 		{
@@ -94,7 +94,7 @@ public sealed class SfumatoAppState
 			Priority = 64,
 			Prefix = "xxl",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: xxl) {"
+			Statement = "@include sf-media($from: $xxl-breakpoint) {"
 		},
 		new CssMediaQuery
 		{
@@ -419,20 +419,20 @@ public sealed class SfumatoAppState
         ["rose-950"] = "rgba(76,5,25,1.0)"
     };
     
-    public List<string> FractionDividendOptions { get; } = new()
+    public List<string> FractionDividendOptions { get; } = new ()
     {
-	    "1",
-	    "2",
-	    "3",
-	    "4",
-	    "5",
-	    "6",
-	    "7",
-	    "8",
-	    "9",
-	    "10",
-	    "11",
-	    "12",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
     };
 	
     public Dictionary<string,string> TextSizeOptions { get; } = new()
@@ -3400,7 +3400,7 @@ public sealed class SfumatoAppState
                 workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
         }
 #endif
-
+        
         return workingPath;
     }
 

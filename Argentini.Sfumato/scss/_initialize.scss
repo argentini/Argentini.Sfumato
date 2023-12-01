@@ -4,34 +4,29 @@ html {
 
     font-size: #{zero-font-size};
 
-    @include sf-media($from: phab) {
+    @include sf-media($from: $sm-breakpoint) {
 
-        font-size: #{phab-font-size};
+        font-size: #{sm-font-size};
     }
 
-    @include sf-media($from: tabp) {
+    @include sf-media($from: $md-breakpoint) {
 
-        font-size: #{tabp-font-size};
+        font-size: #{md-font-size};
     }
 
-    @include sf-media($from: tabl) {
+    @include sf-media($from: $lg-breakpoint) {
 
-        font-size: #{tabl-font-size};
+        font-size: #{lg-font-size};
     }
 
-    @include sf-media($from: note) {
+    @include sf-media($from: $xl-breakpoint) {
 
-        font-size: #{note-font-size};
+        font-size: #{xl-font-size};
     }
 
-    @include sf-media($from: desk) {
+    @include sf-media($from: $xxl-breakpoint) {
 
-        font-size: #{desk-font-size};
-    }
-
-    @include sf-media($from: elas) {
-
-        font-size: #{elas-font-size};
+        font-size: #{xxl-font-size};
     }
 }
 
