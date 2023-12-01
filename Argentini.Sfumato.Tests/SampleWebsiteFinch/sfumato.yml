@@ -1,6 +1,7 @@
 ProjectPaths:
-    - Path: wwwroot
-      Extension: html,htm
+  - Path: 
+    Extensions: html,htm
+    Recurse: true
 DarkMode: class
 UseAutoTheme: true
 Theme:
@@ -17,7 +18,8 @@ Theme:
         Lg: 64em
         Xl: 80em
         Xxl: 96em
-    FontSizeUnits:
+    FontSizeUnit:
+        Zero: 16px
         Sm: 16px
         Md: 16px
         Lg: 16px

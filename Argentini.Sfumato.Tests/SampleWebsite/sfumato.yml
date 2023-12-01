@@ -41,6 +41,7 @@ Theme:
     # For a non-scaling solution use em or px unit values, like "1em" or "16px".
     # * These are the default values so this section can be removed.
     FontSizeUnit:
+        Zero: 16px
         Sm: 16px
         Md: 16px
         Lg: 16px
