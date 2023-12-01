@@ -3,7 +3,7 @@
 
 @import "partials/manifest";
 
-@include sf-media($from: tabp) {
+@include sf-media($from: $sm-breakpoint) {
 
     h1 {
         @apply text-2xl/[1.75] font-bold;
