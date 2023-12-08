@@ -1,0 +1,12 @@
+@sfumato base;
+@sfumato utilities;
+
+@import "css/partials/manifest";
+
+@include sf-media($from: $sm-breakpoint) {
+
+    h1 {
+        @apply text-2xl/[1.75] font-bold;
+        color: black;
+    }
+}
