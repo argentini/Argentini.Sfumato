@@ -42,13 +42,13 @@ public sealed class SfumatoRunner
 	}
 	
 	/// <summary>
-	/// Build sfumato.css based on watched project files.
+	/// Build CSS based on watched SCSS files.
 	/// </summary>
 	/// <param name="timer"></param>
 	/// <param name="onlyFilesUsingBaseAndUtilities"></param>
 	public async Task PerformCoreBuildAsync(Stopwatch timer, bool onlyFilesUsingBaseAndUtilities = false)
 	{
-		var fileResults = new FileResults();
+		var fileBytes = new ConcurrentBag<decimal>();
 		var tasks = new List<Task>();
 
 		foreach (var watchedFile in AppState.WatchedScssFiles.Values)
@@ -57,19 +57,20 @@ public sealed class SfumatoRunner
 
 			if (onlyFilesUsingBaseAndUtilities == false || (onlyFilesUsingBaseAndUtilities && matches.Any(m => m.Value.Contains("base") || m.Value.Contains("utilities"))))
 			{
-				tasks.Add(TranspileAsync(watchedFile, fileResults));
+				tasks.Add(TranspileAsync(watchedFile, fileBytes));
 			}
 		}
 
 		await Task.WhenAll(tasks);
 
-		await Console.Out.WriteLineAsync($"Completed build of {fileResults.FileCount:N0} CSS file{(fileResults.FileCount != 1 ? "s" : string.Empty)} ({fileResults.TotalBytes.FormatBytes()}) in {timer.FormatTimer()}");
+		await Console.Out.WriteLineAsync($"Completed build of {fileBytes.Count:N0} CSS file{(fileBytes.Count != 1 ? "s" : string.Empty)} ({fileBytes.Sum().FormatBytes()}) in {timer.FormatTimer()}");
 	}
 
-	public async Task TranspileAsync(WatchedScssFile watchedFile, FileResults fileResults)
+	public async Task TranspileAsync(WatchedScssFile watchedFile, ConcurrentBag<decimal> fileBytes)
 	{
-		fileResults.FileCount++;
-		fileResults.TotalBytes += (await SfumatoScss.TranspileScssAsync(watchedFile.FilePath, watchedFile.Scss, this)).Length;
+        var css = await SfumatoScss.TranspileScssAsync(watchedFile.FilePath, watchedFile.Scss, this);
+        
+		fileBytes.Add(css.Length);
 	}
 	
 	#endregion
@@ -539,10 +540,4 @@ public sealed class SfumatoRunner
 	}
 	
 	#endregion
-}
-
-public class FileResults
-{
-	public int FileCount { get; set; }
-	public decimal TotalBytes { get; set; }
 }
