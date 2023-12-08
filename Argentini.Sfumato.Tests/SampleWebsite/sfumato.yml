@@ -12,6 +12,10 @@ ProjectPaths:
       Extensions: html,htm
       Recurse: true
 
+    - Path: wwwroot
+      Extensions: scss
+      Recurse: true
+
 # Dark theme options
 # - class: use class "theme-dark" on the html tag to trigger dark mode styles
 # - media: system theme triggers dark mode styles

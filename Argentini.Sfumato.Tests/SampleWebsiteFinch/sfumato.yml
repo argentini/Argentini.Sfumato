@@ -1,7 +1,13 @@
 ProjectPaths:
+
   - Path: 
     Extensions: html,htm
     Recurse: true
+
+  - Path:
+    Extensions: scss
+    Recurse: true
+
 DarkMode: class
 UseAutoTheme: true
 Theme:
