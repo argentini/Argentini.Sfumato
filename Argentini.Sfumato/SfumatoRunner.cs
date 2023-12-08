@@ -89,7 +89,7 @@ public sealed class SfumatoRunner
 		var scssResult = pool.Get();
 		var level = 0;
 		var stripPrefixes = stripPrefix.Split(':', StringSplitOptions.RemoveEmptyEntries);
-		var prefixes = cssSelector.AllVariants;
+		var prefixes = cssSelector.AllVariants.ToList();
 
 		foreach (var prefix in stripPrefixes)
 			if (prefixes.Count > 0 && prefixes[0] == prefix)
