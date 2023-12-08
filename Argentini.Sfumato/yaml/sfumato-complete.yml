@@ -1,3 +1,8 @@
+# SFUMATO Reference Project Configuration
+# =======================================
+# Alter the settings below to suit your project needs and rename this file
+# to "sfumato.yml" to use it for your project configuration.
+
 # One or more project paths:
 # - Path: relative to the location of this file
 # - Extensions: comma separated list of file extensions to watch/process
