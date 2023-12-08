@@ -284,28 +284,60 @@ body main {
   overflow-x: hidden;
 }
 
+:root {
+  --sf-form-background-color: #fff;
+  --sf-form-color: #000;
+  --sf-form-placeholder-color: rgba(107, 114, 128, 0.75);
+  --sf-form-border-color: rgba(107, 114, 128, 0.9);
+  --sf-form-focus-color: rgb(146, 215, 255);
+  --sf-form-check-color: rgb(96, 165, 250);
+  --sf-form-dark-background-color: rgba(55, 65, 81);
+  --sf-form-dark-color: #fff;
+  --sf-form-dark-placeholder-color: rgba(125, 135, 151);
+  --sf-form-focus-border-width: 0.15rem;
+  --sf-form-border-radius: 0.175rem;
+  --sf-form-border-width: 1px;
+  --sf-form-padding: 0.65rem 0.75rem;
+}
+
+html.theme-dark {
+  --sf-form-background-color: var(--sf-form-dark-background-color);
+  --sf-form-color: var(--sf-form-dark-color);
+  --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  html.theme-auto {
+    --sf-form-background-color: var(--sf-form-dark-background-color);
+    --sf-form-color: var(--sf-form-dark-color);
+    --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
+  }
+}
 .form-input, .form-textarea, .form-select, .form-multiselect {
+  display: block;
+  width: 100%;
   appearance: none;
-  background-color: #fff;
-  border-color: rgb(107, 114, 128);
-  border-width: 1px;
-  border-radius: 0.125rem;
-  padding: 0.65rem 0.75rem;
+  background-color: var(--sf-form-background-color);
+  border-color: var(--sf-form-border-color);
+  border-width: var(--sf-form-border-width);
+  border-radius: var(--sf-form-border-radius);
+  padding: var(--sf-form-padding);
+  color: var(--sf-form-color);
   font-size: 1rem;
   line-height: 1;
   --sf-shadow: 0 0 #0000;
 }
 .form-input:focus, .form-textarea:focus, .form-select:focus, .form-multiselect:focus {
-  outline: 0.1875rem solid transparent;
-  outline-offset: 0.1875rem;
+  outline: var(--sf-form-focus-border-width) solid transparent;
+  outline-offset: var(--sf-form-focus-border-width);
   --sf-ring-inset: var(--sf-empty,/*!*/ /*!*/);
   --sf-ring-offset-width: 0px;
   --sf-ring-offset-color: #fff;
-  --sf-ring-color: rgb(191, 219, 254);
+  --sf-ring-color: var(--sf-form-focus-color);
   --sf-ring-offset-shadow: var(--sf-ring-inset) 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color);
-  --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(0.1875rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
+  --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--sf-form-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
   box-shadow: var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
-  border-color: rgb(96, 165, 250);
+  border-color: var(--sf-form-border-color);
 }
 
 .form-select {
@@ -327,7 +359,7 @@ body main {
 
 .form-input::placeholder, .form-textarea::placeholder {
   opacity: 1;
-  color: rgb(107, 114, 128);
+  color: var(--sf-form-placeholder-color);
 }
 
 .form-input::-webkit-datetime-edit-fields-wrapper {
@@ -345,31 +377,32 @@ body main {
 }
 
 .form-checkbox, .form-radio {
+  display: inline-block;
   appearance: none;
   padding: 0;
   print-color-adjust: exact;
-  display: inline-block;
   vertical-align: middle;
   background-origin: border-box;
   user-select: none;
   flex-shrink: 0;
   height: 1rem;
   width: 1rem;
-  color: rgb(96, 165, 250);
-  background-color: #fff;
-  border-color: rgb(107, 114, 128);
-  border-width: 1px;
+  color: var(--sf-form-check-color);
+  background-color: var(--sf-form-background-color);
+  border-color: var(--sf-form-border-color);
+  border-width: var(--sf-form-border-width);
+  cursor: pointer;
   --sf-shadow: 0 0 #0000;
 }
 .form-checkbox:focus, .form-radio:focus {
-  outline: 0.1875rem solid transparent;
-  outline-offset: 0.1875rem;
+  outline: var(--sf-form-focus-border-width) solid transparent;
+  outline-offset: var(--sf-form-focus-border-width);
   --sf-ring-inset: var(--sf-empty,/*!*/ /*!*/);
   --sf-ring-offset-width: 0rem;
   --sf-ring-offset-color: #fff;
-  --sf-ring-color: rgb(191, 219, 254);
+  --sf-ring-color: var(--sf-form-focus-color);
   --sf-ring-offset-shadow: var(--sf-ring-inset) 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color);
-  --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(0.1875rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
+  --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--sf-form-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
   box-shadow: var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
 }
 .form-checkbox:checked, .form-radio:checked {
@@ -385,7 +418,7 @@ body main {
 }
 
 .form-checkbox {
-  border-radius: 0.125rem;
+  border-radius: var(--sf-form-border-radius);
 }
 .form-checkbox:checked {
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
@@ -1452,20 +1485,12 @@ body main {
   border-color: rgb(107, 114, 128);
 }
 
-.focus\:border-green-400:focus {
-  border-color: rgb(74, 222, 128);
-}
-
 .focus\:border-purple-300:focus {
   border-color: rgb(216, 180, 254);
 }
 
 .focus\:border-purple-400:focus {
   border-color: rgb(192, 132, 252);
-}
-
-.focus\:border-red-400:focus {
-  border-color: rgb(248, 113, 113);
 }
 
 .focus\:outline-none:focus {

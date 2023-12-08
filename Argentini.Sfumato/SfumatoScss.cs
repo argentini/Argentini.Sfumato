@@ -51,8 +51,12 @@ public static class SfumatoScss
 		
 		sb.Append(initScss);
 
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n');
-
+        var formScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n';
+        
+        formScss = formScss.Replace("$dark-mode: \"\";", $"$dark-mode: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
+        
+        sb.Append(formScss);
+        
 		diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS base for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
 		var result = sb.ToString();
