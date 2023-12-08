@@ -1,10 +1,7 @@
 # SFUMATO Reference Project Configuration
 # ==============================================================================
-# Alter the settings below to suit your project needs and rename this file
-# to "sfumato.yml" to use it for your project configuration.
-#
-# In the Theme section, remove any settings for which defaults will be used
-# to keep this file manageable.
+# In the Theme section, make changes and remove any settings for which defaults
+# will be used to keep this file manageable.
 # ==============================================================================
 
 # One or more project paths:
@@ -30,7 +27,7 @@ ProjectPaths:
 #   - media: system theme triggers dark mode styles
 DarkMode: class
 
-# Use auto theme class "theme-auto" on html tag to trigger dark mode styles
+# Use with DarkMode:class; use html tag class "theme-auto" to trigger dark mode styles
 # with the system theme
 UseAutoTheme: true
 
