@@ -28,6 +28,7 @@ public static class SfumatoScss
 		mediaQueriesScss = mediaQueriesScss.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
 		mediaQueriesScss = mediaQueriesScss.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
 		mediaQueriesScss = mediaQueriesScss.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
+        mediaQueriesScss = mediaQueriesScss.Replace("$internal-dark-theme: \"\";", $"$internal-dark-theme: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
 		
 		sb.Append(mediaQueriesScss);
 
@@ -52,8 +53,6 @@ public static class SfumatoScss
 		sb.Append(initScss);
 
         var formScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n';
-        
-        formScss = formScss.Replace("$dark-mode: \"\";", $"$dark-mode: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
         
         sb.Append(formScss);
         

@@ -166,3 +166,33 @@ $media-features: (
         }
     }
 }
+
+// sf-dark-theme() - Styles should only be applied to Sfumato dark theme variants.
+@mixin sf-dark-theme() {
+
+    $internal-dark-theme: "";
+
+    @if ($internal-dark-theme == "class" or $internal-dark-theme == "class+auto") {
+    
+        html.theme-dark {
+            @content;
+        }
+    
+        @if ($internal-dark-theme == "class+auto") {
+    
+            @media (prefers-color-scheme: dark) {
+                html.theme-auto {
+                    @content;
+                }
+            }
+        }
+    
+    } @else {
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                @content;
+            }
+        }
+    }
+}

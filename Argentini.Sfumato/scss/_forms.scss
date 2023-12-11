@@ -19,36 +19,10 @@
     --sf-form-padding: 0.65rem 0.75rem;
 }
 
-$dark-mode: "";
-
-@if ($dark-mode == "class" or $dark-mode == "class+auto") {
-
-    html.theme-dark {
-        --sf-form-background-color: var(--sf-form-dark-background-color);
-        --sf-form-color: var(--sf-form-dark-color);
-        --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
-    }
-
-    @if ($dark-mode == "class+auto") {
-
-        @media (prefers-color-scheme: dark) {
-            html.theme-auto {
-                --sf-form-background-color: var(--sf-form-dark-background-color);
-                --sf-form-color: var(--sf-form-dark-color);
-                --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
-            }
-        }
-    }
-
-} @else {
-    
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --sf-form-background-color: var(--sf-form-dark-background-color);
-            --sf-form-color: var(--sf-form-dark-color);
-            --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
-        }
-    }
+@include sf-dark-theme() {
+    --sf-form-background-color: var(--sf-form-dark-background-color);
+    --sf-form-color: var(--sf-form-dark-color);
+    --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
 }
 
 .form-input, .form-textarea, .form-select, .form-multiselect {
