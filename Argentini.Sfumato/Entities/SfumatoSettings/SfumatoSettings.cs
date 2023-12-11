@@ -173,15 +173,9 @@ public sealed class SfumatoSettings
             foreach (var item in Theme.GridAutoRows ?? new Dictionary<string, string>())
                 appState.AutoRowsStaticUtilities.TryAddUpdate(item, "grid-auto-rows: {value};");
             
-            foreach (var item in Theme.GridColEnd ?? new Dictionary<string, string>())
-                appState.ColEndStaticUtilities.TryAddUpdate(item, "grid-column-end: {value};");
+            foreach (var item in Theme.GridCol ?? new Dictionary<string, string>())
+                appState.ColStaticUtilities.TryAddUpdate(item, "grid-column: {value};");
 
-            foreach (var item in Theme.GridColSpan ?? new Dictionary<string, string>())
-                appState.ColSpanStaticUtilities.TryAddUpdate(item, "grid-column: {value};");
-
-            foreach (var item in Theme.GridColStart ?? new Dictionary<string, string>())
-                appState.ColStartStaticUtilities.TryAddUpdate(item, "grid-column-start: {value};");
-            
             foreach (var item in Theme.Gap ?? new Dictionary<string, string>())
             {
                 appState.GapStaticUtilities.TryAddUpdate(item, "gap: {value};");

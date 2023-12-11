@@ -137,20 +137,10 @@ Theme:
         # This option does not exist so it will be added 
         hero: minmax(0, 100em)
 
-    GridColEnd:
+    GridCol:
 
         # This option does not exist so it will be added 
-        last: -1
-
-    GridColSpan:
-
-        # This option does not exist so it will be added 
-        last: 3 / -1
-
-    GridColStart:
-
-        # This option does not exist so it will be added 
-        first: 1
+        full-row: 1 / -1
 
     Gap:
 

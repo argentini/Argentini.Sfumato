@@ -1,16 +1,14 @@
 namespace Argentini.Sfumato.Entities.ScssUtilityCollections.FlexboxAndGrid;
 
-public class ColSpan : ScssUtilityClassGroupBase 
+public class Col : ScssUtilityClassGroupBase 
 {
-    public override string SelectorPrefix => "col-span";
-    
+    public override string SelectorPrefix => "col";
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(appState.ColSpanStaticUtilities);
-
-        await AddToIndexAsync(appState.FlexboxAndGridWholeNumberOptions);
+        await AddToIndexAsync(appState.ColStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -20,14 +18,7 @@ public class ColSpan : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ColSpanStaticUtilities, cssSelector, out Result))
-            return Result;
-        
-        #endregion
-        
-        #region Calculated Utilities
-
-        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-column: span {value} / span {value};", out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ColStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion

@@ -48,9 +48,7 @@ public sealed class Theme
 
     public Dictionary<string,string>? GridAutoCols { get; set; } = new();
     public Dictionary<string,string>? GridAutoRows { get; set; } = new();
-    public Dictionary<string,string>? GridColEnd { get; set; } = new();
-    public Dictionary<string,string>? GridColSpan { get; set; } = new();
-    public Dictionary<string,string>? GridColStart { get; set; } = new();
+    public Dictionary<string,string>? GridCol { get; set; } = new();
     public Dictionary<string,string>? Gap { get; set; } = new();
     public Dictionary<string,string>? GridCols { get; set; } = new();
     public Dictionary<string,string>? GridRows { get; set; } = new();

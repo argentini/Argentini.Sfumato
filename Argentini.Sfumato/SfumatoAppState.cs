@@ -791,27 +791,56 @@ public sealed class SfumatoAppState
     {
 	    ["full"] = "100%"
     };
-    
-    public Dictionary<string, string> ColAutoStaticUtilities { get; } = new()
+
+    public Dictionary<string, string> ColStaticUtilities { get; } = new()
     {
-	    [""] = "grid-column: auto;",
+        ["auto"] = "grid-column: auto;",
+
+        ["span-1"] = "grid-column: span 1 / span 1;",
+        ["span-2"] = "grid-column: span 2 / span 2;",
+        ["span-3"] = "grid-column: span 3 / span 3;",
+        ["span-4"] = "grid-column: span 4 / span 4;",
+        ["span-5"] = "grid-column: span 5 / span 5;",
+        ["span-6"] = "grid-column: span 6 / span 6;",
+        ["span-7"] = "grid-column: span 7 / span 7;",
+        ["span-8"] = "grid-column: span 8 / span 8;",
+        ["span-9"] = "grid-column: span 9 / span 9;",
+        ["span-10"] = "grid-column: span 10 / span 10;",
+        ["span-11"] = "grid-column: span 11 / span 11;",
+        ["span-12"] = "grid-column: span 12 / span 12;",
+        ["span-full"] = "grid-column: 1 / -1;",
+        
+        ["start-1"] = "grid-column-start: 1;",
+        ["start-2"] = "grid-column-start: 2;",
+        ["start-3"] = "grid-column-start: 3;",
+        ["start-4"] = "grid-column-start: 4;",
+        ["start-5"] = "grid-column-start: 5;",
+        ["start-6"] = "grid-column-start: 6;",
+        ["start-7"] = "grid-column-start: 7;",
+        ["start-8"] = "grid-column-start: 8;",
+        ["start-9"] = "grid-column-start: 9;",
+        ["start-10"] = "grid-column-start: 10;",
+        ["start-11"] = "grid-column-start: 11;",
+        ["start-12"] = "grid-column-start: 12;",
+        ["start-13"] = "grid-column-start: 13;",
+        ["start-auto"] = "grid-column-start: auto;",
+
+        ["end-1"] = "grid-column-end: 1;",
+        ["end-2"] = "grid-column-end: 2;",
+        ["end-3"] = "grid-column-end: 3;",
+        ["end-4"] = "grid-column-end: 4;",
+        ["end-5"] = "grid-column-end: 5;",
+        ["end-6"] = "grid-column-end: 6;",
+        ["end-7"] = "grid-column-end: 7;",
+        ["end-8"] = "grid-column-end: 8;",
+        ["end-9"] = "grid-column-end: 9;",
+        ["end-10"] = "grid-column-end: 10;",
+        ["end-11"] = "grid-column-end: 11;",
+        ["end-12"] = "grid-column-end: 12;",
+        ["end-13"] = "grid-column-end: 13;",
+        ["end-auto"] = "grid-column-end: auto;",
     };
     
-    public Dictionary<string, string> ColEndStaticUtilities { get; } = new()
-    {
-	    ["auto"] = "grid-column-end: auto;",
-    }; 
-
-    public Dictionary<string, string> ColSpanStaticUtilities { get; } = new()
-    {
-	    ["full"] = "grid-column: 1 / -1;",
-    }; 
-
-    public Dictionary<string, string> ColStartStaticUtilities { get; } = new()
-    {
-	    ["auto"] = "grid-column-start: auto;",
-    }; 
-
     public Dictionary<string, string> ContentAroundStaticUtilities { get; } = new()
     {
 	    [""] = "align-content: space-around;",
