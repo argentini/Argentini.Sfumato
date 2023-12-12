@@ -1407,23 +1407,23 @@ public sealed class SfumatoAppState
 	           margin-left: auto;
 	           margin-right: auto;
 
-	           @include sf-media($from: sm) {
+	           @include sf-media($from: $sm-breakpoint) {
 	              max-width: $sm-breakpoint;
 	           }
 
-	           @include sf-media($from: md) {
+	           @include sf-media($from: $md-breakpoint) {
 	              max-width: $md-breakpoint;
 	           }
 
-	           @include sf-media($from: lg) {
+	           @include sf-media($from: $lg-breakpoint) {
 	              max-width: $lg-breakpoint;
 	           }
 
-	           @include sf-media($from: xl) {
+	           @include sf-media($from: $xl-breakpoint) {
 	              max-width: $xl-breakpoint;
 	           }
 
-	           @include sf-media($from: xxl) {
+	           @include sf-media($from: $xxl-breakpoint) {
 	              max-width: $xxl-breakpoint;
 	           }
 	           """,
