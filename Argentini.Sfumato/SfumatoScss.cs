@@ -42,7 +42,7 @@ public static class SfumatoScss
 
 		if (appState.Settings.Theme.FontSizeUnit?.Xxl.EndsWith("vw", StringComparison.Ordinal) ?? false)
 		{
-			initScss = initScss.Replace("#{xxl-font-size}", $"calc(#{{xxl-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Xxl})}} / 100))");
+			initScss = initScss.Replace("#{xxl-font-size}", $"calc(#{{$xxl-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Xxl})}} / 100))");
 		}
 
 		else
