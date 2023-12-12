@@ -565,20 +565,20 @@ Theme:
     # Override media breakpoints;
     # Using em units is ideal because they are the most reliable across
     # browsers and devices.
-    #   - Sm => tablet (portrait, small)  - 40em = 640px
-    #   - Md => tablet (portrait)         - 48em = 768px
-    #   - Lg => tablet (landscape)        - 64em = 1024px
-    #   - Xl => desktop                   - 80em = 1280px
-    #   - Xxl => elastic                  - 96em = 1536px
+    #   - Sm => tablet (portrait, small)  - 640px
+    #   - Md => tablet (portrait)         - 768px
+    #   - Lg => tablet (landscape)        - 1024px
+    #   - Xl => desktop                   - 1280px
+    #   - Xxl => elastic                  - 1536px
     #     Stops scaling at this breakpoint when using vw font size units
     #     (see FontSizeUnit below)
     # * These are the default values
     MediaBreakpoint:
-        Sm: 40em
-        Md: 48em
-        Lg: 64em
-        Xl: 80em
-        Xxl: 96em
+        Sm: 640px
+        Md: 768px
+        Lg: 1024px
+        Xl: 1280px
+        Xxl: 1536px
 
     # Override breakpoint font sizes;
     # Default value for breakpoint base font size is 16px.
