@@ -6,6 +6,6 @@ It will watch you as you work, keep track of your markup changes, and generate a
 Sfumato has Dart Sass built-in (cross platform) so you gain all the benefits of SCSS logic and features as part of your stylesheet development.
 And Sfumato uses the same class naming convention as Tailwind CSS.
 
-Install dotnet 7 or later from [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download) and then install Sfumato with the following command:
+Install dotnet 8 or later from [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download) and then install Sfumato with the following command:
 
 ```dotnet tool install --global argentini.sfumato```
