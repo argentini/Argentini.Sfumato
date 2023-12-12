@@ -25,20 +25,6 @@ DarkMode: class
 UseAutoTheme: true
 
 Theme:
-    
-    # Override media breakpoint pixel widths;
-    # - Sm => tablet (portrait, small) - 40em = 640px
-    # - Md => tablet (portrait) - 48em = 768px
-    # - Lg => tablet (landscape) - 65em = 1024px
-    # - Xl => desktop - 80em = 1280px
-    # - Xxl => elastic (stops scaling at this breakpoint) - 96em = 1536px
-    # * These are the default values so this section can be removed.
-    MediaBreakpoint:
-        Sm: 40em
-        Md: 48em
-        Lg: 64em
-        Xl: 80em
-        Xxl: 96em
 
     # Override font sizes at breakpoints;
     # Default uses viewport width (vw) units to scale content.
