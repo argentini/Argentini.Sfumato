@@ -299,6 +299,9 @@ public sealed class SfumatoSettings
             foreach (var item in Theme.Columns ?? new Dictionary<string, string>())
                 appState.ColumnsStaticUtilities.TryAddUpdate(item, "columns: {value};");
 
+            foreach (var item in Theme.Container ?? new Dictionary<string, string>())
+                appState.ContainerStaticUtilities.TryAddUpdate(item, "{value}");
+            
             foreach (var item in Theme.InsetEnd ?? new Dictionary<string, string>())
                 appState.EndStaticUtilities.TryAddUpdate(item, "inset-inline-end: {value};");
 
