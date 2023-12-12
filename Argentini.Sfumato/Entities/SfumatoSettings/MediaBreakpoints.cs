@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.Entities.SfumatoSettings;
 
 public sealed class MediaBreakpoints
 {
-    private string _sm = "40em"; // 640px
+    private string _sm = "640px"; // 640px
     public string Sm
     {
         get => _sm;
@@ -10,12 +10,12 @@ public sealed class MediaBreakpoints
         {
             _sm = value switch
             {
-                "" => "40em",
+                "" => "640px",
                 _ => value
             };
         }
     }
-    private string _md = "48em"; // 768px
+    private string _md = "768px"; // 768px
     public string Md
     {
         get => _md;
@@ -23,12 +23,12 @@ public sealed class MediaBreakpoints
         {
             _md = value switch
             {
-                "" => "48em",
+                "" => "768px",
                 _ => value
             };
         }
     }
-    private string _lg = "64em"; // 1024px
+    private string _lg = "1024px"; // 1024px
     public string Lg
     {
         get => _lg;
@@ -36,12 +36,12 @@ public sealed class MediaBreakpoints
         {
             _lg = value switch
             {
-                "" => "64em",
+                "" => "1024px",
                 _ => value
             };
         }
     }
-    private string _xl = "80em"; // 1280px
+    private string _xl = "1280px"; // 1280px
     public string Xl
     {
         get => _xl;
@@ -49,12 +49,12 @@ public sealed class MediaBreakpoints
         {
             _xl = value switch
             {
-                "" => "80em",
+                "" => "1280px",
                 _ => value
             };
         }
     }
-    private string _xxl = "96em"; // 1536px
+    private string _xxl = "1536px"; // 1536px
     public string Xxl
     {
         get => _xxl;
@@ -62,7 +62,7 @@ public sealed class MediaBreakpoints
         {
             _xxl = value switch
             {
-                "" => "96em",
+                "" => "1536px",
                 _ => value
             };
         }
