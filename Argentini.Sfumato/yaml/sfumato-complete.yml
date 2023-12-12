@@ -567,7 +567,7 @@ Theme:
     # browsers and devices.
     #   - Sm => tablet (portrait, small)  - 40em = 640px
     #   - Md => tablet (portrait)         - 48em = 768px
-    #   - Lg => tablet (landscape)        - 65em = 1024px
+    #   - Lg => tablet (landscape)        - 64em = 1024px
     #   - Xl => desktop                   - 80em = 1280px
     #   - Xxl => elastic                  - 96em = 1536px
     #     Stops scaling at this breakpoint when using vw font size units
