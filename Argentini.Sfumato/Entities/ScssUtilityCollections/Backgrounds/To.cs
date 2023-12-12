@@ -12,6 +12,8 @@ public class To : ScssUtilityClassGroupBase
         await AddToIndexAsync(appState.ToStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
         await AddToIndexAsync(appState.PercentageOptions);
+        
+        SelectorSort = 2;
     }
     
     public override string GetStyles(CssSelector cssSelector)

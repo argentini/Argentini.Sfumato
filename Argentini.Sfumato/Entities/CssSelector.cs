@@ -44,6 +44,7 @@ public sealed class CssSelector
     public ScssUtilityClassGroupBase? ScssUtilityClassGroup { get; set; }
     public string ScssMarkup { get; set; } = string.Empty;
     public int VariantSortOrder { get; set; }
+    public int SelectorSort => ScssUtilityClassGroup?.SelectorSort ?? 0;
 
     #region Selector
     

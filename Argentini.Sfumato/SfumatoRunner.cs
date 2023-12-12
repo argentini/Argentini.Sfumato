@@ -159,7 +159,7 @@ public sealed class SfumatoRunner
 
 		#region Build Hierarchy
 
-		foreach (var (_, usedCssSelector) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Key))
+		foreach (var (_, usedCssSelector) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Value.SelectorSort).ThenBy(c => c.Value.FixedSelector))
 		{
 			if (usedCssSelector.IsInvalid)
 				continue;

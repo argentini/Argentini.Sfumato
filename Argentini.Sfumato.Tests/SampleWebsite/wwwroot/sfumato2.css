@@ -457,7 +457,7 @@ html.theme-dark {
 }
 
 /* SFUMATO UTILITY CLASSES */
-.from-dr05a, .to, .to-dr05b {
+.to-dr05c, .from-dr05a, .via-dr05b, .to {
   --sf-gradient-from-position: ;
   --sf-gradient-via-position: ;
   --sf-gradient-to-position: ;
@@ -656,10 +656,6 @@ html.theme-dark {
 
 .col-span-4 {
   grid-column: span 4/span 4;
-}
-
-.col-start-2 {
-  grid-column-start: 2;
 }
 
 .container {
@@ -1351,10 +1347,6 @@ html.theme-dark {
   line-height: clamp(0.875rem, 4.35vw, 1rem);
 }
 
-.to-dr05b {
-  --sf-gradient-to: rgba(204,99,36,1) var(--sf-gradient-to-position);
-}
-
 .top-0 {
   top: 0px;
 }
@@ -1459,6 +1451,15 @@ html.theme-dark {
 
 .z-30 {
   z-index: 30;
+}
+
+.via-dr05b {
+  --sf-gradient-to: transparent var(--sf-gradient-to-position);
+  --sf-gradient-stops: var(--sf-gradient-from), rgba(204,99,36,1) var(--sf-gradient-via-position), var(--sf-gradient-to);
+}
+
+.to-dr05c {
+  --sf-gradient-to: rgba(59,75,89,1) var(--sf-gradient-to-position);
 }
 
 .active\:bg-purple-600:active {
