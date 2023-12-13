@@ -20,9 +20,11 @@
 }
 
 @include sf-dark-theme() {
-    --sf-form-background-color: var(--sf-form-dark-background-color);
-    --sf-form-color: var(--sf-form-dark-color);
-    --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
+    :root {
+        --sf-form-background-color: var(--sf-form-dark-background-color);
+        --sf-form-color: var(--sf-form-dark-color);
+        --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
+    }
 }
 
 .form-input, .form-textarea, .form-select, .form-multiselect {
