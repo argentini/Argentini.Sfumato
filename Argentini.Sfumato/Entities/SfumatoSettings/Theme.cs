@@ -90,6 +90,7 @@ public sealed class Theme
     public Dictionary<string,string>? Clear { get; set; } = new();
     public Dictionary<string,string>? Columns { get; set; } = new();
     public Dictionary<string,string>? Container { get; set; } = new();
+    public Dictionary<string,string>? Elastic { get; set; } = new();
     public Dictionary<string,string>? InsetEnd { get; set; } = new();
     public Dictionary<string,string>? InsetStart { get; set; } = new();
     public Dictionary<string,string>? Inset { get; set; } = new();

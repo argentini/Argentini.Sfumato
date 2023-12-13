@@ -1429,6 +1429,35 @@ public sealed class SfumatoAppState
 	           """,
     }; 
 
+    public Dictionary<string, string> ElasticStaticUtilities { get; } = new()
+    {
+        [""] = """
+               width: 100%;
+               margin-left: auto;
+               margin-right: auto;
+               
+               @include sf-media($from: $sm-breakpoint) {
+                   max-width: calc(#{$md-breakpoint} - 1px);
+               }
+               
+               @include sf-media($from: $md-breakpoint) {
+                   max-width: calc(#{$lg-breakpoint} - 1px);
+               }
+               
+               @include sf-media($from: $lg-breakpoint) {
+                   max-width: calc(#{$xl-breakpoint} - 1px);
+               }
+               
+               @include sf-media($from: $xl-breakpoint) {
+                   max-width: calc(#{$xxl-breakpoint} - 1px);
+               }
+               
+               @include sf-media($from: $xxl-breakpoint) {
+                   max-width: $xxl-breakpoint;
+               }
+               """,
+    }; 
+
     public Dictionary<string, string> DisplayBlockStaticUtilities { get; } = new()
     {
 	    [""] = "display: block;"

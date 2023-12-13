@@ -271,29 +271,56 @@ Theme:
       
       # This option exists so it will be replaced 
       "": "width: 100%;
-            margin-left: auto;
-            margin-right: auto;
+           margin-left: auto;
+           margin-right: auto;
             
-            @include sf-media($from: $sm-breakpoint) {
-                max-width: $sm-breakpoint;
-            }
+           @include sf-media($from: $sm-breakpoint) {
+               max-width: $sm-breakpoint;
+           }
             
-            @include sf-media($from: $md-breakpoint) {
-                max-width: $md-breakpoint;
-            }
+           @include sf-media($from: $md-breakpoint) {
+               max-width: $md-breakpoint;
+           }
             
-            @include sf-media($from: $lg-breakpoint) {
-                max-width: $lg-breakpoint;
-            }
+           @include sf-media($from: $lg-breakpoint) {
+               max-width: $lg-breakpoint;
+           }
             
-            @include sf-media($from: $xl-breakpoint) {
-                max-width: $xl-breakpoint;
-            }
+           @include sf-media($from: $xl-breakpoint) {
+               max-width: $xl-breakpoint;
+           }
             
-            @include sf-media($from: $xxl-breakpoint) {
+           @include sf-media($from: $xxl-breakpoint) {
+              max-width: $xxl-breakpoint;
+           }"
+
+    Elastic:
+
+      # This option exists so it will be replaced 
+      "": "width: 100%;
+           margin-left: auto;
+           margin-right: auto;
+           
+           @include sf-media($from: $sm-breakpoint) {
+               max-width: calc(#{$md-breakpoint} - 1px);
+           }
+           
+           @include sf-media($from: $md-breakpoint) {
+               max-width: calc(#{$lg-breakpoint} - 1px);
+           }
+           
+           @include sf-media($from: $lg-breakpoint) {
+               max-width: calc(#{$xl-breakpoint} - 1px);
+           }
+           
+           @include sf-media($from: $xl-breakpoint) {
+               max-width: calc(#{$xxl-breakpoint} - 1px);
+           }
+           
+           @include sf-media($from: $xxl-breakpoint) {
                max-width: $xxl-breakpoint;
-            }"
-    
+           }"
+
     InsetEnd:
 
         # This option does not exist so it will be added 
