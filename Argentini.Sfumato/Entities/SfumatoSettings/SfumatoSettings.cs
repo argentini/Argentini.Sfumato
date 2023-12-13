@@ -522,6 +522,9 @@ public sealed class SfumatoSettings
             foreach (var item in Theme.ListStyleImage ?? new Dictionary<string, string>())
                 appState.ListImageStaticUtilities.TryAddUpdate(item, "list-style-image: {value};");
 
+            foreach (var item in Theme.TextSize ?? new Dictionary<string, string>())
+                appState.TextAlignStaticUtilities.TryAddUpdate(item, "font-size: {value};");
+
             foreach (var item in Theme.TextAlign ?? new Dictionary<string, string>())
                 appState.TextAlignStaticUtilities.TryAddUpdate(item, "text-align: {value};");
             

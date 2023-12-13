@@ -300,14 +300,14 @@ body main {
   --sf-form-padding: 0.65rem 0.75rem;
 }
 
-html.theme-dark {
+html.theme-dark :root {
   --sf-form-background-color: var(--sf-form-dark-background-color);
   --sf-form-color: var(--sf-form-dark-color);
   --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
 }
 
 @media (prefers-color-scheme: dark) {
-  html.theme-auto {
+  html.theme-auto :root {
     --sf-form-background-color: var(--sf-form-dark-background-color);
     --sf-form-color: var(--sf-form-dark-color);
     --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
@@ -1253,6 +1253,10 @@ html.theme-dark {
 
 .text-center {
   text-align: center;
+}
+
+.text-eyebrow {
+  font-size: 0.85rem;
 }
 
 .text-gray-400 {
