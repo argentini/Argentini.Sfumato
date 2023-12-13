@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.18.0</AssemblyVersion>
-        <FileVersion>5.0.18.0</FileVersion>
-        <PackageVersion>5.0.18</PackageVersion>
+        <AssemblyVersion>5.0.19.0</AssemblyVersion>
+        <FileVersion>5.0.19.0</FileVersion>
+        <PackageVersion>5.0.19</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
