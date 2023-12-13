@@ -190,9 +190,7 @@ $media-features: (
     } @else {
         
         @media (prefers-color-scheme: dark) {
-            :root {
-                @content;
-            }
+            @content;
         }
     }
 }
