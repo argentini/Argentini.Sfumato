@@ -92,7 +92,7 @@ internal class Program
 			Environment.Exit(0);
 		}
 
-		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "OS Dark/Light Mode" : "CSS Classes")}");
+		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "OS Theme" : "CSS Classes")}");
 		await Console.Out.WriteLineAsync($"Transpile        :  {(runner.AppState.Minify ? "Minify" : "Expanded")}");
 		await Console.Out.WriteLineAsync($"Project Path     :  {runner.AppState.WorkingPath}");
 
