@@ -154,7 +154,7 @@ public sealed class SfumatoRunner
 		var hierarchy = new ScssNode
 		{
 			Prefix = string.Empty,
-			PrefixPath = string.Empty
+			VariantsPath = string.Empty
 		};
 
 		#region Build Hierarchy
@@ -196,7 +196,7 @@ public sealed class SfumatoRunner
 						var newNode = new ScssNode
 						{
 							Prefix = prefix,
-							PrefixPath = prefixPath
+							VariantsPath = prefixPath
 						};
 
 						node.Nodes.Add(newNode);
@@ -212,7 +212,7 @@ public sealed class SfumatoRunner
 				node.Classes.Add(usedCssSelector);
 			}			
 		}
-		
+        
 		#endregion
 
 		if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase))
@@ -228,7 +228,7 @@ public sealed class SfumatoRunner
 				var newNode = new ScssNode
 				{
 					Prefix = "auto-dark",
-					PrefixPath = node.PrefixPath,
+					VariantsPath = node.VariantsPath,
 					Level = node.Level
 				};
 
@@ -317,7 +317,7 @@ public sealed class SfumatoRunner
 			var newNode = new ScssNode
 			{
 				Prefix = childNode.Prefix,
-				PrefixPath = childNode.PrefixPath,
+				VariantsPath = childNode.VariantsPath,
 				Level = childNode.Level
 			};
 			
@@ -358,7 +358,7 @@ public sealed class SfumatoRunner
 		{
 			foreach (var scssClass in scssNode.Classes)
 			{
-				var markup = await GenerateScssClassMarkupAsync(scssClass, AppState.StringBuilderPool, scssNode.PrefixPath);
+				var markup = await GenerateScssClassMarkupAsync(scssClass, AppState.StringBuilderPool, scssNode.VariantsPath);
 					
 				sb.Append($"{markup.Indent(scssNode.Level * IndentationSpaces).TrimEnd('\n')}\n");
 			}
