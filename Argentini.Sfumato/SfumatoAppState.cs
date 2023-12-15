@@ -471,6 +471,8 @@ public sealed class SfumatoAppState
     
     public Dictionary<string,string> LeadingOptions { get; } = new()
     {
+        ["0"] = "0",
+        ["1"] = "1",
 	    ["3"] = "clamp((0.75rem * 0.875), (4.35vw * 0.75), 0.75rem)",
 	    ["4"] = "clamp((1rem * 0.875), (4.35vw * 1), 1rem)",
 	    ["5"] = "clamp((1.25rem * 0.875), (4.35vw * 1.25), 1.25rem)",
