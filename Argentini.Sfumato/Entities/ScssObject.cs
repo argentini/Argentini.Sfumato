@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Entities;
 
-public sealed class ScssNode
+public sealed class ScssObject
 {
     public string Prefix { get; set; } = string.Empty; // e.g. dark
 
@@ -24,5 +24,5 @@ public sealed class ScssNode
     }
     public int Level { get; set; }
     public List<CssSelector> Classes { get; set; } = new();
-    public List<ScssNode> Nodes { get; set; } = new();
+    public List<ScssObject> Nodes { get; set; } = new();
 }

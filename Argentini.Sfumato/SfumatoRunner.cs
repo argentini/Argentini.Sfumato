@@ -151,7 +151,7 @@ public sealed class SfumatoRunner
 	/// <returns></returns>
 	public async Task<string> GenerateUtilityScssAsync()
 	{
-		var hierarchy = new ScssNode
+		var hierarchy = new ScssObject
 		{
 			Prefix = string.Empty,
 			VariantsPath = string.Empty
@@ -193,7 +193,7 @@ public sealed class SfumatoRunner
 
 					if (prefixNode is null)
 					{
-						var newNode = new ScssNode
+						var newNode = new ScssObject
 						{
 							Prefix = prefix,
 							VariantsPath = prefixPath
@@ -225,7 +225,7 @@ public sealed class SfumatoRunner
 				if (node.Prefix.Equals("dark", StringComparison.Ordinal) == false)
 					continue;
 				
-				var newNode = new ScssNode
+				var newNode = new ScssObject
 				{
 					Prefix = "auto-dark",
 					VariantsPath = node.VariantsPath,
@@ -298,9 +298,9 @@ public sealed class SfumatoRunner
 		return scss;
 	}
 
-	private async Task RecurseNodeCloneAsync(ScssNode sourceNode, ScssNode destinationNode)
+	private async Task RecurseNodeCloneAsync(ScssObject sourceObject, ScssObject destinationObject)
 	{
-		foreach (var cssSelector in sourceNode.Classes)
+		foreach (var cssSelector in sourceObject.Classes)
 		{
 			var newCssSelector = new CssSelector(AppState, cssSelector.Selector, cssSelector.IsArbitraryCss);
 			await newCssSelector.ProcessSelectorAsync();
@@ -309,77 +309,77 @@ public sealed class SfumatoRunner
 				continue;
 			
 			newCssSelector.GetStyles();
-			destinationNode.Classes.Add(newCssSelector);
+			destinationObject.Classes.Add(newCssSelector);
 		}
 
-		foreach (var childNode in sourceNode.Nodes)
+		foreach (var childNode in sourceObject.Nodes)
 		{
-			var newNode = new ScssNode
+			var newNode = new ScssObject
 			{
 				Prefix = childNode.Prefix,
 				VariantsPath = childNode.VariantsPath,
 				Level = childNode.Level
 			};
 			
-			destinationNode.Nodes.Add(newNode);
+			destinationObject.Nodes.Add(newNode);
 
 			await RecurseNodeCloneAsync(childNode, newNode);
 		}
 	}
 	
-	private async Task GenerateScssFromObjectTreeAsync(ScssNode scssNode, StringBuilder sb)
+	private async Task GenerateScssFromObjectTreeAsync(ScssObject scssObject, StringBuilder sb)
 	{
-		if (string.IsNullOrEmpty(scssNode.Prefix) == false)
+		if (string.IsNullOrEmpty(scssObject.Prefix) == false)
 		{
-			var prefix = scssNode.Prefix;
+			var prefix = scssObject.Prefix;
 
 			if (prefix.Equals("auto-dark", StringComparison.Ordinal))
 				prefix = "dark";
 			
 			var mediaQueryPrefix = AppState.MediaQueryPrefixes.First(p => p.Prefix.Equals(prefix));
 
-			if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssNode.Prefix == "dark")
+			if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase) && scssObject.Prefix == "dark")
 			{
-				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-dark {{\n");
+				sb.Append($"{Indent(scssObject.Level - 1)}html.theme-dark {{\n");
 			}
 
-			else if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase) && AppState.Settings.UseAutoTheme && scssNode.Prefix == "auto-dark")
+			else if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase) && AppState.Settings.UseAutoTheme && scssObject.Prefix == "auto-dark")
 			{
-				sb.Append($"{Indent(scssNode.Level - 1)}html.theme-auto {{ {mediaQueryPrefix.Statement}\n");
+				sb.Append($"{Indent(scssObject.Level - 1)}html.theme-auto {{ {mediaQueryPrefix.Statement}\n");
 			}
 			
 			else
 			{
-				sb.Append($"{Indent(scssNode.Level - 1)}{mediaQueryPrefix.Statement}\n");
+				sb.Append($"{Indent(scssObject.Level - 1)}{mediaQueryPrefix.Statement}\n");
 			}
 		}
 			
-		if (scssNode.Classes.Count > 0)
+		if (scssObject.Classes.Count > 0)
 		{
-			foreach (var scssClass in scssNode.Classes)
+			foreach (var scssClass in scssObject.Classes)
 			{
-				var markup = await GenerateScssClassMarkupAsync(scssClass, AppState.StringBuilderPool, scssNode.VariantsPath);
+				var markup = await GenerateScssClassMarkupAsync(scssClass, AppState.StringBuilderPool, scssObject.VariantsPath);
 					
-				sb.Append($"{markup.Indent(scssNode.Level * IndentationSpaces).TrimEnd('\n')}\n");
+				sb.Append($"{markup.Indent(scssObject.Level * IndentationSpaces).TrimEnd('\n')}\n");
 			}
 		}
 			
-		if (scssNode.Nodes.Count > 0)
+		if (scssObject.Nodes.Count > 0)
 		{
-			foreach (var node in scssNode.Nodes)
+			foreach (var node in scssObject.Nodes)
 			{
 				await GenerateScssFromObjectTreeAsync(node, sb);
 			}
 		}
 			
-		if (string.IsNullOrEmpty(scssNode.Prefix) == false)
+		if (string.IsNullOrEmpty(scssObject.Prefix) == false)
 		{
-			sb.Append($"{Indent(scssNode.Level - 1)}}}\n");
+			sb.Append($"{Indent(scssObject.Level - 1)}}}\n");
 		}
 
-		if (AppState.Settings.UseAutoTheme && scssNode.Prefix == "auto-dark")
+		if (AppState.Settings.UseAutoTheme && scssObject.Prefix == "auto-dark")
 		{
-			sb.Append($"{Indent(scssNode.Level - 1)}}}\n");
+			sb.Append($"{Indent(scssObject.Level - 1)}}}\n");
 		}
 	}
 	
