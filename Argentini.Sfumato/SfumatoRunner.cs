@@ -83,8 +83,9 @@ public sealed class SfumatoRunner
         var scss = appState.StringBuilderPool.Get();
         var suffix = appState.StringBuilderPool.Get();
         var indent = rootIndent;
-        
-        foreach (var (_, usedCssSelector) in usedCssClasses)
+        var usedCssClassesCopy = usedCssClasses.ToList();
+
+        foreach (var (_, usedCssSelector) in usedCssClassesCopy)
         {
             if (usedCssSelector.IsInvalid)
                 continue;

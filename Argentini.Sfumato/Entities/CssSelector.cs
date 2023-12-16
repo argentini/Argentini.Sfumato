@@ -100,7 +100,7 @@ public sealed class CssSelector
     public bool IsInvalid { get; set; }
 
     #endregion
-
+    
     #endregion
 
     public CssSelector()
@@ -395,6 +395,22 @@ public sealed class CssSelector
 	    {
 		    var indexOfLastSlash = rootSegment.LastIndexOf('/');
 
+            if (rootSegment.IndexOf("peer-", StringComparison.Ordinal) > -1)
+            {
+                if (AppState is not null)
+                {
+                    var matches = AppState.PeerVariantRegex.Matches(rootSegment);
+
+                    if (matches.Count == 1)
+                    {
+                        var peerSlashIndex = matches[0].Value.IndexOf('/') + rootSegment.IndexOf(matches[0].Value, StringComparison.Ordinal);
+
+                        if (peerSlashIndex == indexOfLastSlash)
+                            indexOfLastSlash = -1;
+                    }
+                }
+            }
+            
 		    if (indexOfLastSlash == 0)
 		    {
 			    IsInvalid = true;
@@ -457,6 +473,15 @@ public sealed class CssSelector
 
 			    foreach (var segment in segments)
 			    {
+                    if (segment.IndexOf("peer-", StringComparison.Ordinal) > -1)
+                    {
+                        if (TryHasPeerVariant(AppState, $"{segment}:", out _, out _))
+                        {
+                            PseudoClassVariants.Add(segment);
+                            continue;
+                        }
+                    }
+                    
 				    if (AppState?.PseudoclassPrefixes.ContainsKey(segment) == false)
 					    continue;
 
@@ -517,9 +542,12 @@ public sealed class CssSelector
     private string EscapeCssClassName()
     {
         if (string.IsNullOrEmpty(Selector))
-            return Selector;
+            return string.Empty;
 
-        var value = new StringBuilder();
+        if (AppState is null)
+            return Selector;
+        
+        var value = AppState.StringBuilderPool.Get();
 
         for (var i = 0; i < Selector.Length; i++)
         {
@@ -531,7 +559,19 @@ public sealed class CssSelector
             value.Append(c);
         }
 
-        return value.ToString();
+        if (Selector.Contains("peer-"))
+        {
+            IsInvalid = TryHasPeerVariant(AppState, Selector, out var pseudoclass, out var peerClass) == false;
+
+            if (IsInvalid == false)
+                value.Insert(0, $"{peerClass}:{pseudoclass}~.");
+        }
+
+        var result = value.ToString();
+
+        AppState?.StringBuilderPool.Return(value);
+
+        return result;
     }
 
     /// <summary>
@@ -563,6 +603,50 @@ public sealed class CssSelector
 	    }
 
 	    return ScssMarkup;
+    }
+
+    /// <summary>
+    /// Determine if a selector has a peer variant.
+    /// Output variable contains the pseudoclasss being used. 
+    /// Output variable contains the CSS escaped peer class being targeted. 
+    /// </summary>
+    /// <param name="appState"></param>
+    /// <param name="selector"></param>
+    /// <param name="pseudoclass"></param>
+    /// <returns></returns>
+    public static bool TryHasPeerVariant(SfumatoAppState? appState, string selector, out string pseudoclass, out string peerClass)
+    {
+        pseudoclass = string.Empty;
+        peerClass = string.Empty;
+        
+        if (appState is null)
+            return false;
+        
+        if (selector.IndexOf("peer-", StringComparison.Ordinal) < 0)
+            return false;
+        
+        var matches = appState.PeerVariantRegex.Matches(selector);
+
+        if (matches.Count != 1)
+            return false;
+        
+        var match = matches[0].Value.TrimEnd(':');
+        
+        pseudoclass = match[(match.IndexOf("peer-", StringComparison.Ordinal) + 5)..];
+        peerClass = "peer";
+
+        if (pseudoclass.Contains('/') && pseudoclass.EndsWith('/') == false)
+        {
+            peerClass += $@"\/{pseudoclass[(pseudoclass.IndexOf('/') + 1)..]}";
+            pseudoclass = pseudoclass[..pseudoclass.IndexOf('/')];
+        }
+
+        if (appState.PseudoclassPrefixes.ContainsKey(pseudoclass))
+            return true;
+        
+        pseudoclass = string.Empty;
+        peerClass = string.Empty;
+        return false;
     }
 }
 

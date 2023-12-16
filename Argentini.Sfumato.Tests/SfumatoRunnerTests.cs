@@ -1,6 +1,6 @@
+using System.Text.RegularExpressions;
 using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Extensions;
-using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
 
@@ -82,6 +82,37 @@ public class SfumatoRunnerTests
         });
 
         Assert.Equal($$""".text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.CompactCss());
+    }
+
+    [Fact]
+    public async Task GenerateScssClassMarkup_Peer()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var regex = new Regex(@"(peer\-([a-z\-]{1,25}[/]{0,1}([a-z\-]{0,25})?:))", RegexOptions.Compiled);
+        var matches = regex.Matches("md:peer-hover:text-base");
+
+        Assert.Single(matches);
+        Assert.Equal("peer-hover:", matches[0].Value);
+
+        matches = regex.Matches("md:peer-hover/checkbox:text-base");
+
+        Assert.Single(matches);
+        Assert.Equal("peer-hover/checkbox:", matches[0].Value);
+
+        var cssSelector = new CssSelector(appState, "peer-hover/test:text-base");
+        await cssSelector.ProcessSelectorAsync();
+
+        Assert.Equal(@"peer\/test:hover~.peer-hover\/test\:text-base", cssSelector.EscapedSelector);
+
+        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", cssSelector)
+        });
+
+        Assert.Equal($$""".peer\/test:hover~.peer-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.CompactCss());
     }
 
     [Fact]

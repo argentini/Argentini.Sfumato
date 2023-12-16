@@ -3142,7 +3142,8 @@ public sealed class SfumatoAppState
     public Regex CoreClassRegex { get; }
     public Regex SfumatoScssRegex { get; }
     public Regex SfumatoScssApplyRegex { get; }
-    
+    public Regex PeerVariantRegex { get; } = new (@"(peer\-([a-z\-]{1,25}([/]([a-z\-]{0,25})){0,1}?:))", RegexOptions.Compiled);
+
     #endregion
     
     #region Run Mode Properties
@@ -3203,7 +3204,7 @@ public sealed class SfumatoAppState
 	    
 	    var coreClassExpression = """
 (?<=[\s"'`])
-([a-z]{1,25}(\-[a-z]{0,25})?:){0,5}
+((peer\-([a-z\-]{1,25}([/]([a-z\-]{0,25})){0,1}?:))|([a-z]{1,25}(\-[a-z]{0,25})?:)){0,5}
 (
 	([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
 	(
@@ -3815,10 +3816,15 @@ public sealed class SfumatoAppState
 	public bool VariantsAreValid(string variantsList)
 	{
 		var variants = variantsList.TrimEnd(':').Split(':');
-		
-		foreach (var variant in variants)
-			if (AllVariants.Contains(variant) == false)
-				return false;
+
+        foreach (var variant in variants)
+        {
+            if (variant.StartsWith("peer-"))
+                return CssSelector.TryHasPeerVariant(this, $"{variant}:", out _, out _);
+
+            if (AllVariants.Contains(variant) == false)
+                return false;
+        }
 
 		return true;
 	}
@@ -3876,6 +3882,19 @@ public sealed class SfumatoAppState
 
 		var indexOfSlash = selector.LastIndexOf('/');
 
+        if (selector.IndexOf("peer-", StringComparison.Ordinal) > -1)
+        {
+            var matches = PeerVariantRegex.Matches(selector);
+
+            if (matches.Count == 1)
+            {
+                var peerSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
+
+                if (peerSlashIndex == indexOfSlash)
+                    indexOfSlash = -1;
+            }
+        }
+        
 		if (indexOfSlash > -1)
 			selector = selector[..indexOfSlash];
 
@@ -3960,13 +3979,13 @@ public sealed class SfumatoAppState
 		{
 			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))
 				continue;
-
+            
 			if (cssSelector.ScssUtilityClassGroup is null)
 				continue;
 
 			var newCssSelector = new CssSelector(this, cssSelector.Selector, cssSelector.IsArbitraryCss);
 			await newCssSelector.ProcessSelectorAsync();
-			
+            
 			if (newCssSelector.IsInvalid)
 				continue;
 			

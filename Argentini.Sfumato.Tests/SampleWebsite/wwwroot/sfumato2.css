@@ -456,7 +456,7 @@ html.theme-dark :root {
   --sf-gradient-to-position: ;
 }
 
-.focus\:ring-pink-300, .focus\:ring-2, .focus\:ring-inset {
+.focus\:ring-pink-300, .focus\:ring-2, .peer\/two:focus ~ .peer-focus\/two\:ring-blue-300, .peer\/two:focus ~ .peer-focus\/two\:ring-4, .peer:focus ~ .peer-focus\:ring-4, .peer\/two:focus ~ .dark\:peer-focus\/two\:ring-blue-800, .peer:focus ~ .peer-focus\:ring-blue-300, .focus\:ring-inset, .peer:focus ~ .dark\:peer-focus\:ring-blue-800 {
   --sf-ring-inset: ;
   --sf-ring-offset-width: 0px;
   --sf-ring-offset-color: #fff;
@@ -1613,6 +1613,54 @@ html.theme-dark :root {
   text-decoration-line: underline;
 }
 
+.peer:checked ~ .peer-checked\:bg-blue-600 {
+  background-color: rgb(37, 99, 235);
+}
+
+.peer\/two:checked ~ .peer-checked\/two\:bg-blue-600 {
+  background-color: rgb(37, 99, 235);
+}
+
+.peer:focus ~ .peer-focus\:outline-none {
+  outline-style: none;
+}
+
+.peer:focus ~ .peer-focus\:ring-4 {
+  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.25rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
+}
+
+.peer:focus ~ .peer-focus\:ring-blue-300 {
+  --sf-ring-color: rgba(147,197,253,1);
+}
+
+.peer\/two:focus ~ .peer-focus\/two\:outline-none {
+  outline-style: none;
+}
+
+.peer\/two:focus ~ .peer-focus\/two\:ring-4 {
+  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.25rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
+}
+
+.peer\/two:focus ~ .peer-focus\/two\:ring-blue-300 {
+  --sf-ring-color: rgba(147,197,253,1);
+}
+
+.peer:checked ~ .peer-checked\:after\:border-white::after {
+  border-color: rgb(255, 255, 255);
+}
+
+.peer:checked ~ .peer-checked\:after\:translate-x-full::after {
+  transform: translateX(100%);
+}
+
+.peer\/two:checked ~ .peer-checked\/two\:after\:border-white::after {
+  border-color: rgb(255, 255, 255);
+}
+
+.peer\/two:checked ~ .peer-checked\/two\:after\:translate-x-full::after {
+  transform: translateX(100%);
+}
+
 @media screen and (min-width: 640px) {
   .sm\:flex-row {
     flex-direction: row;
@@ -1802,6 +1850,12 @@ html.theme-dark .dark\:hover\:bg-gray-800:hover {
 }
 html.theme-dark .dark\:hover\:text-gray-200:hover {
   color: rgb(229, 231, 235);
+}
+html.theme-dark .peer:focus ~ .dark\:peer-focus\:ring-blue-800 {
+  --sf-ring-color: rgba(30,64,175,1);
+}
+html.theme-dark .peer\/two:focus ~ .dark\:peer-focus\/two\:ring-blue-800 {
+  --sf-ring-color: rgba(30,64,175,1);
 }
 @media screen and (min-width: 768px) {
   html.theme-dark .dark\:md\:text-base {
