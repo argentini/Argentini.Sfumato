@@ -280,8 +280,13 @@ public sealed class SfumatoRunner
                 suffix.Clear();
 
                 darkClass.Append($"html.theme-dark {{{Environment.NewLine}");
-                autoClass.Append($"html.theme-auto {{{Environment.NewLine}");
-                autoClass.Append($"{" ".Repeat(4)}{AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
+                
+                if (AppState.Settings.UseAutoTheme)
+                {
+                    autoClass.Append($"html.theme-auto {{{Environment.NewLine}");
+                    autoClass.Append($"{" ".Repeat(4)}{AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
+                }
+
                 indent++;
                 
                 foreach (var prefix in prefixes)
@@ -295,7 +300,10 @@ public sealed class SfumatoRunner
                         continue;
 
                     darkClass.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
-                    autoClass.Append($"{" ".Repeat((indent + 1) * 4)}{variant.Statement}{Environment.NewLine}");
+
+                    if (AppState.Settings.UseAutoTheme)
+                        autoClass.Append($"{" ".Repeat((indent + 1) * 4)}{variant.Statement}{Environment.NewLine}");
+                    
                     suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
                     
                     indent++;
@@ -305,14 +313,19 @@ public sealed class SfumatoRunner
                 darkClass.Append(suffix);
                 darkClass.Append($"}}{Environment.NewLine}");
 
-                autoClass.Append(GenerateSingleClassMarkup(usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
-                autoClass.Append(suffix.ToString().Indent(2 * 4));
-                autoClass.Append($"{" ".Repeat(1 * 4)}}}{Environment.NewLine}");
-                autoClass.Append($"}}{Environment.NewLine}");
+                if (AppState.Settings.UseAutoTheme)
+                {
+                    autoClass.Append(GenerateSingleClassMarkup(usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                    autoClass.Append(suffix.ToString().Indent(2 * 4));
+                    autoClass.Append($"{" ".Repeat(1 * 4)}}}{Environment.NewLine}");
+                    autoClass.Append($"}}{Environment.NewLine}");
+                }
             }
 
             scss.Append(darkClass);
-            scss.Append(autoClass);
+
+            if (AppState.Settings.UseAutoTheme)
+                scss.Append(autoClass);
             
             AppState.StringBuilderPool.Return(darkClass);
             AppState.StringBuilderPool.Return(autoClass);
