@@ -168,7 +168,7 @@ h1 {
 
         Assert.Single(runner.AppState.UsedClasses);
 
-        markup = await runner.GenerateUtilityScssAsync();
+        markup = runner.GenerateUtilityScss();
         
         Assert.Equal($$""".text-base\/5 { font-size: {{runner.AppState.TextSizeOptions["base"]}}; line-height: {{runner.AppState.LeadingOptions["5"]}}; }""".CompactCss(), markup.CompactCss());
 
@@ -189,7 +189,7 @@ h1 {
 
         Assert.Single(runner.AppState.UsedClasses);
 
-        markup = await runner.GenerateUtilityScssAsync();
+        markup = runner.GenerateUtilityScss();
         
         Assert.Equal($$""".text-base\/\[3rem\] { font-size: {{runner.AppState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), markup.CompactCss());
         
@@ -210,7 +210,7 @@ h1 {
 
         Assert.Single(runner.AppState.UsedClasses);
 
-        markup = await runner.GenerateUtilityScssAsync();
+        markup = runner.GenerateUtilityScss();
         
         Assert.Equal(".w-1\\/2{\nwidth:50%;\n}", markup.Trim().Replace(" ", string.Empty));
         
@@ -231,7 +231,7 @@ h1 {
 
         Assert.Single(runner.AppState.UsedClasses);
 
-        markup = await runner.GenerateUtilityScssAsync();
+        markup = runner.GenerateUtilityScss();
         
         Assert.Equal(".\\!px-0 { padding-left: 0px !important; padding-right: 0px !important; }".CompactCss(), markup.CompactCss());
 
@@ -252,7 +252,7 @@ h1 {
 
         Assert.Single(runner.AppState.UsedClasses);
 
-        markup = await runner.GenerateUtilityScssAsync();
+        markup = runner.GenerateUtilityScss();
         
         Assert.Equal(".\\!\\[padding\\:2rem\\] { padding:2rem !important; }".CompactCss(), markup.CompactCss());
 

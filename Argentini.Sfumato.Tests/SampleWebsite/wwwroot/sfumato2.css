@@ -300,14 +300,8 @@ body main {
   --sf-form-padding: 0.65rem 0.75rem;
 }
 
-html.theme-dark :root {
-  --sf-form-background-color: var(--sf-form-dark-background-color);
-  --sf-form-color: var(--sf-form-dark-color);
-  --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
-}
-
 @media (prefers-color-scheme: dark) {
-  html.theme-auto :root {
+  :root {
     --sf-form-background-color: var(--sf-form-dark-background-color);
     --sf-form-color: var(--sf-form-dark-color);
     --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
@@ -1708,214 +1702,116 @@ html.theme-dark :root {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-html.theme-dark .dark\:bg-blue-500 {
-  background-color: rgb(59, 130, 246);
-}
-html.theme-dark .dark\:bg-gray-700 {
-  background-color: rgb(55, 65, 81);
-}
-html.theme-dark .dark\:bg-gray-800 {
-  background-color: rgb(31, 41, 55);
-}
-html.theme-dark .dark\:bg-gray-900 {
-  background-color: rgb(17, 24, 39);
-}
-html.theme-dark .dark\:bg-green-500 {
-  background-color: rgb(34, 197, 94);
-}
-html.theme-dark .dark\:bg-green-700 {
-  background-color: rgb(21, 128, 61);
-}
-html.theme-dark .dark\:bg-orange-500 {
-  background-color: rgb(249, 115, 22);
-}
-html.theme-dark .dark\:bg-orange-600 {
-  background-color: rgb(234, 88, 12);
-}
-html.theme-dark .dark\:bg-red-600 {
-  background-color: rgb(220, 38, 38);
-}
-html.theme-dark .dark\:bg-red-700 {
-  background-color: rgb(185, 28, 28);
-}
-html.theme-dark .dark\:bg-teal-500 {
-  background-color: rgb(20, 184, 166);
-}
-html.theme-dark .dark\:block {
-  display: block;
-}
-html.theme-dark .dark\:border-gray-600 {
-  border-color: rgb(75, 85, 99);
-}
-html.theme-dark .dark\:border-gray-700 {
-  border-color: rgb(55, 65, 81);
-}
-html.theme-dark .dark\:border-gray-800 {
-  border-color: rgb(31, 41, 55);
-}
-html.theme-dark .dark\:divide-gray-700 > * + * {
-  border-color: rgb(55, 65, 81);
-}
-html.theme-dark .dark\:hidden {
-  display: none;
-}
-html.theme-dark .dark\:text-blue-100 {
-  color: rgb(219, 234, 254);
-}
-html.theme-dark .dark\:text-gray-100 {
-  color: rgb(243, 244, 246);
-}
-html.theme-dark .dark\:text-gray-200 {
-  color: rgb(229, 231, 235);
-}
-html.theme-dark .dark\:text-gray-300 {
-  color: rgb(209, 213, 219);
-}
-html.theme-dark .dark\:text-gray-400 {
-  color: rgb(156, 163, 175);
-}
-html.theme-dark .dark\:text-green-100 {
-  color: rgb(220, 252, 231);
-}
-html.theme-dark .dark\:text-green-400 {
-  color: rgb(74, 222, 128);
-}
-html.theme-dark .dark\:text-orange-100 {
-  color: rgb(255, 237, 213);
-}
-html.theme-dark .dark\:text-purple-300 {
-  color: rgb(216, 180, 254);
-}
-html.theme-dark .dark\:text-purple-400 {
-  color: rgb(192, 132, 252);
-}
-html.theme-dark .dark\:text-red-100 {
-  color: rgb(254, 226, 226);
-}
-html.theme-dark .dark\:text-red-400 {
-  color: rgb(248, 113, 113);
-}
-html.theme-dark .dark\:text-teal-100 {
-  color: rgb(204, 251, 241);
-}
-html.theme-dark .dark\:text-white {
-  color: rgb(255, 255, 255);
-}
-html.theme-dark .dark\:focus-within\:text-purple-400:focus-within {
-  color: rgb(192, 132, 252);
-}
-html.theme-dark .dark\:hover\:bg-gray-800:hover {
-  background-color: rgb(31, 41, 55);
-}
-html.theme-dark .dark\:hover\:text-gray-200:hover {
-  color: rgb(229, 231, 235);
-}
-
 @media (prefers-color-scheme: dark) {
-  html.theme-auto .dark\:bg-blue-500 {
+  .dark\:bg-blue-500 {
     background-color: rgb(59, 130, 246);
   }
-  html.theme-auto .dark\:bg-gray-700 {
+  .dark\:bg-gray-700 {
     background-color: rgb(55, 65, 81);
   }
-  html.theme-auto .dark\:bg-gray-800 {
+  .dark\:bg-gray-800 {
     background-color: rgb(31, 41, 55);
   }
-  html.theme-auto .dark\:bg-gray-900 {
+  .dark\:bg-gray-900 {
     background-color: rgb(17, 24, 39);
   }
-  html.theme-auto .dark\:bg-green-500 {
+  .dark\:bg-green-500 {
     background-color: rgb(34, 197, 94);
   }
-  html.theme-auto .dark\:bg-green-700 {
+  .dark\:bg-green-700 {
     background-color: rgb(21, 128, 61);
   }
-  html.theme-auto .dark\:bg-orange-500 {
+  .dark\:bg-orange-500 {
     background-color: rgb(249, 115, 22);
   }
-  html.theme-auto .dark\:bg-orange-600 {
+  .dark\:bg-orange-600 {
     background-color: rgb(234, 88, 12);
   }
-  html.theme-auto .dark\:bg-red-600 {
+  .dark\:bg-red-600 {
     background-color: rgb(220, 38, 38);
   }
-  html.theme-auto .dark\:bg-red-700 {
+  .dark\:bg-red-700 {
     background-color: rgb(185, 28, 28);
   }
-  html.theme-auto .dark\:bg-teal-500 {
+  .dark\:bg-teal-500 {
     background-color: rgb(20, 184, 166);
   }
-  html.theme-auto .dark\:block {
+  .dark\:block {
     display: block;
   }
-  html.theme-auto .dark\:border-gray-600 {
+  .dark\:border-gray-600 {
     border-color: rgb(75, 85, 99);
   }
-  html.theme-auto .dark\:border-gray-700 {
+  .dark\:border-gray-700 {
     border-color: rgb(55, 65, 81);
   }
-  html.theme-auto .dark\:border-gray-800 {
+  .dark\:border-gray-800 {
     border-color: rgb(31, 41, 55);
   }
-  html.theme-auto .dark\:divide-gray-700 > * + * {
+  .dark\:divide-gray-700 > * + * {
     border-color: rgb(55, 65, 81);
   }
-  html.theme-auto .dark\:hidden {
+  .dark\:hidden {
     display: none;
   }
-  html.theme-auto .dark\:text-blue-100 {
+  .dark\:text-blue-100 {
     color: rgb(219, 234, 254);
   }
-  html.theme-auto .dark\:text-gray-100 {
+  .dark\:text-gray-100 {
     color: rgb(243, 244, 246);
   }
-  html.theme-auto .dark\:text-gray-200 {
+  .dark\:text-gray-200 {
     color: rgb(229, 231, 235);
   }
-  html.theme-auto .dark\:text-gray-300 {
+  .dark\:text-gray-300 {
     color: rgb(209, 213, 219);
   }
-  html.theme-auto .dark\:text-gray-400 {
+  .dark\:text-gray-400 {
     color: rgb(156, 163, 175);
   }
-  html.theme-auto .dark\:text-green-100 {
+  .dark\:text-green-100 {
     color: rgb(220, 252, 231);
   }
-  html.theme-auto .dark\:text-green-400 {
+  .dark\:text-green-400 {
     color: rgb(74, 222, 128);
   }
-  html.theme-auto .dark\:text-orange-100 {
+  .dark\:text-orange-100 {
     color: rgb(255, 237, 213);
   }
-  html.theme-auto .dark\:text-purple-300 {
+  .dark\:text-purple-300 {
     color: rgb(216, 180, 254);
   }
-  html.theme-auto .dark\:text-purple-400 {
+  .dark\:text-purple-400 {
     color: rgb(192, 132, 252);
   }
-  html.theme-auto .dark\:text-red-100 {
+  .dark\:text-red-100 {
     color: rgb(254, 226, 226);
   }
-  html.theme-auto .dark\:text-red-400 {
+  .dark\:text-red-400 {
     color: rgb(248, 113, 113);
   }
-  html.theme-auto .dark\:text-teal-100 {
+  .dark\:text-teal-100 {
     color: rgb(204, 251, 241);
   }
-  html.theme-auto .dark\:text-white {
+  .dark\:text-white {
     color: rgb(255, 255, 255);
   }
-  html.theme-auto .dark\:focus-within\:text-purple-400:focus-within {
+  .dark\:focus-within\:text-purple-400:focus-within {
     color: rgb(192, 132, 252);
   }
-  html.theme-auto .dark\:hover\:bg-gray-800:hover {
+  .dark\:hover\:bg-gray-800:hover {
     background-color: rgb(31, 41, 55);
   }
-  html.theme-auto .dark\:hover\:text-gray-200:hover {
+  .dark\:hover\:text-gray-200:hover {
     color: rgb(229, 231, 235);
   }
 }
-
+@media screen and (prefers-color-scheme: dark) and (min-width: 768px) {
+  .dark\:md\:text-base {
+    font-size: clamp(0.875rem, 4.35vw, 1rem);
+    line-height: clamp(1.3125rem, 6.525vw, 1.5rem);
+  }
+}
 .manifest {
   font-size: 1rem;
 }

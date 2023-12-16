@@ -19,10 +19,10 @@ ProjectPaths:
 # Dark theme options
 # - class: use class "theme-dark" on the html tag to trigger dark mode styles
 # - media: system theme triggers dark mode styles
-DarkMode: class
+DarkMode: media
 
 # Use auto theme class "theme-auto" on html tag to trigger dark mode styles with the system theme
-UseAutoTheme: true
+UseAutoTheme: false
 
 Theme:
 

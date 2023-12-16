@@ -9,7 +9,7 @@ ProjectPaths:
     Recurse: true
 
 DarkMode: class
-UseAutoTheme: true
+UseAutoTheme: false
 Theme:
     FontSizeUnit:
         Zero: 16px

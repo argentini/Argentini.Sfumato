@@ -69,7 +69,6 @@ public class SfumatoRunnerTests
     [Fact]
     public async Task GenerateScssClassMarkup_Base()
     {
-        var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
         var appState = new SfumatoAppState();
 
         await appState.InitializeAsync(Array.Empty<string>());
@@ -77,7 +76,10 @@ public class SfumatoRunnerTests
         var cssSelector = new CssSelector(appState, "text-base");
         await cssSelector.ProcessSelectorAsync();
 
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
+        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", cssSelector)
+        });
 
         Assert.Equal($$""".text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.CompactCss());
     }
@@ -85,7 +87,6 @@ public class SfumatoRunnerTests
     [Fact]
     public async Task GenerateScssClassMarkup_Options()
     {
-        var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
         var appState = new SfumatoAppState();
 
         await appState.InitializeAsync(Array.Empty<string>());
@@ -93,7 +94,10 @@ public class SfumatoRunnerTests
         var cssSelector = new CssSelector(appState, "text-base/5");
         await cssSelector.ProcessSelectorAsync();
         
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
+        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", cssSelector)
+        });
         
         Assert.Equal(
             $$""".text-base\/5 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.LeadingOptions["5"]}}; }""".CompactCss(), result.CompactCss());
@@ -101,7 +105,10 @@ public class SfumatoRunnerTests
         cssSelector = new CssSelector(appState, "text-base/[3rem]");
         await cssSelector.ProcessSelectorAsync();
 
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, string.Empty);
+        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", cssSelector)
+        });
 
         Assert.Equal(
             $$""".text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
@@ -109,7 +116,10 @@ public class SfumatoRunnerTests
         cssSelector = new CssSelector(appState, "sm:text-base/[3rem]");
         await cssSelector.ProcessSelectorAsync();
 
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(cssSelector, pool, "sm:");
+        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", cssSelector)
+        });
         
         Assert.Equal(
             $$""".sm\:text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
@@ -118,7 +128,6 @@ public class SfumatoRunnerTests
     [Fact]
     public async Task GenerateScssClassMarkup_ArbitraryStyles()
     {
-        var pool = new DefaultObjectPoolProvider().CreateStringBuilderPool();
         var appState = new SfumatoAppState();
 
         await appState.InitializeAsync(Array.Empty<string>());
@@ -126,21 +135,30 @@ public class SfumatoRunnerTests
         var scssClass = new CssSelector(appState, "[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
         
-        var result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, string.Empty);
+        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", scssClass)
+        });
 
         Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new CssSelector(appState, "sm:[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
         
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "sm:");
+        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", scssClass)
+        });
 
         Assert.Equal(".sm\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
         
         scssClass = new CssSelector(appState, "sm:hover:[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
         
-        result = await SfumatoRunner.GenerateScssClassMarkupAsync(scssClass, pool, "sm:");
+        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        {
+            new ("", scssClass)
+        });
 
         Assert.Equal(".sm\\:hover\\:\\[width\\:10rem\\] { &:hover { width:10rem; } }", result.CompactCss());
     }
@@ -186,7 +204,7 @@ public class SfumatoRunnerTests
         await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
         await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
 
-        var scss = await runner.GenerateUtilityScssAsync();
+        var scss = runner.GenerateUtilityScss();
 
         Assert.Equal($$"""
                      .\[font-weight\:600\] {
@@ -273,13 +291,10 @@ public class SfumatoRunnerTests
                          }
                      }
                      @include sf-media($from: $xl-breakpoint) {
-                         .xl\:text-\[\#112233\] {
+                         .xl\:text-\[\#112233\], .xl\:text\[\#112233\] {
                              color: #112233;
                          }
-                         .xl\:text-\[color\:--my-color-var\] {
-                             color: var(--my-color-var);
-                         }
-                         .xl\:text-\[color\:var\(--my-color-var\)\] {
+                         .xl\:text-\[color\:--my-color-var\], .xl\:text-\[color\:var\(--my-color-var\)\] {
                              color: var(--my-color-var);
                          }
                          .xl\:text-\[red\] {
@@ -288,9 +303,6 @@ public class SfumatoRunnerTests
                          .xl\:text-base\/\[3rem\] {
                              font-size: {{runner.AppState.TextSizeOptions["base"]}};
                              line-height: 3rem;
-                         }
-                         .xl\:text\[\#112233\] {
-                             color: #112233;
                          }
                      }
                      @include sf-media($from: $xxl-breakpoint) {

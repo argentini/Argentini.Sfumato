@@ -191,7 +191,7 @@ public static class SfumatoScss
 				{
 					var preamble = $"{Environment.NewLine}{Environment.NewLine}/* SFUMATO UTILITY CLASSES */{Environment.NewLine}{Environment.NewLine}";
 
-					var utilitiesScss = await runner.GenerateUtilityScssAsync();
+					var utilitiesScss = runner.GenerateUtilityScss();
 					
 					rawScss = rawScss.Remove(match.Index, match.Value.Length);
 					rawScss = rawScss.Insert(match.Index, preamble + utilitiesScss);
