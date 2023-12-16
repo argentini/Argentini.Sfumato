@@ -274,6 +274,14 @@ public sealed class SfumatoRunner
         {
             var darkClass = AppState.StringBuilderPool.Get();
             var autoClass = AppState.StringBuilderPool.Get();
+
+            darkClass.Append($"html.theme-dark {{{Environment.NewLine}");
+                
+            if (AppState.Settings.UseAutoTheme)
+            {
+                autoClass.Append($"html.theme-auto {{{Environment.NewLine}");
+                autoClass.Append($"{" ".Repeat(4)}{AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
+            }
             
             foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
             {
@@ -281,14 +289,6 @@ public sealed class SfumatoRunner
                 var indent = 0;
 
                 suffix.Clear();
-
-                darkClass.Append($"html.theme-dark {{{Environment.NewLine}");
-                
-                if (AppState.Settings.UseAutoTheme)
-                {
-                    autoClass.Append($"html.theme-auto {{{Environment.NewLine}");
-                    autoClass.Append($"{" ".Repeat(4)}{AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
-                }
 
                 indent++;
                 
@@ -314,15 +314,20 @@ public sealed class SfumatoRunner
             
                 darkClass.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
                 darkClass.Append(suffix);
-                darkClass.Append($"}}{Environment.NewLine}");
 
-                if (AppState.Settings.UseAutoTheme)
-                {
-                    autoClass.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
-                    autoClass.Append(suffix.ToString().Indent(2 * 4));
-                    autoClass.Append($"{" ".Repeat(1 * 4)}}}{Environment.NewLine}");
-                    autoClass.Append($"}}{Environment.NewLine}");
-                }
+                if (AppState.Settings.UseAutoTheme == false)
+                    continue;
+                
+                autoClass.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                autoClass.Append(suffix.ToString().Indent(2 * 4));
+            }
+
+            darkClass.Append($"}}{Environment.NewLine}");
+
+            if (AppState.Settings.UseAutoTheme)
+            {
+                autoClass.Append($"{" ".Repeat(1 * 4)}}}{Environment.NewLine}");
+                autoClass.Append($"}}{Environment.NewLine}");
             }
 
             scss.Append(darkClass);
@@ -342,7 +347,8 @@ public sealed class SfumatoRunner
                 var indent = 0;
 
                 suffix.Clear();
-            
+
+                
                 foreach (var prefix in prefixes)
                 {
                     var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
