@@ -270,102 +270,105 @@ public sealed class SfumatoRunner
             .ThenBy(c => c.Value.SelectorSort)
             .ThenBy(c => c.Value.FixedSelector).ToList();
 
-        if (AppState.Settings.DarkMode.InvariantEquals("class"))
+        if (usedNestedClasses.Count > 0)
         {
-            var darkClass = AppState.StringBuilderPool.Get();
-            var autoClass = AppState.StringBuilderPool.Get();
-
-            darkClass.Append($"html.theme-dark {{{Environment.NewLine}");
-                
-            if (AppState.Settings.UseAutoTheme)
+            if (AppState.Settings.DarkMode.InvariantEquals("class"))
             {
-                autoClass.Append($"html.theme-auto {{{Environment.NewLine}");
-                autoClass.Append($"{" ".Repeat(4)}{AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
-            }
-            
-            foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
-            {
-                var prefixes = variantsPath.Split(':');
-                var indent = 0;
+                var darkClass = AppState.StringBuilderPool.Get();
+                var autoClass = AppState.StringBuilderPool.Get();
 
-                suffix.Clear();
-
-                indent++;
-                
-                foreach (var prefix in prefixes)
+                darkClass.Append($"html.theme-dark {{{Environment.NewLine}");
+                    
+                if (AppState.Settings.UseAutoTheme)
                 {
-                    if (prefix == "dark")
-                        continue;
-
-                    var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
-
-                    if (variant is null)
-                        continue;
-
-                    darkClass.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
-
-                    if (AppState.Settings.UseAutoTheme)
-                        autoClass.Append($"{" ".Repeat((indent + 1) * 4)}{variant.Statement}{Environment.NewLine}");
-                    
-                    suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
-                    
-                    indent++;
+                    autoClass.Append($"html.theme-auto {{{Environment.NewLine}");
+                    autoClass.Append($"{" ".Repeat(4)}{AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
                 }
-            
-                darkClass.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
-                darkClass.Append(suffix);
-
-                if (AppState.Settings.UseAutoTheme == false)
-                    continue;
                 
-                autoClass.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
-                autoClass.Append(suffix.ToString().Indent(2 * 4));
+                foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
+                {
+                    var prefixes = variantsPath.Split(':');
+                    var indent = 0;
+
+                    suffix.Clear();
+
+                    indent++;
+                    
+                    foreach (var prefix in prefixes)
+                    {
+                        if (prefix == "dark")
+                            continue;
+
+                        var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
+
+                        if (variant is null)
+                            continue;
+
+                        darkClass.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
+
+                        if (AppState.Settings.UseAutoTheme)
+                            autoClass.Append($"{" ".Repeat((indent + 1) * 4)}{variant.Statement}{Environment.NewLine}");
+                        
+                        suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
+                        
+                        indent++;
+                    }
+                
+                    darkClass.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                    darkClass.Append(suffix);
+
+                    if (AppState.Settings.UseAutoTheme == false)
+                        continue;
+                    
+                    autoClass.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                    autoClass.Append(suffix.ToString().Indent(2 * 4));
+                }
+
+                darkClass.Append($"}}{Environment.NewLine}");
+
+                if (AppState.Settings.UseAutoTheme)
+                {
+                    autoClass.Append($"{" ".Repeat(1 * 4)}}}{Environment.NewLine}");
+                    autoClass.Append($"}}{Environment.NewLine}");
+                }
+
+                scss.Append(darkClass);
+
+                if (AppState.Settings.UseAutoTheme)
+                    scss.Append(autoClass);
+                
+                AppState.StringBuilderPool.Return(darkClass);
+                AppState.StringBuilderPool.Return(autoClass);
             }
 
-            darkClass.Append($"}}{Environment.NewLine}");
-
-            if (AppState.Settings.UseAutoTheme)
+            else
             {
-                autoClass.Append($"{" ".Repeat(1 * 4)}}}{Environment.NewLine}");
-                autoClass.Append($"}}{Environment.NewLine}");
+                foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
+                {
+                    var prefixes = variantsPath.Split(':');
+                    var indent = 0;
+
+                    suffix.Clear();
+
+                    
+                    foreach (var prefix in prefixes)
+                    {
+                        var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
+                    
+                        if (variant is null)
+                            continue;
+
+                        scss.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
+                        suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
+                        indent++;
+                    }
+                
+                    scss.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                    scss.Append(suffix);
+                }
             }
-
-            scss.Append(darkClass);
-
-            if (AppState.Settings.UseAutoTheme)
-                scss.Append(autoClass);
-            
-            AppState.StringBuilderPool.Return(darkClass);
-            AppState.StringBuilderPool.Return(autoClass);
         }
 
-        else
-        {
-            foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
-            {
-                var prefixes = variantsPath.Split(':');
-                var indent = 0;
-
-                suffix.Clear();
-
-                
-                foreach (var prefix in prefixes)
-                {
-                    var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
-                
-                    if (variant is null)
-                        continue;
-
-                    scss.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
-                    suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
-                    indent++;
-                }
-            
-                scss.Append(GenerateSingleClassMarkup(AppState, usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
-                scss.Append(suffix);
-            }
-        }
-        
         #endregion
         
         var result = scss.ToString();
