@@ -2537,7 +2537,7 @@ public sealed class SfumatoAppState
 	    [""] = "text-transform: lowercase;",
     }; 
 
-    public Dictionary<string, string> NonItalicStaticUtilities { get; } = new()
+    public Dictionary<string, string> NotItalicStaticUtilities { get; } = new()
     {
 	    [""] = "font-style: normal;",
     };

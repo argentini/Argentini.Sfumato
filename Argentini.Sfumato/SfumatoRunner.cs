@@ -76,8 +76,303 @@ public sealed class SfumatoRunner
 	#endregion
 	
 	#region Generation Methods
-	
-	/// <summary>
+
+    public string GenerateSingleClassMarkup(IEnumerable<KeyValuePair<string, CssSelector>> usedCssClasses, int rootIndent = 0)
+    {
+        List<ScssNode> scssNodes = [];
+        var scss = AppState.StringBuilderPool.Get();
+        var suffix = AppState.StringBuilderPool.Get();
+        var indent = rootIndent;
+        
+        foreach (var (_, usedCssSelector) in usedCssClasses)
+        {
+            if (usedCssSelector.IsInvalid)
+                continue;
+
+            if (usedCssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
+            {
+                usedCssSelector.IsInvalid = true;
+                continue;
+            }
+            
+            var styles = usedCssSelector.ScssMarkup;
+            var compactStyles = styles.CompactCss();
+            var existingScssNode = scssNodes.FirstOrDefault(s =>
+                s.VariantsPath.InvariantEquals(usedCssSelector.VariantSegment) &&
+                s.CompactStyles == compactStyles);
+
+            if (existingScssNode is null)
+            {
+                scssNodes.Add(new ScssNode
+                {
+                    Classes = { usedCssSelector },
+                    CompactStyles = compactStyles,
+                    Styles = styles
+                });
+            }
+
+            else
+            {
+                existingScssNode.Classes.Add(usedCssSelector);
+            }
+        }
+
+        foreach (var node in scssNodes)
+        {
+            suffix.Clear();
+            indent = rootIndent;
+            scss.Append($"{" ".Repeat(rootIndent * 4)}{node.Selector} {{{Environment.NewLine}");
+            indent++;
+
+            foreach (var variant in node.AllVariants)
+            {
+                var pseudoClassVariant = AppState.PseudoclassPrefixes.FirstOrDefault(p => p.Key == variant);
+
+                if (string.IsNullOrEmpty(pseudoClassVariant.Key))
+                    continue;
+
+                scss.Append($"{" ".Repeat(indent * 4)}{pseudoClassVariant.Value}{Environment.NewLine}");
+                suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
+                indent++;
+            }
+            
+            scss.Append($"{node.Styles.Indent(indent * 4)}{Environment.NewLine}");
+            
+            if (node.AllVariants.Count != 0)
+            {
+                scss.Append($"{suffix}");
+            }
+
+            scss.Append($"{" ".Repeat(rootIndent * 4)}}}{Environment.NewLine}{Environment.NewLine}");
+        }
+        
+        var result = scss.ToString();
+        
+        AppState.StringBuilderPool.Return(suffix);
+        AppState.StringBuilderPool.Return(scss);
+
+        return result;
+    }
+    
+    /// <summary>
+    /// Generate utility class SCSS markup.
+    /// </summary>
+    /// <returns></returns>
+    public string V2GenerateUtilityScss()
+    {
+        var scss = AppState.StringBuilderPool.Get();
+        var suffix = AppState.StringBuilderPool.Get();
+        var globalSelector = AppState.StringBuilderPool.Get();
+
+        #region Process global class assignments
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "gradients")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            scss.Append(globalSelector + " {" + Environment.NewLine);
+            scss.Append($"{Indent(1)}--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" + Environment.NewLine);
+            scss.Append("}" + Environment.NewLine);
+        }
+
+        globalSelector.Clear();
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "ring")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            scss.Append(globalSelector + " {" + Environment.NewLine);
+            scss.Append($"{Indent(1)}--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+            scss.Append("}" + Environment.NewLine);
+        }
+
+        globalSelector.Clear();
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "shadow")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            scss.Append(globalSelector + " {" + Environment.NewLine);
+            scss.Append($"{Indent(1)}--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+            scss.Append("}" + Environment.NewLine);
+        }
+
+        #endregion
+        
+        #region Process root classes (no media queries)
+
+        var usedRootClasses = AppState.UsedClasses
+            .Where(c => c.Value.MediaQueryVariants.Count == 0)
+            .OrderBy(c => c.Value.Depth)
+            .ThenBy(c => c.Value.VariantSortOrder)
+            .ThenBy(c => c.Value.SelectorSort)
+            .ThenBy(c => c.Value.FixedSelector).ToList();
+
+        scss.Append(GenerateSingleClassMarkup(usedRootClasses));
+        
+        #endregion
+
+        #region Process media queries (no dark theme)
+        
+        var usedNestedClasses = AppState.UsedClasses
+            .Where(c => c.Value.MediaQueryVariants.Count > 0 && c.Value.MediaQueryVariants[0] != "dark")
+            .OrderBy(c => c.Value.Depth)
+            .ThenBy(c => c.Value.VariantSortOrder)
+            .ThenBy(c => c.Value.SelectorSort)
+            .ThenBy(c => c.Value.FixedSelector).ToList();
+
+        foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
+        {
+            var prefixes = variantsPath.Split(':');
+            var indent = 0;
+
+            suffix.Clear();
+            
+            foreach (var prefix in prefixes)
+            {
+                var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
+                
+                if (variant is null)
+                    continue;
+
+                scss.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
+                suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
+                indent++;
+            }
+            
+            scss.Append(GenerateSingleClassMarkup(usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+            scss.Append(suffix);
+        }
+
+        #endregion
+        
+        #region Process dark theme classes
+        
+        usedNestedClasses = AppState.UsedClasses
+            .Where(c => c.Value.MediaQueryVariants.Count > 0 && c.Value.MediaQueryVariants[0] == "dark")
+            .OrderBy(c => c.Value.Depth)
+            .ThenBy(c => c.Value.VariantSortOrder)
+            .ThenBy(c => c.Value.SelectorSort)
+            .ThenBy(c => c.Value.FixedSelector).ToList();
+
+        if (AppState.Settings.DarkMode.InvariantEquals("class"))
+        {
+            var darkClass = AppState.StringBuilderPool.Get();
+            var autoClass = AppState.StringBuilderPool.Get();
+            
+            foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
+            {
+                var prefixes = variantsPath.Split(':');
+                var indent = 0;
+
+                suffix.Clear();
+
+                darkClass.Append($"html.theme-dark {{{Environment.NewLine}");
+                autoClass.Append($"html.theme-auto {{{Environment.NewLine}");
+                autoClass.Append($"{" ".Repeat(4)}{AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
+                indent++;
+                
+                foreach (var prefix in prefixes)
+                {
+                    if (prefix == "dark")
+                        continue;
+
+                    var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
+
+                    if (variant is null)
+                        continue;
+
+                    darkClass.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
+                    autoClass.Append($"{" ".Repeat((indent + 1) * 4)}{variant.Statement}{Environment.NewLine}");
+                    suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
+                    
+                    indent++;
+                }
+            
+                darkClass.Append(GenerateSingleClassMarkup(usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                darkClass.Append(suffix);
+                darkClass.Append($"}}{Environment.NewLine}");
+
+                autoClass.Append(GenerateSingleClassMarkup(usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                autoClass.Append(suffix.ToString().Indent(2 * 4));
+                autoClass.Append($"{" ".Repeat(1 * 4)}}}{Environment.NewLine}");
+                autoClass.Append($"}}{Environment.NewLine}");
+            }
+
+            scss.Append(darkClass);
+            scss.Append(autoClass);
+            
+            AppState.StringBuilderPool.Return(darkClass);
+            AppState.StringBuilderPool.Return(autoClass);
+        }
+
+        else
+        {
+            foreach (var variantsPath in usedNestedClasses.Select(c => string.Join(':', c.Value.MediaQueryVariants)).Distinct())
+            {
+                var prefixes = variantsPath.Split(':');
+                var indent = 0;
+
+                suffix.Clear();
+            
+                foreach (var prefix in prefixes)
+                {
+                    var variant = AppState.MediaQueryPrefixes.FirstOrDefault(p => p.Prefix == prefix);
+                
+                    if (variant is null)
+                        continue;
+
+                    scss.Append($"{" ".Repeat(indent * 4)}{variant.Statement}{Environment.NewLine}");
+                    suffix.Append($"{" ".Repeat(indent * 4)}}}{Environment.NewLine}");
+                    indent++;
+                }
+            
+                scss.Append(GenerateSingleClassMarkup(usedNestedClasses.Where(c => string.Join(':', c.Value.MediaQueryVariants) == variantsPath).ToList(), indent));
+                scss.Append(suffix);
+            }
+        }
+        
+        #endregion
+        
+        var result = scss.ToString();
+        
+        AppState.StringBuilderPool.Return(globalSelector);
+        AppState.StringBuilderPool.Return(suffix);
+        AppState.StringBuilderPool.Return(scss);
+
+        return result;
+    }
+
+
+
+    
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+    /// <summary>
 	/// Generate SCSS class from user class name, including nesting.
 	/// Only includes pseudoclasses, not media queries.
 	/// </summary>
@@ -150,153 +445,157 @@ public sealed class SfumatoRunner
 	/// <param name="config"></param>
 	/// <returns></returns>
 	public async Task<string> GenerateUtilityScssAsync()
-	{
-		var hierarchy = new ScssObject
-		{
-			Prefix = string.Empty,
-			VariantsPath = string.Empty
-		};
+    {
+        return V2GenerateUtilityScss();
 
-		#region Build Hierarchy
+        /*
+        var hierarchy = new ScssObject
+        {
+            Prefix = string.Empty,
+            VariantsPath = string.Empty
+        };
 
-		foreach (var (_, usedCssSelector) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Value.SelectorSort).ThenBy(c => c.Value.FixedSelector))
-		{
-			if (usedCssSelector.IsInvalid)
-				continue;
-			
-			if (usedCssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
-			{
-				usedCssSelector.IsInvalid = true;
-				continue;
-			}
-			
-			// Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
+        #region Build Hierarchy
 
-			if (usedCssSelector.MediaQueryVariants.Count == 0)
-			{
-				hierarchy.Classes.Add(usedCssSelector);
-			}
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses.OrderBy(c => c.Value.Depth).ThenBy(c => c.Value.VariantSortOrder).ThenBy(c => c.Value.SelectorSort).ThenBy(c => c.Value.FixedSelector))
+        {
+            if (usedCssSelector.IsInvalid)
+                continue;
 
-			else
-			{
-				var prefixPath = string.Empty;
-				var node = hierarchy;
+            if (usedCssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
+            {
+                usedCssSelector.IsInvalid = true;
+                continue;
+            }
 
-				foreach (var prefix in usedCssSelector.AllVariants)
-				{
-					if (IsMediaQueryPrefix(prefix, usedCssSelector.AppState) == false)
-						break;
-					
-					prefixPath += $"{prefix}:";
-					
-					var prefixNode = node.Nodes.FirstOrDefault(n => n.Prefix.Equals(prefix, StringComparison.Ordinal));
+            // Handle base classes (no prefixes) or prefixes start with pseudoclass (no inheritance)
 
-					if (prefixNode is null)
-					{
-						var newNode = new ScssObject
-						{
-							Prefix = prefix,
-							VariantsPath = prefixPath
-						};
+            if (usedCssSelector.MediaQueryVariants.Count == 0)
+            {
+                hierarchy.Classes.Add(usedCssSelector);
+            }
 
-						node.Nodes.Add(newNode);
-						node = newNode;
-					}
+            else
+            {
+                var prefixPath = string.Empty;
+                var node = hierarchy;
 
-					else
-					{
-						node = prefixNode;
-					}
-				}
-				
-				node.Classes.Add(usedCssSelector);
-			}			
-		}
-        
-		#endregion
+                foreach (var prefix in usedCssSelector.AllVariants)
+                {
+                    if (IsMediaQueryPrefix(prefix, usedCssSelector.AppState) == false)
+                        break;
 
-		if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase))
-		{
-			// Search first level nodes for "dark" prefix and add additional nodes to support "theme-auto";
-			// Light mode will work without any CSS since removing "theme-dark" and "theme-auto" from the
-			// <html> class list will disabled dark mode altogether.
-			foreach (var node in hierarchy.Nodes.ToList())
-			{
-				if (node.Prefix.Equals("dark", StringComparison.Ordinal) == false)
-					continue;
-				
-				var newNode = new ScssObject
-				{
-					Prefix = "auto-dark",
-					VariantsPath = node.VariantsPath,
-					Level = node.Level
-				};
+                    prefixPath += $"{prefix}:";
 
-				await RecurseNodeCloneAsync(node, newNode);
-				
-				hierarchy.Nodes.Add(newNode);
-			}
-		} 
-		
-		var sb = AppState.StringBuilderPool.Get();
-		var globalSelector = AppState.StringBuilderPool.Get();
-		
-		#region Process global class assignments
-		
-		foreach (var (_, usedCssSelector) in AppState.UsedClasses)
-		{
-			if (usedCssSelector.ScssUtilityClassGroup?.Category == "gradients")
-				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
-		}
+                    var prefixNode = node.Nodes.FirstOrDefault(n => n.Prefix.Equals(prefix, StringComparison.Ordinal));
 
-		if (globalSelector.Length > 0)
-		{
-			sb.Append(globalSelector + " {" + Environment.NewLine);
-			sb.Append($"{Indent(1)}--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" + Environment.NewLine);
-			sb.Append("}" + Environment.NewLine);
-		}
+                    if (prefixNode is null)
+                    {
+                        var newNode = new ScssObject
+                        {
+                            Prefix = prefix,
+                            VariantsPath = prefixPath
+                        };
 
-		globalSelector.Clear();
+                        node.Nodes.Add(newNode);
+                        node = newNode;
+                    }
 
-		foreach (var (_, usedCssSelector) in AppState.UsedClasses)
-		{
-			if (usedCssSelector.ScssUtilityClassGroup?.Category == "ring")
-				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
-		}
+                    else
+                    {
+                        node = prefixNode;
+                    }
+                }
 
-		if (globalSelector.Length > 0)
-		{
-			sb.Append(globalSelector + " {" + Environment.NewLine);
-			sb.Append($"{Indent(1)}--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
-			sb.Append("}" + Environment.NewLine);
-		}
-		
-		globalSelector.Clear();
+                node.Classes.Add(usedCssSelector);
+            }
+        }
 
-		foreach (var (_, usedCssSelector) in AppState.UsedClasses)
-		{
-			if (usedCssSelector.ScssUtilityClassGroup?.Category == "shadow")
-				globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
-		}
+        #endregion
 
-		if (globalSelector.Length > 0)
-		{
-			sb.Append(globalSelector + " {" + Environment.NewLine);
-			sb.Append($"{Indent(1)}--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
-			sb.Append("}" + Environment.NewLine);
-		}
+        if (AppState.Settings.DarkMode.Equals("class", StringComparison.OrdinalIgnoreCase))
+        {
+            // Search first level nodes for "dark" prefix and add additional nodes to support "theme-auto";
+            // Light mode will work without any CSS since removing "theme-dark" and "theme-auto" from the
+            // <html> class list will disabled dark mode altogether.
+            foreach (var node in hierarchy.Nodes.ToList())
+            {
+                if (node.Prefix.Equals("dark", StringComparison.Ordinal) == false)
+                    continue;
 
-		#endregion
+                var newNode = new ScssObject
+                {
+                    Prefix = "auto-dark",
+                    VariantsPath = node.VariantsPath,
+                    Level = node.Level
+                };
 
-		await GenerateScssFromObjectTreeAsync(hierarchy, sb);
-        
-		var scss = sb.ToString();
-		
-		AppState.StringBuilderPool.Return(globalSelector);
-		AppState.StringBuilderPool.Return(sb);
-		
-		return scss;
-	}
+                await RecurseNodeCloneAsync(node, newNode);
+
+                hierarchy.Nodes.Add(newNode);
+            }
+        }
+
+        var sb = AppState.StringBuilderPool.Get();
+        var globalSelector = AppState.StringBuilderPool.Get();
+
+        #region Process global class assignments
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "gradients")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            sb.Append(globalSelector + " {" + Environment.NewLine);
+            sb.Append($"{Indent(1)}--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" + Environment.NewLine);
+            sb.Append("}" + Environment.NewLine);
+        }
+
+        globalSelector.Clear();
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "ring")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            sb.Append(globalSelector + " {" + Environment.NewLine);
+            sb.Append($"{Indent(1)}--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+            sb.Append("}" + Environment.NewLine);
+        }
+
+        globalSelector.Clear();
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "shadow")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            sb.Append(globalSelector + " {" + Environment.NewLine);
+            sb.Append($"{Indent(1)}--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+            sb.Append("}" + Environment.NewLine);
+        }
+
+        #endregion
+
+        await GenerateScssFromObjectTreeAsync(hierarchy, sb);
+
+        var scss = sb.ToString();
+
+        AppState.StringBuilderPool.Return(globalSelector);
+        AppState.StringBuilderPool.Return(sb);
+
+        return scss;
+        */
+    }
 
 	private async Task RecurseNodeCloneAsync(ScssObject sourceObject, ScssObject destinationObject)
 	{

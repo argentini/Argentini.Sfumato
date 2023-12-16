@@ -286,6 +286,34 @@ public static class Strings
 		return source?.Equals(value, comparisonType) == false;
 	}
 
+    /// <summary>
+    /// Determine if two strings are not equal, ignoring case.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="value"></param>
+    /// <param name="comparisonType"></param>
+    /// <returns></returns>
+    public static bool InvariantNotEquals(this string? source, string? value)
+    {
+        if (source == null && value == null) return false;
+        if (source is not null && value == null) return true;
+        if (source == null && value is not null) return true;
+		
+        return source?.Equals(value, StringComparison.InvariantCultureIgnoreCase) == false;
+    }
+
+    /// <summary>
+    /// Determine if two strings are equal, ignoring case.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="value"></param>
+    /// <param name="comparisonType"></param>
+    /// <returns></returns>
+    public static bool InvariantEquals(this string? source, string? value)
+    {
+        return source.InvariantNotEquals(value) == false;
+    }
+
 	/// <summary>
 	/// Determine if a string starts with any value from a string array.
 	/// </summary>
@@ -431,9 +459,13 @@ public static class Strings
 	/// <param name="css"></param>
 	/// <returns></returns>
 	public static string CompactCss(this string css)
-	{
-		return Regex.Replace(css.NormalizeLinebreaks(), @"\s+", " ").Trim();
-	}
+    {
+        var result = Regex.Replace(css.NormalizeLinebreaks(), @"\s+", " ").Trim();;
+
+        result = result.Replace(": ", ":");
+
+        return result;
+    }
 	
 	/// <summary>
 	/// Repeat a string a specified number of times.
