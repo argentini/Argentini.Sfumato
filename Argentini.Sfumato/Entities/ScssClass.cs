@@ -10,6 +10,18 @@ public sealed class ScssClass
 
     public string GetScssMarkup()
     {
+        var needsLeadingDots = Selectors.Any(s => s.StartsWith('.') == false);
+
+        if (needsLeadingDots)
+        {
+            var oldList = Selectors.ToList();
+
+            Selectors.Clear();
+
+            foreach (var selector in oldList)
+                Selectors.Add($".{selector.TrimStart('.')}");
+        }
+        
         return
             $$"""
             {{string.Join($"{PseudoclassSuffix}, ", Selectors)}}{{PseudoclassSuffix}} {

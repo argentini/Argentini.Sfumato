@@ -76,12 +76,15 @@ public class SfumatoRunnerTests
         var cssSelector = new CssSelector(appState, "text-base");
         await cssSelector.ProcessSelectorAsync();
 
-        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        var result = new ScssClass
         {
-            new ("", cssSelector)
-        });
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
 
-        Assert.Equal($$""".text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.CompactCss());
+        Assert.Equal($$""".text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
     }
 
     [Fact]
@@ -107,12 +110,15 @@ public class SfumatoRunnerTests
 
         Assert.Equal(@"peer\/test:hover~.peer-hover\/test\:text-base", cssSelector.EscapedSelector);
 
-        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        var result = new ScssClass
         {
-            new ("", cssSelector)
-        });
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
 
-        Assert.Equal($$""".peer\/test:hover~.peer-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.CompactCss());
+        Assert.Equal($$""".peer\/test:hover~.peer-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
     }
 
     [Fact]
@@ -125,35 +131,43 @@ public class SfumatoRunnerTests
         var cssSelector = new CssSelector(appState, "text-base/5");
         await cssSelector.ProcessSelectorAsync();
         
-        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        var result = new ScssClass
         {
-            new ("", cssSelector)
-        });
-        
-        Assert.Equal(
-            $$""".text-base\/5 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.LeadingOptions["5"]}}; }""".CompactCss(), result.CompactCss());
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
+
+        Assert.Equal($$""".text-base\/5 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.LeadingOptions["5"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
         
         cssSelector = new CssSelector(appState, "text-base/[3rem]");
         await cssSelector.ProcessSelectorAsync();
 
-        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        result = new ScssClass
         {
-            new ("", cssSelector)
-        });
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
 
         Assert.Equal(
-            $$""".text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
+            $$""".text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.GetScssMarkup().CompactCss());
 
         cssSelector = new CssSelector(appState, "sm:text-base/[3rem]");
         await cssSelector.ProcessSelectorAsync();
 
-        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        result = new ScssClass
         {
-            new ("", cssSelector)
-        });
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
         
         Assert.Equal(
-            $$""".sm\:text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.CompactCss());
+            $$""".sm\:text-base\/\[3rem\] { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 3rem; }""".CompactCss(), result.GetScssMarkup().CompactCss());
     }
     
     [Fact]
@@ -166,32 +180,41 @@ public class SfumatoRunnerTests
         var scssClass = new CssSelector(appState, "[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
         
-        var result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
+        var result = new ScssClass
         {
-            new ("", scssClass)
-        });
+            Selectors = { scssClass.EscapedSelector },
+            PseudoclassSuffix = scssClass.PseudoclassPath,
+            ScssProperties = scssClass.GetStyles(),
+            CompactScssProperties = scssClass.ScssMarkup.CompactCss()
+        };
 
-        Assert.Equal(".\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
+        Assert.Equal(@".\[width\:10rem\] { width:10rem; }".CompactCss(), result.GetScssMarkup().CompactCss());
         
         scssClass = new CssSelector(appState, "sm:[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
-        
-        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
-        {
-            new ("", scssClass)
-        });
 
-        Assert.Equal(".sm\\:\\[width\\:10rem\\] { width:10rem; }", result.CompactCss());
+        result = new ScssClass
+        {
+            Selectors = { scssClass.EscapedSelector },
+            PseudoclassSuffix = scssClass.PseudoclassPath,
+            ScssProperties = scssClass.GetStyles(),
+            CompactScssProperties = scssClass.ScssMarkup.CompactCss()
+        };
+
+        Assert.Equal(@".sm\:\[width\:10rem\] { width:10rem; }".CompactCss(), result.GetScssMarkup().CompactCss());
         
         scssClass = new CssSelector(appState, "sm:hover:[width:10rem]", true);
         await scssClass.ProcessSelectorAsync();
-        
-        result = SfumatoRunner.GenerateSingleClassMarkup(appState, new List<KeyValuePair<string, CssSelector>>
-        {
-            new ("", scssClass)
-        });
 
-        Assert.Equal(".sm\\:hover\\:\\[width\\:10rem\\] { &:hover { width:10rem; } }", result.CompactCss());
+        result = new ScssClass
+        {
+            Selectors = { scssClass.EscapedSelector },
+            PseudoclassSuffix = scssClass.PseudoclassPath,
+            ScssProperties = scssClass.GetStyles(),
+            CompactScssProperties = scssClass.ScssMarkup.CompactCss()
+        };
+
+        Assert.Equal(@".sm\:hover\:\[width\:10rem\]:hover { width:10rem; }".CompactCss(), result.GetScssMarkup().CompactCss());
     }
     
     [Fact]

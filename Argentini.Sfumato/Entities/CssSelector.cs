@@ -86,6 +86,7 @@ public sealed class CssSelector
     public string ModifierValueType { get; set; } = string.Empty;
     public string ArbitraryValue { get; set; } = string.Empty;
     public string ArbitraryValueType { get; set; } = string.Empty;
+    public string PseudoclassPath { get; set; } = string.Empty;
     
 	#endregion    
 
@@ -496,6 +497,12 @@ public sealed class CssSelector
 			    if (PseudoClassVariants.Count > 0)
 				    FixedSelector += $"{string.Join(':', PseudoClassVariants)}:";
 
+                foreach (var pseudoClass in PseudoClassVariants)
+                {
+                    if (pseudoClass.Contains("peer-") == false)
+                        PseudoclassPath += AppState?.PseudoclassPrefixes[pseudoClass];
+                }
+                
 			    FixedSelector += rightOfVariants;
 		    }
                 

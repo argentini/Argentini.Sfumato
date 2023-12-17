@@ -37,22 +37,59 @@ public sealed class ScssMediaQuery
     {
         var scss = AppState.StringBuilderPool.Get();
 
-        if (Depth > -1)
-            scss.Append(Selector.Indent(Depth * 4) + Environment.NewLine);
-        
-        foreach (var scssClass in ScssClasses)
+        if (Prefix == "dark" && AppState.Settings.DarkMode.InvariantEquals("class"))
         {
-            scss.Append(scssClass.GetScssMarkup());
+            scss.Append($"html.theme-dark {{{Environment.NewLine}");
+
+            foreach (var scssClass in ScssClasses)
+            {
+                scss.Append(scssClass.GetScssMarkup());
+            }
+
+            foreach (var mediaQuery in MediaQueries)
+            {
+                scss.Append(mediaQuery.GetScssMarkup());
+            }
+            
+            scss.Append($"}}{Environment.NewLine}");
+            
+            if (AppState.Settings.UseAutoTheme)
+            {
+                scss.Append($"html.theme-auto {{ {AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
+                
+                foreach (var scssClass in ScssClasses)
+                {
+                    scss.Append(scssClass.GetScssMarkup());
+                }
+
+                foreach (var mediaQuery in MediaQueries)
+                {
+                    scss.Append(mediaQuery.GetScssMarkup());
+                }
+            
+                scss.Append($"}} }}{Environment.NewLine}");
+            }
         }
 
-        foreach (var mediaQuery in MediaQueries)
+        else
         {
-            scss.Append(mediaQuery.GetScssMarkup());
+            if (Depth > -1)
+                scss.Append(Selector.Indent(Depth * 4) + Environment.NewLine);
+
+            foreach (var scssClass in ScssClasses)
+            {
+                scss.Append(scssClass.GetScssMarkup());
+            }
+
+            foreach (var mediaQuery in MediaQueries)
+            {
+                scss.Append(mediaQuery.GetScssMarkup());
+            }
+
+            if (Depth > -1)
+                scss.Append($"}}{Environment.NewLine}".Indent(Depth * 4));
         }
 
-        if (Depth > -1)
-            scss.Append($"}}{Environment.NewLine}".Indent(Depth * 4));
-        
         var result = scss.ToString();
 
         AppState.StringBuilderPool.Return(scss);
