@@ -460,7 +460,7 @@ public static class Strings
 	/// <returns></returns>
 	public static string CompactCss(this string css)
     {
-        var result = Regex.Replace(css.NormalizeLinebreaks(), @"\s+", " ").Trim();;
+        var result = Regex.Replace(css.NormalizeLinebreaks(), @"\s+", " ").Trim();
 
         result = result.Replace(": ", ":");
 
@@ -500,6 +500,12 @@ public static class Strings
 		if (string.IsNullOrEmpty(block))
 			return block;
 
+        if (count < 0)
+            count = 0;
+
+        if (count == 0)
+            return block;
+        
 		var whitespace = " ".Repeat(count);
 		var result = block.Replace("\n", $"\n{whitespace}");
 

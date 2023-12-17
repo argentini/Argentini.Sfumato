@@ -77,9 +77,181 @@ public sealed class SfumatoRunner
 	
 	#region Generation Methods
 
+    private static ScssMediaQuery? EnsureMediaQueryPathExists(SfumatoAppState appState, string fullMediaQueryVariantPath, ScssMediaQuery? rootNode, int index = 0, ScssMediaQuery? currentNode = null)
+    {
+        if (fullMediaQueryVariantPath == string.Empty)
+            return rootNode;
+
+        if (fullMediaQueryVariantPath.EndsWith(':') == false)
+            fullMediaQueryVariantPath += ':';
+        
+        if (index == 0 || currentNode is null)
+            currentNode = rootNode;
+        
+        var variantSegments = fullMediaQueryVariantPath.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+        if (variantSegments.Length == 0 || index > variantSegments.Length - 1)
+            return rootNode;
+        
+        //var variant = variantSegments[index];
+        var partialMediaQueryVariantPath = string.Join(':', variantSegments[..(index + 1)]) + ':';
+        var existingNode = currentNode?.MediaQueries.FirstOrDefault(n => n.PrefixPath == partialMediaQueryVariantPath);
+
+        if (existingNode is null)
+        {
+            existingNode = new ScssMediaQuery(appState, partialMediaQueryVariantPath);
+            currentNode?.MediaQueries.Add(existingNode);
+        }
+
+        if (variantSegments.Length <= index + 1)
+            return existingNode;
+
+        index++;
+
+        return EnsureMediaQueryPathExists(appState, fullMediaQueryVariantPath, rootNode, index, existingNode);
+    }
+
+    public string GenerateScssGraphMarkup()
+    {
+        var scss = AppState.StringBuilderPool.Get();
+        var scssRootNode = new ScssMediaQuery(AppState, string.Empty, -1);
+        
+        #region Generate SCSS Tree
+        
+        var usedCssSelectors = AppState.UsedClasses
+            .OrderBy(c => c.Value.Depth)
+            .ThenBy(c => c.Value.VariantSortOrder)
+            .ThenBy(c => c.Value.SelectorSort)
+            .ThenBy(c => c.Value.FixedSelector)
+            .ToList();
+
+        foreach (var (_, usedCssSelector) in usedCssSelectors)
+        {
+            if (usedCssSelector.IsInvalid)
+                continue;
+
+            if (string.IsNullOrEmpty(usedCssSelector.ScssMarkup))
+                usedCssSelector.GetStyles();
+            
+            if (usedCssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
+            {
+                usedCssSelector.IsInvalid = true;
+                continue;
+            }
+            
+            var compactScss = usedCssSelector.ScssMarkup.CompactCss();
+            var pseudoclassSuffix = string.Empty;
+            var parentNode = EnsureMediaQueryPathExists(AppState, string.Join(':', usedCssSelector.MediaQueryVariants), scssRootNode);
+
+            foreach (var pseudoClass in usedCssSelector.PseudoClassVariants)
+            {
+                if (AppState.PseudoclassPrefixes.TryGetValue(pseudoClass, out var prefix))
+                    pseudoclassSuffix += prefix;
+            }
+
+            var existingClass = parentNode?.ScssClasses.FirstOrDefault(c => c.CompactScssProperties == compactScss && c.PseudoclassSuffix == pseudoclassSuffix);
+            
+            if (existingClass is null)
+            {
+                parentNode?.ScssClasses.Add(new ScssClass
+                {
+                    Depth = parentNode.Depth + 1,
+                    Selectors = { $".{usedCssSelector.EscapedSelector}" },
+                    PseudoclassSuffix = pseudoclassSuffix,
+                    CompactScssProperties = compactScss,
+                    ScssProperties = usedCssSelector.ScssMarkup
+                });
+
+                continue;
+            }
+            
+            existingClass.Selectors.Add($".{usedCssSelector.EscapedSelector}");
+        }
+
+        #endregion        
+        
+        #region Process global class assignments
+
+        var globalSelector = AppState.StringBuilderPool.Get();
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "gradients")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            scss.Append(globalSelector + " {" + Environment.NewLine);
+            scss.Append($"{Indent(1)}--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" + Environment.NewLine);
+            scss.Append("}" + Environment.NewLine);
+        }
+
+        globalSelector.Clear();
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "ring")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            scss.Append(globalSelector + " {" + Environment.NewLine);
+            scss.Append($"{Indent(1)}--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+            scss.Append("}" + Environment.NewLine);
+        }
+
+        globalSelector.Clear();
+
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        {
+            if (usedCssSelector.ScssUtilityClassGroup?.Category == "shadow")
+                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+        }
+
+        if (globalSelector.Length > 0)
+        {
+            scss.Append(globalSelector + " {" + Environment.NewLine);
+            scss.Append($"{Indent(1)}--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+            scss.Append("}" + Environment.NewLine);
+        }
+
+        AppState.StringBuilderPool.Return(globalSelector);
+
+        #endregion
+        
+        #region Generate SCSS
+
+        scss.Append(scssRootNode.GetScssMarkup());
+        
+        #endregion
+        
+        var result = scss.ToString();
+        
+        AppState.StringBuilderPool.Return(scss);
+
+        return result;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public static string GenerateSingleClassMarkup(SfumatoAppState appState, IEnumerable<KeyValuePair<string, CssSelector>> usedCssClasses, int rootIndent = 0)
     {
-        List<ScssNode> scssNodes = [];
+        List<ScssElement> scssNodes = [];
         var scss = appState.StringBuilderPool.Get();
         var suffix = appState.StringBuilderPool.Get();
         var indent = rootIndent;
@@ -107,7 +279,7 @@ public sealed class SfumatoRunner
 
             if (existingScssNode is null)
             {
-                scssNodes.Add(new ScssNode
+                scssNodes.Add(new ScssElement
                 {
                     Classes = { usedCssSelector },
                     CompactStyles = compactStyles,
@@ -164,10 +336,19 @@ public sealed class SfumatoRunner
     /// <returns></returns>
     public string GenerateUtilityScss()
     {
+        //todo: REMOVE
+        _ = GenerateScssGraphMarkup();
+
+        
+        
+        
+        
+        
+        
         var scss = AppState.StringBuilderPool.Get();
         var suffix = AppState.StringBuilderPool.Get();
         var globalSelector = AppState.StringBuilderPool.Get();
-
+        
         #region Process global class assignments
 
         foreach (var (_, usedCssSelector) in AppState.UsedClasses)

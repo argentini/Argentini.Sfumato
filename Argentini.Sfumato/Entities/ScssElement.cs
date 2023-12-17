@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Entities;
 
-public sealed class ScssNode
+public sealed class ScssElement
 {
     public string Selector => $".{string.Join(", .", Classes.Select(c => c.EscapedSelector))}"; // e.g. .bg-white, .my-bg-color
     public List<CssSelector> Classes { get; } = [];

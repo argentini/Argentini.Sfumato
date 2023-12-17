@@ -91,7 +91,7 @@ public sealed class CssSelector
 
 	#region Metadata
 	
-    public int Depth => AllVariants.Count;
+    public int Depth => MediaQueryVariants.Count;
     public bool HasModifierValue => ModifierValue.Length > 0;
     public bool HasArbitraryValue  => ArbitraryValue.Length > 0;
     public bool UsesModifier { get; set; }

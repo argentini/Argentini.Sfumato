@@ -495,6 +495,64 @@ html.theme-dark :root {
   accent-color: rgba(255, 228, 230, 0.25);
 }
 
+.active\:bg-purple-600:active {
+  background-color: rgb(147, 51, 234);
+}
+
+.active\:bg-transparent:active {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.active\:text-gray-500:active {
+  color: rgb(107, 114, 128);
+}
+
+.after\:absolute::after {
+  position: absolute;
+}
+
+.after\:bg-white::after {
+  background-color: rgb(255, 255, 255);
+}
+
+.after\:border::after {
+  border-width: 1px;
+}
+
+.after\:border-gray-300::after {
+  border-color: rgb(209, 213, 219);
+}
+
+.after\:content-\[\'\'\]::after {
+  content: "";
+}
+
+.after\:h-5::after {
+  height: 1.25rem;
+}
+
+.after\:rounded-full::after {
+  border-radius: 9999px;
+}
+
+.after\:start-\[2px\]::after {
+  inset-inline-start: 2px;
+}
+
+.after\:top-\[2px\]::after {
+  top: 2px;
+}
+
+.after\:transition-all::after {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.after\:w-5::after {
+  width: 1.25rem;
+}
+
 .align-middle {
   vertical-align: middle;
 }
@@ -747,6 +805,46 @@ html.theme-dark :root {
   flex-wrap: wrap;
 }
 
+.focus-within\:text-purple-500:focus-within {
+  color: rgb(168, 85, 247);
+}
+
+.focus-within\:text-purple-600:focus-within {
+  color: rgb(147, 51, 234);
+}
+
+.focus\:bg-white:focus {
+  background-color: rgb(255, 255, 255);
+}
+
+.focus\:border-gray-500:focus {
+  border-color: rgb(107, 114, 128);
+}
+
+.focus\:border-purple-300:focus {
+  border-color: rgb(216, 180, 254);
+}
+
+.focus\:border-purple-400:focus {
+  border-color: rgb(192, 132, 252);
+}
+
+.focus\:outline-none:focus {
+  outline-style: none;
+}
+
+.focus\:ring-2:focus {
+  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.125rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
+}
+
+.focus\:ring-inset:focus {
+  --sf-ring-inset: inset;
+}
+
+.focus\:ring-pink-300:focus {
+  --sf-ring-color: rgba(249,168,212,1);
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -811,6 +909,30 @@ html.theme-dark :root {
 
 .hidden {
   display: none;
+}
+
+.hover\:bg-gray-100:hover {
+  background-color: rgb(243, 244, 246);
+}
+
+.hover\:bg-purple-700:hover {
+  background-color: rgb(126, 34, 206);
+}
+
+.hover\:border-gray-500:hover {
+  border-color: rgb(107, 114, 128);
+}
+
+.hover\:text-gray-700:hover {
+  color: rgb(55, 65, 81);
+}
+
+.hover\:text-gray-800:hover {
+  color: rgb(31, 41, 55);
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
 
 .inline-block {
@@ -1047,6 +1169,54 @@ html.theme-dark :root {
 
 .pb-16 {
   padding-bottom: 4rem;
+}
+
+.peer:checked ~ .peer-checked\:after\:border-white::after {
+  border-color: rgb(255, 255, 255);
+}
+
+.peer:checked ~ .peer-checked\:after\:translate-x-full::after {
+  transform: translateX(100%);
+}
+
+.peer:checked ~ .peer-checked\:bg-blue-600 {
+  background-color: rgb(37, 99, 235);
+}
+
+.peer\/two:checked ~ .peer-checked\/two\:after\:border-white::after {
+  border-color: rgb(255, 255, 255);
+}
+
+.peer\/two:checked ~ .peer-checked\/two\:after\:translate-x-full::after {
+  transform: translateX(100%);
+}
+
+.peer\/two:checked ~ .peer-checked\/two\:bg-blue-600 {
+  background-color: rgb(37, 99, 235);
+}
+
+.peer:focus ~ .peer-focus\:outline-none {
+  outline-style: none;
+}
+
+.peer:focus ~ .peer-focus\:ring-4 {
+  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.25rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
+}
+
+.peer:focus ~ .peer-focus\:ring-blue-300 {
+  --sf-ring-color: rgba(147,197,253,1);
+}
+
+.peer\/two:focus ~ .peer-focus\/two\:outline-none {
+  outline-style: none;
+}
+
+.peer\/two:focus ~ .peer-focus\/two\:ring-4 {
+  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.25rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
+}
+
+.peer\/two:focus ~ .peer-focus\/two\:ring-blue-300 {
+  --sf-ring-color: rgba(147,197,253,1);
 }
 
 .pl-10 {
@@ -1491,176 +1661,6 @@ html.theme-dark :root {
   --sf-gradient-to: rgba(59,75,89,1) var(--sf-gradient-to-position);
 }
 
-.active\:bg-purple-600:active {
-  background-color: rgb(147, 51, 234);
-}
-
-.active\:bg-transparent:active {
-  background-color: rgba(0, 0, 0, 0);
-}
-
-.active\:text-gray-500:active {
-  color: rgb(107, 114, 128);
-}
-
-.after\:absolute::after {
-  position: absolute;
-}
-
-.after\:bg-white::after {
-  background-color: rgb(255, 255, 255);
-}
-
-.after\:border::after {
-  border-width: 1px;
-}
-
-.after\:border-gray-300::after {
-  border-color: rgb(209, 213, 219);
-}
-
-.after\:content-\[\'\'\]::after {
-  content: "";
-}
-
-.after\:h-5::after {
-  height: 1.25rem;
-}
-
-.after\:rounded-full::after {
-  border-radius: 9999px;
-}
-
-.after\:start-\[2px\]::after {
-  inset-inline-start: 2px;
-}
-
-.after\:top-\[2px\]::after {
-  top: 2px;
-}
-
-.after\:transition-all::after {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-.after\:w-5::after {
-  width: 1.25rem;
-}
-
-.focus-within\:text-purple-500:focus-within {
-  color: rgb(168, 85, 247);
-}
-
-.focus-within\:text-purple-600:focus-within {
-  color: rgb(147, 51, 234);
-}
-
-.focus\:bg-white:focus {
-  background-color: rgb(255, 255, 255);
-}
-
-.focus\:border-gray-500:focus {
-  border-color: rgb(107, 114, 128);
-}
-
-.focus\:border-purple-300:focus {
-  border-color: rgb(216, 180, 254);
-}
-
-.focus\:border-purple-400:focus {
-  border-color: rgb(192, 132, 252);
-}
-
-.focus\:outline-none:focus {
-  outline-style: none;
-}
-
-.focus\:ring-2:focus {
-  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.125rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
-}
-
-.focus\:ring-inset:focus {
-  --sf-ring-inset: inset;
-}
-
-.focus\:ring-pink-300:focus {
-  --sf-ring-color: rgba(249,168,212,1);
-}
-
-.hover\:bg-gray-100:hover {
-  background-color: rgb(243, 244, 246);
-}
-
-.hover\:bg-purple-700:hover {
-  background-color: rgb(126, 34, 206);
-}
-
-.hover\:border-gray-500:hover {
-  border-color: rgb(107, 114, 128);
-}
-
-.hover\:text-gray-700:hover {
-  color: rgb(55, 65, 81);
-}
-
-.hover\:text-gray-800:hover {
-  color: rgb(31, 41, 55);
-}
-
-.hover\:underline:hover {
-  text-decoration-line: underline;
-}
-
-.peer:checked ~ .peer-checked\:bg-blue-600 {
-  background-color: rgb(37, 99, 235);
-}
-
-.peer\/two:checked ~ .peer-checked\/two\:bg-blue-600 {
-  background-color: rgb(37, 99, 235);
-}
-
-.peer:focus ~ .peer-focus\:outline-none {
-  outline-style: none;
-}
-
-.peer:focus ~ .peer-focus\:ring-4 {
-  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.25rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
-}
-
-.peer:focus ~ .peer-focus\:ring-blue-300 {
-  --sf-ring-color: rgba(147,197,253,1);
-}
-
-.peer\/two:focus ~ .peer-focus\/two\:outline-none {
-  outline-style: none;
-}
-
-.peer\/two:focus ~ .peer-focus\/two\:ring-4 {
-  box-shadow: var(--sf-ring-inset) 0 0 0 calc(0.25rem + var(--sf-ring-offset-width)) var(--sf-ring-color);
-}
-
-.peer\/two:focus ~ .peer-focus\/two\:ring-blue-300 {
-  --sf-ring-color: rgba(147,197,253,1);
-}
-
-.peer:checked ~ .peer-checked\:after\:border-white::after {
-  border-color: rgb(255, 255, 255);
-}
-
-.peer:checked ~ .peer-checked\:after\:translate-x-full::after {
-  transform: translateX(100%);
-}
-
-.peer\/two:checked ~ .peer-checked\/two\:after\:border-white::after {
-  border-color: rgb(255, 255, 255);
-}
-
-.peer\/two:checked ~ .peer-checked\/two\:after\:translate-x-full::after {
-  transform: translateX(100%);
-}
-
 @media screen and (min-width: 640px) {
   .sm\:flex-row {
     flex-direction: row;
@@ -1797,8 +1797,23 @@ html.theme-dark .dark\:border-gray-800 {
 html.theme-dark .dark\:divide-gray-700 > * + * {
   border-color: rgb(55, 65, 81);
 }
+html.theme-dark .dark\:focus-within\:text-purple-400:focus-within {
+  color: rgb(192, 132, 252);
+}
 html.theme-dark .dark\:hidden {
   display: none;
+}
+html.theme-dark .dark\:hover\:bg-gray-800:hover {
+  background-color: rgb(31, 41, 55);
+}
+html.theme-dark .dark\:hover\:text-gray-200:hover {
+  color: rgb(229, 231, 235);
+}
+html.theme-dark .peer:focus ~ .dark\:peer-focus\:ring-blue-800 {
+  --sf-ring-color: rgba(30,64,175,1);
+}
+html.theme-dark .peer\/two:focus ~ .dark\:peer-focus\/two\:ring-blue-800 {
+  --sf-ring-color: rgba(30,64,175,1);
 }
 html.theme-dark .dark\:text-blue-100 {
   color: rgb(219, 234, 254);
@@ -1841,21 +1856,6 @@ html.theme-dark .dark\:text-teal-100 {
 }
 html.theme-dark .dark\:text-white {
   color: rgb(255, 255, 255);
-}
-html.theme-dark .dark\:focus-within\:text-purple-400:focus-within {
-  color: rgb(192, 132, 252);
-}
-html.theme-dark .dark\:hover\:bg-gray-800:hover {
-  background-color: rgb(31, 41, 55);
-}
-html.theme-dark .dark\:hover\:text-gray-200:hover {
-  color: rgb(229, 231, 235);
-}
-html.theme-dark .peer:focus ~ .dark\:peer-focus\:ring-blue-800 {
-  --sf-ring-color: rgba(30,64,175,1);
-}
-html.theme-dark .peer\/two:focus ~ .dark\:peer-focus\/two\:ring-blue-800 {
-  --sf-ring-color: rgba(30,64,175,1);
 }
 @media screen and (min-width: 768px) {
   html.theme-dark .dark\:md\:text-base {
