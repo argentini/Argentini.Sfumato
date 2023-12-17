@@ -62,7 +62,7 @@ public sealed class SfumatoAppState
 			Priority = 4,
 			Prefix = "sm",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: $sm-breakpoint) {"
+			Statement = "@media (min-width: #{$sm-breakpoint}) {"
 		},
 		new CssMediaQuery
 		{
@@ -70,7 +70,7 @@ public sealed class SfumatoAppState
 			Priority = 8,
 			Prefix = "md",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: $md-breakpoint) {"
+			Statement = "@media (min-width: #{$md-breakpoint}) {"
 		},
 		new CssMediaQuery
 		{
@@ -78,7 +78,7 @@ public sealed class SfumatoAppState
 			Priority = 16,
 			Prefix = "lg",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: $lg-breakpoint) {"
+			Statement = "@media (min-width: #{$lg-breakpoint}) {"
 		},
 		new CssMediaQuery
 		{
@@ -86,7 +86,7 @@ public sealed class SfumatoAppState
 			Priority = 32,
 			Prefix = "xl",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: $xl-breakpoint) {"
+			Statement = "@media (min-width: #{$xl-breakpoint}) {"
 		},
 		new CssMediaQuery
 		{
@@ -94,7 +94,7 @@ public sealed class SfumatoAppState
 			Priority = 64,
 			Prefix = "xxl",
 			PrefixType = "breakpoint",
-			Statement = "@include sf-media($from: $xxl-breakpoint) {"
+			Statement = "@media (min-width: #{$xxl-breakpoint}) {"
 		},
 		new CssMediaQuery
 		{

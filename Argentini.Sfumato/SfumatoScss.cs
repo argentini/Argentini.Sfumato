@@ -18,43 +18,13 @@ public static class SfumatoScss
 		
 		var sb = appState.StringBuilderPool.Get();
 		
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + '\n');
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_browser-reset.scss"))).Trim() + '\n');
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_browser-reset.scss"))).Trim() + Environment.NewLine);
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + Environment.NewLine);
+        sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + Environment.NewLine);
 
-		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + '\n';
-
-		mediaQueriesScss = mediaQueriesScss.Replace("#{sm-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Sm}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
-        mediaQueriesScss = mediaQueriesScss.Replace("$internal-dark-theme: \"\";", $"$internal-dark-theme: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
-		
-		sb.Append(mediaQueriesScss);
-
-		var initScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + '\n';
-		
-        initScss = initScss.Replace("#{zero-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Zero}");
-		initScss = initScss.Replace("#{sm-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Sm}");
-		initScss = initScss.Replace("#{md-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Md}");
-		initScss = initScss.Replace("#{lg-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Lg}");
-		initScss = initScss.Replace("#{xl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xl}");
-
-		if (appState.Settings.Theme.FontSizeUnit?.Xxl.EndsWith("vw", StringComparison.Ordinal) ?? false)
-		{
-			initScss = initScss.Replace("#{xxl-font-size}", $"calc(#{{$xxl-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Xxl})}} / 100))");
-		}
-
-		else
-		{
-			initScss = initScss.Replace("#{xxl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xxl}");
-		}
-		
-		sb.Append(initScss);
-
-        var formScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + '\n';
-        
-        sb.Append(formScss);
+        ProcessShortCodes(appState, sb);
         
 		diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS base for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
@@ -80,17 +50,10 @@ public static class SfumatoScss
 		
 		var sb = appState.StringBuilderPool.Get();
 		
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + '\n');
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
+		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
 
-		var mediaQueriesScss = (await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + '\n';
-
-		mediaQueriesScss = mediaQueriesScss.Replace("#{sm-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Sm}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
-		mediaQueriesScss = mediaQueriesScss.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
-		
-		sb.Append(mediaQueriesScss);
+        ProcessShortCodes(appState, sb);
 
 		diagnosticOutput.TryAdd("init3", $"{Strings.TriangleRight} Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
@@ -100,7 +63,40 @@ public static class SfumatoScss
 
 		return result;
 	}
-	
+
+    /// <summary>
+    /// Find/replace various system short codes in generated SCSS markup
+    /// (e.g. media breakpoint values).
+    /// </summary>
+    /// <param name="appState"></param>
+    /// <param name="sb"></param>
+    public static void ProcessShortCodes(SfumatoAppState appState, StringBuilder sb)
+    {
+        sb = sb.Replace("#{sm-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Sm}");
+        sb = sb.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
+        sb = sb.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
+        sb = sb.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
+        sb = sb.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
+        
+        sb = sb.Replace("$internal-dark-theme: \"\";", $"$internal-dark-theme: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
+
+        sb = sb.Replace("#{zero-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Zero}");
+        sb = sb.Replace("#{sm-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Sm}");
+        sb = sb.Replace("#{md-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Md}");
+        sb = sb.Replace("#{lg-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Lg}");
+        sb = sb.Replace("#{xl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xl}");
+
+        if (appState.Settings.Theme.FontSizeUnit?.Xxl.EndsWith("vw", StringComparison.Ordinal) ?? false)
+        {
+            sb = sb.Replace("#{xxl-font-size}", $"calc(#{{$xxl-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Xxl})}} / 100))");
+        }
+
+        else
+        {
+            sb = sb.Replace("#{xxl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xxl}");
+        }
+    }
+    
 	#endregion
 	
 	#region SCSS Transpiling
