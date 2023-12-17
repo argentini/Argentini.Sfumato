@@ -6,7 +6,6 @@
 @include sf-media($from: $sm-breakpoint) {
 
     h1 {
-        @apply text-2xl/[1.75] font-bold;
-        color: black;
+        @apply text-2xl/[1.75] font-bold text-black;
     }
 }
