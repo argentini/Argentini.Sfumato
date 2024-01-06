@@ -1,6 +1,6 @@
 # SFUMATO
 
-Sfumato is a lean, modern, utility-based CSS framework generation tool. It is compatible with the Tailwind CSS class structure and has the following additional features:
+Sfumato is a lean, modern, utility-based CSS framework generation tool. It is compatible with the Tailwind CSS class naming structure and has the following additional features:
 
 - The Sfumato CLI tool is written in cros-platform native code, not javascript, and is very fast
 - Dart Sass (also cross-platform native code) is embedded so you get all the benefits of using Sass as part of your workflow
