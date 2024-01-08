@@ -363,6 +363,9 @@ public sealed class SfumatoSettings
             foreach (var item in Theme.MaxWidth ?? new Dictionary<string, string>())
                 appState.MaxWStaticUtilities.TryAddUpdate(item, "max-width: {value};");
 
+            foreach (var item in Theme.Size ?? new Dictionary<string, string>())
+                appState.SizeStaticUtilities.TryAddUpdate(item, "width: {value}; height: {value};");
+
             #endregion
 
             #region Spacing

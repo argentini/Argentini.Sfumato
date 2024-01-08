@@ -396,6 +396,11 @@ Theme:
         # This option does not exist so it will be added 
         banner: 60em
 
+    Size:
+      
+      # This option does not exist so it will be added 
+      bannerSquare: 60rem
+
     Width:
 
         # This option does not exist so it will be added 

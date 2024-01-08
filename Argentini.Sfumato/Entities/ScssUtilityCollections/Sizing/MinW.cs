@@ -9,6 +9,7 @@ public class MinW : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MinWStaticUtilities);
+        await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -21,6 +22,13 @@ public class MinW : ScssUtilityClassGroupBase
         if (ProcessStaticDictionaryOptions(cssSelector.AppState.MinWStaticUtilities, cssSelector, out Result))
             return Result;
         
+        #endregion
+        
+        #region Calculated Utilities
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "min-width: {value};", out Result))
+            return Result;
+
         #endregion
         
         #region Arbitrary Values

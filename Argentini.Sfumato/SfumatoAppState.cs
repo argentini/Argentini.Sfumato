@@ -1787,7 +1787,10 @@ public sealed class SfumatoAppState
 	    ["min"] = "height: min-content;",
 	    ["max"] = "height: max-content;",
 	    ["fit"] = "height: fit-content;",
-	    ["full"] = "height: 100%;"
+	    ["full"] = "height: 100%;",
+        ["svh"] = "height: 100svh;",
+        ["lvh"] = "height: 100lvh;",
+        ["dvh"] = "height: 100dvh;",
     }; 
 
     public Dictionary<string, string> MaxHStaticUtilities { get; } = new()
@@ -1800,6 +1803,9 @@ public sealed class SfumatoAppState
 	    ["min"] = "max-height: min-content;",
 	    ["max"] = "max-height: max-content;",
 	    ["fit"] = "max-height: fit-content;",
+        ["svh"] = "max-height: 100svh;",
+        ["lvh"] = "max-height: 100lvh;",
+        ["dvh"] = "max-height: 100dvh;",
     }; 
 
     public Dictionary<string, string> MaxWStaticUtilities { get; } = new()
@@ -1836,7 +1842,10 @@ public sealed class SfumatoAppState
 	    ["screen"] = "min-height: 100vh;",
 	    ["min"] = "min-height: min-content;",
 	    ["max"] = "min-height: max-content;",
-	    ["fit"] = "min-height: fit-content;"
+	    ["fit"] = "min-height: fit-content;",
+        ["svh"] = "min-height: 100svh;",
+        ["lvh"] = "min-height: 100lvh;",
+        ["dvh"] = "min-height: 100dvh;",
     }; 
 
     public Dictionary<string, string> MinWStaticUtilities { get; } = new()
@@ -1844,6 +1853,7 @@ public sealed class SfumatoAppState
 	    ["0"] = "min-width: 0px;",
 	    ["px"] = "min-width: 1px;",
 	    ["screen"] = "min-width: 100vw;",
+        ["full"] = "min-width: 100%;",
 	    ["min"] = "min-width: min-content;",
 	    ["max"] = "min-width: max-content;",
 	    ["fit"] = "min-width: fit-content;"
@@ -1858,7 +1868,20 @@ public sealed class SfumatoAppState
 	    ["min"] = "width: min-content;",
 	    ["max"] = "width: max-content;",
 	    ["fit"] = "width: fit-content;",
-	    ["full"] = "width: 100%;"
+	    ["full"] = "width: 100%;",
+        ["svw"] = "width: 100svw;",
+        ["lvw"] = "width: 100lvw;",
+        ["dvw"] = "width: 100dvw;",
+    }; 
+    
+    public Dictionary<string, string> SizeStaticUtilities { get; } = new()
+    {
+        ["0"] = "width: 0px; height: 0px;",
+        ["px"] = "width: 1px; height: 1px;",
+        ["full"] = "width: 100%; height: 100%;",
+        ["min"] = "width: min-content; height: min-content;",
+        ["max"] = "width: max-content; height: max-content;",
+        ["fit"] = "width: fit-content; height: fit-content;"
     }; 
     
     #endregion

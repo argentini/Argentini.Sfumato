@@ -9,6 +9,7 @@ public class MaxW : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MaxWStaticUtilities);
+        await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -21,6 +22,13 @@ public class MaxW : ScssUtilityClassGroupBase
         if (ProcessStaticDictionaryOptions(cssSelector.AppState.MaxWStaticUtilities, cssSelector, out Result))
             return Result;
         
+        #endregion
+        
+        #region Calculated Utilities
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "max-width: {value};", out Result))
+            return Result;
+
         #endregion
         
         #region Arbitrary Values

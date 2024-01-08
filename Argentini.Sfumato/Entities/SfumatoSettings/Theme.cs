@@ -112,6 +112,7 @@ public sealed class Theme
     public Dictionary<string,string>? Width { get; set; } = new();
     public Dictionary<string,string>? MinWidth { get; set; } = new();
     public Dictionary<string,string>? MaxWidth { get; set; } = new();
+    public Dictionary<string,string>? Size { get; set; } = new();
     
     #endregion
 

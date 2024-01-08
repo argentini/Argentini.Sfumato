@@ -9,6 +9,7 @@ public class MinH : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MinHStaticUtilities);
+        await AddToIndexAsync(appState.LayoutRemUnitOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -21,6 +22,13 @@ public class MinH : ScssUtilityClassGroupBase
         if (ProcessStaticDictionaryOptions(cssSelector.AppState.MinHStaticUtilities, cssSelector, out Result))
             return Result;
         
+        #endregion
+        
+        #region Calculated Utilities
+        
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "min-height: {value};", out Result))
+            return Result;
+
         #endregion
         
         #region Arbitrary Values

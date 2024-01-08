@@ -1,15 +1,16 @@
 namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Sizing;
 
-public class MaxH : ScssUtilityClassGroupBase 
+public class Size : ScssUtilityClassGroupBase 
 {
-    public override string SelectorPrefix => "max-h";
+    public override string SelectorPrefix => "size";
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         SelectorIndex.Add(SelectorPrefix);
 
-        await AddToIndexAsync(appState.MaxHStaticUtilities);
+        await AddToIndexAsync(appState.SizeStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
+        await AddToIndexAsync(appState.FractionDividendOptions);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -19,16 +20,19 @@ public class MaxH : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MaxHStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SizeStaticUtilities, cssSelector, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "max-height: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "width: {value}; height: {value};", out Result))
             return Result;
 
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "width: {value}; height: {value};", out Result))
+            return Result;
+        
         #endregion
         
         #region Arbitrary Values
@@ -36,7 +40,7 @@ public class MaxH : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "max-height: {value};", out Result))
+        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "width: {value}; height: {value};", out Result))
             return Result;
       
         #endregion
