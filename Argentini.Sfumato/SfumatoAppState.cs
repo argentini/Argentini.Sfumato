@@ -419,8 +419,8 @@ public sealed class SfumatoAppState
         ["rose-950"] = "rgba(76,5,25,1.0)"
     };
     
-    public List<string> FractionDividendOptions { get; } = new ()
-    {
+    public List<string> FractionDividendOptions { get; } =
+    [
         "1",
         "2",
         "3",
@@ -433,7 +433,7 @@ public sealed class SfumatoAppState
         "10",
         "11",
         "12"
-    };
+    ];
 	
     public Dictionary<string,string> TextSizeOptions { get; } = new()
     {
