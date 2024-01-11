@@ -326,17 +326,17 @@ public class SfumatoRunnerTests
                      .top-8 {
                          top: 2rem;
                      }
-                     @include sf-media($from: $sm-breakpoint) {
+                     @media (min-width: #{$sm-breakpoint}) {
                          .sm\:\[font-weight\:900\] {
                              font-weight:900;
                          }
                      }
-                     @include sf-media($from: $md-breakpoint) {
+                     @media (min-width: #{$md-breakpoint}) {
                          .md\:\[font-weight\:700\] {
                              font-weight:700;
                          }
                      }
-                     @include sf-media($from: $lg-breakpoint) {
+                     @media (min-width: #{$lg-breakpoint}) {
                          .lg\:\[font-weight\:600\] {
                              font-weight:600;
                          }
@@ -344,7 +344,7 @@ public class SfumatoRunnerTests
                              font-size: 1.25rem;
                          }
                      }
-                     @include sf-media($from: $xl-breakpoint) {
+                     @media (min-width: #{$xl-breakpoint}) {
                          .xl\:text-\[\#112233\], .xl\:text\[\#112233\] {
                              color: #112233;
                          }
@@ -359,7 +359,7 @@ public class SfumatoRunnerTests
                              line-height: 3rem;
                          }
                      }
-                     @include sf-media($from: $xxl-breakpoint) {
+                     @media (min-width: #{$xxl-breakpoint}) {
                          .xxl\:aspect-\[8\/4\] {
                              aspect-ratio: 8/4;
                          }
