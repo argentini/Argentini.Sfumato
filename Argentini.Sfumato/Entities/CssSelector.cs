@@ -70,9 +70,8 @@ public sealed class CssSelector
     
     #region Variants
     
-    public List<string> MediaQueryVariants { get; set; } = new();
-    public List<string> PseudoClassVariants { get; set; } = new();
-    public List<string> AllVariants { get; set; } = new();
+    public List<string> MediaQueryVariants { get; set; } = [];
+    public List<string> PseudoClassVariants { get; set; } = [];
     
     #endregion
 
@@ -171,7 +170,13 @@ public sealed class CssSelector
 	    }
 
 	    #region length
-	    
+
+        if (value.Contains("calc(") || value.Contains("var("))
+        {
+            result.ValueType = "length";
+            return result;
+        }
+
 	    var unitless = string.Empty;
 
 	    foreach (var unit in appState?.CssUnits ?? Enumerable.Empty<string>())
@@ -326,7 +331,6 @@ public sealed class CssSelector
     {
 	    MediaQueryVariants.Clear();
 	    PseudoClassVariants.Clear();
-	    AllVariants.Clear();
 
 	    FixedSelector = Selector;
 	    EscapedSelector = string.Empty;
@@ -506,9 +510,6 @@ public sealed class CssSelector
 			    FixedSelector += rightOfVariants;
 		    }
                 
-		    AllVariants.AddRange(MediaQueryVariants);
-		    AllVariants.AddRange(PseudoClassVariants);
-
 		    BuildVariantSortOrder();
 	    }
 
@@ -538,7 +539,7 @@ public sealed class CssSelector
 
 	    PrefixSegment = ScssUtilityClassGroup.SelectorPrefix;
 	    CoreSegment = rootSegment.TrimStart(ScssUtilityClassGroup.SelectorPrefix)?.TrimStart('-') ?? string.Empty;
-
+        
 	    await Task.CompletedTask;
     }
 
