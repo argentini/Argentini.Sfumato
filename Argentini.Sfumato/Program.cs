@@ -148,7 +148,10 @@ internal class Program
 			}, false));
 			
 			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
-			{
+            {
+                if (Directory.Exists(projectPath.Path) == false)
+                    continue;
+                
 				if (projectPath.Extensions == "scss")
 					fileWatchers.Add(await CreateFileChangeWatcherAsync(scssTranspileQueue, projectPath, projectPath.Recurse));
 				else
@@ -501,7 +504,7 @@ internal class Program
 		    await Console.Out.WriteLineAsync("Fatal Error: No watch path specified");
 		    Environment.Exit(1);
 	    }
-
+        
 	    var filePath = projectPath.Path;
 	    var watcher = new FileSystemWatcher(filePath)
         {
