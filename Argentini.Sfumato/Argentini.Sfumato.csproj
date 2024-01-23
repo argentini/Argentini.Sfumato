@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.27.0</AssemblyVersion>
-        <FileVersion>5.0.27.0</FileVersion>
-        <PackageVersion>5.0.27</PackageVersion>
+        <AssemblyVersion>5.0.28.0</AssemblyVersion>
+        <FileVersion>5.0.28.0</FileVersion>
+        <PackageVersion>5.0.28</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Arbitrary values using var() or calc() now default to be considered "length" data types.</PackageReleaseNotes>
+        <PackageReleaseNotes>No longer aborts when adding a non-existent directory watcher.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>

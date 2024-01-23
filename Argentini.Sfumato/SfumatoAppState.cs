@@ -3710,8 +3710,8 @@ public sealed class SfumatoAppState
 		if (dir.Exists == false)
 		{
 			await Console.Out.WriteLineAsync($"Source directory does not exist or could not be found: {sourcePath}");
-			Environment.Exit(1);
-		}
+            return;
+        }
 
 		dirs = dir.GetDirectories();
 		files = dir.GetFiles();
