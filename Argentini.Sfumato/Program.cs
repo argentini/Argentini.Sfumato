@@ -149,13 +149,27 @@ internal class Program
 			
 			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
             {
-                if (Directory.Exists(projectPath.Path) == false)
+                if (projectPath.ExtensionsList.Count == 0 || Directory.Exists(projectPath.Path) == false)
                     continue;
-                
-				if (projectPath.Extensions == "scss")
-					fileWatchers.Add(await CreateFileChangeWatcherAsync(scssTranspileQueue, projectPath, projectPath.Recurse));
-				else
+
+				if (projectPath.ExtensionsList.Count != 0 && projectPath.ExtensionsList.Contains("scss"))
+                {
+                    var newProjectPath = new ProjectPath
+                    {
+                        Path = projectPath.Path,
+                        Extensions = "scss",
+                        Recurse = projectPath.Recurse
+                    };
+                    
+					fileWatchers.Add(await CreateFileChangeWatcherAsync(scssTranspileQueue, newProjectPath, projectPath.Recurse));
+
+                    projectPath.Path = projectPath.Path.TrimStart("scss,")?.TrimEnd(",scss")?.Replace(",scss,", ",") ?? string.Empty;
+                }
+
+                if (projectPath.ExtensionsList.Count != 0 && projectPath.ExtensionsList.Contains("scss") == false)
+                {
 					fileWatchers.Add(await CreateFileChangeWatcherAsync(rebuildProjectQueue, projectPath, projectPath.Recurse));
+                }
 			}
 			
 			#endregion
