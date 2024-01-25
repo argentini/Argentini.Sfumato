@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.29.0</AssemblyVersion>
-        <FileVersion>5.0.29.0</FileVersion>
-        <PackageVersion>5.0.29</PackageVersion>
+        <AssemblyVersion>5.0.30.0</AssemblyVersion>
+        <FileVersion>5.0.30.0</FileVersion>
+        <PackageVersion>5.0.30</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>No longer aborts when adding a non-existent directory watcher.</PackageReleaseNotes>
+        <PackageReleaseNotes>Allow up to 250 characters for arbitrary CSS and arbitrary values (was 100).</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
