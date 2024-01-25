@@ -127,7 +127,7 @@ internal class Program
 
 		#region Watcher Mode
 
-		if (runner.AppState.WatchMode)
+		if (true || runner.AppState.WatchMode)
 		{
 			var fileWatchers = new List<FileSystemWatcher>();
 			var restartAppQueue = new ConcurrentDictionary<long, FileChangeRequest>();
@@ -163,7 +163,7 @@ internal class Program
                     
 					fileWatchers.Add(await CreateFileChangeWatcherAsync(scssTranspileQueue, newProjectPath, projectPath.Recurse));
 
-                    projectPath.Path = projectPath.Path.TrimStart("scss,")?.TrimEnd(",scss")?.Replace(",scss,", ",") ?? string.Empty;
+                    projectPath.Extensions = projectPath.Extensions.TrimStart("scss,")?.TrimEnd(",scss")?.Replace(",scss,", ",") ?? string.Empty;
                 }
 
                 if (projectPath.ExtensionsList.Count != 0 && projectPath.ExtensionsList.Contains("scss") == false)
