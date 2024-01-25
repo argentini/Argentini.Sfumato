@@ -5,15 +5,7 @@
 ProjectPaths:
     
     - Path: wwwroot
-      Extensions: html,htm
-      Recurse: false
-
-    - Path: wwwroot/pages
-      Extensions: html,htm
-      Recurse: true
-
-    - Path: wwwroot
-      Extensions: scss
+      Extensions: scss,html,htm
       Recurse: true
 
 # Dark theme options
