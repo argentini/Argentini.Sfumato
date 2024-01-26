@@ -1837,6 +1837,7 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> MinHStaticUtilities { get; } = new()
     {
+        ["auto"] = "min-height: auto;",
 	    ["0"] = "min-height: 0px;",
 	    ["full"] = "min-height: 100%;",
 	    ["screen"] = "min-height: 100vh;",
@@ -1850,6 +1851,7 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> MinWStaticUtilities { get; } = new()
     {
+        ["auto"] = "min-width: auto;",
 	    ["0"] = "min-width: 0px;",
 	    ["px"] = "min-width: 1px;",
 	    ["screen"] = "min-width: 100vw;",
