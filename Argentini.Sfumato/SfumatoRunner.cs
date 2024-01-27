@@ -258,7 +258,15 @@ public sealed class SfumatoRunner
 	{
 		await AppState.ExamineWatchedFilesForUsedClassesAsync();
 
-		var scss = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
+        if (File.Exists(filePath) == false)
+        {
+            if (AppState.WatchedScssFiles.TryGetValue(filePath, out _))
+                AppState.WatchedScssFiles.TryRemove(filePath, out _);
+                    
+            return;
+        }
+
+        var scss = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
 		var css = await SfumatoScss.TranspileScssAsync(filePath, scss, this);
 
 		if (AppState.WatchedScssFiles.TryGetValue(filePath, out var watchedScssFile))
@@ -306,6 +314,14 @@ public sealed class SfumatoRunner
 		if (filePath.Equals(AppState.SettingsFilePath, StringComparison.OrdinalIgnoreCase))
 			return;
 
+        if (File.Exists(filePath) == false)
+        {
+            if (AppState.WatchedFiles.TryGetValue(filePath, out _))
+                AppState.WatchedFiles.TryRemove(filePath, out _);
+                    
+            return;
+        }
+        
 		var markup = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
 
 		if (AppState.WatchedFiles.TryGetValue(filePath, out var watchedFile))
