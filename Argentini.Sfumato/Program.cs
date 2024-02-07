@@ -14,18 +14,20 @@ internal class Program
 		
 		var runner = new SfumatoRunner();
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
+        var sassVersion = await runner.AppState.GetEmbeddedSassVersionAsync();
 
 		await runner.InitializeAsync(args);
 
 		if (runner.AppState.VersionMode)
 		{
 			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
+            await Console.Out.WriteLineAsync($"Dart Sass Version {sassVersion}");
 			Environment.Exit(0);
 		}
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		await Console.Out.WriteLineAsync("Sfumato: The lean, modern, utility-based SCSS/CSS framework generation tool");
-		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / {runner.AppState.UtilityClassCollection.Count:N0} Utility Classes");
+		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / Dart Sass {sassVersion} / {runner.AppState.UtilityClassCollection.Count:N0} Utility Classes");
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
 		

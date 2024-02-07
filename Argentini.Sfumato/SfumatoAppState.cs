@@ -3490,6 +3490,37 @@ public sealed class SfumatoAppState
         return workingPath;
     }
 
+    public async Task<string> GetEmbeddedSassVersionAsync()
+    {
+        var version = string.Empty;
+        var sassPath = await this.GetEmbeddedSassPathAsync();
+        var sb = StringBuilderPool.Get();
+        var cmd = Cli.Wrap(sassPath)
+            .WithArguments(arguments =>
+            {
+                arguments.Add("--version");
+            })
+            .WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
+            .WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
+
+        try
+        {
+            _ = cmd.ExecuteAsync().GetAwaiter().GetResult();
+        }
+
+        catch
+        {
+            await Console.Out.WriteLineAsync("Dart Sass is embedded but cannot be found.");
+            Environment.Exit(1);
+        }
+
+        version = sb.ToString().Trim();
+
+        StringBuilderPool.Return(sb);
+
+        return version;
+    }
+    
     public async Task<string> GetEmbeddedSassPathAsync()
     {
         var osPlatform = Identify.GetOsPlatform();
