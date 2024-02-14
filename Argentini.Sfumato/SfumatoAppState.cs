@@ -3222,7 +3222,7 @@ public sealed class SfumatoAppState
 (?<=[\s"'`])
 ([a-z]{1,25}(\-[a-z]{0,25})?:){0,5}
 ([\!]?\[(([a-z]{1,25}(\-[a-z]{0,25}){0,2}))\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])
-(?=[\s"'`])
+(?=[\s"'`]|[\\"])
 """;
 	    
 	    ArbitraryCssRegex = new Regex(arbitraryCssExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
@@ -3236,7 +3236,7 @@ public sealed class SfumatoAppState
 		(/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
 	)
 )
-(?=[\s"'`])
+(?=[\s"'`]|[\\"])
 """;
 	    
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
@@ -3812,7 +3812,7 @@ public sealed class SfumatoAppState
 		watchedFile.ArbitraryCssMatches.Clear();
 		
 		var tasks = new List<Task>();
-		var matches = CoreClassRegex.Matches(watchedFile.Markup).Distinct().ToList();
+		var matches = CoreClassRegex.Matches(watchedFile.Markup).DistinctBy(m => m.Value).ToList();
 
 		if (matches.Count > 0)
 		{
@@ -3826,7 +3826,7 @@ public sealed class SfumatoAppState
 
 		tasks.Clear();
 		
-		matches = ArbitraryCssRegex.Matches(watchedFile.Markup).Distinct().ToList();
+		matches = ArbitraryCssRegex.Matches(watchedFile.Markup).DistinctBy(m => m.Value).ToList();
 
 		if (matches.Count > 0)
 		{

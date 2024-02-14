@@ -36,6 +36,13 @@ public class RegularExpressionsTests
                                              }
                                            }
                                        </script>
+                                       @{
+                                           var test1 = $""
+                                               block bg-slate-400
+                                           "";
+                                           
+                                           var detailsMask = $"<span class=\"line-clamp-1 mt-1 text-slate-500 dark:text-dark-foreground-dim line-clamp-2\">{description}</span>";
+                                       }
                                    </body>
                                    </html>
                                    """;
@@ -46,7 +53,7 @@ public class RegularExpressionsTests
     public void MatchArbitraryCssRegex()
     {
         var appState = new SfumatoAppState();
-        var matches = appState.ArbitraryCssRegex.Matches(Markup).Distinct().ToList();
+        var matches = appState.ArbitraryCssRegex.Matches(Markup).DistinctBy(m => m.Value).ToList();
 
         Assert.Equal(8, matches.Count);
         
@@ -59,17 +66,17 @@ public class RegularExpressionsTests
     public async Task MatchCoreClassesRegex()
     {
         var appState = new SfumatoAppState();
-        var matches = appState.CoreClassRegex.Matches(Markup).Distinct().ToList();
+        var matches = appState.CoreClassRegex.Matches(Markup).DistinctBy(m => m.Value).ToList();
 
-        Assert.Equal(34, matches.Count);
+        Assert.Equal(41, matches.Count);
         
         await appState.InitializeAsync(Array.Empty<string>());
 
         appState.FilterCoreClassMatches(matches);
         
-        Assert.Equal(24, matches.Count);
+        Assert.Equal(29, matches.Count);
         
-        matches = appState.CoreClassRegex.Matches("<div class=\"!px-0\"></div>").Distinct().ToList();
+        matches = appState.CoreClassRegex.Matches("<div class=\"!px-0\"></div>").DistinctBy(m => m.Value).ToList();
 
         if (matches.Count > 0)
         {
@@ -78,7 +85,7 @@ public class RegularExpressionsTests
             Assert.Single(matches);
         }
         
-        matches = appState.CoreClassRegex.Matches("<div class=\"-order-1\"></div>").Distinct().ToList();
+        matches = appState.CoreClassRegex.Matches("<div class=\"-order-1\"></div>").DistinctBy(m => m.Value).ToList();
 
         if (matches.Count > 0)
         {
