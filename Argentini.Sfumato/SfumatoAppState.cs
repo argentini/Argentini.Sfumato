@@ -505,7 +505,8 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> BorderWidthOptions { get; } = new()
     {
 	    [""] = "1px",
-	    ["0"] = "0px",
+        ["0"] = "0px",
+        ["1"] = "1px",
 	    ["2"] = 2.PxToRem(),
 	    ["4"] = 4.PxToRem(),
 	    ["8"] = 8.PxToRem()
@@ -514,7 +515,8 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> DivideWidthOptions { get; } = new()
     {
 	    [""] = "1px",
-	    ["0"] = "0px",
+        ["0"] = "0px",
+        ["1"] = "1px",
 	    ["2"] = 2.PxToRem(),
 	    ["4"] = 4.PxToRem(),
 	    ["8"] = 8.PxToRem()
