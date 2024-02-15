@@ -1,29 +1,36 @@
 :root {
 
     // Color
-    --sf-form-background-color: #fff;
-    --sf-form-color: #000;
-    --sf-form-placeholder-color: rgba(107, 114, 128, 0.75);
-    --sf-form-border-color: rgba(107, 114, 128, 0.9);
-    --sf-form-focus-color: rgb(146, 215, 255);
-    --sf-form-check-color: rgb(96, 165, 250);
-
+    --sf-form-field-background-color: #fff;
+    --sf-form-field-color: #000;
+    --sf-form-field-placeholder-color: rgba(107, 114, 128, 0.75);
+    --sf-form-field-border-color: rgba(107, 114, 128, 0.9);
+    --sf-form-field-focus-color: rgb(146, 215, 255);
+    --sf-form-field-check-color: rgb(96, 165, 250);
+    --sf-form-button-bg-color: rgb(14, 165, 233);
+    --sf-form-button-color: #fff;
+    --sf-form-button-hover-bg-color: rgb(56, 189, 248);
+    --sf-form-button-hover-color: #fff;
+    
     --sf-form-dark-background-color: rgba(55, 65, 81);
     --sf-form-dark-color: #fff;
     --sf-form-dark-placeholder-color: rgba(125, 135, 151);
 
     // Metrics
-    --sf-form-focus-border-width: 0.15rem;
-    --sf-form-border-radius: 0.175rem;
-    --sf-form-border-width: 1px;
-    --sf-form-padding: 0.65rem 0.75rem;
+    --sf-form-field-focus-border-width: 0.15rem;
+    --sf-form-field-border-radius: 0.175rem;
+    --sf-form-field-border-width: 1px;
+    --sf-form-field-padding: 0.75rem 0.75rem;
+    --sf-form-field-max-height: 2.8rem;
+
+    --sf-form-button-padding: 0.75rem 1rem;
 }
 
 @include sf-dark-theme() {
     :root {
-        --sf-form-background-color: var(--sf-form-dark-background-color);
-        --sf-form-color: var(--sf-form-dark-color);
-        --sf-form-placeholder-color: var(--sf-form-dark-placeholder-color);
+        --sf-form-field-background-color: var(--sf-form-dark-background-color);
+        --sf-form-field-color: var(--sf-form-dark-color);
+        --sf-form-field-placeholder-color: var(--sf-form-dark-placeholder-color);
     }
 }
 
@@ -32,28 +39,28 @@
     display: block;
     width: 100%;
     appearance: none;
-    background-color: var(--sf-form-background-color);
-    border-color: var(--sf-form-border-color);
-    border-width: var(--sf-form-border-width);
-    border-radius: var(--sf-form-border-radius);
-    padding: var(--sf-form-padding);
-    color: var(--sf-form-color);
+    background-color: var(--sf-form-field-background-color);
+    border-color: var(--sf-form-field-border-color);
+    border-width: var(--sf-form-field-border-width);
+    border-radius: var(--sf-form-field-border-radius);
+    padding: var(--sf-form-field-padding);
+    color: var(--sf-form-field-color);
     font-size: 1rem;
     line-height: 1.2;
 
     --sf-shadow: 0 0 #0000;
 
     &:focus {
-        outline: var(--sf-form-focus-border-width) solid transparent;
-        outline-offset: var(--sf-form-focus-border-width);
+        outline: var(--sf-form-field-focus-border-width) solid transparent;
+        outline-offset: var(--sf-form-field-focus-border-width);
         --sf-ring-inset: var(--sf-empty,/*!*/ /*!*/);
         --sf-ring-offset-width: 0px;
         --sf-ring-offset-color: #fff;
-        --sf-ring-color: var(--sf-form-focus-color);
+        --sf-ring-color: var(--sf-form-field-focus-color);
         --sf-ring-offset-shadow: var(--sf-ring-inset) 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color);
-        --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--sf-form-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
+        --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--sf-form-field-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
         box-shadow: var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
-        border-color: var(--sf-form-border-color);
+        border-color: var(--sf-form-field-border-color);
     }
 }
 
@@ -65,6 +72,7 @@
     background-size: 1.5em 1.5em;
     padding-right: 2.5rem;
     print-color-adjust: exact;
+    max-height: var(--sf-form-field-max-height);
 
     &:where([size]:not([size="1"])) {
         background-image: initial;
@@ -80,7 +88,7 @@
 
     &::placeholder {
         opacity: 1;
-        color: var(--sf-form-placeholder-color);
+        color: var(--sf-form-field-placeholder-color);
     }    
 }
 
@@ -110,6 +118,17 @@
         padding-top: 0;
         padding-bottom: 0;
     }
+
+    &:not([type="button"]),
+    &:not([type="checkbox"]),
+    &:not([type="hidden"]),
+    &:not([type="image"]),
+    &:not([type="radio"]),
+    &:not([type="reset"]),
+    &:not([type="submit"]) {
+        max-height: var(--sf-form-field-max-height);
+    }
+
 }
 
 .form-checkbox, .form-radio {
@@ -124,23 +143,23 @@
     flex-shrink: 0;
     height: 1rem;
     width: 1rem;
-    color: var(--sf-form-check-color);
-    background-color: var(--sf-form-background-color);
-    border-color: var(--sf-form-border-color);
-    border-width: var(--sf-form-border-width);
+    color: var(--sf-form-field-check-color);
+    background-color: var(--sf-form-field-background-color);
+    border-color: var(--sf-form-field-border-color);
+    border-width: var(--sf-form-field-border-width);
     cursor: pointer;
     
     --sf-shadow: 0 0 #0000;
 
     &:focus {
-        outline: var(--sf-form-focus-border-width) solid transparent;
-        outline-offset: var(--sf-form-focus-border-width);
+        outline: var(--sf-form-field-focus-border-width) solid transparent;
+        outline-offset: var(--sf-form-field-focus-border-width);
         --sf-ring-inset: var(--sf-empty,/*!*/ /*!*/);
         --sf-ring-offset-width: 0rem;
         --sf-ring-offset-color: #fff;
-        --sf-ring-color: var(--sf-form-focus-color);
+        --sf-ring-color: var(--sf-form-field-focus-color);
         --sf-ring-offset-shadow: var(--sf-ring-inset) 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color);
-        --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--sf-form-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
+        --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--sf-form-field-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
         box-shadow: var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
     }
 
@@ -160,7 +179,7 @@
 
 .form-checkbox {
     
-    border-radius: var(--sf-form-border-radius);
+    border-radius: var(--sf-form-field-border-radius);
 
     &:checked {
         background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
@@ -203,5 +222,28 @@
 
     &:focus {
         outline: 1px auto -webkit-focus-ring-color;
+    }
+}
+
+.form-button {
+
+    display: inline-block;
+    background-color: var(--sf-form-button-bg-color);
+    border-color: var(--sf-form-button-bg-color);
+    color: var(--sf-form-button-color);
+    border-radius: var(--sf-form-field-border-radius);
+    padding: var(--sf-form-button-padding);
+    max-height: var(--sf-form-field-max-height);
+
+    font-size: 1rem;
+    line-height: 1.2;
+    border-width: 1px;
+    cursor: pointer;
+    text-align: center;
+
+    &:hover {
+        background-color: var(--sf-form-button-hover-bg-color);
+        border-color: var(--sf-form-button-hover-bg-color);
+        color: var(--sf-form-button-hover-color);
     }
 }
