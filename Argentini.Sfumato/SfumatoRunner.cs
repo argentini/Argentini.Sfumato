@@ -166,7 +166,12 @@ public sealed class SfumatoRunner
 
         var globalSelector = AppState.StringBuilderPool.Get();
 
-        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                     .OrderBy(c => c.Value.Depth)
+                     .ThenBy(c => c.Value.VariantSortOrder)
+                     .ThenBy(c => c.Value.SelectorSort)
+                     .ThenBy(c => c.Value.FixedSelector)
+                     .ToList())
         {
             if (usedCssSelector.ScssUtilityClassGroup?.Category == "gradients")
                 globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
@@ -181,7 +186,12 @@ public sealed class SfumatoRunner
 
         globalSelector.Clear();
 
-        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                     .OrderBy(c => c.Value.Depth)
+                     .ThenBy(c => c.Value.VariantSortOrder)
+                     .ThenBy(c => c.Value.SelectorSort)
+                     .ThenBy(c => c.Value.FixedSelector)
+                     .ToList())
         {
             if (usedCssSelector.ScssUtilityClassGroup?.Category == "ring")
                 globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
@@ -196,7 +206,12 @@ public sealed class SfumatoRunner
 
         globalSelector.Clear();
 
-        foreach (var (_, usedCssSelector) in AppState.UsedClasses)
+        foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                     .OrderBy(c => c.Value.Depth)
+                     .ThenBy(c => c.Value.VariantSortOrder)
+                     .ThenBy(c => c.Value.SelectorSort)
+                     .ThenBy(c => c.Value.FixedSelector)
+                     .ToList())
         {
             if (usedCssSelector.ScssUtilityClassGroup?.Category == "shadow")
                 globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
