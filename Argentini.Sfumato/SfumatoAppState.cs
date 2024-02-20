@@ -2427,6 +2427,11 @@ public sealed class SfumatoAppState
 	    [""] = "overflow-wrap: break-word;",
     };
 
+    public Dictionary<string, string> BreakAnywhereStaticUtilities { get; } = new()
+    {
+        [""] = "overflow-wrap: anywhere;",
+    };
+
     public Dictionary<string, string> CapitalizeStaticUtilities { get; } = new()
     {
 	    [""] = "text-transform: capitalize;",
