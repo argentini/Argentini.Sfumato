@@ -2,11 +2,12 @@
 
 Sfumato is a lean, modern, utility-based CSS framework generation tool. It is compatible with the Tailwind CSS class naming structure and has the following additional features:
 
-- The Sfumato CLI tool is written in cros-platform native code, not javascript, and is very fast
+- The Sfumato CLI tool is written in cross-platform (multi-threaded) native code, not javascript, and is much faster than Tailwind
 - Dart Sass (also cross-platform native code) is embedded so you get all the benefits of using Sass as part of your workflow
-- Sfumato uses a scalable CSS system that makes all the viewport sizes between breakpoints scale like a PDF for a more controlled layout
+- Sfumato provides an optional scalable CSS system that makes all the viewport sizes between breakpoints scale like a PDF for a more controlled layout
 - Theme mode that supports system theme matching, as well as classes that include an "auto" class to fall back to system matching
 - Integrated form element styles (class compatible with Tailwind forms plugin)
+- One install works for all your projects!
 
 ## How To Use
 
