@@ -56,9 +56,17 @@ public sealed class SfumatoAppState
 			PrefixType = "animation",
 			Statement = "@media (prefers-reduced-motion: reduce) {"
 		},
+        new CssMediaQuery
+        {
+            PrefixOrder = 7,
+            Priority = 4096,
+            Prefix = "supports-backdrop-blur",
+            PrefixType = "features",
+            Statement = "@supports ((-webkit-backdrop-filter:blur(0)) or (backdrop-filter:blur(0))) or (-webkit-backdrop-filter:blur(0)) {"
+        },
 		new CssMediaQuery
 		{
-			PrefixOrder = 7,
+			PrefixOrder = 8,
 			Priority = 4,
 			Prefix = "sm",
 			PrefixType = "breakpoint",
@@ -66,7 +74,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 8,
+			PrefixOrder = 9,
 			Priority = 8,
 			Prefix = "md",
 			PrefixType = "breakpoint",
@@ -74,7 +82,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 9,
+			PrefixOrder = 10,
 			Priority = 16,
 			Prefix = "lg",
 			PrefixType = "breakpoint",
@@ -82,7 +90,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 10,
+			PrefixOrder = 11,
 			Priority = 32,
 			Prefix = "xl",
 			PrefixType = "breakpoint",
@@ -90,7 +98,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 11,
+			PrefixOrder = 12,
 			Priority = 64,
 			Prefix = "xxl",
 			PrefixType = "breakpoint",
@@ -98,7 +106,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 12,
+			PrefixOrder = 13,
 			Priority = 128,
 			Prefix = "mobi",
 			PrefixType = "breakpoint",
@@ -106,7 +114,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 13,
+			PrefixOrder = 14,
 			Priority = 256,
 			Prefix = "tabp",
 			PrefixType = "breakpoint",
@@ -114,7 +122,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 14,
+			PrefixOrder = 15,
 			Priority = 512,
 			Prefix = "tabl",
 			PrefixType = "breakpoint",
@@ -122,7 +130,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 15,
+			PrefixOrder = 16,
 			Priority = 1024,
 			Prefix = "desk",
 			PrefixType = "breakpoint",
@@ -130,7 +138,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 16,
+			PrefixOrder = 17,
 			Priority = 2048,
 			Prefix = "wide",
 			PrefixType = "breakpoint",
@@ -138,7 +146,7 @@ public sealed class SfumatoAppState
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 17,
+			PrefixOrder = 18,
 			Priority = 4096,
 			Prefix = "vast",
 			PrefixType = "breakpoint",

@@ -524,6 +524,13 @@ public class CssSelectorTests
         Assert.Equal("", selector.ArbitraryValueType);
         Assert.Equal("", selector.ModifierValue);
         Assert.Equal("", selector.ModifierValueType);
+        
+        selector = new CssSelector(appState, "supports-backdrop-blur:bg-rose-100/60");
+
+        await selector.ProcessSelectorAsync();
+        
+        Assert.Single(selector.MediaQueryVariants);
+        Assert.Equal("supports-backdrop-blur", selector.MediaQueryVariants[0]);
     }
     
     [Fact]

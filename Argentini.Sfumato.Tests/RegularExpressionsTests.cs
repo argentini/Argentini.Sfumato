@@ -264,5 +264,26 @@ h1 {
         Assert.Equal(".\\!\\[padding\\:2rem\\] { padding:2rem !important; }".CompactCss(), markup.CompactCss());
 
         #endregion
+        
+        #region supports-backdrop-blur
+        
+        runner.AppState.UsedClasses.Clear();
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"supports-backdrop-blur:bg-slate-100\"></div>"
+        };
+
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
+
+        Assert.Single(runner.AppState.UsedClasses);
+
+        // markup = runner.GenerateUtilityScss();
+        //
+        // Assert.Equal(".\\!\\[padding\\:2rem\\] { padding:2rem !important; }".CompactCss(), markup.CompactCss());
+
+        #endregion
     }
 }
