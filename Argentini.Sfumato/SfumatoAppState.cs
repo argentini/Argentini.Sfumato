@@ -470,11 +470,11 @@ public sealed class SfumatoAppState
 	    ["2xl"] = "clamp((2rem * 0.875), (4.35vw * 2), 2rem)",
 	    ["3xl"] = "clamp((2.25rem * 0.875), (4.35vw * 2.25), 2.25rem)",
 	    ["4xl"] = "clamp((2.5rem * 0.875), (4.35vw * 2.5), 2.5rem)",
-	    ["5xl"] = "1",
-	    ["6xl"] = "1",
-	    ["7xl"] = "1",
-	    ["8xl"] = "1",
-	    ["9xl"] = "1"
+	    ["5xl"] = "1.1",
+	    ["6xl"] = "1.1",
+	    ["7xl"] = "1.1",
+	    ["8xl"] = "1.1",
+	    ["9xl"] = "1.1"
     };
     
     public Dictionary<string,string> LeadingOptions { get; } = new()
