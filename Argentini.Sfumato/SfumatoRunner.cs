@@ -236,8 +236,6 @@ public sealed class SfumatoRunner
                 scss.Append("}" + Environment.NewLine);
             }
 
-            AppState.StringBuilderPool.Return(globalSelector);
-
             #endregion
 
             scss.Append(scssRootNode.GetScssMarkup());
@@ -253,6 +251,7 @@ public sealed class SfumatoRunner
         finally
         {
             AppState.StringBuilderPool.Return(scss);
+            AppState.StringBuilderPool.Return(globalSelector);
         }
     }
 
