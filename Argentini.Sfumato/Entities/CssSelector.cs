@@ -557,29 +557,38 @@ public sealed class CssSelector
         
         var value = AppState.StringBuilderPool.Get();
 
-        for (var i = 0; i < Selector.Length; i++)
+        try
         {
-            var c = Selector[i];
-            
-            if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
-                value.Append('\\');
-            
-            value.Append(c);
-        }
+            for (var i = 0; i < Selector.Length; i++)
+            {
+                var c = Selector[i];
 
-        if (Selector.Contains("peer-"))
-        {
+                if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
+                    value.Append('\\');
+
+                value.Append(c);
+            }
+
+            if (Selector.Contains("peer-") == false)
+                return value.ToString();
+            
             IsInvalid = TryHasPeerVariant(AppState, Selector, out var pseudoclass, out var peerClass) == false;
 
             if (IsInvalid == false)
                 value.Insert(0, $"{peerClass}:{pseudoclass}~.");
+
+            return value.ToString();
         }
 
-        var result = value.ToString();
-
-        AppState?.StringBuilderPool.Return(value);
-
-        return result;
+        catch
+        {
+            return string.Empty;
+        }
+        
+        finally
+        {
+            AppState?.StringBuilderPool.Return(value);
+        }
     }
 
     /// <summary>

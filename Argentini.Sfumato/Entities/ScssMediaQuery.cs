@@ -37,26 +37,27 @@ public sealed class ScssMediaQuery
     {
         var scss = AppState.StringBuilderPool.Get();
 
-        if (Prefix == "dark" && AppState.Settings.DarkMode.InvariantEquals("class"))
+        try
         {
-            scss.Append($"html.theme-dark {{{Environment.NewLine}");
+            if (Prefix == "dark" && AppState.Settings.DarkMode.InvariantEquals("class"))
+            {
+                #region Handle root tag classes as "special case"
 
-            foreach (var scssClass in ScssClasses)
-            {
-                scss.Append(scssClass.GetScssMarkup());
-            }
+                foreach (var scssClass in ScssClasses)
+                {
+                    foreach (var selector in scssClass.Selectors.ToList())
+                    {
+                        if (AppState.HtmlTagClasses.Contains(selector.TrimStart('.').Replace("\\", string.Empty)))
+                        {
+                            scssClass.Selectors.Add($"html{selector}");
+                        }
+                    }
+                }
 
-            foreach (var mediaQuery in MediaQueries)
-            {
-                scss.Append(mediaQuery.GetScssMarkup());
-            }
-            
-            scss.Append($"}}{Environment.NewLine}");
-            
-            if (AppState.Settings.UseAutoTheme)
-            {
-                scss.Append($"html.theme-auto {{ {AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
-                
+                #endregion
+
+                scss.Append($"html.theme-dark {{{Environment.NewLine}");
+
                 foreach (var scssClass in ScssClasses)
                 {
                     scss.Append(scssClass.GetScssMarkup());
@@ -66,34 +67,58 @@ public sealed class ScssMediaQuery
                 {
                     scss.Append(mediaQuery.GetScssMarkup());
                 }
-            
+
+                scss.Append($"}}{Environment.NewLine}");
+
+                if (AppState.Settings.UseAutoTheme == false)
+                    return scss.ToString();
+
+                scss.Append(
+                    $"html.theme-auto {{ {AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
+
+                foreach (var scssClass in ScssClasses)
+                {
+                    scss.Append(scssClass.GetScssMarkup());
+                }
+
+                foreach (var mediaQuery in MediaQueries)
+                {
+                    scss.Append(mediaQuery.GetScssMarkup());
+                }
+
                 scss.Append($"}} }}{Environment.NewLine}");
             }
+
+            else
+            {
+                if (Depth > -1)
+                    scss.Append(Selector.Indent(Depth * 4) + Environment.NewLine);
+
+                foreach (var scssClass in ScssClasses)
+                {
+                    scss.Append(scssClass.GetScssMarkup());
+                }
+
+                foreach (var mediaQuery in MediaQueries)
+                {
+                    scss.Append(mediaQuery.GetScssMarkup());
+                }
+
+                if (Depth > -1)
+                    scss.Append($"}}{Environment.NewLine}".Indent(Depth * 4));
+            }
+
+            return scss.ToString();
         }
 
-        else
+        catch
         {
-            if (Depth > -1)
-                scss.Append(Selector.Indent(Depth * 4) + Environment.NewLine);
-
-            foreach (var scssClass in ScssClasses)
-            {
-                scss.Append(scssClass.GetScssMarkup());
-            }
-
-            foreach (var mediaQuery in MediaQueries)
-            {
-                scss.Append(mediaQuery.GetScssMarkup());
-            }
-
-            if (Depth > -1)
-                scss.Append($"}}{Environment.NewLine}".Indent(Depth * 4));
+            return string.Empty;
         }
 
-        var result = scss.ToString();
-
-        AppState.StringBuilderPool.Return(scss);
-        
-        return result;
+        finally
+        {
+            AppState.StringBuilderPool.Return(scss);
+        }
     }
 }

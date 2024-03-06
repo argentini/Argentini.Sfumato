@@ -1,3 +1,5 @@
+using HtmlAgilityPack;
+
 namespace Argentini.Sfumato;
 
 public sealed class SfumatoAppState
@@ -3204,6 +3206,7 @@ public sealed class SfumatoAppState
     public ConcurrentDictionary<string,WatchedScssFile> WatchedScssFiles { get; } = new();
     public ConcurrentDictionary<string,CssSelector> UsedClasses { get; } = new();
     public Dictionary<string,ScssUtilityClassGroupBase> UtilityClassCollection { get; } = new();
+    public List<string> HtmlTagClasses { get; } = new();
     
     #endregion
     
@@ -3510,17 +3513,17 @@ public sealed class SfumatoAppState
         var version = string.Empty;
         var sassPath = await this.GetEmbeddedSassPathAsync();
         var sb = StringBuilderPool.Get();
-        var cmd = Cli.Wrap(sassPath)
-            .WithArguments(arguments =>
-            {
-                arguments.Add("--version");
-            })
-            .WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
-            .WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
 
         try
         {
+            var cmd = Cli.Wrap(sassPath)
+                .WithArguments(arguments => { arguments.Add("--version"); })
+                .WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
+                .WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
+
             _ = cmd.ExecuteAsync().GetAwaiter().GetResult();
+
+            return sb.ToString().Trim();
         }
 
         catch
@@ -3529,11 +3532,12 @@ public sealed class SfumatoAppState
             Environment.Exit(1);
         }
 
-        version = sb.ToString().Trim();
+        finally
+        {
+            StringBuilderPool.Return(sb);
+        }
 
-        StringBuilderPool.Return(sb);
-
-        return version;
+        return string.Empty;
     }
     
     public async Task<string> GetEmbeddedSassPathAsync()
@@ -3595,27 +3599,31 @@ public sealed class SfumatoAppState
 		}
 		
 		var sb = StringBuilderPool.Get();
-		var cmd = Cli.Wrap(sassPath)
-			.WithArguments(arguments =>
-			{
-				arguments.Add("--version");
-			})
-			.WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
-			.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
 
-		try
-		{
-			_ = cmd.ExecuteAsync().GetAwaiter().GetResult();
-		}
+        try
+        {
+		    var cmd = Cli.Wrap(sassPath)
+			    .WithArguments(arguments =>
+			    {
+				    arguments.Add("--version");
+			    })
+			    .WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
+			    .WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
 
-		catch
-		{
-			await Console.Out.WriteLineAsync($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
-			Environment.Exit(1);
-		}
+                _ = cmd.ExecuteAsync().GetAwaiter().GetResult();
+        }
 
-		StringBuilderPool.Return(sb);
-		
+        catch
+        {
+            await Console.Out.WriteLineAsync($"{CliErrorPrefix}Dart Sass is embedded but cannot be found.");
+            Environment.Exit(1);
+        }
+
+        finally
+        {
+            StringBuilderPool.Return(sb);
+        }
+        
 		return sassPath;
     }
 
@@ -4031,6 +4039,7 @@ public sealed class SfumatoAppState
 	public async Task ExamineWatchedFilesForUsedClassesAsync()
 	{
 		UsedClasses.Clear();
+        HtmlTagClasses.Clear();
 
 		var tasks = new List<Task>();
 		
@@ -4046,6 +4055,33 @@ public sealed class SfumatoAppState
 	/// <param name="watchedFile"></param>
 	public async Task ExamineMarkupForUsedClassesAsync(WatchedFile watchedFile)
 	{
+        // Classes on the root tag need special treatment when using theme modes
+        // So keep track of all root tag classes for dark mode so their selectors
+        // can be modified later.
+        if (watchedFile.Markup.Contains("<html "))
+        {
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(watchedFile.Markup);
+
+            var htmlTag = htmlDoc.DocumentNode.SelectSingleNode("//html");
+
+            if (htmlTag != null)
+            {
+                var classes = htmlTag.GetAttributeValue("class", string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var className in classes)
+                {
+                    if (className.StartsWith("dark:") == false || className.Equals("html.theme-dark") || className.Equals("html.theme-light") || className.Equals("html.theme-auto"))
+                        continue;
+
+                    if (HtmlTagClasses.Contains(className))
+                        continue;
+
+                    HtmlTagClasses.Add(className);
+                }
+            }
+        }
+        
 		foreach (var cssSelector in watchedFile.CoreClassMatches.Values)
 		{
 			if (UsedClasses.ContainsKey(cssSelector.FixedSelector))

@@ -19,7 +19,7 @@ public sealed class ScssClass
             Selectors.Clear();
 
             foreach (var selector in oldList)
-                Selectors.Add($".{selector.TrimStart('.')}");
+                Selectors.Add($"{(selector.StartsWith("html") ? string.Empty : ".")}{selector.TrimStart('.')}");
         }
         
         return

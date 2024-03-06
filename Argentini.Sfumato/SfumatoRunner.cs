@@ -114,127 +114,146 @@ public sealed class SfumatoRunner
     public string GenerateUtilityScss()
     {
         var scss = AppState.StringBuilderPool.Get();
-        var scssRootNode = new ScssMediaQuery(AppState, string.Empty, -1);
-        
-        #region Generate SCSS Tree
-        
-        var usedCssSelectors = AppState.UsedClasses
-            .OrderBy(c => c.Value.Depth)
-            .ThenBy(c => c.Value.VariantSortOrder)
-            .ThenBy(c => c.Value.SelectorSort)
-            .ThenBy(c => c.Value.FixedSelector)
-            .ToList();
-
-        foreach (var (_, usedCssSelector) in usedCssSelectors)
-        {
-            if (usedCssSelector.IsInvalid)
-                continue;
-
-            if (string.IsNullOrEmpty(usedCssSelector.ScssMarkup))
-                usedCssSelector.GetStyles();
-            
-            if (usedCssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
-            {
-                usedCssSelector.IsInvalid = true;
-                continue;
-            }
-            
-            var compactScss = usedCssSelector.ScssMarkup.CompactCss();
-            var parentNode = EnsureMediaQueryPathExists(AppState, string.Join(':', usedCssSelector.MediaQueryVariants), scssRootNode);
-            var existingClass = parentNode?.ScssClasses.FirstOrDefault(c => c.CompactScssProperties == compactScss && c.PseudoclassSuffix == usedCssSelector.PseudoclassPath);
-            
-            if (existingClass is null)
-            {
-                parentNode?.ScssClasses.Add(new ScssClass
-                {
-                    Depth = parentNode.Depth + 1,
-                    Selectors = { $".{usedCssSelector.EscapedSelector}" },
-                    PseudoclassSuffix = usedCssSelector.PseudoclassPath,
-                    CompactScssProperties = compactScss,
-                    ScssProperties = usedCssSelector.ScssMarkup
-                });
-
-                continue;
-            }
-            
-            existingClass.Selectors.Add($".{usedCssSelector.EscapedSelector}");
-        }
-
-        #endregion        
-        
-        #region Process global class assignments
-
         var globalSelector = AppState.StringBuilderPool.Get();
+        var scssRootNode = new ScssMediaQuery(AppState, string.Empty, -1);
 
-        foreach (var (_, usedCssSelector) in AppState.UsedClasses
-                     .OrderBy(c => c.Value.Depth)
-                     .ThenBy(c => c.Value.VariantSortOrder)
-                     .ThenBy(c => c.Value.SelectorSort)
-                     .ThenBy(c => c.Value.FixedSelector)
-                     .ToList())
+        try
         {
-            if (usedCssSelector.ScssUtilityClassGroup?.Category == "gradients")
-                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
+            #region Generate SCSS Tree
+
+            var usedCssSelectors = AppState.UsedClasses
+                .OrderBy(c => c.Value.Depth)
+                .ThenBy(c => c.Value.VariantSortOrder)
+                .ThenBy(c => c.Value.SelectorSort)
+                .ThenBy(c => c.Value.FixedSelector)
+                .ToList();
+
+            foreach (var (_, usedCssSelector) in usedCssSelectors)
+            {
+                if (usedCssSelector.IsInvalid)
+                    continue;
+
+                if (string.IsNullOrEmpty(usedCssSelector.ScssMarkup))
+                    usedCssSelector.GetStyles();
+
+                if (usedCssSelector is { IsArbitraryCss: false, ScssMarkup: "" })
+                {
+                    usedCssSelector.IsInvalid = true;
+                    continue;
+                }
+
+                var compactScss = usedCssSelector.ScssMarkup.CompactCss();
+                var parentNode = EnsureMediaQueryPathExists(AppState,
+                    string.Join(':', usedCssSelector.MediaQueryVariants), scssRootNode);
+                var existingClass = parentNode?.ScssClasses.FirstOrDefault(c =>
+                    c.CompactScssProperties == compactScss && c.PseudoclassSuffix == usedCssSelector.PseudoclassPath);
+
+                if (existingClass is null)
+                {
+                    parentNode?.ScssClasses.Add(new ScssClass
+                    {
+                        Depth = parentNode.Depth + 1,
+                        Selectors = { $".{usedCssSelector.EscapedSelector}" },
+                        PseudoclassSuffix = usedCssSelector.PseudoclassPath,
+                        CompactScssProperties = compactScss,
+                        ScssProperties = usedCssSelector.ScssMarkup
+                    });
+
+                    continue;
+                }
+
+                existingClass.Selectors.Add($".{usedCssSelector.EscapedSelector}");
+            }
+
+            #endregion
+
+            #region Process global class assignments
+
+            foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                         .OrderBy(c => c.Value.Depth)
+                         .ThenBy(c => c.Value.VariantSortOrder)
+                         .ThenBy(c => c.Value.SelectorSort)
+                         .ThenBy(c => c.Value.FixedSelector)
+                         .ToList())
+            {
+                if (usedCssSelector.ScssUtilityClassGroup?.Category == "gradients")
+                    globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) +
+                                          $".{usedCssSelector.EscapedSelector}");
+            }
+
+            if (globalSelector.Length > 0)
+            {
+                scss.Append(globalSelector + " {" + Environment.NewLine);
+                scss.Append(
+                    $"{Indent(1)}--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" +
+                    Environment.NewLine);
+                scss.Append("}" + Environment.NewLine);
+            }
+
+            globalSelector.Clear();
+
+            foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                         .OrderBy(c => c.Value.Depth)
+                         .ThenBy(c => c.Value.VariantSortOrder)
+                         .ThenBy(c => c.Value.SelectorSort)
+                         .ThenBy(c => c.Value.FixedSelector)
+                         .ToList())
+            {
+                if (usedCssSelector.ScssUtilityClassGroup?.Category == "ring")
+                    globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) +
+                                          $".{usedCssSelector.EscapedSelector}");
+            }
+
+            if (globalSelector.Length > 0)
+            {
+                scss.Append(globalSelector + " {" + Environment.NewLine);
+                scss.Append(
+                    $"{Indent(1)}--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" +
+                    Environment.NewLine);
+                scss.Append("}" + Environment.NewLine);
+            }
+
+            globalSelector.Clear();
+
+            foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                         .OrderBy(c => c.Value.Depth)
+                         .ThenBy(c => c.Value.VariantSortOrder)
+                         .ThenBy(c => c.Value.SelectorSort)
+                         .ThenBy(c => c.Value.FixedSelector)
+                         .ToList())
+            {
+                if (usedCssSelector.ScssUtilityClassGroup?.Category == "shadow")
+                    globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) +
+                                          $".{usedCssSelector.EscapedSelector}");
+            }
+
+            if (globalSelector.Length > 0)
+            {
+                scss.Append(globalSelector + " {" + Environment.NewLine);
+                scss.Append(
+                    $"{Indent(1)}--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" +
+                    Environment.NewLine);
+                scss.Append("}" + Environment.NewLine);
+            }
+
+            AppState.StringBuilderPool.Return(globalSelector);
+
+            #endregion
+
+            scss.Append(scssRootNode.GetScssMarkup());
+
+            return scss.ToString();
         }
 
-        if (globalSelector.Length > 0)
+        catch
         {
-            scss.Append(globalSelector + " {" + Environment.NewLine);
-            scss.Append($"{Indent(1)}--sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" + Environment.NewLine);
-            scss.Append("}" + Environment.NewLine);
+            return string.Empty;
         }
-
-        globalSelector.Clear();
-
-        foreach (var (_, usedCssSelector) in AppState.UsedClasses
-                     .OrderBy(c => c.Value.Depth)
-                     .ThenBy(c => c.Value.VariantSortOrder)
-                     .ThenBy(c => c.Value.SelectorSort)
-                     .ThenBy(c => c.Value.FixedSelector)
-                     .ToList())
-        {
-            if (usedCssSelector.ScssUtilityClassGroup?.Category == "ring")
-                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
-        }
-
-        if (globalSelector.Length > 0)
-        {
-            scss.Append(globalSelector + " {" + Environment.NewLine);
-            scss.Append($"{Indent(1)}--sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
-            scss.Append("}" + Environment.NewLine);
-        }
-
-        globalSelector.Clear();
-
-        foreach (var (_, usedCssSelector) in AppState.UsedClasses
-                     .OrderBy(c => c.Value.Depth)
-                     .ThenBy(c => c.Value.VariantSortOrder)
-                     .ThenBy(c => c.Value.SelectorSort)
-                     .ThenBy(c => c.Value.FixedSelector)
-                     .ToList())
-        {
-            if (usedCssSelector.ScssUtilityClassGroup?.Category == "shadow")
-                globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) + $".{usedCssSelector.EscapedSelector}");
-        }
-
-        if (globalSelector.Length > 0)
-        {
-            scss.Append(globalSelector + " {" + Environment.NewLine);
-            scss.Append($"{Indent(1)}--sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
-            scss.Append("}" + Environment.NewLine);
-        }
-
-        AppState.StringBuilderPool.Return(globalSelector);
-
-        #endregion
         
-        scss.Append(scssRootNode.GetScssMarkup());
-        
-        var result = scss.ToString();
-        
-        AppState.StringBuilderPool.Return(scss);
-
-        return result;
+        finally
+        {
+            AppState.StringBuilderPool.Return(scss);
+        }
     }
 
     #endregion
