@@ -447,6 +447,7 @@ public sealed class SfumatoAppState
 	
     public Dictionary<string,string> TextSizeOptions { get; } = new()
     {
+        ["none"] = "0",
 	    ["xs"] = "clamp((0.75rem * 0.875), (4.35vw * 0.75), 0.75rem)",
 	    ["sm"] = "clamp((0.875rem * 0.875), (4.35vw * 0.875), 0.875rem)",
 	    ["base"] = "clamp((1rem * 0.875), (4.35vw * 1), 1rem)",
@@ -464,6 +465,7 @@ public sealed class SfumatoAppState
 
     public Dictionary<string,string> TextSizeLeadingOptions { get; } = new()
     {
+        ["none"] = "0",
 	    ["xs"] = "clamp((1rem * 0.875), (4.35vw * 1), 1rem)",
 	    ["sm"] = "clamp((1.25rem * 0.875), (4.35vw * 1.25), 1.25rem)",
 	    ["base"] = "clamp((1.5rem * 0.875), (4.35vw * 1.5), 1.5rem)",
