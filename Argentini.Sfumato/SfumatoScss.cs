@@ -18,21 +18,30 @@ public static class SfumatoScss
 		
 		var sb = appState.StringBuilderPool.Get();
 		
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_browser-reset.scss"))).Trim() + Environment.NewLine);
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + Environment.NewLine);
-        sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + Environment.NewLine);
+        try
+        {
+		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
+		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_browser-reset.scss"))).Trim() + Environment.NewLine);
+		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
+		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + Environment.NewLine);
+            sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + Environment.NewLine);
 
-        ProcessShortCodes(appState, sb);
+            ProcessShortCodes(appState, sb);
+            
+		    diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS base for output injection in {timer.FormatTimer()}{Environment.NewLine}");
+
+		    return sb.ToString();
+        }
+
+        catch
+        {
+            return string.Empty;
+        }
         
-		diagnosticOutput.TryAdd("init2", $"{Strings.TriangleRight} Prepared SCSS base for output injection in {timer.FormatTimer()}{Environment.NewLine}");
-
-		var result = sb.ToString();
-		
-		appState.StringBuilderPool.Return(sb);
-
-		return result;
+        finally
+        {
+            appState.StringBuilderPool.Return(sb);
+        }
 	}
 	
 	/// <summary>
@@ -50,18 +59,27 @@ public static class SfumatoScss
 		
 		var sb = appState.StringBuilderPool.Get();
 		
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
-		sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
+        try
+        {
+		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
+		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
 
-        ProcessShortCodes(appState, sb);
+            ProcessShortCodes(appState, sb);
 
-		diagnosticOutput.TryAdd("init3", $"{Strings.TriangleRight} Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
+		    diagnosticOutput.TryAdd("init3", $"{Strings.TriangleRight} Prepared shared SCSS for output injection in {timer.FormatTimer()}{Environment.NewLine}");
 
-		var result = sb.ToString();
-		
-		appState.StringBuilderPool.Return(sb);
+            return sb.ToString();
+        }
 
-		return result;
+        catch
+        {
+            return string.Empty;
+        }
+        
+        finally
+        {
+            appState.StringBuilderPool.Return(sb);
+        }
 	}
 
     /// <summary>
@@ -113,6 +131,8 @@ public static class SfumatoScss
 	{
 		var sb = runner.AppState.StringBuilderPool.Get();
 		var scss = runner.AppState.StringBuilderPool.Get();
+        var styles = runner.AppState.StringBuilderPool.Get();
+        var details = runner.AppState.StringBuilderPool.Get();
 
 		try
 		{
@@ -229,7 +249,7 @@ public static class SfumatoScss
 				
 				else
 				{
-					var styles = runner.AppState.StringBuilderPool.Get();
+					styles.Clear();
 
 					foreach (var selector in classes)
 					{
@@ -245,9 +265,7 @@ public static class SfumatoScss
 					
 					rawScss = rawScss.Remove(match.Index, match.Value.Length);
 					rawScss = rawScss.Insert(match.Index, styles.ToString());
-					
-					runner.AppState.StringBuilderPool.Return(styles);
-				}
+                }
 				
 				matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
 			}
@@ -283,15 +301,10 @@ public static class SfumatoScss
             
             await File.WriteAllTextAsync(cssOutputPath, sb.ToString());
 
-            var css =  sb.ToString();
-            
-			runner.AppState.StringBuilderPool.Return(sb);
-			runner.AppState.StringBuilderPool.Return(scss);
-
 			if (showOutput == false)
-				return css;
+				return sb.ToString();
 			
-			var details = runner.AppState.StringBuilderPool.Get();
+			details.Clear();
 				
 			if (includesBase)
 				details.Append(", +base");
@@ -305,11 +318,9 @@ public static class SfumatoScss
 			if (runner.AppState.Minify)
 				details.Append(", minified");
 				
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {SfumatoRunner.ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({css.Length.FormatBytes()}{details}) in {timer.FormatTimer()}");
-
-			runner.AppState.StringBuilderPool.Return(details);
-
-			return css;
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Generated {SfumatoRunner.ShortenPathForOutput(filePath.TrimEnd(".scss", StringComparison.OrdinalIgnoreCase) + ".css", runner.AppState)} ({sb.Length.FormatBytes()}{details}) in {timer.FormatTimer()}");
+            
+			return sb.ToString();
 		}
 
 		catch
@@ -323,11 +334,16 @@ public static class SfumatoScss
 			
 			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} {SfumatoRunner.ShortenPathForOutput(filePath, runner.AppState)} => {error}");
 
-			runner.AppState.StringBuilderPool.Return(sb);
-			runner.AppState.StringBuilderPool.Return(scss);
-
 			return string.Empty;
 		}
+        
+        finally
+        {
+            runner.AppState.StringBuilderPool.Return(sb);
+            runner.AppState.StringBuilderPool.Return(scss);
+            runner.AppState.StringBuilderPool.Return(styles);
+            runner.AppState.StringBuilderPool.Return(details);
+        }
 	}
 	
 	#endregion
