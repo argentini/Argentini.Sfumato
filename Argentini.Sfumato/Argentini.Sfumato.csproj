@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.47.0</AssemblyVersion>
-        <FileVersion>5.0.47.0</FileVersion>
-        <PackageVersion>5.0.47</PackageVersion>
+        <AssemblyVersion>5.0.48.0</AssemblyVersion>
+        <FileVersion>5.0.48.0</FileVersion>
+        <PackageVersion>5.0.48</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Root (html) element classes now handle variants with theme mode of class.</PackageReleaseNotes>
+        <PackageReleaseNotes>Added text-none font size.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
