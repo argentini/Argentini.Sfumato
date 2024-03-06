@@ -73,8 +73,7 @@ public sealed class ScssMediaQuery
                 if (AppState.Settings.UseAutoTheme == false)
                     return scss.ToString();
 
-                scss.Append(
-                    $"html.theme-auto {{ {AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
+                scss.Append($"html.theme-auto {{ {AppState.MediaQueryPrefixes.First(p => p.Prefix == "dark").Statement}{Environment.NewLine}");
 
                 foreach (var scssClass in ScssClasses)
                 {
