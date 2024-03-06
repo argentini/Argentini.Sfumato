@@ -33,29 +33,33 @@ public sealed class ScssMediaQuery
     /// Get the SCSS markup for this SCSS graph node.
     /// </summary>
     /// <returns></returns>
-    public string GetScssMarkup()
+    public string GetScssMarkup(bool nestedInDark = false)
     {
         var scss = AppState.StringBuilderPool.Get();
 
         try
         {
-            if (Prefix == "dark" && AppState.Settings.DarkMode.InvariantEquals("class"))
+            if (nestedInDark || AppState.Settings.DarkMode.InvariantEquals("class"))
             {
-                #region Handle root tag classes as "special case"
+                #region Handle root element classes as "special case"
 
                 foreach (var scssClass in ScssClasses)
                 {
                     foreach (var selector in scssClass.Selectors.ToList())
                     {
-                        if (AppState.HtmlTagClasses.Contains(selector.TrimStart('.').Replace("\\", string.Empty)))
-                        {
-                            scssClass.Selectors.Add($"html{selector}");
-                        }
+                        if (AppState.HtmlTagClasses.Contains(selector.TrimStart('.').Replace("\\", string.Empty)) == false)
+                            continue;
+                        
+                        if (scssClass.Selectors.Contains($"&{selector}") == false)
+                            scssClass.Selectors.Add($"&{selector}");
                     }
                 }
 
                 #endregion
-
+            }            
+            
+            if (Prefix == "dark" && AppState.Settings.DarkMode.InvariantEquals("class"))
+            {
                 scss.Append($"html.theme-dark {{{Environment.NewLine}");
 
                 foreach (var scssClass in ScssClasses)
@@ -65,7 +69,7 @@ public sealed class ScssMediaQuery
 
                 foreach (var mediaQuery in MediaQueries)
                 {
-                    scss.Append(mediaQuery.GetScssMarkup());
+                    scss.Append(mediaQuery.GetScssMarkup(true));
                 }
 
                 scss.Append($"}}{Environment.NewLine}");
@@ -82,7 +86,7 @@ public sealed class ScssMediaQuery
 
                 foreach (var mediaQuery in MediaQueries)
                 {
-                    scss.Append(mediaQuery.GetScssMarkup());
+                    scss.Append(mediaQuery.GetScssMarkup(true));
                 }
 
                 scss.Append($"}} }}{Environment.NewLine}");
