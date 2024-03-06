@@ -267,11 +267,20 @@ public static class SfumatoScss
 				.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
 
 			await cmd.ExecuteAsync();
-			
+
+            sb.Clear();
+            sb.Append(await File.ReadAllTextAsync(cssOutputPath));
+            sb.Replace("html.theme-dark :root", "html.theme-dark");
+            sb.Replace("html.theme-auto :root", "html.theme-auto");
+            sb.Replace("html.theme-dark html", "html.theme-dark");
+            sb.Replace("html.theme-auto html", "html.theme-auto");
+            
+            await File.WriteAllTextAsync(cssOutputPath, sb.ToString());
+
+            var css =  sb.ToString();
+            
 			runner.AppState.StringBuilderPool.Return(sb);
 			runner.AppState.StringBuilderPool.Return(scss);
-
-			var css = await File.ReadAllTextAsync(cssOutputPath);
 
 			if (showOutput == false)
 				return css;

@@ -9,3 +9,18 @@
         @apply text-2xl/[1.75] font-bold text-black;
     }
 }
+
+@include sf-dark-theme() {
+
+    //.testclass {
+    //    background-color: blue;
+    //}
+    //
+    //:root {
+    //    background-color: red;
+    //}
+    //
+    //html {
+    //    color: yellow;
+    //}
+}
