@@ -4,8 +4,11 @@ public class Bottom : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "bottom";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BottomStaticUtilities);
@@ -20,7 +23,7 @@ public class Bottom : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BottomStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BottomStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,7 +37,7 @@ public class Bottom : ScssUtilityClassGroupBase
 
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "bottom: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "bottom: {value};", AppState, out Result))
             return Result;
 
         if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "bottom: {value};", out Result))
@@ -47,7 +50,7 @@ public class Bottom : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "bottom: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "bottom: {value};", AppState, out Result))
             return Result;
 
         #endregion

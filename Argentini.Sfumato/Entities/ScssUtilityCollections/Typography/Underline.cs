@@ -4,8 +4,11 @@ public class Underline : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "underline";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.UnderlineStaticUtilities);
@@ -18,7 +21,7 @@ public class Underline : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.UnderlineStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.UnderlineStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

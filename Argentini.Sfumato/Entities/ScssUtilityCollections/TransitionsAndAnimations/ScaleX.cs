@@ -4,8 +4,11 @@ public class ScaleX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scale-x";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScaleXStaticUtilities);
@@ -18,7 +21,7 @@ public class ScaleX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScaleXStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScaleXStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class ScaleX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("number", cssSelector, "transform: scaleX({value});", out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "transform: scaleX({value});", AppState, out Result))
             return Result;
       
         #endregion

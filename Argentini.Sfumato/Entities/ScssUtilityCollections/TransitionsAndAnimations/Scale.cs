@@ -4,8 +4,11 @@ public class Scale : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scale";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScaleStaticUtilities);
@@ -18,7 +21,7 @@ public class Scale : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScaleStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScaleStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Scale : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("number", cssSelector, "transform: scale({value});", out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "transform: scale({value});", AppState, out Result))
             return Result;
       
         #endregion

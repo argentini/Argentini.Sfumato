@@ -4,8 +4,11 @@ public class Aspect : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "aspect";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.AspectStaticUtilities);
@@ -18,7 +21,7 @@ public class Aspect : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AspectStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AspectStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Aspect : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("ratio", cssSelector, "aspect-ratio: {value};", out Result))
+        if (ProcessArbitraryValues("ratio", cssSelector, "aspect-ratio: {value};", AppState, out Result))
             return Result;
         
         #endregion

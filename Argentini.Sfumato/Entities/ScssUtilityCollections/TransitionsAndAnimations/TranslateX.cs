@@ -4,8 +4,11 @@ public class TranslateX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "translate-x";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.TranslateXStaticUtilities);
@@ -20,7 +23,7 @@ public class TranslateX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TranslateXStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TranslateXStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,7 +37,7 @@ public class TranslateX : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "transform: translateX({value});", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "transform: translateX({value});", AppState, out Result))
             return Result;
 
         if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "transform: translateX({value});", out Result))
@@ -47,7 +50,7 @@ public class TranslateX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "transform: translateX({value});", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "transform: translateX({value});", AppState, out Result))
             return Result;
       
         #endregion

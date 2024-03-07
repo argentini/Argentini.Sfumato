@@ -4,8 +4,11 @@ public class ContentBaseline : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content-baseline";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ContentBaselineStaticUtilities);
@@ -18,7 +21,7 @@ public class ContentBaseline : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentBaselineStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentBaselineStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

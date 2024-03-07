@@ -4,8 +4,11 @@ public class Translate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "translate";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.TranslateStaticUtilities);
@@ -20,7 +23,7 @@ public class Translate : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TranslateStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TranslateStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,7 +37,7 @@ public class Translate : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "transform: translate({value},{value});", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "transform: translate({value},{value});", AppState, out Result))
             return Result;
 
         if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "transform: translate({value},{value});", out Result))
@@ -47,7 +50,7 @@ public class Translate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "transform: translate({value},{value});", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "transform: translate({value},{value});", AppState, out Result))
             return Result;
       
         #endregion

@@ -4,8 +4,11 @@ public class LiningNums : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "lining-nums";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.LiningNumsStaticUtilities);
@@ -18,7 +21,7 @@ public class LiningNums : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LiningNumsStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LiningNumsStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

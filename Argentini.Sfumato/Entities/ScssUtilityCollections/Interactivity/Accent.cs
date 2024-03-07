@@ -4,8 +4,11 @@ public class Accent : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "accent";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColorOptions);
@@ -25,7 +28,7 @@ public class Accent : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "accent-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "accent-color: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -35,7 +38,7 @@ public class Accent : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "accent-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "accent-color: {value};", AppState, out Result))
             return Result;
 
         #endregion

@@ -4,8 +4,11 @@ public class BreakAnywhere : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "break-anywhere";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BreakAnywhereStaticUtilities);
@@ -18,7 +21,7 @@ public class BreakAnywhere : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakAnywhereStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakAnywhereStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

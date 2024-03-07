@@ -4,8 +4,11 @@ public class Decoration : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "decoration";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DecorationStaticUtilities);
@@ -19,7 +22,7 @@ public class Decoration : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DecorationStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DecorationStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -33,7 +36,7 @@ public class Decoration : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "text-decoration-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "text-decoration-color: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -43,10 +46,10 @@ public class Decoration : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "text-decoration-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "text-decoration-color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues("length", cssSelector, "text-decoration-thickness: {value};", out Result))
+        if (ProcessArbitraryValues("length", cssSelector, "text-decoration-thickness: {value};", AppState, out Result))
             return Result;
         
         #endregion

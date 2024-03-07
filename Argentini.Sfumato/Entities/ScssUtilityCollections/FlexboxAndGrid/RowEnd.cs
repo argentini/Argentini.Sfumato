@@ -4,8 +4,11 @@ public class RowEnd : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "row-end";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.RowEndStaticUtilities);
@@ -19,14 +22,14 @@ public class RowEnd : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RowEndStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RowEndStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-row-end: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-row-end: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -36,7 +39,7 @@ public class RowEnd : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("integer", cssSelector, "grid-row-end: {value};", out Result))
+        if (ProcessArbitraryValues("integer", cssSelector, "grid-row-end: {value};", AppState, out Result))
             return Result;
       
         #endregion

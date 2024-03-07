@@ -4,8 +4,11 @@ public class Left : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "left";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.LeftStaticUtilities);
@@ -20,7 +23,7 @@ public class Left : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LeftStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LeftStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,7 +37,7 @@ public class Left : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "left: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "left: {value};", AppState, out Result))
             return Result;
 
         if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "left: {value};", out Result))
@@ -47,7 +50,7 @@ public class Left : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "left: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "left: {value};", AppState, out Result))
             return Result;
       
         #endregion

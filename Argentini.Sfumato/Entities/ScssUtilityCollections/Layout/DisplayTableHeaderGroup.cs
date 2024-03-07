@@ -4,8 +4,11 @@ public class DisplayTableHeaderGroup : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-header-group";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayTableHeaderGroupStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayTableHeaderGroup : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableHeaderGroupStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableHeaderGroupStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

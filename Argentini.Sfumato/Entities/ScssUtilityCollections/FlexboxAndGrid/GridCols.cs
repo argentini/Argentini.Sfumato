@@ -4,8 +4,11 @@ public class GridCols : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "grid-cols";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.GridColsStaticUtilities);
@@ -19,14 +22,14 @@ public class GridCols : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GridColsStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GridColsStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-template-columns: repeat({value}, minmax(0, 1fr));", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "grid-template-columns: repeat({value}, minmax(0, 1fr));", AppState, out Result))
             return Result;
         
         #endregion
@@ -36,7 +39,7 @@ public class GridCols : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "grid-template-columns: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "grid-template-columns: {value};", AppState, out Result))
             return Result;
       
         #endregion

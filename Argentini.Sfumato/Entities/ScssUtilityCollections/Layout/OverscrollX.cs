@@ -4,8 +4,11 @@ public class OverscrollX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "overscroll-x";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OverscrollXStaticUtilities);
@@ -18,7 +21,7 @@ public class OverscrollX : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OverscrollXStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OverscrollXStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

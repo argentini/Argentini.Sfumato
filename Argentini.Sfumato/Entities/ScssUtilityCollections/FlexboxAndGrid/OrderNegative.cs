@@ -4,8 +4,11 @@ public class OrderNegative : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "-order";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.FlexboxAndGridNegativeWholeNumberOptions);
@@ -18,7 +21,7 @@ public class OrderNegative : ScssUtilityClassGroupBase
 
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridNegativeWholeNumberOptions, cssSelector, "order: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridNegativeWholeNumberOptions, cssSelector, "order: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class OrderNegative : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("integer", cssSelector, "order: {value};", out Result))
+        if (ProcessArbitraryValues("integer", cssSelector, "order: {value};", AppState, out Result))
             return Result;
       
         #endregion

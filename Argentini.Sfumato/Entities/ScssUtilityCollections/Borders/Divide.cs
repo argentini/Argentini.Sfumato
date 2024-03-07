@@ -4,8 +4,11 @@ public class Divide : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "divide";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DivideStaticUtilities);
@@ -19,7 +22,7 @@ public class Divide : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -43,7 +46,7 @@ public class Divide : ScssUtilityClassGroupBase
                 & > * + * {
                     border-color: {value};
                 }
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         #endregion
@@ -58,7 +61,7 @@ public class Divide : ScssUtilityClassGroupBase
                 & > * + * {
                     border-color: {value};
                 }
-                """, out Result))
+                """, AppState, out Result))
             return Result;
 
         #endregion

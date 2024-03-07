@@ -4,8 +4,11 @@ public class End : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "end";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.EndStaticUtilities);
@@ -20,7 +23,7 @@ public class End : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.EndStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.EndStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,7 +37,7 @@ public class End : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "inset-inline-end: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "inset-inline-end: {value};", AppState, out Result))
             return Result;
 
         if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "inset-inline-end: {value};", out Result))
@@ -47,7 +50,7 @@ public class End : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "inset-inline-end: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "inset-inline-end: {value};", AppState, out Result))
             return Result;
       
         #endregion

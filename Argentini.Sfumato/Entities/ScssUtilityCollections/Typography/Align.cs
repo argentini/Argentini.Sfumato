@@ -4,8 +4,11 @@ public class Align : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "align";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.AlignStaticUtilities);
@@ -18,7 +21,7 @@ public class Align : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AlignStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AlignStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Align : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length", cssSelector, "vertical-align: {value};", out Result))
+        if (ProcessArbitraryValues("length", cssSelector, "vertical-align: {value};", AppState, out Result))
             return Result;
 
         #endregion

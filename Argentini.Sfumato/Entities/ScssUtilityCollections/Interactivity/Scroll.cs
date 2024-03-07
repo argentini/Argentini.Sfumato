@@ -4,8 +4,11 @@ public class Scroll : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScrollStaticUtilities);
@@ -18,7 +21,7 @@ public class Scroll : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

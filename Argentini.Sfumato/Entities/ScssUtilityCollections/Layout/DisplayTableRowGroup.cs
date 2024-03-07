@@ -4,8 +4,11 @@ public class DisplayTableRowGroup : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-row-group";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayTableRowGroupStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayTableRowGroup : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableRowGroupStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableRowGroupStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

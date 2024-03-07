@@ -4,8 +4,11 @@ public class Pt : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "pt";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.PtStaticUtilities);
@@ -19,14 +22,14 @@ public class Pt : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PtStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PtStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "padding-top: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "padding-top: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -36,7 +39,7 @@ public class Pt : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "padding-top: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "padding-top: {value};", AppState, out Result))
             return Result;
       
         #endregion

@@ -4,8 +4,11 @@ public class BreakBefore : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "break-before";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BreakBeforeStaticUtilities);
@@ -18,7 +21,7 @@ public class BreakBefore : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakBeforeStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakBeforeStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

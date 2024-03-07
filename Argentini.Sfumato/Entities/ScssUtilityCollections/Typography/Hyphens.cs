@@ -4,8 +4,11 @@ public class Hyphens : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "hyphens";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.HyphensStaticUtilities);
@@ -18,7 +21,7 @@ public class Hyphens : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.HyphensStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.HyphensStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

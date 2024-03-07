@@ -4,8 +4,11 @@ public class BackdropGrayscale : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "backdrop-grayscale";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BackdropGrayscaleStaticUtilities);
@@ -18,7 +21,7 @@ public class BackdropGrayscale : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BackdropGrayscaleStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BackdropGrayscaleStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class BackdropGrayscale : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("percentage", cssSelector, "backdrop-filter: grayscale({value});", out Result))
+        if (ProcessArbitraryValues("percentage", cssSelector, "backdrop-filter: grayscale({value});", AppState, out Result))
             return Result;
         
         #endregion

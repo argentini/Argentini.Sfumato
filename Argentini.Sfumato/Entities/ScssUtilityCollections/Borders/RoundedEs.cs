@@ -4,8 +4,11 @@ public class RoundedEs : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix { get; set; } = "rounded-es";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.RoundedOptions);
@@ -18,7 +21,7 @@ public class RoundedEs : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.RoundedOptions, cssSelector, "border-end-start-radius: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.RoundedOptions, cssSelector, "border-end-start-radius: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class RoundedEs : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-end-start-radius: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-end-start-radius: {value};", AppState, out Result))
             return Result;
         
         #endregion

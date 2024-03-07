@@ -4,8 +4,11 @@ public class Py : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "py";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.PyStaticUtilities);
@@ -19,7 +22,7 @@ public class Py : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PyStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PyStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -30,7 +33,7 @@ public class Py : ScssUtilityClassGroupBase
             """
             padding-top: {value};
             padding-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
 
         #endregion
@@ -44,7 +47,7 @@ public class Py : ScssUtilityClassGroupBase
             """
             padding-top: {value};
             padding-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
       
         #endregion

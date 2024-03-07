@@ -4,8 +4,11 @@ public class Container : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "container";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ContainerStaticUtilities);
@@ -18,7 +21,7 @@ public class Container : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContainerStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContainerStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

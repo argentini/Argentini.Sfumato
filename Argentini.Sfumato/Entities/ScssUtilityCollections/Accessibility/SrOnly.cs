@@ -4,8 +4,11 @@ public class SrOnly : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "sr-only";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await Task.CompletedTask;

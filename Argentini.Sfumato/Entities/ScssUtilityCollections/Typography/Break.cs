@@ -4,8 +4,11 @@ public class Break : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "break";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BreakStaticUtilities);
@@ -18,7 +21,7 @@ public class Break : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

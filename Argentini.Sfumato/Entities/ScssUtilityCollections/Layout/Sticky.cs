@@ -4,8 +4,11 @@ public class Sticky : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "sticky";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.StickyStaticUtilities);
@@ -18,7 +21,7 @@ public class Sticky : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.StickyStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.StickyStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

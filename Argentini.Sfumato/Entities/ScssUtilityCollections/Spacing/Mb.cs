@@ -4,8 +4,11 @@ public class Mb : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "mb";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MbStaticUtilities);
@@ -20,14 +23,14 @@ public class Mb : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MbStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MbStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "margin-bottom: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "margin-bottom: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -37,7 +40,7 @@ public class Mb : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "margin-bottom: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "margin-bottom: {value};", AppState, out Result))
             return Result;
       
         #endregion

@@ -4,8 +4,11 @@ public class ScrollPx : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll-px";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScrollPxStaticUtilities);
@@ -19,7 +22,7 @@ public class ScrollPx : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollPxStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollPxStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -30,7 +33,7 @@ public class ScrollPx : ScssUtilityClassGroupBase
             """
             scroll-padding-left: {value};
             scroll-padding-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion
@@ -44,7 +47,7 @@ public class ScrollPx : ScssUtilityClassGroupBase
             """
             scroll-padding-left: {value};
             scroll-padding-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion

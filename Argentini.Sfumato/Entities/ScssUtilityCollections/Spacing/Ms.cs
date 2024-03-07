@@ -4,8 +4,11 @@ public class Ms : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "ms";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MsStaticUtilities);
@@ -19,14 +22,14 @@ public class Ms : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MsStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MsStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "margin-inline-start: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "margin-inline-start: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -36,7 +39,7 @@ public class Ms : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "margin-inline-start: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "margin-inline-start: {value};", AppState, out Result))
             return Result;
       
         #endregion

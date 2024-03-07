@@ -4,8 +4,11 @@ public class BgBlend : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "bg-blend";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BlendModeOptions);
@@ -18,7 +21,7 @@ public class BgBlend : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.BlendModeOptions, cssSelector, "background-blend-mode: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.BlendModeOptions, cssSelector, "background-blend-mode: {value};", AppState, out Result))
             return Result;
 
         #endregion

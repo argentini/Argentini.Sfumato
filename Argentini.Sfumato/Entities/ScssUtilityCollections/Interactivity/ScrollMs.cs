@@ -4,8 +4,11 @@ public class ScrollMs : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll-ms";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScrollMsStaticUtilities);
@@ -19,14 +22,14 @@ public class ScrollMs : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollMStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollMStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "scroll-margin-inline-start: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "scroll-margin-inline-start: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -36,7 +39,7 @@ public class ScrollMs : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "scroll-margin-inline-start: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "scroll-margin-inline-start: {value};", AppState, out Result))
             return Result;
         
         #endregion

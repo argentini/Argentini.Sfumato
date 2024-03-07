@@ -5,8 +5,11 @@ public class Via : ScssUtilityClassGroupBase
     public override string SelectorPrefix => "via";
     public override string Category => "gradients";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ViaStaticUtilities);
@@ -23,7 +26,7 @@ public class Via : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ViaStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ViaStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,10 +37,10 @@ public class Via : ScssUtilityClassGroupBase
                 """
                 --sf-gradient-to: transparent var(--sf-gradient-to-position);
                 --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-via-position: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-via-position: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -51,7 +54,7 @@ public class Via : ScssUtilityClassGroupBase
             """
             --sf-gradient-to: transparent var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), {value} var(--sf-gradient-via-position), var(--sf-gradient-to);
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion

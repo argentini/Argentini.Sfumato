@@ -4,8 +4,11 @@ public class SkewY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "skew-y";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.SkewYStaticUtilities);
@@ -18,7 +21,7 @@ public class SkewY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SkewYStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SkewYStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class SkewY : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues("angle", cssSelector, "transform: skewY({value});", out Result))
+        if (ProcessArbitraryValues("angle", cssSelector, "transform: skewY({value});", AppState, out Result))
             return Result;
       
         #endregion

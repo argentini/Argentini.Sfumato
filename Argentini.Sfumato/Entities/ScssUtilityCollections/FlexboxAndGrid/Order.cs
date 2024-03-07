@@ -4,8 +4,11 @@ public class Order : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "order";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OrderStaticUtilities);
@@ -19,14 +22,14 @@ public class Order : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OrderStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OrderStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "order: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexboxAndGridWholeNumberOptions, cssSelector, "order: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -36,7 +39,7 @@ public class Order : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("integer", cssSelector, "order: {value};", out Result))
+        if (ProcessArbitraryValues("integer", cssSelector, "order: {value};", AppState, out Result))
             return Result;
       
         #endregion

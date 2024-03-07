@@ -4,8 +4,11 @@ public class MaxW : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "max-w";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MaxWStaticUtilities);
@@ -19,14 +22,14 @@ public class MaxW : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MaxWStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MaxWStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "max-width: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "max-width: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -36,7 +39,7 @@ public class MaxW : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "max-width: {value};", out Result))
+        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "max-width: {value};", AppState, out Result))
             return Result;
       
         #endregion

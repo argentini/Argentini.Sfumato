@@ -251,6 +251,13 @@ public class CssSelectorTests
         Assert.Equal("", selector.ArbitraryValueType);
         Assert.Equal("", selector.ModifierValue);
         Assert.Equal("", selector.ModifierValueType);
+        
+        selector = new CssSelector(appState, "backdrop-blur");
+
+        await selector.ProcessSelectorAsync();
+
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem);".CompactCss(), selector.GetStyles().CompactCss());
     }
 
     [Fact]

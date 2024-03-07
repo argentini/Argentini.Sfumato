@@ -4,8 +4,11 @@ public class Mx : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "mx";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MxStaticUtilities);
@@ -19,7 +22,7 @@ public class Mx : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MxStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MxStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -30,7 +33,7 @@ public class Mx : ScssUtilityClassGroupBase
             """
             margin-left: {value};
             margin-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
 
         #endregion
@@ -44,7 +47,7 @@ public class Mx : ScssUtilityClassGroupBase
             """
             margin-left: {value};
             margin-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
       
         #endregion

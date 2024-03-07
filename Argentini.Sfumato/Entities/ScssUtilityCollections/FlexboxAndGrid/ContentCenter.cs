@@ -4,8 +4,11 @@ public class ContentCenter : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content-center";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ContentCenterStaticUtilities);
@@ -18,7 +21,7 @@ public class ContentCenter : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentCenterStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentCenterStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

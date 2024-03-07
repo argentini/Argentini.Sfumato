@@ -4,8 +4,11 @@ public class TableAuto : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-auto";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.TableAutoStaticUtilities);
@@ -18,7 +21,7 @@ public class TableAuto : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TableAutoStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TableAutoStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

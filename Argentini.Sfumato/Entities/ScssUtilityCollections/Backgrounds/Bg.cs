@@ -4,8 +4,11 @@ public class Bg : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "bg";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BgStaticUtilities);
@@ -19,7 +22,7 @@ public class Bg : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BgStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BgStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -33,7 +36,7 @@ public class Bg : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "background-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "background-color: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -43,16 +46,16 @@ public class Bg : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "background-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "background-color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "background-size: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "background-size: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues("url", cssSelector, "background-image: {value};", out Result))
+        if (ProcessArbitraryValues("url", cssSelector, "background-image: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "background-position: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "background-position: {value};", AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Animate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "animate";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.AnimateStaticUtilities);
@@ -18,7 +21,7 @@ public class Animate : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AnimateStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AnimateStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Animate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "animation: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "animation: {value};", AppState, out Result))
             return Result;
       
         #endregion

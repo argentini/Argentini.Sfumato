@@ -4,8 +4,11 @@ public class DivideY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "divide-y";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DivideYStaticUtilities);
@@ -19,7 +22,7 @@ public class DivideY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideYStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideYStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -32,7 +35,7 @@ public class DivideY : ScssUtilityClassGroupBase
                     border-top-width: {value};
                     border-bottom-width: 0px;
                 }
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         #endregion
@@ -48,7 +51,7 @@ public class DivideY : ScssUtilityClassGroupBase
                    border-top-width: {value};
                    border-bottom-width: 0px;
                 }
-                """, out Result))
+                """, AppState, out Result))
             return Result;
 
         #endregion

@@ -4,8 +4,11 @@ public class NormalCase : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "normal-case";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.NormalCaseStaticUtilities);
@@ -18,7 +21,7 @@ public class NormalCase : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.NormalCaseStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.NormalCaseStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class LineThrough : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "line-through";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.LineThroughStaticUtilities);
@@ -18,7 +21,7 @@ public class LineThrough : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LineThroughStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LineThroughStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

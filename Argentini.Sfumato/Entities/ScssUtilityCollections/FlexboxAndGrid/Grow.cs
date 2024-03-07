@@ -4,8 +4,11 @@ public class Grow : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "grow";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
         
         await Task.CompletedTask;
@@ -21,7 +24,7 @@ public class Grow : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("integer,number", cssSelector, "flex-grow: {value};", out Result))
+        if (ProcessArbitraryValues("integer,number", cssSelector, "flex-grow: {value};", AppState, out Result))
             return Result;
       
         #endregion

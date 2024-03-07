@@ -4,8 +4,11 @@ public class BorderSeparate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border-separate";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BorderSeparateStaticUtilities);
@@ -18,7 +21,7 @@ public class BorderSeparate : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderSeparateStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderSeparateStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Indent : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "indent";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.IndentStaticUtilities);
@@ -19,14 +22,14 @@ public class Indent : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.IndentStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.IndentStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "text-indent: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "text-indent: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -36,7 +39,7 @@ public class Indent : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length", cssSelector, "text-indent: {value};", out Result))
+        if (ProcessArbitraryValues("length", cssSelector, "text-indent: {value};", AppState, out Result))
             return Result;
 
         #endregion

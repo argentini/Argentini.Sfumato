@@ -4,8 +4,11 @@ public class Ease : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "ease";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.EaseStaticUtilities);
@@ -18,7 +21,7 @@ public class Ease : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.EaseStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.EaseStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Ease : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "transition-timing-function: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "transition-timing-function: {value};", AppState, out Result))
             return Result;
 
         #endregion

@@ -4,8 +4,11 @@ public class ScrollPy : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll-py";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScrollPyStaticUtilities);
@@ -19,7 +22,7 @@ public class ScrollPy : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollPyStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollPyStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -30,7 +33,7 @@ public class ScrollPy : ScssUtilityClassGroupBase
             """
             scroll-padding-top: {value};
             scroll-padding-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion
@@ -44,7 +47,7 @@ public class ScrollPy : ScssUtilityClassGroupBase
             """
             scroll-padding-top: {value};
             scroll-padding-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Sepia : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "sepia";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.SepiaStaticUtilities);
@@ -18,7 +21,7 @@ public class Sepia : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SepiaStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SepiaStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Sepia : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("percentage", cssSelector, "filter: sepia({value});", out Result))
+        if (ProcessArbitraryValues("percentage", cssSelector, "filter: sepia({value});", AppState, out Result))
             return Result;
         
         #endregion

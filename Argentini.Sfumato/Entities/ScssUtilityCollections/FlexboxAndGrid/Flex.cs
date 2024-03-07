@@ -4,8 +4,11 @@ public class Flex : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "flex";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.FlexStaticUtilities);
@@ -18,7 +21,7 @@ public class Flex : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FlexStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FlexStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Flex : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "flex: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "flex: {value};", AppState, out Result))
             return Result;
       
         #endregion

@@ -4,8 +4,11 @@ public class SubpixelAntialiased : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "subpixel-antialiased";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.SubpixelAntialiasedStaticUtilities);
@@ -18,7 +21,7 @@ public class SubpixelAntialiased : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SubpixelAntialiasedStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SubpixelAntialiasedStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

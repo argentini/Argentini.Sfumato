@@ -4,8 +4,11 @@ public class Inset : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "inset";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.InsetStaticUtilities);
@@ -22,7 +25,7 @@ public class Inset : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InsetStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InsetStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -36,7 +39,7 @@ public class Inset : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "inset: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "inset: {value};", AppState, out Result))
             return Result;
 
         if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "inset: {value};", out Result))
@@ -49,7 +52,7 @@ public class Inset : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "inset: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "inset: {value};", AppState, out Result))
             return Result;
       
         #endregion

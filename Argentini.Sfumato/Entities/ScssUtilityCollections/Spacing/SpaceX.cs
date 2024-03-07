@@ -4,8 +4,11 @@ public class SpaceX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "space-x";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.SpaceXStaticUtilities);
@@ -19,7 +22,7 @@ public class SpaceX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SpaceXStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SpaceXStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -31,7 +34,7 @@ public class SpaceX : ScssUtilityClassGroupBase
             & > * + * {
                 margin-left: {value};
             }
-            """, out Result))
+            """, AppState, out Result))
             return Result;
 
         #endregion
@@ -46,7 +49,7 @@ public class SpaceX : ScssUtilityClassGroupBase
             & > * + * {
                 margin-left: {value};
             }
-            """, out Result))
+            """, AppState, out Result))
             return Result;
       
         #endregion

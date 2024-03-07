@@ -4,8 +4,11 @@ public class Text : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "text";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.TextAlignStaticUtilities);
@@ -20,7 +23,7 @@ public class Text : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextAlignStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextAlignStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -41,7 +44,7 @@ public class Text : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "color: {value};", AppState, out Result))
             return Result;
 
         if (cssSelector.AppState.TextSizeOptions.TryGetValue(cssSelector.CoreSegment, out var fontSize))
@@ -49,7 +52,7 @@ public class Text : ScssUtilityClassGroupBase
                 $$"""
                  font-size: {{fontSize}};
                  line-height: {value};
-                 """, out Result))
+                 """, AppState, out Result))
                 return Result;
         
         #endregion
@@ -59,10 +62,10 @@ public class Text : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues("color", cssSelector, "color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "font-size: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "font-size: {value};", AppState, out Result))
             return Result;
 
         #endregion

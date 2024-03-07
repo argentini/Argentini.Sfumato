@@ -4,8 +4,11 @@ public class ScrollMx : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll-mx";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScrollMxStaticUtilities);
@@ -19,7 +22,7 @@ public class ScrollMx : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollMxStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollMxStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -30,7 +33,7 @@ public class ScrollMx : ScssUtilityClassGroupBase
             """
             scroll-margin-left: {value};
             scroll-margin-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion
@@ -44,7 +47,7 @@ public class ScrollMx : ScssUtilityClassGroupBase
             """
             scroll-margin-left: {value};
             scroll-margin-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion

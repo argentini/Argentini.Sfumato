@@ -4,8 +4,11 @@ public class DisplayTable : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayTableStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayTable : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Invisible : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "invisible";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.InvisibleStaticUtilities);
@@ -18,7 +21,7 @@ public class Invisible : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InvisibleStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.InvisibleStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

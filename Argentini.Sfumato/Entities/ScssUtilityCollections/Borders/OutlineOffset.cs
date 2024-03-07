@@ -4,8 +4,11 @@ public class OutlineOffset : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "outline-offset";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BorderWidthOptions);
@@ -18,7 +21,7 @@ public class OutlineOffset : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "outline-offset: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "outline-offset: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class OutlineOffset : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "outline-offset: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "outline-offset: {value};", AppState, out Result))
             return Result;
         
         #endregion

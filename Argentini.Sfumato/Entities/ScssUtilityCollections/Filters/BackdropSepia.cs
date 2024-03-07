@@ -4,8 +4,11 @@ public class BackdropSepia : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "backdrop-sepia";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BackdropSepiaStaticUtilities);
@@ -18,7 +21,7 @@ public class BackdropSepia : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BackdropSepiaStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BackdropSepiaStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class BackdropSepia : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("percentage", cssSelector, "backdrop-filter: sepia({value});", out Result))
+        if (ProcessArbitraryValues("percentage", cssSelector, "backdrop-filter: sepia({value});", AppState, out Result))
             return Result;
         
         #endregion

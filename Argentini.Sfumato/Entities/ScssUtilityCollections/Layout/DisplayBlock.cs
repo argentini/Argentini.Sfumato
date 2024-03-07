@@ -4,8 +4,11 @@ public class DisplayBlock : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "block";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayBlockStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayBlock : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayBlockStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayBlockStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

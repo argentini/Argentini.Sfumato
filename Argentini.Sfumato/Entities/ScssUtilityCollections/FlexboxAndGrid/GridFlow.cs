@@ -4,8 +4,11 @@ public class GridFlow : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "grid-flow";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.GridFlowStaticUtilities);
@@ -18,7 +21,7 @@ public class GridFlow : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GridFlowStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GridFlowStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

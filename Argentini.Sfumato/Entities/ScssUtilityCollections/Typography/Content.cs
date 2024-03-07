@@ -4,8 +4,11 @@ public class Content : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ContentStaticUtilities);
@@ -18,7 +21,7 @@ public class Content : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Content : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("string", cssSelector, "content: {value};", out Result))
+        if (ProcessArbitraryValues("string", cssSelector, "content: {value};", AppState, out Result))
             return Result;
 
         #endregion

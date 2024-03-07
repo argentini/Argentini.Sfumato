@@ -4,8 +4,11 @@ public class Border : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BorderStaticUtilities);
@@ -20,7 +23,7 @@ public class Border : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderStaticUtilities, cssSelector, AppState, out Result))
             return Result;
 
         #endregion
@@ -34,10 +37,10 @@ public class Border : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-width: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-width: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -47,13 +50,13 @@ public class Border : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "border-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "border-color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-width: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-width: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "border-style: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "border-style: {value};", AppState, out Result))
             return Result;
         
         #endregion

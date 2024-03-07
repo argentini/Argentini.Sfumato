@@ -4,8 +4,11 @@ public class Overline : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "overline";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OverlineStaticUtilities);
@@ -18,7 +21,7 @@ public class Overline : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OverlineStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OverlineStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class DisplayTableCell : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-cell";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayTableCellStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayTableCell : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableCellStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableCellStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

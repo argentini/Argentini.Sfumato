@@ -4,8 +4,11 @@ public class LineClamp : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "line-clamp";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.LineClampStaticUtilities);
@@ -18,7 +21,7 @@ public class LineClamp : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LineClampStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.LineClampStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,7 +37,7 @@ public class LineClamp : ScssUtilityClassGroupBase
             overflow: hidden;
             display: -webkit-box;
             -webkit-box-orient: vertical;
-            """, out Result))
+            """, AppState, out Result))
             return Result;
 
         #endregion

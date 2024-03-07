@@ -4,8 +4,11 @@ public class Absolute : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "absolute";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.AbsoluteStaticUtilities);
@@ -18,7 +21,7 @@ public class Absolute : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AbsoluteStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.AbsoluteStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

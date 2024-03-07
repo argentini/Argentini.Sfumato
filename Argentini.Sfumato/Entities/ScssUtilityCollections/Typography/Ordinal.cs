@@ -4,8 +4,11 @@ public class Ordinal : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "ordinal";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OrdinalStaticUtilities);
@@ -18,7 +21,7 @@ public class Ordinal : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OrdinalStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OrdinalStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

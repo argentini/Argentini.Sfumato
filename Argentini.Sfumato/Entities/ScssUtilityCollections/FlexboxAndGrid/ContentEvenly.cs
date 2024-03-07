@@ -4,8 +4,11 @@ public class ContentEvenly : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content-evenly";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ContentEvenlyStaticUtilities);
@@ -18,7 +21,7 @@ public class ContentEvenly : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentEvenlyStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentEvenlyStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

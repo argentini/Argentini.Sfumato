@@ -4,8 +4,11 @@ public class GapX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "gap-x";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.GapXStaticUtilities);
@@ -19,14 +22,14 @@ public class GapX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GapXStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.GapXStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "column-gap: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "column-gap: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -36,7 +39,7 @@ public class GapX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "column-gap: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "column-gap: {value};", AppState, out Result))
             return Result;
       
         #endregion

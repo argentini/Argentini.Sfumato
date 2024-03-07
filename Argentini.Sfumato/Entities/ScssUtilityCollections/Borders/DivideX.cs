@@ -4,8 +4,11 @@ public class DivideX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "divide-x";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DivideXStaticUtilities);
@@ -19,7 +22,7 @@ public class DivideX : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideXStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DivideXStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -32,7 +35,7 @@ public class DivideX : ScssUtilityClassGroupBase
                 border-right-width: 0px;
                 border-left-width: {value};
             }
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion
@@ -48,7 +51,7 @@ public class DivideX : ScssUtilityClassGroupBase
                 border-right-width: 0px;
                 border-left-width: {value};
             }
-            """, out Result))
+            """, AppState, out Result))
             return Result;
 
         #endregion

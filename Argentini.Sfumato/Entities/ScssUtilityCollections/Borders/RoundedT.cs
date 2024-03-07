@@ -4,8 +4,11 @@ public class RoundedT : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix { get; set; } = "rounded-t";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.RoundedOptions);
@@ -22,7 +25,7 @@ public class RoundedT : ScssUtilityClassGroupBase
                 """
                 border-top-left-radius: {value};
                 border-top-right-radius: {value};
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         #endregion
@@ -36,7 +39,7 @@ public class RoundedT : ScssUtilityClassGroupBase
                 """
                 border-top-left-radius: {value};
                 border-top-right-radius: {value};
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         #endregion

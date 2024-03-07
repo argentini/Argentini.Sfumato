@@ -4,8 +4,11 @@ public class Leading : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "leading";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.LeadingOptions);
@@ -18,7 +21,7 @@ public class Leading : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LeadingOptions, cssSelector, "line-height: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LeadingOptions, cssSelector, "line-height: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -28,7 +31,7 @@ public class Leading : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,integer,number", cssSelector, "line-height: {value};", out Result))
+        if (ProcessArbitraryValues("length,integer,number", cssSelector, "line-height: {value};", AppState, out Result))
             return Result;
 
         #endregion

@@ -5,8 +5,11 @@ public class From : ScssUtilityClassGroupBase
     public override string SelectorPrefix => "from";
     public override string Category => "gradients";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.FromStaticUtilities);
@@ -21,7 +24,7 @@ public class From : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FromStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FromStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -33,10 +36,10 @@ public class From : ScssUtilityClassGroupBase
                 --sf-gradient-from: {value} var(--sf-gradient-from-position);
                 --sf-gradient-to: transparent var(--sf-gradient-to-position);
                 --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
-                """, out Result))
+                """, AppState, out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-from-position: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-from-position: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -51,7 +54,7 @@ public class From : ScssUtilityClassGroupBase
             --sf-gradient-from: {value} var(--sf-gradient-from-position);
             --sf-gradient-to: transparent var(--sf-gradient-to-position);
             --sf-gradient-stops: var(--sf-gradient-from), var(--sf-gradient-to);
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion

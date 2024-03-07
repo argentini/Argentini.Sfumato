@@ -4,8 +4,11 @@ public class BreakNormal : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "break-normal";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BreakNormalStaticUtilities);
@@ -18,7 +21,7 @@ public class BreakNormal : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakNormalStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakNormalStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

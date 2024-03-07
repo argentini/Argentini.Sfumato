@@ -4,8 +4,11 @@ public class BorderSpacingY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border-spacing-y";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BorderSpacingYStaticUtilities);
@@ -19,14 +22,14 @@ public class BorderSpacingY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderSpacingYStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BorderSpacingYStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "border-spacing: var(--sf-border-spacing-x) {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "border-spacing: var(--sf-border-spacing-x) {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -36,7 +39,7 @@ public class BorderSpacingY : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-spacing: var(--sf-border-spacing-x) {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-spacing: var(--sf-border-spacing-x) {value};", AppState, out Result))
             return Result;
 
         #endregion

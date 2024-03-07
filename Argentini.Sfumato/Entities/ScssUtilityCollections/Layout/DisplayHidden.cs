@@ -4,8 +4,11 @@ public class DisplayHidden : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "hidden";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayHiddenStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayHidden : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayHiddenStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayHiddenStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

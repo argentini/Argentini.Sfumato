@@ -4,8 +4,11 @@ public class Origin : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "origin";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OriginStaticUtilities);
@@ -18,7 +21,7 @@ public class Origin : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OriginStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OriginStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Origin : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "transform-origin: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "transform-origin: {value};", AppState, out Result))
             return Result;
       
         #endregion

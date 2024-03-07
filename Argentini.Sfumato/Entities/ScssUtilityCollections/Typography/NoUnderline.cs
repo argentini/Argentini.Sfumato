@@ -4,8 +4,11 @@ public class NoUnderline : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "no-underline";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.NoUnderlineStaticUtilities);
@@ -18,7 +21,7 @@ public class NoUnderline : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.NoUnderlineStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.NoUnderlineStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

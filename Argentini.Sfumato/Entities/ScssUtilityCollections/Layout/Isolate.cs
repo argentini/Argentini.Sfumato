@@ -4,8 +4,11 @@ public class Isolate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "isolate";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.IsolateStaticUtilities);
@@ -18,7 +21,7 @@ public class Isolate : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.IsolateStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.IsolateStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

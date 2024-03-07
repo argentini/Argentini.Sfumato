@@ -4,8 +4,11 @@ public class ProportionalNums : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "proportional-nums";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ProportionalNumsStaticUtilities);
@@ -18,7 +21,7 @@ public class ProportionalNums : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ProportionalNumsStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ProportionalNumsStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

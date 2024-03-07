@@ -4,8 +4,11 @@ public class BreakInside : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "break-inside";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BreakInsideStaticUtilities);
@@ -18,7 +21,7 @@ public class BreakInside : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakInsideStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BreakInsideStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

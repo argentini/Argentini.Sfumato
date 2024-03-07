@@ -5,8 +5,11 @@ public class To : ScssUtilityClassGroupBase
     public override string SelectorPrefix => "to";
     public override string Category => "gradients";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ToStaticUtilities);
@@ -23,17 +26,17 @@ public class To : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ToStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ToStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "--sf-gradient-to: {value} var(--sf-gradient-to-position);", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "--sf-gradient-to: {value} var(--sf-gradient-to-position);", AppState, out Result))
             return Result;
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-to-position: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.PercentageOptions, cssSelector, "--sf-gradient-to-position: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -43,10 +46,10 @@ public class To : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "--sf-gradient-to: {value} var(--sf-gradient-to-position);", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "--sf-gradient-to: {value} var(--sf-gradient-to-position);", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues("percentage", cssSelector, "--sf-gradient-to-position: {value};", out Result))
+        if (ProcessArbitraryValues("percentage", cssSelector, "--sf-gradient-to-position: {value};", AppState, out Result))
             return Result;
 
         #endregion

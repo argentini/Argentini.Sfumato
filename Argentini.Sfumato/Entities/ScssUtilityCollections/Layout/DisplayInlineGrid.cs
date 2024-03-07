@@ -4,8 +4,11 @@ public class DisplayInlineGrid : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "inline-grid";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayInlineGridStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayInlineGrid : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayInlineGridStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayInlineGridStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

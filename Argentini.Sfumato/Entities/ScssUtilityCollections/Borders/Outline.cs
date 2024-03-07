@@ -4,8 +4,11 @@ public class Outline : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "outline";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OutlineStaticUtilities);
@@ -20,7 +23,7 @@ public class Outline : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OutlineStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OutlineStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -34,10 +37,10 @@ public class Outline : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "outline-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "outline-color: {value};", AppState, out Result))
             return Result;
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "outline-width: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "outline-width: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -47,13 +50,13 @@ public class Outline : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "outline-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "outline-color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "outline-width: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "outline-width: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "outline-style: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "outline-style: {value};", AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class My : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "my";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.MyStaticUtilities);
@@ -20,7 +23,7 @@ public class My : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MyStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.MyStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -31,7 +34,7 @@ public class My : ScssUtilityClassGroupBase
             """
             margin-top: {value};
             margin-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
 
         #endregion
@@ -45,7 +48,7 @@ public class My : ScssUtilityClassGroupBase
             """
             margin-top: {value};
             margin-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
       
         #endregion

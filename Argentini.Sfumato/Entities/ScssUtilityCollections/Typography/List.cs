@@ -4,8 +4,11 @@ public class List : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "list";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ListStaticUtilities);
@@ -18,7 +21,7 @@ public class List : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ListStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ListStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class List : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "list-style-type: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "list-style-type: {value};", AppState, out Result))
             return Result;
         
         #endregion

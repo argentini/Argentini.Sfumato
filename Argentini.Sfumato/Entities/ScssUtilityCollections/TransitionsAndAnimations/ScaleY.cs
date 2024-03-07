@@ -4,8 +4,11 @@ public class ScaleY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scale-y";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScaleYStaticUtilities);
@@ -18,7 +21,7 @@ public class ScaleY : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScaleYStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScaleYStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class ScaleY : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("number", cssSelector, "transform: scaleY({value});", out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "transform: scaleY({value});", AppState, out Result))
             return Result;
       
         #endregion

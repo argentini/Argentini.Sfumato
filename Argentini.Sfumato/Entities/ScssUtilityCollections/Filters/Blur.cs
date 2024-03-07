@@ -4,8 +4,11 @@ public class Blur : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "blur";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.FilterSizeOptions);
@@ -18,7 +21,7 @@ public class Blur : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.FilterSizeOptions, cssSelector, "filter: blur({value});", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.FilterSizeOptions, cssSelector, "filter: blur({value});", AppState, out Result))
             return Result;
 
         #endregion
@@ -28,7 +31,7 @@ public class Blur : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "filter: blur({value});", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "filter: blur({value});", AppState, out Result))
             return Result;
         
         #endregion

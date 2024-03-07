@@ -4,8 +4,11 @@ public class Italic : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "italic";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ItalicStaticUtilities);
@@ -18,7 +21,7 @@ public class Italic : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ItalicStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ItalicStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

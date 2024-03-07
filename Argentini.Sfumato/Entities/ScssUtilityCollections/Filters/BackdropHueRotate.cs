@@ -4,8 +4,11 @@ public class BackdropHueRotate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "backdrop-hue-rotate";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BackdropHueRotateStaticUtilities);
@@ -18,7 +21,7 @@ public class BackdropHueRotate : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BackdropHueRotateStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BackdropHueRotateStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class BackdropHueRotate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("angle", cssSelector, "backdrop-filter: hue-rotate({value});", out Result))
+        if (ProcessArbitraryValues("angle", cssSelector, "backdrop-filter: hue-rotate({value});", AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class ScrollMy : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "scroll-my";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ScrollMyStaticUtilities);
@@ -19,7 +22,7 @@ public class ScrollMy : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollMyStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ScrollMyStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -30,7 +33,7 @@ public class ScrollMy : ScssUtilityClassGroupBase
             """
             scroll-margin-top: {value};
             scroll-margin-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion
@@ -44,7 +47,7 @@ public class ScrollMy : ScssUtilityClassGroupBase
             """
             scroll-margin-top: {value};
             scroll-margin-bottom: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
         
         #endregion

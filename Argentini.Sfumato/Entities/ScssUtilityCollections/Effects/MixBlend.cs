@@ -4,8 +4,11 @@ public class MixBlend : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "mix-blend";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BlendModeOptions);
@@ -18,7 +21,7 @@ public class MixBlend : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.BlendModeOptions, cssSelector, "mix-blend-mode: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.BlendModeOptions, cssSelector, "mix-blend-mode: {value};", AppState, out Result))
             return Result;
 
         #endregion

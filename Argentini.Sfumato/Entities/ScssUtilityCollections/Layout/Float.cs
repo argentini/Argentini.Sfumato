@@ -4,8 +4,11 @@ public class Float : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "float";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.FloatStaticUtilities);
@@ -18,7 +21,7 @@ public class Float : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FloatStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FloatStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

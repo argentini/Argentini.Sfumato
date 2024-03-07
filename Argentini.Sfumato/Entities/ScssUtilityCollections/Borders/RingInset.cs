@@ -5,8 +5,11 @@ public class RingInset : ScssUtilityClassGroupBase
     public override string SelectorPrefix => "ring-inset";
     public override string Category => "ring";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.RingInsetStaticUtilities);
@@ -19,7 +22,7 @@ public class RingInset : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RingInsetStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RingInsetStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

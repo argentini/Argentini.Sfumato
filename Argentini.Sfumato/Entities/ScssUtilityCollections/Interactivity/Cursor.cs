@@ -4,8 +4,11 @@ public class Cursor : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "cursor";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.CursorStaticUtilities);
@@ -18,7 +21,7 @@ public class Cursor : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.CursorStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.CursorStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Cursor : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "cursor: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "cursor: {value};", AppState, out Result))
             return Result;
         
         #endregion

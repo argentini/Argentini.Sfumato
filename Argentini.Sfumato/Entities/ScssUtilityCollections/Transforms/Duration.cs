@@ -4,8 +4,11 @@ public class Duration : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "duration";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DurationStaticUtilities);
@@ -18,7 +21,7 @@ public class Duration : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DurationStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DurationStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Duration : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("time", cssSelector, "transition-duration: {value};", out Result))
+        if (ProcessArbitraryValues("time", cssSelector, "transition-duration: {value};", AppState, out Result))
             return Result;
       
         #endregion

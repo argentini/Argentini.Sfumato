@@ -4,8 +4,11 @@ public class Caret : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "caret";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColorOptions);
@@ -25,7 +28,7 @@ public class Caret : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "caret-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "caret-color: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -35,7 +38,7 @@ public class Caret : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "caret-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "caret-color: {value};", AppState, out Result))
             return Result;
 
         #endregion

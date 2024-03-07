@@ -4,8 +4,11 @@ public class DisplayFlowRoot : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "flow-root";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayFlowRootStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayFlowRoot : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayFlowRootStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayFlowRootStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

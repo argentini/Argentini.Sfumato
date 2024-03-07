@@ -4,8 +4,11 @@ public class DisplayTableColumnGroup : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-column-group";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayTableColumnGroupStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayTableColumnGroup : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableColumnGroupStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableColumnGroupStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

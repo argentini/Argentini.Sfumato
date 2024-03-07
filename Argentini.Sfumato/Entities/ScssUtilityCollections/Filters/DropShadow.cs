@@ -4,8 +4,11 @@ public class DropShadow : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "drop-shadow";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DropShadowStaticUtilities);
@@ -18,7 +21,7 @@ public class DropShadow : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DropShadowStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DropShadowStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class DropShadow : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "filter: drop-shadow({value});", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "filter: drop-shadow({value});", AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Fill : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "fill";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.FillStaticUtilities);
@@ -19,7 +22,7 @@ public class Fill : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FillStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FillStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -33,7 +36,7 @@ public class Fill : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "fill: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "fill: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -43,7 +46,7 @@ public class Fill : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("color", cssSelector, "fill: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "fill: {value};", AppState, out Result))
             return Result;
       
         #endregion

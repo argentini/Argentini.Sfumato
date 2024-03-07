@@ -4,8 +4,11 @@ public class Box : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "box";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BoxStaticUtilities);
@@ -18,7 +21,7 @@ public class Box : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BoxStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BoxStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

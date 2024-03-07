@@ -4,8 +4,11 @@ public class BorderB : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border-b";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColorOptions);
@@ -26,10 +29,10 @@ public class BorderB : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-bottom-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-bottom-color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-bottom-width: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-bottom-width: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -39,13 +42,13 @@ public class BorderB : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues("color", cssSelector, "border-bottom-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "border-bottom-color: {value};", AppState, out Result))
             return Result;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-bottom-width: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-bottom-width: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "border-bottom-style: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "border-bottom-style: {value};", AppState, out Result))
             return Result;
         
         #endregion

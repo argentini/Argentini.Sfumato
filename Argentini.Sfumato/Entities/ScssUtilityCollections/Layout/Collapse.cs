@@ -4,8 +4,11 @@ public class Collapse : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "collapse";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.CollapseStaticUtilities);
@@ -18,7 +21,7 @@ public class Collapse : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.CollapseStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.CollapseStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

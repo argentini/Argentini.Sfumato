@@ -4,8 +4,11 @@ public class DisplayTableFooterGroup : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "table-footer-group";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayTableFooterGroupStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayTableFooterGroup : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableFooterGroupStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayTableFooterGroupStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

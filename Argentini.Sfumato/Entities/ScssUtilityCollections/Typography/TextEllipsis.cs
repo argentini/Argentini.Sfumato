@@ -4,8 +4,11 @@ public class TextEllipsis : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "text-ellipsis";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.TextEllipsisStaticUtilities);
@@ -18,7 +21,7 @@ public class TextEllipsis : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextEllipsisStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextEllipsisStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Basis : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "basis";
     
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.BasisStaticUtilities);
@@ -27,14 +30,14 @@ public class Basis : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BasisStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.BasisStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.FlexRemUnitOptions, cssSelector, "flex-basis: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.FlexRemUnitOptions, cssSelector, "flex-basis: {value};", AppState, out Result))
             return Result;
 
         if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "flex-basis: {value};", out Result))
@@ -47,7 +50,7 @@ public class Basis : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "flex-basis: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "flex-basis: {value};", AppState, out Result))
             return Result;
       
         #endregion

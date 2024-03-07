@@ -4,8 +4,11 @@ public class TextClip : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "text-clip";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.TextClipStaticUtilities);
@@ -18,7 +21,7 @@ public class TextClip : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextClipStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextClipStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

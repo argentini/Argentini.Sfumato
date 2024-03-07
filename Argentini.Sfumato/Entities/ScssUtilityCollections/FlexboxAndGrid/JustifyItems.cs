@@ -4,8 +4,11 @@ public class JustifyItems : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "justify-items";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.JustifyItemsStaticUtilities);
@@ -18,7 +21,7 @@ public class JustifyItems : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.JustifyItemsStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.JustifyItemsStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

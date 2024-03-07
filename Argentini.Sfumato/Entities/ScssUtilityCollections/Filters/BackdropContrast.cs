@@ -4,8 +4,11 @@ public class BackdropContrast : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "backdrop-contrast";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.EffectsFiltersOneBasedPercentageOptions);
@@ -18,7 +21,7 @@ public class BackdropContrast : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "backdrop-filter: contrast({value});", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "backdrop-filter: contrast({value});", AppState, out Result))
             return Result;
 
         #endregion
@@ -28,7 +31,7 @@ public class BackdropContrast : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("number", cssSelector, "backdrop-filter: contrast({value});", out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "backdrop-filter: contrast({value});", AppState, out Result))
             return Result;
         
         #endregion

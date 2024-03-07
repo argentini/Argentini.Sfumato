@@ -4,8 +4,11 @@ public class ContentNormal : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "content-normal";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ContentNormalStaticUtilities);
@@ -18,7 +21,7 @@ public class ContentNormal : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentNormalStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ContentNormalStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

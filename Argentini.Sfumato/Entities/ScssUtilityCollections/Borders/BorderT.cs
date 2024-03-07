@@ -4,8 +4,11 @@ public class BorderT : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border-t";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColorOptions);
@@ -26,10 +29,10 @@ public class BorderT : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-top-color: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.ColorOptions, cssSelector, "border-top-color: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-top-width: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector, "border-top-width: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -39,13 +42,13 @@ public class BorderT : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues("color", cssSelector, "border-top-color: {value};", out Result))
+        if (ProcessArbitraryValues("color", cssSelector, "border-top-color: {value};", AppState, out Result))
             return Result;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-top-width: {value};", out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "border-top-width: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessArbitraryValues(string.Empty, cssSelector, "border-top-style: {value};", out Result))
+        if (ProcessArbitraryValues(string.Empty, cssSelector, "border-top-style: {value};", AppState, out Result))
             return Result;
         
         #endregion

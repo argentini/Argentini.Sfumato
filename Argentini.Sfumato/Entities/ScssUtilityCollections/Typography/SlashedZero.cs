@@ -4,8 +4,11 @@ public class SlashedZero : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "slashed-zero";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.SlashedZeroStaticUtilities);
@@ -18,7 +21,7 @@ public class SlashedZero : ScssUtilityClassGroupBase
         
         #region Static Utilities
 
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SlashedZeroStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SlashedZeroStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Clear : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "clear";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ClearStaticUtilities);
@@ -18,7 +21,7 @@ public class Clear : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ClearStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ClearStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

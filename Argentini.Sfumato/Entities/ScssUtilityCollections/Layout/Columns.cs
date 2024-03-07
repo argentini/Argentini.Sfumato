@@ -4,8 +4,11 @@ public class Columns : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "columns";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColumnsStaticUtilities);
@@ -20,14 +23,14 @@ public class Columns : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ColumnsStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.ColumnsStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutWholeNumberOptions, cssSelector, "columns: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutWholeNumberOptions, cssSelector, "columns: {value};", AppState, out Result))
             return Result;
         
         #endregion
@@ -37,7 +40,7 @@ public class Columns : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "columns: {value};", out Result))
+        if (ProcessArbitraryValues("integer,length,percentage", cssSelector, "columns: {value};", AppState, out Result))
             return Result;
         
         #endregion

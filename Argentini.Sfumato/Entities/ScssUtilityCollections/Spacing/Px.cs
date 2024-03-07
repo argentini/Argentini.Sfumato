@@ -4,8 +4,11 @@ public class Px : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "px";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.PxStaticUtilities);
@@ -19,7 +22,7 @@ public class Px : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PxStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.PxStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -30,7 +33,7 @@ public class Px : ScssUtilityClassGroupBase
             """
             padding-left: {value};
             padding-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
 
         #endregion
@@ -44,7 +47,7 @@ public class Px : ScssUtilityClassGroupBase
             """
             padding-left: {value};
             padding-right: {value};
-            """, out Result))
+            """, AppState, out Result))
             return Result;
       
         #endregion

@@ -4,8 +4,11 @@ public class DisplayListItem : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "list-item";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.DisplayListItemStaticUtilities);
@@ -18,7 +21,7 @@ public class DisplayListItem : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayListItemStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.DisplayListItemStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

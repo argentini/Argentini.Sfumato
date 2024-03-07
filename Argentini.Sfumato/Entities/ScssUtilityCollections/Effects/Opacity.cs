@@ -4,8 +4,11 @@ public class Opacity : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "opacity";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.EffectsFiltersOneBasedPercentageOptions);
@@ -18,7 +21,7 @@ public class Opacity : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "opacity: {value};", out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "opacity: {value};", AppState, out Result))
             return Result;
 
         #endregion
@@ -28,7 +31,7 @@ public class Opacity : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("number", cssSelector, "opacity: {value};", out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "opacity: {value};", AppState, out Result))
             return Result;
         
         #endregion

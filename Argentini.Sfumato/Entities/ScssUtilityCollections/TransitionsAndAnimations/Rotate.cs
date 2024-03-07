@@ -4,8 +4,11 @@ public class Rotate : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "rotate";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.RotateStaticUtilities);
@@ -18,7 +21,7 @@ public class Rotate : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RotateStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.RotateStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
@@ -28,7 +31,7 @@ public class Rotate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("angle", cssSelector, "transform: rotate({value});", out Result))
+        if (ProcessArbitraryValues("angle", cssSelector, "transform: rotate({value});", AppState, out Result))
             return Result;
       
         #endregion

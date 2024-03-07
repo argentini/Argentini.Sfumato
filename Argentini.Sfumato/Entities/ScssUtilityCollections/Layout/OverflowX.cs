@@ -4,8 +4,11 @@ public class OverflowX : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "overflow-x";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.OverflowXStaticUtilities);
@@ -18,7 +21,7 @@ public class OverflowX : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OverflowXStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.OverflowXStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

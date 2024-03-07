@@ -4,8 +4,11 @@ public class BorderY : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "border-y";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.ColorOptions);
@@ -34,14 +37,14 @@ public class BorderY : ScssUtilityClassGroupBase
                 """
                 border-top-color: {value};
                 border-bottom-color: {value};
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         if (ProcessDictionaryOptions(cssSelector.AppState.BorderWidthOptions, cssSelector,
                 """
                 border-top-width: {value};
                 border-bottom-width: {value};
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         #endregion
@@ -55,21 +58,21 @@ public class BorderY : ScssUtilityClassGroupBase
                 """
                 border-top-color: {value};
                 border-bottom-color: {value};
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         if (ProcessArbitraryValues("length,percentage", cssSelector,
                 """
                 border-top-width: {value};
                 border-bottom-width: {value};
-                """, out Result))
+                """, AppState, out Result))
             return Result;
 
         if (ProcessArbitraryValues(string.Empty, cssSelector,
                 """
                 border-top-style: {value};
                 border-bottom-style: {value};
-                """, out Result))
+                """, AppState, out Result))
             return Result;
         
         #endregion

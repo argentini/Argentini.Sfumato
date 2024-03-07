@@ -4,8 +4,11 @@ public class Self : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "self";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.SelfStaticUtilities);
@@ -18,7 +21,7 @@ public class Self : ScssUtilityClassGroupBase
 
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SelfStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.SelfStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion

@@ -4,8 +4,11 @@ public class Whitespace : ScssUtilityClassGroupBase
 {
     public override string SelectorPrefix => "whitespace";
 
+    public SfumatoAppState? AppState { get; set; }
+
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
+        AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.WhitespaceStaticUtilities);
@@ -18,7 +21,7 @@ public class Whitespace : ScssUtilityClassGroupBase
         
         #region Static Utilities
         
-        if (ProcessStaticDictionaryOptions(cssSelector.AppState.WhitespaceStaticUtilities, cssSelector, out Result))
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.WhitespaceStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
