@@ -3241,7 +3241,7 @@ public sealed class SfumatoAppState
 	    const string arbitraryCssExpression = """
 (?<=[\s"'`])
 ([a-z]{1,25}(\-[a-z]{0,25})?:){0,5}
-([\!]?\[(([a-z]{1,25}(\-[a-z]{0,25}){0,2}))\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])
+([\!]?\[(([a-z\-]{1,25}(\-[a-z]{0,25}){0,2}))\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])
 (?=[\s"'`]|[\\"])
 """;
 	    
@@ -3512,8 +3512,7 @@ public sealed class SfumatoAppState
 
     public async Task<string> GetEmbeddedSassVersionAsync()
     {
-        var version = string.Empty;
-        var sassPath = await this.GetEmbeddedSassPathAsync();
+        var sassPath = await GetEmbeddedSassPathAsync();
         var sb = StringBuilderPool.Get();
 
         try
