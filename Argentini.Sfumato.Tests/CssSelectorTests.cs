@@ -257,7 +257,7 @@ public class CssSelectorTests
         await selector.ProcessSelectorAsync();
 
         Assert.NotNull(selector.ScssUtilityClassGroup);
-        Assert.Equal("backdrop-filter: blur(0.5rem); -webkit-backdrop-filter: blur(0.5rem);".CompactCss(), selector.GetStyles().CompactCss());
+        Assert.Equal("--sf-backdrop-blur:blur(0.5rem);".CompactCss(), selector.GetStyles().CompactCss());
     }
 
     [Fact]
