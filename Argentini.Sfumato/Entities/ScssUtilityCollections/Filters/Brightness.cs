@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class Brightness : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "brightness";
-
+    public override string Category => "filter";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 1;
 
         await AddToIndexAsync(appState.EffectsFiltersOneBasedPercentageOptions);
     }

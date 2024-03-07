@@ -236,6 +236,58 @@ public sealed class SfumatoRunner
                 scss.Append("}" + Environment.NewLine);
             }
 
+            globalSelector.Clear();
+
+            foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                         .OrderBy(c => c.Value.Depth)
+                         .ThenBy(c => c.Value.VariantSortOrder)
+                         .ThenBy(c => c.Value.SelectorSort)
+                         .ThenBy(c => c.Value.FixedSelector)
+                         .ToList())
+            {
+                if (usedCssSelector.ScssUtilityClassGroup?.Category == "backdrop")
+                    globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) +
+                                          $".{usedCssSelector.EscapedSelector}");
+            }
+
+            if (globalSelector.Length > 0)
+            {
+                scss.Append(globalSelector + " {" + Environment.NewLine);
+                scss.Append(
+                    $"{Indent(1)}--sf-backdrop-blur: ; --sf-backdrop-brightness: ; --sf-backdrop-contrast: ; --sf-backdrop-grayscale: ; --sf-backdrop-hue-rotate: ; --sf-backdrop-invert: ; --sf-backdrop-opacity: ; --sf-backdrop-saturate: ; --sf-backdrop-sepia: ;" +
+                    Environment.NewLine +
+                    $"{Indent(1)}backdrop-filter: var(--sf-backdrop-blur) var(--sf-backdrop-brightness) var(--sf-backdrop-contrast) var(--sf-backdrop-grayscale) var(--sf-backdrop-hue-rotate) var(--sf-backdrop-invert) var(--sf-backdrop-opacity) var(--sf-backdrop-saturate) var(--sf-backdrop-sepia);" +
+                    Environment.NewLine +
+                    $"{Indent(1)}-webkit-backdrop-filter: var(--sf-backdrop-blur) var(--sf-backdrop-brightness) var(--sf-backdrop-contrast) var(--sf-backdrop-grayscale) var(--sf-backdrop-hue-rotate) var(--sf-backdrop-invert) var(--sf-backdrop-opacity) var(--sf-backdrop-saturate) var(--sf-backdrop-sepia);" +
+                    Environment.NewLine);
+                scss.Append("}" + Environment.NewLine);
+            }
+
+            globalSelector.Clear();
+
+            foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                         .OrderBy(c => c.Value.Depth)
+                         .ThenBy(c => c.Value.VariantSortOrder)
+                         .ThenBy(c => c.Value.SelectorSort)
+                         .ThenBy(c => c.Value.FixedSelector)
+                         .ToList())
+            {
+                if (usedCssSelector.ScssUtilityClassGroup?.Category == "filter")
+                    globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) +
+                                          $".{usedCssSelector.EscapedSelector}");
+            }
+
+            if (globalSelector.Length > 0)
+            {
+                scss.Append(globalSelector + " {" + Environment.NewLine);
+                scss.Append(
+                    $"{Indent(1)}--sf-blur: ; --sf-brightness: ; --sf-contrast: ; --sf-drop-shadow: ; --sf-grayscale: ; --sf-hue-rotate: ; --sf-invert: ; --sf-saturate: ; --sf-sepia: ;" +
+                    Environment.NewLine +
+                    $"{Indent(1)}filter: var(--sf-blur) var(--sf-brightness) var(--sf-contrast) var(--sf-drop-shadow) var(--sf-grayscale) var(--sf-hue-rotate) var(--sf-invert) var(--sf-saturate) var(--sf-sepia);" +
+                    Environment.NewLine);
+                scss.Append("}" + Environment.NewLine);
+            }
+            
             #endregion
 
             scss.Append(scssRootNode.GetScssMarkup());

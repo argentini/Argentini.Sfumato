@@ -718,69 +718,69 @@ public sealed class SfumatoAppState
     
     public Dictionary<string, string> BackdropGrayscaleStaticUtilities { get; } = new()
     {
-	    [""] = "backdrop-filter: grayscale(100%);",
-	    ["0"] = "backdrop-filter: grayscale(0);"
+	    [""] = "--sf-backdrop-grayscale: grayscale(100%);",
+	    ["0"] = "--sf-backdrop-grayscale: grayscale(0);"
     }; 
     
     public Dictionary<string, string> BackdropHueRotateStaticUtilities { get; } = new()
     {
-	    ["0"] = "backdrop-filter: hue-rotate(0deg);",
-	    ["15"] = "backdrop-filter: hue-rotate(15deg);",
-	    ["30"] = "backdrop-filter: hue-rotate(30deg);",
-	    ["60"] = "backdrop-filter: hue-rotate(60deg);",
-	    ["90"] = "backdrop-filter: hue-rotate(90deg);",
-	    ["180"] = "backdrop-filter: hue-rotate(180deg);"
+	    ["0"] = "--sf-backdrop-hue-rotate: hue-rotate(0deg);",
+	    ["15"] = "--sf-backdrop-hue-rotate: hue-rotate(15deg);",
+	    ["30"] = "--sf-backdrop-hue-rotate: hue-rotate(30deg);",
+	    ["60"] = "--sf-backdrop-hue-rotate: hue-rotate(60deg);",
+	    ["90"] = "--sf-backdrop-hue-rotate: hue-rotate(90deg);",
+	    ["180"] = "--sf-backdrop-hue-rotate: hue-rotate(180deg);"
     }; 
     
     public Dictionary<string, string> BackdropInvertStaticUtilities { get; } = new()
     {
-	    [""] = "backdrop-filter: invert(100%);",
-	    ["0"] = "backdrop-filter: invert(0);"
+	    [""] = "--sf-backdrop-invert: invert(100%);",
+	    ["0"] = "--sf-backdrop-invert: invert(0);"
     }; 
 
     public Dictionary<string, string> BackdropSepiaStaticUtilities { get; } = new()
     {
-	    [""] = "backdrop-filter: sepia(100%);",
-	    ["0"] = "backdrop-filter: sepia(0);"
+	    [""] = "--sf-backdrop-sepia: sepia(100%);",
+	    ["0"] = "--sf-backdrop-sepia: sepia(0);"
     }; 
 
     public Dictionary<string, string> DropShadowStaticUtilities { get; } = new()
     {
-	    [""] = $"filter: drop-shadow(0 1px {2.PxToRem()} rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));",
-	    ["sm"] = "filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));",
-	    ["md"] = $"filter: drop-shadow(0 {4.PxToRem()} {3.PxToRem()} rgb(0 0 0 / 0.07)) drop-shadow(0 {2.PxToRem()} {2.PxToRem()} rgb(0 0 0 / 0.06));",
-	    ["lg"] = $"filter: drop-shadow(0 {10.PxToRem()} {8.PxToRem()} rgb(0 0 0 / 0.04)) drop-shadow(0 {4.PxToRem()} {3.PxToRem()} rgb(0 0 0 / 0.1));",
-	    ["xl"] = $"filter: drop-shadow(0 {20.PxToRem()} {13.PxToRem()} rgb(0 0 0 / 0.03)) drop-shadow(0 {8.PxToRem()} {5.PxToRem()} rgb(0 0 0 / 0.08));",
-	    ["2xl"] = $"filter: drop-shadow(0 {25.PxToRem()} {25.PxToRem()} rgb(0 0 0 / 0.15));",
-	    ["none"] = "filter: drop-shadow(0 0 #0000);"
+	    [""] = $"--sf-drop-shadow: drop-shadow(0 1px {2.PxToRem()} rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));",
+	    ["sm"] = "--sf-drop-shadow: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));",
+	    ["md"] = $"--sf-drop-shadow: drop-shadow(0 {4.PxToRem()} {3.PxToRem()} rgb(0 0 0 / 0.07)) drop-shadow(0 {2.PxToRem()} {2.PxToRem()} rgb(0 0 0 / 0.06));",
+	    ["lg"] = $"--sf-drop-shadow: drop-shadow(0 {10.PxToRem()} {8.PxToRem()} rgb(0 0 0 / 0.04)) drop-shadow(0 {4.PxToRem()} {3.PxToRem()} rgb(0 0 0 / 0.1));",
+	    ["xl"] = $"--sf-drop-shadow: drop-shadow(0 {20.PxToRem()} {13.PxToRem()} rgb(0 0 0 / 0.03)) drop-shadow(0 {8.PxToRem()} {5.PxToRem()} rgb(0 0 0 / 0.08));",
+	    ["2xl"] = $"--sf-drop-shadow: drop-shadow(0 {25.PxToRem()} {25.PxToRem()} rgb(0 0 0 / 0.15));",
+	    ["none"] = "--sf-drop-shadow: drop-shadow(0 0 #0000);"
     }; 
     
     public Dictionary<string, string> GrayscaleStaticUtilities { get; } = new()
     {
-	    [""] = "filter: grayscale(100%);",
-	    ["0"] = "filter: grayscale(0);"
+	    [""] = "--sf-grayscale: grayscale(100%);",
+	    ["0"] = "--sf-grayscale: grayscale(0);"
     }; 
 
     public Dictionary<string, string> HueRotateStaticUtilities { get; } = new()
     {
-	    ["0"] = "filter: hue-rotate(0deg);",
-	    ["15"] = "filter: hue-rotate(15deg);",
-	    ["30"] = "filter: hue-rotate(30deg);",
-	    ["60"] = "filter: hue-rotate(60deg);",
-	    ["90"] = "filter: hue-rotate(90deg);",
-	    ["180"] = "filter: hue-rotate(180deg);"
+	    ["0"] = "--sf-hue-rotate: hue-rotate(0deg);",
+	    ["15"] = "--sf-hue-rotate: hue-rotate(15deg);",
+	    ["30"] = "--sf-hue-rotate: hue-rotate(30deg);",
+	    ["60"] = "--sf-hue-rotate: hue-rotate(60deg);",
+	    ["90"] = "--sf-hue-rotate: hue-rotate(90deg);",
+	    ["180"] = "--sf-hue-rotate: hue-rotate(180deg);"
     }; 
     
     public Dictionary<string, string> InvertStaticUtilities { get; } = new()
     {
-	    [""] = "filter: invert(100%);",
-	    ["0"] = "filter: invert(0);"
+	    [""] = "--sf-invert: invert(100%);",
+	    ["0"] = "--sf-invrt: invert(0);"
     }; 
     
     public Dictionary<string, string> SepiaStaticUtilities { get; } = new()
     {
-	    [""] = "filter: sepia(100%);",
-	    ["0"] = "filter: sepia(0);"
+	    [""] = "--sf-sepia: sepia(100%);",
+	    ["0"] = "--sf-sepia: sepia(0);"
     }; 
     
     #endregion

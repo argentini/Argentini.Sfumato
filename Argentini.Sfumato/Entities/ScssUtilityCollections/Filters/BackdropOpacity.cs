@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class BackdropOpacity : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "backdrop-opacity";
-
+    public override string Category => "backdrop";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 6;
 
         await AddToIndexAsync(appState.EffectsFiltersOneBasedPercentageOptions);
     }

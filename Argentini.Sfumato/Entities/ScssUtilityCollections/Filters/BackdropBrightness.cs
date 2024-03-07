@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class BackdropBrightness : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "backdrop-brightness";
-
+    public override string Category => "backdrop";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 1;
 
         await AddToIndexAsync(appState.EffectsFiltersOneBasedPercentageOptions);
     }
@@ -21,7 +22,7 @@ public class BackdropBrightness : ScssUtilityClassGroupBase
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "backdrop-filter: brightness({value});", AppState, out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.EffectsFiltersOneBasedPercentageOptions, cssSelector, "--sf-backdrop-brightness: brightness({value});", AppState, out Result))
             return Result;
 
         #endregion
@@ -31,7 +32,7 @@ public class BackdropBrightness : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues("number", cssSelector, "backdrop-filter: brightness({value});", AppState, out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "--sf-backdrop-brightness: brightness({value});", AppState, out Result))
             return Result;
 
         #endregion

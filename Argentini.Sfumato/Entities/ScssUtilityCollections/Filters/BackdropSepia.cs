@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class BackdropSepia : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "backdrop-sepia";
-
+    public override string Category => "backdrop";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 8;
 
         await AddToIndexAsync(appState.BackdropSepiaStaticUtilities);
     }

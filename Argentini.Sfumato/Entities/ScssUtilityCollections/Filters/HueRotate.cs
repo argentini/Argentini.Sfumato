@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.Filters;
 public class HueRotate : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "hue-rotate";
-    
+    public override string Category => "filter";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 5;
 
         await AddToIndexAsync(appState.HueRotateStaticUtilities);
     }
@@ -31,7 +32,7 @@ public class HueRotate : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("angle", cssSelector, "filter: hue-rotate({value});", AppState, out Result))
+        if (ProcessArbitraryValues("angle", cssSelector, "--sf-hue-rotate: hue-rotate({value});", AppState, out Result))
             return Result;
         
         #endregion
