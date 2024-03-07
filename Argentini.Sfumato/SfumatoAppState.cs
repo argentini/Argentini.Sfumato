@@ -3241,7 +3241,7 @@ public sealed class SfumatoAppState
 	    const string arbitraryCssExpression = """
 (?<=[\s"'`])
 ([a-z]{1,25}(\-[a-z]{0,25})?:){0,5}
-([\!]?\[(([a-z\-]{1,25}(\-[a-z]{0,25}){0,2}))\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])
+([\!]?\[[a-z\-]{1,50}\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])
 (?=[\s"'`]|[\\"])
 """;
 	    
@@ -4026,7 +4026,7 @@ public sealed class SfumatoAppState
 
 			var segments = value.Split(':');
 			
-			if (CssPropertyNames.Contains(segments[0]))
+			if (segments[0].StartsWith("-webkit-") || segments[0].StartsWith("-moz-") || segments[0].StartsWith("-o-") || segments[0].StartsWith("-ms-") || CssPropertyNames.Contains(segments[0]))
 				continue;
 
 			matches.Remove(match);

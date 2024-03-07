@@ -15,7 +15,7 @@ public class RegularExpressionsTests
                                        <meta name="viewport" content="width=device-width, initial-scale=1">
                                        <link rel="stylesheet" href="css/sfumato.css">
                                    </head>
-                                   <body class="text-base/5 xl:text-base/[3rem]">
+                                   <body class="text-base/5 xl:text-base/[3rem] [-webkit-backdrop-filter:blur(1rem)]">
                                        <div id="test-home" class="text-[1rem] lg:text-[1.25rem] bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] xl:text-[#112233] xl:text-[red] xl:text-[--my-color-var] xl:text-[var(--my-color-var)]">
                                            <p class="[font-weight:900] sm:[font-weight:900]">Placeholder</p>
                                            <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
@@ -55,11 +55,11 @@ public class RegularExpressionsTests
         var appState = new SfumatoAppState();
         var matches = appState.ArbitraryCssRegex.Matches(Markup).DistinctBy(m => m.Value).ToList();
 
-        Assert.Equal(8, matches.Count);
+        Assert.Equal(9, matches.Count);
         
         appState.FilterArbitraryCssMatches(matches);
         
-        Assert.Equal(6, matches.Count);
+        Assert.Equal(7, matches.Count);
     }
 
     [Fact]
@@ -274,6 +274,23 @@ h1 {
         
         Assert.Equal(".\\!\\[padding\\:2rem\\] { padding:2rem !important; }".CompactCss(), markup.CompactCss());
 
+        runner.AppState.UsedClasses.Clear();
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"[-webkit-backdrop-filter:blur(1rem)]\"></div>"
+        };
+
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
+
+        Assert.Single(runner.AppState.UsedClasses);
+
+        markup = runner.GenerateUtilityScss();
+        
+        Assert.Equal(".\\[-webkit-backdrop-filter\\:blur\\(1rem\\)\\] { -webkit-backdrop-filter:blur(1rem); }".CompactCss(), markup.CompactCss());
+        
         #endregion
         
         #region supports-backdrop-blur
