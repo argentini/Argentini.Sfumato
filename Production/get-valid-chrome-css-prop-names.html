@@ -1,0 +1,16 @@
+<html>
+<head></head>
+<body>
+<script>
+
+const properties = Object.keys(document.createElement('div').style)
+    .filter(key => isNaN(Number(key)))
+    .map(prop => `"${prop.replace(/([A-Z])/g, '-$1').toLowerCase()}"`)
+    .sort()
+    .join(',\n');
+
+console.log(properties);
+
+</script>
+</body>
+</html
