@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.TransitionsAndAnimat
 public class TranslateY : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "translate-y";
-
+    public override string Category => "transform";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 1;
 
         await AddToIndexAsync(appState.TranslateYStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
@@ -30,17 +31,17 @@ public class TranslateY : ScssUtilityClassGroupBase
         
         #region Modifier Utilities
         
-        if (ProcessFractionModifierOptions(cssSelector, "transform: translateY({value});", out Result))
+        if (ProcessFractionModifierOptions(cssSelector, "--sf-translate-y: {value};", out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "transform: translateY({value});", AppState, out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "--sf-translate-y: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "transform: translateY({value});", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "--sf-translate-y: {value};", out Result))
             return Result;
         
         #endregion
@@ -50,7 +51,7 @@ public class TranslateY : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "transform: translateY({value});", AppState, out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "--sf-translate-y: {value};", AppState, out Result))
             return Result;
       
         #endregion

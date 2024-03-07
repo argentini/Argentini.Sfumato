@@ -2293,15 +2293,15 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> RotateStaticUtilities { get; } = new()
     {
-	    ["0"] = "transform: rotate(0deg);",
-	    ["1"] = "transform: rotate(1deg);",
-	    ["2"] = "transform: rotate(2deg);",
-	    ["3"] = "transform: rotate(3deg);",
-	    ["6"] = "transform: rotate(6deg);",
-	    ["12"] = "transform: rotate(12deg);",
-	    ["45"] = "transform: rotate(45deg);",
-	    ["90"] = "transform: rotate(90deg);",
-	    ["180"] = "transform: rotate(180deg);"
+	    ["0"] = "--sf-rotate: 0deg;",
+	    ["1"] = "--sf-rotate: 1deg;",
+	    ["2"] = "--sf-rotate: 2deg;",
+	    ["3"] = "--sf-rotate: 3deg;",
+	    ["6"] = "--sf-rotate: 6deg;",
+	    ["12"] = "--sf-rotate: 12deg;",
+	    ["45"] = "--sf-rotate: 45deg;",
+	    ["90"] = "--sf-rotate: 90deg;",
+	    ["180"] = "--sf-rotate: 180deg;"
     }; 
 
     public Dictionary<string, string> ScaleStaticUtilities { get; } = new()
@@ -2320,56 +2320,56 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> ScaleXStaticUtilities { get; } = new()
     {
-	    ["0"] = "transform: scaleX(0);",
-	    ["50"] = "transform: scaleX(0.5);",
-	    ["75"] = "transform: scaleX(0.75);",
-	    ["90"] = "transform: scaleX(0.90);",
-	    ["95"] = "transform: scaleX(0.95);",
-	    ["100"] = "transform: scaleX(1.0);",
-	    ["105"] = "transform: scaleX(1.05);",
-	    ["110"] = "transform: scaleX(1.1);",
-	    ["125"] = "transform: scaleX(1.25);",
-	    ["150"] = "transform: scaleX(1.5);"
+	    ["0"] = "--sf-scale-x: 0;",
+	    ["50"] = "--sf-scale-x: 0.5;",
+	    ["75"] = "--sf-scale-x: 0.75;",
+	    ["90"] = "--sf-scale-x: 0.90;",
+	    ["95"] = "--sf-scale-x: 0.95;",
+	    ["100"] = "--sf-scale-x: 1.0;",
+	    ["105"] = "--sf-scale-x: 1.05;",
+	    ["110"] = "--sf-scale-x: 1.1;",
+	    ["125"] = "--sf-scale-x: 1.25;",
+	    ["150"] = "--sf-scale-x: 1.5;"
     }; 
 
     public Dictionary<string, string> ScaleYStaticUtilities { get; } = new()
     {
-	    ["0"] = "transform: scaleY(0);",
-	    ["50"] = "transform: scaleY(0.5);",
-	    ["75"] = "transform: scaleY(0.75);",
-	    ["90"] = "transform: scaleY(0.90);",
-	    ["95"] = "transform: scaleY(0.95);",
-	    ["100"] = "transform: scaleY(1.0);",
-	    ["105"] = "transform: scaleY(1.05);",
-	    ["110"] = "transform: scaleY(1.1);",
-	    ["125"] = "transform: scaleY(1.25);",
-	    ["150"] = "transform: scaleY(1.5);"
+        ["0"] = "--sf-scale-y: 0;",
+        ["50"] = "--sf-scale-y: 0.5;",
+        ["75"] = "--sf-scale-y: 0.75;",
+        ["90"] = "--sf-scale-y: 0.90;",
+        ["95"] = "--sf-scale-y: 0.95;",
+        ["100"] = "--sf-scale-y: 1.0;",
+        ["105"] = "--sf-scale-y: 1.05;",
+        ["110"] = "--sf-scale-y: 1.1;",
+        ["125"] = "--sf-scale-y: 1.25;",
+        ["150"] = "--sf-scale-y: 1.5;"
     };
 
     public Dictionary<string, string> SkewXStaticUtilities { get; } = new()
     {
-	    ["0"] = "transform: skewX(0deg);",
-	    ["1"] = "transform: skewX(1deg);",
-	    ["2"] = "transform: skewX(2deg);",
-	    ["3"] = "transform: skewX(3deg);",
-	    ["6"] = "transform: skewX(6deg);",
-	    ["12"] = "transform: skewX(12deg);",
-	    ["45"] = "transform: skewX(45deg);",
-	    ["90"] = "transform: skewX(90deg);",
-	    ["180"] = "transform: skewX(180deg);"
+	    ["0"] = "--sf-skew-x: 0deg;",
+	    ["1"] = "--sf-skew-x: 1deg;",
+	    ["2"] = "--sf-skew-x: 2deg;",
+	    ["3"] = "--sf-skew-x: 3deg;",
+	    ["6"] = "--sf-skew-x: 6deg;",
+	    ["12"] = "--sf-skew-x: 12deg;",
+	    ["45"] = "--sf-skew-x: 45deg;",
+	    ["90"] = "--sf-skew-x: 90deg;",
+	    ["180"] = "--sf-skew-x: 180deg;"
     };
 
     public Dictionary<string, string> SkewYStaticUtilities { get; } = new()
     {
-	    ["0"] = "transform: skewY(0deg);",
-	    ["1"] = "transform: skewY(1deg);",
-	    ["2"] = "transform: skewY(2deg);",
-	    ["3"] = "transform: skewY(3deg);",
-	    ["6"] = "transform: skewY(6deg);",
-	    ["12"] = "transform: skewY(12deg);",
-	    ["45"] = "transform: skewY(45deg);",
-	    ["90"] = "transform: skewY(90deg);",
-	    ["180"] = "transform: skewY(180deg);"
+	    ["0"] = "--sf-skew-y: 0deg;",
+	    ["1"] = "--sf-skew-y: 1deg;",
+	    ["2"] = "--sf-skew-y: 2deg;",
+	    ["3"] = "--sf-skew-y: 3deg;",
+	    ["6"] = "--sf-skew-y: 6deg;",
+	    ["12"] = "--sf-skew-y: 12deg;",
+	    ["45"] = "--sf-skew-y: 45deg;",
+	    ["90"] = "--sf-skew-y: 90deg;",
+	    ["180"] = "--sf-skew-y: 180deg;"
     };
 
     public Dictionary<string, string> TranslateStaticUtilities { get; } = new()
@@ -2382,18 +2382,18 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> TranslateXStaticUtilities { get; } = new()
     {
-	    ["0"] = "transform: translateX(0px);",
-	    ["px"] = "transform: translateX(1px);",
-	    ["full"] = "transform: translateX(100%);",
-        ["center"] = "transform: translateX(-50%);",
+	    ["0"] = "--sf-translate-x: 0px;",
+	    ["px"] = "--sf-translate-x: 1px;",
+	    ["full"] = "--sf-translate-x: 100%;",
+        ["center"] = "--sf-translate-x: -50%;",
     }; 
 
     public Dictionary<string, string> TranslateYStaticUtilities { get; } = new()
     {
-	    ["0"] = "transform: translateY(0px);",
-	    ["px"] = "transform: translateY(1px);",
-	    ["full"] = "transform: translateY(100%);",
-        ["center"] = "transform: translateY(-50%);"
+	    ["0"] = "--sf-translate-y: 0px;",
+	    ["px"] = "--sf-translate-y: 1px;",
+	    ["full"] = "--sf-translate-y: 100%;",
+        ["center"] = "--sf-translate-y: -50%;"
     }; 
     
     #endregion

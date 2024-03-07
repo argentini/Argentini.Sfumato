@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.TransitionsAndAnimat
 public class ScaleY : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "scale-y";
-
+    public override string Category => "transform";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 6;
 
         await AddToIndexAsync(appState.ScaleYStaticUtilities);
     }
@@ -31,7 +32,7 @@ public class ScaleY : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("number", cssSelector, "transform: scaleY({value});", AppState, out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "--sf-scale-y: {value};", AppState, out Result))
             return Result;
       
         #endregion

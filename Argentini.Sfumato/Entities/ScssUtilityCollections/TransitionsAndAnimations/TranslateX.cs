@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.TransitionsAndAnimat
 public class TranslateX : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "translate-x";
-
+    public override string Category => "transform";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 0;
 
         await AddToIndexAsync(appState.TranslateXStaticUtilities);
         await AddToIndexAsync(appState.LayoutRemUnitOptions);
@@ -30,17 +31,17 @@ public class TranslateX : ScssUtilityClassGroupBase
         
         #region Modifier Utilities
         
-        if (ProcessFractionModifierOptions(cssSelector, "transform: translateX({value});", out Result))
+        if (ProcessFractionModifierOptions(cssSelector, "--sf-translate-x: {value};", out Result))
             return Result;
         
         #endregion
         
         #region Calculated Utilities
         
-        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "transform: translateX({value});", AppState, out Result))
+        if (ProcessDictionaryOptions(cssSelector.AppState.LayoutRemUnitOptions, cssSelector, "--sf-translate-x: {value};", AppState, out Result))
             return Result;
 
-        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "transform: translateX({value});", out Result))
+        if (ProcessListOptions(cssSelector.AppState.FractionDividendOptions, cssSelector, "--sf-translate-x: {value};", out Result))
             return Result;
         
         #endregion

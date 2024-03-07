@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.TransitionsAndAnimat
 public class ScaleX : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "scale-x";
-
+    public override string Category => "transform";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 5;
 
         await AddToIndexAsync(appState.ScaleXStaticUtilities);
     }
@@ -31,7 +32,7 @@ public class ScaleX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("number", cssSelector, "transform: scaleX({value});", AppState, out Result))
+        if (ProcessArbitraryValues("number", cssSelector, "--sf-scale-x: {value};", AppState, out Result))
             return Result;
       
         #endregion

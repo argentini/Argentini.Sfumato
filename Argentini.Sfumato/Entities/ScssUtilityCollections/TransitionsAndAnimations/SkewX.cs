@@ -3,13 +3,14 @@ namespace Argentini.Sfumato.Entities.ScssUtilityCollections.TransitionsAndAnimat
 public class SkewX : ScssUtilityClassGroupBase 
 {
     public override string SelectorPrefix => "skew-x";
-
+    public override string Category => "transform";
     public SfumatoAppState? AppState { get; set; }
 
     public override async Task InitializeAsync(SfumatoAppState appState)
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 3;
 
         await AddToIndexAsync(appState.SkewXStaticUtilities);
     }
@@ -31,7 +32,7 @@ public class SkewX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
 
-        if (ProcessArbitraryValues("angle", cssSelector, "transform: skewX({value});", AppState, out Result))
+        if (ProcessArbitraryValues("angle", cssSelector, "--sf-skew-x: {value};", AppState, out Result))
             return Result;
       
         #endregion

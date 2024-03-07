@@ -287,7 +287,32 @@ public sealed class SfumatoRunner
                     Environment.NewLine);
                 scss.Append("}" + Environment.NewLine);
             }
-            
+
+            globalSelector.Clear();
+
+            foreach (var (_, usedCssSelector) in AppState.UsedClasses
+                         .OrderBy(c => c.Value.Depth)
+                         .ThenBy(c => c.Value.VariantSortOrder)
+                         .ThenBy(c => c.Value.SelectorSort)
+                         .ThenBy(c => c.Value.FixedSelector)
+                         .ToList())
+            {
+                if (usedCssSelector.ScssUtilityClassGroup?.Category == "transform")
+                    globalSelector.Append((globalSelector.Length > 0 ? "," : string.Empty) +
+                                          $".{usedCssSelector.EscapedSelector}");
+            }
+
+            if (globalSelector.Length > 0)
+            {
+                scss.Append(globalSelector + " {" + Environment.NewLine);
+                scss.Append(
+                    $"{Indent(1)}--sf-translate-x: 0; --sf-translate-y: 0; --sf-rotate: 0; --sf-skew-x: 0; --sf-skew-y: 0; --sf-scale-x: 1; --sf-scale-y: 1;" +
+                    Environment.NewLine +
+                    $"{Indent(1)}transform: translate(var(--sf-translate-x), var(--sf-translate-y)) rotate(var(--sf-rotate)) skewX(var(--sf-skew-x)) skewY(var(--sf-skew-y)) scaleX(var(--sf-scale-x)) scaleY(var(--sf-scale-y));" +
+                    Environment.NewLine);
+                scss.Append("}" + Environment.NewLine);
+            }
+
             #endregion
 
             scss.Append(scssRootNode.GetScssMarkup());
