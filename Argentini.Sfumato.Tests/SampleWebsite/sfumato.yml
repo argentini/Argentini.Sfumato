@@ -17,6 +17,10 @@ DarkMode: class
 UseAutoTheme: false
 
 Theme:
+  
+    # Use adaptive layout breakpoints (mobi, tabp, etc.) instead of standard media breakpoints (sm, md, etc.)
+    # Requires use of adaptive font size units (mobi, tabp, etc.)
+    UseAdaptiveLayout: false
 
     # Override font sizes at breakpoints;
     # Default uses viewport width (vw) units to scale content.
@@ -29,6 +33,12 @@ Theme:
         Lg: 16px
         Xl: 16px
         Xxl: 16px
+        Mobi: 16px
+        Tabp: 16px
+        Tabl: 16px
+        Wide: 16px
+        Desk: 16px
+        Vast: 16px
 
     TextSize:
         eyebrow: 0.85rem

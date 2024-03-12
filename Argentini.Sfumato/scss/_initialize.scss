@@ -4,30 +4,34 @@ html {
 
     font-size: #{zero-font-size};
 
-    @include sf-media($from: $sm-breakpoint) {
-
-        font-size: #{sm-font-size};
-    }
-
-    @include sf-media($from: $md-breakpoint) {
-
-        font-size: #{md-font-size};
-    }
-
-    @include sf-media($from: $lg-breakpoint) {
-
-        font-size: #{lg-font-size};
-    }
-
-    @include sf-media($from: $xl-breakpoint) {
-
-        font-size: #{xl-font-size};
-    }
-
-    @include sf-media($from: $xxl-breakpoint) {
-
-        font-size: #{xxl-font-size};
-    }
+    $media-breakpoints;
+    
+    $adaptive-breakpoints;
+    
+    //@include sf-media($from: $sm-breakpoint) {
+    //
+    //    font-size: #{sm-font-size};
+    //}
+    //
+    //@include sf-media($from: $md-breakpoint) {
+    //
+    //    font-size: #{md-font-size};
+    //}
+    //
+    //@include sf-media($from: $lg-breakpoint) {
+    //
+    //    font-size: #{lg-font-size};
+    //}
+    //
+    //@include sf-media($from: $xl-breakpoint) {
+    //
+    //    font-size: #{xl-font-size};
+    //}
+    //
+    //@include sf-media($from: $xxl-breakpoint) {
+    //
+    //    font-size: #{xxl-font-size};
+    //}
 }
 
 html, body {

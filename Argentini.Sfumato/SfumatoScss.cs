@@ -90,28 +90,91 @@ public static class SfumatoScss
     /// <param name="sb"></param>
     public static void ProcessShortCodes(SfumatoAppState appState, StringBuilder sb)
     {
-        sb = sb.Replace("#{sm-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Sm}");
-        sb = sb.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
-        sb = sb.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
-        sb = sb.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
-        sb = sb.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
+        var breakpoints = appState.StringBuilderPool.Get();
         
-        sb = sb.Replace("$internal-dark-theme: \"\";", $"$internal-dark-theme: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
-
-        sb = sb.Replace("#{zero-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Zero}");
-        sb = sb.Replace("#{sm-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Sm}");
-        sb = sb.Replace("#{md-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Md}");
-        sb = sb.Replace("#{lg-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Lg}");
-        sb = sb.Replace("#{xl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xl}");
-
-        if (appState.Settings.Theme.FontSizeUnit?.Xxl.EndsWith("vw", StringComparison.Ordinal) ?? false)
+        try
         {
-            sb = sb.Replace("#{xxl-font-size}", $"calc(#{{$xxl-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Xxl})}} / 100))");
-        }
+            if (appState.Settings.Theme.UseAdaptiveLayout == false)
+            {
+                sb.Replace("$adaptive-breakpoints;", string.Empty);
 
-        else
+                try
+                {
+                    foreach (var prefix in appState.MediaQueryPrefixes.Where(p => p.PrefixType.Equals("breakpoint", StringComparison.OrdinalIgnoreCase) && p.Prefix.Length < 4).OrderBy(o => o.PrefixOrder))
+                    {
+                        var fontSize = appState.Settings.Theme.FontSizeUnit?.GetType()
+                            .GetProperty(prefix.Prefix.ToSentenceCase())
+                            ?.GetValue(appState.Settings.Theme.FontSizeUnit, null);
+                    
+                        breakpoints.Append($"{prefix.Statement}\n");
+                        breakpoints.Append($"    font-size: {fontSize};\n");                
+                        breakpoints.Append("}\n");
+                    }
+
+                    sb.Replace("$media-breakpoints;", breakpoints.ToString());
+                }
+
+                catch
+                {
+                    sb.Replace("$media-breakpoints;", string.Empty);
+                }
+                
+                sb.Replace("#{sm-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Sm}");
+                sb.Replace("#{md-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Md}");
+                sb.Replace("#{lg-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Lg}");
+                sb.Replace("#{xl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xl}");
+                sb.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
+            
+                sb.Replace("$internal-dark-theme: \"\";", $"$internal-dark-theme: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
+            
+                sb.Replace("#{zero-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Zero}");
+                sb.Replace("#{sm-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Sm}");
+                sb.Replace("#{md-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Md}");
+                sb.Replace("#{lg-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Lg}");
+                sb.Replace("#{xl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xl}");
+
+                if (appState.Settings.Theme.FontSizeUnit?.Xxl.EndsWith("vw", StringComparison.Ordinal) ?? false)
+                {
+                    sb.Replace("#{xxl-font-size}", $"calc(#{{$xxl-breakpoint}} * (#{{sf-strip-unit({appState.Settings.Theme.FontSizeUnit?.Xxl})}} / 100))");
+                }
+            
+                else
+                {
+                    sb.Replace("#{xxl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xxl}");
+                }
+            }
+
+            else
+            {
+                sb.Replace("$media-breakpoints;", string.Empty);
+                sb.Replace("#{zero-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Zero}");
+
+                try
+                {
+                    foreach (var prefix in appState.MediaQueryPrefixes.Where(p => p.PrefixType.Equals("breakpoint", StringComparison.OrdinalIgnoreCase) && p.Prefix.Length > 3).OrderBy(o => o.PrefixOrder))
+                    {
+                        var fontSize = appState.Settings.Theme.FontSizeUnit?.GetType()
+                            .GetProperty(prefix.Prefix.ToSentenceCase())
+                            ?.GetValue(appState.Settings.Theme.FontSizeUnit, null);
+                        
+                        breakpoints.Append($"{prefix.Statement}\n");
+                        breakpoints.Append($"    font-size: {fontSize};\n");                
+                        breakpoints.Append("}\n");
+                    }
+
+                    sb.Replace("$adaptive-breakpoints;", breakpoints.ToString());
+                }
+
+                catch
+                {
+                    sb.Replace("$adaptive-breakpoints;", string.Empty);
+                }
+            }
+        }        
+
+        finally
         {
-            sb = sb.Replace("#{xxl-font-size}", $"{appState.Settings.Theme.FontSizeUnit?.Xxl}");
+            appState.StringBuilderPool.Return(breakpoints);
         }
     }
     

@@ -439,6 +439,14 @@ public static class Strings
 	
 	#region Transformations
 
+    public static string ToSentenceCase(this string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return string.Empty;
+
+        return char.ToUpper(input[0]) + input[1..];
+    }
+    
 	/// <summary>
 	/// When indenting a complex RegEx use this to make it one line again.
 	/// </summary>

@@ -4,7 +4,8 @@ public sealed class Theme
 {
     public MediaBreakpoints? MediaBreakpoint { get; set; } = new();
     public FontSizeUnits? FontSizeUnit { get; set; } = new();
-    
+    public bool UseAdaptiveLayout { get; set; }
+
     #region Value Options
     
     public Dictionary<string,string>? Color { get; set; } = new();

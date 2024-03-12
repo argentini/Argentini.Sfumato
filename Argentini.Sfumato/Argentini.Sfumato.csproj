@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.51.0</AssemblyVersion>
-        <FileVersion>5.0.51.0</FileVersion>
-        <PackageVersion>5.0.51</PackageVersion>
+        <AssemblyVersion>5.0.52.0</AssemblyVersion>
+        <FileVersion>5.0.52.0</FileVersion>
+        <PackageVersion>5.0.52</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Utility classes for filter/backdrop-filter (blur, brightness, contrast, drop-shadow, etc.), translateX/Y, rotate, scaleX/Y, skewX/Y styles now use CSS custom props which stack effects as you add classes to an element.</PackageReleaseNotes>
+        <PackageReleaseNotes>Added new setting: Theme > UseAdaptiveLayout (true/false). Allows page scaling based on adaptive breakpoints.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>

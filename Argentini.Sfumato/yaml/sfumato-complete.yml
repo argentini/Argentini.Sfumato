@@ -36,6 +36,10 @@ UseAutoTheme: true
 # The Theme item or any of its option groups can be omitted.
 # * Options use SCSS values
 Theme:
+  
+    # Use adaptive layout breakpoints (mobi, tabp, etc.) instead of standard media breakpoints (sm, md, etc.)
+    # Requires use of adaptive font size units (mobi, tabp, etc.)
+    UseAdaptiveLayout: false
     
     BackgroundImage:
         
@@ -624,6 +628,15 @@ Theme:
         Lg: 16px
         Xl: 16px
         Xxl: 16px
+  
+        # When using adaptive layout, use the following adaptive breakpoint font size units
+        # Zero: 16px
+        # Mobi: 16px
+        # Tabp: 16px
+        # Tabl: 16px
+        # Desk: 16px
+        # Wide: 16px
+        # Vast: 16px
 
     # This example is 5 new colors named after the Dieter Rams Braun 05
     # color palette so they will be added as color options.
