@@ -37,7 +37,9 @@ UseAutoTheme: true
 # * Options use SCSS values
 Theme:
   
-    # Use adaptive layout breakpoints (mobi, tabp, etc.) instead of standard media breakpoints (sm, md, etc.)
+    # Use adaptive layout breakpoints (mobi, tabp, etc.) to scale
+    # font sizes and other layout elements using rem units instead
+    # of using media breakpoints for this purpose.
     # Requires use of adaptive font size units (mobi, tabp, etc.)
     UseAdaptiveLayout: false
     

@@ -1842,11 +1842,11 @@ public sealed class SfumatoAppState
 	    ["max"] = "max-width: max-content;",
 	    ["fit"] = "max-width: fit-content;",
 	    ["prose"] = "max-width: 65ch;",
-	    ["screen-sm"] = "max-width: #{$sm-bp};",
-	    ["screen-md"] = "max-width: #{$md-bp};",
-	    ["screen-lg"] = "max-width: #{$lg-bp};",
-	    ["screen-xl"] = "max-width: #{$xl-bp};",
-	    ["screen-xxl"] = "max-width: #{$xxl-bp};"
+	    ["screen-sm"] = "max-width: #{$sm-breakpoint};",
+	    ["screen-md"] = "max-width: #{$md-breakpoint};",
+	    ["screen-lg"] = "max-width: #{$lg-breakpoint};",
+	    ["screen-xl"] = "max-width: #{$xl-breakpoint};",
+	    ["screen-xxl"] = "max-width: #{$xxl-breakpoint};"
     }; 
 
     public Dictionary<string, string> MinHStaticUtilities { get; } = new()
@@ -4408,6 +4408,10 @@ public sealed class SfumatoAppState
             if (index > -1)
                 workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
         }
+
+        //workingPath = "/Users/magic/Developer/monitoring-analytics-web/UmbracoCms";
+        //workingPath = "/Users/magic/Developer/FileBucket/FileBucket";
+        
 #endif
         
         return workingPath;
