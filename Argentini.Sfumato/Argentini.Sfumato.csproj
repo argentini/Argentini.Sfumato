@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.52.0</AssemblyVersion>
-        <FileVersion>5.0.52.0</FileVersion>
-        <PackageVersion>5.0.52</PackageVersion>
+        <AssemblyVersion>5.0.53.0</AssemblyVersion>
+        <FileVersion>5.0.53.0</FileVersion>
+        <PackageVersion>5.0.53</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added new setting: Theme > UseAdaptiveLayout (true/false). Allows page scaling based on adaptive breakpoints.</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed issue with max-w-screen-{sm/md/lg/xl/xxl} classes not working.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
