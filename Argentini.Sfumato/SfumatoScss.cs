@@ -103,6 +103,13 @@ public static class SfumatoScss
             sb.Replace("#{xxl-bp}", $"{appState.Settings.Theme.MediaBreakpoint?.Xxl}");
             
             sb.Replace("$internal-dark-theme: \"\";", $"$internal-dark-theme: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
+
+            sb.Replace("$mobi-breakpoint: \"\";", $"$mobi-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "mobi").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
+            sb.Replace("$tabp-breakpoint: \"\";", $"$tabp-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "tabp").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
+            sb.Replace("$tabl-breakpoint: \"\";", $"$tabl-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "tabl").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
+            sb.Replace("$desk-breakpoint: \"\";", $"$desk-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "desk").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
+            sb.Replace("$wide-breakpoint: \"\";", $"$wide-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "wide").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
+            sb.Replace("$vast-breakpoint: \"\";", $"$vast-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "vast").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
             
             if (appState.Settings.Theme.UseAdaptiveLayout == false)
             {

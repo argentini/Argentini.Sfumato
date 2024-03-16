@@ -1,4 +1,22 @@
 // Following are settings for media breakpoints. Uses px units.
+
+$mobi-breakpoint: "";
+$tabp-breakpoint: "";
+$tabl-breakpoint: "";
+$desk-breakpoint: "";
+$wide-breakpoint: "";
+$vast-breakpoint: "";
+
+@mixin sf-adaptive($device:false) {
+
+    @if $device {
+        @media #{$device} {
+            @content;
+        }
+    }
+}
+
+// Following are settings for media breakpoints. Uses px units.
 $media-breakpoints: (
 
     // REQUIRED: Set the screen width for which a portrait tablet experience begins.
