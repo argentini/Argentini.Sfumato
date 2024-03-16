@@ -34,7 +34,7 @@ public sealed class SfumatoSettings
             #region Load sfumato.yml file
 
             var json = await File.ReadAllTextAsync(appState.SettingsFilePath);
-            var deserializer = new DeserializerBuilder().Build();
+            var deserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
             var jsonSettings = deserializer.Deserialize<SfumatoSettings>(json);
 
             jsonSettings.Adapt(this);
