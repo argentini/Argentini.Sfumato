@@ -212,6 +212,60 @@ public class CssSelectorTests
     
     #endregion
 
+        #region IsImportant
+    
+    [Fact]
+    public async Task IsNegative()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var selector = new CssSelector(appState, "-w-full");
+        await selector.ProcessSelectorAsync();
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Empty(selector.MediaQueryVariants);
+        Assert.Empty(selector.PseudoClassVariants);
+        Assert.True(selector.IsNegative);
+        
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("width:-100%;".CompactCss(), selector.GetStyles().CompactCss());
+        
+        selector = new CssSelector(appState, "sm:focus:-w-full");
+        await selector.ProcessSelectorAsync();
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Single(selector.MediaQueryVariants);
+        Assert.Single(selector.PseudoClassVariants);
+        Assert.True(selector.IsNegative);
+
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("width:-100%;".CompactCss(), selector.GetStyles().CompactCss());
+        
+        selector = new CssSelector(appState, "-gap-x-4");
+        await selector.ProcessSelectorAsync();
+        
+        Assert.False(selector.IsArbitraryCss);
+        Assert.Empty(selector.MediaQueryVariants);
+        Assert.Empty(selector.PseudoClassVariants);
+        Assert.True(selector.IsNegative);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+        Assert.Equal("column-gap:-1rem;".CompactCss(), selector.GetStyles().CompactCss());
+        
+        selector = new CssSelector(appState, "-gap-x-[0.75rem]");
+        await selector.ProcessSelectorAsync();
+        
+        Assert.True(selector.IsNegative);
+        Assert.NotNull(selector.ScssUtilityClassGroup);
+
+        var test = selector.GetStyles();
+        
+        Assert.Equal("column-gap:-0.75rem;".CompactCss(), selector.GetStyles().CompactCss());
+    }
+    
+    #endregion
+
     #region Base Utilities
     
     [Fact]
@@ -393,7 +447,6 @@ public class CssSelectorTests
         
         Assert.False(selector.IsInvalid);
         Assert.False(selector.IsArbitraryCss);
-        Assert.False(selector.IsImportant);
         Assert.True(selector.UsesModifier);
         Assert.False(selector.HasModifierValue);
         Assert.True(selector.HasArbitraryValue);
@@ -669,104 +722,105 @@ public class CssSelectorTests
     public void GetUserClassValueType()
     {
         var appState = new SfumatoAppState();
+        var cssSelector = new CssSelector(appState, string.Empty);
 
-        var package = CssSelector.SetCustomValueType("", appState);
+        var package = cssSelector.SetCustomValueType("", appState);
         Assert.Equal(string.Empty, package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[width:3rem]", appState);
+        package = cssSelector.SetCustomValueType("[width:3rem]", appState);
         Assert.Equal(string.Empty, package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[3rem]", appState);
+        package = cssSelector.SetCustomValueType("[3rem]", appState);
         Assert.Equal("length", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[3fr]", appState);
+        package = cssSelector.SetCustomValueType("[3fr]", appState);
         Assert.Equal("flex", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[3%]", appState);
+        package = cssSelector.SetCustomValueType("[3%]", appState);
         Assert.Equal("percentage", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[3.5%]", appState);
+        package = cssSelector.SetCustomValueType("[3.5%]", appState);
         Assert.Equal("percentage", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[3]", appState);
+        package = cssSelector.SetCustomValueType("[3]", appState);
         Assert.Equal("integer", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[0.5]", appState);
+        package = cssSelector.SetCustomValueType("[0.5]", appState);
         Assert.Equal("number", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[3.0]", appState);
+        package = cssSelector.SetCustomValueType("[3.0]", appState);
         Assert.Equal("number", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[#123]", appState);
+        package = cssSelector.SetCustomValueType("[#123]", appState);
         Assert.Equal("color", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[#123f]", appState);
+        package = cssSelector.SetCustomValueType("[#123f]", appState);
         Assert.Equal("color", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[#aa1122]", appState);
+        package = cssSelector.SetCustomValueType("[#aa1122]", appState);
         Assert.Equal("color", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[#aa1122ff]", appState);
+        package = cssSelector.SetCustomValueType("[#aa1122ff]", appState);
         Assert.Equal("color", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[rgb(1,2,3)]", appState);
+        package = cssSelector.SetCustomValueType("[rgb(1,2,3)]", appState);
         Assert.Equal("color", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[rgba(1,2,3,0.5)]", appState);
+        package = cssSelector.SetCustomValueType("[rgba(1,2,3,0.5)]", appState);
         Assert.Equal("color", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("['hello_world!']", appState);
+        package = cssSelector.SetCustomValueType("['hello_world!']", appState);
         Assert.Equal("string", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[url(http://image.src)]", appState);
+        package = cssSelector.SetCustomValueType("[url(http://image.src)]", appState);
         Assert.Equal("url", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[http://sfumato.org/images/file.jpg]", appState);
+        package = cssSelector.SetCustomValueType("[http://sfumato.org/images/file.jpg]", appState);
         Assert.Equal("url", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[https://sfumato.org/images/file.jpg]", appState);
+        package = cssSelector.SetCustomValueType("[https://sfumato.org/images/file.jpg]", appState);
         Assert.Equal("url", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[url(/images/file.jpg)]", appState);
+        package = cssSelector.SetCustomValueType("[url(/images/file.jpg)]", appState);
         Assert.Equal("url", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[/images/file.jpg]", appState);
+        package = cssSelector.SetCustomValueType("[/images/file.jpg]", appState);
         Assert.Equal("url", package.ValueType);
 
-        package = CssSelector.SetCustomValueType("[./images/file.jpg]", appState);
+        package = cssSelector.SetCustomValueType("[./images/file.jpg]", appState);
         Assert.Equal("url", package.ValueType);
         
-        package = CssSelector.SetCustomValueType("[../images/file.jpg]", appState);
+        package = cssSelector.SetCustomValueType("[../images/file.jpg]", appState);
         Assert.Equal("url", package.ValueType);
 
         foreach (var unit in appState.CssAngleUnits)
         {
-            package = CssSelector.SetCustomValueType($"[1{unit}]", appState);
+            package = cssSelector.SetCustomValueType($"[1{unit}]", appState);
             Assert.Equal("angle", package.ValueType);
         }
 
         foreach (var unit in appState.CssTimeUnits)
         {
-            package = CssSelector.SetCustomValueType($"[100{unit}]", appState);
+            package = cssSelector.SetCustomValueType($"[100{unit}]", appState);
             Assert.Equal("time", package.ValueType);
         }
 
         foreach (var unit in appState.CssFrequencyUnits)
         {
-            package = CssSelector.SetCustomValueType($"[1{unit}]", appState);
+            package = cssSelector.SetCustomValueType($"[1{unit}]", appState);
             Assert.Equal("frequency", package.ValueType);
         }
 
         foreach (var unit in appState.CssResolutionUnits)
         {
-            package = CssSelector.SetCustomValueType($"[1024{unit}]", appState);
+            package = cssSelector.SetCustomValueType($"[1024{unit}]", appState);
             Assert.Equal("resolution", package.ValueType);
         }
         
-        package = CssSelector.SetCustomValueType("[1/2]", appState);
+        package = cssSelector.SetCustomValueType("[1/2]", appState);
         Assert.Equal("ratio", package.ValueType);
 
-        package = CssSelector.SetCustomValueType("[1_/_2]", appState);
+        package = cssSelector.SetCustomValueType("[1_/_2]", appState);
         Assert.Equal("ratio", package.ValueType);
     }
     

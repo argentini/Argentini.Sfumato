@@ -254,6 +254,27 @@ h1 {
         Assert.Equal(".\\!px-0 { padding-left: 0px !important; padding-right: 0px !important; }".CompactCss(), markup.CompactCss());
 
         #endregion
+
+        #region negative
+        
+        runner.AppState.UsedClasses.Clear();
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"-px-4 md:-px-6\"></div>"
+        };
+
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
+
+        Assert.Equal(2, runner.AppState.UsedClasses.Count);
+
+        markup = runner.GenerateUtilityScss();
+        
+        Assert.Equal(".-px-4 { padding-left: -1rem; padding-right: -1rem; } @media (min-width: #{$md-breakpoint}) { .md\\:-px-6 { padding-left: -1.5rem; padding-right: -1.5rem; } }".CompactCss(), markup.CompactCss());
+
+        #endregion
         
         #region important arbitrary css
         

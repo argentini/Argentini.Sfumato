@@ -4409,7 +4409,7 @@ public sealed class SfumatoAppState
                 workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
         }
 
-        //workingPath = "/Users/magic/Developer/monitoring-analytics-web/UmbracoCms";
+        workingPath = "/Users/magic/Developer/monitoring-analytics-web/UmbracoCms";
         //workingPath = "/Users/magic/Developer/FileBucket/FileBucket";
         
 #endif
@@ -4838,6 +4838,9 @@ public sealed class SfumatoAppState
 	{
 		var invalidEnding = false;
 
+        selector = selector.TrimStart('!');
+        selector = selector.TrimStart('-');
+        
 		foreach (var exclusion in ClassMatchEndingExclusions)
 			if (selector.EndsWith(exclusion))
 			{
@@ -4864,9 +4867,9 @@ public sealed class SfumatoAppState
 			if (VariantsAreValid(variants) == false)
 				return false;
 		}
-
-		selector = selector.TrimStart('!');
-
+        
+        selector = selector.TrimStart('-');
+        
 		var indexOfSlash = selector.LastIndexOf('/');
 
         if (selector.IndexOf("peer-", StringComparison.Ordinal) > -1)

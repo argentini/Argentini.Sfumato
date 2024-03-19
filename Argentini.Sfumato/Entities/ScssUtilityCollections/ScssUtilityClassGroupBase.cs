@@ -5,7 +5,7 @@ public abstract class ScssUtilityClassGroupBase
     public virtual string SelectorPrefix { get; set; } = string.Empty;
     public virtual string Category { get; set; } = string.Empty;
     public List<string> SelectorIndex { get; set; } = new();
-    public int SelectorSort { get; set; }
+    public int SelectorSort { get; protected set; }
     protected string Result = string.Empty;
         
     public virtual Task InitializeAsync(SfumatoAppState appState)
@@ -30,9 +30,10 @@ public abstract class ScssUtilityClassGroupBase
     /// backdrop-filter: blur(1rem); -webkit-backdrop-filter: blur(1rem);
     /// </example>
     /// <param name="propertyTemplate"></param>
+    /// <param name="isNegative"></param>
     /// <param name="appState"></param>
     /// <returns></returns>
-    protected static string AddVendorPrefixedProperty(string propertyTemplate, SfumatoAppState? appState)
+    protected static string AddVendorPrefixedProperty(string propertyTemplate, CssSelector cssSelector, SfumatoAppState? appState)
     {
         if (appState is null)
             return propertyTemplate;
@@ -48,7 +49,8 @@ public abstract class ScssUtilityClassGroupBase
 
             foreach (var propStatement in splits)
             {
-                result.Append($"{propStatement};");
+                if (cssSelector.IsNegative == false)
+                    result.Append($"{propStatement};");
 
                 var firstColonIndex = propStatement.IndexOf(':');
 
@@ -61,6 +63,14 @@ public abstract class ScssUtilityClassGroupBase
                 if (propertyName == string.Empty || propertyValue == string.Empty || propertyName.StartsWith("-webkit-"))
                     continue;
 
+                if (cssSelector.IsNegative)
+                {
+                    if (propertyValue.Contains("{value}") == false)
+                        propertyValue = cssSelector.ProcessNegativeValue(propertyValue, appState);
+                    
+                    result.Append($"{propertyName}: {propertyValue};");
+                }
+                
                 var availableInChrome = appState.ValidChromeCssPropertyNames.Contains(propertyName);
                 var availableInSafari = appState.ValidSafariCssPropertyNames.Contains(propertyName);
 
@@ -142,7 +152,7 @@ public abstract class ScssUtilityClassGroupBase
         if ((dictionary?.TryGetValue(cssSelector.CoreSegment, out var value) ?? false) == false)
             return false;
         
-        result = AddVendorPrefixedProperty(value, appState);
+        result = AddVendorPrefixedProperty(value, cssSelector, appState);
 
         return true;
     }
@@ -169,7 +179,10 @@ public abstract class ScssUtilityClassGroupBase
         if (dictionary == cssSelector.AppState?.ColorOptions)
             value = value.WebColorToRgba();
 
-        result = AddVendorPrefixedProperty(propertyTemplate, appState).Replace("{value}", value);
+        if (cssSelector.IsNegative)
+            value = cssSelector.ProcessNegativeValue(value, appState);
+        
+        result = AddVendorPrefixedProperty(propertyTemplate, cssSelector, appState).Replace("{value}", value);
                 
         return true;
     }
@@ -340,8 +353,13 @@ public abstract class ScssUtilityClassGroupBase
 
         if (valueTypesArray.Contains(cssSelector.ArbitraryValueType) == false && valueTypes != string.Empty && valueTypesArray.Length != 0)
             return false;
+
+        var value = cssSelector.ArbitraryValue;
         
-        result = AddVendorPrefixedProperty(propertyTemplate, appState).Replace("{value}", cssSelector.ArbitraryValue);
+        if (cssSelector.IsNegative)
+            value = cssSelector.ProcessNegativeValue(value, appState);
+        
+        result = AddVendorPrefixedProperty(propertyTemplate, cssSelector, appState).Replace("{value}", value);
 
         return true;
     }

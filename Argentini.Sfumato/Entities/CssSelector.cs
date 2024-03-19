@@ -96,6 +96,7 @@ public sealed class CssSelector
     public bool HasArbitraryValue  => ArbitraryValue.Length > 0;
     public bool UsesModifier { get; set; }
     public bool IsImportant { get; set; }
+    public bool IsNegative { get; set; }
     public bool IsArbitraryCss { get; set; }
     public bool IsInvalid { get; set; }
 
@@ -124,7 +125,7 @@ public sealed class CssSelector
     /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <returns></returns>
-    public static ArbitraryValuePackage SetCustomValueType(string arbitraryValue, SfumatoAppState? appState)
+    public ArbitraryValuePackage SetCustomValueType(string arbitraryValue, SfumatoAppState? appState)
     {
 	    if (string.IsNullOrEmpty(arbitraryValue))
 		    return new ArbitraryValuePackage();
@@ -144,10 +145,13 @@ public sealed class CssSelector
 			    if (appState?.ArbitraryValueTypes.Contains(segments[0]) ?? false)
 			    {
 				    result.ValueType = segments[0];
-				    result.Value = segments[1];
+				    result.Value = IsNegative ? ProcessNegativeValue(segments[1], appState) : segments[1];
 				    return result;
 			    }
 	    }
+        
+        if (IsNegative)
+            value = ProcessNegativeValue(value, appState);
 
 	    // Determine value type based on value (e.g. text-[red])
 
@@ -325,6 +329,47 @@ public sealed class CssSelector
     }
 
     /// <summary>
+    /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
+    /// </summary>
+    /// <returns></returns>
+    public string ProcessNegativeValue(string value, SfumatoAppState? appState)
+    {
+	    if (string.IsNullOrEmpty(value))
+		    return value;
+
+	    if (value.EndsWith('%') && double.TryParse(value.TrimEnd('%'), out _))
+            return $"-{value.TrimStart()}";
+
+	    if (value.Contains('.') == false && int.TryParse(value, out _))
+            return $"-{value.TrimStart()}";
+
+	    if (double.TryParse(value, out _))
+            return $"-{value.TrimStart()}";
+
+	    #region length
+
+        if (value.Contains("calc(") || value.Contains("var("))
+            return $"calc(-1 * {value.TrimStart()})";
+
+	    var unitless = string.Empty;
+
+	    foreach (var unit in appState?.CssUnits ?? Enumerable.Empty<string>())
+	    {
+		    unitless = value.TrimEnd(unit) ?? string.Empty;
+		    
+		    if (value.Length != unitless.Length)
+			    break;
+	    }
+
+	    if (double.TryParse(unitless, out _))
+            return $"-{value.TrimStart()}";
+
+	    #endregion
+
+	    return value;
+    }
+    
+    /// <summary>
     /// Establish all property values from parsing the Value property.
     /// </summary>
     public async Task ProcessSelectorAsync()
@@ -348,6 +393,7 @@ public sealed class CssSelector
 	    VariantSortOrder = 0;
 	    
 	    IsImportant = false;
+        IsNegative = false;
 	    IsInvalid = false;
 	    UsesModifier = false;
 
@@ -522,7 +568,13 @@ public sealed class CssSelector
 		    IsImportant = true;
 		    rootSegment = rootSegment.TrimStart('!');
 	    }
-	    
+
+        if (rootSegment.StartsWith('-'))
+        {
+            IsNegative = true;
+            rootSegment = rootSegment.TrimStart('-');
+        }
+        
 	    #endregion
 	    
 	    if (IsArbitraryCss)
