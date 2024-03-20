@@ -1,4 +1,6 @@
-﻿namespace Argentini.Sfumato;
+﻿using Mapster;
+
+namespace Argentini.Sfumato;
 
 internal class Program
 {
@@ -192,8 +194,13 @@ internal class Program
 				{
 					var triggered = false;
 
-					foreach (var (_, fileChangeRequest) in rebuildProjectQueue.OrderBy(f => f.Key))
-					{
+                    var clonedDictionary = rebuildProjectQueue.Adapt<Dictionary<long,FileChangeRequest?>>().ToDictionary();
+                    
+					foreach (var (_, fileChangeRequest) in clonedDictionary.OrderBy(f => f.Key))
+                    {
+                        if (fileChangeRequest is null)
+                            continue;
+                        
 						var eventArgs = fileChangeRequest.FileSystemEventArgs;
 
 						if (eventArgs is null)
@@ -257,10 +264,11 @@ internal class Program
 							await runner.AddUpdateWatchedFileAsync(renamedEventArgs.FullPath, cancellationTokenSource);
 							triggered = true;
 						}
-					}					
-					
-					rebuildProjectQueue.Clear();
+					}
 
+                    foreach (var item in clonedDictionary)
+                        rebuildProjectQueue.TryRemove(item.Key, out _);
+					
 					if (triggered)
 					{
 						var timer = new Stopwatch();
@@ -278,9 +286,14 @@ internal class Program
 				{
 					var triggered = false;
 
-					foreach (var (_, fileChangeRequest) in scssTranspileQueue.OrderBy(f => f.Key))
+                    var clonedDictionary = scssTranspileQueue.Adapt<Dictionary<long,FileChangeRequest?>>().ToDictionary();
+
+					foreach (var (_, fileChangeRequest) in clonedDictionary.OrderBy(f => f.Key))
 					{
-						var eventArgs = fileChangeRequest.FileSystemEventArgs;
+                        if (fileChangeRequest is null)
+                            continue;
+
+                        var eventArgs = fileChangeRequest.FileSystemEventArgs;
 
 						if (eventArgs is null)
 							continue;
@@ -401,7 +414,8 @@ internal class Program
 						}
 					}
 
-					scssTranspileQueue.Clear();
+                    foreach (var item in clonedDictionary)
+                        scssTranspileQueue.TryRemove(item.Key, out _);
 
 					if (triggered)
 					{
@@ -413,9 +427,14 @@ internal class Program
 				{
 					var triggered = false;
 
-					foreach (var (_, fileChangeRequest) in restartAppQueue)
+                    var clonedDictionary = restartAppQueue.Adapt<Dictionary<long,FileChangeRequest?>>().ToDictionary();
+
+					foreach (var (_, fileChangeRequest) in clonedDictionary)
 					{
-						var eventArgs = fileChangeRequest.FileSystemEventArgs;
+                        if (fileChangeRequest is null)
+                            continue;
+
+                        var eventArgs = fileChangeRequest.FileSystemEventArgs;
 
 						if (eventArgs is null)
 							continue;
@@ -457,7 +476,8 @@ internal class Program
 						processedFiles = true;
 					}
 
-					restartAppQueue.Clear();
+                    foreach (var item in clonedDictionary)
+                        restartAppQueue.TryRemove(item.Key, out _);
 				}
 				
 				if (processedFiles)
