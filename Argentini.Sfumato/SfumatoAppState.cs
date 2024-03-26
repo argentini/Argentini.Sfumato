@@ -805,7 +805,7 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> BasisStaticUtilities { get; } = new()
     {
-	    ["full"] = "100%"
+	    ["full"] = "flex-basis: 100%;"
     };
 
     public Dictionary<string, string> ColStaticUtilities { get; } = new()
@@ -4228,7 +4228,7 @@ public sealed class SfumatoAppState
 	    LayoutRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
 
 	    FlexRemUnitOptions.Clear();
-	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 3.5m);
+	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
 
 	    LayoutWholeNumberOptions.Clear();
 	    LayoutWholeNumberOptions.AddWholeNumberOptions(1, 24);
