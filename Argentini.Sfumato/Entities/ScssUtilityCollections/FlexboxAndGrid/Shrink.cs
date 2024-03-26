@@ -10,8 +10,8 @@ public class Shrink : ScssUtilityClassGroupBase
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
-        
-        await Task.CompletedTask;
+
+        await AddToIndexAsync(appState.FlexShrinkStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
@@ -19,6 +19,13 @@ public class Shrink : ScssUtilityClassGroupBase
         if (cssSelector.AppState is null)
             return string.Empty;
 
+        #region Static Utilities
+        
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FlexShrinkStaticUtilities, cssSelector, AppState, out Result))
+            return Result;
+        
+        #endregion
+        
         #region Arbitrary Values
         
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })

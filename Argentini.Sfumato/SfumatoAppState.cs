@@ -918,15 +918,21 @@ public sealed class SfumatoAppState
 	    ["1"] = "flex: 1 1 0%;",
 	    ["auto"] = "flex: 1 1 auto;",
 	    ["initial"] = "flex: 0 1 auto;",
-	    ["none"] = "flex: none;",
-        
-	    ["grow"] = "flex-grow: 1;",
-	    ["grow-0"] = "flex-grow: 0;",
-
-	    ["shrink"] = "flex-shrink: 1;",
-	    ["shrink-0"] = "flex-shrink: 0;"
+	    ["none"] = "flex: none;"
     }; 
 
+    public Dictionary<string, string> FlexGrowStaticUtilities { get; } = new()
+    {
+        [""] = "flex-grow: 1;",
+        ["0"] = "flex-grow: 0;",
+    }; 
+
+    public Dictionary<string, string> FlexShrinkStaticUtilities { get; } = new()
+    {
+        [""] = "flex-shrink: 1;",
+        ["0"] = "flex-shrink: 0;"
+    }; 
+    
     public Dictionary<string, string> GapStaticUtilities { get; } = new()
     {
 	    ["0"] = "gap: auto;",

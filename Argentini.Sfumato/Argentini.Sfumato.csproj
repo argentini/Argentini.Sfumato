@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.58.0</AssemblyVersion>
-        <FileVersion>5.0.58.0</FileVersion>
-        <PackageVersion>5.0.58</PackageVersion>
+        <AssemblyVersion>5.0.59.0</AssemblyVersion>
+        <FileVersion>5.0.59.0</FileVersion>
+        <PackageVersion>5.0.59</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Change to better handle watcher file change request conflicts.</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed flex grow and shrink utility classes.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>

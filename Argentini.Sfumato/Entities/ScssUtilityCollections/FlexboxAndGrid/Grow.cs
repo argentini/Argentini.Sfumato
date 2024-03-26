@@ -11,13 +11,20 @@ public class Grow : ScssUtilityClassGroupBase
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
         
-        await Task.CompletedTask;
+        await AddToIndexAsync(appState.FlexGrowStaticUtilities);
     }
 
     public override string GetStyles(CssSelector cssSelector)
     {
         if (cssSelector.AppState is null)
             return string.Empty;
+
+        #region Static Utilities
+        
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.FlexGrowStaticUtilities, cssSelector, AppState, out Result))
+            return Result;
+        
+        #endregion
 
         #region Arbitrary Values
         
