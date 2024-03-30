@@ -586,8 +586,8 @@ public sealed class SfumatoAppState
     {
         ["repeat"] = "background-repeat: repeat;",
         ["no-repeat"] = "background-repeat: no-repeat;",
-        ["repeat-x"] = "background-repeat: border-box;",
-        ["repeat-y"] = "background-repeat: padding-box;",
+        ["repeat-x"] = "background-repeat: repeat-x;",
+        ["repeat-y"] = "background-repeat: repeat-y;",
         ["repeat-round"] = "background-repeat: round;",
         ["repeat-space"] = "background-repeat: space;",
         ["origin-border"] = "background-origin: border-box;",
