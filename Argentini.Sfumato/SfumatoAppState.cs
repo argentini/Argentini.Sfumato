@@ -2660,6 +2660,14 @@ public sealed class SfumatoAppState
 	    ["end"] = "text-align: end;"
     }; 
 
+    public Dictionary<string, string> TextWrapStaticUtilities { get; } = new()
+    {
+        ["wrap"] = "text-wrap: wrap;",
+        ["nowrap"] = "text-wrap: nowrap;",
+        ["balance"] = "text-wrap: balance;",
+        ["pretty"] = "text-wrap: pretty;"
+    }; 
+
     public Dictionary<string, string> TextClipStaticUtilities { get; } = new()
     {
 	    [""] = "text-overflow: clip;",

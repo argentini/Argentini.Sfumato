@@ -12,6 +12,7 @@ public class Text : ScssUtilityClassGroupBase
         SelectorIndex.Add(SelectorPrefix);
 
         await AddToIndexAsync(appState.TextAlignStaticUtilities);
+        await AddToIndexAsync(appState.TextWrapStaticUtilities);
         await AddToIndexAsync(appState.ColorOptions);
         await AddToIndexAsync(appState.TextSizeOptions);
     }
@@ -24,6 +25,9 @@ public class Text : ScssUtilityClassGroupBase
         #region Static Utilities
         
         if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextAlignStaticUtilities, cssSelector, AppState, out Result))
+            return Result;
+
+        if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextWrapStaticUtilities, cssSelector, AppState, out Result))
             return Result;
         
         #endregion
