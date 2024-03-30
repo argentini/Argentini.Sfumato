@@ -10,6 +10,7 @@ public class Leading : ScssUtilityClassGroupBase
     {
         AppState = appState;
         SelectorIndex.Add(SelectorPrefix);
+        SelectorSort = 1;
 
         await AddToIndexAsync(appState.LeadingOptions);
     }
