@@ -4168,7 +4168,7 @@ public sealed class SfumatoAppState
 (?<=[\s"'`])
 ((peer\-([a-z\-]{1,25}([/]([a-z\-]{0,25})){0,1}?:))|([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:)){0,5}
 (
-	([\!\-]{0,2}?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
+	([\!\-]{0,2}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
 	(
 		(/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
 	)
@@ -4852,9 +4852,6 @@ public sealed class SfumatoAppState
 	{
 		var invalidEnding = false;
 
-        selector = selector.TrimStart('!');
-        selector = selector.TrimStart('-');
-        
 		foreach (var exclusion in ClassMatchEndingExclusions)
 			if (selector.EndsWith(exclusion))
 			{
@@ -4882,6 +4879,7 @@ public sealed class SfumatoAppState
 				return false;
 		}
         
+        selector = selector.TrimStart('!');
         selector = selector.TrimStart('-');
         
 		var indexOfSlash = selector.LastIndexOf('/');

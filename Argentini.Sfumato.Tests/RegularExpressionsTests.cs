@@ -253,6 +253,23 @@ h1 {
         
         Assert.Equal(".\\!px-0 { padding-left: 0px !important; padding-right: 0px !important; }".CompactCss(), markup.CompactCss());
 
+        runner.AppState.UsedClasses.Clear();
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"tabp:!px-0\"></div>"
+        };
+
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
+
+        Assert.Single(runner.AppState.UsedClasses);
+
+        markup = runner.GenerateUtilityScss();
+        
+        Assert.Equal("@media screen and (min-aspect-ratio:10/16) { .tabp\\:\\!px-0 { padding-left: 0px !important; padding-right: 0px !important; } }".CompactCss(), markup.CompactCss());
+        
         #endregion
 
         #region negative
@@ -274,6 +291,27 @@ h1 {
         
         Assert.Equal(".-px-4 { padding-left: -1rem; padding-right: -1rem; } @media (min-width: #{$md-breakpoint}) { .md\\:-px-6 { padding-left: -1.5rem; padding-right: -1.5rem; } }".CompactCss(), markup.CompactCss());
 
+        #endregion
+        
+        #region combined negative and important
+        
+        runner.AppState.UsedClasses.Clear();
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"!-px-4 tabp:!-px-4\"></div>"
+        };
+
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
+
+        Assert.Equal(2, runner.AppState.UsedClasses.Count);
+
+        markup = runner.GenerateUtilityScss();
+        
+        Assert.Equal(".\\!-px-4 { padding-left: -1rem !important; padding-right: -1rem !important; } @media screen and (min-aspect-ratio:10/16) { .tabp\\:\\!-px-4 { padding-left: -1rem !important; padding-right: -1rem !important; } }".CompactCss(), markup.CompactCss());
+        
         #endregion
         
         #region important arbitrary css

@@ -49,7 +49,6 @@ public sealed class CssSelector
     #region Selector
     
     public string Selector { get; set; } = string.Empty;
-
     public string FixedSelector { get; set; } = string.Empty;
     
     private string _escapedSelector = string.Empty;
@@ -376,9 +375,9 @@ public sealed class CssSelector
     {
 	    MediaQueryVariants.Clear();
 	    PseudoClassVariants.Clear();
-
-	    FixedSelector = Selector;
+        
 	    EscapedSelector = string.Empty;
+        FixedSelector = Selector;
 
 	    VariantSegment = string.Empty;
 	    PrefixSegment = string.Empty;
@@ -561,22 +560,25 @@ public sealed class CssSelector
 
 	    #endregion
 	    
-	    #region Process Important Override
+        #region Process Important and Negative Overrides
 	    
-	    if (rootSegment.StartsWith('!'))
-	    {
-		    IsImportant = true;
-		    rootSegment = rootSegment.TrimStart('!');
-	    }
-
-        if (rootSegment.StartsWith('-'))
+        while (rootSegment.StartsWith('!') || rootSegment.StartsWith('-'))
         {
-            IsNegative = true;
-            rootSegment = rootSegment.TrimStart('-');
+            if (rootSegment.StartsWith('-'))
+            {
+                IsNegative = true;
+                rootSegment = rootSegment.TrimStart('-');
+            }
+            
+            else if (rootSegment.StartsWith('!'))
+            {
+                IsImportant = true;
+                rootSegment = rootSegment.TrimStart('!');
+            }
         }
+
+        #endregion
         
-	    #endregion
-	    
 	    if (IsArbitraryCss)
 		    return;
 
