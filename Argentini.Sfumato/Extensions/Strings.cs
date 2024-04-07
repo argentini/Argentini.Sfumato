@@ -657,7 +657,17 @@ public static class Strings
 	{
 		return $"{(pixels / 16m):#0.######}rem";
 	}
-	
+
+    /// <summary>
+    /// Convert a numeric pixel value to a rem value string, including the "rem" unit.
+    /// </summary>
+    /// <param name="pixels"></param>
+    /// <returns></returns>
+    public static string PxToRem(this double pixels)
+    {
+        return $"{(pixels / 16):#0.######}rem";
+    }
+
 	/// <summary>
 	/// Convert a pixel string value to a rem value string, including the "rem" unit.
 	/// </summary>
