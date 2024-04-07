@@ -519,8 +519,13 @@ public sealed class SfumatoAppState
 	    [""] = "1px",
         ["0"] = "0px",
         ["1"] = "1px",
+        ["1.5"] = 1.5.PxToRem(),
 	    ["2"] = 2.PxToRem(),
+        ["3"] = 3.PxToRem(),
 	    ["4"] = 4.PxToRem(),
+        ["5"] = 5.PxToRem(),
+        ["6"] = 6.PxToRem(),
+        ["7"] = 7.PxToRem(),
 	    ["8"] = 8.PxToRem()
     };
    
@@ -529,9 +534,14 @@ public sealed class SfumatoAppState
 	    [""] = "1px",
         ["0"] = "0px",
         ["1"] = "1px",
-	    ["2"] = 2.PxToRem(),
-	    ["4"] = 4.PxToRem(),
-	    ["8"] = 8.PxToRem()
+        ["1.5"] = 1.5.PxToRem(),
+        ["2"] = 2.PxToRem(),
+        ["3"] = 3.PxToRem(),
+        ["4"] = 4.PxToRem(),
+        ["5"] = 5.PxToRem(),
+        ["6"] = 6.PxToRem(),
+        ["7"] = 7.PxToRem(),
+        ["8"] = 8.PxToRem()
     };
     
     public Dictionary<string, string> BlendModeOptions { get; } = new()
