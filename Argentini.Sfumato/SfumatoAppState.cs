@@ -815,6 +815,7 @@ public sealed class SfumatoAppState
 
     public Dictionary<string, string> BasisStaticUtilities { get; } = new()
     {
+        ["0"] = "flex-basis: 0;",
 	    ["full"] = "flex-basis: 100%;"
     };
 
