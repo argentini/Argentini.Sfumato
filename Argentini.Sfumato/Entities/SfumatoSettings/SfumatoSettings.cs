@@ -33,11 +33,11 @@ public sealed class SfumatoSettings
         {
             #region Load sfumato.yml file
 
-            var json = await File.ReadAllTextAsync(appState.SettingsFilePath);
+            var yaml = await File.ReadAllTextAsync(appState.SettingsFilePath);
             var deserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
-            var jsonSettings = deserializer.Deserialize<SfumatoSettings>(json);
+            var yamlSettings = deserializer.Deserialize<SfumatoSettings>(yaml);
 
-            jsonSettings.Adapt(this);
+            yamlSettings.Adapt(this);
             
             #region Dark Mode
             
@@ -49,7 +49,7 @@ public sealed class SfumatoSettings
                 _ => "media"
             };
 
-            UseAutoTheme = jsonSettings.UseAutoTheme;
+            UseAutoTheme = yamlSettings.UseAutoTheme;
             
             #endregion
             
@@ -57,9 +57,9 @@ public sealed class SfumatoSettings
 
             var invalidExtensions = new[] { "css", "map" };
 
-            if (jsonSettings.ProjectPaths.Count == 0)
+            if (yamlSettings.ProjectPaths.Count == 0)
             {
-                jsonSettings.ProjectPaths.Add(new ProjectPath());
+                yamlSettings.ProjectPaths.Add(new ProjectPath());
             }
             
             foreach (var projectPath in ProjectPaths.ToList())
