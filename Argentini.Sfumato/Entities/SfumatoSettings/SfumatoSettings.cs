@@ -11,7 +11,7 @@ public sealed class SfumatoSettings
 
     public Theme Theme { get; set; } = new();
 
-    public async Task LoadJsonSettingsAsync(SfumatoAppState appState)
+    public async Task LoadSettingsAsync(SfumatoAppState appState)
     {
         #region Find sfumato.yml file
 

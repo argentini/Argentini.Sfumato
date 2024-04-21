@@ -4225,7 +4225,7 @@ public sealed class SfumatoAppState
     #region Entry Points
     
     /// <summary>
-    /// Initialize the app state. Loads settings JSON file from working path.
+    /// Initialize the app state. Loads settings file from working path.
     /// Sets up runtime environment for the runner.
     /// </summary>
     /// <param name="args">CLI arguments</param>
@@ -4267,7 +4267,7 @@ public sealed class SfumatoAppState
 	    #endregion
 	    
 	    if (VersionMode == false && HelpMode == false && InitMode == false)
-		    await Settings.LoadJsonSettingsAsync(this);
+		    await Settings.LoadSettingsAsync(this);
 	    
 	    #region Load Utility Classes
 
