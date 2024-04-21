@@ -4341,75 +4341,67 @@ public sealed class SfumatoAppState
 		if (CliArguments.Count < 1)
 			return;
 
-		if (CliArguments.Count == 0)
+		if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch" && CliArguments[0] != "init")
+		{
+			await Console.Out.WriteLineAsync("Invalid command specified; must be: help, init, version, build, or watch");
+			await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
+			Environment.Exit(1);
+		}			
+		
+		if (CliArguments[0] == "help")
 		{
 			HelpMode = true;
+			return;
 		}
 
-		else
+		if (CliArguments[0] == "version")
 		{
-			if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch" && CliArguments[0] != "init")
-			{
-				await Console.Out.WriteLineAsync("Invalid command specified; must be: help, init, version, build, or watch");
-				await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
-				Environment.Exit(1);
-			}			
-			
-			if (CliArguments[0] == "help")
-			{
-				HelpMode = true;
-				return;
-			}
+			VersionMode = true;
+			return;
+		}
 
-			if (CliArguments[0] == "version")
-			{
-				VersionMode = true;
-				return;
-			}
-
-			if (CliArguments[0] == "watch")
-			{
-				WatchMode = true;
-			}
+		if (CliArguments[0] == "watch")
+		{
+			WatchMode = true;
+		}
+	
+		if (CliArguments[0] == "init")
+		{
+			InitMode = true;
+		}
 		
-			if (CliArguments[0] == "init")
+		if (CliArguments.Count > 1)
+		{
+			for (var x = 1; x < CliArguments.Count; x++)
 			{
-				InitMode = true;
-			}
-			
-			if (CliArguments.Count > 1)
-			{
-				for (var x = 1; x < CliArguments.Count; x++)
-				{
-					var arg = CliArguments[x];
-					
-					if (arg.Equals("--minify", StringComparison.OrdinalIgnoreCase))
-						Minify = true;
+				var arg = CliArguments[x];
+				
+				if (arg.Equals("--minify", StringComparison.OrdinalIgnoreCase))
+					Minify = true;
 
-					else if (arg.Equals("--path", StringComparison.OrdinalIgnoreCase))
-						if (++x < CliArguments.Count)
+				else if (arg.Equals("--path", StringComparison.OrdinalIgnoreCase))
+					if (++x < CliArguments.Count)
+					{
+						var path = CliArguments[x].SetNativePathSeparators();
+
+						if (path.Contains(Path.DirectorySeparatorChar) == false &&
+							path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+							continue;
+
+						if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+							path = path[..path.LastIndexOf(Path.DirectorySeparatorChar)];
+
+						try
 						{
-							var path = CliArguments[x].SetNativePathSeparators();
-
-							if (path.Contains(Path.DirectorySeparatorChar) == false &&
-							    path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-								continue;
-
-							if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-								path = path[..path.LastIndexOf(Path.DirectorySeparatorChar)];
-
-							try
-							{
-								WorkingPathOverride = Path.GetFullPath(path);
-							}
-
-							catch
-							{
-								await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid project path at {path}");
-								Environment.Exit(1);
-							}
+							WorkingPathOverride = Path.GetFullPath(path);
 						}
-				}
+
+						catch
+						{
+							await Console.Out.WriteLineAsync($"{CliErrorPrefix}Invalid project path at {path}");
+							Environment.Exit(1);
+						}
+					}
 			}
 		}
 	}
