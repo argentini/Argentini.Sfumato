@@ -855,4 +855,58 @@ public static class Strings
 	}
 	
 	#endregion
+    
+    #region Console
+
+    public static IEnumerable<string> WrapTextAtMaxWidth(string input, int maxLength)
+    {
+        var result = new List<string>();
+        var indentation = Regex.Match(input, @"^\s+").Value;
+        var words = input.TrimStart().Split(' ');
+        var currentLineLength = indentation.Length;
+        var currentLine = new StringBuilder(indentation);
+        var bulletIndentation = string.Empty;
+
+        if (input.Trim().StartsWith("- ") || input.Trim().StartsWith("* "))
+            bulletIndentation = "  ";
+	    
+        foreach (var word in words)
+        {
+            if (currentLineLength + word.Length + (result.Count > 0 ? bulletIndentation.Length : 0) > maxLength)
+            {
+                result.Add($"{(result.Count > 0 ? bulletIndentation : string.Empty)}{currentLine}");
+                currentLine.Clear();
+                currentLine.Append(indentation);
+                currentLineLength = indentation.Length;
+            }
+
+            currentLine.Append(word);
+            currentLine.Append(' ');
+            currentLineLength += word.Length + 1;
+        }
+
+        if (currentLine.Length > indentation.Length + (result.Count > 0 ? bulletIndentation.Length : 0))
+            result.Add($"{(result.Count > 0 ? bulletIndentation : string.Empty)}{currentLine}");
+
+        return result;
+    }
+	
+    public static void WriteToConsole(this string text, int maxCharacters)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        var result = new List<string>();
+        var lines = text.Trim().NormalizeLinebreaks().Replace("_\n", " ").Split('\n');
+
+        foreach (var line in lines)
+            result.AddRange(WrapTextAtMaxWidth(line, maxCharacters));
+
+        foreach (var line in result)
+        {
+            Console.WriteLine(line.NormalizeLinebreaks(Environment.NewLine));
+        }
+    }
+    
+    #endregion
 }

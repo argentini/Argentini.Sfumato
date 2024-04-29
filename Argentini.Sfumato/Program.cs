@@ -49,49 +49,69 @@ internal class Program
 		}
 		
 		if (runner.AppState.HelpMode)
-		{
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("Sfumato will recursively scan your project directory for SCSS files and");
-			await Console.Out.WriteLineAsync("transpile them. It will also inject Sfumato styles into your generated CSS");
-			await Console.Out.WriteLineAsync("wherever the appropriate Sfumato directive is found:");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("Directives:");
+        {
+            await Console.Out.WriteLineAsync();
+
+            const string introText = """
+                                     Sfumato will recursively scan your project directory for SCSS files and transpile them._
+                                     It will also inject Sfumato styles into your generated CSS wherever the appropriate Sfumato directive is found:
+                                     
+                                     Directives:
+                                     """;
+            introText.WriteToConsole(80);
 			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Directives:".Length));
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@sfumato base;`");
-			await Console.Out.WriteLineAsync("  Embed brower reset and base element styles");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@sfumato utilities;`");
-			await Console.Out.WriteLineAsync("  Embed utility classes based on which ones are being used in your project");
-			await Console.Out.WriteLineAsync("  files (configurable in a `sfumato.yml` settings file)");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} `@apply [class name] [...];`");
-			await Console.Out.WriteLineAsync("  Embed the styles for a specific utility class within your own classes;");
-			await Console.Out.WriteLineAsync("  used to create custom classes with one or more utility class styles");
-			await Console.Out.WriteLineAsync("  (e.g. `.heading { @apply text-2xl/5 bold }`)");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("Command Line Usage:");
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Command Line Usage:".Length));
-			await Console.Out.WriteLineAsync("sfumato [help|version]");
-			await Console.Out.WriteLineAsync("sfumato [build|watch] [options]");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("Commands:");
+
+            var directivesText = $$"""
+                                 {{Strings.TriangleRight}} `@sfumato base;`
+                                   Embed browser reset and base element styles
+
+                                 {{Strings.TriangleRight}} `@sfumato utilities;`
+                                   Embed utility classes based on which ones are being used in your project
+                                   files (configurable in a `sfumato.yml` settings file)
+
+                                 {{Strings.TriangleRight}} `@apply [class name] [...];`
+                                   Embed the styles for a specific utility class within your own classes;
+                                   used to create custom classes with one or more utility class styles
+                                   (e.g. `.heading { @apply text-2xl/5 bold }`)
+
+                                 Command Line Usage:
+                                 """;
+            directivesText.WriteToConsole(80);
+            await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Command Line Usage:".Length));
+
+            const string cliUsageText = """
+                                        sfumato [help|version]
+                                        sfumato [build|watch] [options]
+
+                                        Commands:
+                                        """;
+            cliUsageText.WriteToConsole(80);
 			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Commands:".Length));
-			await Console.Out.WriteLineAsync("init      : Create a sample sfumato.yml file (can use --path)");
-			await Console.Out.WriteLineAsync("build     : Perform a single complete build");
-			await Console.Out.WriteLineAsync("watch     : Perform a complete build and then watch for changes");
-			await Console.Out.WriteLineAsync("version   : Show the sfumato version number");
-			await Console.Out.WriteLineAsync("help      : Show this help message");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("* build and watch commands look in the current path for a `sfumato.yml`");
-			await Console.Out.WriteLineAsync("  settings file unless using the `--path` option; visit https://sfumato.app");
-			await Console.Out.WriteLineAsync("  for more information on creating a sfumato.yml settings file");
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("Options:");
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
-			await Console.Out.WriteLineAsync("--path    : Follow with a relative or absolute path to/for your sfumato.yml");
-			await Console.Out.WriteLineAsync("            settings file (e.g. `sfumato watch --path Code/MyProject`)");
-			await Console.Out.WriteLineAsync("--minify  : Minify CSS output; use with build and watch commands");
-			await Console.Out.WriteLineAsync();
+
+            const string commandsText = """
+                                        init      : Create a sample sfumato.yml file (can use --path)
+                                        build     : Perform a single complete build
+                                        watch     : Perform a complete build and then watch for changes
+                                        version   : Show the sfumato version number
+                                        help      : Show this help message
+
+                                        * build and watch commands look in the current path for a `sfumato.yml`
+                                          settings file unless using the `--path` option; visit https://sfumato.app
+                                          for more information on creating a sfumato.yml settings file
+
+                                        Options:
+                                        """;
+            commandsText.WriteToConsole(80);
+            await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
+
+            const string optionsText = """
+                                       --path    : Follow with a relative or absolute path to/for your sfumato.yml
+                                                   settings file (e.g. `sfumato watch --path Code/MyProject`)
+                                       --minify  : Minify CSS output; use with build and watch commands
+                                       """;
+            optionsText.WriteToConsole(80);
+
+            await Console.Out.WriteLineAsync();
 
 			Environment.Exit(0);
 		}
