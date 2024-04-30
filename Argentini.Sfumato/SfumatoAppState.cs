@@ -4494,8 +4494,10 @@ public sealed class SfumatoAppState
 			
 			if (osPlatform == OSPlatform.Windows)
 			{
-				if (processorArchitecture is Architecture.X64 or Architecture.Arm64)
+				if (processorArchitecture is Architecture.X64)
 					sassPath = Path.Combine(workingPath, "dart-sass-windows-x64", "sass.bat");
+                else if (processorArchitecture == Architecture.Arm64)
+                    sassPath = Path.Combine(workingPath, "dart-sass-windows-arm64", "sass.bat");
 			}
 				
 			else if (osPlatform == OSPlatform.OSX)
