@@ -51,7 +51,7 @@ public class TranslateX : ScssUtilityClassGroupBase
         if (cssSelector is not { HasArbitraryValue: true, CoreSegment: "" })
             return string.Empty;
         
-        if (ProcessArbitraryValues("length,percentage", cssSelector, "transform: translateX({value});", AppState, out Result))
+        if (ProcessArbitraryValues("length,percentage", cssSelector, "--sf-translate-x: {value};", AppState, out Result))
             return Result;
       
         #endregion

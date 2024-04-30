@@ -66,7 +66,7 @@ public abstract class ScssUtilityClassGroupBase
                 if (cssSelector.IsNegative)
                 {
                     if (propertyValue.Contains("{value}") == false)
-                        propertyValue = cssSelector.ProcessNegativeValue(propertyValue, appState);
+                        propertyValue = CssSelector.ProcessNegativeValue(propertyValue, appState);
                     
                     result.Append($"{propertyName}: {propertyValue};");
                 }
@@ -180,7 +180,7 @@ public abstract class ScssUtilityClassGroupBase
             value = value.WebColorToRgba();
 
         if (cssSelector.IsNegative)
-            value = cssSelector.ProcessNegativeValue(value, appState);
+            value = CssSelector.ProcessNegativeValue(value, appState);
         
         result = AddVendorPrefixedProperty(propertyTemplate, cssSelector, appState).Replace("{value}", value);
                 
@@ -204,7 +204,7 @@ public abstract class ScssUtilityClassGroupBase
 
         if ((list?.Contains(cssSelector.CoreSegment) ?? false) == false)
             return false;
-        
+
         result = propertyTemplate.Replace("{value}", cssSelector.CoreSegment);
 
         return true;
@@ -282,7 +282,7 @@ public abstract class ScssUtilityClassGroupBase
         if (decimal.TryParse(modifierValue, out var divisor) == false)
             return false;
         
-        result = propertyTemplate.Replace("{value}", $"{((dividend / divisor) * 100):0.##}%");
+        result = propertyTemplate.Replace("{value}", $"{(cssSelector.IsNegative ? "-" : string.Empty)}{((dividend / divisor) * 100):0.##}%");
 
         return true;
     }
@@ -357,7 +357,7 @@ public abstract class ScssUtilityClassGroupBase
         var value = cssSelector.ArbitraryValue;
         
         if (cssSelector.IsNegative)
-            value = cssSelector.ProcessNegativeValue(value, appState);
+            value = CssSelector.ProcessNegativeValue(value, appState);
         
         result = AddVendorPrefixedProperty(propertyTemplate, cssSelector, appState).Replace("{value}", value);
 

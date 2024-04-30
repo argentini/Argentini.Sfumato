@@ -331,7 +331,7 @@ public sealed class CssSelector
     /// Get the value type of the custom class value (e.g. "length:...", "color:...", etc.)
     /// </summary>
     /// <returns></returns>
-    public string ProcessNegativeValue(string value, SfumatoAppState? appState)
+    public static string ProcessNegativeValue(string value, SfumatoAppState? appState)
     {
 	    if (string.IsNullOrEmpty(value))
 		    return value;
