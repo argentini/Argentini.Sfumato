@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.68.0</AssemblyVersion>
-        <FileVersion>5.0.68.0</FileVersion>
-        <PackageVersion>5.0.68</PackageVersion>
+        <AssemblyVersion>5.0.69.0</AssemblyVersion>
+        <FileVersion>5.0.69.0</FileVersion>
+        <PackageVersion>5.0.69</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Fixed issue with negative modifiers not working with fraction utilities (e.g. translate-y-1/2) and fixed an issue with translate-x arbitrary values not working when combined with translate-y.</PackageReleaseNotes>
+        <PackageReleaseNotes>Update Dart Sass from 1.7.0 to 1.7.6, added Windows Arm64 version!</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
