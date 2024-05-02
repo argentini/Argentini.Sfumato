@@ -2746,6 +2746,8 @@ public sealed class SfumatoAppState
     #endregion
     
     #region Constants
+
+    public const int FileAccessRetryMs = 5000;
     
     public IEnumerable<string> ClassMatchEndingExclusions { get; } = new[]
     {
@@ -4731,7 +4733,7 @@ public sealed class SfumatoAppState
 		if (extension == "scss" && projectFile.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
 			return;
 		
-		var markup = await File.ReadAllTextAsync(projectFile.FullName);
+        var markup = await Storage.ReadAllTextWithRetriesAsync(projectFile.FullName, FileAccessRetryMs);
 
 		if (extension == "scss")
 		{

@@ -33,7 +33,7 @@ public sealed class SfumatoSettings
         {
             #region Load sfumato.yml file
 
-            var yaml = await File.ReadAllTextAsync(appState.SettingsFilePath);
+            var yaml = await Storage.ReadAllTextWithRetriesAsync(appState.SettingsFilePath, SfumatoAppState.FileAccessRetryMs);
             var deserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
             var yamlSettings = deserializer.Deserialize<SfumatoSettings>(yaml);
 

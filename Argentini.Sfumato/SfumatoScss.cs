@@ -20,11 +20,11 @@ public static class SfumatoScss
 		
         try
         {
-		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
-		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_browser-reset.scss"))).Trim() + Environment.NewLine);
-		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
-		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_initialize.scss"))).Trim() + Environment.NewLine);
-            sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_forms.scss"))).Trim() + Environment.NewLine);
+		    sb.Append((await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.ScssPath, "_core.scss"), SfumatoAppState.FileAccessRetryMs)).Trim() + Environment.NewLine);
+		    sb.Append((await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.ScssPath, "_browser-reset.scss"), SfumatoAppState.FileAccessRetryMs)).Trim() + Environment.NewLine);
+		    sb.Append((await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"), SfumatoAppState.FileAccessRetryMs)).Trim() + Environment.NewLine);
+		    sb.Append((await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.ScssPath, "_initialize.scss"), SfumatoAppState.FileAccessRetryMs)).Trim() + Environment.NewLine);
+            sb.Append((await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.ScssPath, "_forms.scss"), SfumatoAppState.FileAccessRetryMs)).Trim() + Environment.NewLine);
 
             ProcessShortCodes(appState, sb);
             
@@ -61,8 +61,8 @@ public static class SfumatoScss
 		
         try
         {
-		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_core.scss"))).Trim() + Environment.NewLine);
-		    sb.Append((await File.ReadAllTextAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"))).Trim() + Environment.NewLine);
+		    sb.Append((await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.ScssPath, "_core.scss"), SfumatoAppState.FileAccessRetryMs)).Trim() + Environment.NewLine);
+		    sb.Append((await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.ScssPath, "_media-queries.scss"), SfumatoAppState.FileAccessRetryMs)).Trim() + Environment.NewLine);
 
             ProcessShortCodes(appState, sb);
 
@@ -209,7 +209,7 @@ public static class SfumatoScss
 		try
 		{
 			if (string.IsNullOrEmpty(rawScss))
-				rawScss = await File.ReadAllTextAsync(filePath);
+				rawScss = await Storage.ReadAllTextWithRetriesAsync(filePath, SfumatoAppState.FileAccessRetryMs);
 
 			if (string.IsNullOrEmpty(rawScss))
 				return string.Empty;
@@ -359,7 +359,7 @@ public static class SfumatoScss
 			await cmd.ExecuteAsync();
 
             sb.Clear();
-            sb.Append(await File.ReadAllTextAsync(cssOutputPath));
+            sb.Append(await Storage.ReadAllTextWithRetriesAsync(cssOutputPath, SfumatoAppState.FileAccessRetryMs));
             
             sb.Replace("html.theme-dark :root.", "html.theme-dark.");
             sb.Replace("html.theme-auto :root.", "html.theme-auto.");

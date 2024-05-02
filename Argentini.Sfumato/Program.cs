@@ -35,7 +35,7 @@ internal class Program
 		
 		if (runner.AppState.InitMode)
 		{
-			var yaml = await File.ReadAllTextAsync(Path.Combine(runner.AppState.YamlPath, "sfumato-complete.yml"), cancellationTokenSource.Token);
+            var yaml = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(runner.AppState.YamlPath, "sfumato-complete.yml"), SfumatoAppState.FileAccessRetryMs, cancellationTokenSource.Token);
 			
 			if (string.IsNullOrEmpty(runner.AppState.WorkingPathOverride) == false)
 				runner.AppState.WorkingPath = runner.AppState.WorkingPathOverride;

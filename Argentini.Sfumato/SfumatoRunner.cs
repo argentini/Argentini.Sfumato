@@ -376,7 +376,7 @@ public sealed class SfumatoRunner
             return;
         }
 
-        var scss = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
+        var scss = await Storage.ReadAllTextWithRetriesAsync(filePath, SfumatoAppState.FileAccessRetryMs, cancellationTokenSource.Token);
 		var css = await SfumatoScss.TranspileScssAsync(filePath, scss, this);
 
 		if (AppState.WatchedScssFiles.TryGetValue(filePath, out var watchedScssFile))
@@ -432,7 +432,7 @@ public sealed class SfumatoRunner
             return;
         }
         
-		var markup = await File.ReadAllTextAsync(filePath, cancellationTokenSource.Token);
+        var markup = await Storage.ReadAllTextWithRetriesAsync(filePath, SfumatoAppState.FileAccessRetryMs, cancellationTokenSource.Token);
 
 		if (AppState.WatchedFiles.TryGetValue(filePath, out var watchedFile))
 		{
