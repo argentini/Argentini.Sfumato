@@ -4428,9 +4428,6 @@ public sealed class SfumatoAppState
                 workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
         }
 
-        //workingPath = "/Users/magic/Developer/monitoring-analytics-web/UmbracoCms";
-        //workingPath = "/Users/magic/Developer/FileBucket/FileBucket";
-        
 #endif
         
         return workingPath;
