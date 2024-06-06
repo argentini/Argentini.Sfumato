@@ -296,12 +296,14 @@ public abstract class ScssUtilityClassGroupBase
     /// <returns></returns>
     protected static bool ProcessTextSizeLeadingModifierOptions(CssSelector cssSelector, string propertyTemplate, out string result)
     {
+        var fontSize = string.Empty;
+        
         result = string.Empty;
 
-        if (cssSelector.UsesModifier == false)
+        if (cssSelector.UsesModifier == false || cssSelector.AppState is null)
             return false;
 
-        if ((cssSelector.AppState?.TextSizeOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out var fontSize) ?? false) == false)
+        if (cssSelector is not { HasArbitraryValue: true, HasModifierValue: true } && (cssSelector.AppState?.TextSizeOptions.TryGetValue(cssSelector.CoreSegment.TrimEnd(cssSelector.ModifierSegment) ?? string.Empty, out fontSize) ?? false) == false)
             return false;
         
         var valueType = cssSelector.HasModifierValue ? cssSelector.ModifierValueType : cssSelector.ArbitraryValueType;
@@ -319,6 +321,9 @@ public abstract class ScssUtilityClassGroupBase
         
         var modifierValue2 = cssSelector.HasModifierValue ? cssSelector.ModifierValue : cssSelector.ArbitraryValue;
 
+        if (cssSelector is { HasArbitraryValue: true, HasModifierValue: true })
+            fontSize = cssSelector.ArbitraryValue;
+        
         if (valueType is "integer" or "" && cssSelector.AppState.LeadingOptions.TryGetValue(modifierValue2, out var option))
         {
             result = propertyTemplate.Replace("{fontSize}", fontSize).Replace("{value}", option);

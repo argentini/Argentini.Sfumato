@@ -21,7 +21,7 @@ public class Text : ScssUtilityClassGroupBase
     {
         if (cssSelector.AppState is null)
             return string.Empty;
-        
+
         #region Static Utilities
         
         if (ProcessStaticDictionaryOptions(cssSelector.AppState.TextAlignStaticUtilities, cssSelector, AppState, out Result))

@@ -84,6 +84,10 @@ public class RegularExpressionsTests
 			
             Assert.Single(matches);
         }
+        else
+        {
+            Assert.Fail();
+        }
         
         matches = appState.CoreClassRegex.Matches("<div class=\"-order-1\"></div>").DistinctBy(m => m.Value).ToList();
 
@@ -94,6 +98,10 @@ public class RegularExpressionsTests
             Assert.Single(matches);
             Assert.Equal("-order-1", matches[0].Value);
         }
+        else
+        {
+            Assert.Fail();
+        }
         
         matches = appState.CoreClassRegex.Matches("$\"\"\"<div class=\"space-y-6\"></div>\"\"\"").DistinctBy(m => m.Value).ToList();
 
@@ -103,6 +111,24 @@ public class RegularExpressionsTests
 			
             Assert.Single(matches);
             Assert.Equal("space-y-6", matches[0].Value);
+        }
+        else
+        {
+            Assert.Fail();
+        }
+        
+        matches = appState.CoreClassRegex.Matches("$\"\"\"<div class=\"text-[0.75rem]/1\"></div>\"\"\"").DistinctBy(m => m.Value).ToList();
+
+        if (matches.Count > 0)
+        {
+            appState.FilterCoreClassMatches(matches);
+			
+            Assert.Single(matches);
+            Assert.Equal("text-[0.75rem]/1", matches[0].Value);
+        }
+        else
+        {
+            Assert.Fail();
         }
     }
 

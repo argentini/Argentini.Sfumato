@@ -401,7 +401,7 @@ public sealed class CssSelector
 		    IsInvalid = true;
 		    return;
 	    }
-
+        
 	    var rightOfVariants = Selector;
 	    var rootSegment = Selector;
 	    
@@ -418,7 +418,7 @@ public sealed class CssSelector
 	    
 	    if (indexOfBracket > -1)
 	    {
-		    ArbitraryValue = Selector[(indexOfBracket + 1)..].TrimEnd(']').Replace('_', ' ').Replace("\\ ", "\\_");
+		    ArbitraryValue = Selector.Substring(indexOfBracket + 1, indexOfBracketClose - indexOfBracket - 1).Replace('_', ' ').Replace("\\ ", "\\_");
 		    
 		    rootSegment = Selector[..indexOfBracket].TrimEnd('-');
 
@@ -466,22 +466,41 @@ public sealed class CssSelector
 			    IsInvalid = true;
 			    return;
 		    }
+            
+            // Handle text-[0.75rem]/1
 
-		    if (indexOfLastSlash > 0)
+            if (indexOfLastSlash < 0 && Selector.LastIndexOf('/') > Selector.LastIndexOf(']'))
+            {
+                indexOfLastSlash = Selector.LastIndexOf('/');
+
+                if (indexOfLastSlash > 0 && indexOfLastSlash < Selector.Length - 1)
+                {
+                    UsesModifier = true;
+                    ModifierSegment = Selector[indexOfLastSlash..];
+                    ModifierValue = Selector[(indexOfLastSlash + 1)..];
+
+                    var valueTypePackage = SetCustomValueType(ModifierValue, AppState);
+
+                    ModifierValueType = valueTypePackage.ValueType;
+                    ModifierValue = valueTypePackage.Value;
+                }
+            }
+
+            else if (indexOfLastSlash > 0)
 		    {
-			    UsesModifier = true;
-			    ModifierSegment = rootSegment[indexOfLastSlash..];
+                UsesModifier = true;
+                ModifierSegment = rootSegment[indexOfLastSlash..];
 
-			    if (ArbitraryValue == string.Empty)
-				    ModifierValue = rootSegment[(indexOfLastSlash + 1)..];
+                if (ArbitraryValue == string.Empty)
+                    ModifierValue = rootSegment[(indexOfLastSlash + 1)..];
 
-			    rootSegment = rootSegment[..indexOfLastSlash];
-			    
-			    var valueTypePackage = SetCustomValueType(ModifierValue, AppState);
-	    
-			    ModifierValueType = valueTypePackage.ValueType;
-			    ModifierValue = valueTypePackage.Value;
-		    }
+                rootSegment = rootSegment[..indexOfLastSlash];
+                
+                var valueTypePackage = SetCustomValueType(ModifierValue, AppState);
+
+                ModifierValueType = valueTypePackage.ValueType;
+                ModifierValue = valueTypePackage.Value;
+            }
 	    }
 	    
 	    #endregion
