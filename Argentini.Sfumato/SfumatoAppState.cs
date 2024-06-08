@@ -4247,10 +4247,10 @@ public sealed class SfumatoAppState
 	    #region Establish Theme Dictionaries
 
 	    LayoutRemUnitOptions.Clear();
-	    LayoutRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
+	    LayoutRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 192m);
 
 	    FlexRemUnitOptions.Clear();
-	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 96m);
+	    FlexRemUnitOptions.AddNumberedRemUnitOptions(0.5m, 192m);
 
 	    LayoutWholeNumberOptions.Clear();
 	    LayoutWholeNumberOptions.AddWholeNumberOptions(1, 24);
