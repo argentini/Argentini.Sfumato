@@ -202,7 +202,7 @@ internal class Program
 
 			var watchTimer = new Stopwatch();
 			
-			while (Console.KeyAvailable == false && cancellationTokenSource.IsCancellationRequested == false)
+			while ((Console.IsInputRedirected || Console.KeyAvailable == false) && cancellationTokenSource.IsCancellationRequested == false)
 			{
 				var processedFiles = false;
 
@@ -510,7 +510,7 @@ internal class Program
 				if (cancellationTokenSource.IsCancellationRequested)
 					break;
 
-				if (Console.KeyAvailable == false)
+				if (Console.IsInputRedirected || Console.KeyAvailable == false)
 					continue;
 				
 				var keyPress = Console.ReadKey(intercept: true);
