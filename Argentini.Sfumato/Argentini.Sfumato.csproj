@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.73.0</AssemblyVersion>
-        <FileVersion>5.0.73.0</FileVersion>
-        <PackageVersion>5.0.73</PackageVersion>
+        <AssemblyVersion>5.0.74.0</AssemblyVersion>
+        <FileVersion>5.0.74.0</FileVersion>
+        <PackageVersion>5.0.74</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Max rem unit options doubled to 192 from 96</PackageReleaseNotes>
+        <PackageReleaseNotes>Watcher now works with redirected input and @sfumato directives no longer require new lines.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
