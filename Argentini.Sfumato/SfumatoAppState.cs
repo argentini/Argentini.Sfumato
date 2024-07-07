@@ -4193,7 +4193,7 @@ public sealed class SfumatoAppState
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 
 	    const string sfumatoScssRegexExpression = """
-(?<=^|[\s])
+(?<=^|[\s]|;)
 (@sfumato[\s]{1,})
 (
 	([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
@@ -4202,7 +4202,6 @@ public sealed class SfumatoAppState
 	)
 	(([\s]{1,})|([\s]{0,};))
 ){1,}
-(?=[\s])
 """;
 	    
 	    SfumatoScssRegex = new Regex(sfumatoScssRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);

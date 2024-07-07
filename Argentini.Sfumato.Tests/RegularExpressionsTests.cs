@@ -190,6 +190,67 @@ h1 {
     }
 
     [Fact]
+    public void ScssSfumatoRegex()
+    {
+        var appState = new SfumatoAppState();
+        var matches = appState.SfumatoScssRegex.Matches(@"@sfumato base;
+");
+
+        Assert.Single(matches);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        
+        matches = appState.SfumatoScssRegex.Matches(@"@sfumato base;
+@sfumato utilities;
+");
+        
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        Assert.Equal("@sfumato utilities;", matches[1].Value);
+
+        matches = appState.SfumatoScssRegex.Matches(@"@sfumato base;@sfumato utilities;
+");
+        
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        Assert.Equal("@sfumato utilities;", matches[1].Value);
+
+        matches = appState.SfumatoScssRegex.Matches(@"@sfumato base;@sfumato utilities;");
+        
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        Assert.Equal("@sfumato utilities;", matches[1].Value);
+
+        matches = appState.SfumatoScssRegex.Matches(@"@sfumato base; @sfumato utilities;
+");
+        
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        Assert.Equal("@sfumato utilities;", matches[1].Value);
+
+        matches = appState.SfumatoScssRegex.Matches(@"@sfumato base;
+@sfumato utilities;");
+
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        Assert.Equal("@sfumato utilities;", matches[1].Value);
+
+        matches = appState.SfumatoScssRegex.Matches(@"@sfumato base;
+@sfumato utilities;
+.test { }");
+
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        Assert.Equal("@sfumato utilities;", matches[1].Value);
+        
+        matches = appState.SfumatoScssRegex.Matches(@"@sfumato base;
+@sfumato utilities;.test { }");
+
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("@sfumato base;", matches[0].Value);
+        Assert.Equal("@sfumato utilities;", matches[1].Value);
+    }
+
+    [Fact]
     public async Task ExamineMarkupForUsedClasses()
     {
         var runner = new SfumatoRunner();
