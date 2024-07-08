@@ -202,30 +202,37 @@ internal class Program
 
 			var watchTimer = new Stopwatch();
 
-			// Support async stdin read
-			if (Console.IsInputRedirected)
-			{
-				// Read the stream without blocking the main thread
-				// Check if the escape key is sent to the stdin stream
-				// If it is, cancel the token source and exit the loop
-				// This will allow interactive quit when input is redirected
-				_ = Task.Run(async () =>
-				{
-					while (cancellationTokenSource.IsCancellationRequested == false)
-					{
-						if (Console.In.Peek() == -1)
-							continue;
+            // Support async stdin read
+            if (Console.IsInputRedirected)
+            {
+                // Read the stream without blocking the main thread.
+                // Check if the escape key is sent to the stdin stream.
+                // If it is, cancel the token source and exit the loop.
+                // This will allow interactive quit when input is redirected.
+                _ = Task.Run(async () =>
+                {
+                    while (cancellationTokenSource.IsCancellationRequested == false)
+                    {
+                        try
+                        {
+                            await Task.Delay(25, cancellationTokenSource.Token);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            break;
+                        }
 
-						var keyChar = (char)Console.In.Read();
-						
-						if (keyChar != Convert.ToChar(ConsoleKey.Escape))
-							continue;
+                        if (Console.In.Peek() == -1)
+                            continue;
 
-						await cancellationTokenSource.CancelAsync();
-						break;
-					}
-				}, cancellationTokenSource.Token);
-			}
+                        if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
+                            continue;
+
+                        await cancellationTokenSource.CancelAsync();
+                        break;
+                    }
+                }, cancellationTokenSource.Token);
+            }
 			
 			while ((Console.IsInputRedirected || Console.KeyAvailable == false) && cancellationTokenSource.IsCancellationRequested == false)
 			{
