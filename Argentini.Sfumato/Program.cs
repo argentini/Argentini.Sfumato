@@ -211,15 +211,12 @@ internal class Program
 				// This will allow interactive quit when input is redirected
 				_ = Task.Run(async () =>
 				{
-					await Console.Out.WriteLineAsync("Starting redirected input watch...");
 					while (cancellationTokenSource.IsCancellationRequested == false)
 					{
 						if (Console.In.Peek() == -1)
 							continue;
 
 						var keyChar = (char)Console.In.Read();
-
-						await Console.Out.WriteLineAsync($"Got Key from stdin: {keyChar}");
 						
 						if (keyChar != Convert.ToChar(ConsoleKey.Escape))
 							continue;
