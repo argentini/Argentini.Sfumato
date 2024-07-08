@@ -1,4 +1,4 @@
-﻿using Mapster;
+using Mapster;
 
 namespace Argentini.Sfumato;
 
@@ -201,13 +201,45 @@ internal class Program
 			#region Watch
 
 			var watchTimer = new Stopwatch();
+
+			// Support async stdin read
+			if (Console.IsInputRedirected)
+			{
+				// Read the stream without blocking the main thread
+				// Check if the escape key is sent to the stdin stream
+				// If it is, cancel the token source and exit the loop
+				// This will allow interactive quit when input is redirected
+				_ = Task.Run(async () =>
+				{
+					while (cancellationTokenSource.IsCancellationRequested == false)
+					{
+						if (Console.In.Peek() == -1)
+							continue;
+
+						var keyChar = (char)Console.In.Read();
+						
+						if (keyChar != Convert.ToChar(ConsoleKey.Escape))
+							continue;
+
+						await cancellationTokenSource.CancelAsync();
+						break;
+					}
+				}, cancellationTokenSource.Token);
+			}
 			
 			while ((Console.IsInputRedirected || Console.KeyAvailable == false) && cancellationTokenSource.IsCancellationRequested == false)
 			{
 				var processedFiles = false;
 
-				await Task.Delay(25, cancellationTokenSource.Token);
-
+				try
+				{
+					await Task.Delay(25, cancellationTokenSource.Token);
+				}
+				catch (TaskCanceledException)
+				{
+					break;
+				}
+				
 				watchTimer.Restart();
 
 				if (rebuildProjectQueue.IsEmpty == false)
@@ -510,17 +542,21 @@ internal class Program
 				if (cancellationTokenSource.IsCancellationRequested)
 					break;
 
-				if (Console.IsInputRedirected || Console.KeyAvailable == false)
-					continue;
-				
-				var keyPress = Console.ReadKey(intercept: true);
+				// Handle normal console input
+				if (Console.IsInputRedirected == false)
+				{
+					if (Console.KeyAvailable == false)
+						continue;
+					
+					var keyPress = Console.ReadKey(intercept: true);
 
-				if (keyPress.Key != ConsoleKey.Escape)
-					continue;
-				
-				await cancellationTokenSource.CancelAsync();
-				
-				break;
+					if (keyPress.Key != ConsoleKey.Escape)
+						continue;
+					
+					await cancellationTokenSource.CancelAsync();
+					
+					break;
+				}
 			}
 			
 			#endregion
