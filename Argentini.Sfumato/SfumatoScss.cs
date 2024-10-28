@@ -205,6 +205,8 @@ public static class SfumatoScss
 		var scss = runner.AppState.StringBuilderPool.Get();
         var styles = runner.AppState.StringBuilderPool.Get();
         var details = runner.AppState.StringBuilderPool.Get();
+        var first = runner.AppState.StringBuilderPool.Get();
+        var second = runner.AppState.StringBuilderPool.Get();
 
 		try
 		{
@@ -247,10 +249,165 @@ public static class SfumatoScss
 			arguments.Add("--stdin");
 			arguments.Add(cssOutputPath);
 			
+            #region Process @apply directives
+
+            var matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
+            var startIndex = 0;
+
+            while (matches.Count > 0)
+            {
+                var match = matches[0];
+				
+                if (match.Index + match.Value.Length > startIndex)
+                    startIndex = match.Index + match.Value.Length;
+
+                var matchValue = match.Value.Trim().TrimEnd(';').CompactCss().TrimStart("@apply ");
+
+                var classes = (matchValue?.Split(' ') ?? []).ToList();
+
+                foreach (var selector in classes.ToList())
+                {
+                    if (runner.AppState.IsValidCoreClassSelector(selector) == false)
+                        classes.Remove(selector);
+                }
+
+                if (classes.Count == 0)
+                {
+                    rawScss = rawScss.Remove(match.Index, match.Value.Length);
+                }
+				
+                else
+                {
+                    styles.Clear();
+
+                    var addGradients = false;
+                    var addRing = false;
+                    var addShadow = false;
+                    var addBackdrop = false;
+                    var addFilter = false;
+                    var addTransform = false;
+
+                    first.Clear();
+                    second.Clear();
+                    
+                    foreach (var selector in classes)
+                    {
+                        var newCssSelector = new CssSelector(runner.AppState, selector);
+
+                        await newCssSelector.ProcessSelectorAsync();
+
+                        if (newCssSelector.IsInvalid)
+                            continue;
+                        
+                        #region Process global class assignments
+
+                        if (newCssSelector.ScssUtilityClassGroup?.Category == "gradients")
+                        {
+                            if (addGradients == false)
+                            {
+                                first.Append("  --sf-gradient-from-position: ; --sf-gradient-via-position: ; --sf-gradient-to-position: ;" + Environment.NewLine);
+                                addGradients = true;
+                            }
+
+                            first.Append(newCssSelector.GetStyles() + Environment.NewLine);
+                        }
+                        else if (newCssSelector.ScssUtilityClassGroup?.Category == "ring")
+                        {
+                            if (addRing == false)
+                            {
+                                first.Append("  --sf-ring-inset: ; --sf-ring-offset-width: 0px; --sf-ring-offset-color: #fff; --sf-ring-color: #3b82f680; --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+                                addRing = true;
+                            }
+
+                            first.Append(newCssSelector.GetStyles() + Environment.NewLine);
+                        }
+                        else if (newCssSelector.ScssUtilityClassGroup?.Category == "shadow")
+                        {
+                            if (addShadow == false)
+                            {
+                                first.Append("  --sf-ring-offset-shadow: 0 0 #0000; --sf-ring-shadow: 0 0 #0000; --sf-shadow: 0 0 #0000; --sf-shadow-colored: 0 0 #0000;" + Environment.NewLine);
+                                addShadow = true;
+                            }
+
+                            first.Append(newCssSelector.GetStyles() + Environment.NewLine);
+                        }
+                        else if (newCssSelector.ScssUtilityClassGroup?.Category == "backdrop")
+                        {
+                            if (addBackdrop == false)
+                            {
+                                first.Append("  --sf-backdrop-blur: ; --sf-backdrop-brightness: ; --sf-backdrop-contrast: ; --sf-backdrop-grayscale: ; --sf-backdrop-hue-rotate: ; --sf-backdrop-invert: ; --sf-backdrop-opacity: ; --sf-backdrop-saturate: ; --sf-backdrop-sepia: ;" + Environment.NewLine);
+                                addBackdrop = true;
+                            }
+
+                            first.Append(newCssSelector.GetStyles() + Environment.NewLine);
+                        }
+                        else if (newCssSelector.ScssUtilityClassGroup?.Category == "filter")
+                        {
+                            if (addFilter == false)
+                            {
+                                first.Append("  --sf-blur: ; --sf-brightness: ; --sf-contrast: ; --sf-drop-shadow: ; --sf-grayscale: ; --sf-hue-rotate: ; --sf-invert: ; --sf-saturate: ; --sf-sepia: ;" + Environment.NewLine);
+                                addFilter = true;
+                            }
+
+                            first.Append(newCssSelector.GetStyles() + Environment.NewLine);
+                        }
+                        else if (newCssSelector.ScssUtilityClassGroup?.Category == "transform")
+                        {
+                            if (addTransform == false)
+                            {
+                                first.Append("  --sf-translate-x: 0; --sf-translate-y: 0; --sf-rotate: 0; --sf-skew-x: 0; --sf-skew-y: 0; --sf-scale-x: 1; --sf-scale-y: 1;" + Environment.NewLine);
+                                addTransform = true;
+                            }
+
+                            first.Append(newCssSelector.GetStyles() + Environment.NewLine);
+                        }
+                        else
+                        {
+                            second.Append(newCssSelector.GetStyles());
+                        }
+
+                        #endregion
+                    }
+
+                    styles.Append(first);
+                    
+                    if (addBackdrop)
+                    {
+                        styles.Append(
+                            "  backdrop-filter: var(--sf-backdrop-blur) var(--sf-backdrop-brightness) var(--sf-backdrop-contrast) var(--sf-backdrop-grayscale) var(--sf-backdrop-hue-rotate) var(--sf-backdrop-invert) var(--sf-backdrop-opacity) var(--sf-backdrop-saturate) var(--sf-backdrop-sepia);" + Environment.NewLine +
+                            "  -webkit-backdrop-filter: var(--sf-backdrop-blur) var(--sf-backdrop-brightness) var(--sf-backdrop-contrast) var(--sf-backdrop-grayscale) var(--sf-backdrop-hue-rotate) var(--sf-backdrop-invert) var(--sf-backdrop-opacity) var(--sf-backdrop-saturate) var(--sf-backdrop-sepia);" + Environment.NewLine
+                        );
+                    }
+                    
+                    if (addFilter)
+                    {
+                        styles.Append(
+                            "  filter: var(--sf-blur) var(--sf-brightness) var(--sf-contrast) var(--sf-drop-shadow) var(--sf-grayscale) var(--sf-hue-rotate) var(--sf-invert) var(--sf-saturate) var(--sf-sepia);" + Environment.NewLine
+                        );
+                    }
+
+                    if (addTransform)
+                    {
+                        styles.Append(
+                            "  transform: translate(var(--sf-translate-x), var(--sf-translate-y)) rotate(var(--sf-rotate)) skewX(var(--sf-skew-x)) skewY(var(--sf-skew-y)) scaleX(var(--sf-scale-x)) scaleY(var(--sf-scale-y));" + Environment.NewLine
+                        );
+                    }
+
+                    styles.Append(second);
+
+                    rawScss = rawScss.Remove(match.Index, match.Value.Length);
+                    rawScss = rawScss.Insert(match.Index, styles.ToString());
+                }
+				
+                matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
+            }
+
+            #endregion
+            
 			#region Process @sfumato directives
 			
-			var matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
-			var startIndex = 0;
+			matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
+			startIndex = 0;
 
 			while (matches.Count > 0)
 			{
@@ -291,59 +448,7 @@ public static class SfumatoScss
 			}
 			
 			#endregion
-			
-			#region Process @apply directives
-			
-			matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
-			startIndex = 0;
-
-			while (matches.Count > 0)
-			{
-				var match = matches[0];
-				
-				if (match.Index + match.Value.Length > startIndex)
-					startIndex = match.Index + match.Value.Length;
-
-				var matchValue = match.Value.Trim().TrimEnd(';').CompactCss().TrimStart("@apply ");
-
-				var classes = (matchValue?.Split(' ') ?? Array.Empty<string>()).ToList();
-
-				foreach (var selector in classes.ToList())
-				{
-					if (runner.AppState.IsValidCoreClassSelector(selector) == false)
-						classes.Remove(selector);
-				}
-
-				if (classes.Count == 0)
-				{
-					rawScss = rawScss.Remove(match.Index, match.Value.Length);
-				}
-				
-				else
-				{
-					styles.Clear();
-
-					foreach (var selector in classes)
-					{
-						var newCssSelector = new CssSelector(runner.AppState, selector);
-
-						await newCssSelector.ProcessSelectorAsync();
-
-						if (newCssSelector.IsInvalid)
-							continue;
-
-						styles.Append(newCssSelector.GetStyles());
-					}
-					
-					rawScss = rawScss.Remove(match.Index, match.Value.Length);
-					rawScss = rawScss.Insert(match.Index, styles.ToString());
-                }
-				
-				matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
-			}
-
-			#endregion
-			
+            
 			scss.Append(rawScss);
 			
 			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(runner.AppState.SassCliPath)
@@ -415,6 +520,8 @@ public static class SfumatoScss
             runner.AppState.StringBuilderPool.Return(scss);
             runner.AppState.StringBuilderPool.Return(styles);
             runner.AppState.StringBuilderPool.Return(details);
+            runner.AppState.StringBuilderPool.Return(first);
+            runner.AppState.StringBuilderPool.Return(second);
         }
 	}
 	

@@ -492,16 +492,16 @@ public sealed class SfumatoRunner
 	}
 
 	/// <summary>
-	/// Determine if a prefix is a pseudoclass prefix.
+	/// Determine if a prefix is a pseudo class prefix.
 	/// </summary>
 	/// <param name="prefix"></param>
 	/// <param name="appState"></param>
 	/// <returns></returns>
-	public static bool IsPseudoclassPrefix(string prefix, SfumatoAppState? appState)
+	public static bool IsPseudoClassPrefix(string prefix, SfumatoAppState? appState)
 	{
-		var pseudoclassPrefix = appState?.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
+		var pseudoClassPrefix = appState?.PseudoclassPrefixes.FirstOrDefault(p => p.Key.Equals(prefix, StringComparison.Ordinal));
 		
-		return string.IsNullOrEmpty(pseudoclassPrefix?.Key) == false;
+		return string.IsNullOrEmpty(pseudoClassPrefix?.Key) == false;
 	}
 	
 	#endregion

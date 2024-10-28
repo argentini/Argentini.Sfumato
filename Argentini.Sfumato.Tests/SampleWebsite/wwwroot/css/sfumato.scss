@@ -3,6 +3,10 @@
 
 @import "partials/manifest";
 
+.test-applies {
+    @apply px-4 translate-y-[100vh] translate-x-full backdrop-blur;
+}
+
 @include sf-media($from: $sm-breakpoint) {
 
     h1 {

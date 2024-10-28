@@ -60,10 +60,10 @@ public class SfumatoRunnerTests
     {
         var appState = new SfumatoAppState();
         
-        Assert.False(SfumatoRunner.IsPseudoclassPrefix("sm", appState));
-        Assert.False(SfumatoRunner.IsPseudoclassPrefix("dark", appState));
-        Assert.True(SfumatoRunner.IsPseudoclassPrefix("hover", appState));
-        Assert.True(SfumatoRunner.IsPseudoclassPrefix("focus", appState));
+        Assert.False(SfumatoRunner.IsPseudoClassPrefix("sm", appState));
+        Assert.False(SfumatoRunner.IsPseudoClassPrefix("dark", appState));
+        Assert.True(SfumatoRunner.IsPseudoClassPrefix("hover", appState));
+        Assert.True(SfumatoRunner.IsPseudoClassPrefix("focus", appState));
     }
 
     [Fact]
