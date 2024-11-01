@@ -784,7 +784,7 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> InvertStaticUtilities { get; } = new()
     {
 	    [""] = "--sf-invert: invert(100%);",
-	    ["0"] = "--sf-invrt: invert(0);"
+	    ["0"] = "--sf-invert: invert(0);"
     }; 
     
     public Dictionary<string, string> SepiaStaticUtilities { get; } = new()
