@@ -5,9 +5,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.76.0</AssemblyVersion>
-        <FileVersion>5.0.76.0</FileVersion>
-        <PackageVersion>5.0.76</PackageVersion>
+        <AssemblyVersion>5.0.77.0</AssemblyVersion>
+        <FileVersion>5.0.77.0</FileVersion>
+        <PackageVersion>5.0.77</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>@apply now works with dynamic classes, like backdrop, translate, and more; update to Dart Sass 1.80.4</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed issue with `invert-0` not working</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
