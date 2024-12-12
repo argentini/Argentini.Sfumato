@@ -2,12 +2,12 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <LangVersion>12</LangVersion>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.0.77.0</AssemblyVersion>
-        <FileVersion>5.0.77.0</FileVersion>
-        <PackageVersion>5.0.77</PackageVersion>
+        <AssemblyVersion>5.1.0.0</AssemblyVersion>
+        <FileVersion>5.1.0.0</FileVersion>
+        <PackageVersion>5.1.0</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -22,25 +22,25 @@
             
             dotnet tool install --global argentini.sfumato
         </Description>
-        <Copyright>Copyright (c) Michael Argentini 2023.</Copyright>
+        <Copyright>Copyright (c) Argentini Unlimited, Ltd 2024.</Copyright>
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Fixed issue with `invert-0` not working</PackageReleaseNotes>
+        <PackageReleaseNotes>Update to .NET 9, update dependencies, update to Dart Sass 1.82.0, SCSS @apply statements can now be used in @import files</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.70" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
         <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
-        <PackageReference Include="CliWrap" Version="3.6.7" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.10" />
-        <PackageReference Include="YamlDotNet" Version="16.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
+        <PackageReference Include="CliWrap" Version="3.7.0" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0" />
+        <PackageReference Include="YamlDotNet" Version="16.2.1" />
     </ItemGroup>
     
     <ItemGroup>

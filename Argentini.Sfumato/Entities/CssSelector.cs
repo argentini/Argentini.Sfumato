@@ -182,7 +182,7 @@ public sealed class CssSelector
 
 	    var unitless = string.Empty;
 
-	    foreach (var unit in appState?.CssUnits ?? Enumerable.Empty<string>())
+	    foreach (var unit in appState?.CssUnits ?? [])
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -230,7 +230,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in appState?.CssAngleUnits ?? Enumerable.Empty<string>())
+	    foreach (var unit in appState?.CssAngleUnits ?? [])
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -250,7 +250,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in appState?.CssTimeUnits ?? Enumerable.Empty<string>())
+	    foreach (var unit in appState?.CssTimeUnits ?? [])
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -270,7 +270,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in appState?.CssFrequencyUnits ?? Enumerable.Empty<string>())
+	    foreach (var unit in appState?.CssFrequencyUnits ?? [])
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -290,7 +290,7 @@ public sealed class CssSelector
 
 	    unitless = string.Empty;
 
-	    foreach (var unit in appState?.CssResolutionUnits ?? Enumerable.Empty<string>())
+	    foreach (var unit in appState?.CssResolutionUnits ?? [])
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -352,7 +352,7 @@ public sealed class CssSelector
 
 	    var unitless = string.Empty;
 
-	    foreach (var unit in appState?.CssUnits ?? Enumerable.Empty<string>())
+	    foreach (var unit in appState?.CssUnits ?? [])
 	    {
 		    unitless = value.TrimEnd(unit) ?? string.Empty;
 		    
@@ -697,7 +697,7 @@ public sealed class CssSelector
 
     /// <summary>
     /// Determine if a selector has a peer variant.
-    /// Output variable contains the pseudoclasss being used. 
+    /// Output variable contains the pseudoclass being used. 
     /// Output variable contains the CSS escaped peer class being targeted. 
     /// </summary>
     /// <param name="appState"></param>

@@ -682,7 +682,7 @@ public static class Strings
 	}
 
 	/// <summary>
-	/// Convert a web color to an rgba() value.
+	/// Convert a web color to a rgba() value.
 	/// Handles rgb() and hex colors.
 	/// Optionally set a new opacity value (0-100).
 	/// </summary>
@@ -695,7 +695,7 @@ public static class Strings
 	}
 
 	/// <summary>
-	/// Convert a web color to an rgba() value.
+	/// Convert a web color to a rgba() value.
 	/// Handles rgb() and hex colors.
 	/// Optionally set a new opacity value (0-1.0).
 	/// </summary>
@@ -708,7 +708,7 @@ public static class Strings
 	}
 	
 	/// <summary>
-	/// Convert a web color (hex, rgb, or named) to an rgba() value.
+	/// Convert a web color (hex, rgb, or named) to a rgba() value.
 	/// Handles rgb() and hex colors.
 	/// Optionally set a new opacity value (0-1.0).
 	/// </summary>
@@ -816,25 +816,25 @@ public static class Strings
 	#region Time
 
 	/// <summary>
-	/// Format the elapsed time as a more friendly time span with a custom delimitter.
+	/// Format the elapsed time as a more friendly time span with a custom delimiter.
 	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
 	/// </summary>
 	/// <param name="timer"></param>
 	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
 	/// <returns>Formatted timespan</returns>
-	public static string FormatTimer(this Stopwatch timer, string delimitter = ":")
+	public static string FormatTimer(this Stopwatch timer, string delimiter = ":")
 	{
-		return FormatTimer(TimeSpan.FromMilliseconds(timer.ElapsedMilliseconds), delimitter);
+		return FormatTimer(TimeSpan.FromMilliseconds(timer.ElapsedMilliseconds), delimiter);
 	}
 	
 	/// <summary>
-	/// Format the elapsed time as a more friendly time span with a custom delimitter.
+	/// Format the elapsed time as a more friendly time span with a custom delimiter.
 	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
 	/// </summary>
 	/// <param name="timespan"></param>
 	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
 	/// <returns>Formatted timespan</returns>
-	public static string FormatTimer(this TimeSpan timespan, string delimitter = ":")
+	public static string FormatTimer(this TimeSpan timespan, string delimiter = ":")
 	{
 		var seconds = $"{timespan.TotalSeconds:0.00000000000000000}";
 
@@ -844,14 +844,14 @@ public static class Strings
 		seconds = $"{timespan.Seconds:00.00000000000000000}";
 		
 		if (timespan is { Days: 0, Hours: 0 })
-			return $"{timespan.Minutes:00}m{delimitter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
+			return $"{timespan.Minutes:00}m{delimiter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
 
 		if (timespan.Days == 0)
 		{
-			return $"{timespan.Hours:00}h{delimitter}{timespan.Minutes:00}m{delimitter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
+			return $"{timespan.Hours:00}h{delimiter}{timespan.Minutes:00}m{delimiter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
 		}
 
-		return $"{timespan.Days:00}d{delimitter}{timespan.Hours:00}h{delimitter}{timespan.Minutes:00}m{delimitter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
+		return $"{timespan.Days:00}d{delimiter}{timespan.Hours:00}h{delimiter}{timespan.Minutes:00}m{delimiter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
 	}
 	
 	#endregion

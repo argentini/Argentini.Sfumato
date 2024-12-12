@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2023 Michael Argentini
+Copyright (c) 2024 Argentini Unlimited, Ltd
 
 Blog    : https://nonsequiturs.com
 App     : https://sfumato.app

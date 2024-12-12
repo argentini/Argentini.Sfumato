@@ -8,9 +8,9 @@ public sealed class SfumatoAppState
 
 	#region Shared Options
 
-	public IEnumerable<CssMediaQuery> MediaQueryPrefixes { get; } = new []
-	{
-		new CssMediaQuery
+	public IEnumerable<CssMediaQuery> MediaQueryPrefixes { get; } =
+    [
+        new CssMediaQuery
 		{
 			PrefixOrder = 1,
 			Priority = int.MaxValue,
@@ -153,8 +153,8 @@ public sealed class SfumatoAppState
 			Prefix = "vast",
 			PrefixType = "breakpoint",
 			Statement = "@media screen and (min-aspect-ratio: 21/9) {"
-		},
-	};
+		}
+    ];
 	
     public Dictionary<string,string> ColorOptions { get; } = new()
     {
@@ -2749,60 +2749,60 @@ public sealed class SfumatoAppState
 
     public const int FileAccessRetryMs = 5000;
     
-    public IEnumerable<string> ClassMatchEndingExclusions { get; } = new[]
-    {
-	    "/",
+    public IEnumerable<string> ClassMatchEndingExclusions { get; } =
+    [
+        "/",
 	    ".css",
 	    ".htm",
 	    ".html",
 	    ".js",
-	    ".json",
-    };
+	    ".json"
+    ];
     
-	public IEnumerable<string> ArbitraryValueTypes { get; } = new[]
-	{
-		"string", "url", "custom-ident", "dashed-ident",
+	public IEnumerable<string> ArbitraryValueTypes { get; } =
+    [
+        "string", "url", "custom-ident", "dashed-ident",
 		"integer", "number", "percentage", "ratio", "flex",
 		"length", "angle", "time", "frequency", "resolution",
 		"color"
-	};
+    ];
 
-	public IEnumerable<string> CssUnits { get; } = new[]
-	{
-		// Order here matters as truncating values like 'em' also work on values ending with 'rem'
+	public IEnumerable<string> CssUnits { get; } =
+    [
+        // Order here matters as truncating values like 'em' also work on values ending with 'rem'
 
 		"rem", "vmin", "vmax",
 		"cm", "in", "mm", "pc", "pt", "px",
 		"ch", "em", "ex", "vw", "vh"
-	};
+    ];
 
-	public IEnumerable<string> CssAngleUnits { get; } = new[]
-	{
-		// Order here matters as truncating values like 'rad' also work on values ending with 'grad'
+	public IEnumerable<string> CssAngleUnits { get; } =
+    [
+        // Order here matters as truncating values like 'rad' also work on values ending with 'grad'
 
 		"grad", "turn", "deg", "rad"
-	};
+    ];
 
-	public IEnumerable<string> CssTimeUnits { get; } = new[]
-	{
-		// Order here matters as truncating values like 's' also work on values ending with 'ms'
+	public IEnumerable<string> CssTimeUnits { get; } =
+    [
+        // Order here matters as truncating values like 's' also work on values ending with 'ms'
 		
 		"ms", "s"
-	};
+    ];
 
-	public IEnumerable<string> CssFrequencyUnits { get; } = new[]
-	{
-		// Order here matters as truncating values like 'Hz' also work on values ending with 'kHz'
+	public IEnumerable<string> CssFrequencyUnits { get; } =
+    [
+        // Order here matters as truncating values like 'Hz' also work on values ending with 'kHz'
 		
 		"kHz", "Hz"
-	};
+    ];
 
-	public IEnumerable<string> CssResolutionUnits { get; } = new[]
-	{
-		// Order here matters as truncating values like 'x' also work on values ending with 'dppx'
+	public IEnumerable<string> CssResolutionUnits { get; } =
+    [
+        // Order here matters as truncating values like 'x' also work on values ending with 'dppx'
 		
 		"dpcm", "dppx", "dpi", "x"
-	};
+    ];
 
     public List<string> ValidCssPropertyNames { get; } = [];
 
@@ -4415,15 +4415,18 @@ public sealed class SfumatoAppState
 #if DEBUG
         var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
 
+        // index = workingPath[..index].TrimEnd(Path.DirectorySeparatorChar).LastIndexOf(Path.DirectorySeparatorChar);
+        // workingPath = Path.Combine(workingPath[..index], "TestProjectFolder");
+        
         if (index > -1)
         {
             workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
         }
-
+        
         else
         {
             index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
-
+        
             if (index > -1)
                 workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
         }
@@ -4814,7 +4817,7 @@ public sealed class SfumatoAppState
 	}
 	
 	/// <summary>
-	/// Verifuy a string of colon-separated variants.
+	/// Verify a string of colon-separated variants.
 	/// </summary>
 	/// <param name="variantsList"></param>
 	/// <returns></returns>

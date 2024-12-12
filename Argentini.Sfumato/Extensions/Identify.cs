@@ -63,7 +63,7 @@ public static class Identify
         if (result == null || result.IsEmpty()) return string.Empty;
 
         if (result.Contains("Version="))
-            return result.Right("Version=").TrimStart(new[] { 'v' });
+            return result.Right("Version=").TrimStart(['v']);
 
         return result;
     }

@@ -13,7 +13,7 @@ public sealed class FileChangeRequest
             SetExtensionsList();
         }
     }
-    public List<string> ExtensionsList { get; } = new();
+    public List<string> ExtensionsList { get; } = [];
     public FileSystemEventArgs? FileSystemEventArgs { get; set; }
 
     private void SetExtensionsList()

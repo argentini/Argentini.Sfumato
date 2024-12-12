@@ -117,7 +117,7 @@ public static class StringBuilders
 	/// <returns>Number of times the substring is within the source.</returns>
 	public static int SubstringCount(this StringBuilder source, string substring)
 	{
-		return source.ToString().Split(new [] { substring }, StringSplitOptions.None).Length - 1;
+		return source.ToString().Split([substring], StringSplitOptions.None).Length - 1;
 	}
 
 	/// <summary>

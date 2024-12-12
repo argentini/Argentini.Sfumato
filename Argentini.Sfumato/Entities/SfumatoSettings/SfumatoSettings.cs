@@ -5,7 +5,7 @@ namespace Argentini.Sfumato.Entities.SfumatoSettings;
 
 public sealed class SfumatoSettings
 {
-    public List<ProjectPath> ProjectPaths { get; set;  } = new();
+    public List<ProjectPath> ProjectPaths { get; set;  } = [];
     public string DarkMode { get; set; } = "media";
     public bool UseAutoTheme { get; set; }
 

@@ -21,7 +21,7 @@ Use the following command for more information on Sfumato commands and options:
 
 ### 1. Install Microsoft .NET
 
-Sfumato requires that you already have the .NET 8.0 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
+Sfumato requires that you already have the .NET 9.0 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
 
 ### 2. Install Sfumato
 

@@ -38,7 +38,7 @@ public sealed class SfumatoRunner
 	/// </summary>
 	public async Task InitializeAsync(IEnumerable<string>? args = null)
 	{
-		await AppState.InitializeAsync(args ?? Enumerable.Empty<string>());
+		await AppState.InitializeAsync(args ?? []);
 	}
 	
 	/// <summary>

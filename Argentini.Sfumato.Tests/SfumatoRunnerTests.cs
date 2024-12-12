@@ -395,20 +395,22 @@ public class SfumatoRunnerTests
                             """;
 
         var css = await SfumatoScss.TranspileScssAsync("test.scss", scss, runner);
+        var baseline =
+            """
+            @media screen and (min-width: 640px) {
+              h1 {
+                font-size: clamp((1.5rem * 0.875), (4.35vw * 1.5), 1.5rem);
+                line-height: 1.75;
+                font-weight: 700 !important;
+                color: black;
+              }
+            }
+            """.CompactCss().Replace("; ", ";");
 
         css = css.Contains("/*") == false
-            ? css
-            : css[..css.IndexOf("/*", StringComparison.Ordinal)];
+            ? css.CompactCss().Replace("; ", ";")
+            : css[..css.IndexOf("/*", StringComparison.Ordinal)].CompactCss().Replace("; ", ";");
         
-        Assert.Equal($$"""
-                     @media screen and (min-width: 640px) {
-                       h1 {
-                         font-size: clamp(1.3125rem, 6.525vw, 1.5rem);
-                         line-height: 1.75;
-                         font-weight: 700 !important;
-                         color: black;
-                       }
-                     }
-                     """.CompactCss(), css.CompactCss());
+        Assert.Equal(baseline, css);
     }
 }

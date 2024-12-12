@@ -249,10 +249,82 @@ public static class SfumatoScss
 			arguments.Add("--stdin");
 			arguments.Add(cssOutputPath);
 			
+			#region Process @sfumato directives
+			
+			var matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
+			var startIndex = 0;
+
+			while (matches.Count > 0)
+			{
+				var match = matches[0];
+				
+				if (match.Index + match.Value.Length > startIndex)
+					startIndex = match.Index + match.Value.Length;
+
+				var matchValue = match.Value.CompactCss().TrimEnd(';');
+				
+				if (matchValue.EndsWith(" shared"))
+				{
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					rawScss = rawScss.Insert(match.Index, runner.AppState.ScssSharedInjectable.ToString());
+					includesShared = true;
+				}
+
+				else if (matchValue.EndsWith(" base"))
+				{
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					rawScss = rawScss.Insert(match.Index, runner.AppState.ScssBaseInjectable.ToString());
+					includesBase = true;
+				}
+				
+				else if (matchValue.EndsWith(" utilities"))
+				{
+					var preamble = $"{Environment.NewLine}{Environment.NewLine}/* SFUMATO UTILITY CLASSES */{Environment.NewLine}{Environment.NewLine}";
+
+					var utilitiesScss = runner.GenerateUtilityScss();
+					
+					rawScss = rawScss.Remove(match.Index, match.Value.Length);
+					rawScss = rawScss.Insert(match.Index, preamble + utilitiesScss);
+
+					includesUtilities = true;
+				}
+				
+				matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
+			}
+			
+			#endregion
+            
+			scss.Append(rawScss);
+			
+			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(runner.AppState.SassCliPath)
+				.WithArguments(args =>
+				{
+					foreach (var arg in arguments)
+						args.Add(arg);
+
+				})
+				.WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
+				.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
+
+			await cmd.ExecuteAsync();
+
+            sb.Clear();
+            sb.Append(await Storage.ReadAllTextWithRetriesAsync(cssOutputPath, SfumatoAppState.FileAccessRetryMs));
+            
+            sb.Replace("html.theme-dark :root.", "html.theme-dark.");
+            sb.Replace("html.theme-auto :root.", "html.theme-auto.");
+            sb.Replace("html.theme-dark html.", "html.theme-dark.");
+            sb.Replace("html.theme-auto html.", "html.theme-auto.");
+
+            sb.Replace("html.theme-dark :root", "html.theme-dark");
+            sb.Replace("html.theme-auto :root", "html.theme-auto");
+            sb.Replace("html.theme-dark html", "html.theme-dark");
+            sb.Replace("html.theme-auto html", "html.theme-auto");
+            
             #region Process @apply directives
 
-            var matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
-            var startIndex = 0;
+            matches = runner.AppState.SfumatoScssApplyRegex.Matches(sb.ToString());
+            startIndex = 0;
 
             while (matches.Count > 0)
             {
@@ -273,7 +345,7 @@ public static class SfumatoScss
 
                 if (classes.Count == 0)
                 {
-                    rawScss = rawScss.Remove(match.Index, match.Value.Length);
+                    sb.Remove(match.Index, match.Value.Length);
                 }
 				
                 else
@@ -395,86 +467,14 @@ public static class SfumatoScss
 
                     styles.Append(second);
 
-                    rawScss = rawScss.Remove(match.Index, match.Value.Length);
-                    rawScss = rawScss.Insert(match.Index, styles.ToString());
+                    sb.Remove(match.Index, match.Value.Length);
+                    sb.Insert(match.Index, styles.ToString());
                 }
 				
-                matches = runner.AppState.SfumatoScssApplyRegex.Matches(rawScss);
+                matches = runner.AppState.SfumatoScssApplyRegex.Matches(sb.ToString());
             }
 
             #endregion
-            
-			#region Process @sfumato directives
-			
-			matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
-			startIndex = 0;
-
-			while (matches.Count > 0)
-			{
-				var match = matches[0];
-				
-				if (match.Index + match.Value.Length > startIndex)
-					startIndex = match.Index + match.Value.Length;
-
-				var matchValue = match.Value.CompactCss().TrimEnd(';');
-				
-				if (matchValue.EndsWith(" shared"))
-				{
-					rawScss = rawScss.Remove(match.Index, match.Value.Length);
-					rawScss = rawScss.Insert(match.Index, runner.AppState.ScssSharedInjectable.ToString());
-					includesShared = true;
-				}
-
-				else if (matchValue.EndsWith(" base"))
-				{
-					rawScss = rawScss.Remove(match.Index, match.Value.Length);
-					rawScss = rawScss.Insert(match.Index, runner.AppState.ScssBaseInjectable.ToString());
-					includesBase = true;
-				}
-				
-				else if (matchValue.EndsWith(" utilities"))
-				{
-					var preamble = $"{Environment.NewLine}{Environment.NewLine}/* SFUMATO UTILITY CLASSES */{Environment.NewLine}{Environment.NewLine}";
-
-					var utilitiesScss = runner.GenerateUtilityScss();
-					
-					rawScss = rawScss.Remove(match.Index, match.Value.Length);
-					rawScss = rawScss.Insert(match.Index, preamble + utilitiesScss);
-
-					includesUtilities = true;
-				}
-				
-				matches = runner.AppState.SfumatoScssRegex.Matches(rawScss);
-			}
-			
-			#endregion
-            
-			scss.Append(rawScss);
-			
-			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(runner.AppState.SassCliPath)
-				.WithArguments(args =>
-				{
-					foreach (var arg in arguments)
-						args.Add(arg);
-
-				})
-				.WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
-				.WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
-
-			await cmd.ExecuteAsync();
-
-            sb.Clear();
-            sb.Append(await Storage.ReadAllTextWithRetriesAsync(cssOutputPath, SfumatoAppState.FileAccessRetryMs));
-            
-            sb.Replace("html.theme-dark :root.", "html.theme-dark.");
-            sb.Replace("html.theme-auto :root.", "html.theme-auto.");
-            sb.Replace("html.theme-dark html.", "html.theme-dark.");
-            sb.Replace("html.theme-auto html.", "html.theme-auto.");
-
-            sb.Replace("html.theme-dark :root", "html.theme-dark");
-            sb.Replace("html.theme-auto :root", "html.theme-auto");
-            sb.Replace("html.theme-dark html", "html.theme-dark");
-            sb.Replace("html.theme-auto html", "html.theme-auto");
             
             await File.WriteAllTextAsync(cssOutputPath, sb.ToString());
 
