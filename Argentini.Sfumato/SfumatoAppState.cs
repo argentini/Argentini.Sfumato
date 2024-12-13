@@ -4168,57 +4168,61 @@ public sealed class SfumatoAppState
         
 	    #region Regular Expressions
 	    
-	    const string arbitraryCssExpression = """
-(?<=[\s"'`])
-([a-z]{1,25}(\-[a-z]{0,25})?:){0,5}
-([\!]?\[[a-z\-]{1,50}\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])
-(?=[\s"'`]|[\\"])
-""";
+	    const string arbitraryCssExpression =
+            """
+            (?<=[\s"'`])
+            ([a-z]{1,25}(\-[a-z]{0,25})?:){0,5}
+            ([\!]?\[[a-z\-]{1,50}\:[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])
+            (?=[\s"'`]|[\\"])
+            """;
 	    
 	    ArbitraryCssRegex = new Regex(arbitraryCssExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 	    
-	    const string coreClassExpression = """
-(?<=[\s"'`])
-((peer\-([a-z\-]{1,25}([/]([a-z\-]{0,25})){0,1}?:))|([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:)){0,5}
-(
-	([\!\-]{0,2}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
-	(
-		(/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
-	)
-	(/[a-z0-9\-\.]{1,250})?
-)
-(?=[\s"'`]|[\\"])
-""";
+	    const string coreClassExpression = 
+            """
+            (?<=[\s"'`])
+            ((peer\-([a-z\-]{1,25}([/]([a-z\-]{0,25})){0,1}?:))|([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:)){0,5}
+            (
+                ([\!\-]{0,2}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
+                (
+                    (/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
+                )
+                (/[a-z0-9\-\.]{1,250})?
+            )
+            (?=[\s"'`]|[\\"])
+            """;
 	    
 	    CoreClassRegex = new Regex(coreClassExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 
-	    const string sfumatoScssRegexExpression = """
-(?<=^|[\s]|;)
-(@sfumato[\s]{1,})
-(
-	([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
-	(
-		(/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
-	)
-	(([\s]{1,})|([\s]{0,};))
-){1,}
-""";
+	    const string sfumatoScssRegexExpression =
+            """
+            (?<=^|[\s]|;)
+            (@sfumato[\s]{1,})
+            (
+                ([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
+                (
+                    (/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
+                )
+                (([\s]{1,})|([\s]{0,};))
+            ){1,}
+            """;
 	    
 	    SfumatoScssRegex = new Regex(sfumatoScssRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
-	    
-	    const string sfumatoScssApplyRegexExpression = """
-(?<=^|[\s])
-(@apply[\s]{1,})
-(
-	([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
-	(
-		(/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
-	)
-	(([\s]{1,})|([\s]{0,};))
-){1,}
-(?=[\s])
-""";
-	    
+
+        const string sfumatoScssApplyRegexExpression =
+            """
+            (?<=^|[\s\{;])
+            (@apply[\s]{1,})
+            (
+                ([\!\-]?[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,5})
+                (
+                    (/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+]{1,250}\])?
+                )
+                [\s]{0,}
+            ){1,}
+            (?=[\s\};])
+            """;
+
 	    SfumatoScssApplyRegex = new Regex(sfumatoScssApplyRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 	    
 	    #endregion
@@ -4337,7 +4341,12 @@ public sealed class SfumatoAppState
 	/// <param name="args"></param>
 	public async Task ProcessCliArgumentsAsync(IEnumerable<string>? args)
 	{
-		CliArguments.Clear();
+
+// #if DEBUG
+//         Minify = true;
+// #endif
+
+        CliArguments.Clear();
 		CliArguments.AddRange(args?.ToList() ?? new List<string>());
 
 		if (CliArguments.Count < 1)
@@ -4416,8 +4425,8 @@ public sealed class SfumatoAppState
         var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
 
         // index = workingPath[..index].TrimEnd(Path.DirectorySeparatorChar).LastIndexOf(Path.DirectorySeparatorChar);
-        // workingPath = Path.Combine(workingPath[..index], "TestProjectFolder");
-        
+        // workingPath = Path.Combine(workingPath[..index], "Fynydd-Website-2024", "UmbracoCms");
+
         if (index > -1)
         {
             workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");

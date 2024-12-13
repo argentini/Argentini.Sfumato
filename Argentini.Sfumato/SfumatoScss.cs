@@ -333,9 +333,8 @@ public static class SfumatoScss
                 if (match.Index + match.Value.Length > startIndex)
                     startIndex = match.Index + match.Value.Length;
 
-                var matchValue = match.Value.Trim().TrimEnd(';').CompactCss().TrimStart("@apply ");
-
-                var classes = (matchValue?.Split(' ') ?? []).ToList();
+                var matchValue = match.Value.Trim().CompactCss().TrimStart("@apply ");
+                var classes = (matchValue?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? []).ToList();
 
                 foreach (var selector in classes.ToList())
                 {
@@ -468,7 +467,7 @@ public static class SfumatoScss
                     styles.Append(second);
 
                     sb.Remove(match.Index, match.Value.Length);
-                    sb.Insert(match.Index, styles.ToString());
+                    sb.Insert(match.Index, styles.ToString().Trim().TrimEnd(';').Trim().CompactCss());
                 }
 				
                 matches = runner.AppState.SfumatoScssApplyRegex.Matches(sb.ToString());
