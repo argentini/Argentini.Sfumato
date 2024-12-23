@@ -130,6 +130,20 @@ public class RegularExpressionsTests
         {
             Assert.Fail();
         }
+        
+        matches = appState.CoreClassRegex.Matches("<div class=\"border-b-canvas-tint-light-border dark:border-b-dark-canvas-tint-light-border\"></div>").DistinctBy(m => m.Value).ToList();
+
+        Assert.Equal(2, matches.Count);
+
+        if (matches.Count > 0)
+        {
+            Assert.Equal("border-b-canvas-tint-light-border", matches[0].Value);
+            Assert.Equal("dark:border-b-dark-canvas-tint-light-border", matches[1].Value);
+        }
+        else
+        {
+            Assert.Fail();
+        }
     }
 
     [Fact]
