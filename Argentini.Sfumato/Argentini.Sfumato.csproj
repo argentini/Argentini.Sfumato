@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.1.1.0</AssemblyVersion>
-        <FileVersion>5.1.1.0</FileVersion>
-        <PackageVersion>5.1.1</PackageVersion>
+        <AssemblyVersion>5.1.2.0</AssemblyVersion>
+        <FileVersion>5.1.2.0</FileVersion>
+        <PackageVersion>5.1.2</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Bug fix: update to .NET 9, update dependencies, update to Dart Sass 1.82.0, SCSS @apply statements can now be used in @import files</PackageReleaseNotes>
+        <PackageReleaseNotes>Allow for longer utility class names</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
@@ -40,7 +40,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
         <PackageReference Include="CliWrap" Version="3.7.0" />
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0" />
-        <PackageReference Include="YamlDotNet" Version="16.2.1" />
+        <PackageReference Include="YamlDotNet" Version="16.3.0" />
     </ItemGroup>
     
     <ItemGroup>
