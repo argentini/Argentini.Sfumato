@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.1.2.0</AssemblyVersion>
-        <FileVersion>5.1.2.0</FileVersion>
-        <PackageVersion>5.1.2</PackageVersion>
+        <AssemblyVersion>5.1.3.0</AssemblyVersion>
+        <FileVersion>5.1.3.0</FileVersion>
+        <PackageVersion>5.1.3</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Allow for longer utility class names</PackageReleaseNotes>
+        <PackageReleaseNotes>Added "phab" adaptive breakpoint between "mobi" and "tabp" (less narrow phones like iPhone SE)</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
