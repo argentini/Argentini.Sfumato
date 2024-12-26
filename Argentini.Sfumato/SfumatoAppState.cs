@@ -112,7 +112,7 @@ public sealed class SfumatoAppState
 			Priority = 128,
 			Prefix = "mobi",
 			PrefixType = "breakpoint",
-			Statement = "@media screen and (max-aspect-ratio: 9.999999999999/16) {"
+			Statement = "@media screen and (max-aspect-ratio: 0.624999999999) {"
 		},
 		new CssMediaQuery
 		{
@@ -120,7 +120,7 @@ public sealed class SfumatoAppState
 			Priority = 256,
 			Prefix = "phab",
 			PrefixType = "breakpoint",
-			Statement = "@media screen and (min-aspect-ratio: 8/16) {"
+			Statement = "@media screen and (min-aspect-ratio: 0.575) {"
 		},
 		new CssMediaQuery
 		{
@@ -128,7 +128,7 @@ public sealed class SfumatoAppState
 			Priority = 512,
 			Prefix = "tabp",
 			PrefixType = "breakpoint",
-			Statement = "@media screen and (min-aspect-ratio: 10/16) {"
+			Statement = "@media screen and (min-aspect-ratio: 0.625) {"
 		},
 		new CssMediaQuery
 		{
@@ -136,7 +136,7 @@ public sealed class SfumatoAppState
 			Priority = 1024,
 			Prefix = "tabl",
 			PrefixType = "breakpoint",
-			Statement = "@media screen and (min-aspect-ratio: 1/1) {"
+			Statement = "@media screen and (min-aspect-ratio: 1.0) {"
 		},
 		new CssMediaQuery
 		{
@@ -144,7 +144,7 @@ public sealed class SfumatoAppState
 			Priority = 2048,
 			Prefix = "desk",
 			PrefixType = "breakpoint",
-			Statement = "@media screen and (min-aspect-ratio: 3/2) {"
+			Statement = "@media screen and (min-aspect-ratio: 1.5) {"
 		},
 		new CssMediaQuery
 		{
@@ -152,7 +152,7 @@ public sealed class SfumatoAppState
 			Priority = 4096,
 			Prefix = "wide",
 			PrefixType = "breakpoint",
-			Statement = "@media screen and (min-aspect-ratio: 16/9) {"
+			Statement = "@media screen and (min-aspect-ratio: 1.77777778) {"
 		},
 		new CssMediaQuery
 		{
@@ -160,7 +160,7 @@ public sealed class SfumatoAppState
 			Priority = 8192,
 			Prefix = "vast",
 			PrefixType = "breakpoint",
-			Statement = "@media screen and (min-aspect-ratio: 21/9) {"
+			Statement = "@media screen and (min-aspect-ratio: 2.33333333) {"
 		}
     ];
 	
