@@ -105,6 +105,7 @@ public static class SfumatoScss
             sb.Replace("$internal-dark-theme: \"\";", $"$internal-dark-theme: \"{(appState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "media" : appState.Settings.UseAutoTheme ? "class+auto" : "class")}\";");
 
             sb.Replace("$mobi-breakpoint: \"\";", $"$mobi-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "mobi").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
+            sb.Replace("$phab-breakpoint: \"\";", $"$phab-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "phab").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
             sb.Replace("$tabp-breakpoint: \"\";", $"$tabp-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "tabp").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
             sb.Replace("$tabl-breakpoint: \"\";", $"$tabl-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "tabl").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");
             sb.Replace("$desk-breakpoint: \"\";", $"$desk-breakpoint: \"{appState.MediaQueryPrefixes.First(p => p.Prefix == "desk").Statement.TrimStart("@media ").TrimEnd("{")?.Trim()}\";");

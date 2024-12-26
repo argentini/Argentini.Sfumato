@@ -634,6 +634,7 @@ Theme:
         # When using adaptive layout, use the following adaptive breakpoint font size units
         # Zero: 16px
         # Mobi: 16px
+        # Phab: 16px
         # Tabp: 16px
         # Tabl: 16px
         # Desk: 16px

@@ -118,38 +118,46 @@ public sealed class SfumatoAppState
 		{
 			PrefixOrder = 14,
 			Priority = 256,
+			Prefix = "phab",
+			PrefixType = "breakpoint",
+			Statement = "@media screen and (min-aspect-ratio: 8/16) {"
+		},
+		new CssMediaQuery
+		{
+			PrefixOrder = 15,
+			Priority = 512,
 			Prefix = "tabp",
 			PrefixType = "breakpoint",
 			Statement = "@media screen and (min-aspect-ratio: 10/16) {"
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 15,
-			Priority = 512,
+			PrefixOrder = 16,
+			Priority = 1024,
 			Prefix = "tabl",
 			PrefixType = "breakpoint",
 			Statement = "@media screen and (min-aspect-ratio: 1/1) {"
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 16,
-			Priority = 1024,
+			PrefixOrder = 17,
+			Priority = 2048,
 			Prefix = "desk",
 			PrefixType = "breakpoint",
 			Statement = "@media screen and (min-aspect-ratio: 3/2) {"
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 17,
-			Priority = 2048,
+			PrefixOrder = 18,
+			Priority = 4096,
 			Prefix = "wide",
 			PrefixType = "breakpoint",
 			Statement = "@media screen and (min-aspect-ratio: 16/9) {"
 		},
 		new CssMediaQuery
 		{
-			PrefixOrder = 18,
-			Priority = 4096,
+			PrefixOrder = 19,
+			Priority = 8192,
 			Prefix = "vast",
 			PrefixType = "breakpoint",
 			Statement = "@media screen and (min-aspect-ratio: 21/9) {"
