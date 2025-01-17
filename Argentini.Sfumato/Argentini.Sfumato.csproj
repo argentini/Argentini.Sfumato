@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.1.4.0</AssemblyVersion>
-        <FileVersion>5.1.4.0</FileVersion>
-        <PackageVersion>5.1.4</PackageVersion>
+        <AssemblyVersion>5.1.6.0</AssemblyVersion>
+        <FileVersion>5.1.6.0</FileVersion>
+        <PackageVersion>5.1.6</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -22,24 +22,24 @@
             
             dotnet tool install --global argentini.sfumato
         </Description>
-        <Copyright>Copyright (c) Argentini Unlimited, Ltd 2024.</Copyright>
+        <Copyright>Copyright (c) Argentini Unlimited, Ltd 2025.</Copyright>
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added "phab" adaptive breakpoint between "mobi" and "tabp" (less narrow phones like iPhone SE)</PackageReleaseNotes>
+        <PackageReleaseNotes>Browser reset adjustments for html,body,main max-width/overflow inheritance, package updates</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
         <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.0" />
-        <PackageReference Include="CliWrap" Version="3.7.0" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.1" />
+        <PackageReference Include="CliWrap" Version="3.7.1" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.1" />
         <PackageReference Include="YamlDotNet" Version="16.3.0" />
     </ItemGroup>
     
