@@ -69,6 +69,9 @@ public sealed class SfumatoSettings
                 if (projectPath.ExtensionsList.Count > 0)
                     projectPath.Extensions = string.Join(',', projectPath.ExtensionsList);
 
+                if (projectPath.IgnoreFoldersList.Count > 0)
+                    projectPath.IgnoreFolders = string.Join(',', projectPath.IgnoreFoldersList);
+
                 if (string.IsNullOrEmpty(projectPath.Extensions) || invalidExtensions.Contains(projectPath.Extensions))
                     ProjectPaths.Remove(projectPath);
             }

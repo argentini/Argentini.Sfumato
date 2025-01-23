@@ -16,10 +16,24 @@ public sealed class ProjectPath
             SetExtensionsList();
         }
     }
+    private string _ignoreFolders = string.Empty;
+    public string IgnoreFolders
+    {
+        get => _ignoreFolders;
+        set
+        {
+            _ignoreFolders = value.ToLower();
+
+            SetIgnoreFoldersList();
+        }
+    }
     public bool Recurse { get; set; } = true;
     
     [YamlIgnore]
     public List<string> ExtensionsList { get; } = new();
+
+    [YamlIgnore]
+    public List<string> IgnoreFoldersList { get; } = new();
 
     public ProjectPath()
     {
@@ -38,7 +52,20 @@ public sealed class ProjectPath
                 ExtensionsList.Add(ext);
         }
     }
-    
+
+    private void SetIgnoreFoldersList()
+    {
+        IgnoreFoldersList.Clear();
+            
+        foreach (var ignoreFolder in _ignoreFolders.Split(',', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var folder = ignoreFolder.Trim();
+                    
+            if (IgnoreFoldersList.Contains(folder) == false)
+                IgnoreFoldersList.Add(folder);
+        }
+    }
+
     public static string GetMatchingFileExtension(string? fileName, List<string> extensionsList)
     {
         if (string.IsNullOrEmpty(fileName))

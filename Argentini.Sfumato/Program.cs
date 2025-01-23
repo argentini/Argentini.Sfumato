@@ -19,7 +19,7 @@ internal class Program
         var sassVersion = await runner.AppState.GetEmbeddedSassVersionAsync();
 
 		await runner.InitializeAsync(args);
-
+        
 		if (runner.AppState.VersionMode)
 		{
 			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
@@ -129,7 +129,14 @@ internal class Program
 				if (paths.Length > 0)
 					paths.Append("                 :  ");
 
-				paths.Append($".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{(path.Recurse ? $"**{Path.DirectorySeparatorChar}" : string.Empty)}*.{(path.ExtensionsList.Count == 1 ? path.Extensions : $"[{path.Extensions}]")}{Environment.NewLine}");
+				var _path  = $".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{(path.Recurse ? $"**{Path.DirectorySeparatorChar}" : string.Empty)}*.{(path.ExtensionsList.Count == 1 ? path.Extensions : $"[{path.Extensions}]")}";
+
+                if (string.IsNullOrEmpty(path.IgnoreFolders) == false)
+                    _path += $" (ignore {path.IgnoreFolders.Trim()})";
+
+                _path += Environment.NewLine;
+
+                paths.Append(_path);
 			}
 	        
 			await Console.Out.WriteLineAsync($"Watch Path(s)    :  {paths.ToString().TrimEnd()}");
@@ -252,7 +259,6 @@ internal class Program
 				if (rebuildProjectQueue.IsEmpty == false)
 				{
 					var triggered = false;
-
                     var clonedDictionary = rebuildProjectQueue.Adapt<Dictionary<long,FileChangeRequest?>>().ToDictionary();
                     
 					foreach (var (_, fileChangeRequest) in clonedDictionary.OrderBy(f => f.Key))
@@ -269,7 +275,7 @@ internal class Program
 						
 						if (eventArgs.ChangeType == WatcherChangeTypes.Deleted)
 						{
-							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false)
+							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false || fileChangeRequest.IsIgnorePath(eventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 							
 							await Console.Out.WriteLineAsync($"Project file changes detected at {DateTime.Now:HH:mm:ss.fff}");
@@ -280,7 +286,7 @@ internal class Program
 
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Changed)
 						{
-							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false)
+							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false || fileChangeRequest.IsIgnorePath(eventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 
 							await Console.Out.WriteLineAsync($"Project file changes detected at {DateTime.Now:HH:mm:ss.fff}");
@@ -291,7 +297,7 @@ internal class Program
 						
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Created)
 						{
-							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false)
+                            if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false || fileChangeRequest.IsIgnorePath(eventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 
 							await Console.Out.WriteLineAsync($"Project file changes detected at {DateTime.Now:HH:mm:ss.fff}");
@@ -304,7 +310,7 @@ internal class Program
 						{
 							var renamedEventArgs = (RenamedEventArgs) eventArgs;
 
-							if (fileChangeRequest.IsMatchingFile(renamedEventArgs.OldName) == false && fileChangeRequest.IsMatchingFile(renamedEventArgs.Name) == false)
+							if ((fileChangeRequest.IsMatchingFile(renamedEventArgs.OldName) == false && fileChangeRequest.IsMatchingFile(renamedEventArgs.Name) == false) || fileChangeRequest.IsIgnorePath(renamedEventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 
 							await Console.Out.WriteLineAsync($"Project file changes detected at {DateTime.Now:HH:mm:ss.fff}");
@@ -361,7 +367,7 @@ internal class Program
 
 						if (eventArgs.ChangeType == WatcherChangeTypes.Deleted)
 						{
-							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false)
+							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false || fileChangeRequest.IsIgnorePath(eventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 
 							await Console.Out.WriteLineAsync($"Deleted {filePath} at {DateTime.Now:HH:mm:ss.fff}");
@@ -387,7 +393,7 @@ internal class Program
 
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Changed)
 						{
-							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false)
+							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false || fileChangeRequest.IsIgnorePath(eventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 
 							await Console.Out.WriteLineAsync($"Updated {filePath} at {DateTime.Now:HH:mm:ss.fff}");
@@ -410,7 +416,7 @@ internal class Program
 						
 						else if (eventArgs.ChangeType == WatcherChangeTypes.Created)
 						{
-							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false)
+							if (fileChangeRequest.IsMatchingFile(eventArgs.Name) == false || fileChangeRequest.IsIgnorePath(eventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 
 							await Console.Out.WriteLineAsync($"Added {filePath} at {DateTime.Now:HH:mm:ss.fff}");
@@ -435,7 +441,7 @@ internal class Program
 						{
 							var renamedEventArgs = (RenamedEventArgs) eventArgs;
 						
-							if (fileChangeRequest.IsMatchingFile(renamedEventArgs.OldName) == false && fileChangeRequest.IsMatchingFile(renamedEventArgs.Name) == false)
+							if ((fileChangeRequest.IsMatchingFile(renamedEventArgs.OldName) == false && fileChangeRequest.IsMatchingFile(renamedEventArgs.Name) == false) || fileChangeRequest.IsIgnorePath(renamedEventArgs.FullPath.TrimStart(runner.AppState.WorkingPath)))
 								continue;
 
 							var oldFilePath = SfumatoRunner.ShortenPathForOutput(renamedEventArgs.OldFullPath, runner.AppState);
@@ -614,10 +620,10 @@ internal class Program
                            | NotifyFilters.Size
         };
 
-        watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions);
-        watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions);
-        watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions);
-        watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions);
+        watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
+        watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
+        watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
+        watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
         
         watcher.Filter = string.Empty;
         watcher.IncludeSubdirectories = recurse;
@@ -632,12 +638,13 @@ internal class Program
     /// <param name="fileChangeQueue"></param>
     /// <param name="e"></param>
     /// <param name="extensions"></param>
-    private static async Task AddChangeToQueueAsync(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, FileSystemEventArgs e, string extensions)
+    private static async Task AddChangeToQueueAsync(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, FileSystemEventArgs e, string extensions, string ignoreFolders)
     {
 	    var newKey = DateTimeOffset.UtcNow.UtcTicks;
 	    var fcr = new FileChangeRequest
 	    {
 		    FileSystemEventArgs = e,
+            IgnoreFolders = ignoreFolders,
 		    Extensions = extensions
 	    };
 

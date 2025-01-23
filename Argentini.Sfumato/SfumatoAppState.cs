@@ -4388,7 +4388,7 @@ public sealed class SfumatoAppState
 		{
 			InitMode = true;
 		}
-		
+
 		if (CliArguments.Count > 1)
 		{
 			for (var x = 1; x < CliArguments.Count; x++)
@@ -4670,7 +4670,7 @@ public sealed class SfumatoAppState
 		// Gather files lists
 		
 		foreach (var projectPath in Settings.ProjectPaths)
-			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.ExtensionsList, projectPath.Recurse));
+			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.ExtensionsList, projectPath.IgnoreFoldersList, projectPath.Recurse));
 
 		await Task.WhenAll(tasks);
 		
@@ -4698,8 +4698,9 @@ public sealed class SfumatoAppState
 	/// </summary>
 	/// <param name="sourcePath"></param>
 	/// <param name="extensionsList"></param>
+	/// <param name="ignoreFoldersList"></param>
 	/// <param name="recurse"></param>
-	public async Task RecurseProjectPathAsync(string? sourcePath, List<string> extensionsList, bool recurse = false)
+	public async Task RecurseProjectPathAsync(string? sourcePath, List<string> extensionsList, List<string> ignoreFoldersList, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty() || extensionsList.Count == 0)
 			return;
@@ -4722,7 +4723,7 @@ public sealed class SfumatoAppState
 		
 		foreach (var projectFile in files)
 		{
-			var extension = ProjectPath.GetMatchingFileExtension(projectFile.Name, extensionsList);
+            var extension = ProjectPath.GetMatchingFileExtension(projectFile.Name, extensionsList);
 			
 			if (extension != string.Empty)
 				tasks.Add(AddProjectFileToCollectionAsync(projectFile, extension));
@@ -4732,10 +4733,15 @@ public sealed class SfumatoAppState
 
 		if (recurse == false)
 			return;
-		
-		foreach (var subDir in dirs.OrderBy(d => d.Name))
-			await RecurseProjectPathAsync(subDir.FullName, extensionsList, recurse);
-	}
+
+        foreach (var subDir in dirs.OrderBy(d => d.Name))
+        {
+            if (ignoreFoldersList.Any(s => s.Equals(subDir.Name, StringComparison.CurrentCultureIgnoreCase)))
+                continue;
+            
+            await RecurseProjectPathAsync(subDir.FullName, extensionsList, ignoreFoldersList, recurse);
+        }
+    }
 
 	/// <summary>
 	/// Read a FileInfo object and add it to the appropriate collection.

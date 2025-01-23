@@ -7,8 +7,14 @@
 # One or more project paths:
 # - Path: relative to the location of this file
 # - Extensions: comma separated list of file extensions to watch/process
+# - IgnoreFolders: comma separated list of folder names to ignore
 # - Recurse: watch/process all subdirectories
 ProjectPaths:
+
+    - Path: ~
+      Extensions: html,htm
+      IgnoreFolders: obj,bin,node_modules
+      Recurse: true
 
     - Path: wwwroot
       Extensions: html,htm
