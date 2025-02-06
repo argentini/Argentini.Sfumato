@@ -9,16 +9,6 @@ html {
     $adaptive-breakpoint-font-sizes;
 }
 
-html, body {
-
-    // Needed for mobile
-    max-width: 100vw;
-
-    * {
-        max-width: initial;
-    }
-}
-
 body {
 
     position: relative;

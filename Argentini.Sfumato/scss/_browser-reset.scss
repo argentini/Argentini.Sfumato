@@ -22,6 +22,7 @@
 // 3. Use a more readable tab size.
 
 html {
+
   line-height: 1.5; // 1
   -webkit-text-size-adjust: 100%; // 2
   -moz-tab-size: 4; // 3
@@ -35,6 +36,16 @@ html {
 body {
   margin: 0; // 1
   line-height: inherit; // 2
+}
+
+html, body {
+
+  // Needed for mobile
+  max-width: 100vw;
+
+  * {
+    max-width: initial;
+  }
 }
 
 // 1. Add the correct height in Firefox.
