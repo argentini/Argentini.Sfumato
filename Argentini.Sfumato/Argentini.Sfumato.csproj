@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.1.7.0</AssemblyVersion>
-        <FileVersion>5.1.7.0</FileVersion>
-        <PackageVersion>5.1.7</PackageVersion>
+        <AssemblyVersion>5.1.8.0</AssemblyVersion>
+        <FileVersion>5.1.8.0</FileVersion>
+        <PackageVersion>5.1.8</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added IgnoreFolders setting to YAML project paths</PackageReleaseNotes>
+        <PackageReleaseNotes>Moved html, body max-widths to early in the browser reset</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
