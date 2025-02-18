@@ -94,7 +94,7 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var regex = new Regex(@"(peer\-([a-z\-]{1,25}[/]{0,1}([a-z\-]{0,25})?:))", RegexOptions.Compiled);
+        var regex = new Regex(@"(peer\-([a-z\-]{1,50}[/]{0,1}([a-z\-]{0,50})?:))", RegexOptions.Compiled);
         var matches = regex.Matches("md:peer-hover:text-base");
 
         Assert.Single(matches);
@@ -119,6 +119,40 @@ public class SfumatoRunnerTests
         };
 
         Assert.Equal($$""".peer\/test:hover~.peer-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
+    }
+
+    [Fact]
+    public async Task GenerateScssClassMarkup_Group()
+    {
+        var appState = new SfumatoAppState();
+
+        await appState.InitializeAsync(Array.Empty<string>());
+
+        var regex = new Regex(@"(group\-([a-z\-]{1,50}[/]{0,1}([a-z\-]{0,50})?:))", RegexOptions.Compiled);
+        var matches = regex.Matches("md:group-hover:text-base");
+
+        Assert.Single(matches);
+        Assert.Equal("group-hover:", matches[0].Value);
+
+        matches = regex.Matches("md:group-hover/checkbox:text-base");
+
+        Assert.Single(matches);
+        Assert.Equal("group-hover/checkbox:", matches[0].Value);
+
+        var cssSelector = new CssSelector(appState, "group-hover/test:text-base");
+        await cssSelector.ProcessSelectorAsync();
+
+        Assert.Equal(@"group\/test:hover~.group-hover\/test\:text-base", cssSelector.EscapedSelector);
+
+        var result = new ScssClass
+        {
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
+
+        Assert.Equal($$""".group\/test:hover~.group-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
     }
 
     [Fact]

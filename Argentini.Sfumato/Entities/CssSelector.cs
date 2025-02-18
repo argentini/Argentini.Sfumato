@@ -460,7 +460,23 @@ public sealed class CssSelector
                     }
                 }
             }
-            
+
+            else if (rootSegment.IndexOf("group-", StringComparison.Ordinal) > -1)
+            {
+	            if (AppState is not null)
+	            {
+		            var matches = AppState.GroupVariantRegex.Matches(rootSegment);
+
+		            if (matches.Count == 1)
+		            {
+			            var groupSlashIndex = matches[0].Value.IndexOf('/') + rootSegment.IndexOf(matches[0].Value, StringComparison.Ordinal);
+
+			            if (groupSlashIndex == indexOfLastSlash)
+				            indexOfLastSlash = -1;
+		            }
+	            }
+            }
+
 		    if (indexOfLastSlash == 0)
 		    {
 			    IsInvalid = true;
@@ -550,7 +566,16 @@ public sealed class CssSelector
                             continue;
                         }
                     }
-                    
+
+                    else if (segment.IndexOf("group-", StringComparison.Ordinal) > -1)
+                    {
+	                    if (TryHasGroupVariant(AppState, $"{segment}:", out _, out _))
+	                    {
+		                    PseudoClassVariants.Add(segment);
+		                    continue;
+	                    }
+                    }
+
 				    if (AppState?.PseudoclassPrefixes.ContainsKey(segment) == false)
 					    continue;
 
@@ -567,7 +592,7 @@ public sealed class CssSelector
 
                 foreach (var pseudoClass in PseudoClassVariants)
                 {
-                    if (pseudoClass.Contains("peer-") == false)
+                    if (pseudoClass.Contains("peer-") == false && pseudoClass.Contains("group-") == false)
                         PseudoclassPath += AppState?.PseudoclassPrefixes[pseudoClass];
                 }
                 
@@ -642,14 +667,24 @@ public sealed class CssSelector
                 value.Append(c);
             }
 
-            if (Selector.Contains("peer-") == false)
-                return value.ToString();
+            if (Selector.Contains("peer-"))
+            {
+	            IsInvalid = TryHasPeerVariant(AppState, Selector, out var pseudoClass, out var peerClass) == false;
+
+	            if (IsInvalid == false)
+		            value.Insert(0, $"{peerClass}:{pseudoClass}~.");
+            }
+            else
+            {
+	            if (Selector.Contains("group-") == false)
+		            return value.ToString();
+	            
+	            IsInvalid = TryHasGroupVariant(AppState, Selector, out var pseudoClass, out var groupClass) == false;
+
+	            if (IsInvalid == false)
+		            value.Insert(0, $"{groupClass}:{pseudoClass} .");
+            }
             
-            IsInvalid = TryHasPeerVariant(AppState, Selector, out var pseudoclass, out var peerClass) == false;
-
-            if (IsInvalid == false)
-                value.Insert(0, $"{peerClass}:{pseudoclass}~.");
-
             return value.ToString();
         }
 
@@ -697,16 +732,17 @@ public sealed class CssSelector
 
     /// <summary>
     /// Determine if a selector has a peer variant.
-    /// Output variable contains the pseudoclass being used. 
+    /// Output variable contains the pseudo class being used. 
     /// Output variable contains the CSS escaped peer class being targeted. 
     /// </summary>
     /// <param name="appState"></param>
     /// <param name="selector"></param>
-    /// <param name="pseudoclass"></param>
+    /// <param name="pseudoClass"></param>
+    /// <param name="peerClass"></param>
     /// <returns></returns>
-    public static bool TryHasPeerVariant(SfumatoAppState? appState, string selector, out string pseudoclass, out string peerClass)
+    public static bool TryHasPeerVariant(SfumatoAppState? appState, string selector, out string pseudoClass, out string peerClass)
     {
-        pseudoclass = string.Empty;
+	    pseudoClass = string.Empty;
         peerClass = string.Empty;
         
         if (appState is null)
@@ -722,21 +758,68 @@ public sealed class CssSelector
         
         var match = matches[0].Value.TrimEnd(':');
         
-        pseudoclass = match[(match.IndexOf("peer-", StringComparison.Ordinal) + 5)..];
+        pseudoClass = match[(match.IndexOf("peer-", StringComparison.Ordinal) + 5)..];
         peerClass = "peer";
 
-        if (pseudoclass.Contains('/') && pseudoclass.EndsWith('/') == false)
+        if (pseudoClass.Contains('/') && pseudoClass.EndsWith('/') == false)
         {
-            peerClass += $@"\/{pseudoclass[(pseudoclass.IndexOf('/') + 1)..]}";
-            pseudoclass = pseudoclass[..pseudoclass.IndexOf('/')];
+            peerClass += $@"\/{pseudoClass[(pseudoClass.IndexOf('/') + 1)..]}";
+            pseudoClass = pseudoClass[..pseudoClass.IndexOf('/')];
         }
 
-        if (appState.PseudoclassPrefixes.ContainsKey(pseudoclass))
+        if (appState.PseudoclassPrefixes.ContainsKey(pseudoClass))
             return true;
         
-        pseudoclass = string.Empty;
+        pseudoClass = string.Empty;
         peerClass = string.Empty;
+        
         return false;
+    }
+
+    /// <summary>
+    /// Determine if a selector has a group variant.
+    /// Output variable contains the pseudo class being used. 
+    /// Output variable contains the CSS escaped group class being targeted. 
+    /// </summary>
+    /// <param name="appState"></param>
+    /// <param name="selector"></param>
+    /// <param name="pseudoClass"></param>
+    /// <param name="groupClass"></param>
+    /// <returns></returns>
+    public static bool TryHasGroupVariant(SfumatoAppState? appState, string selector, out string pseudoClass, out string groupClass)
+    {
+	    pseudoClass = string.Empty;
+	    groupClass = string.Empty;
+        
+	    if (appState is null)
+		    return false;
+        
+	    if (selector.IndexOf("group-", StringComparison.Ordinal) < 0)
+		    return false;
+        
+	    var matches = appState.GroupVariantRegex.Matches(selector);
+
+	    if (matches.Count != 1)
+		    return false;
+        
+	    var match = matches[0].Value.TrimEnd(':');
+        
+	    pseudoClass = match[(match.IndexOf("group-", StringComparison.Ordinal) + 6)..];
+	    groupClass = "group";
+
+	    if (pseudoClass.Contains('/') && pseudoClass.EndsWith('/') == false)
+	    {
+		    groupClass += $@"\/{pseudoClass[(pseudoClass.IndexOf('/') + 1)..]}";
+		    pseudoClass = pseudoClass[..pseudoClass.IndexOf('/')];
+	    }
+
+	    if (appState.PseudoclassPrefixes.ContainsKey(pseudoClass))
+		    return true;
+        
+	    pseudoClass = string.Empty;
+	    groupClass = string.Empty;
+
+	    return false;
     }
 }
 

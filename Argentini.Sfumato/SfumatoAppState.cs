@@ -4113,7 +4113,8 @@ public sealed class SfumatoAppState
     public Regex CoreClassRegex { get; }
     public Regex SfumatoScssRegex { get; }
     public Regex SfumatoScssApplyRegex { get; }
-    public Regex PeerVariantRegex { get; } = new (@"(peer\-([a-z\-]{1,25}([/]([a-z\-]{0,25})){0,1}?:))", RegexOptions.Compiled);
+    public Regex PeerVariantRegex { get; } = new (@"(peer\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))", RegexOptions.Compiled);
+    public Regex GroupVariantRegex { get; } = new (@"(group\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))", RegexOptions.Compiled);
 
     #endregion
     
@@ -4189,7 +4190,7 @@ public sealed class SfumatoAppState
 	    const string coreClassExpression = 
             """
             (?<=[\s"'`])
-            ((peer\-([a-z\-]{1,25}([/]([a-z\-]{0,25})){0,1}?:))|([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:)){0,5}
+            ((peer\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))|(group\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))|([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:)){0,5}
             (
                 ([\!\-]{0,2}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,10})
                 (
@@ -4433,7 +4434,7 @@ public sealed class SfumatoAppState
         var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
 
         // index = workingPath[..index].TrimEnd(Path.DirectorySeparatorChar).LastIndexOf(Path.DirectorySeparatorChar);
-        // workingPath = Path.Combine(workingPath[..index], "Fynydd-Website-2024", "UmbracoCms");
+        // return Path.Combine(workingPath[..index], "Fynydd-Website-2024", "UmbracoCms");        
 
         if (index > -1)
         {
@@ -4852,6 +4853,9 @@ public sealed class SfumatoAppState
         {
             if (variant.StartsWith("peer-"))
                 return CssSelector.TryHasPeerVariant(this, $"{variant}:", out _, out _);
+            
+            if (variant.StartsWith("group-"))
+	            return CssSelector.TryHasGroupVariant(this, $"{variant}:", out _, out _);
 
             if (AllVariants.Contains(variant) == false)
                 return false;
@@ -4926,14 +4930,24 @@ public sealed class SfumatoAppState
                     indexOfSlash = -1;
             }
         }
+
+        else if (selector.IndexOf("group-", StringComparison.Ordinal) > -1)
+        {
+	        var matches = GroupVariantRegex.Matches(selector);
+
+	        if (matches.Count == 1)
+	        {
+		        var groupSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
+
+		        if (groupSlashIndex == indexOfSlash)
+			        indexOfSlash = -1;
+	        }
+        }
         
 		if (indexOfSlash > -1)
 			selector = selector[..indexOfSlash];
 
-		if (UtilityClassCollection.ContainsKey(selector))
-			return true;
-			
-		return false;
+		return UtilityClassCollection.ContainsKey(selector);
 	}
 	
 	/// <summary>
