@@ -142,7 +142,7 @@ public class SfumatoRunnerTests
         var cssSelector = new CssSelector(appState, "group-hover/test:text-base");
         await cssSelector.ProcessSelectorAsync();
 
-        Assert.Equal(@"group\/test:hover~.group-hover\/test\:text-base", cssSelector.EscapedSelector);
+        Assert.Equal(@"group\/test:hover .group-hover\/test\:text-base", cssSelector.EscapedSelector);
 
         var result = new ScssClass
         {
@@ -152,7 +152,7 @@ public class SfumatoRunnerTests
             CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
         };
 
-        Assert.Equal($$""".group\/test:hover~.group-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
+        Assert.Equal($$""".group\/test:hover .group-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
     }
 
     [Fact]

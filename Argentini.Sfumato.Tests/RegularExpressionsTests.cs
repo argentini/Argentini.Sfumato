@@ -369,7 +369,7 @@ h1 {
 
         markup = runner.GenerateUtilityScss();
         
-        Assert.Equal("@media screen and (min-aspect-ratio:10/16) { .tabp\\:\\!px-0 { padding-left: 0px !important; padding-right: 0px !important; } }".CompactCss(), markup.CompactCss());
+        Assert.Equal("@media screen and (min-aspect-ratio:0.625) { .tabp\\:\\!px-0 { padding-left: 0px !important; padding-right: 0px !important; } }".CompactCss(), markup.CompactCss());
         
         #endregion
 
@@ -411,7 +411,7 @@ h1 {
 
         markup = runner.GenerateUtilityScss();
         
-        Assert.Equal(".\\!-px-4 { padding-left: -1rem !important; padding-right: -1rem !important; } @media screen and (min-aspect-ratio:10/16) { .tabp\\:\\!-px-4 { padding-left: -1rem !important; padding-right: -1rem !important; } }".CompactCss(), markup.CompactCss());
+        Assert.Equal(".\\!-px-4 { padding-left: -1rem !important; padding-right: -1rem !important; } @media screen and (min-aspect-ratio:0.625) { .tabp\\:\\!-px-4 { padding-left: -1rem !important; padding-right: -1rem !important; } }".CompactCss(), markup.CompactCss());
         
         #endregion
         
