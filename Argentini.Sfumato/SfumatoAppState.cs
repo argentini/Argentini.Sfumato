@@ -4466,7 +4466,7 @@ public sealed class SfumatoAppState
                 .WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
                 .WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
 
-            _ = cmd.ExecuteAsync().GetAwaiter().GetResult();
+            await cmd.ExecuteAsync();
 
             return sb.ToString().Trim();
         }
@@ -4557,7 +4557,7 @@ public sealed class SfumatoAppState
 			    .WithStandardOutputPipe(PipeTarget.ToStringBuilder(sb))
 			    .WithStandardErrorPipe(PipeTarget.ToStringBuilder(sb));
 
-                _ = cmd.ExecuteAsync().GetAwaiter().GetResult();
+                await cmd.ExecuteAsync();
         }
 
         catch

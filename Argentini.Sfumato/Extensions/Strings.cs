@@ -719,13 +719,15 @@ public static class Strings
 	{
 		const string errorValue = "rgba(0,0,0,-0)";
 
+		opacity ??= 1;
+
 		if (opacity > 1)
 			opacity = 1;
 
 		if (opacity < 0)
 			opacity = 0;
 		
-		color = color.Replace(" ", string.Empty);
+		color = color.Trim().Replace(" ", string.Empty);
 
 		var rgbIndex = color.IndexOf("rgb", StringComparison.Ordinal);
 		var hexIndex = color.IndexOf('#');
@@ -777,7 +779,9 @@ public static class Strings
 			if (alpha > 1)
 				alpha = 1;
 
-			return $"rgba({red},{green},{blue},{(opacity is null ? $"{alpha:0.##}" : $"{opacity:0.##}")})";
+			var o1 = $"{(opacity > 0 ? alpha * opacity : 0):0.#######}".TrimEnd('0');
+
+			return $"rgba({red},{green},{blue},{(string.IsNullOrEmpty(o1) ? "0" : o1)})";
 		}
 
 		if (hexIndex != 0)
@@ -805,10 +809,9 @@ public static class Strings
 			a = Math.Round((decimal)alpha / 255, 2);
 		}
 
-		if (opacity is null)
-			return $"rgba({r},{g},{b},{a:0.##})";
+		var o2 = $"{(opacity > 0 ? a * opacity : 0):0.#######}".TrimEnd('0');
 
-		return $"rgba({r},{g},{b},{opacity:0.##})";
+		return $"rgba({r},{g},{b},{(string.IsNullOrEmpty(o2) ? "0" : o2)})";
 	}
 	
 	#endregion

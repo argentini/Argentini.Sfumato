@@ -123,7 +123,7 @@ public class ExtensionsTests
         Assert.Equal("rgba(255,255,255,0.25)", color.WebColorToRgba(25));
 
         color = "#fff0";
-        Assert.Equal("rgba(255,255,255,0.25)", color.WebColorToRgba(0.25));
+        Assert.Equal("rgba(255,255,255,0)", color.WebColorToRgba(0.25));
         
         color = "#000000";
         Assert.Equal("rgba(0,0,0,0.75)", color.WebColorToRgba(0.75m));
@@ -132,11 +132,14 @@ public class ExtensionsTests
         Assert.Equal("rgba(0,0,0,1)", color.WebColorToRgba(200));
         
         color = "#00000000";
-        Assert.Equal("rgba(0,0,0,1)", color.WebColorToRgba(2.0m));
+        Assert.Equal("rgba(0,0,0,0)", color.WebColorToRgba(2.0m));
         
         color = "rgb(50, 100, 200)";
         Assert.Equal("rgba(50,100,200,0.75)", color.WebColorToRgba(75));
-        
+
+        color = "rgb(50, 100, 200, 1.0)";
+        Assert.Equal("rgba(50,100,200,0.75)", color.WebColorToRgba(75));
+
         color = "rgb(50,100,200)";
         Assert.Equal("rgba(50,100,200,0.75)", color.WebColorToRgba(0.75));
         
@@ -144,7 +147,7 @@ public class ExtensionsTests
         Assert.Equal("rgba(50,100,200,0.5)", color.WebColorToRgba(0.5m));
         
         color = "rgba(50,100,200,0.5)";
-        Assert.Equal("rgba(50,100,200,0.03)", color.WebColorToRgba(3));
+        Assert.Equal("rgba(50,100,200,0.015)", color.WebColorToRgba(3));
 
         #endregion
     }
