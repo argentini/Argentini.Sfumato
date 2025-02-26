@@ -4113,8 +4113,8 @@ public sealed class SfumatoAppState
     public Regex CoreClassRegex { get; }
     public Regex SfumatoScssRegex { get; }
     public Regex SfumatoScssApplyRegex { get; }
-    public Regex PeerVariantRegex { get; } = new (@"(peer\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))", RegexOptions.Compiled);
-    public Regex GroupVariantRegex { get; } = new (@"(group\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))", RegexOptions.Compiled);
+    public Regex PeerVariantRegex { get; } = new (@"(([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}peer(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))", RegexOptions.Compiled);
+    public Regex GroupVariantRegex { get; } = new (@"(([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}group(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))", RegexOptions.Compiled);
 
     #endregion
     
@@ -4190,7 +4190,13 @@ public sealed class SfumatoAppState
 	    const string coreClassExpression = 
             """
             (?<=[\s"'`])
-            ((peer\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))|(group\-([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:))|([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:)){0,5}
+            (
+                ([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}
+                |
+                (peer(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))
+                |
+                (group(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))
+            ){0,5}
             (
                 ([\!\-]{0,2}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,10})
                 (
@@ -4432,8 +4438,13 @@ public sealed class SfumatoAppState
         
 #if DEBUG
         var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
-
-        // index = workingPath[..index].TrimEnd(Path.DirectorySeparatorChar).LastIndexOf(Path.DirectorySeparatorChar);
+        
+        /*
+        if (index == -1)
+	        index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
+        index = workingPath[..index].TrimEnd(Path.DirectorySeparatorChar).LastIndexOf(Path.DirectorySeparatorChar);
+        return Path.Combine(workingPath[..index], "Coursabi", "Coursabi.Apps", "Coursabi.Apps.Client", "Coursabi.Apps.Client");        
+        */
         // return Path.Combine(workingPath[..index], "Fynydd-Website-2024", "UmbracoCms");        
 
         if (index > -1)
@@ -4789,7 +4800,7 @@ public sealed class SfumatoAppState
 		
 		var tasks = new List<Task>();
 		var matches = CoreClassRegex.Matches(watchedFile.Markup).DistinctBy(m => m.Value).ToList();
-
+		
 		if (matches.Count > 0)
 		{
 			FilterCoreClassMatches(matches);
@@ -4824,7 +4835,7 @@ public sealed class SfumatoAppState
 	/// <param name="collection"></param>
 	/// <param name="value"></param>
 	/// <param name="isArbitraryCss"></param>
-	public async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value, bool isArbitraryCss = false)
+	private async Task AddCssSelectorToCollection(ConcurrentDictionary<string,CssSelector> collection, string value, bool isArbitraryCss = false)
 	{
 		if (collection.ContainsKey(value))
 			return;
@@ -4845,18 +4856,16 @@ public sealed class SfumatoAppState
 	/// </summary>
 	/// <param name="variantsList"></param>
 	/// <returns></returns>
-	public bool VariantsAreValid(string variantsList)
+	private bool VariantsAreValid(string variantsList)
 	{
 		var variants = variantsList.TrimEnd(':').Split(':');
 
         foreach (var variant in variants)
         {
-            if (variant.StartsWith("peer-"))
-                return CssSelector.TryHasPeerVariant(this, $"{variant}:", out _, out _);
-            
-            if (variant.StartsWith("group-"))
-	            return CssSelector.TryHasGroupVariant(this, $"{variant}:", out _, out _);
-
+	        if (variant.StartsWith("peer-", StringComparison.Ordinal) || variant.Contains(":peer-", StringComparison.Ordinal) || 
+	            variant.StartsWith("group-", StringComparison.Ordinal) || variant.Contains(":group-", StringComparison.Ordinal))	        
+		        return CssSelector.HasPeerGroupVariant(this, $"{variant}:", variant, out _, out _);
+    
             if (AllVariants.Contains(variant) == false)
                 return false;
         }
@@ -4899,6 +4908,33 @@ public sealed class SfumatoAppState
 		var variants = string.Empty;
 		var indexOfBracket = selector.IndexOf('[');
 
+		if (selector.StartsWith("peer-", StringComparison.Ordinal) || selector.StartsWith("group-", StringComparison.Ordinal) || selector.Contains(":peer-", StringComparison.Ordinal) || selector.Contains(":group-", StringComparison.Ordinal))
+		{
+			var idxOfBracket = selector.IndexOf('[');
+			var idxOfClosingBracket = selector.IndexOf(']');
+	            
+			if (idxOfBracket > 0 && idxOfClosingBracket > idxOfBracket && idxOfClosingBracket < selector.Length - 1)
+			{
+				selector = selector[(idxOfClosingBracket + 2)..];
+			}
+			else
+			{
+				var idxOfSlash = selector.IndexOf('/');
+				
+				if (idxOfSlash > 0 && idxOfSlash < selector.Length - 1)
+				{
+					selector = selector[idxOfSlash..];
+					
+					var idxOfColon = selector.IndexOf(':');
+
+					if (idxOfColon > 0 && idxOfColon < selector.Length - 1)
+						selector = selector[(idxOfColon + 1)..];
+				}
+			}
+			
+			indexOfBracket = -1;
+		}
+
 		if (indexOfBracket > -1)
 			selector = selector[..indexOfBracket].TrimEnd('-').TrimEnd('/');
 			
@@ -4918,29 +4954,49 @@ public sealed class SfumatoAppState
         
 		var indexOfSlash = selector.LastIndexOf('/');
 
-        if (selector.IndexOf("peer-", StringComparison.Ordinal) > -1)
+        if (selector == "peer" || selector.IndexOf("peer-", StringComparison.Ordinal) > -1)
         {
             var matches = PeerVariantRegex.Matches(selector);
 
             if (matches.Count == 1)
             {
-                var peerSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
+	            var idxOfBracket = matches[0].Value.IndexOf('[');
+	            var idxOfClosingBracket = matches[0].Value.IndexOf(']');
+	            
+	            if (idxOfBracket > 0 && idxOfClosingBracket > idxOfBracket)
+	            {
+		            indexOfSlash = idxOfClosingBracket + 1;
+	            }
+	            else
+	            {
+	                var peerSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
 
-                if (peerSlashIndex == indexOfSlash)
-                    indexOfSlash = -1;
+	                if (peerSlashIndex == indexOfSlash)
+	                    indexOfSlash = -1;
+	            }
             }
         }
 
-        else if (selector.IndexOf("group-", StringComparison.Ordinal) > -1)
+        else if (selector == "group" || selector.IndexOf("group-", StringComparison.Ordinal) > -1)
         {
 	        var matches = GroupVariantRegex.Matches(selector);
 
 	        if (matches.Count == 1)
 	        {
-		        var groupSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
+		        var idxOfBracket = matches[0].Value.IndexOf('[');
+		        var idxOfClosingBracket = matches[0].Value.IndexOf(']');
+	            
+		        if (idxOfBracket > 0 && idxOfClosingBracket > idxOfBracket)
+		        {
+			        indexOfSlash = idxOfClosingBracket + 1;
+		        }
+		        else
+		        {
+			        var groupSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
 
-		        if (groupSlashIndex == indexOfSlash)
-			        indexOfSlash = -1;
+			        if (groupSlashIndex == indexOfSlash)
+				        indexOfSlash = -1;
+			    }
 	        }
         }
         
@@ -5032,7 +5088,7 @@ public sealed class SfumatoAppState
 
             var htmlTag = htmlDoc.DocumentNode.SelectSingleNode("//html");
 
-            if (htmlTag != null)
+            if (htmlTag is not null)
             {
                 var classes = htmlTag.GetAttributeValue("class", string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
 

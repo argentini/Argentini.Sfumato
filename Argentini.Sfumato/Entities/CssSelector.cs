@@ -1,3 +1,5 @@
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace Argentini.Sfumato.Entities;
 
 public sealed class CssSelector
@@ -85,6 +87,7 @@ public sealed class CssSelector
     public string ArbitraryValue { get; set; } = string.Empty;
     public string ArbitraryValueType { get; set; } = string.Empty;
     public string PseudoclassPath { get; set; } = string.Empty;
+    public string PeerGroupPrefix { get; set; } = string.Empty;
     
 	#endregion    
 
@@ -401,7 +404,9 @@ public sealed class CssSelector
 		    IsInvalid = true;
 		    return;
 	    }
-        
+
+	    var peerGroupBase = string.Empty;
+	    
 	    var rightOfVariants = Selector;
 	    var rootSegment = Selector;
 	    
@@ -413,14 +418,50 @@ public sealed class CssSelector
 		    IsInvalid = true;
 		    return;
 	    }
+
+	    #region Pre-Process Peer/Group
+	    
+	    if (rootSegment.StartsWith("peer-", StringComparison.Ordinal) || rootSegment.Contains(":peer-", StringComparison.Ordinal) || 
+	        rootSegment.StartsWith("group-", StringComparison.Ordinal) || rootSegment.Contains(":group-", StringComparison.Ordinal))
+	    {
+		    var segment = rootSegment.Contains("peer-", StringComparison.Ordinal) ? "peer" : "group";
+
+		    if (rootSegment.StartsWith("peer-", StringComparison.Ordinal) ||
+		        rootSegment.Contains(":peer-", StringComparison.Ordinal))
+		    {
+			    segment = "peer";
+		    }
+		    
+		    if (rootSegment.StartsWith("group-", StringComparison.Ordinal) ||
+		        rootSegment.Contains(":group-", StringComparison.Ordinal))
+		    {
+			    segment = "group";
+		    }
+
+		    if (HasPeerGroupVariant(AppState, Selector, segment, out peerGroupBase, out var peerGroupPrefix))
+		    {
+			    PeerGroupPrefix = peerGroupPrefix;
+		    }
+		    
+		    indexOfBracket = peerGroupBase.IndexOf('[');
+		    indexOfBracketClose = peerGroupBase.LastIndexOf(']');
+	    }
+	    
+	    #endregion
+
+	    var workingSelector = string.IsNullOrEmpty(peerGroupBase) ? Selector : peerGroupBase;
+
+	    if (string.IsNullOrEmpty(peerGroupBase) == false)
+		    rootSegment = workingSelector;
 	    
 	    #region Process Arbitrary Value
 	    
-	    if (indexOfBracket > -1)
+	    if (workingSelector.IndexOf('[') > -1 && workingSelector.IndexOf(']') > 0 && indexOfBracket > -1 && indexOfBracketClose > indexOfBracket)
 	    {
-		    ArbitraryValue = Selector.Substring(indexOfBracket + 1, indexOfBracketClose - indexOfBracket - 1).Replace('_', ' ').Replace("\\ ", "\\_");
-		    
-		    rootSegment = Selector[..indexOfBracket].TrimEnd('-');
+		    ArbitraryValue = workingSelector.Substring(indexOfBracket + 1, indexOfBracketClose - indexOfBracket - 1)
+			    .Replace('_', ' ').Replace("\\ ", "\\_");
+
+		    rootSegment = workingSelector[..indexOfBracket].TrimEnd('-');
 
 		    if (IsArbitraryCss == false)
 		    {
@@ -445,38 +486,6 @@ public sealed class CssSelector
 	    {
 		    var indexOfLastSlash = rootSegment.LastIndexOf('/');
 
-            if (rootSegment.IndexOf("peer-", StringComparison.Ordinal) > -1)
-            {
-                if (AppState is not null)
-                {
-                    var matches = AppState.PeerVariantRegex.Matches(rootSegment);
-
-                    if (matches.Count == 1)
-                    {
-                        var peerSlashIndex = matches[0].Value.IndexOf('/') + rootSegment.IndexOf(matches[0].Value, StringComparison.Ordinal);
-
-                        if (peerSlashIndex == indexOfLastSlash)
-                            indexOfLastSlash = -1;
-                    }
-                }
-            }
-
-            else if (rootSegment.IndexOf("group-", StringComparison.Ordinal) > -1)
-            {
-	            if (AppState is not null)
-	            {
-		            var matches = AppState.GroupVariantRegex.Matches(rootSegment);
-
-		            if (matches.Count == 1)
-		            {
-			            var groupSlashIndex = matches[0].Value.IndexOf('/') + rootSegment.IndexOf(matches[0].Value, StringComparison.Ordinal);
-
-			            if (groupSlashIndex == indexOfLastSlash)
-				            indexOfLastSlash = -1;
-		            }
-	            }
-            }
-
 		    if (indexOfLastSlash == 0)
 		    {
 			    IsInvalid = true;
@@ -485,15 +494,15 @@ public sealed class CssSelector
             
             // Handle text-[0.75rem]/1
 
-            if (indexOfLastSlash < 0 && Selector.LastIndexOf('/') > Selector.LastIndexOf(']'))
+            if (indexOfLastSlash < 0 && workingSelector.LastIndexOf('/') > workingSelector.LastIndexOf(']'))
             {
-                indexOfLastSlash = Selector.LastIndexOf('/');
+                indexOfLastSlash = workingSelector.LastIndexOf('/');
 
-                if (indexOfLastSlash > 0 && indexOfLastSlash < Selector.Length - 1)
+                if (indexOfLastSlash > 0 && indexOfLastSlash < workingSelector.Length - 1)
                 {
                     UsesModifier = true;
-                    ModifierSegment = Selector[indexOfLastSlash..];
-                    ModifierValue = Selector[(indexOfLastSlash + 1)..];
+                    ModifierSegment = workingSelector[indexOfLastSlash..];
+                    ModifierValue = workingSelector[(indexOfLastSlash + 1)..];
 
                     var valueTypePackage = SetCustomValueType(ModifierValue, AppState);
 
@@ -535,7 +544,7 @@ public sealed class CssSelector
 	    {
 		    VariantSegment = rootSegment[..(indexOfLastColon + 1)];
 		    rootSegment = rootSegment[(indexOfLastColon + 1)..];
-		    rightOfVariants = Selector[(indexOfLastColon + 1)..];
+		    rightOfVariants = workingSelector[(indexOfLastColon + 1)..];
 	    }
 	    
 	    if (VariantSegment.Length > 0)
@@ -558,24 +567,6 @@ public sealed class CssSelector
 
 			    foreach (var segment in segments)
 			    {
-                    if (segment.IndexOf("peer-", StringComparison.Ordinal) > -1)
-                    {
-                        if (TryHasPeerVariant(AppState, $"{segment}:", out _, out _))
-                        {
-                            PseudoClassVariants.Add(segment);
-                            continue;
-                        }
-                    }
-
-                    else if (segment.IndexOf("group-", StringComparison.Ordinal) > -1)
-                    {
-	                    if (TryHasGroupVariant(AppState, $"{segment}:", out _, out _))
-	                    {
-		                    PseudoClassVariants.Add(segment);
-		                    continue;
-	                    }
-                    }
-
 				    if (AppState?.PseudoclassPrefixes.ContainsKey(segment) == false)
 					    continue;
 
@@ -592,8 +583,7 @@ public sealed class CssSelector
 
                 foreach (var pseudoClass in PseudoClassVariants)
                 {
-                    if (pseudoClass.Contains("peer-") == false && pseudoClass.Contains("group-") == false)
-                        PseudoclassPath += AppState?.PseudoclassPrefixes[pseudoClass];
+	                PseudoclassPath += AppState?.PseudoclassPrefixes[pseudoClass];
                 }
                 
 			    FixedSelector += rightOfVariants;
@@ -667,22 +657,37 @@ public sealed class CssSelector
                 value.Append(c);
             }
 
-            if (Selector.Contains("peer-"))
+            if (Selector.StartsWith("peer-", StringComparison.Ordinal) || Selector.Contains(":peer-", StringComparison.Ordinal))            
             {
-	            IsInvalid = TryHasPeerVariant(AppState, Selector, out var pseudoClass, out var peerClass) == false;
+	            if (string.IsNullOrEmpty(PeerGroupPrefix))
+	            {
+		            IsInvalid = HasPeerGroupVariant(AppState, Selector, "peer", out _, out var peerGroupPrefix) == false;
 
-	            if (IsInvalid == false)
-		            value.Insert(0, $"{peerClass}:{pseudoClass}~.");
+		            if (IsInvalid)
+			            return value.ToString();
+		            
+		            PeerGroupPrefix = peerGroupPrefix;
+				}		            
+
+	            value.Insert(
+		            0,
+		            $"{PeerGroupPrefix}~.");
             }
-            else
+            else if (Selector.StartsWith("group-", StringComparison.Ordinal) || Selector.Contains(":group-", StringComparison.Ordinal))
             {
-	            if (Selector.Contains("group-") == false)
-		            return value.ToString();
-	            
-	            IsInvalid = TryHasGroupVariant(AppState, Selector, out var pseudoClass, out var groupClass) == false;
+	            if (string.IsNullOrEmpty(PeerGroupPrefix))
+	            {
+		            IsInvalid = HasPeerGroupVariant(AppState, Selector, "group", out _, out var peerGroupPrefix) == false;
 
-	            if (IsInvalid == false)
-		            value.Insert(0, $"{groupClass}:{pseudoClass} .");
+		            if (IsInvalid)
+			            return value.ToString();
+		            
+		            PeerGroupPrefix = peerGroupPrefix;
+		        }
+
+	            value.Insert(
+		            0,
+		            $"{PeerGroupPrefix} .");
             }
             
             return value.ToString();
@@ -731,95 +736,119 @@ public sealed class CssSelector
     }
 
     /// <summary>
-    /// Determine if a selector has a peer variant.
+    /// Determine if a selector has a peer/group variant.
     /// Output variable contains the pseudo class being used. 
     /// Output variable contains the CSS escaped peer class being targeted. 
     /// </summary>
     /// <param name="appState"></param>
     /// <param name="selector"></param>
-    /// <param name="pseudoClass"></param>
-    /// <param name="peerClass"></param>
+    /// <param name="segment"></param>
+    /// <param name="peerGroupBase"></param>
+    /// <param name="peerGroupPrefix"></param>
     /// <returns></returns>
-    public static bool TryHasPeerVariant(SfumatoAppState? appState, string selector, out string pseudoClass, out string peerClass)
+    public static bool HasPeerGroupVariant(SfumatoAppState? appState, string selector, string segment, out string peerGroupBase, out string peerGroupPrefix)
     {
-	    pseudoClass = string.Empty;
-        peerClass = string.Empty;
-        
-        if (appState is null)
-            return false;
-        
-        if (selector.IndexOf("peer-", StringComparison.Ordinal) < 0)
-            return false;
-        
-        var matches = appState.PeerVariantRegex.Matches(selector);
+	    peerGroupBase = string.Empty;
+	    peerGroupPrefix = string.Empty;
 
-        if (matches.Count != 1)
-            return false;
-        
-        var match = matches[0].Value.TrimEnd(':');
-        
-        pseudoClass = match[(match.IndexOf("peer-", StringComparison.Ordinal) + 5)..];
-        peerClass = "peer";
-
-        if (pseudoClass.Contains('/') && pseudoClass.EndsWith('/') == false)
-        {
-            peerClass += $@"\/{pseudoClass[(pseudoClass.IndexOf('/') + 1)..]}";
-            pseudoClass = pseudoClass[..pseudoClass.IndexOf('/')];
-        }
-
-        if (appState.PseudoclassPrefixes.ContainsKey(pseudoClass))
-            return true;
-        
-        pseudoClass = string.Empty;
-        peerClass = string.Empty;
-        
-        return false;
-    }
-
-    /// <summary>
-    /// Determine if a selector has a group variant.
-    /// Output variable contains the pseudo class being used. 
-    /// Output variable contains the CSS escaped group class being targeted. 
-    /// </summary>
-    /// <param name="appState"></param>
-    /// <param name="selector"></param>
-    /// <param name="pseudoClass"></param>
-    /// <param name="groupClass"></param>
-    /// <returns></returns>
-    public static bool TryHasGroupVariant(SfumatoAppState? appState, string selector, out string pseudoClass, out string groupClass)
-    {
-	    pseudoClass = string.Empty;
-	    groupClass = string.Empty;
-        
-	    if (appState is null)
+	    if (segment != "peer" && segment != "group")
 		    return false;
-        
-	    if (selector.IndexOf("group-", StringComparison.Ordinal) < 0)
-		    return false;
-        
-	    var matches = appState.GroupVariantRegex.Matches(selector);
 
-	    if (matches.Count != 1)
+	    if (selector.StartsWith($"{segment}-", StringComparison.Ordinal) == false && selector.Contains($":{segment}-", StringComparison.Ordinal) == false)
 		    return false;
-        
-	    var match = matches[0].Value.TrimEnd(':');
-        
-	    pseudoClass = match[(match.IndexOf("group-", StringComparison.Ordinal) + 6)..];
-	    groupClass = "group";
-
-	    if (pseudoClass.Contains('/') && pseudoClass.EndsWith('/') == false)
+	    
+	    var idxOfBracket = selector.IndexOf($"{segment}-[", StringComparison.Ordinal);
+    
+	    if (idxOfBracket > -1)
 	    {
-		    groupClass += $@"\/{pseudoClass[(pseudoClass.IndexOf('/') + 1)..]}";
-		    pseudoClass = pseudoClass[..pseudoClass.IndexOf('/')];
-	    }
+		    idxOfBracket += $"{segment}-[".Length;
+		    
+		    var idxOfClosingBracket = selector[idxOfBracket..].IndexOf(']', StringComparison.Ordinal);
 
-	    if (appState.PseudoclassPrefixes.ContainsKey(pseudoClass))
+		    if (idxOfClosingBracket < 2)
+			    return false;
+
+		    idxOfClosingBracket += idxOfBracket;
+			    
+		    var pseudoClass = selector.Substring(idxOfBracket, idxOfClosingBracket - idxOfBracket);
+		    var pc = string.Empty;
+
+		    if (pseudoClass.StartsWith(':'))
+		    {
+			    pc = peerGroupBase;
+			    peerGroupBase = string.Empty;
+		    }
+
+		    var workingPseudoClass = string.Empty;
+				    
+		    for (var i = 0; i < pseudoClass.Length; i++)
+		    {
+			    var c = pseudoClass[i];
+
+			    if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_' && c != '.'))
+				    workingPseudoClass += '\\';
+
+			    workingPseudoClass += c;
+		    }
+
+		    pseudoClass = workingPseudoClass;
+				    
+		    var idxOfColon = selector[idxOfClosingBracket..].IndexOf(':', StringComparison.Ordinal);
+
+		    if (idxOfColon > 0)
+			    peerGroupBase = selector[(idxOfClosingBracket + idxOfColon + 1)..];
+		    else
+			    return false;
+
+		    if (selector.Contains($":{segment}-", StringComparison.Ordinal))
+			    peerGroupBase = selector[..(selector.IndexOf($":{segment}-", StringComparison.Ordinal) + 1)].Trim(':') + ':' + peerGroupBase;
+				    
+		    peerGroupPrefix = $"{segment}{pseudoClass}{pc}";
+
 		    return true;
-        
-	    pseudoClass = string.Empty;
-	    groupClass = string.Empty;
+	    }
+	    else
+	    {
+		    var pseudoClass = string.Empty;
+		    var idxOfHyphen = selector.IndexOf('-', StringComparison.Ordinal);
+		    var idxOfSlash = selector.IndexOf('/', StringComparison.Ordinal);
 
-	    return false;
+		    if (idxOfHyphen > 0 && idxOfSlash > idxOfHyphen + 1)
+		    {
+			    if (idxOfSlash < selector.Length - 1)
+			    {
+				    var idxOfColon = selector[idxOfSlash..].IndexOf(':', StringComparison.Ordinal);
+
+				    if (idxOfColon > 0)
+				    {
+					    idxOfColon += idxOfSlash;
+						    
+					    var pc = string.Empty;
+						    
+					    peerGroupBase = selector[(idxOfColon + 1)..];
+						    
+					    var ios = selector.IndexOf('/', StringComparison.Ordinal);
+						    
+					    if (ios > idxOfHyphen)
+						    pc = $":{selector.Substring(idxOfHyphen + 1, ios - idxOfHyphen - 1)}";
+
+					    peerGroupPrefix =
+						    $@"{segment}\/{selector.Substring(idxOfSlash + 1, idxOfColon - idxOfSlash - 1)}{pc}";
+					    
+					    pseudoClass = selector.Substring(idxOfHyphen + 1, idxOfSlash - idxOfHyphen - 1);
+				    }
+				    else
+				    {
+					    return false;
+				    }
+			    }
+				    
+			    if (selector.Contains($":{segment}-", StringComparison.Ordinal))
+				    peerGroupBase = selector[..(selector.IndexOf($":{segment}-", StringComparison.Ordinal) + 1)].Trim(':') + ':' + peerGroupBase;
+		    }
+
+		    return appState?.PseudoclassPrefixes.ContainsKey(pseudoClass) ?? false;
+	    }
     }
 }
 

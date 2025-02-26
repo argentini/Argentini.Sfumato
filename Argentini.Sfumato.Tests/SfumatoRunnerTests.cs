@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Extensions;
 
@@ -94,7 +93,7 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var regex = new Regex(@"(peer\-([a-z\-]{1,50}[/]{0,1}([a-z\-]{0,50})?:))", RegexOptions.Compiled);
+        var regex = appState.PeerVariantRegex;
         var matches = regex.Matches("md:peer-hover:text-base");
 
         Assert.Single(matches);
@@ -128,21 +127,33 @@ public class SfumatoRunnerTests
 
         await appState.InitializeAsync(Array.Empty<string>());
 
-        var regex = new Regex(@"(group\-([a-z\-]{1,50}[/]{0,1}([a-z\-]{0,50})?:))", RegexOptions.Compiled);
+        var regex = appState.GroupVariantRegex;
+        var ms = regex.Matches("group-hover/test:text-base");
+        Assert.Single(ms);
+        ms = regex.Matches("md:group-hover/test:text-base");
+        Assert.Single(ms);
+        ms = regex.Matches("md:group-[.selected]:text-base");
+        Assert.Single(ms);
+        
         var matches = regex.Matches("md:group-hover:text-base");
 
         Assert.Single(matches);
-        Assert.Equal("group-hover:", matches[0].Value);
+        Assert.Equal("md:group-hover:", matches[0].Value);
 
         matches = regex.Matches("md:group-hover/checkbox:text-base");
 
         Assert.Single(matches);
-        Assert.Equal("group-hover/checkbox:", matches[0].Value);
+        Assert.Equal("md:group-hover/checkbox:", matches[0].Value);
 
         var cssSelector = new CssSelector(appState, "group-hover/test:text-base");
         await cssSelector.ProcessSelectorAsync();
-
+        
         Assert.Equal(@"group\/test:hover .group-hover\/test\:text-base", cssSelector.EscapedSelector);
+
+        cssSelector = new CssSelector(appState, "group-hover/test:text-base/1");
+        await cssSelector.ProcessSelectorAsync();
+
+        Assert.Equal(@"group\/test:hover .group-hover\/test\:text-base\/1", cssSelector.EscapedSelector);
 
         var result = new ScssClass
         {
@@ -152,7 +163,57 @@ public class SfumatoRunnerTests
             CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
         };
 
-        Assert.Equal($$""".group\/test:hover .group-hover\/test\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
+        Assert.Equal($$""".group\/test:hover .group-hover\/test\:text-base\/1 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 1; }""".CompactCss(), result.GetScssMarkup().CompactCss());
+        
+        cssSelector = new CssSelector(appState, "group:text-base");
+        await cssSelector.ProcessSelectorAsync();
+
+        Assert.Equal(@"group\:text-base", cssSelector.EscapedSelector);
+        
+        cssSelector = new CssSelector(appState, "group-[.selected]:text-base");
+        await cssSelector.ProcessSelectorAsync();
+
+        Assert.Equal(@"group.selected .group-\[\.selected\]\:text-base", cssSelector.EscapedSelector);
+
+        result = new ScssClass
+        {
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
+
+        Assert.Equal($$""".group.selected .group-\[\.selected\]\:text-base { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.TextSizeLeadingOptions["base"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
+        
+        cssSelector = new CssSelector(appState, "group-[.selected]:text-base/1");
+        await cssSelector.ProcessSelectorAsync();
+
+        Assert.Equal(@"group.selected .group-\[\.selected\]\:text-base\/1", cssSelector.EscapedSelector);
+
+        result = new ScssClass
+        {
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
+
+        Assert.Equal($$""".group.selected .group-\[\.selected\]\:text-base\/1 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: {{appState.LeadingOptions["1"]}}; }""".CompactCss(), result.GetScssMarkup().CompactCss());
+        
+        cssSelector = new CssSelector(appState, "tabp:group-[.selected]:text-base/1");
+        await cssSelector.ProcessSelectorAsync();
+
+        Assert.Equal(@"group.selected .tabp\:group-\[\.selected\]\:text-base\/1", cssSelector.EscapedSelector);
+        
+        result = new ScssClass
+        {
+            Selectors = { cssSelector.EscapedSelector },
+            PseudoclassSuffix = cssSelector.PseudoclassPath,
+            ScssProperties = cssSelector.GetStyles(),
+            CompactScssProperties = cssSelector.ScssMarkup.CompactCss()
+        };
+
+        Assert.Equal($$""".group.selected .tabp\:group-\[\.selected\]\:text-base\/1 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 1; }""".CompactCss(), result.GetScssMarkup().CompactCss());
     }
 
     [Fact]
