@@ -4113,8 +4113,8 @@ public sealed class SfumatoAppState
     public Regex CoreClassRegex { get; }
     public Regex SfumatoScssRegex { get; }
     public Regex SfumatoScssApplyRegex { get; }
-    public Regex PeerVariantRegex { get; } = new (@"(([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}peer(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))", RegexOptions.Compiled);
-    public Regex GroupVariantRegex { get; } = new (@"(([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}group(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))", RegexOptions.Compiled);
+    public Regex PeerVariantRegex { get; } = new (@"((([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}){0,5}((peer\-[\-a-z]{1,25}\/[\-a-zA-Z0-9]{1,50}\:)|(peer\-[\-a-z]{1,25}\:)|(peer\-\[[^\[\]\s]{1,250}\]\:))[^\s]{1,250})", RegexOptions.Compiled);
+    public Regex GroupVariantRegex { get; } = new (@"((([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}){0,5}((group\-[\-a-z]{1,25}\/[\-a-zA-Z0-9]{1,50}\:)|(group\-[\-a-z]{1,25}\:)|(group\-\[[^\[\]\s]{1,250}\]\:))[^\s]{1,250})", RegexOptions.Compiled);
 
     #endregion
     
@@ -4187,16 +4187,24 @@ public sealed class SfumatoAppState
 	    
 	    ArbitraryCssRegex = new Regex(arbitraryCssExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 	    
+	    // peer-hover/edit:text-base/1
+	    // peer-hover:text-base/1
+	    // peer-[.selected]:text-base/1
+	    // peer-[:hover]:text-base/1
+	    
 	    const string coreClassExpression = 
             """
             (?<=[\s"'`])
             (
                 ([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}
-                |
-                (peer(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))
-                |
-                (group(\-(([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\]){0,1}?:)|([a-z\-]{1,50}([/]([a-z\-]{0,50})){0,1}?:)))
             ){0,5}
+            (
+                ((peer|group)\-[\-a-z]{1,25}\/[\-a-zA-Z0-9]{1,50}\:)
+                |
+                ((peer|group)\-[\-a-z]{1,25}\:)
+                |
+                ((peer|group)\-\[[^\[\]\s]{1,250}\]\:)
+            ){0,1}
             (
                 ([\!\-]{0,2}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,10})
                 (
@@ -4862,11 +4870,12 @@ public sealed class SfumatoAppState
 
         foreach (var variant in variants)
         {
-	        if (variant.StartsWith("peer-", StringComparison.Ordinal) || variant.Contains(":peer-", StringComparison.Ordinal) || 
-	            variant.StartsWith("group-", StringComparison.Ordinal) || variant.Contains(":group-", StringComparison.Ordinal))	        
+	        if (CssSelector.IsPeerGroupSelector(variant, "peer") || CssSelector.IsPeerGroupSelector(variant, "group"))
+	        {
 		        return CssSelector.HasPeerGroupVariant(this, $"{variant}:", variant, out _, out _);
-    
-            if (AllVariants.Contains(variant) == false)
+	        }
+
+	        if (AllVariants.Contains(variant) == false)
                 return false;
         }
 
@@ -4905,41 +4914,55 @@ public sealed class SfumatoAppState
 		if (invalidEnding)
 			return false;
 			
-		var variants = string.Empty;
-		var indexOfBracket = selector.IndexOf('[');
-
-		if (selector.StartsWith("peer-", StringComparison.Ordinal) || selector.StartsWith("group-", StringComparison.Ordinal) || selector.Contains(":peer-", StringComparison.Ordinal) || selector.Contains(":group-", StringComparison.Ordinal))
+		var peerGroupSegment = CssSelector.IsPeerGroupSelector(selector, "peer") ? "peer" : CssSelector.IsPeerGroupSelector(selector, "group") ? "group" : string.Empty;
+		
+		if (string.IsNullOrEmpty(peerGroupSegment) == false)		
 		{
-			var idxOfBracket = selector.IndexOf('[');
-			var idxOfClosingBracket = selector.IndexOf(']');
-	            
-			if (idxOfBracket > 0 && idxOfClosingBracket > idxOfBracket && idxOfClosingBracket < selector.Length - 1)
-			{
-				selector = selector[(idxOfClosingBracket + 2)..];
-			}
+			var indexOfUtilityClassDelim = -1;
+			var segment = peerGroupSegment;
+			var matches = segment == "peer" ? PeerVariantRegex.Matches(selector) : GroupVariantRegex.Matches(selector);
+				
+			if (matches.Count != 1)
+				return false;
+
+			var idxStart = matches[0].Value.IndexOf($"{segment}-", StringComparison.Ordinal);
+			var selectorRoot = idxStart > 0 ? matches[0].Value[idxStart..] : matches[0].Value;
+			var indexPadding = selector.Length - selectorRoot.Length;
+			var idxOfBracket = selectorRoot.IndexOf('[');
+			var idxOfClosingBracket = selectorRoot.IndexOf(']');
+            
+			if (idxOfBracket > 0 && idxOfClosingBracket > idxOfBracket)
+				indexOfUtilityClassDelim = idxOfClosingBracket + indexPadding + 1;
 			else
 			{
-				var idxOfSlash = selector.IndexOf('/');
-				
-				if (idxOfSlash > 0 && idxOfSlash < selector.Length - 1)
-				{
-					selector = selector[idxOfSlash..];
-					
-					var idxOfColon = selector.IndexOf(':');
+				var idxOfColon = selectorRoot.IndexOf(':');
 
-					if (idxOfColon > 0 && idxOfColon < selector.Length - 1)
-						selector = selector[(idxOfColon + 1)..];
-				}
+				indexOfUtilityClassDelim = idxOfColon + indexPadding;
 			}
+
+			if (indexOfUtilityClassDelim > -1)
+				selector = selector[(indexOfUtilityClassDelim + 1)..];
+			else
+				return false;
+
+			var idxOfSlash = selector.LastIndexOf('/');
 			
-			indexOfBracket = -1;
+			if (idxOfSlash > -1)
+				selector = selector[..idxOfSlash];
+			
+			var result = UtilityClassCollection.ContainsKey(selector);
+
+			return result;
 		}
 
+		var variants = string.Empty;
+		var indexOfBracket = selector.IndexOf('[');
+		
 		if (indexOfBracket > -1)
 			selector = selector[..indexOfBracket].TrimEnd('-').TrimEnd('/');
 			
 		var indexOfColon = selector.LastIndexOf(':');
-
+		
 		if (indexOfColon > 1 && indexOfColon < selector.Length - 1)
 		{
 			variants = selector[..(indexOfColon + 1)];
@@ -4948,58 +4971,12 @@ public sealed class SfumatoAppState
 			if (VariantsAreValid(variants) == false)
 				return false;
 		}
-        
+
         selector = selector.TrimStart('!');
         selector = selector.TrimStart('-');
-        
-		var indexOfSlash = selector.LastIndexOf('/');
 
-        if (selector == "peer" || selector.IndexOf("peer-", StringComparison.Ordinal) > -1)
-        {
-            var matches = PeerVariantRegex.Matches(selector);
+        var indexOfSlash = selector.LastIndexOf('/');
 
-            if (matches.Count == 1)
-            {
-	            var idxOfBracket = matches[0].Value.IndexOf('[');
-	            var idxOfClosingBracket = matches[0].Value.IndexOf(']');
-	            
-	            if (idxOfBracket > 0 && idxOfClosingBracket > idxOfBracket)
-	            {
-		            indexOfSlash = idxOfClosingBracket + 1;
-	            }
-	            else
-	            {
-	                var peerSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
-
-	                if (peerSlashIndex == indexOfSlash)
-	                    indexOfSlash = -1;
-	            }
-            }
-        }
-
-        else if (selector == "group" || selector.IndexOf("group-", StringComparison.Ordinal) > -1)
-        {
-	        var matches = GroupVariantRegex.Matches(selector);
-
-	        if (matches.Count == 1)
-	        {
-		        var idxOfBracket = matches[0].Value.IndexOf('[');
-		        var idxOfClosingBracket = matches[0].Value.IndexOf(']');
-	            
-		        if (idxOfBracket > 0 && idxOfClosingBracket > idxOfBracket)
-		        {
-			        indexOfSlash = idxOfClosingBracket + 1;
-		        }
-		        else
-		        {
-			        var groupSlashIndex = matches[0].Value.IndexOf('/') + selector.IndexOf(matches[0].Value, StringComparison.Ordinal);
-
-			        if (groupSlashIndex == indexOfSlash)
-				        indexOfSlash = -1;
-			    }
-	        }
-        }
-        
 		if (indexOfSlash > -1)
 			selector = selector[..indexOfSlash];
 

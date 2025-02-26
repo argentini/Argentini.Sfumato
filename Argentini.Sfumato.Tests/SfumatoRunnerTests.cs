@@ -97,12 +97,12 @@ public class SfumatoRunnerTests
         var matches = regex.Matches("md:peer-hover:text-base");
 
         Assert.Single(matches);
-        Assert.Equal("peer-hover:", matches[0].Value);
+        Assert.Equal("md:peer-hover:text-base", matches[0].Value);
 
         matches = regex.Matches("md:peer-hover/checkbox:text-base");
 
         Assert.Single(matches);
-        Assert.Equal("peer-hover/checkbox:", matches[0].Value);
+        Assert.Equal("md:peer-hover/checkbox:text-base", matches[0].Value);
 
         var cssSelector = new CssSelector(appState, "peer-hover/test:text-base");
         await cssSelector.ProcessSelectorAsync();
@@ -138,12 +138,12 @@ public class SfumatoRunnerTests
         var matches = regex.Matches("md:group-hover:text-base");
 
         Assert.Single(matches);
-        Assert.Equal("md:group-hover:", matches[0].Value);
+        Assert.Equal("md:group-hover:text-base", matches[0].Value);
 
         matches = regex.Matches("md:group-hover/checkbox:text-base");
 
         Assert.Single(matches);
-        Assert.Equal("md:group-hover/checkbox:", matches[0].Value);
+        Assert.Equal("md:group-hover/checkbox:text-base", matches[0].Value);
 
         var cssSelector = new CssSelector(appState, "group-hover/test:text-base");
         await cssSelector.ProcessSelectorAsync();
@@ -214,6 +214,13 @@ public class SfumatoRunnerTests
         };
 
         Assert.Equal($$""".group.selected .tabp\:group-\[\.selected\]\:text-base\/1 { font-size: {{appState.TextSizeOptions["base"]}}; line-height: 1; }""".CompactCss(), result.GetScssMarkup().CompactCss());
+
+        matches = appState.CoreClassRegex.Matches("""<div class="group-hover/edit:text-base/1 group-hover:text-base/1 tabp:group-[.selected]:text-base/1">Test!</div>""");
+        
+        Assert.Equal(3, matches.Count);
+        Assert.Equal("group-hover/edit:text-base/1", matches[0].Value);
+        Assert.Equal("group-hover:text-base/1", matches[1].Value);
+        Assert.Equal("tabp:group-[.selected]:text-base/1", matches[2].Value);
     }
 
     [Fact]

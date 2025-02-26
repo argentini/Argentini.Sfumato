@@ -420,28 +420,13 @@ public sealed class CssSelector
 	    }
 
 	    #region Pre-Process Peer/Group
-	    
-	    if (rootSegment.StartsWith("peer-", StringComparison.Ordinal) || rootSegment.Contains(":peer-", StringComparison.Ordinal) || 
-	        rootSegment.StartsWith("group-", StringComparison.Ordinal) || rootSegment.Contains(":group-", StringComparison.Ordinal))
+
+	    var peerGroupSegment = IsPeerGroupSelector(Selector, "peer") ? "peer" : IsPeerGroupSelector(Selector, "group") ? "group" : string.Empty;
+
+	    if (string.IsNullOrEmpty(peerGroupSegment) == false)
 	    {
-		    var segment = rootSegment.Contains("peer-", StringComparison.Ordinal) ? "peer" : "group";
-
-		    if (rootSegment.StartsWith("peer-", StringComparison.Ordinal) ||
-		        rootSegment.Contains(":peer-", StringComparison.Ordinal))
-		    {
-			    segment = "peer";
-		    }
-		    
-		    if (rootSegment.StartsWith("group-", StringComparison.Ordinal) ||
-		        rootSegment.Contains(":group-", StringComparison.Ordinal))
-		    {
-			    segment = "group";
-		    }
-
-		    if (HasPeerGroupVariant(AppState, Selector, segment, out peerGroupBase, out var peerGroupPrefix))
-		    {
+		    if (HasPeerGroupVariant(AppState, Selector, peerGroupSegment, out peerGroupBase, out var peerGroupPrefix))
 			    PeerGroupPrefix = peerGroupPrefix;
-		    }
 		    
 		    indexOfBracket = peerGroupBase.IndexOf('[');
 		    indexOfBracketClose = peerGroupBase.LastIndexOf(']');
@@ -657,39 +642,25 @@ public sealed class CssSelector
                 value.Append(c);
             }
 
-            if (Selector.StartsWith("peer-", StringComparison.Ordinal) || Selector.Contains(":peer-", StringComparison.Ordinal))            
-            {
-	            if (string.IsNullOrEmpty(PeerGroupPrefix))
-	            {
-		            IsInvalid = HasPeerGroupVariant(AppState, Selector, "peer", out _, out var peerGroupPrefix) == false;
+            var peerGroupSegment = IsPeerGroupSelector(Selector, "peer") ? "peer" : IsPeerGroupSelector(Selector, "group") ? "group" : string.Empty;
 
-		            if (IsInvalid)
-			            return value.ToString();
-		            
-		            PeerGroupPrefix = peerGroupPrefix;
-				}		            
-
-	            value.Insert(
-		            0,
-		            $"{PeerGroupPrefix}~.");
-            }
-            else if (Selector.StartsWith("group-", StringComparison.Ordinal) || Selector.Contains(":group-", StringComparison.Ordinal))
-            {
-	            if (string.IsNullOrEmpty(PeerGroupPrefix))
-	            {
-		            IsInvalid = HasPeerGroupVariant(AppState, Selector, "group", out _, out var peerGroupPrefix) == false;
-
-		            if (IsInvalid)
-			            return value.ToString();
-		            
-		            PeerGroupPrefix = peerGroupPrefix;
-		        }
-
-	            value.Insert(
-		            0,
-		            $"{PeerGroupPrefix} .");
-            }
+            if (string.IsNullOrEmpty(peerGroupSegment))
+	            return value.ToString();
             
+            if (string.IsNullOrEmpty(PeerGroupPrefix))
+            {
+	            IsInvalid = HasPeerGroupVariant(AppState, Selector, peerGroupSegment, out _, out var peerGroupPrefix) == false;
+
+	            if (IsInvalid)
+		            return value.ToString();
+		            
+	            PeerGroupPrefix = peerGroupPrefix;
+            }
+
+            value.Insert(
+	            0,
+	            peerGroupSegment == "peer" ? $"{PeerGroupPrefix}~." : $"{PeerGroupPrefix} .");
+
             return value.ToString();
         }
 
@@ -735,6 +706,18 @@ public sealed class CssSelector
 	    return ScssMarkup;
     }
 
+    public static bool IsPeerGroupSelector(string selector, string segment)
+    {
+	    if (segment != "peer" && segment != "group")
+		    return false;
+
+	    return 
+		    selector.StartsWith($"{segment}:", StringComparison.Ordinal) || 
+		    selector.StartsWith($"{segment}-", StringComparison.Ordinal) || 
+		    selector.Contains($":{segment}-", StringComparison.Ordinal) || 
+		    selector.Contains($":{segment}:", StringComparison.Ordinal);	    
+    }
+    
     /// <summary>
     /// Determine if a selector has a peer/group variant.
     /// Output variable contains the pseudo class being used. 
@@ -754,12 +737,12 @@ public sealed class CssSelector
 	    if (segment != "peer" && segment != "group")
 		    return false;
 
-	    if (selector.StartsWith($"{segment}-", StringComparison.Ordinal) == false && selector.Contains($":{segment}-", StringComparison.Ordinal) == false)
+	    if (IsPeerGroupSelector(selector, segment) == false)
 		    return false;
 	    
 	    var idxOfBracket = selector.IndexOf($"{segment}-[", StringComparison.Ordinal);
     
-	    if (idxOfBracket > -1)
+	    if (idxOfBracket > -1) // group-[.selected]:text-base/1, group-[:hover]:text-base/1
 	    {
 		    idxOfBracket += $"{segment}-[".Length;
 		    
@@ -807,13 +790,19 @@ public sealed class CssSelector
 
 		    return true;
 	    }
-	    else
+	    else  // group-hover:text-base/1, group-hover/edit:text-base/1
 	    {
 		    var pseudoClass = string.Empty;
-		    var idxOfHyphen = selector.IndexOf('-', StringComparison.Ordinal);
+		    var idxOfHyphen = selector.IndexOf($"{segment}-", StringComparison.Ordinal);
+
+		    if (idxOfHyphen < 0)
+			    return false;
+
+		    idxOfHyphen += $"{segment}-".Length - 1;
+		    
 		    var idxOfSlash = selector.IndexOf('/', StringComparison.Ordinal);
 
-		    if (idxOfHyphen > 0 && idxOfSlash > idxOfHyphen + 1)
+		    if (idxOfHyphen > 0 && idxOfSlash > idxOfHyphen + 1) // group-hover/edit:text-base/1
 		    {
 			    if (idxOfSlash < selector.Length - 1)
 			    {
@@ -823,19 +812,14 @@ public sealed class CssSelector
 				    {
 					    idxOfColon += idxOfSlash;
 						    
-					    var pc = string.Empty;
-						    
 					    peerGroupBase = selector[(idxOfColon + 1)..];
-						    
-					    var ios = selector.IndexOf('/', StringComparison.Ordinal);
-						    
-					    if (ios > idxOfHyphen)
-						    pc = $":{selector.Substring(idxOfHyphen + 1, ios - idxOfHyphen - 1)}";
+					    pseudoClass = selector.Substring(idxOfHyphen + 1, idxOfSlash - idxOfHyphen - 1);
 
 					    peerGroupPrefix =
-						    $@"{segment}\/{selector.Substring(idxOfSlash + 1, idxOfColon - idxOfSlash - 1)}{pc}";
+						    $@"{segment}\/{selector.Substring(idxOfSlash + 1, idxOfColon - idxOfSlash - 1)}:{selector.Substring(idxOfHyphen + 1, idxOfSlash - idxOfHyphen - 1)}";
 					    
-					    pseudoClass = selector.Substring(idxOfHyphen + 1, idxOfSlash - idxOfHyphen - 1);
+					    if (selector.Contains($":{segment}-", StringComparison.Ordinal))
+						    peerGroupBase = selector[..(selector.IndexOf($":{segment}-", StringComparison.Ordinal) + 1)].Trim(':') + ':' + peerGroupBase;
 				    }
 				    else
 				    {
@@ -845,6 +829,28 @@ public sealed class CssSelector
 				    
 			    if (selector.Contains($":{segment}-", StringComparison.Ordinal))
 				    peerGroupBase = selector[..(selector.IndexOf($":{segment}-", StringComparison.Ordinal) + 1)].Trim(':') + ':' + peerGroupBase;
+		    }
+		    else if (idxOfHyphen > 0) // group-hover:text-base
+		    {
+			    var idxOfColon = selector.LastIndexOf(':');
+
+			    if (idxOfColon > idxOfHyphen + 1)
+			    {
+				    pseudoClass = selector.Substring(idxOfHyphen + 1, idxOfColon - idxOfHyphen - 1);
+				    peerGroupBase = selector[(idxOfColon + 1)..];
+				    peerGroupPrefix = $"{segment}:{pseudoClass}";
+				    
+				    if (selector.Contains($":{segment}-", StringComparison.Ordinal))
+					    peerGroupBase = selector[..(selector.IndexOf($":{segment}-", StringComparison.Ordinal) + 1)].Trim(':') + ':' + peerGroupBase;
+			    }
+			    else
+			    {
+				    return false;
+			    }
+		    }
+		    else
+		    {
+				return false;
 		    }
 
 		    return appState?.PseudoclassPrefixes.ContainsKey(pseudoClass) ?? false;
