@@ -258,9 +258,6 @@ public class CssSelectorTests
         
         Assert.True(selector.IsNegative);
         Assert.NotNull(selector.ScssUtilityClassGroup);
-
-        var test = selector.GetStyles();
-        
         Assert.Equal("column-gap:-0.75rem;".CompactCss(), selector.GetStyles().CompactCss());
     }
     

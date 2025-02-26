@@ -6,7 +6,7 @@ public sealed class SfumatoRunner
 	
 	public SfumatoAppState AppState { get; } = new();
 
-	public static int IndentationSpaces => 4;
+	private static int IndentationSpaces => 4;
 
 	public static int MaxConsoleWidth => GetMaxConsoleWidth();
 	
@@ -51,6 +51,7 @@ public sealed class SfumatoRunner
 		var fileBytes = new ConcurrentBag<decimal>();
 		var tasks = new List<Task>();
 
+		// ReSharper disable once LoopCanBeConvertedToQuery
 		foreach (var watchedFile in AppState.WatchedScssFiles.Values)
 		{
 			var matches = AppState.SfumatoScssRegex.Matches(watchedFile.Scss);
@@ -66,7 +67,7 @@ public sealed class SfumatoRunner
 		await Console.Out.WriteLineAsync($"Completed build of {fileBytes.Count:N0} CSS file{(fileBytes.Count != 1 ? "s" : string.Empty)} ({fileBytes.Sum().FormatBytes()}) in {timer.FormatTimer()}");
 	}
 
-	public async Task TranspileAsync(WatchedScssFile watchedFile, ConcurrentBag<decimal> fileBytes)
+	private async Task TranspileAsync(WatchedScssFile watchedFile, ConcurrentBag<decimal> fileBytes)
 	{
         var css = await SfumatoScss.TranspileScssAsync(watchedFile.FilePath, watchedFile.Scss, this);
         

@@ -2756,8 +2756,8 @@ public sealed class SfumatoAppState
     #region Constants
 
     public const int FileAccessRetryMs = 5000;
-    
-    public IEnumerable<string> ClassMatchEndingExclusions { get; } =
+
+    private IEnumerable<string> ClassMatchEndingExclusions { get; } =
     [
         "/",
 	    ".css",
@@ -2812,7 +2812,7 @@ public sealed class SfumatoAppState
 		"dpcm", "dppx", "dpi", "x"
     ];
 
-    public List<string> ValidCssPropertyNames { get; } = [];
+	private List<string> ValidCssPropertyNames { get; } = [];
 
     public IEnumerable<string> ValidSafariCssPropertyNames { get; } = 
     [
@@ -4113,30 +4113,32 @@ public sealed class SfumatoAppState
     public Regex CoreClassRegex { get; }
     public Regex SfumatoScssRegex { get; }
     public Regex SfumatoScssApplyRegex { get; }
+#pragma warning disable SYSLIB1045
     public Regex PeerVariantRegex { get; } = new (@"((([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}){0,5}((peer\-[\-a-z]{1,25}\/[\-a-zA-Z0-9]{1,50}\:)|(peer\-[\-a-z]{1,25}\:)|(peer\-\[[^\[\]\s]{1,250}\]\:))[^\s]{1,250})", RegexOptions.Compiled);
     public Regex GroupVariantRegex { get; } = new (@"((([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}){0,5}((group\-[\-a-z]{1,25}\/[\-a-zA-Z0-9]{1,50}\:)|(group\-[\-a-z]{1,25}\:)|(group\-\[[^\[\]\s]{1,250}\]\:))[^\s]{1,250})", RegexOptions.Compiled);
+#pragma warning restore SYSLIB1045
 
     #endregion
     
     #region Run Mode Properties
 
     public bool Minify { get; set; }
-    public bool WatchMode { get; set; }
-    public bool VersionMode { get; set; }
-    public bool InitMode { get; set; }
-    public bool HelpMode { get; set; }
+    public bool WatchMode { get; private set; }
+    public bool VersionMode { get; private set; }
+    public bool InitMode { get; private set; }
+    public bool HelpMode { get; private set; }
     public bool DiagnosticMode { get; set; }
 	
     #endregion
     
     #region Collection Properties
 
-    public List<string> CliArguments { get; } = new();
+    private List<string> CliArguments { get; } = [];
     public ConcurrentDictionary<string,WatchedFile> WatchedFiles { get; } = new();
     public ConcurrentDictionary<string,WatchedScssFile> WatchedScssFiles { get; } = new();
     public ConcurrentDictionary<string,CssSelector> UsedClasses { get; } = new();
     public Dictionary<string,ScssUtilityClassGroupBase> UtilityClassCollection { get; } = new();
-    public List<string> HtmlTagClasses { get; } = new();
+    public List<string> HtmlTagClasses { get; } = [];
     
     #endregion
     
@@ -4146,13 +4148,13 @@ public sealed class SfumatoAppState
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
     public SfumatoSettings Settings { get; set; } = new();
     public ConcurrentDictionary<string,string> DiagnosticOutput { get; set; } = new();
-    public string WorkingPathOverride { get; set; } = string.Empty;
+    public string WorkingPathOverride { get; private set; } = string.Empty;
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();
-    public string SassCliPath { get; set; } = string.Empty;
-    public string ScssPath { get; set; } = string.Empty;
-    public string YamlPath { get; set; } = string.Empty;
-    public List<string> AllVariants { get; } = new();
+    public string SassCliPath { get; private set; } = string.Empty;
+    public string ScssPath { get; private set; } = string.Empty;
+    public string YamlPath { get; private set; } = string.Empty;
+    private List<string> AllVariants { get; } = [];
     public StringBuilder ScssBaseInjectable { get; } = new();
     public StringBuilder ScssSharedInjectable { get; } = new();
     
@@ -4362,7 +4364,7 @@ public sealed class SfumatoAppState
 	/// Process CLI arguments and set properties accordingly.
 	/// </summary>
 	/// <param name="args"></param>
-	public async Task ProcessCliArgumentsAsync(IEnumerable<string>? args)
+	private async Task ProcessCliArgumentsAsync(IEnumerable<string>? args)
 	{
 
 // #if DEBUG
@@ -4439,8 +4441,8 @@ public sealed class SfumatoAppState
 			}
 		}
 	}
-	
-    public static string GetWorkingPath()
+
+	private static string GetWorkingPath()
     {
         var workingPath = Directory.GetCurrentDirectory();
         
@@ -4503,8 +4505,8 @@ public sealed class SfumatoAppState
 
         return string.Empty;
     }
-    
-    public async Task<string> GetEmbeddedSassPathAsync()
+
+    private async Task<string> GetEmbeddedSassPathAsync()
     {
         var osPlatform = Identify.GetOsPlatform();
         var processorArchitecture = Identify.GetProcessorArchitecture();
@@ -4593,7 +4595,7 @@ public sealed class SfumatoAppState
 		return sassPath;
     }
 
-    public static async Task<string> GetEmbeddedScssPathAsync()
+    private static async Task<string> GetEmbeddedScssPathAsync()
     {
 	    var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
@@ -4629,7 +4631,7 @@ public sealed class SfumatoAppState
 		return workingPath;
 	}
 
-    public static async Task<string> GetEmbeddedYamlPathAsync()
+    private static async Task<string> GetEmbeddedYamlPathAsync()
     {
 	    var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
@@ -4672,7 +4674,6 @@ public sealed class SfumatoAppState
 	/// <summary>
 	/// Gather all watched files defined in settings.
 	/// </summary>
-	/// <param name="runner"></param>
 	public async Task GatherWatchedFilesAsync()
 	{
 		var totalTimer = new Stopwatch();
@@ -4689,6 +4690,7 @@ public sealed class SfumatoAppState
 
 		// Gather files lists
 		
+		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 		foreach (var projectPath in Settings.ProjectPaths)
 			tasks.Add(RecurseProjectPathAsync(projectPath.Path, projectPath.ExtensionsList, projectPath.IgnoreFoldersList, projectPath.Recurse));
 
@@ -4698,6 +4700,7 @@ public sealed class SfumatoAppState
 		
 		// Add matches to files lists
 
+		// ReSharper disable once LoopCanBeConvertedToQuery
 		foreach (var watchedFile in WatchedFiles)
 			tasks.Add(ProcessFileMatchesAsync(watchedFile.Value));
 		
@@ -4720,14 +4723,11 @@ public sealed class SfumatoAppState
 	/// <param name="extensionsList"></param>
 	/// <param name="ignoreFoldersList"></param>
 	/// <param name="recurse"></param>
-	public async Task RecurseProjectPathAsync(string? sourcePath, List<string> extensionsList, List<string> ignoreFoldersList, bool recurse = false)
+	private async Task RecurseProjectPathAsync(string? sourcePath, List<string> extensionsList, List<string> ignoreFoldersList, bool recurse = false)
 	{
 		if (string.IsNullOrEmpty(sourcePath) || sourcePath.IsEmpty() || extensionsList.Count == 0)
 			return;
 
-		FileInfo[] files = null!;
-		DirectoryInfo[] dirs = null!;
-		
 		var dir = new DirectoryInfo(sourcePath);
 
 		if (dir.Exists == false)
@@ -4736,11 +4736,11 @@ public sealed class SfumatoAppState
             return;
         }
 
-		dirs = dir.GetDirectories();
-		files = dir.GetFiles();
-
+		var dirs = dir.GetDirectories();
+		var files = dir.GetFiles();
 		var tasks = new List<Task>();
 		
+		// ReSharper disable once LoopCanBeConvertedToQuery
 		foreach (var projectFile in files)
 		{
             var extension = ProjectPath.GetMatchingFileExtension(projectFile.Name, extensionsList);
@@ -4768,7 +4768,7 @@ public sealed class SfumatoAppState
 	/// </summary>
 	/// <param name="projectFile"></param>
 	/// <param name="extension"></param>
-	public async Task AddProjectFileToCollectionAsync(FileInfo projectFile, string extension)
+	private async Task AddProjectFileToCollectionAsync(FileInfo projectFile, string extension)
 	{
 		if (projectFile.Name.Equals("sfumato.yml", StringComparison.OrdinalIgnoreCase))
 			return;
@@ -4918,14 +4918,13 @@ public sealed class SfumatoAppState
 		
 		if (string.IsNullOrEmpty(peerGroupSegment) == false)		
 		{
-			var indexOfUtilityClassDelim = -1;
-			var segment = peerGroupSegment;
-			var matches = segment == "peer" ? PeerVariantRegex.Matches(selector) : GroupVariantRegex.Matches(selector);
+			int indexOfUtilityClassDelim;
+			var matches = peerGroupSegment == "peer" ? PeerVariantRegex.Matches(selector) : GroupVariantRegex.Matches(selector);
 				
 			if (matches.Count != 1)
 				return false;
 
-			var idxStart = matches[0].Value.IndexOf($"{segment}-", StringComparison.Ordinal);
+			var idxStart = matches[0].Value.IndexOf($"{peerGroupSegment}-", StringComparison.Ordinal);
 			var selectorRoot = idxStart > 0 ? matches[0].Value[idxStart..] : matches[0].Value;
 			var indexPadding = selector.Length - selectorRoot.Length;
 			var idxOfBracket = selectorRoot.IndexOf('[');
@@ -4955,7 +4954,6 @@ public sealed class SfumatoAppState
 			return result;
 		}
 
-		var variants = string.Empty;
 		var indexOfBracket = selector.IndexOf('[');
 		
 		if (indexOfBracket > -1)
@@ -4965,7 +4963,8 @@ public sealed class SfumatoAppState
 		
 		if (indexOfColon > 1 && indexOfColon < selector.Length - 1)
 		{
-			variants = selector[..(indexOfColon + 1)];
+			var variants = selector[..(indexOfColon + 1)];
+
 			selector = selector[(indexOfColon + 1)..];
 
 			if (VariantsAreValid(variants) == false)
@@ -4992,9 +4991,9 @@ public sealed class SfumatoAppState
 		foreach (var match in matches.ToList())
 		{
 			var value = match.Value;
-			var variants = string.Empty;
 			var indexOfBracket = value.IndexOf('[');
 
+			// ReSharper disable once ConvertIfStatementToSwitchStatement
 			if (indexOfBracket == -1)
 			{
 				matches.Remove(match);
@@ -5003,7 +5002,8 @@ public sealed class SfumatoAppState
 			
 			if (indexOfBracket > 1)
 			{
-				variants = value[..indexOfBracket];
+				var variants = value[..indexOfBracket];
+
 				value = value[indexOfBracket..];
 
 				if (VariantsAreValid(variants) == false)
@@ -5043,6 +5043,7 @@ public sealed class SfumatoAppState
 
 		var tasks = new List<Task>();
 		
+		// ReSharper disable once LoopCanBeConvertedToQuery
 		foreach (var watchedFile in WatchedFiles)
 			tasks.Add(ExamineMarkupForUsedClassesAsync(watchedFile.Value));
 		
@@ -5123,6 +5124,7 @@ public sealed class SfumatoAppState
 
 public class WatchedFile
 {
+	// ReSharper disable once UnusedAutoPropertyAccessor.Global
 	public string FilePath { get; set; } = string.Empty;
 	public string Markup { get; set; } = string.Empty;
 	public ConcurrentDictionary<string,CssSelector> CoreClassMatches { get; set; } = new ();
@@ -5131,7 +5133,8 @@ public class WatchedFile
 
 public class WatchedScssFile
 {
-	public string FilePath { get; set; } = string.Empty;
+	public string FilePath { get; init; } = string.Empty;
 	public string Scss { get; set; } = string.Empty;
+	// ReSharper disable once UnusedAutoPropertyAccessor.Global
 	public string Css { get; set; } = string.Empty;
 }
