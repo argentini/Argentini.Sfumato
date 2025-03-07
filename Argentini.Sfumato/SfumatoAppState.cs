@@ -4113,6 +4113,7 @@ public sealed class SfumatoAppState
     public Regex CoreClassRegex { get; }
     public Regex SfumatoScssRegex { get; }
     public Regex SfumatoScssApplyRegex { get; }
+    public Regex SfumatoScssValueRegex { get; }
 #pragma warning disable SYSLIB1045
     public Regex PeerVariantRegex { get; } = new (@"((([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}){0,5}((peer\-[\-a-z]{1,25}\/[\-a-zA-Z0-9]{1,50}\:)|(peer\-[\-a-z]{1,25}\:)|(peer\-\[[^\[\]\s]{1,250}\]\:))[^\s]{1,250})", RegexOptions.Compiled);
     public Regex GroupVariantRegex { get; } = new (@"((([a-z]{1,25}([\-a-z]{0,25})[a-z]{1,25}?:){0,1}){0,5}((group\-[\-a-z]{1,25}\/[\-a-zA-Z0-9]{1,50}\:)|(group\-[\-a-z]{1,25}\:)|(group\-\[[^\[\]\s]{1,250}\]\:))[^\s]{1,250})", RegexOptions.Compiled);
@@ -4249,6 +4250,23 @@ public sealed class SfumatoAppState
             """;
 
 	    SfumatoScssApplyRegex = new Regex(sfumatoScssApplyRegexExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
+	    
+	    const string scssValueExpression = 
+		    """
+		    (?<=^|[\s\:])
+		    (
+		        (#{)
+		            ([\!\-]{0,2}[a-z]{1,25}(\-[a-z0-9\.%]{0,25}){0,10})
+		            (
+		                (/[a-z0-9\-\.]{1,250})|([/]?\[[a-zA-Z0-9%',\!/\-\._\:\(\)\\\*\#\$\^\?\+\{\}]{1,250}\])?
+		            )
+		            (/[a-z0-9\-\.]{1,250})?
+		        (})
+		    )
+		    (?=)
+		    """;
+	    
+	    SfumatoScssValueRegex = new Regex(scssValueExpression.CleanUpIndentedRegex(), RegexOptions.Compiled);
 	    
 	    #endregion
    }

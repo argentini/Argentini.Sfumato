@@ -7,6 +7,12 @@
     @apply px-4 translate-y-[100vh] translate-x-full backdrop-blur;
 }
 
+.test-values {
+    background-color: #{bg-dr05a};
+    color: #{text-dr05b};
+    padding-top: #{pt-5}
+}
+
 @include sf-media($from: $sm-breakpoint) {
 
     h1 {

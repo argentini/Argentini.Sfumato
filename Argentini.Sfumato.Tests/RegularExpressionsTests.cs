@@ -202,7 +202,7 @@ h1 {
 
         Assert.Equal(2, matches.Count);
     }
-
+    
     [Fact]
     public void ScssSfumatoRegex()
     {
@@ -262,6 +262,23 @@ h1 {
         Assert.Equal(2, matches.Count);
         Assert.Equal("@sfumato base;", matches[0].Value);
         Assert.Equal("@sfumato utilities;", matches[1].Value);
+    }
+
+    [Fact]
+    public void ScssValueSfumatoRegex()
+    {
+        var appState = new SfumatoAppState();
+        var matches = appState.SfumatoScssValueRegex.Matches(@"@apply sfumato-core;
+
+    .sample {
+        background-color: #{bg-primary/10};
+        color:#{text-primary/10};
+    }
+");
+
+        Assert.Equal(2, matches.Count);
+        Assert.Equal("#{bg-primary/10}", matches[0].Value);
+        Assert.Equal("#{text-primary/10}", matches[1].Value);
     }
 
     [Fact]
