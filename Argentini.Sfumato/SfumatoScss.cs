@@ -1,5 +1,3 @@
-using YamlDotNet.Core.Tokens;
-
 namespace Argentini.Sfumato;
 
 public static class SfumatoScss
@@ -290,53 +288,6 @@ public static class SfumatoScss
             
 			scss.Append(rawScss);
 			
-			#region Process #{} value directives
-
-			matches = runner.AppState.SfumatoScssValueRegex.Matches(scss.ToString());
-			startIndex = 0;
-            
-			while (matches.Count > 0)
-			{
-				var match = matches[0];
-				
-				if (match.Index + match.Value.Length > startIndex)
-					startIndex = match.Index + match.Value.Length;
-
-				var selector = match.Value.TrimStart("#{").TrimEnd("}")?.Trim() ?? string.Empty;
-
-				if (runner.AppState.IsValidCoreClassSelector(selector))
-				{
-					styles.Clear();
-					first.Clear();
-					second.Clear();
-                    
-					var newCssSelector = new CssSelector(runner.AppState, selector);
-
-					await newCssSelector.ProcessSelectorAsync();
-
-					scss.Remove(match.Index, match.Value.Length);
-
-					if (newCssSelector.IsInvalid == false)
-					{
-						var value = newCssSelector.GetStyles().Trim();
-
-						if (value.Contains('\r') == false && value.Contains('\n') == false && value.IndexOf(':') > 0 && value.IndexOf(':') < value.Length - 1)
-						{
-							value = value[(value.IndexOf(':') + 1)..].Trim();
-							scss.Insert(match.Index, value.TrimEnd(';').CompactCss());
-						}
-					}
-				}
-				else
-				{
-					scss.Remove(match.Index, match.Value.Length);
-				}
-				
-				matches = runner.AppState.SfumatoScssValueRegex.Matches(scss.ToString());
-			}
-
-			#endregion
-			
 			var cmd = PipeSource.FromString(scss.ToString()) | Cli.Wrap(runner.AppState.SassCliPath)
 				.WithArguments(args =>
 				{
@@ -512,6 +463,53 @@ public static class SfumatoScss
                 }
 				
                 matches = runner.AppState.SfumatoScssApplyRegex.Matches(sb.ToString());
+            }
+
+            #endregion
+            
+            #region Process single value directives
+
+            matches = runner.AppState.SfumatoScssValueRegex.Matches(sb.ToString());
+            startIndex = 0;
+            
+            while (matches.Count > 0)
+            {
+	            var match = matches[0];
+				
+	            if (match.Index + match.Value.Length > startIndex)
+		            startIndex = match.Index + match.Value.Length;
+
+	            var selector = match.Value.TrimStart("var(").TrimEnd(")")?.Trim() ?? string.Empty;
+
+	            if (runner.AppState.IsValidCoreClassSelector(selector))
+	            {
+		            styles.Clear();
+		            first.Clear();
+		            second.Clear();
+                    
+		            var newCssSelector = new CssSelector(runner.AppState, selector);
+
+		            await newCssSelector.ProcessSelectorAsync();
+
+		            sb.Remove(match.Index, match.Value.Length);
+
+		            if (newCssSelector.IsInvalid == false)
+		            {
+			            var value = newCssSelector.GetStyles().Trim();
+
+			            if (value.Contains('\r') == false && value.Contains('\n') == false && value.IndexOf(':') > 0 && value.IndexOf(':') < value.Length - 1)
+			            {
+				            value = value[(value.IndexOf(':') + 1)..].Trim();
+				            sb.Insert(match.Index, value.TrimEnd(';').CompactCss());
+			            }
+		            }
+	            }
+	            else
+	            {
+		            sb.Remove(match.Index, match.Value.Length);
+	            }
+				
+	            matches = runner.AppState.SfumatoScssValueRegex.Matches(sb.ToString());
             }
 
             #endregion

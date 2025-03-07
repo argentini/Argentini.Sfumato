@@ -8,9 +8,9 @@
 }
 
 .test-values {
-    background-color: #{bg-dr05a};
-    color: #{text-dr05b};
-    padding-top: #{pt-5}
+    background-color: var(bg-dr05a);
+    color: var(text-dr05b);
+    padding-top: var(pt-5);
 }
 
 @include sf-media($from: $sm-breakpoint) {

@@ -271,14 +271,15 @@ h1 {
         var matches = appState.SfumatoScssValueRegex.Matches(@"@apply sfumato-core;
 
     .sample {
-        background-color: #{bg-primary/10};
-        color:#{text-primary/10};
+        background-color: var(bg-primary/10);
+        color:var(text-primary/10);
+        padding: var(--p-5);
     }
 ");
 
         Assert.Equal(2, matches.Count);
-        Assert.Equal("#{bg-primary/10}", matches[0].Value);
-        Assert.Equal("#{text-primary/10}", matches[1].Value);
+        Assert.Equal("var(bg-primary/10)", matches[0].Value);
+        Assert.Equal("var(text-primary/10)", matches[1].Value);
     }
 
     [Fact]
