@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added SCSS file single value injection using '#{}' (e.g. 'color: #{text-black/90}')</PackageReleaseNotes>
+        <PackageReleaseNotes>Added SCSS file single value injection using 'var()' without leading hyphens (e.g. 'color: var(text-black/90)')</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
