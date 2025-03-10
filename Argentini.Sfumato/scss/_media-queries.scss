@@ -192,24 +192,24 @@ $media-features: (
     $internal-dark-theme: "";
 
     @if ($internal-dark-theme == "class" or $internal-dark-theme == "class+auto") {
-    
-        html.theme-dark {
+
+        @at-root html.theme-dark #{if(&, "&", "")} {
             @content;
         }
-    
+
         @if ($internal-dark-theme == "class+auto") {
-    
             @media (prefers-color-scheme: dark) {
-                html.theme-auto {
+                @at-root html.theme-auto #{if(&, "&", "")} {
                     @content;
                 }
             }
         }
-    
+
     } @else {
-        
         @media (prefers-color-scheme: dark) {
-            @content;
+            @at-root #{if(&, "&", "")} {
+                @content;
+            }
         }
     }
 }
