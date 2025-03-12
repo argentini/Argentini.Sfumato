@@ -9,11 +9,5 @@ global using System.Text;
 global using System.Text.RegularExpressions;
 global using System.Threading;
 global using System.Threading.Tasks;
-
-global using Argentini.Sfumato.Entities;
-global using Argentini.Sfumato.Entities.SfumatoSettings;
-global using Argentini.Sfumato.Entities.ScssUtilityCollections;
-global using Argentini.Sfumato.Extensions;
-
 global using CliWrap;
 global using Microsoft.Extensions.ObjectPool;

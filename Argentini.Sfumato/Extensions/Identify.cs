@@ -191,7 +191,7 @@ public static class Identify
     #region Color
 
     /// <summary>
-    /// Determine if a string is a valid web color (e.g. "#abc", "#abcf", "#abc123", "#112233ff", rgb(...), rgba(...), aliceblue, etc.)
+    /// Determine if a string is a valid web color (e.g. "#abc", "#abcf", "#abc123", "#112233ff", rgb(...), rgba(...), oklch(...), aliceblue, etc.)
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
@@ -199,6 +199,8 @@ public static class Identify
     {
         if (string.IsNullOrEmpty(color))
             return false;
+        
+        #region Hex Color
         
         var hashIndex = color.IndexOf('#');
 
@@ -218,29 +220,63 @@ public static class Identify
             return true;
         }
 
-        var rgbIndex = color.IndexOf("rgb", StringComparison.Ordinal);
+        #endregion
 
-        if (rgbIndex != 0)
+        #region RGB/a Color
+        
+        var rgbIndex = color.IndexOf("rgb", StringComparison.OrdinalIgnoreCase);
+        var indexOpen = color.IndexOf('(');
+        var indexClose = color.LastIndexOf(')');
+
+        if (rgbIndex == 0)
         {
-            if (Strings.CssNamedColors.ContainsKey(color))
-                return true;
-            
-            return false;
-        }
-
-        if (color.Contains('(') == false || color.Contains(')') == false)
-            return false;
-
-        var segments = (color.Replace(" ", string.Empty).TrimStart("rgba(").TrimStart("rgb(")?.TrimEnd(')') ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries);
-            
-        if (segments.Length is < 3 or > 4)
-            return false;
-
-        foreach (var segment in segments)
-            if (decimal.TryParse(segment, out _) == false)
+            if (indexOpen < 0 || indexClose < 0 || indexClose <= indexOpen)
                 return false;
 
-        return true;
+            var segments = (color.Replace(" ", string.Empty).TrimStart("rgba(").TrimStart("rgb(")?.TrimEnd(')') ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries);
+                
+            if (segments.Length is < 3 or > 4)
+                return false;
+
+            foreach (var segment in segments)
+                if (decimal.TryParse(segment.Trim(), out _) == false)
+                    return false;
+
+            return true;
+        }        
+
+        #endregion
+
+        #region OKLCH Color
+
+        var oklchIndex = color.IndexOf("oklch", StringComparison.OrdinalIgnoreCase);
+
+        if (oklchIndex == 0)
+        {
+            if (indexOpen < 0 || indexClose < 0 || indexClose <= indexOpen)
+                return false;
+
+            var segments = (color.Replace(" ", string.Empty).TrimStart("oklch(")?.TrimEnd(')') ?? string.Empty).Replace(',', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                
+            if (segments.Length != 3 && segments.Length != 5)
+                return false;
+
+            if (segments.Length == 5)
+                if (double.TryParse(segments[4], out _) == false)
+                    return false;
+
+            if (double.TryParse(segments[0], out _) == false)
+                return false;
+
+            if (double.TryParse(segments[1], out _) == false)
+                return false;
+            
+            return double.TryParse(segments[2], out _) != false;
+        }
+        
+        #endregion
+        
+        return Strings.CssNamedColors.ContainsKey(color);
     }
 
     #endregion
