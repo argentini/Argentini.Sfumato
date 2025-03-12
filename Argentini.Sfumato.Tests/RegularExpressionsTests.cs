@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using Argentini.Sfumato.Extensions;
 using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
@@ -69,14 +71,18 @@ public class RegularExpressionsTests
                              """;
         */
 
-        var quotedSubstrings = FileScanner.ScanForQuotedStrings(Markup);
+        var timer = new Stopwatch();
         var utilityClasses = new List<string>();
+        
+        timer.Start();
+        
+        var quotedSubstrings = FileScanner.ScanForQuotedStrings(Markup);
         
         foreach (var quotedSubstring in quotedSubstrings)
         {
             _testOutputHelper.WriteLine($"Found quoted block => \"{quotedSubstring}\"");
 
-            var localClasses = FileScanner.ScanForClasses(quotedSubstring);
+            var localClasses = FileScanner.ScanStringForClasses(quotedSubstring);
 
             foreach (var cm in localClasses)
                 _testOutputHelper.WriteLine($"   Tailwind class: {cm}");
@@ -84,7 +90,22 @@ public class RegularExpressionsTests
             utilityClasses.AddRange(localClasses);
         }
 
+        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.Microseconds} microseconds");
+
         Assert.Equal(17, quotedSubstrings.Count);
+        Assert.Equal(44, utilityClasses.Count);
+
+        utilityClasses.Clear();
+
+        _testOutputHelper.WriteLine("Running as batch...");
+
+        timer.Reset();
+        timer.Start();
+        
+        utilityClasses.AddRange(FileScanner.ScanFileForClasses(Markup));
+
+        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.Microseconds} microseconds");
+
         Assert.Equal(44, utilityClasses.Count);
     }
 }

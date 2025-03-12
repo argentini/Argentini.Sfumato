@@ -11,6 +11,21 @@ public sealed partial class FileScanner
     
     public const string PatternQuotedSubstrings = @"\S+";
 
+    public static IEnumerable<string> ScanFileForClasses(string fileContent)
+    {
+        var results = new List<string>();
+        var quotedSubstrings = ScanForQuotedStrings(fileContent);
+        
+        foreach (var quotedSubstring in quotedSubstrings)
+        {
+            var localClasses = ScanStringForClasses(quotedSubstring);
+
+            results.AddRange(localClasses);
+        }
+        
+        return results;
+    }
+    
     public static List<string> ScanForQuotedStrings(string input)
     {
         var results = new List<string>();
@@ -34,7 +49,7 @@ public sealed partial class FileScanner
         return results;
     }
 
-    public static List<string> ScanForClasses(string quotedString)
+    public static List<string> ScanStringForClasses(string quotedString)
     {
         var results = new List<string>();
 
