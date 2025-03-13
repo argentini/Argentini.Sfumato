@@ -1,26 +1,41 @@
+using Argentini.Sfumato.Entities;
+
 namespace Argentini.Sfumato;
 
-public sealed partial class FileScanner
+public static partial class FileScanner
 {
-    public const string PatternQuotedStrings =
+    #region Regular Expressions
+    
+    private const string PatternQuotedStrings =
         """
         (?<delim>(\\")|["'`])
         (?<content>(?:\\.|(?!\k<delim>).){3,}?)
         \k<delim>
         """;
-    
-    public const string PatternQuotedSubstrings = @"\S+";
 
-    public static IEnumerable<string> ScanFileForClasses(string fileContent)
+    private const string PatternQuotedSubstrings = @"\S+";
+
+    [GeneratedRegex(PatternQuotedStrings, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
+    private static partial Regex QuotedStringsRegex();
+    
+    [GeneratedRegex(PatternQuotedSubstrings, RegexOptions.Compiled)]
+    private static partial Regex UtilityClassRegex();
+    
+    #endregion
+    
+    #region File Parsing Methods
+    
+    public static HashSet<string> ScanFileForClasses(string fileContent)
     {
-        var results = new List<string>();
+        var constants = new Library();
+        var results = new HashSet<string>();
         var quotedSubstrings = ScanForQuotedStrings(fileContent);
         
         foreach (var quotedSubstring in quotedSubstrings)
         {
-            var localClasses = ScanStringForClasses(quotedSubstring);
+            var localClasses = ScanStringForClasses(quotedSubstring, constants);
 
-            results.AddRange(localClasses);
+            results.UnionWith(localClasses);
         }
         
         return results;
@@ -33,34 +48,43 @@ public sealed partial class FileScanner
 
         foreach (Match qm in quoteMatches)
         {
-            var subStringMatches = QuotedStringsRegex().Matches(qm.Groups["content"].Value);
-
-            if (subStringMatches.Count > 0)
-            {
-                foreach (Match sqm in subStringMatches)
-                    results.Add(sqm.Groups["content"].Value);
-            }
-            else
-            {
-                results.Add(qm.Groups["content"].Value);
-            }
+            results.Add(qm.Groups["content"].Value);
+            
+            if (qm.Groups["content"].Value.Contains('\"') || qm.Groups["content"].Value.Contains('\'') || qm.Groups["content"].Value.Contains('`'))
+                results.AddRange(ScanForQuotedStrings(qm.Groups["content"].Value));
         }
 
         return results;
     }
 
-    public static List<string> ScanStringForClasses(string quotedString)
+    public static HashSet<string> ScanStringForClasses(string quotedString, Library library)
     {
-        var results = new List<string>();
+        var results = new HashSet<string>();
 
-        results.AddRange(UtilityClassRegex().Matches(quotedString).Select(m => m.Value));
+        results.UnionWith(UtilityClassRegex()
+            .Matches(quotedString)
+            .Where(m => m.Value.IsLikelyUtilityClass(library))
+            .Select(m => m.Value));
 
         return results;
     }
 
-    [GeneratedRegex(PatternQuotedStrings, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
-    private static partial Regex QuotedStringsRegex();
+    private static bool IsLikelyUtilityClass(this string input, Library library)
+    {
+        if (input[0] == '[' && input[^1] == ']') // Arbitrary CSS
+        {
+            if (library.ValidCssPropertyNames.Any(substring => input.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+                return true;
+        }
+
+        if (library.UtilityClassPrefixes.Any(substring => input.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+            return true;
+
+        if (library.StaticUtilityClasses.Any(substring => input.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+            return true;
+
+        return false;
+    }
     
-    [GeneratedRegex(PatternQuotedSubstrings, RegexOptions.Compiled)]
-    private static partial Regex UtilityClassRegex();
+    #endregion
 }

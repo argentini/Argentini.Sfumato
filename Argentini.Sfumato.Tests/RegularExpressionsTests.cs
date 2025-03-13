@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Argentini.Sfumato.Entities;
 using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
@@ -50,7 +51,7 @@ public class RegularExpressionsTests
                                                 block bg-slate-400
                                             "";
                                             
-                                            var detailsMask = $"<span class=\"line-clamp-1 mt-1 text-slate-500 dark:text-dark-foreground-dim line-clamp-2\"><span class=\"line-clamp-2\">{description}</span></span>";
+                                            var detailsMask = $"<span class=\"line-clamp-1 mt-1 text-slate-500 dark:text-dark-foreground-dim line-clamp-2\"><span class=""line-clamp-2"">{description}</span></span>";
                                         }
                                     </body>
                                     </html>
@@ -71,7 +72,8 @@ public class RegularExpressionsTests
         */
 
         var timer = new Stopwatch();
-        var utilityClasses = new List<string>();
+        var constants = new Library();
+        var utilityClasses = new HashSet<string>();
         
         timer.Start();
         
@@ -81,30 +83,38 @@ public class RegularExpressionsTests
         {
             _testOutputHelper.WriteLine($"Found quoted block => \"{quotedSubstring}\"");
 
-            var localClasses = FileScanner.ScanStringForClasses(quotedSubstring);
+            var localClasses = FileScanner.ScanStringForClasses(quotedSubstring, constants);
 
             foreach (var cm in localClasses)
                 _testOutputHelper.WriteLine($"   Tailwind class: {cm}");
 
-            utilityClasses.AddRange(localClasses);
+            utilityClasses.UnionWith(localClasses);
         }
 
-        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.Microseconds} microseconds");
+        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
 
-        Assert.Equal(17, quotedSubstrings.Count);
-        Assert.Equal(45, utilityClasses.Count);
+        Assert.Equal(20, quotedSubstrings.Count);
+        Assert.Equal(19, utilityClasses.Count);
 
         utilityClasses.Clear();
 
+        _testOutputHelper.WriteLine(""); 
         _testOutputHelper.WriteLine("Running as batch...");
 
         timer.Reset();
         timer.Start();
         
-        utilityClasses.AddRange(FileScanner.ScanFileForClasses(Markup));
+        utilityClasses = FileScanner.ScanFileForClasses(Markup);
 
-        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.Microseconds} microseconds");
+        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
 
-        Assert.Equal(45, utilityClasses.Count);
+        Assert.Equal(19, utilityClasses.Count);
+
+        _testOutputHelper.WriteLine(""); 
+        _testOutputHelper.WriteLine("FINAL LIST");
+        _testOutputHelper.WriteLine("");
+
+        foreach (var cname in utilityClasses)
+            _testOutputHelper.WriteLine($"{cname}");
     }
 }

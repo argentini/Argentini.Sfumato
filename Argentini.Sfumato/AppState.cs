@@ -1,3 +1,4 @@
+using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Entities.Yaml;
 using Argentini.Sfumato.Extensions;
 
@@ -5,24 +6,7 @@ namespace Argentini.Sfumato;
 
 public sealed class AppState
 {
-    #region Constants
-
-    public const int FileAccessRetryMs = 5000;
-    public int MaxConsoleWidth => GetMaxConsoleWidth();
-	
-    private static int GetMaxConsoleWidth()
-    {
-	    try
-	    {
-		    return Console.WindowWidth - 1;
-	    }
-	    catch
-	    {
-		    return 78;
-	    }
-    }
-
-	#endregion
+	public Library Library { get; set; } = new();
 	
     #region Run Mode Properties
 
