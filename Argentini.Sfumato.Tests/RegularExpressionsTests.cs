@@ -60,17 +60,8 @@ public class RegularExpressionsTests
     #endregion
 
     [Fact]
-    public void TestMarkupRegex()
+    public void UtilityClassParsing()
     {
-        /*
-        const string input = """
-                             <div class="bg-red-500 hover:bg-blue-500 !m-4 -mt-2" data='grid-cols-[auto,1fr]'>
-                             <p class='text-lg md:text-2xl font-bold'></p>
-                             <span class=`text-base/5 sm:mx-2 lg:hover:opacity-75 content-['Hello!']`></span>
-                             <button data-class="sm:w-1/2 !p-3">Click</button>
-                             """;
-        */
-
         var timer = new Stopwatch();
         var constants = new Library();
         var utilityClasses = new HashSet<string>();
