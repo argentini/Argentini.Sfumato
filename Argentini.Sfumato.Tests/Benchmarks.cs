@@ -1,21 +1,12 @@
-using System.Diagnostics;
 using Argentini.Sfumato.Entities;
-using Xunit.Abstractions;
+using BenchmarkDotNet.Attributes;
 
 namespace Argentini.Sfumato.Tests;
 
-public class RegularExpressionsTests
+public class Benchmarks
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public RegularExpressionsTests(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
-
-    #region Constants
-
+    private Library Library { get; set; } = new();
+    
     private static string Markup => """
                                     <!DOCTYPE html>
                                     <html lang="en">
@@ -57,55 +48,12 @@ public class RegularExpressionsTests
                                     </html>
                                     """;
     
-    #endregion
-
-    [Fact]
-    public void UtilityClassParsing()
+    
+    
+    
+    [Benchmark]
+    public HashSet<string> ScanFileForClasses()
     {
-        var timer = new Stopwatch();
-        var library = new Library();
-        var utilityClasses = new HashSet<string>();
-        
-        timer.Start();
-        
-        var quotedSubstrings = FileScanner.ScanForQuotedStrings(Markup);
-        
-        foreach (var quotedSubstring in quotedSubstrings)
-        {
-            _testOutputHelper.WriteLine($"Found quoted block => \"{quotedSubstring}\"");
-
-            var localClasses = FileScanner.ScanStringForClasses(quotedSubstring, library);
-
-            foreach (var cm in localClasses)
-                _testOutputHelper.WriteLine($"   Tailwind class: {cm}");
-
-            utilityClasses.UnionWith(localClasses);
-        }
-
-        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
-
-        Assert.Equal(20, quotedSubstrings.Count);
-        Assert.Equal(19, utilityClasses.Count);
-
-        utilityClasses.Clear();
-
-        _testOutputHelper.WriteLine(""); 
-        _testOutputHelper.WriteLine("Running as batch...");
-
-        timer.Reset();
-        timer.Start();
-        
-        utilityClasses = FileScanner.ScanFileForClasses(Markup, library);
-
-        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
-
-        Assert.Equal(19, utilityClasses.Count);
-
-        _testOutputHelper.WriteLine(""); 
-        _testOutputHelper.WriteLine("FINAL LIST");
-        _testOutputHelper.WriteLine("");
-
-        foreach (var cname in utilityClasses)
-            _testOutputHelper.WriteLine($"{cname}");
+        return FileScanner.ScanFileForClasses(Markup, Library);
     }
 }

@@ -25,15 +25,14 @@ public static partial class FileScanner
     
     #region File Parsing Methods
     
-    public static HashSet<string> ScanFileForClasses(string fileContent)
+    public static HashSet<string> ScanFileForClasses(string fileContent, Library library)
     {
-        var constants = new Library();
         var results = new HashSet<string>();
         var quotedSubstrings = ScanForQuotedStrings(fileContent);
         
         foreach (var quotedSubstring in quotedSubstrings)
         {
-            var localClasses = ScanStringForClasses(quotedSubstring, constants);
+            var localClasses = ScanStringForClasses(quotedSubstring, library);
 
             results.UnionWith(localClasses);
         }

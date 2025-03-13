@@ -1,15 +1,20 @@
-using System.Diagnostics;
-using Argentini.Sfumato.Entities;
+using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Loggers;
+using BenchmarkDotNet.Reports;
+using BenchmarkDotNet.Running;
+using Perfolizer.Horology;
 using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
 
-public class RegularExpressionsTests
+public class BenchmarkTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public RegularExpressionsTests(ITestOutputHelper testOutputHelper)
+    public BenchmarkTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
@@ -60,52 +65,50 @@ public class RegularExpressionsTests
     #endregion
 
     [Fact]
-    public void UtilityClassParsing()
+    public void ScanFileForClassesBenchmark()
     {
-        var timer = new Stopwatch();
-        var library = new Library();
-        var utilityClasses = new HashSet<string>();
-        
-        timer.Start();
-        
-        var quotedSubstrings = FileScanner.ScanForQuotedStrings(Markup);
-        
-        foreach (var quotedSubstring in quotedSubstrings)
-        {
-            _testOutputHelper.WriteLine($"Found quoted block => \"{quotedSubstring}\"");
-
-            var localClasses = FileScanner.ScanStringForClasses(quotedSubstring, library);
-
-            foreach (var cm in localClasses)
-                _testOutputHelper.WriteLine($"   Tailwind class: {cm}");
-
-            utilityClasses.UnionWith(localClasses);
-        }
-
-        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
-
-        Assert.Equal(20, quotedSubstrings.Count);
-        Assert.Equal(19, utilityClasses.Count);
-
-        utilityClasses.Clear();
-
-        _testOutputHelper.WriteLine(""); 
-        _testOutputHelper.WriteLine("Running as batch...");
-
-        timer.Reset();
-        timer.Start();
-        
-        utilityClasses = FileScanner.ScanFileForClasses(Markup, library);
-
-        _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
-
-        Assert.Equal(19, utilityClasses.Count);
-
-        _testOutputHelper.WriteLine(""); 
-        _testOutputHelper.WriteLine("FINAL LIST");
+        _testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
         _testOutputHelper.WriteLine("");
 
-        foreach (var cname in utilityClasses)
-            _testOutputHelper.WriteLine($"{cname}");
+        var summary = BenchmarkRunner.Run<Benchmarks>();
+
+        Assert.NotNull(summary);
+        
+        _testOutputHelper.WriteLine(GetBenchmarkSummaryText(summary));
+    }
+
+    private static string GetBenchmarkSummaryText(Summary summary)
+    {
+        using var writer = new StringWriter();
+        var wrappedLogger = new AccumulationLogger(); // Accumulates logs in memory
+
+        MarkdownExporter.Console.ExportToLog(summary, wrappedLogger);
+        
+        return wrappedLogger.GetLog(); // Retrieve formatted text output
+    }
+}
+
+public class NanosecondsConfig : ManualConfig
+{
+    public NanosecondsConfig()
+    {
+        AddColumn(StatisticColumn.Mean, StatisticColumn.Error, StatisticColumn.StdDev);
+        SummaryStyle = BenchmarkDotNet.Reports.SummaryStyle.Default.WithTimeUnit(TimeUnit.Nanosecond);
+    }
+}
+public class MicrosecondsConfig : ManualConfig
+{
+    public MicrosecondsConfig()
+    {
+        AddColumn(StatisticColumn.Mean, StatisticColumn.Error, StatisticColumn.StdDev);
+        SummaryStyle = BenchmarkDotNet.Reports.SummaryStyle.Default.WithTimeUnit(TimeUnit.Microsecond);
+    }
+}
+public class MillisecondsConfig : ManualConfig
+{
+    public MillisecondsConfig()
+    {
+        AddColumn(StatisticColumn.Mean, StatisticColumn.Error, StatisticColumn.StdDev);
+        SummaryStyle = BenchmarkDotNet.Reports.SummaryStyle.Default.WithTimeUnit(TimeUnit.Millisecond);
     }
 }
