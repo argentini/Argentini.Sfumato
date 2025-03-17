@@ -32,6 +32,9 @@ public static partial class FileScanner
     
     public static HashSet<string> ScanFileForUtilityClasses(string fileContent, Library library)
     {
+        if (string.IsNullOrEmpty(fileContent))
+            return [];
+        
         var quotedSubstrings = new List<string>();
         var results = new HashSet<string>();
 
