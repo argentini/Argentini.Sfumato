@@ -30,6 +30,8 @@ public class RegularExpressionsTests
                                             <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
                                         </div>
                                         <div class="content-['Hello!'] [--margin-val6:_1.25rem]! block invisible top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
+                                        <div class=""></div>
+                                        <div class="top-1/2"></div>
                                         <script>
                                             function test() {
                                               let el = document.getElementById('test-element');
@@ -52,6 +54,7 @@ public class RegularExpressionsTests
                                             
                                             var detailsMask = $"<span class=\"line-clamp-1 -mt-1! text-slate-500 dark:text-dark-foreground-dim line-clamp-2\"><span class=""line-clamp-2"">{description}</span></span>";
                                         }
+                                        <p>top-999</p>
                                     </body>
                                     </html>
                                     """;
@@ -64,7 +67,7 @@ public class RegularExpressionsTests
         var library = new Library();
         var utilityClasses = FileScanner.ScanFileForUtilityClasses(Markup, library);
 
-        Assert.Equal(23, utilityClasses.Count);
+        Assert.Equal(25, utilityClasses.Count);
 
         _testOutputHelper.WriteLine("FOUND:");
         _testOutputHelper.WriteLine("");
