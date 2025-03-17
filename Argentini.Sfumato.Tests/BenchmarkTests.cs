@@ -1,3 +1,5 @@
+// ReSharper disable ConvertToPrimaryConstructor
+
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
@@ -13,7 +15,6 @@ public class BenchmarkTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public BenchmarkTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
@@ -65,7 +66,7 @@ public class BenchmarkTests
     #endregion
 
     [Fact]
-    public void ScanFileForClassesBenchmark()
+    public void ScanContentForClassesBenchmark()
     {
         _testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
         _testOutputHelper.WriteLine("");

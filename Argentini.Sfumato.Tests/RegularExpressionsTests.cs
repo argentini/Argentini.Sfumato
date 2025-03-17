@@ -1,3 +1,5 @@
+// ReSharper disable ConvertToPrimaryConstructor
+
 using Argentini.Sfumato.Entities;
 using Xunit.Abstractions;
 
@@ -7,7 +9,6 @@ public class RegularExpressionsTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    // ReSharper disable once ConvertToPrimaryConstructor
     public RegularExpressionsTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
@@ -65,7 +66,7 @@ public class RegularExpressionsTests
     public void UtilityClassParsing()
     {
         var library = new Library();
-        var utilityClasses = FileScanner.ScanFileForUtilityClasses(Markup, library);
+        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, library);
 
         Assert.Equal(25, utilityClasses.Count);
 

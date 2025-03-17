@@ -2,7 +2,7 @@ using Argentini.Sfumato.Entities;
 
 namespace Argentini.Sfumato;
 
-public static partial class FileScanner
+public static partial class ContentScanner
 {
     #region Regular Expressions
     
