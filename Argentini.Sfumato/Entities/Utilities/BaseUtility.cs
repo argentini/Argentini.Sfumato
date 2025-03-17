@@ -12,4 +12,10 @@ public class BaseUtility
 
     public List<string> UsesCssCustomProperties { get; set; } = [];
     public int SelectorSort { get; protected set; }
+    
+    
+    
+    
+    
+    
 }
