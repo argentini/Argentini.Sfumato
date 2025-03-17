@@ -15,12 +15,17 @@ public static partial class FileScanner
 
     private const string PatternQuotedSubstrings = @"\S+";
 
+    private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+\s*:\s*[^;]+;?$";
+    
     [GeneratedRegex(PatternQuotedStrings, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
     private static partial Regex QuotedStringsRegex();
     
     [GeneratedRegex(PatternQuotedSubstrings, RegexOptions.Compiled)]
     private static partial Regex UtilityClassRegex();
-    
+
+    [GeneratedRegex(PatternCssCustomPropertyAssignment, RegexOptions.Compiled)]
+    private static partial Regex PatternCssCustomPropertyAssignmentRegex();
+
     #endregion
     
     #region File Parsing Methods
@@ -70,16 +75,40 @@ public static partial class FileScanner
 
     private static bool IsLikelyUtilityClass(this string input, Library library)
     {
-        if (input[0] == '[' && input[^1] == ']') // Arbitrary CSS
+        var root = input.TrimEnd('!');
+        
+        if (root[^1] == ']')
         {
-            if (library.ValidCssPropertyNames.Any(substring => input.Contains(substring, StringComparison.OrdinalIgnoreCase)))
-                return true;
+            var lastBracketIndex = root.LastIndexOf('[');
+
+            if (lastBracketIndex == -1)
+                return false;
+
+            if (lastBracketIndex == 0 || root[lastBracketIndex - 1] == ':')
+                root = root[lastBracketIndex..];
+            else
+                root = root[..lastBracketIndex];
         }
 
-        if (library.UtilityClassPrefixes.Any(substring => input.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+        if (root[0] == '[' && root[^1] == ']') // Arbitrary CSS
+        {
+            if (PatternCssCustomPropertyAssignmentRegex().Match(root.TrimStart('[').TrimEnd(']')).Success)
+                return true;
+
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (library.CssPropertyNamesWithColons.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+                return true;
+
+            return false;
+        }
+
+        root = root.Split(':', StringSplitOptions.RemoveEmptyEntries)[^1];
+
+        if (library.UtilityClassPrefixes.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
             return true;
 
-        if (library.StaticUtilityClasses.Any(substring => input.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+        // ReSharper disable once ConvertIfStatementToReturnStatement
+        if (library.StaticUtilityClasses.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
             return true;
 
         return false;

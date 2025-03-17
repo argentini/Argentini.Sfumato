@@ -30,7 +30,7 @@ public class RegularExpressionsTests
                                             <p class="[font-weight:900] sm:[font-weight:900]">Placeholder</p>
                                             <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
                                         </div>
-                                        <div class="content-['Hello!'] block invisible top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
+                                        <div class="content-['Hello!'] [--margin-val6:_1.25rem]! block invisible top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
                                         <script>
                                             function test() {
                                               let el = document.getElementById('test-element');
@@ -51,7 +51,7 @@ public class RegularExpressionsTests
                                                 block bg-slate-400
                                             "";
                                             
-                                            var detailsMask = $"<span class=\"line-clamp-1 mt-1 text-slate-500 dark:text-dark-foreground-dim line-clamp-2\"><span class=""line-clamp-2"">{description}</span></span>";
+                                            var detailsMask = $"<span class=\"line-clamp-1 -mt-1! text-slate-500 dark:text-dark-foreground-dim line-clamp-2\"><span class=""line-clamp-2"">{description}</span></span>";
                                         }
                                     </body>
                                     </html>
@@ -85,7 +85,7 @@ public class RegularExpressionsTests
         _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
 
         Assert.Equal(20, quotedSubstrings.Count);
-        Assert.Equal(19, utilityClasses.Count);
+        Assert.Equal(23, utilityClasses.Count);
 
         utilityClasses.Clear();
 
@@ -99,7 +99,7 @@ public class RegularExpressionsTests
 
         _testOutputHelper.WriteLine($"TIME: {timer.Elapsed.TotalMilliseconds} ms");
 
-        Assert.Equal(19, utilityClasses.Count);
+        Assert.Equal(23, utilityClasses.Count);
 
         _testOutputHelper.WriteLine(""); 
         _testOutputHelper.WriteLine("FINAL LIST");

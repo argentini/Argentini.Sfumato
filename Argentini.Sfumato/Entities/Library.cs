@@ -1528,7 +1528,7 @@ public sealed class Library
     
     public HashSet<string> UtilityClassPrefixes { get; set; } = [];
     public HashSet<string> StaticUtilityClasses { get; set; } = [];
-    public HashSet<string> ValidCssPropertyNames { get; set; } = [];
+    public HashSet<string> CssPropertyNamesWithColons { get; set; } = [];
 
     #endregion
     
@@ -1546,9 +1546,9 @@ public sealed class Library
         }
 
         foreach (var propertyName in ValidSafariCssPropertyNames)
-            ValidCssPropertyNames.Add($"{propertyName}:");
+            CssPropertyNamesWithColons.Add($"{propertyName}:");
         
         foreach (var propertyName in ValidChromeCssPropertyNames)
-            ValidCssPropertyNames.Add($"{propertyName}:");
+            CssPropertyNamesWithColons.Add($"{propertyName}:");
     }
 }
