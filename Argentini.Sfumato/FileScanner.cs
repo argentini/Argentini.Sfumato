@@ -30,24 +30,21 @@ public static partial class FileScanner
     
     #region File Parsing Methods
     
-    public static HashSet<string> ScanFileForClasses(string fileContent, Library library)
+    public static HashSet<string> ScanFileForUtilityClasses(string fileContent, Library library)
     {
+        var quotedSubstrings = new List<string>();
         var results = new HashSet<string>();
-        var quotedSubstrings = ScanForQuotedStrings(fileContent);
+
+        ScanForQuotedStrings(fileContent, quotedSubstrings);
         
         foreach (var quotedSubstring in quotedSubstrings)
-        {
-            var localClasses = ScanStringForClasses(quotedSubstring, library);
-
-            results.UnionWith(localClasses);
-        }
+            ScanStringForClasses(quotedSubstring, results, library);
         
         return results;
     }
     
-    public static List<string> ScanForQuotedStrings(string input)
+    private static void ScanForQuotedStrings(string input, List<string> results)
     {
-        var results = new List<string>();
         var quoteMatches = QuotedStringsRegex().Matches(input);
 
         foreach (Match qm in quoteMatches)
@@ -55,27 +52,24 @@ public static partial class FileScanner
             results.Add(qm.Groups["content"].Value);
             
             if (qm.Groups["content"].Value.Contains('\"') || qm.Groups["content"].Value.Contains('\'') || qm.Groups["content"].Value.Contains('`'))
-                results.AddRange(ScanForQuotedStrings(qm.Groups["content"].Value));
+                ScanForQuotedStrings(qm.Groups["content"].Value, results);
         }
-
-        return results;
     }
 
-    public static HashSet<string> ScanStringForClasses(string quotedString, Library library)
+    private static void ScanStringForClasses(string quotedString, HashSet<string> results, Library library)
     {
-        var results = new HashSet<string>();
-
         results.UnionWith(UtilityClassRegex()
             .Matches(quotedString)
             .Where(m => m.Value.IsLikelyUtilityClass(library))
             .Select(m => m.Value));
-
-        return results;
     }
 
+    // ReSharper disable ConvertIfStatementToReturnStatement
     private static bool IsLikelyUtilityClass(this string input, Library library)
     {
-        var root = input.TrimEnd('!');
+        var root = input.TrimEnd('!'); // Strip important flag
+
+        #region Differentiate arbitrary CSS from utility class modifiers
         
         if (root[^1] == ']')
         {
@@ -85,33 +79,41 @@ public static partial class FileScanner
                 return false;
 
             if (lastBracketIndex == 0 || root[lastBracketIndex - 1] == ':')
-                root = root[lastBracketIndex..];
+                root = root[lastBracketIndex..]; // Strip prefixes from arbitrary CSS
             else
-                root = root[..lastBracketIndex];
+                root = root[..lastBracketIndex]; // Strip modifier from utility class
         }
 
-        if (root[0] == '[' && root[^1] == ']') // Arbitrary CSS
+        #endregion
+        
+        #region Validate bracketed arbitrary CSS
+        
+        if (root[0] == '[' && root[^1] == ']')
         {
             if (PatternCssCustomPropertyAssignmentRegex().Match(root.TrimStart('[').TrimEnd(']')).Success)
                 return true;
 
-            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (library.CssPropertyNamesWithColons.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
                 return true;
 
             return false;
         }
 
+        #endregion
+        
+        #region Validate static and utility classes
+        
         root = root.Split(':', StringSplitOptions.RemoveEmptyEntries)[^1];
 
         if (library.UtilityClassPrefixes.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
             return true;
 
-        // ReSharper disable once ConvertIfStatementToReturnStatement
         if (library.StaticUtilityClasses.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
             return true;
 
         return false;
+        
+        #endregion
     }
     
     #endregion

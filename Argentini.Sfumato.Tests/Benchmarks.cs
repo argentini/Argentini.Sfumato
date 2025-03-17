@@ -51,6 +51,6 @@ public class Benchmarks
     [Benchmark]
     public HashSet<string> ScanFileForClasses()
     {
-        return FileScanner.ScanFileForClasses(Markup, Library);
+        return FileScanner.ScanFileForUtilityClasses(Markup, Library);
     }
 }
