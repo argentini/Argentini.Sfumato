@@ -668,12 +668,12 @@ public static class Strings
         return $"{(pixels / 16):#0.######}rem";
     }
 
-	/// <summary>
-	/// Convert a pixel string value to a rem value string, including the "rem" unit.
-	/// </summary>
-	/// <param name="pixels"></param>
-	/// <returns></returns>
-	public static string PxToRem(this string pixelVal)
+    /// <summary>
+    /// Convert a pixel string value to a rem value string, including the "rem" unit.
+    /// </summary>
+    /// <param name="pixelVal"></param>
+    /// <returns></returns>
+    public static string PxToRem(this string pixelVal)
 	{
 		if (decimal.TryParse(pixelVal.Trim().TrimEnd("px")?.Trim(), out var pixels) == false)
 			return "0rem";
@@ -687,51 +687,66 @@ public static class Strings
 	/// Optionally set a new opacity value (0-100).
 	/// </summary>
 	/// <param name="color"></param>
-	/// <param name="opacity"></param>
+	/// <param name="opacityPct"></param>
 	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
-	public static string WebColorToRgba(this string color, int opacity)
+	public static string SetWebColorAlpha(this string color, int opacityPct)
 	{
-		return color.WebColorToRgba(opacity / 100m);
+		return color.SetWebColorAlpha(opacityPct / 100d);
 	}
 
 	/// <summary>
-	/// Convert a web color to a rgba() value.
-	/// Handles rgb() and hex colors.
-	/// Optionally set a new opacity value (0-1.0).
+	/// Add an alpha value to a web color (hex, rgb, rgba, oklch, etc.).
 	/// </summary>
 	/// <param name="color"></param>
-	/// <param name="opacity"></param>
+	/// <param name="opacity">0.0 to 1.0</param>
 	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
-	public static string WebColorToRgba(this string color, double opacity)
+	public static string SetWebColorAlpha(this string color, double opacity = 1.0)
 	{
-		return color.WebColorToRgba((decimal)opacity);
-	}
-	
-	/// <summary>
-	/// Convert a web color (hex, rgb, or named) to a rgba() value.
-	/// Handles rgb() and hex colors.
-	/// Optionally set a new opacity value (0-1.0).
-	/// </summary>
-	/// <param name="color"></param>
-	/// <param name="opacity"></param>
-	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
-	public static string WebColorToRgba(this string color, decimal? opacity = null)
-	{
-		const string errorValue = "rgba(0,0,0,-0)";
-
-		opacity ??= 1;
-
-		if (opacity > 1)
-			opacity = 1;
-
-		if (opacity < 0)
-			opacity = 0;
+		if (string.IsNullOrEmpty(color.Trim()))
+			return string.Empty;
 		
+		if (opacity is < 0 or > 1.0)
+			return color;
+
+		color = color.Trim();
+		
+		var indexOpen = color.IndexOf('(');
+		var indexClose = color.LastIndexOf(')');
+		
+		#region OKLCH Color
+
+		var oklchIndex = color.IndexOf("oklch", StringComparison.Ordinal);
+
+		if (oklchIndex == 0)
+		{
+			if (indexOpen < 0 || indexClose < 0 || indexClose <= indexOpen)
+				return color;
+
+			var segments = (color.Replace("/", " / ").TrimStart("oklch(")?.TrimEnd(')') ?? string.Empty).Replace(',', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                
+			if (segments.Length != 3 && segments.Length != 5)
+				return color;
+
+			var alpha = opacity;
+
+			if (segments.Length == 5 && opacity < 1.0d)
+			{
+				if (double.TryParse(segments[4], out var existing))
+					alpha = (opacity > 0 ? existing * opacity : 0);
+			}
+			
+			return alpha >= 1.0d ? $"oklch({segments[0]} {segments[1]} {segments[2]})" : $"oklch({segments[0]} {segments[1]} {segments[2]} / {$"{alpha:0.#######}".TrimEnd('0')})";
+		}
+        
+		#endregion
+
 		color = color.Trim().Replace(" ", string.Empty);
 
-		var rgbIndex = color.IndexOf("rgb", StringComparison.Ordinal);
 		var hexIndex = color.IndexOf('#');
+		var rgbIndex = color.IndexOf("rgb", StringComparison.Ordinal);
 
+		#region Named Color Conversion
+		
 		if (hexIndex == -1 && rgbIndex == -1)
 		{
 			if (CssNamedColors.TryGetValue(color, out var namedColor))
@@ -741,6 +756,43 @@ public static class Strings
 			}
 		}
 		
+		#endregion
+
+		#region Hex Color
+
+		if (hexIndex == 0)
+		{
+			color = color[1..];
+
+			if (color.Length is not (3 or 4 or 6 or 8))
+				return color;
+		
+			if (color.Length is 3)
+				color = color[0].ToString() + color[0] + color[1] + color[1] + color[2] + color[2];
+
+			if (color.Length is 4)
+				color = color[0].ToString() + color[0] + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+
+			var red = Convert.ToInt32(color[..2], 16);
+			var green = Convert.ToInt32(color.Substring(2, 2), 16);
+			var blue = Convert.ToInt32(color.Substring(4, 2), 16);
+			var alpha = 1d;
+
+			if (color.Length == 8 && opacity < 1.0d)
+			{
+				var a = Convert.ToInt32(color[6..], 16);
+				alpha = Math.Round((double)a / 255, 2);
+			}
+
+			var o1 = opacity > 0 ? alpha * opacity : 0;
+
+			return o1 >= 1.0d ?  $"rgb({red},{green},{blue})" : $"rgba({red},{green},{blue},{$"{o1:0.#######}".TrimEnd('0')})";
+		}		
+		
+		#endregion		
+		
+		#region RGB/A Color
+
 		if (rgbIndex == 0)
 		{
 			color = color.TrimStart("rgb(") ?? string.Empty;
@@ -751,67 +803,45 @@ public static class Strings
 			var segments = color.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
 			if (segments.Length != 3 && segments.Length != 4)
-				return errorValue;
+				return color;
 
 			if (int.TryParse(segments[0].Trim('-'), out var red) == false)
-				return errorValue;
+				return color;
 			
 			if (int.TryParse(segments[1].Trim('-'), out var green) == false)
-				return errorValue;
+				return color;
 
 			if (int.TryParse(segments[2].Trim('-'), out var blue) == false)
-				return errorValue;
+				return color;
 
 			if (red < 0 || green < 0 || blue < 0)
-				return errorValue;
+				return color;
 
 			if (red > 255 || green > 255 || blue > 255)
-				return errorValue;
+				return color;
 			
-			var alpha = 1m;
+			var alpha = 1d;
 
-			if (segments.Length == 4)
-				_ = decimal.TryParse(segments[3].Trim('-'), out alpha);
+			if (opacity < 1.0d)
+			{
+				if (segments.Length == 4)
+					_ = double.TryParse(segments[3].Trim('-'), out alpha);
 
-			if (alpha < 0)
-				alpha = 0;
+				if (alpha < 0)
+					alpha = 0;
 
-			if (alpha > 1)
-				alpha = 1;
+				if (alpha > 1)
+					alpha = 1;
+			}
 
-			var o1 = $"{(opacity > 0 ? alpha * opacity : 0):0.#######}".TrimEnd('0');
+			var o1 = opacity > 0 ? alpha * opacity : 0;
 
-			return $"rgba({red},{green},{blue},{(string.IsNullOrEmpty(o1) ? "0" : o1)})";
+			return o1 >= 1.0d ?  $"rgb({red},{green},{blue})" : $"rgba({red},{green},{blue},{$"{o1:0.#######}".TrimEnd('0')})";
 		}
 
-		if (hexIndex != 0)
-			return errorValue;
-			
-		color = color[1..];
+		#endregion
 
-		if (color.Length is not (3 or 4 or 6 or 8))
-			return errorValue;
-	
-		if (color.Length is 3)
-			color = color[0].ToString() + color[0] + color[1] + color[1] + color[2] + color[2];
-
-		if (color.Length is 4)
-			color = color[0].ToString() + color[0] + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
-
-		var r = Convert.ToInt32(color[..2], 16);
-		var g = Convert.ToInt32(color.Substring(2, 2), 16);
-		var b = Convert.ToInt32(color.Substring(4, 2), 16);
-		var a = 1m;
-
-		if (color.Length == 8)
-		{
-			var alpha = Convert.ToInt32(color[6..], 16);
-			a = Math.Round((decimal)alpha / 255, 2);
-		}
-
-		var o2 = $"{(opacity > 0 ? a * opacity : 0):0.#######}".TrimEnd('0');
-
-		return $"rgba({r},{g},{b},{(string.IsNullOrEmpty(o2) ? "0" : o2)})";
+		return color;
 	}
 	
 	#endregion
@@ -823,7 +853,7 @@ public static class Strings
 	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
 	/// </summary>
 	/// <param name="timer"></param>
-	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
+	/// <param name="delimiter">Text to separate time elements; defaults to " : ".</param>
 	/// <returns>Formatted timespan</returns>
 	public static string FormatTimer(this Stopwatch timer, string delimiter = ":")
 	{
@@ -835,7 +865,7 @@ public static class Strings
 	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
 	/// </summary>
 	/// <param name="timespan"></param>
-	/// <param name="delimitter">Text to separate time elements; defaults to " : ".</param>
+	/// <param name="delimiter">Text to separate time elements; defaults to " : ".</param>
 	/// <returns>Formatted timespan</returns>
 	public static string FormatTimer(this TimeSpan timespan, string delimiter = ":")
 	{
