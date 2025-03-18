@@ -72,19 +72,36 @@ public static partial class ContentScanner
     {
         var root = input.TrimEnd('!'); // Strip important flag
 
-        #region Differentiate arbitrary CSS from utility class modifiers
+        #region Differentiate arbitrary CSS from custom values
         
-        if (root[^1] == ']')
+        switch (root[^1])
         {
-            var lastBracketIndex = root.LastIndexOf('[');
+            case ']':
+            {
+                var lastBracketIndex = root.LastIndexOf('[');
 
-            if (lastBracketIndex == -1)
-                return false;
+                if (lastBracketIndex == -1)
+                    return false;
 
-            if (lastBracketIndex == 0 || root[lastBracketIndex - 1] == ':')
-                root = root[lastBracketIndex..]; // Strip prefixes from arbitrary CSS
-            else
-                root = root[..lastBracketIndex]; // Strip modifier from utility class
+                if (lastBracketIndex == 0 || root[lastBracketIndex - 1] == ':')
+                    root = root[lastBracketIndex..]; // Strip prefixes from arbitrary CSS
+                else
+                    root = root[..lastBracketIndex]; // Strip bracketed custom value
+                break;
+            }
+            case ')':
+            {
+                var lastParenIndex = root.LastIndexOf('(');
+
+                if (lastParenIndex > 1 || root[lastParenIndex - 1] == '-')
+                    root = root[..lastParenIndex]; // Strip custom value parenthetical
+                else
+                {
+                    return false;
+                }
+
+                break;
+            }
         }
 
         #endregion
@@ -96,7 +113,7 @@ public static partial class ContentScanner
             if (PatternCssCustomPropertyAssignmentRegex().Match(root.TrimStart('[').TrimEnd(']')).Success)
                 return true;
 
-            if (library.CssPropertyNamesWithColons.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+            if (library.CssPropertyNamesWithColons.Any(substring => root.Contains(substring, StringComparison.Ordinal)))
                 return true;
 
             return false;
@@ -108,12 +125,9 @@ public static partial class ContentScanner
         
         root = root.Split(':', StringSplitOptions.RemoveEmptyEntries)[^1];
 
-        if (library.UtilityClassPrefixes.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
+        if (library.ClassNamePrefixes.Any(key => root.StartsWith(key, StringComparison.Ordinal)))
             return true;
-
-        if (library.StaticUtilityClasses.Any(substring => root.Contains(substring, StringComparison.OrdinalIgnoreCase)))
-            return true;
-
+        
         return false;
         
         #endregion

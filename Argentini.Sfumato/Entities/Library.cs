@@ -1,5 +1,4 @@
-using Argentini.Sfumato.Entities.Utilities;
-using Argentini.Sfumato.Extensions;
+// ReSharper disable RawStringCanBeSimplified
 
 namespace Argentini.Sfumato.Entities;
 
@@ -1526,29 +1525,397 @@ public sealed class Library
     
     #region Scanner Collections
     
-    public HashSet<string> UtilityClassPrefixes { get; set; } = [];
-    public HashSet<string> StaticUtilityClasses { get; set; } = [];
     public HashSet<string> CssPropertyNamesWithColons { get; set; } = [];
+    public HashSet<string> ClassNamePrefixes { get; set; } = [];
 
     #endregion
     
     public Library()
     {
-        foreach (var instance in typeof(BaseUtility).GetInheritedTypes().ToList().Select(prefix => Activator.CreateInstance(prefix) as BaseUtility))
-        {
-            if (instance is null)
-                continue;
-
-            if (instance.IsSimpleUtility == false)
-                UtilityClassPrefixes.Add($"{instance.Prefix}-");
-            else
-                StaticUtilityClasses.Add(instance.Prefix);
-        }
-
         foreach (var propertyName in ValidSafariCssPropertyNames)
             CssPropertyNamesWithColons.Add($"{propertyName}:");
         
         foreach (var propertyName in ValidChromeCssPropertyNames)
             CssPropertyNamesWithColons.Add($"{propertyName}:");
+        
+        ClassNamePrefixes.UnionWith(StaticClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ClassNamePrefixes.UnionWith(LengthClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ClassNamePrefixes.UnionWith(FractionClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ClassNamePrefixes.UnionWith(ColorClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ClassNamePrefixes.UnionWith(DurationClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ClassNamePrefixes.UnionWith(AngleClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
     }
+    
+    #region Utility Class Definitions
+
+    public Dictionary<string, BaseUtility> StaticClasses { get; set; } = new()
+    {
+        {
+            "antialiased", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           -webkit-font-smoothing: antialiased;
+                           -moz-osx-font-smoothing: grayscale;
+                           """
+            }
+        },
+        {
+            "subpixel-antialiased", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           -webkit-font-smoothing: auto;
+                           -moz-osx-font-smoothing: auto;
+                           """
+            }
+        },
+        {
+            "text-xs", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-xs);
+                           line-height: var(--text-xs--line-height);
+                           """
+            }
+        },
+        {
+            "text-sm", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-sm);
+                           line-height: var(--text-sm--line-height);
+                           """
+            }
+        },
+        {
+            "text-base", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-base);
+                           line-height: var(--text-base--line-height);
+                           """
+            }
+        },
+        {
+            "text-lg", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-lg);
+                           line-height: var(--text-lg--line-height);
+                           """
+            }
+        },
+        {
+            "text-xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-xl);
+                           line-height: var(--text-xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-2xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-2xl);
+                           line-height: var(--text-2xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-3xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-3xl);
+                           line-height: var(--text-3xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-4xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-4xl);
+                           line-height: var(--text-4xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-5xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-5xl);
+                           line-height: var(--text-5xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-6xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-6xl);
+                           line-height: var(--text-6xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-7xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-7xl);
+                           line-height: var(--text-7xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-8xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-8xl);
+                           line-height: var(--text-8xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-9xl", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var(--text-9xl);
+                           line-height: var(--text-9xl--line-height);
+                           """
+            }
+        },
+        {
+            "text-left", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           text-align: left;
+                           """
+            }
+        },
+        {
+            "text-center", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           text-align: center;
+                           """
+            }
+        },
+        {
+            "text-right", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           text-align: right;
+                           """
+            }
+        },
+        {
+            "text-justify", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           text-align: justify;
+                           """
+            }
+        },
+        {
+            "text-start", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           text-align: start;
+                           """
+            }
+        },
+        {
+            "text-end", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           text-align: end;
+                           """
+            }
+        },
+        {
+            "top-auto", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """top: auto;"""
+            }
+        },
+        {
+            "top-px", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """top: 1px;"""
+            }
+        },
+        {
+            "-top-px", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """top: -1px;"""
+            }
+        },
+        {
+            "top-full", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """top: {0};""",
+                Value = """100%"""
+            }
+        },
+        {
+            "-top-full", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """top: {0};""",
+                Value = """-100%"""
+            }
+        },
+    };
+
+    public Dictionary<string, BaseUtility> LengthClasses { get; set; } = new()
+    {
+        {
+            "text-[", new BaseUtility
+            {
+                UsesLength = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: {0};
+                           line-height: {1};
+                           """
+            }
+        },
+        {
+            "text-(", new BaseUtility
+            {
+                UsesLength = true,
+                UsesSlashModifier = true,
+                Template = """
+                           font-size: var({0});
+                           line-height: {1};
+                           """
+            }
+        },
+        {
+            "top-", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """top: calc(var(--spacing) * {0});"""
+            }
+        },
+        {
+            "-top-", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """top: calc(var(--spacing) * -{0});"""
+            }
+        },
+        {
+            "top-[", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """top: {0};"""
+            }
+        },
+        {
+            "top-(", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """top: var({0});"""
+            }
+        },
+        {
+            "-top-(", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """top: calc(var({0}) * -1);"""
+            }
+        },
+    };
+
+    public Dictionary<string, BaseUtility> FractionClasses { get; set; } = new()
+    {
+        {
+            "top-", new BaseUtility
+            {
+                UsesFraction = true,
+                Template = """top: calc({0} * 100%);"""
+            }
+        },
+        {
+            "-top-", new BaseUtility
+            {
+                UsesFraction = true,
+                Template = """top: calc({0} * -100%);"""
+            }
+        },
+    };
+
+    public Dictionary<string, BaseUtility> ColorClasses { get; set; } = new()
+    {
+        {
+            "bg-", new BaseUtility
+            {
+                UsesColor = true,
+                UsesSlashModifier = true,
+                Template = """
+                           background-color: {0};
+                           """
+            }
+        },
+        {
+            "text-", new BaseUtility
+            {
+                UsesColor = true,
+                UsesSlashModifier = true,
+                Template = """
+                           color: {0};
+                           """
+            }
+        },
+    };
+
+    public Dictionary<string, BaseUtility> DurationClasses { get; set; } = new()
+    {
+    };
+
+    public Dictionary<string, BaseUtility> AngleClasses { get; set; } = new()
+    {
+    };
+    
+    #endregion
 }
