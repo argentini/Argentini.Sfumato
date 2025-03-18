@@ -224,7 +224,7 @@ public static class Identify
 
         #region RGB/a Color
         
-        var rgbIndex = color.IndexOf("rgb", StringComparison.OrdinalIgnoreCase);
+        var rgbIndex = color.IndexOf("rgb", StringComparison.Ordinal);
         var indexOpen = color.IndexOf('(');
         var indexClose = color.LastIndexOf(')');
 
@@ -249,14 +249,14 @@ public static class Identify
 
         #region OKLCH Color
 
-        var oklchIndex = color.IndexOf("oklch", StringComparison.OrdinalIgnoreCase);
+        var oklchIndex = color.IndexOf("oklch", StringComparison.Ordinal);
 
         if (oklchIndex == 0)
         {
             if (indexOpen < 0 || indexClose < 0 || indexClose <= indexOpen)
                 return false;
 
-            var segments = (color.Replace(" ", string.Empty).TrimStart("oklch(")?.TrimEnd(')') ?? string.Empty).Replace(',', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var segments = (color.Replace("/", " / ").TrimStart("oklch(")?.TrimEnd(')') ?? string.Empty).Replace(',', ' ').Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 
             if (segments.Length != 3 && segments.Length != 5)
                 return false;
