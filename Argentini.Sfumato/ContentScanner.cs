@@ -125,7 +125,7 @@ public static partial class ContentScanner
         
         root = root.Split(':', StringSplitOptions.RemoveEmptyEntries)[^1];
 
-        if (library.ClassNamePrefixes.Any(key => root.StartsWith(key, StringComparison.Ordinal)))
+        if (library.ScannerClassNamePrefixes.Any(key => root.StartsWith(key, StringComparison.Ordinal)))
             return true;
         
         return false;

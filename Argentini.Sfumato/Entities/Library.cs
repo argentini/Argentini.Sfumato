@@ -1526,7 +1526,7 @@ public sealed class Library
     #region Scanner Collections
     
     public HashSet<string> CssPropertyNamesWithColons { get; set; } = [];
-    public HashSet<string> ClassNamePrefixes { get; set; } = [];
+    public HashSet<string> ScannerClassNamePrefixes { get; set; } = [];
 
     #endregion
     
@@ -1538,12 +1538,13 @@ public sealed class Library
         foreach (var propertyName in ValidChromeCssPropertyNames)
             CssPropertyNamesWithColons.Add($"{propertyName}:");
         
-        ClassNamePrefixes.UnionWith(StaticClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ClassNamePrefixes.UnionWith(LengthClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ClassNamePrefixes.UnionWith(FractionClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ClassNamePrefixes.UnionWith(ColorClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ClassNamePrefixes.UnionWith(DurationClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ClassNamePrefixes.UnionWith(AngleClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ScannerClassNamePrefixes.UnionWith(StaticClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ScannerClassNamePrefixes.UnionWith(NumberClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ScannerClassNamePrefixes.UnionWith(LengthClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ScannerClassNamePrefixes.UnionWith(FractionClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ScannerClassNamePrefixes.UnionWith(ColorClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ScannerClassNamePrefixes.UnionWith(DurationClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        ScannerClassNamePrefixes.UnionWith(AngleClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
     }
     
     #region Utility Class Definitions
@@ -1571,6 +1572,16 @@ public sealed class Library
             }
         },
         {
+            "leading-none", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                SelectorSort = 1,
+                Template = """
+                           line-height: 1;
+                           """
+            }
+        },
+        {
             "text-xs", new BaseUtility
             {
                 IsSimpleUtility = true,
@@ -1578,6 +1589,10 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-xs);
                            line-height: var(--text-xs--line-height);
+                           """,
+                ModifierTemplate = """
+                           font-size: var(--text-xs);
+                           line-height: calc(var(--spacing) * {1});
                            """
             }
         },
@@ -1589,7 +1604,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-sm);
                            line-height: var(--text-sm--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-sm);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1600,7 +1619,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-base);
                            line-height: var(--text-base--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-base);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1611,7 +1634,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-lg);
                            line-height: var(--text-lg--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-lg);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1622,7 +1649,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-xl);
                            line-height: var(--text-xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1633,7 +1664,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-2xl);
                            line-height: var(--text-2xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-2xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1644,7 +1679,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-3xl);
                            line-height: var(--text-3xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-3xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1655,7 +1694,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-4xl);
                            line-height: var(--text-4xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-4xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1666,7 +1709,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-5xl);
                            line-height: var(--text-5xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-5xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1677,7 +1724,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-6xl);
                            line-height: var(--text-6xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-6xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1688,7 +1739,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-7xl);
                            line-height: var(--text-7xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-7xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1699,7 +1754,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-8xl);
                            line-height: var(--text-8xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-8xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1710,7 +1769,11 @@ public sealed class Library
                 Template = """
                            font-size: var(--text-9xl);
                            line-height: var(--text-9xl--line-height);
-                           """
+                           """,
+                ModifierTemplate = """
+                                   font-size: var(--text-9xl);
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1806,8 +1869,52 @@ public sealed class Library
         },
     };
 
+    public Dictionary<string, BaseUtility> NumberClasses { get; set; } = new()
+    {
+        {
+            "top-", new BaseUtility
+            {
+                UsesNumber = true,
+                Template = """top: calc(var(--spacing) * {0});"""
+            }
+        },
+        {
+            "-top-", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """top: calc(var(--spacing) * -{0});"""
+            }
+        },
+        {
+            "leading-", new BaseUtility
+            {
+                UsesNumber = true,
+                SelectorSort = 1,
+                Template = """line-height: calc(var(--spacing) * {0});"""
+            }
+        },
+    };
+
     public Dictionary<string, BaseUtility> LengthClasses { get; set; } = new()
     {
+        {
+            "leading-[", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """
+                           line-height: {0};
+                           """
+            }
+        },
+        {
+            "leading-(", new BaseUtility
+            {
+                UsesLength = true,
+                Template = """
+                           line-height: var({0});
+                           """
+            }
+        },
         {
             "text-[", new BaseUtility
             {
@@ -1815,8 +1922,12 @@ public sealed class Library
                 UsesSlashModifier = true,
                 Template = """
                            font-size: {0};
-                           line-height: {1};
-                           """
+                           line-height: calc(var(--spacing) * {1});
+                           """,
+                ModifierTemplate = """
+                                   font-size: {0};
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1826,22 +1937,12 @@ public sealed class Library
                 UsesSlashModifier = true,
                 Template = """
                            font-size: var({0});
-                           line-height: {1};
-                           """
-            }
-        },
-        {
-            "top-", new BaseUtility
-            {
-                UsesLength = true,
-                Template = """top: calc(var(--spacing) * {0});"""
-            }
-        },
-        {
-            "-top-", new BaseUtility
-            {
-                UsesLength = true,
-                Template = """top: calc(var(--spacing) * -{0});"""
+                           line-height: calc(var(--spacing) * {1});
+                           """,
+                ModifierTemplate = """
+                                   font-size: var({0});
+                                   line-height: calc(var(--spacing) * {1});
+                                   """
             }
         },
         {
@@ -1894,7 +1995,10 @@ public sealed class Library
                 UsesSlashModifier = true,
                 Template = """
                            background-color: {0};
-                           """
+                           """,
+                ModifierTemplate = """
+                                   background-color: {0};
+                                   """
             }
         },
         {
@@ -1904,7 +2008,10 @@ public sealed class Library
                 UsesSlashModifier = true,
                 Template = """
                            color: {0};
-                           """
+                           """,
+                ModifierTemplate = """
+                                   color: {0};
+                                   """
             }
         },
     };

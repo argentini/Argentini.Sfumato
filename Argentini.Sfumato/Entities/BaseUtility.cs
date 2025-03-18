@@ -11,7 +11,12 @@ public class BaseUtility
     public virtual bool IsSimpleUtility { get; set; }
 
     /// <summary>
-    /// Class uses length or spacing (e.g. "1rem")
+    /// Class uses spacing number (e.g. "m-4")
+    /// </summary>
+    public virtual bool UsesNumber { get; set; }
+
+    /// <summary>
+    /// Class uses length (e.g. "1rem")
     /// </summary>
     public virtual bool UsesLength { get; set; }
 
@@ -41,12 +46,19 @@ public class BaseUtility
     public virtual bool UsesSlashModifier { get; set; }
 
     /// <summary>
-    /// CSS class property template (e.g. "font-smoothing: antialiased;").
+    /// CSS class property template (e.g. "font-smoothing: antialiased;", "top: {0};").
+    /// Can contain more than one property assignment.
+    /// Use placeholder {0} for custom value.
+    /// </summary>
+    public virtual string Template { get; set; } = string.Empty;
+
+    /// <summary>
+    /// CSS class property template using a modifier (e.g. "font-size: {0}; line-height: calc(var(--spacing) * {1});").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
-    public virtual string Template { get; set; } = string.Empty;
+    public virtual string ModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
     /// Property value inserted into Template (e.g. "1rem").
@@ -59,9 +71,9 @@ public class BaseUtility
     public virtual List<string> UsesCssCustomProperties { get; set; } = [];
 
     /// <summary>
-    /// Order output class declarations by this integer (default is int.MaxValue).
+    /// Order output class declarations by this integer (default is 0).
     /// </summary>
-    public virtual int SelectorSort { get; protected set; } = int.MaxValue;
+    public virtual int SelectorSort { get; set; } = 0;
 
 
 
