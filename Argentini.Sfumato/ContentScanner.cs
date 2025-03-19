@@ -110,6 +110,15 @@ public static partial class ContentScanner
         // hover
         // text-(length:--my-text-var)
 
+        // dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]/[0.1]
+        // dark
+        // group-[.is-published]
+        // [&.active]
+        // tabp
+        // hover
+        // text-[color
+        // var(--my-color-var)]/[0.1]
+
         var segments = new List<string>(SplitClassIntoSegmentsRegex().Split(input.TrimEnd('!'))).ToList();
 
         #region Validate bracketed arbitrary CSS

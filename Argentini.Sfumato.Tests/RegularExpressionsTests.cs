@@ -79,6 +79,8 @@ public class RegularExpressionsTests
         const string nightmareClass12 = "dark:group-[.is-published]:[&.active]:tabp:hover:[font-weight:700]!";
         const string nightmareClass13 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-(length:--my-text-var)";
         const string nightmareClass14 = "dark:group-[.is-published]:[&.active]:tabp:hover:[color:var(--my-color-var)]";
+        const string nightmareClass15 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]/[0.1]";
+        const string nightmareClass16 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-[length:var(--my-text-size-var)]/5";
             
         var library = new Library();
 
@@ -95,6 +97,9 @@ public class RegularExpressionsTests
         Assert.True(nightmareClass11.IsLikelyUtilityClass(library));
         Assert.True(nightmareClass12.IsLikelyUtilityClass(library));
         Assert.True(nightmareClass13.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass14.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass15.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass16.IsLikelyUtilityClass(library));
     }
     
     [Fact]
