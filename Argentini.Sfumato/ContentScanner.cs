@@ -1,3 +1,5 @@
+// ReSharper disable ConvertIfStatementToSwitchStatement
+
 using Argentini.Sfumato.Entities;
 
 namespace Argentini.Sfumato;
@@ -6,7 +8,7 @@ public static partial class ContentScanner
 {
     #region Regular Expressions
     
-    private const string PatternQuotedStrings =
+    public const string PatternQuotedStrings =
         """
         (?<delim>(\\")|["'`])
         (?<content>(?:\\.|(?!\k<delim>).){3,}?)
@@ -17,14 +19,19 @@ public static partial class ContentScanner
 
     private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+\s*:\s*[^;]+;?$";
     
+    private const string SplitClassIntoSegments = @":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
+    
     [GeneratedRegex(PatternQuotedStrings, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
-    private static partial Regex QuotedStringsRegex();
+    public static partial Regex QuotedStringsRegex();
     
     [GeneratedRegex(PatternQuotedSubstrings, RegexOptions.Compiled)]
-    private static partial Regex UtilityClassRegex();
+    public static partial Regex UtilityClassRegex();
 
     [GeneratedRegex(PatternCssCustomPropertyAssignment, RegexOptions.Compiled)]
-    private static partial Regex PatternCssCustomPropertyAssignmentRegex();
+    public static partial Regex PatternCssCustomPropertyAssignmentRegex();
+
+    [GeneratedRegex(SplitClassIntoSegments, RegexOptions.Compiled)]
+    public static partial Regex SplitClassIntoSegmentsRegex();
 
     #endregion
     
@@ -68,52 +75,51 @@ public static partial class ContentScanner
     }
 
     // ReSharper disable ConvertIfStatementToReturnStatement
-    private static bool IsLikelyUtilityClass(this string input, Library library)
+    public static bool IsLikelyUtilityClass(this string input, Library library)
     {
-        var root = input.TrimEnd('!'); // Strip important flag
+        // dark:group-[.is-published]:[&.active]:tabp:hover:text-[1rem]/6!
+        // dark
+        // group-[.is-published]
+        // [&.active]
+        // tabp
+        // hover
+        // text-[1rem]/6
 
-        #region Differentiate arbitrary CSS from custom values
-        
-        switch (root[^1])
-        {
-            case ']':
-            {
-                var lastBracketIndex = root.LastIndexOf('[');
+        // dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]
+        // dark
+        // group-[.is-published]
+        // [&.active]
+        // tabp
+        // hover
+        // text-[color
+        // var(--my-color-var)]
 
-                if (lastBracketIndex == -1)
-                    return false;
+        // dark:group-[.is-published]:[&.active]:tabp:hover:[font-weight:700]!
+        // dark
+        // group-[.is-published]
+        // [&.active]
+        // tabp
+        // hover
+        // [font-weight: 700]
 
-                if (lastBracketIndex == 0 || root[lastBracketIndex - 1] == ':')
-                    root = root[lastBracketIndex..]; // Strip prefixes from arbitrary CSS
-                else
-                    root = root[..lastBracketIndex]; // Strip bracketed custom value
-                break;
-            }
-            case ')':
-            {
-                var lastParenIndex = root.LastIndexOf('(');
+        // dark:group-[.is-published]:[&.active]:tabp:hover:text-(length:--my-text-var)
+        // dark
+        // group-[.is-published]
+        // [&.active]
+        // tabp
+        // hover
+        // text-(length:--my-text-var)
 
-                if (lastParenIndex > 1 || root[lastParenIndex - 1] == '-')
-                    root = root[..lastParenIndex]; // Strip custom value parenthetical
-                else
-                {
-                    return false;
-                }
+        var segments = new List<string>(SplitClassIntoSegmentsRegex().Split(input.TrimEnd('!'))).ToList();
 
-                break;
-            }
-        }
-
-        #endregion
-        
         #region Validate bracketed arbitrary CSS
         
-        if (root[0] == '[' && root[^1] == ']')
+        if (segments[^1][0] == '[' && segments[^1][^1] == ']')
         {
-            if (PatternCssCustomPropertyAssignmentRegex().Match(root.TrimStart('[').TrimEnd(']')).Success)
+            if (PatternCssCustomPropertyAssignmentRegex().Match(segments[^1].TrimStart('[').TrimEnd(']')).Success)
                 return true;
 
-            if (library.CssPropertyNamesWithColons.Any(substring => root.Contains(substring, StringComparison.Ordinal)))
+            if (library.CssPropertyNamesWithColons.Any(substring => segments[^1].Contains(substring, StringComparison.Ordinal)))
                 return true;
 
             return false;
@@ -123,9 +129,7 @@ public static partial class ContentScanner
         
         #region Validate static and utility classes
         
-        root = root.Split(':', StringSplitOptions.RemoveEmptyEntries)[^1];
-
-        if (library.ScannerClassNamePrefixes.Any(key => root.StartsWith(key, StringComparison.Ordinal)))
+        if (library.ScannerClassNamePrefixes.Any(key => segments[^1].StartsWith(key, StringComparison.Ordinal)))
             return true;
         
         return false;

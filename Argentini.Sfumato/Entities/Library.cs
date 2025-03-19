@@ -1562,6 +1562,24 @@ public sealed class Library
             }
         },
         {
+            "block", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           display: block;
+                           """
+            }
+        },
+        {
+            "flex", new BaseUtility
+            {
+                IsSimpleUtility = true,
+                Template = """
+                           display: flex;
+                           """
+            }
+        },
+        {
             "subpixel-antialiased", new BaseUtility
             {
                 IsSimpleUtility = true,

@@ -65,10 +65,45 @@ public class RegularExpressionsTests
     [Fact]
     public void UtilityClassParsing()
     {
+        const string nightmareClass1 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-[1rem]/6!";
+        const string nightmareClass2 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-[1rem]!";
+        const string nightmareClass3 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]";
+        const string nightmareClass4 = "[&.my-item_active]:tabp:hover:-top-8!";
+        const string nightmareClass5 = "group-has-[a]:tabp:hover:antialiased";
+        const string nightmareClass6 = "tabp:has-checked:bg-indigo-50";
+        const string nightmareClass7 = "hover:not-focus:bg-indigo-700";
+        const string nightmareClass8 = "not-supports-[display:grid]:flex";
+        const string nightmareClass9 = "tabp:group-hover:bg-white";
+        const string nightmareClass10 = "group-[.is-published]:block";
+        const string nightmareClass11 = "[font-weight:700]";
+        const string nightmareClass12 = "dark:group-[.is-published]:[&.active]:tabp:hover:[font-weight:700]!";
+        const string nightmareClass13 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-(length:--my-text-var)";
+        const string nightmareClass14 = "dark:group-[.is-published]:[&.active]:tabp:hover:[color:var(--my-color-var)]";
+            
+        var library = new Library();
+
+        Assert.True(nightmareClass1.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass2.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass3.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass4.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass5.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass6.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass7.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass8.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass9.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass10.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass11.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass12.IsLikelyUtilityClass(library));
+        Assert.True(nightmareClass13.IsLikelyUtilityClass(library));
+    }
+    
+    [Fact]
+    public void FileContentParsing()
+    {
         var library = new Library();
         var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, library);
 
-        Assert.Equal(28, utilityClasses.Count);
+        Assert.Equal(29, utilityClasses.Count);
 
         _testOutputHelper.WriteLine("FOUND:");
         _testOutputHelper.WriteLine("");
