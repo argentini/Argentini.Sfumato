@@ -1,4 +1,6 @@
-﻿namespace Argentini.Sfumato.Extensions;
+﻿using Argentini.Sfumato.Entities;
+
+namespace Argentini.Sfumato.Extensions;
 
 public static class Objects
 {
@@ -26,7 +28,7 @@ public static class Objects
     #region Dictionaries
     
     /// <summary>
-    /// Add or update a Dictionary<string,string> with a given key/value pair.
+    /// Add or update a Dictionary with a given key/value pair.
     /// </summary>
     /// <param name="dictionary"></param>
     /// <param name="key"></param>
@@ -43,7 +45,7 @@ public static class Objects
     }
     
     /// <summary>
-    /// Add or update a Dictionary<string,string> with a given key/value pair.
+    /// Add or update a Dictionary with a given key/value pair.
     /// </summary>
     /// <param name="dictionary"></param>
     /// <param name="kvp"></param>
@@ -56,6 +58,12 @@ public static class Objects
         
         dictionary[kvp.Key] = propertyTemplate == string.Empty ? kvp.Value : propertyTemplate.Replace("{value}", kvp.Value);
         return true;
+    }
+
+    public static void AddRange<TKey, TValue>(this Dictionary<TKey, TValue> dict, IEnumerable<KeyValuePair<TKey, TValue>> other) where TKey : notnull
+    {
+        foreach (var kvp in other)
+            dict.TryAdd(kvp.Key, kvp.Value);
     }
     
     #endregion
