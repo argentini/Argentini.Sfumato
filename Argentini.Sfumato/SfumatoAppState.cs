@@ -824,7 +824,9 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> BasisStaticUtilities { get; } = new()
     {
         ["0"] = "flex-basis: 0;",
-	    ["full"] = "flex-basis: 100%;"
+        ["px"] = "flex-basis: 1px;",
+        ["auto"] = "flex-basis: auto;",
+	    ["full"] = "flex-basis: 100%;",
     };
 
     public Dictionary<string, string> ColStaticUtilities { get; } = new()
@@ -955,19 +957,19 @@ public sealed class SfumatoAppState
     public Dictionary<string, string> GapStaticUtilities { get; } = new()
     {
 	    ["0"] = "gap: auto;",
-	    ["px"] = "gap: min-content;",
+	    ["px"] = "gap: 1px;",
     }; 
 
     public Dictionary<string, string> GapXStaticUtilities { get; } = new()
     {
 	    ["0"] = "column-gap: auto;",
-	    ["px"] = "column-gap: min-content;",
+	    ["px"] = "column-gap: 1px;",
     }; 
 
     public Dictionary<string, string> GapYStaticUtilities { get; } = new()
     {
 	    ["0"] = "row-gap: auto;",
-	    ["px"] = "row-gap: min-content;",
+	    ["px"] = "row-gap: 1px;",
     }; 
 
     public Dictionary<string, string> GridColsStaticUtilities { get; } = new()
