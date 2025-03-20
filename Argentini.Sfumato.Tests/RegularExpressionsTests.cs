@@ -82,31 +82,48 @@ public class RegularExpressionsTests
         const string nightmareClass15 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]/[0.1]";
         const string nightmareClass16 = "dark:group-[.is-published]:[&.active]:tabp:hover:text-[length:var(--my-text-size-var)]/5";
             
-        var library = new Library();
+        var appState = new AppState();
 
-        Assert.NotNull(nightmareClass1.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass2.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass3.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass4.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass5.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass6.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass7.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass8.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass9.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass10.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass11.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass12.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass13.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass14.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass15.GetLikelyUtilityClass(library));
-        Assert.NotNull(nightmareClass16.GetLikelyUtilityClass(library));
+        var result1 = nightmareClass1.GetLikelyUtilityClass(appState);
+        var result2 = nightmareClass2.GetLikelyUtilityClass(appState);
+        var result3 = nightmareClass3.GetLikelyUtilityClass(appState);
+        var result4 = nightmareClass4.GetLikelyUtilityClass(appState);
+        var result5 = nightmareClass5.GetLikelyUtilityClass(appState);
+        var result6 = nightmareClass6.GetLikelyUtilityClass(appState);
+        var result7 = nightmareClass7.GetLikelyUtilityClass(appState);
+        var result8 = nightmareClass8.GetLikelyUtilityClass(appState);
+        var result9 = nightmareClass9.GetLikelyUtilityClass(appState);
+        var result10 = nightmareClass10.GetLikelyUtilityClass(appState);
+        var result11 = nightmareClass11.GetLikelyUtilityClass(appState);
+        var result12 = nightmareClass12.GetLikelyUtilityClass(appState);
+        var result13 = nightmareClass13.GetLikelyUtilityClass(appState);
+        var result14 = nightmareClass14.GetLikelyUtilityClass(appState);
+        var result15 = nightmareClass15.GetLikelyUtilityClass(appState);
+        var result16 = nightmareClass16.GetLikelyUtilityClass(appState);
+
+        Assert.NotNull(result1);
+        Assert.NotNull(result2);
+        Assert.NotNull(result3);
+        Assert.NotNull(result4);
+        Assert.NotNull(result5);
+        Assert.NotNull(result6);
+        Assert.NotNull(result7);
+        Assert.NotNull(result8);
+        Assert.NotNull(result9);
+        Assert.NotNull(result10);
+        Assert.NotNull(result11);
+        Assert.NotNull(result12);
+        Assert.NotNull(result13);
+        Assert.NotNull(result14);
+        Assert.NotNull(result15);
+        Assert.NotNull(result16);
     }
     
     [Fact]
     public void FileContentParsing()
     {
-        var library = new Library();
-        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, library);
+        var appState = new AppState();
+        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appState);
 
         Assert.Equal(29, utilityClasses.Count);
 

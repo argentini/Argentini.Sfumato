@@ -19,8 +19,12 @@ public static partial class ContentScanner
 
     private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+\s*:\s*[^;]+;?$";
     
-    private const string SplitClassIntoSegments = @":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
-    
+    private const string SplitByColons = @":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
+
+    private const string SplitByHyphens = @"-(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
+
+    private const string SplitBySlashes = @"/(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
+
     [GeneratedRegex(PatternQuotedStrings, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
     public static partial Regex QuotedStringsRegex();
     
@@ -30,14 +34,20 @@ public static partial class ContentScanner
     [GeneratedRegex(PatternCssCustomPropertyAssignment, RegexOptions.Compiled)]
     public static partial Regex PatternCssCustomPropertyAssignmentRegex();
 
-    [GeneratedRegex(SplitClassIntoSegments, RegexOptions.Compiled)]
-    public static partial Regex SplitClassIntoSegmentsRegex();
+    [GeneratedRegex(SplitByColons, RegexOptions.Compiled)]
+    public static partial Regex SplitByColonsRegex();
+
+    [GeneratedRegex(SplitByHyphens, RegexOptions.Compiled)]
+    public static partial Regex SplitByHyphensRegex();
+
+    [GeneratedRegex(SplitBySlashes, RegexOptions.Compiled)]
+    public static partial Regex SplitBySlashesRegex();
 
     #endregion
     
     #region File Parsing Methods
     
-    public static Dictionary<string,CssClass> ScanFileForUtilityClasses(string fileContent, Library library)
+    public static Dictionary<string,CssClass> ScanFileForUtilityClasses(string fileContent, AppState appState)
     {
         if (string.IsNullOrEmpty(fileContent))
             return [];
@@ -49,7 +59,7 @@ public static partial class ContentScanner
         var results = new Dictionary<string,CssClass>();
 
         foreach (var quotedSubstring in quotedSubstrings)
-            ScanStringForClasses(quotedSubstring, results, library);
+            ScanStringForClasses(quotedSubstring, results, appState);
         
         return results;
     }
@@ -67,32 +77,36 @@ public static partial class ContentScanner
         }
     }
 
-    private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, Library library)
+    private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, AppState appState)
     {
         foreach (Match match in UtilityClassRegex().Matches(quotedString))
         {
-            if (match.Value.GetLikelyUtilityClass(library) is { } cssClass)
+            if (match.Value.GetLikelyUtilityClass(appState) is { } cssClass)
+            {
+                // todo: fully validate class
+                
+                
+                
+                
+                
                 results.TryAdd(match.Value, cssClass);
+            }
         }
     }
 
     // ReSharper disable ConvertIfStatementToReturnStatement
-    public static CssClass? GetLikelyUtilityClass(this string input, Library library)
+    public static CssClass? GetLikelyUtilityClass(this string input, AppState appState)
     {
-        var cssClass = new CssClass
-        {
-            Name = input,
-            NameSegments = new List<string>(SplitClassIntoSegmentsRegex().Split(input.TrimEnd('!'))).ToList()
-        };
+        var cssClass = new CssClass(appState, input);
 
         #region Validate bracketed arbitrary CSS
         
-        if (cssClass.NameSegments[^1][0] == '[' && cssClass.NameSegments[^1][^1] == ']')
+        if (cssClass.AllSegments[^1][0] == '[' && cssClass.AllSegments[^1][^1] == ']')
         {
-            if (PatternCssCustomPropertyAssignmentRegex().Match(cssClass.NameSegments[^1].TrimStart('[').TrimEnd(']')).Success)
+            if (PatternCssCustomPropertyAssignmentRegex().Match(cssClass.AllSegments[^1].TrimStart('[').TrimEnd(']')).Success)
                 return cssClass;
 
-            if (library.CssPropertyNamesWithColons.Any(substring => cssClass.NameSegments[^1].Contains(substring, StringComparison.Ordinal)))
+            if (appState.Library.CssPropertyNamesWithColons.Any(substring => cssClass.AllSegments[^1].Contains(substring, StringComparison.Ordinal)))
                 return cssClass;
 
             return null;
@@ -101,8 +115,15 @@ public static partial class ContentScanner
         #endregion
         
         #region Validate static and utility classes
-        
-        if (library.ScannerClassNamePrefixes.Any(key => cssClass.NameSegments[^1].StartsWith(key, StringComparison.Ordinal)))
+
+        if (appState.Library.StaticClasses.TryGetValue(cssClass.AllSegments[^1], out var definition))
+        {
+            cssClass.ClassDefinition = definition;
+
+            return cssClass;
+        }
+
+        if (appState.Library.ScannerClassNamePrefixes.Any(key => cssClass.AllSegments[^1].StartsWith(key, StringComparison.Ordinal)))
             return cssClass;
         
         return null;

@@ -1,5 +1,7 @@
 // ReSharper disable RawStringCanBeSimplified
 
+using Argentini.Sfumato.Extensions;
+
 namespace Argentini.Sfumato.Entities;
 
 public sealed class Library
@@ -1528,6 +1530,8 @@ public sealed class Library
     public HashSet<string> CssPropertyNamesWithColons { get; set; } = [];
     public HashSet<string> ScannerClassNamePrefixes { get; set; } = [];
 
+    public Dictionary<string, ClassDefinition> AllNonStaticClasses { get; set; } = [];
+        
     #endregion
     
     public Library()
@@ -1538,13 +1542,19 @@ public sealed class Library
         foreach (var propertyName in ValidChromeCssPropertyNames)
             CssPropertyNamesWithColons.Add($"{propertyName}:");
         
-        ScannerClassNamePrefixes.UnionWith(StaticClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
         ScannerClassNamePrefixes.UnionWith(NumberClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
         ScannerClassNamePrefixes.UnionWith(LengthClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
         ScannerClassNamePrefixes.UnionWith(FractionClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
         ScannerClassNamePrefixes.UnionWith(ColorClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
         ScannerClassNamePrefixes.UnionWith(DurationClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
         ScannerClassNamePrefixes.UnionWith(AngleClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
+        
+        AllNonStaticClasses.AddRange(NumberClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
+        AllNonStaticClasses.AddRange(LengthClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
+        AllNonStaticClasses.AddRange(FractionClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
+        AllNonStaticClasses.AddRange(ColorClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
+        AllNonStaticClasses.AddRange(DurationClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
+        AllNonStaticClasses.AddRange(AngleClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
     }
     
     #region Utility Class Definitions
