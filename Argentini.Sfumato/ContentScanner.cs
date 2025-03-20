@@ -37,111 +37,75 @@ public static partial class ContentScanner
     
     #region File Parsing Methods
     
-    public static HashSet<string> ScanFileForUtilityClasses(string fileContent, Library library)
+    public static Dictionary<string,CssClass> ScanFileForUtilityClasses(string fileContent, Library library)
     {
         if (string.IsNullOrEmpty(fileContent))
             return [];
         
         var quotedSubstrings = new List<string>();
-        var results = new HashSet<string>();
 
         ScanForQuotedStrings(fileContent, quotedSubstrings);
-        
+
+        var results = new Dictionary<string,CssClass>();
+
         foreach (var quotedSubstring in quotedSubstrings)
             ScanStringForClasses(quotedSubstring, results, library);
         
         return results;
     }
     
-    private static void ScanForQuotedStrings(string input, List<string> results)
+    private static void ScanForQuotedStrings(string input, List<string> quotedSubstrings)
     {
         var quoteMatches = QuotedStringsRegex().Matches(input);
 
         foreach (Match qm in quoteMatches)
         {
-            results.Add(qm.Groups["content"].Value);
+            quotedSubstrings.Add(qm.Groups["content"].Value);
             
             if (qm.Groups["content"].Value.Contains('\"') || qm.Groups["content"].Value.Contains('\'') || qm.Groups["content"].Value.Contains('`'))
-                ScanForQuotedStrings(qm.Groups["content"].Value, results);
+                ScanForQuotedStrings(qm.Groups["content"].Value, quotedSubstrings);
         }
     }
 
-    private static void ScanStringForClasses(string quotedString, HashSet<string> results, Library library)
+    private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, Library library)
     {
-        results.UnionWith(UtilityClassRegex()
-            .Matches(quotedString)
-            .Where(m => m.Value.IsLikelyUtilityClass(library))
-            .Select(m => m.Value));
+        foreach (Match match in UtilityClassRegex().Matches(quotedString))
+        {
+            if (match.Value.GetLikelyUtilityClass(library) is { } cssClass)
+                results.TryAdd(match.Value, cssClass);
+        }
     }
 
     // ReSharper disable ConvertIfStatementToReturnStatement
-    public static bool IsLikelyUtilityClass(this string input, Library library)
+    public static CssClass? GetLikelyUtilityClass(this string input, Library library)
     {
-        // dark:group-[.is-published]:[&.active]:tabp:hover:text-[1rem]/6!
-        // dark
-        // group-[.is-published]
-        // [&.active]
-        // tabp
-        // hover
-        // text-[1rem]/6
-
-        // dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]
-        // dark
-        // group-[.is-published]
-        // [&.active]
-        // tabp
-        // hover
-        // text-[color
-        // var(--my-color-var)]
-
-        // dark:group-[.is-published]:[&.active]:tabp:hover:[font-weight:700]!
-        // dark
-        // group-[.is-published]
-        // [&.active]
-        // tabp
-        // hover
-        // [font-weight: 700]
-
-        // dark:group-[.is-published]:[&.active]:tabp:hover:text-(length:--my-text-var)
-        // dark
-        // group-[.is-published]
-        // [&.active]
-        // tabp
-        // hover
-        // text-(length:--my-text-var)
-
-        // dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]/[0.1]
-        // dark
-        // group-[.is-published]
-        // [&.active]
-        // tabp
-        // hover
-        // text-[color
-        // var(--my-color-var)]/[0.1]
-
-        var segments = new List<string>(SplitClassIntoSegmentsRegex().Split(input.TrimEnd('!'))).ToList();
+        var cssClass = new CssClass
+        {
+            Name = input,
+            NameSegments = new List<string>(SplitClassIntoSegmentsRegex().Split(input.TrimEnd('!'))).ToList()
+        };
 
         #region Validate bracketed arbitrary CSS
         
-        if (segments[^1][0] == '[' && segments[^1][^1] == ']')
+        if (cssClass.NameSegments[^1][0] == '[' && cssClass.NameSegments[^1][^1] == ']')
         {
-            if (PatternCssCustomPropertyAssignmentRegex().Match(segments[^1].TrimStart('[').TrimEnd(']')).Success)
-                return true;
+            if (PatternCssCustomPropertyAssignmentRegex().Match(cssClass.NameSegments[^1].TrimStart('[').TrimEnd(']')).Success)
+                return cssClass;
 
-            if (library.CssPropertyNamesWithColons.Any(substring => segments[^1].Contains(substring, StringComparison.Ordinal)))
-                return true;
+            if (library.CssPropertyNamesWithColons.Any(substring => cssClass.NameSegments[^1].Contains(substring, StringComparison.Ordinal)))
+                return cssClass;
 
-            return false;
+            return null;
         }
 
         #endregion
         
         #region Validate static and utility classes
         
-        if (library.ScannerClassNamePrefixes.Any(key => segments[^1].StartsWith(key, StringComparison.Ordinal)))
-            return true;
+        if (library.ScannerClassNamePrefixes.Any(key => cssClass.NameSegments[^1].StartsWith(key, StringComparison.Ordinal)))
+            return cssClass;
         
-        return false;
+        return null;
         
         #endregion
     }

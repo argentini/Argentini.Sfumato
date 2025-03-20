@@ -52,7 +52,7 @@ public class Benchmarks
                                     """;
     
     [Benchmark]
-    public HashSet<string> ScanFileForClasses()
+    public Dictionary<string,CssClass> ScanFileForClasses()
     {
         return ContentScanner.ScanFileForUtilityClasses(Markup, Library);
     }

@@ -2,7 +2,7 @@
 
 namespace Argentini.Sfumato.Entities;
 
-public class BaseUtility
+public class ClassDefinition
 {
     /// <summary>
     /// Is a simple utility with static properties (e.g. "antialiased");

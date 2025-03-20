@@ -84,22 +84,22 @@ public class RegularExpressionsTests
             
         var library = new Library();
 
-        Assert.True(nightmareClass1.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass2.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass3.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass4.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass5.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass6.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass7.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass8.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass9.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass10.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass11.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass12.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass13.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass14.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass15.IsLikelyUtilityClass(library));
-        Assert.True(nightmareClass16.IsLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass1.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass2.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass3.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass4.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass5.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass6.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass7.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass8.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass9.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass10.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass11.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass12.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass13.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass14.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass15.GetLikelyUtilityClass(library));
+        Assert.NotNull(nightmareClass16.GetLikelyUtilityClass(library));
     }
     
     [Fact]
@@ -110,10 +110,10 @@ public class RegularExpressionsTests
 
         Assert.Equal(29, utilityClasses.Count);
 
-        _testOutputHelper.WriteLine("FOUND:");
+        _testOutputHelper.WriteLine("FileContentParsing() => Found:");
         _testOutputHelper.WriteLine("");
 
         foreach (var cname in utilityClasses)
-            _testOutputHelper.WriteLine($"{cname}");
+            _testOutputHelper.WriteLine($"{cname.Key}");
     }
 }

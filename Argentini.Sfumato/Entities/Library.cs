@@ -1549,10 +1549,10 @@ public sealed class Library
     
     #region Utility Class Definitions
 
-    public Dictionary<string, BaseUtility> StaticClasses { get; set; } = new()
+    public Dictionary<string, ClassDefinition> StaticClasses { get; set; } = new()
     {
         {
-            "antialiased", new BaseUtility
+            "antialiased", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1562,7 +1562,7 @@ public sealed class Library
             }
         },
         {
-            "block", new BaseUtility
+            "block", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1571,7 +1571,7 @@ public sealed class Library
             }
         },
         {
-            "flex", new BaseUtility
+            "flex", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1580,7 +1580,7 @@ public sealed class Library
             }
         },
         {
-            "subpixel-antialiased", new BaseUtility
+            "subpixel-antialiased", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1590,7 +1590,7 @@ public sealed class Library
             }
         },
         {
-            "leading-none", new BaseUtility
+            "leading-none", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 SelectorSort = 1,
@@ -1600,7 +1600,7 @@ public sealed class Library
             }
         },
         {
-            "text-xs", new BaseUtility
+            "text-xs", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1615,7 +1615,7 @@ public sealed class Library
             }
         },
         {
-            "text-sm", new BaseUtility
+            "text-sm", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1630,7 +1630,7 @@ public sealed class Library
             }
         },
         {
-            "text-base", new BaseUtility
+            "text-base", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1645,7 +1645,7 @@ public sealed class Library
             }
         },
         {
-            "text-lg", new BaseUtility
+            "text-lg", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1660,7 +1660,7 @@ public sealed class Library
             }
         },
         {
-            "text-xl", new BaseUtility
+            "text-xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1675,7 +1675,7 @@ public sealed class Library
             }
         },
         {
-            "text-2xl", new BaseUtility
+            "text-2xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1690,7 +1690,7 @@ public sealed class Library
             }
         },
         {
-            "text-3xl", new BaseUtility
+            "text-3xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1705,7 +1705,7 @@ public sealed class Library
             }
         },
         {
-            "text-4xl", new BaseUtility
+            "text-4xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1720,7 +1720,7 @@ public sealed class Library
             }
         },
         {
-            "text-5xl", new BaseUtility
+            "text-5xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1735,7 +1735,7 @@ public sealed class Library
             }
         },
         {
-            "text-6xl", new BaseUtility
+            "text-6xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1750,7 +1750,7 @@ public sealed class Library
             }
         },
         {
-            "text-7xl", new BaseUtility
+            "text-7xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1765,7 +1765,7 @@ public sealed class Library
             }
         },
         {
-            "text-8xl", new BaseUtility
+            "text-8xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1780,7 +1780,7 @@ public sealed class Library
             }
         },
         {
-            "text-9xl", new BaseUtility
+            "text-9xl", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 UsesSlashModifier = true,
@@ -1795,7 +1795,7 @@ public sealed class Library
             }
         },
         {
-            "text-left", new BaseUtility
+            "text-left", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1804,7 +1804,7 @@ public sealed class Library
             }
         },
         {
-            "text-center", new BaseUtility
+            "text-center", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1813,7 +1813,7 @@ public sealed class Library
             }
         },
         {
-            "text-right", new BaseUtility
+            "text-right", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1822,7 +1822,7 @@ public sealed class Library
             }
         },
         {
-            "text-justify", new BaseUtility
+            "text-justify", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1831,7 +1831,7 @@ public sealed class Library
             }
         },
         {
-            "text-start", new BaseUtility
+            "text-start", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1840,7 +1840,7 @@ public sealed class Library
             }
         },
         {
-            "text-end", new BaseUtility
+            "text-end", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """
@@ -1849,28 +1849,28 @@ public sealed class Library
             }
         },
         {
-            "top-auto", new BaseUtility
+            "top-auto", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """top: auto;"""
             }
         },
         {
-            "top-px", new BaseUtility
+            "top-px", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """top: 1px;"""
             }
         },
         {
-            "-top-px", new BaseUtility
+            "-top-px", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """top: -1px;"""
             }
         },
         {
-            "top-full", new BaseUtility
+            "top-full", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """top: {0};""",
@@ -1878,7 +1878,7 @@ public sealed class Library
             }
         },
         {
-            "-top-full", new BaseUtility
+            "-top-full", new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = """top: {0};""",
@@ -1887,24 +1887,24 @@ public sealed class Library
         },
     };
 
-    public Dictionary<string, BaseUtility> NumberClasses { get; set; } = new()
+    public Dictionary<string, ClassDefinition> NumberClasses { get; set; } = new()
     {
         {
-            "top-", new BaseUtility
+            "top-", new ClassDefinition
             {
                 UsesNumber = true,
                 Template = """top: calc(var(--spacing) * {0});"""
             }
         },
         {
-            "-top-", new BaseUtility
+            "-top-", new ClassDefinition
             {
                 UsesLength = true,
                 Template = """top: calc(var(--spacing) * -{0});"""
             }
         },
         {
-            "leading-", new BaseUtility
+            "leading-", new ClassDefinition
             {
                 UsesNumber = true,
                 SelectorSort = 1,
@@ -1913,10 +1913,10 @@ public sealed class Library
         },
     };
 
-    public Dictionary<string, BaseUtility> LengthClasses { get; set; } = new()
+    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = new()
     {
         {
-            "leading-[", new BaseUtility
+            "leading-[", new ClassDefinition
             {
                 UsesLength = true,
                 Template = """
@@ -1925,7 +1925,7 @@ public sealed class Library
             }
         },
         {
-            "leading-(", new BaseUtility
+            "leading-(", new ClassDefinition
             {
                 UsesLength = true,
                 Template = """
@@ -1934,7 +1934,7 @@ public sealed class Library
             }
         },
         {
-            "text-[", new BaseUtility
+            "text-[", new ClassDefinition
             {
                 UsesLength = true,
                 UsesSlashModifier = true,
@@ -1949,7 +1949,7 @@ public sealed class Library
             }
         },
         {
-            "text-(", new BaseUtility
+            "text-(", new ClassDefinition
             {
                 UsesLength = true,
                 UsesSlashModifier = true,
@@ -1964,21 +1964,21 @@ public sealed class Library
             }
         },
         {
-            "top-[", new BaseUtility
+            "top-[", new ClassDefinition
             {
                 UsesLength = true,
                 Template = """top: {0};"""
             }
         },
         {
-            "top-(", new BaseUtility
+            "top-(", new ClassDefinition
             {
                 UsesLength = true,
                 Template = """top: var({0});"""
             }
         },
         {
-            "-top-(", new BaseUtility
+            "-top-(", new ClassDefinition
             {
                 UsesLength = true,
                 Template = """top: calc(var({0}) * -1);"""
@@ -1986,17 +1986,17 @@ public sealed class Library
         },
     };
 
-    public Dictionary<string, BaseUtility> FractionClasses { get; set; } = new()
+    public Dictionary<string, ClassDefinition> FractionClasses { get; set; } = new()
     {
         {
-            "top-", new BaseUtility
+            "top-", new ClassDefinition
             {
                 UsesFraction = true,
                 Template = """top: calc({0} * 100%);"""
             }
         },
         {
-            "-top-", new BaseUtility
+            "-top-", new ClassDefinition
             {
                 UsesFraction = true,
                 Template = """top: calc({0} * -100%);"""
@@ -2004,10 +2004,10 @@ public sealed class Library
         },
     };
 
-    public Dictionary<string, BaseUtility> ColorClasses { get; set; } = new()
+    public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = new()
     {
         {
-            "bg-", new BaseUtility
+            "bg-", new ClassDefinition
             {
                 UsesColor = true,
                 UsesSlashModifier = true,
@@ -2020,7 +2020,7 @@ public sealed class Library
             }
         },
         {
-            "text-", new BaseUtility
+            "text-", new ClassDefinition
             {
                 UsesColor = true,
                 UsesSlashModifier = true,
@@ -2034,11 +2034,11 @@ public sealed class Library
         },
     };
 
-    public Dictionary<string, BaseUtility> DurationClasses { get; set; } = new()
+    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = new()
     {
     };
 
-    public Dictionary<string, BaseUtility> AngleClasses { get; set; } = new()
+    public Dictionary<string, ClassDefinition> AngleClasses { get; set; } = new()
     {
     };
     
