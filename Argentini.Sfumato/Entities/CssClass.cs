@@ -73,6 +73,14 @@ public sealed class CssClass
     /// Master class definition for this utility class.
     /// </summary>
     public ClassDefinition? ClassDefinition { get; set; }
+
+    #region Properties
+
+    public bool IsValid { get; set; }
+    public bool IsCustomCss { get; set; }
+    public bool IsCssCustomPropertyAssignment { get; set; }
+    
+    #endregion
     
     #region Initialization
 
@@ -97,45 +105,65 @@ public sealed class CssClass
         }
         else
         {
-            var found = false;
-            
-            foreach (var dictionary in AppState.Library.AllDictionaries)
+            if (AllSegments[^1][0] == '[' && AllSegments[^1][^1] == ']')
             {
-                foreach (var (core, classDefinition) in dictionary.OrderByDescending(kvp => kvp.Key))
+                if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(AllSegments[^1].TrimStart('[').TrimEnd(']')).Success)
                 {
-                    if (AllSegments[^1].StartsWith(core, StringComparison.OrdinalIgnoreCase) == false)
-                        continue;
-
-                    var value = AllSegments[^1].TrimStart(core) ?? string.Empty;
-                    var modifier = string.Empty;
-
-                    if (classDefinition.UsesSlashModifier)
-                    {
-                        var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
-
-                        if (slashSegments.Length == 2)
-                        {
-                            modifier = slashSegments[^1];
-                            value = value.TrimEnd($"/{modifier}") ?? string.Empty;
-                        }
-                    }
-
-                    CoreSegments.Add(core);
-
-                    if (string.IsNullOrEmpty(value) == false)
-                        CoreSegments.Add(value);
-
-                    if (string.IsNullOrEmpty(modifier) == false)
-                        CoreSegments.Add(modifier);
-
-                    found = true;
+                    // [--my-color-var:red]
+                    CoreSegments.Add(AllSegments[^1]);
+                    IsCssCustomPropertyAssignment = true;
+                    IsValid = true;
                     
-                    break;
+                    return;
                 }
 
-                if (found)
-                    break;
+                if (AppState.Library.CssPropertyNamesWithColons.Any(substring => AllSegments[^1].Contains(substring, StringComparison.Ordinal)))
+                {
+                    // [color:red]
+                    CoreSegments.Add(AllSegments[^1]);
+                    IsCustomCss = true;
+                    IsValid = true;
+                    
+                    return;
+                }
+
+                return;
             }
+            
+            var prefix = string.Empty;
+            
+            foreach (var utility in AppState.Library.ScannerClassNamePrefixes.OrderByDescending(p => p.Length))
+            {
+                if (AllSegments[^1].StartsWith(utility, StringComparison.Ordinal) == false)
+                    continue;
+                
+                prefix = utility;
+
+                break;
+            }
+
+            if (string.IsNullOrEmpty(prefix))
+                return;
+            
+            var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
+            var modifier = string.Empty;
+            var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
+
+            if (slashSegments.Length == 2)
+            {
+                modifier = slashSegments[^1];
+                value = value.TrimEnd($"/{modifier}") ?? string.Empty;
+            }
+
+            CoreSegments.Add(prefix);
+
+            if (string.IsNullOrEmpty(value) == false)
+                CoreSegments.Add(value);
+
+            if (string.IsNullOrEmpty(modifier) == false)
+                CoreSegments.Add(modifier);
+
+            IsValid = true;
         }        
     }
 

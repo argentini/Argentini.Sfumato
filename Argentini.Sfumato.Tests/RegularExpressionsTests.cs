@@ -84,22 +84,22 @@ public class RegularExpressionsTests
             
         var appState = new AppState();
 
-        var result1 = nightmareClass1.GetLikelyUtilityClass(appState);
-        var result2 = nightmareClass2.GetLikelyUtilityClass(appState);
-        var result3 = nightmareClass3.GetLikelyUtilityClass(appState);
-        var result4 = nightmareClass4.GetLikelyUtilityClass(appState);
-        var result5 = nightmareClass5.GetLikelyUtilityClass(appState);
-        var result6 = nightmareClass6.GetLikelyUtilityClass(appState);
-        var result7 = nightmareClass7.GetLikelyUtilityClass(appState);
-        var result8 = nightmareClass8.GetLikelyUtilityClass(appState);
-        var result9 = nightmareClass9.GetLikelyUtilityClass(appState);
-        var result10 = nightmareClass10.GetLikelyUtilityClass(appState);
-        var result11 = nightmareClass11.GetLikelyUtilityClass(appState);
-        var result12 = nightmareClass12.GetLikelyUtilityClass(appState);
-        var result13 = nightmareClass13.GetLikelyUtilityClass(appState);
-        var result14 = nightmareClass14.GetLikelyUtilityClass(appState);
-        var result15 = nightmareClass15.GetLikelyUtilityClass(appState);
-        var result16 = nightmareClass16.GetLikelyUtilityClass(appState);
+        var result1 = new CssClass(appState, nightmareClass1);
+        var result2 = new CssClass(appState, nightmareClass2);
+        var result3 = new CssClass(appState, nightmareClass3);
+        var result4 = new CssClass(appState, nightmareClass4);
+        var result5 = new CssClass(appState, nightmareClass5);
+        var result6 = new CssClass(appState, nightmareClass6);
+        var result7 = new CssClass(appState, nightmareClass7);
+        var result8 = new CssClass(appState, nightmareClass8);
+        var result9 = new CssClass(appState, nightmareClass9);
+        var result10 = new CssClass(appState, nightmareClass10);
+        var result11 = new CssClass(appState, nightmareClass11);
+        var result12 = new CssClass(appState, nightmareClass12);
+        var result13 = new CssClass(appState, nightmareClass13);
+        var result14 = new CssClass(appState, nightmareClass14);
+        var result15 = new CssClass(appState, nightmareClass15);
+        var result16 = new CssClass(appState, nightmareClass16);
 
         Assert.NotNull(result1);
         Assert.NotNull(result2);
@@ -125,12 +125,12 @@ public class RegularExpressionsTests
         var appState = new AppState();
         var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appState);
 
-        Assert.Equal(29, utilityClasses.Count);
-
         _testOutputHelper.WriteLine("FileContentParsing() => Found:");
         _testOutputHelper.WriteLine("");
 
         foreach (var cname in utilityClasses)
             _testOutputHelper.WriteLine($"{cname.Key}");
+        
+        Assert.Equal(29, utilityClasses.Count);
     }
 }

@@ -81,54 +81,15 @@ public static partial class ContentScanner
     {
         foreach (Match match in UtilityClassRegex().Matches(quotedString))
         {
-            if (match.Value.GetLikelyUtilityClass(appState) is { } cssClass)
-            {
-                // todo: fully validate class
-                
-                
-                
-                
-                
+            var cssClass = new CssClass(appState, match.Value);
+            
+            if (cssClass?.IsValid ?? false)
                 results.TryAdd(match.Value, cssClass);
+            else
+            {
+                Console.WriteLine(cssClass?.Name);
             }
         }
-    }
-
-    // ReSharper disable ConvertIfStatementToReturnStatement
-    public static CssClass? GetLikelyUtilityClass(this string input, AppState appState)
-    {
-        var cssClass = new CssClass(appState, input);
-
-        #region Validate bracketed arbitrary CSS
-        
-        if (cssClass.AllSegments[^1][0] == '[' && cssClass.AllSegments[^1][^1] == ']')
-        {
-            if (PatternCssCustomPropertyAssignmentRegex().Match(cssClass.AllSegments[^1].TrimStart('[').TrimEnd(']')).Success)
-                return cssClass;
-
-            if (appState.Library.CssPropertyNamesWithColons.Any(substring => cssClass.AllSegments[^1].Contains(substring, StringComparison.Ordinal)))
-                return cssClass;
-
-            return null;
-        }
-
-        #endregion
-        
-        #region Validate static and utility classes
-
-        if (appState.Library.StaticClasses.TryGetValue(cssClass.AllSegments[^1], out var definition))
-        {
-            cssClass.ClassDefinition = definition;
-
-            return cssClass;
-        }
-
-        if (appState.Library.ScannerClassNamePrefixes.Any(key => cssClass.AllSegments[^1].StartsWith(key, StringComparison.Ordinal)))
-            return cssClass;
-        
-        return null;
-        
-        #endregion
     }
     
     #endregion

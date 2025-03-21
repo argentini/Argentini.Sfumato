@@ -1559,17 +1559,17 @@ public sealed class Library
             .GetTypes()
             .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
 
+        AllDictionaries.Add(StaticClasses);
+        AllDictionaries.Add(NumberClasses);
+        AllDictionaries.Add(LengthClasses);
+        AllDictionaries.Add(ColorClasses);
+        AllDictionaries.Add(DurationClasses);
+        AllDictionaries.Add(AngleClasses);
+
         foreach (var type in derivedTypes)
         {
             if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
                 continue;
-            
-            AllDictionaries.Add(StaticClasses);
-            AllDictionaries.Add(NumberClasses);
-            AllDictionaries.Add(LengthClasses);
-            AllDictionaries.Add(ColorClasses);
-            AllDictionaries.Add(DurationClasses);
-            AllDictionaries.Add(AngleClasses);
             
             foreach (var item in instance.Data)
             {
