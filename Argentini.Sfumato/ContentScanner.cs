@@ -1,4 +1,5 @@
 // ReSharper disable ConvertIfStatementToSwitchStatement
+// ReSharper disable MemberCanBePrivate.Global
 
 using Argentini.Sfumato.Entities;
 
@@ -83,12 +84,8 @@ public static partial class ContentScanner
         {
             var cssClass = new CssClass(appState, match.Value);
             
-            if (cssClass?.IsValid ?? false)
+            if (cssClass.IsValid)
                 results.TryAdd(match.Value, cssClass);
-            else
-            {
-                Console.WriteLine(cssClass?.Name);
-            }
         }
     }
     
