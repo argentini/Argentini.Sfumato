@@ -21,11 +21,6 @@ public class ClassDefinition
     public virtual bool UsesLength { get; set; }
 
     /// <summary>
-    /// Class uses fraction (e.g. "1/2")
-    /// </summary>
-    public virtual bool UsesFraction { get; set; }
-
-    /// <summary>
     /// Class uses color (e.g. "#aabbcc")
     /// </summary>
     public virtual bool UsesColor { get; set; }

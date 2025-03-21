@@ -97,34 +97,44 @@ public sealed class CssClass
         }
         else
         {
-            foreach (var (core, classDefinition) in AppState.Library.AllNonStaticClasses.OrderByDescending(kvp => kvp.Key))
+            var found = false;
+            
+            foreach (var dictionary in AppState.Library.AllDictionaries)
             {
-                if (AllSegments[^1].StartsWith(core, StringComparison.OrdinalIgnoreCase) == false)
-                    continue;
-
-                var value = AllSegments[^1].TrimStart(core) ?? string.Empty;
-                var modifier = string.Empty;
-
-                if (classDefinition.UsesSlashModifier)
+                foreach (var (core, classDefinition) in dictionary.OrderByDescending(kvp => kvp.Key))
                 {
-                    var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
+                    if (AllSegments[^1].StartsWith(core, StringComparison.OrdinalIgnoreCase) == false)
+                        continue;
 
-                    if (slashSegments.Length == 2)
+                    var value = AllSegments[^1].TrimStart(core) ?? string.Empty;
+                    var modifier = string.Empty;
+
+                    if (classDefinition.UsesSlashModifier)
                     {
-                        modifier = slashSegments[^1];
-                        value = value.TrimEnd($"/{modifier}") ?? string.Empty;
+                        var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
+
+                        if (slashSegments.Length == 2)
+                        {
+                            modifier = slashSegments[^1];
+                            value = value.TrimEnd($"/{modifier}") ?? string.Empty;
+                        }
                     }
+
+                    CoreSegments.Add(core);
+
+                    if (string.IsNullOrEmpty(value) == false)
+                        CoreSegments.Add(value);
+
+                    if (string.IsNullOrEmpty(modifier) == false)
+                        CoreSegments.Add(modifier);
+
+                    found = true;
+                    
+                    break;
                 }
 
-                CoreSegments.Add(core);
-                    
-                if (string.IsNullOrEmpty(value) == false)
-                    CoreSegments.Add(value);
-
-                if (string.IsNullOrEmpty(modifier) == false)
-                    CoreSegments.Add(modifier);
-
-                break;
+                if (found)
+                    break;
             }
         }        
     }

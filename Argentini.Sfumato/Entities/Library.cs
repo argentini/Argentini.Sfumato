@@ -1,5 +1,6 @@
 // ReSharper disable RawStringCanBeSimplified
 
+using System.Reflection;
 using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Entities;
@@ -1530,8 +1531,20 @@ public sealed class Library
     public HashSet<string> CssPropertyNamesWithColons { get; set; } = [];
     public HashSet<string> ScannerClassNamePrefixes { get; set; } = [];
 
-    public Dictionary<string, ClassDefinition> AllNonStaticClasses { get; set; } = [];
-        
+    public Dictionary<string, ClassDefinition> StaticClasses { get; set; } = [];
+
+    public Dictionary<string, ClassDefinition> NumberClasses { get; set; } = [];
+
+    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = [];
+
+    public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = [];
+
+    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = [];
+
+    public Dictionary<string, ClassDefinition> AngleClasses { get; set; } = [];
+
+    public List<Dictionary<string, ClassDefinition>> AllDictionaries { get; set; } = [];
+
     #endregion
     
     public Library()
@@ -1541,516 +1554,43 @@ public sealed class Library
         
         foreach (var propertyName in ValidChromeCssPropertyNames)
             CssPropertyNamesWithColons.Add($"{propertyName}:");
-        
-        ScannerClassNamePrefixes.UnionWith(NumberClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ScannerClassNamePrefixes.UnionWith(LengthClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ScannerClassNamePrefixes.UnionWith(FractionClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ScannerClassNamePrefixes.UnionWith(ColorClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ScannerClassNamePrefixes.UnionWith(DurationClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        ScannerClassNamePrefixes.UnionWith(AngleClasses.Keys.Where(key => key.EndsWith('(') == false && key.EndsWith('[') == false));
-        
-        AllNonStaticClasses.AddRange(NumberClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
-        AllNonStaticClasses.AddRange(LengthClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
-        AllNonStaticClasses.AddRange(FractionClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
-        AllNonStaticClasses.AddRange(ColorClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
-        AllNonStaticClasses.AddRange(DurationClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
-        AllNonStaticClasses.AddRange(AngleClasses.Where(kvp => kvp.Key.EndsWith('(') == false && kvp.Key.EndsWith('[') == false));
+
+        var derivedTypes = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
+
+        foreach (var type in derivedTypes)
+        {
+            if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
+                continue;
+            
+            AllDictionaries.Add(StaticClasses);
+            AllDictionaries.Add(NumberClasses);
+            AllDictionaries.Add(LengthClasses);
+            AllDictionaries.Add(ColorClasses);
+            AllDictionaries.Add(DurationClasses);
+            AllDictionaries.Add(AngleClasses);
+            
+            foreach (var item in instance.Data)
+            {
+                if (item.Key.EndsWith('(') || item.Key.EndsWith('['))
+                    continue;
+                
+                if (item.Value.IsSimpleUtility)
+                    StaticClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesNumber)
+                    NumberClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesLength)
+                    LengthClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesColor)
+                    ColorClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesDuration)
+                    DurationClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesAngle)
+                    AngleClasses.Add(item.Key, item.Value);
+
+                ScannerClassNamePrefixes.Add(item.Key);
+            }
+        }        
     }
-    
-    #region Utility Class Definitions
-
-    public Dictionary<string, ClassDefinition> StaticClasses { get; set; } = new()
-    {
-        {
-            "antialiased", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           -webkit-font-smoothing: antialiased;
-                           -moz-osx-font-smoothing: grayscale;
-                           """
-            }
-        },
-        {
-            "block", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           display: block;
-                           """
-            }
-        },
-        {
-            "flex", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           display: flex;
-                           """
-            }
-        },
-        {
-            "subpixel-antialiased", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           -webkit-font-smoothing: auto;
-                           -moz-osx-font-smoothing: auto;
-                           """
-            }
-        },
-        {
-            "leading-none", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                SelectorSort = 1,
-                Template = """
-                           line-height: 1;
-                           """
-            }
-        },
-        {
-            "text-xs", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-xs);
-                           line-height: var(--text-xs--line-height);
-                           """,
-                ModifierTemplate = """
-                           font-size: var(--text-xs);
-                           line-height: calc(var(--spacing) * {1});
-                           """
-            }
-        },
-        {
-            "text-sm", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-sm);
-                           line-height: var(--text-sm--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-sm);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-base", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-base);
-                           line-height: var(--text-base--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-base);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-lg", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-lg);
-                           line-height: var(--text-lg--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-lg);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-xl);
-                           line-height: var(--text-xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-2xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-2xl);
-                           line-height: var(--text-2xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-2xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-3xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-3xl);
-                           line-height: var(--text-3xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-3xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-4xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-4xl);
-                           line-height: var(--text-4xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-4xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-5xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-5xl);
-                           line-height: var(--text-5xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-5xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-6xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-6xl);
-                           line-height: var(--text-6xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-6xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-7xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-7xl);
-                           line-height: var(--text-7xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-7xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-8xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-8xl);
-                           line-height: var(--text-8xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-8xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-9xl", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var(--text-9xl);
-                           line-height: var(--text-9xl--line-height);
-                           """,
-                ModifierTemplate = """
-                                   font-size: var(--text-9xl);
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-left", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           text-align: left;
-                           """
-            }
-        },
-        {
-            "text-center", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           text-align: center;
-                           """
-            }
-        },
-        {
-            "text-right", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           text-align: right;
-                           """
-            }
-        },
-        {
-            "text-justify", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           text-align: justify;
-                           """
-            }
-        },
-        {
-            "text-start", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           text-align: start;
-                           """
-            }
-        },
-        {
-            "text-end", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """
-                           text-align: end;
-                           """
-            }
-        },
-        {
-            "top-auto", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """top: auto;"""
-            }
-        },
-        {
-            "top-px", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """top: 1px;"""
-            }
-        },
-        {
-            "-top-px", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """top: -1px;"""
-            }
-        },
-        {
-            "top-full", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """top: {0};""",
-                Value = """100%"""
-            }
-        },
-        {
-            "-top-full", new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = """top: {0};""",
-                Value = """-100%"""
-            }
-        },
-    };
-
-    public Dictionary<string, ClassDefinition> NumberClasses { get; set; } = new()
-    {
-        {
-            "top-", new ClassDefinition
-            {
-                UsesNumber = true,
-                Template = """top: calc(var(--spacing) * {0});"""
-            }
-        },
-        {
-            "-top-", new ClassDefinition
-            {
-                UsesLength = true,
-                Template = """top: calc(var(--spacing) * -{0});"""
-            }
-        },
-        {
-            "leading-", new ClassDefinition
-            {
-                UsesNumber = true,
-                SelectorSort = 1,
-                Template = """line-height: calc(var(--spacing) * {0});"""
-            }
-        },
-    };
-
-    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = new()
-    {
-        {
-            "leading-[", new ClassDefinition
-            {
-                UsesLength = true,
-                Template = """
-                           line-height: {0};
-                           """
-            }
-        },
-        {
-            "leading-(", new ClassDefinition
-            {
-                UsesLength = true,
-                Template = """
-                           line-height: var({0});
-                           """
-            }
-        },
-        {
-            "text-[", new ClassDefinition
-            {
-                UsesLength = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: {0};
-                           line-height: calc(var(--spacing) * {1});
-                           """,
-                ModifierTemplate = """
-                                   font-size: {0};
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "text-(", new ClassDefinition
-            {
-                UsesLength = true,
-                UsesSlashModifier = true,
-                Template = """
-                           font-size: var({0});
-                           line-height: calc(var(--spacing) * {1});
-                           """,
-                ModifierTemplate = """
-                                   font-size: var({0});
-                                   line-height: calc(var(--spacing) * {1});
-                                   """
-            }
-        },
-        {
-            "top-[", new ClassDefinition
-            {
-                UsesLength = true,
-                Template = """top: {0};"""
-            }
-        },
-        {
-            "top-(", new ClassDefinition
-            {
-                UsesLength = true,
-                Template = """top: var({0});"""
-            }
-        },
-        {
-            "-top-(", new ClassDefinition
-            {
-                UsesLength = true,
-                Template = """top: calc(var({0}) * -1);"""
-            }
-        },
-    };
-
-    public Dictionary<string, ClassDefinition> FractionClasses { get; set; } = new()
-    {
-        {
-            "top-", new ClassDefinition
-            {
-                UsesFraction = true,
-                Template = """top: calc({0} * 100%);"""
-            }
-        },
-        {
-            "-top-", new ClassDefinition
-            {
-                UsesFraction = true,
-                Template = """top: calc({0} * -100%);"""
-            }
-        },
-    };
-
-    public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = new()
-    {
-        {
-            "bg-", new ClassDefinition
-            {
-                UsesColor = true,
-                UsesSlashModifier = true,
-                Template = """
-                           background-color: {0};
-                           """,
-                ModifierTemplate = """
-                                   background-color: {0};
-                                   """
-            }
-        },
-        {
-            "text-", new ClassDefinition
-            {
-                UsesColor = true,
-                UsesSlashModifier = true,
-                Template = """
-                           color: {0};
-                           """,
-                ModifierTemplate = """
-                                   color: {0};
-                                   """
-            }
-        },
-    };
-
-    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = new()
-    {
-    };
-
-    public Dictionary<string, ClassDefinition> AngleClasses { get; set; } = new()
-    {
-    };
-    
-    #endregion
 }
