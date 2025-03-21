@@ -8,11 +8,8 @@ public sealed class CssClass
 {
     public CssClass(AppState appState, string name)
     {
-        Name = name;
         AppState = appState;
-
-        EscapeCssClassName();
-        ProcessData();
+        Name = name;
     }
     
     public AppState? AppState { get; set; }
@@ -29,7 +26,12 @@ public sealed class CssClass
         {
             _name = value;
 
-            AllSegments = new List<string>(ContentScanner.SplitByColonsRegex().Split(_name.TrimEnd('!'))).ToList();
+            CssSelector = string.Empty;
+
+            AllSegments.Clear();
+            VariantSegments.Clear();
+            CoreSegments.Clear();
+            AllSegments.AddRange(ContentScanner.SplitByColonsRegex().Split(_name.TrimEnd('!')));
 
             EscapeCssClassName();
             ProcessData();
@@ -41,13 +43,13 @@ public sealed class CssClass
     /// Name broken into variant and core segments.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]", "text-base/6"])
     /// </summary>
-    public List<string> AllSegments { get; set; } = [];
+    public List<string> AllSegments { get; } = [];
 
     /// <summary>
     /// Variant segments used in the class name.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]"])
     /// </summary>
-    public List<string> VariantSegments { get; set; } = [];
+    public List<string> VariantSegments { get; } = [];
 
     /// <summary>
     /// Core class segments; only one segment for static utilities.
@@ -55,7 +57,7 @@ public sealed class CssClass
     /// (e.g. "dark:tabp:-min-w-10" => ["-min-w-", "10"])
     /// (e.g. "antialiased" => ["antialiased"])
     /// </summary>
-    public List<string> CoreSegments { get; set; } = [];
+    public List<string> CoreSegments { get; } = [];
 
     /// <summary>
     /// CSS selector generated from the Name; 
@@ -64,15 +66,9 @@ public sealed class CssClass
     public string CssSelector { get; set; } = string.Empty;
 
     /// <summary>
-    /// Determines the order of generated CSS classes;
-    /// defaults to zero.
-    /// </summary>
-    public int SelectorSort { get; set; } = 0;
-
-    /// <summary>
     /// Master class definition for this utility class.
     /// </summary>
-    public ClassDefinition? ClassDefinition { get; set; }
+    public ClassDefinition? ClassDefinition;
 
     #region Properties
 
@@ -89,82 +85,129 @@ public sealed class CssClass
         if (AppState is null || string.IsNullOrEmpty(Name))
             return;
 
-        AllSegments.Clear();
-        AllSegments.AddRange(ContentScanner.SplitByColonsRegex().Split(Name.TrimEnd('!')));
-
-        VariantSegments.Clear();
+        #region Variants
         
         if (AllSegments.Count > 1)
             VariantSegments.AddRange(AllSegments.Take(AllSegments.Count - 1));
 
-        CoreSegments.Clear();
-
-        if (ClassDefinition is not null && ClassDefinition.IsSimpleUtility)
+        // todo: validate variants
+        
+        #endregion
+        
+        #region Custom CSS
+        
+        if (AllSegments[^1][0] == '[' && AllSegments[^1][^1] == ']')
         {
-            CoreSegments.Add(AllSegments[^1]);
+            if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(AllSegments[^1].TrimStart('[').TrimEnd(']')).Success)
+            {
+                // [--my-color-var:red]
+                CoreSegments.Add(AllSegments[^1]);
+                IsCssCustomPropertyAssignment = true;
+                IsValid = true;
+                
+                return;
+            }
+
+            if (AppState.Library.CssPropertyNamesWithColons.Any(substring => AllSegments[^1].Contains(substring, StringComparison.Ordinal)))
+            {
+                // [color:red]
+                CoreSegments.Add(AllSegments[^1]);
+                IsCustomCss = true;
+                IsValid = true;
+                
+                return;
+            }
+
+            return;
+        }
+
+        #endregion
+
+        #region Utility Classes
+        
+        var prefix = string.Empty;
+        
+        foreach (var utility in AppState.Library.ScannerClassNamePrefixes.OrderByDescending(p => p.Length))
+        {
+            if (AllSegments[^1].StartsWith(utility, StringComparison.Ordinal) == false)
+                continue;
+            
+            prefix = utility;
+
+            break;
+        }
+
+        if (string.IsNullOrEmpty(prefix))
+            return;
+        
+        var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
+        var modifier = string.Empty;
+        var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
+
+        if (slashSegments.Length == 2)
+        {
+            modifier = slashSegments[^1];
+            value = value.TrimEnd($"/{modifier}") ?? string.Empty;
+        }
+
+        CoreSegments.Add(prefix);
+
+        if (string.IsNullOrEmpty(value) == false)
+            CoreSegments.Add(value);
+
+        if (string.IsNullOrEmpty(modifier) == false)
+            CoreSegments.Add(modifier);
+
+        IsValid = true;
+
+        if (value.StartsWith('[') && value.EndsWith(']'))
+        {
+            var trimmedValue = value.TrimStart('[').TrimEnd(']');
+            
+            if (ValueIsLength(trimmedValue))
+                AppState.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (ValueIsColorName(trimmedValue) || trimmedValue.IsValidWebColor())
+                AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (ValueIsAngle(trimmedValue))
+                AppState.Library.AngleClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (ValueIsFrequency(trimmedValue))
+                AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (ValueIsResolution(trimmedValue))
+                AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
         }
         else
         {
-            if (AllSegments[^1][0] == '[' && AllSegments[^1][^1] == ']')
+            if (string.IsNullOrEmpty(value))
             {
-                if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(AllSegments[^1].TrimStart('[').TrimEnd(']')).Success)
+                AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
+            }
+            else if (ValueIsNumber(value))
+            {
+                if (AppState.Library.NumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
                 {
-                    // [--my-color-var:red]
-                    CoreSegments.Add(AllSegments[^1]);
-                    IsCssCustomPropertyAssignment = true;
-                    IsValid = true;
-                    
-                    return;
+                    if (AppState.Library.AngleClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                    {
+                        if (AppState.Library.DurationClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                        {
+                            if (AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                            {
+                                AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                            }
+                        }
+                    }
                 }
-
-                if (AppState.Library.CssPropertyNamesWithColons.Any(substring => AllSegments[^1].Contains(substring, StringComparison.Ordinal)))
-                {
-                    // [color:red]
-                    CoreSegments.Add(AllSegments[^1]);
-                    IsCustomCss = true;
-                    IsValid = true;
-                    
-                    return;
-                }
-
-                return;
             }
-            
-            var prefix = string.Empty;
-            
-            foreach (var utility in AppState.Library.ScannerClassNamePrefixes.OrderByDescending(p => p.Length))
+            else if (ValueIsLength(value))
             {
-                if (AllSegments[^1].StartsWith(utility, StringComparison.Ordinal) == false)
-                    continue;
-                
-                prefix = utility;
-
-                break;
+                AppState.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition);
             }
-
-            if (string.IsNullOrEmpty(prefix))
-                return;
-            
-            var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
-            var modifier = string.Empty;
-            var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
-
-            if (slashSegments.Length == 2)
+            else if (ValueIsColorName(value))
             {
-                modifier = slashSegments[^1];
-                value = value.TrimEnd($"/{modifier}") ?? string.Empty;
+                AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
             }
+        }
 
-            CoreSegments.Add(prefix);
-
-            if (string.IsNullOrEmpty(value) == false)
-                CoreSegments.Add(value);
-
-            if (string.IsNullOrEmpty(modifier) == false)
-                CoreSegments.Add(modifier);
-
-            IsValid = true;
-        }        
+        #endregion
     }
 
     #endregion
@@ -224,6 +267,44 @@ public sealed class CssClass
             AppState?.StringBuilderPool.Return(value);
         }
     }
-    
+
+    private bool ValueIsNumber(string value)
+    {
+        return value.All(c => char.IsDigit(c) || c == '.');
+    }
+
+    private bool ValueIsLength(string value)
+    {
+        var unit = AppState?.Library.CssUnits.FirstOrDefault(unit => value.EndsWith(unit, StringComparison.Ordinal)) ?? string.Empty;
+
+        return string.IsNullOrEmpty(unit) == false && ValueIsNumber(value.TrimEnd(unit) ?? string.Empty);
+    }
+
+    private bool ValueIsAngle(string value)
+    {
+        var unit = AppState?.Library.CssAngleUnits.FirstOrDefault(unit => value.EndsWith(unit, StringComparison.Ordinal)) ?? string.Empty;
+
+        return string.IsNullOrEmpty(unit) == false && ValueIsNumber(value.TrimEnd(unit) ?? string.Empty);
+    }
+
+    private bool ValueIsFrequency(string value)
+    {
+        var unit = AppState?.Library.CssFrequencyUnits.FirstOrDefault(unit => value.EndsWith(unit, StringComparison.Ordinal)) ?? string.Empty;
+
+        return string.IsNullOrEmpty(unit) == false && ValueIsNumber(value.TrimEnd(unit) ?? string.Empty);
+    }
+
+    private bool ValueIsResolution(string value)
+    {
+        var unit = AppState?.Library.CssResolutionUnits.FirstOrDefault(unit => value.EndsWith(unit, StringComparison.Ordinal)) ?? string.Empty;
+
+        return string.IsNullOrEmpty(unit) == false && ValueIsNumber(value.TrimEnd(unit) ?? string.Empty);
+    }
+
+    private bool ValueIsColorName(string value)
+    {
+        return AppState?.Library.Colors.ContainsKey(value) ?? false;
+    }
+
     #endregion
 }

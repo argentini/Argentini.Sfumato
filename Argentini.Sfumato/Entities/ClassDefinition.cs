@@ -36,6 +36,16 @@ public class ClassDefinition
     public virtual bool UsesAngle { get; set; }
 
     /// <summary>
+    /// Class uses frequency (e.g. "10Hz")
+    /// </summary>
+    public virtual bool UsesFrequency { get; set; }
+
+    /// <summary>
+    /// Class uses resolution (e.g. "10dpi")
+    /// </summary>
+    public virtual bool UsesResolution { get; set; }
+
+    /// <summary>
     /// Class uses slash modifiers (e.g. "text-base/2")
     /// </summary>
     public virtual bool UsesSlashModifier { get; set; }

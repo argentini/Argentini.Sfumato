@@ -1,4 +1,5 @@
 // ReSharper disable RawStringCanBeSimplified
+// ReSharper disable MemberCanBePrivate.Global
 
 using System.Reflection;
 using Argentini.Sfumato.Extensions;
@@ -257,6 +258,43 @@ public sealed class Library
         { "stone-950", "oklch(0.147 0.004 49.25)" }
     };
 
+    public IEnumerable<string> CssUnits { get; } =
+    [
+        // Order here matters as truncating values like 'em' also work on values ending with 'rem'
+
+        "rem", "vmin", "vmax",
+        "cm", "in", "mm", "pc", "pt", "px",
+        "ch", "em", "ex", "vw", "vh"
+    ];
+    
+    public IEnumerable<string> CssAngleUnits { get; } =
+    [
+        // Order here matters as truncating values like 'rad' also work on values ending with 'grad'
+
+        "grad", "turn", "deg", "rad"
+    ];
+
+    public IEnumerable<string> CssDurationUnits { get; } =
+    [
+        // Order here matters as truncating values like 's' also work on values ending with 'ms'
+		
+        "ms", "s"
+    ];
+
+    public IEnumerable<string> CssFrequencyUnits { get; } =
+    [
+        // Order here matters as truncating values like 'Hz' also work on values ending with 'kHz'
+		
+        "kHz", "Hz"
+    ];
+
+    public IEnumerable<string> CssResolutionUnits { get; } =
+    [
+        // Order here matters as truncating values like 'x' also work on values ending with 'dppx'
+		
+        "dpcm", "dppx", "dpi", "x"
+    ];
+    
     private HashSet<string> ValidSafariCssPropertyNames { get; } = 
     [
         "-apple-pay-button-style",
@@ -1531,19 +1569,14 @@ public sealed class Library
     public HashSet<string> CssPropertyNamesWithColons { get; set; } = [];
     public HashSet<string> ScannerClassNamePrefixes { get; set; } = [];
 
-    public Dictionary<string, ClassDefinition> StaticClasses { get; set; } = [];
-
+    public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = [];
     public Dictionary<string, ClassDefinition> NumberClasses { get; set; } = [];
-
     public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = [];
-
     public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = [];
-
     public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = [];
-
     public Dictionary<string, ClassDefinition> AngleClasses { get; set; } = [];
-
-    public List<Dictionary<string, ClassDefinition>> AllDictionaries { get; set; } = [];
+    public Dictionary<string, ClassDefinition> FrequencyClasses { get; set; } = [];
+    public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = [];
 
     #endregion
     
@@ -1559,13 +1592,6 @@ public sealed class Library
             .GetTypes()
             .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
 
-        AllDictionaries.Add(StaticClasses);
-        AllDictionaries.Add(NumberClasses);
-        AllDictionaries.Add(LengthClasses);
-        AllDictionaries.Add(ColorClasses);
-        AllDictionaries.Add(DurationClasses);
-        AllDictionaries.Add(AngleClasses);
-
         foreach (var type in derivedTypes)
         {
             if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
@@ -1577,7 +1603,7 @@ public sealed class Library
                     continue;
                 
                 if (item.Value.IsSimpleUtility)
-                    StaticClasses.Add(item.Key, item.Value);
+                    SimpleClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesNumber)
                     NumberClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesLength)
@@ -1588,6 +1614,10 @@ public sealed class Library
                     DurationClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesAngle)
                     AngleClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesFrequency)
+                    FrequencyClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesResolution)
+                    ResolutionClasses.Add(item.Key, item.Value);
 
                 ScannerClassNamePrefixes.Add(item.Key);
             }
