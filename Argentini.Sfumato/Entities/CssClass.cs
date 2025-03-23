@@ -31,6 +31,9 @@ public sealed class CssClass
             AllSegments.Clear();
             VariantSegments.Clear();
             CoreSegments.Clear();
+
+            IsImportant = _name.EndsWith('!');
+            
             AllSegments.AddRange(ContentScanner.SplitByColonsRegex().Split(_name.TrimEnd('!')));
 
             EscapeCssClassName();
@@ -75,6 +78,7 @@ public sealed class CssClass
     public bool IsValid { get; set; }
     public bool IsCustomCss { get; set; }
     public bool IsCssCustomPropertyAssignment { get; set; }
+    public bool IsImportant { get; set; }
     
     #endregion
     
