@@ -8,7 +8,7 @@ public sealed class BackgroundColor : ClassDictionaryBase
 {
     public BackgroundColor()
     {
-        Data.AddRange(new Dictionary<string, ClassDefinition>()
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
                 "bg-", new ClassDefinition

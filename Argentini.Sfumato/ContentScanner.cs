@@ -18,7 +18,7 @@ public static partial class ContentScanner
 
     private const string PatternQuotedSubstrings = @"\S+";
 
-    private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+\s*:\s*[^;]+;?$";
+    private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+_?:_?[^;]+;?$";
     
     private const string SplitByColons = @":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
 
@@ -57,7 +57,7 @@ public static partial class ContentScanner
 
         ScanForQuotedStrings(fileContent, quotedSubstrings);
 
-        var results = new Dictionary<string,CssClass>();
+        var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
 
         foreach (var quotedSubstring in quotedSubstrings)
             ScanStringForClasses(quotedSubstring, results, appState);

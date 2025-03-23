@@ -12,7 +12,7 @@ public static class Strings
 	public static string ThinLine => "\u23bb";	
 	public static string ThickLine => "\u2501";	
 	
-	public static Dictionary<string, string> CssNamedColors { get; } = new()
+	public static Dictionary<string, string> CssNamedColors { get; } = new(StringComparer.Ordinal)
 	{
 	    ["aliceblue"] = "rgb(240, 248, 255)",
 	    ["antiquewhite"] = "rgb(250, 235, 215)",

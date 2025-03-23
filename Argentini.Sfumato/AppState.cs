@@ -30,7 +30,7 @@ public sealed class AppState
     public static string CliErrorPrefix => "Sfumato => ";
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
     public Settings Settings { get; set; } = new();
-    public ConcurrentDictionary<string,string> DiagnosticOutput { get; set; } = new();
+    public ConcurrentDictionary<string,string> DiagnosticOutput { get; set; } = new(StringComparer.Ordinal);
     public string WorkingPathOverride { get; private set; } = string.Empty;
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();

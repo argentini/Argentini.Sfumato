@@ -8,7 +8,7 @@ public sealed class TextAlign : ClassDictionaryBase
 {
     public TextAlign()
     {
-        Data.AddRange(new Dictionary<string, ClassDefinition>()
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
                 "text-left", new ClassDefinition

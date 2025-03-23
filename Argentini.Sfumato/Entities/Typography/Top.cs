@@ -8,7 +8,7 @@ public sealed class Top : ClassDictionaryBase
 {
     public Top()
     {
-        Data.AddRange(new Dictionary<string, ClassDefinition>()
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics
             

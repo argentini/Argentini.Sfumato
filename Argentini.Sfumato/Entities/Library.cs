@@ -2,7 +2,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System.Reflection;
-using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Entities;
 
@@ -10,7 +9,7 @@ public sealed class Library
 {
     #region Utility Class Constants
     
-    public Dictionary<string, string> Colors { get; set; } = new()
+    public Dictionary<string, string> Colors { get; set; } = new(StringComparer.Ordinal)
     {
         { "black", "#000" },
         { "white", "#fff" },
@@ -258,45 +257,45 @@ public sealed class Library
         { "stone-950", "oklch(0.147 0.004 49.25)" }
     };
 
-    public IEnumerable<string> CssUnits { get; } =
-    [
+    public HashSet<string> CssLengthUnits { get; } = new(StringComparer.Ordinal)
+    {
         // Order here matters as truncating values like 'em' also work on values ending with 'rem'
 
         "rem", "vmin", "vmax",
         "cm", "in", "mm", "pc", "pt", "px",
         "ch", "em", "ex", "vw", "vh"
-    ];
+    };
     
-    public IEnumerable<string> CssAngleUnits { get; } =
-    [
+    public HashSet<string> CssAngleUnits { get; } = new(StringComparer.Ordinal)
+    {
         // Order here matters as truncating values like 'rad' also work on values ending with 'grad'
 
         "grad", "turn", "deg", "rad"
-    ];
+    };
 
-    public IEnumerable<string> CssDurationUnits { get; } =
-    [
+    public HashSet<string> CssDurationUnits { get; } = new(StringComparer.Ordinal)
+    {
         // Order here matters as truncating values like 's' also work on values ending with 'ms'
 		
         "ms", "s"
-    ];
+    };
 
-    public IEnumerable<string> CssFrequencyUnits { get; } =
-    [
+    public HashSet<string> CssFrequencyUnits { get; } = new(StringComparer.Ordinal)
+    {
         // Order here matters as truncating values like 'Hz' also work on values ending with 'kHz'
 		
         "kHz", "Hz"
-    ];
+    };
 
-    public IEnumerable<string> CssResolutionUnits { get; } =
-    [
+    public HashSet<string> CssResolutionUnits { get; } = new(StringComparer.Ordinal)
+    {
         // Order here matters as truncating values like 'x' also work on values ending with 'dppx'
 		
         "dpcm", "dppx", "dpi", "x"
-    ];
+    };
     
-    private HashSet<string> ValidSafariCssPropertyNames { get; } = 
-    [
+    private HashSet<string> ValidSafariCssPropertyNames { get; } = new(StringComparer.Ordinal)
+    {
         "-apple-pay-button-style",
         "-apple-pay-button-type",
         "-epub-caption-side",
@@ -919,10 +918,10 @@ public sealed class Library
         "y",
         "z-index",
         "zoom"
-    ];
+    };
 
-    private HashSet<string> ValidChromeCssPropertyNames { get; } =
-	[
+    private HashSet<string> ValidChromeCssPropertyNames { get; } = new(StringComparer.Ordinal)
+    {
         "accent-color",
         "additive-symbols",
         "align-content",
@@ -1542,7 +1541,7 @@ public sealed class Library
         "y",
         "z-index",
         "zoom"
-    ];
+    };
 
     #endregion
     
@@ -1566,27 +1565,27 @@ public sealed class Library
     
     #region Scanner Collections
     
-    public HashSet<string> CssPropertyNamesWithColons { get; set; } = [];
-    public HashSet<string> ScannerClassNamePrefixes { get; set; } = [];
+    public PrefixTrie CssPropertyNamesWithColons { get; set; } = new();
+    public HashSet<string> ScannerClassNamePrefixes { get; set; } = new(StringComparer.Ordinal);
 
-    public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = [];
-    public Dictionary<string, ClassDefinition> NumberClasses { get; set; } = [];
-    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = [];
-    public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = [];
-    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = [];
-    public Dictionary<string, ClassDefinition> AngleClasses { get; set; } = [];
-    public Dictionary<string, ClassDefinition> FrequencyClasses { get; set; } = [];
-    public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = [];
+    public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> NumberClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> AngleClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> FrequencyClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = new(StringComparer.Ordinal);
 
     #endregion
     
     public Library()
     {
         foreach (var propertyName in ValidSafariCssPropertyNames)
-            CssPropertyNamesWithColons.Add($"{propertyName}:");
+            CssPropertyNamesWithColons.Insert($"{propertyName}:");
         
         foreach (var propertyName in ValidChromeCssPropertyNames)
-            CssPropertyNamesWithColons.Add($"{propertyName}:");
+            CssPropertyNamesWithColons.Insert($"{propertyName}:");
 
         var derivedTypes = Assembly.GetExecutingAssembly()
             .GetTypes()
@@ -1596,12 +1595,9 @@ public sealed class Library
         {
             if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
                 continue;
-            
-            foreach (var item in instance.Data)
+
+            foreach (var item in instance.Data.Where(item => item.Key.EndsWith('(') == false && item.Key.EndsWith('[') == false))
             {
-                if (item.Key.EndsWith('(') || item.Key.EndsWith('['))
-                    continue;
-                
                 if (item.Value.IsSimpleUtility)
                     SimpleClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesNumber)

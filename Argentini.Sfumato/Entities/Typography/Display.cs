@@ -8,7 +8,7 @@ public sealed class Display : ClassDictionaryBase
 {
     public Display()
     {
-        Data.AddRange(new Dictionary<string, ClassDefinition>()
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
                 "inline", new ClassDefinition

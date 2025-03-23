@@ -8,7 +8,7 @@ public sealed class FontSize : ClassDictionaryBase
 {
     public FontSize()
     {
-        Data.AddRange(new Dictionary<string, ClassDefinition>()
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
                 "text-xs", new ClassDefinition

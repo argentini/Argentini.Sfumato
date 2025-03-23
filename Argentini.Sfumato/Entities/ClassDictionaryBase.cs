@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.Entities;
 
 public class ClassDictionaryBase
 {
-    public Dictionary<string, ClassDefinition> Data { get; } = new ();
+    public Dictionary<string, ClassDefinition> Data { get; } = new (StringComparer.Ordinal);
     
     public ClassDefinition this[string key]
     {

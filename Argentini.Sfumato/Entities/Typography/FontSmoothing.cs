@@ -8,7 +8,7 @@ public sealed class FontSmoothing : ClassDictionaryBase
 {
     public FontSmoothing()
     {
-        Data.AddRange(new Dictionary<string, ClassDefinition>()
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
                 "antialiased", new ClassDefinition

@@ -8,7 +8,7 @@ public sealed class Color : ClassDictionaryBase
 {
     public Color()
     {
-        Data.AddRange(new Dictionary<string, ClassDefinition>()
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
                 "text-", new ClassDefinition
