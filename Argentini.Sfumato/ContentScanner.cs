@@ -12,10 +12,10 @@ public static partial class ContentScanner
     public const string PatternQuotedStrings =
         """
         (?<delim>(\\")|["'`])
-        (?<content>(?:\\.|(?!\k<delim>).){3,}?)
+        (?<content>(?:(?!\k<delim>)[\s\S])*?)
         \k<delim>
         """;
-
+    
     private const string PatternQuotedSubstrings = @"\S+";
 
     private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+_?:_?[^;]+;?$";
