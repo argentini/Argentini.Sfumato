@@ -66,47 +66,29 @@ public sealed class Top : ClassDictionaryBase
             {
                 "top-", new ClassDefinition
                 {
-                    UsesNumber = true,
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
                     Template = """
                                top: calc(var(--spacing) * {0});
-                               """
+                               """,
+                    CustomCssTemplate =
+                        """
+                        top: {0};
+                        """
                 }
             },
-            {
-                "top-[", new ClassDefinition
-                {
-                    UsesLength = true,
-                    Template = """
-                               top: {0};
-                               """
-                }
-            },
-            {
-                "top-(", new ClassDefinition
-                {
-                    UsesLength = true,
-                    Template = """
-                               top: var({0});
-                               """
-                }
-            },
-
             {
                 "-top-", new ClassDefinition
                 {
-                    UsesLength = true,
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
                     Template = """
                                top: calc(var(--spacing) * -{0});
-                               """
-                }
-            },
-            {
-                "-top-(", new ClassDefinition
-                {
-                    UsesLength = true,
-                    Template = """
-                               top: calc(var({0}) * -1);
-                               """
+                               """,
+                    CustomCssTemplate =
+                        """
+                        top: calc({0} * -1);
+                        """
                 }
             },
 

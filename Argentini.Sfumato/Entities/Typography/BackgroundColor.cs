@@ -20,7 +20,7 @@ public sealed class BackgroundColor : ClassDictionaryBase
                                """,
                     ModifierTemplate = """
                                        background-color: {0};
-                                       """
+                                       """,
                 }
             },
         });

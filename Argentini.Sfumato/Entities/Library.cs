@@ -257,6 +257,20 @@ public sealed class Library
         { "stone-950", "oklch(0.147 0.004 49.25)" }
     };
 
+    
+    /// <summary>
+    /// Groups of the same validators:
+    /// alpha, number
+    /// angle, hue
+    /// dimension, length
+    /// duration, time
+    /// image, url
+    /// </summary>
+    public HashSet<string> CssDataTypes { get; } = new(StringComparer.Ordinal)
+    {
+        "alpha", "angle", "color", "dimension", "duration", "flex", "frequency", "hue", "image", "integer", "length", "number", "percentage", "ratio", "resolution", "string", "time", "url",
+    };
+
     public HashSet<string> CssLengthUnits { get; } = new(StringComparer.Ordinal)
     {
         // Order here matters as truncating values like 'em' also work on values ending with 'rem'
@@ -1566,16 +1580,24 @@ public sealed class Library
     #region Scanner Collections
     
     public PrefixTrie CssPropertyNamesWithColons { get; set; } = new();
-    public HashSet<string> ScannerClassNamePrefixes { get; set; } = new(StringComparer.Ordinal);
+    public PrefixTrie ScannerClassNamePrefixes { get; set; } = new();
 
     public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> NumberClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> SpacingClasses { get; set; } = new(StringComparer.Ordinal);
+    
+    public Dictionary<string, ClassDefinition> AlphaNumberClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> AngleHueClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> AngleClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> DimensionLengthClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> DurationTimeClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> FlexClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> FrequencyClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> ImageUrlClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> IntegerClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> PercentageClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> RatioClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> StringClasses { get; set; } = new(StringComparer.Ordinal);
 
     #endregion
     
@@ -1600,22 +1622,37 @@ public sealed class Library
             {
                 if (item.Value.IsSimpleUtility)
                     SimpleClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesNumber)
-                    NumberClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesLength)
-                    LengthClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesSpacing)
+                    SpacingClasses.Add(item.Key, item.Value);
+
+                else if (item.Value.UsesAlphaNumber)
+                    AlphaNumberClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesAngleHue)
+                    AngleHueClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesColor)
                     ColorClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesDuration)
-                    DurationClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesAngle)
-                    AngleClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesDimensionLength)
+                    DimensionLengthClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesDurationTime)
+                    DurationTimeClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesFlex)
+                    FlexClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesFrequency)
                     FrequencyClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesImageUrl)
+                    ImageUrlClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesInteger)
+                    IntegerClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesPercentage)
+                    PercentageClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesRatio)
+                    RatioClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesResolution)
                     ResolutionClasses.Add(item.Key, item.Value);
+                else if (item.Value.UsesString)
+                    StringClasses.Add(item.Key, item.Value);
 
-                ScannerClassNamePrefixes.Add(item.Key);
+                ScannerClassNamePrefixes.Insert(item.Key);
             }
         }        
     }

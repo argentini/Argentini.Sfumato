@@ -11,6 +11,20 @@ public sealed class FontSize : ClassDictionaryBase
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
+                "text-", new ClassDefinition
+                {
+                    UsesDimensionLength = true,
+                    UsesSlashModifier = true,
+                    Template = """
+                               font-size: {0};
+                               """,
+                    ModifierTemplate = """
+                                       font-size: {0};
+                                       line-height: calc(var(--spacing) * {1});
+                                       """
+                }
+            },
+            {
                 "text-xs", new ClassDefinition
                 {
                     IsSimpleUtility = true,
@@ -201,36 +215,6 @@ public sealed class FontSize : ClassDictionaryBase
                                """,
                     ModifierTemplate = """
                                        font-size: var(--text-9xl);
-                                       line-height: calc(var(--spacing) * {1});
-                                       """
-                }
-            },
-            {
-                "text-[", new ClassDefinition
-                {
-                    UsesLength = true,
-                    UsesSlashModifier = true,
-                    Template = """
-                               font-size: {0};
-                               line-height: calc(var(--spacing) * {1});
-                               """,
-                    ModifierTemplate = """
-                                       font-size: {0};
-                                       line-height: calc(var(--spacing) * {1});
-                                       """
-                }
-            },
-            {
-                "text-(", new ClassDefinition
-                {
-                    UsesLength = true,
-                    UsesSlashModifier = true,
-                    Template = """
-                               font-size: var({0});
-                               line-height: calc(var(--spacing) * {1});
-                               """,
-                    ModifierTemplate = """
-                                       font-size: var({0});
                                        line-height: calc(var(--spacing) * {1});
                                        """
                 }

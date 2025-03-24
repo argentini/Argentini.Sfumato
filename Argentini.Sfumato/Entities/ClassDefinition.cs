@@ -13,12 +13,17 @@ public class ClassDefinition
     /// <summary>
     /// Class uses spacing number (e.g. "m-4")
     /// </summary>
-    public virtual bool UsesNumber { get; set; }
+    public virtual bool UsesSpacing { get; set; }
 
     /// <summary>
-    /// Class uses length (e.g. "1rem")
+    /// Class uses float (e.g. "leading-[1.3]")
     /// </summary>
-    public virtual bool UsesLength { get; set; }
+    public virtual bool UsesAlphaNumber { get; set; }
+
+    /// <summary>
+    /// Class uses angles (e.g. "90deg")
+    /// </summary>
+    public virtual bool UsesAngleHue { get; set; }
 
     /// <summary>
     /// Class uses color (e.g. "#aabbcc")
@@ -26,14 +31,19 @@ public class ClassDefinition
     public virtual bool UsesColor { get; set; }
 
     /// <summary>
-    /// Class uses duration (e.g. "10s")
+    /// Class uses length (e.g. "1rem")
     /// </summary>
-    public virtual bool UsesDuration { get; set; }
+    public virtual bool UsesDimensionLength { get; set; }
 
     /// <summary>
-    /// Class uses angles (e.g. "90deg")
+    /// Class uses duration (e.g. "10s")
     /// </summary>
-    public virtual bool UsesAngle { get; set; }
+    public virtual bool UsesDurationTime { get; set; }
+
+    /// <summary>
+    /// Class uses flex (e.g. "1fr")
+    /// </summary>
+    public virtual bool UsesFlex { get; set; }
 
     /// <summary>
     /// Class uses frequency (e.g. "10Hz")
@@ -41,9 +51,34 @@ public class ClassDefinition
     public virtual bool UsesFrequency { get; set; }
 
     /// <summary>
+    /// Class uses a URL (e.g. "url('/images/bg.jpg')")
+    /// </summary>
+    public virtual bool UsesImageUrl { get; set; }
+
+    /// <summary>
+    /// Class uses an integer (e.g. "3")
+    /// </summary>
+    public virtual bool UsesInteger { get; set; }
+
+    /// <summary>
+    /// Class uses a percentage (e.g. "50.25%")
+    /// </summary>
+    public virtual bool UsesPercentage { get; set; }
+
+    /// <summary>
+    /// Class uses a ratio (e.g. "1 / 2")
+    /// </summary>
+    public virtual bool UsesRatio { get; set; }
+
+    /// <summary>
     /// Class uses resolution (e.g. "10dpi")
     /// </summary>
     public virtual bool UsesResolution { get; set; }
+
+    /// <summary>
+    /// Class uses a string (e.g. "'hello world'")
+    /// </summary>
+    public virtual bool UsesString { get; set; }
 
     /// <summary>
     /// Class uses slash modifiers (e.g. "text-base/2")
@@ -64,6 +99,21 @@ public class ClassDefinition
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
     public virtual string ModifierTemplate { get; set; } = string.Empty;
+
+    /// <summary>
+    /// CSS class property template for custom CSS values (e.g. "text-[1rem]").
+    /// Can contain more than one property assignment.
+    /// Use placeholder {0} for custom value.
+    /// </summary>
+    public virtual string CustomCssTemplate { get; set; } = string.Empty;
+
+    /// <summary>
+    /// CSS class property template for custom CSS values using a modifier (e.g. "text-[1rem]/5").
+    /// Can contain more than one property assignment.
+    /// Use placeholder {0} for custom value.
+    /// Use placeholder {1} for slash modifier value.
+    /// </summary>
+    public virtual string CustomCssModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
     /// Property value inserted into Template (e.g. "1rem").

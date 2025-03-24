@@ -30,6 +30,7 @@ public sealed class CssClass
             _name = value;
 
             CssSelector = string.Empty;
+            IsValid = false;
 
             AllSegments.Clear();
             VariantSegments.Clear();
@@ -115,7 +116,7 @@ public sealed class CssClass
             if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
                 return;
             
-            if (trimmedValue.StartsWith("--", StringComparison.OrdinalIgnoreCase))
+            if (trimmedValue.StartsWith("--", StringComparison.Ordinal))
             {
                 // [--my-color-var:red]
                 CoreSegments.Add(trimmedValue);
@@ -152,8 +153,9 @@ public sealed class CssClass
 
         #region Utility Classes
         
-        var prefix = string.Empty;
+        var prefix = AppState.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
         
+        /*
         foreach (var utility in AppState.Library.ScannerClassNamePrefixes.OrderByDescending(p => p.Length))
         {
             if (AllSegments[^1].StartsWith(utility, StringComparison.Ordinal) == false)
@@ -163,6 +165,7 @@ public sealed class CssClass
 
             break;
         }
+        */
 
         if (string.IsNullOrEmpty(prefix))
             return;
@@ -185,29 +188,124 @@ public sealed class CssClass
         if (string.IsNullOrEmpty(modifier) == false)
             CoreSegments.Add(modifier);
 
-        if (value.StartsWith('[') && value.EndsWith(']'))
+        if ((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')')))
         {
-            var customValue = value.TrimStart('[').TrimEnd(']');
-            
-            if (ValueIsLength(customValue))
-                AppState.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (ValueIsColorName(customValue) || customValue.IsValidWebColor())
+            var customValue = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+
+            // Specified arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
+            if (customValue.StartsWith("alpha:", StringComparison.Ordinal) || customValue.StartsWith("number:", StringComparison.Ordinal))
+                AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("angle:", StringComparison.Ordinal) || customValue.StartsWith("hue:", StringComparison.Ordinal))
+                AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("color:", StringComparison.Ordinal))
                 AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (ValueIsDuration(customValue))
-                AppState.Library.DurationClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (ValueIsAngle(customValue))
-                AppState.Library.AngleClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (ValueIsFrequency(customValue))
+            else if (customValue.StartsWith("dimension:", StringComparison.Ordinal) || customValue.StartsWith("length:", StringComparison.Ordinal))
+                AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("duration:", StringComparison.Ordinal) || customValue.StartsWith("time:", StringComparison.Ordinal))
+                AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("flex:", StringComparison.Ordinal))
+                AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("frequency:", StringComparison.Ordinal))
                 AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (ValueIsResolution(customValue))
+            else if (customValue.StartsWith("image:", StringComparison.Ordinal) || customValue.StartsWith("url:", StringComparison.Ordinal))
+                AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("integer:", StringComparison.Ordinal))
+                AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("percentage:", StringComparison.Ordinal))
+                AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("ratio:", StringComparison.Ordinal))
+                AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("resolution:", StringComparison.Ordinal))
                 AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+            else if (customValue.StartsWith("string:", StringComparison.Ordinal))
+                AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+            else
+            {
+                if (value.StartsWith("(--", StringComparison.Ordinal) || value.StartsWith("[var(--", StringComparison.Ordinal))
+                {
+                    AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                    
+                    if (ClassDefinition is null)
+                        AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                    
+                    if (ClassDefinition is null)
+                        AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                    
+                    if (ClassDefinition is null)
+                        AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                    
+                    if (ClassDefinition is null)
+                        AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                    
+                    if (ClassDefinition is null)
+                        AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else
+                {
+                    // Auto-detect value type
+
+                    if (ValueIsAlphaNumber(customValue))
+                    {
+                        if (AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+                    else if (ValueIsInteger(customValue))
+                        AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsColorName(customValue) || customValue.IsValidWebColor())
+                        AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsPercentage(customValue))
+                        AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsAngleHue(customValue))
+                        AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsDimensionLength(customValue))
+                        AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsDurationTime(customValue))
+                        AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsFrequency(customValue))
+                        AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsImageUrl(customValue))
+                        AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsRatio(customValue))
+                        AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (ValueIsResolution(customValue))
+                        AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                    else
+                    {
+                        if (AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                            AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+                }
+            }
         }
         else
         {
             if (string.IsNullOrEmpty(value))
                 AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (ValueIsNumber(value))
-                AppState.Library.NumberClasses.TryGetValue(prefix, out ClassDefinition);
+
+            else if (ValueIsInteger(value))
+                AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition);
+
             else if (ValueIsColorName(value))
                 AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
         }
@@ -286,12 +384,27 @@ public sealed class CssClass
         return index >= value.Length ? string.Empty : value[index..];         
     }
     
-    private bool ValueIsNumber(string value)
+    private bool ValueIsAlphaNumber(string value)
     {
         return value.All(c => char.IsDigit(c) || c == '.');
     }
 
-    private bool ValueIsLength(string value)
+    private bool ValueIsAngleHue(string value)
+    {
+        var unit = GetUnit(value);
+
+        if (string.IsNullOrEmpty(unit))
+            return false;
+        
+        return AppState?.Library.CssAngleUnits.Any(u => u == unit) ?? false;
+    }
+
+    private bool ValueIsColorName(string value)
+    {
+        return AppState?.Library.Colors.ContainsKey(value) ?? false;
+    }
+
+    private bool ValueIsDimensionLength(string value)
     {
         var unit = GetUnit(value);
 
@@ -301,7 +414,7 @@ public sealed class CssClass
         return AppState?.Library.CssLengthUnits.Any(u => u == unit) ?? false;
     }
 
-    private bool ValueIsDuration(string value)
+    private bool ValueIsDurationTime(string value)
     {
         var unit = GetUnit(value);
 
@@ -309,16 +422,6 @@ public sealed class CssClass
             return false;
         
         return AppState?.Library.CssDurationUnits.Any(u => u == unit) ?? false;
-    }
-
-    private bool ValueIsAngle(string value)
-    {
-        var unit = GetUnit(value);
-
-        if (string.IsNullOrEmpty(unit))
-            return false;
-        
-        return AppState?.Library.CssAngleUnits.Any(u => u == unit) ?? false;
     }
 
     private bool ValueIsFrequency(string value)
@@ -331,6 +434,31 @@ public sealed class CssClass
         return AppState?.Library.CssFrequencyUnits.Any(u => u == unit) ?? false;
     }
 
+    private bool ValueIsImageUrl(string value)
+    {
+        return value.StartsWith("url(", StringComparison.Ordinal) || Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out _);
+    }
+
+    private bool ValueIsInteger(string value)
+    {
+        return value.All(char.IsDigit);
+    }
+
+    private bool ValueIsRatio(string value)
+    {
+        var segments = value.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        if (segments.Length != 2)
+            return false;
+        
+        return int.TryParse(segments[0].Trim(), out _) && int.TryParse(segments[1].Trim(), out _);
+    }
+
+    private bool ValueIsPercentage(string value)
+    {
+        return value.All(c => char.IsDigit(c) || c == '.') && value.EndsWith('%');
+    }
+
     private bool ValueIsResolution(string value)
     {
         var unit = GetUnit(value);
@@ -339,11 +467,6 @@ public sealed class CssClass
             return false;
         
         return AppState?.Library.CssResolutionUnits.Any(u => u == unit) ?? false;
-    }
-
-    private bool ValueIsColorName(string value)
-    {
-        return AppState?.Library.Colors.ContainsKey(value) ?? false;
     }
 
     #endregion
