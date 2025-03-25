@@ -92,6 +92,9 @@ public class RegularExpressionsTests
             var result = new CssClass(appState, nightmareClass);
 
             Assert.NotNull(result);
+
+            _testOutputHelper.WriteLine($"{nightmareClass} => {result.IsValid}");
+
             Assert.True(result.IsValid);
             
             if (nightmareClass.EndsWith('!'))

@@ -98,11 +98,175 @@ public sealed class CssClass
             return;
 
         #region Variants
-        
-        if (AllSegments.Count > 1)
-            VariantSegments.AddRange(AllSegments.Take(AllSegments.Count - 1));
 
-        // todo: validate variants
+        if (AllSegments.Count > 1)
+        {
+            // One or more invalid variants invalidate the entire utility class
+            
+            foreach (var segment in AllSegments.Take(AllSegments.Count - 1))
+            {
+                var variant = segment.TrimStart("max-").TrimStart("not-") ?? string.Empty;
+
+                if (string.IsNullOrEmpty(variant))
+                    return;
+
+                if (AppState.Library.MediaQueryPrefixes.ContainsKey(variant))
+                {
+                    // tabp: dark: etc.
+                    
+                    VariantSegments.Add(segment);
+                }
+                else if (AppState.Library.PseudoclassPrefixes.ContainsKey(variant))
+                {
+                    // hover: focus: etc.
+                    
+                    VariantSegments.Add(segment);
+                }
+                else if (segment.StartsWith("group-"))
+                {
+                    if (segment.StartsWith("group-has-"))
+                    {
+                        // group-has-[a]:
+                        
+                        VariantSegments.Add(segment);
+                    }
+                    else if (segment.StartsWith("group-aria-"))
+                    {
+                        // group-aria-checked:
+                        
+                        VariantSegments.Add(segment);
+                    }
+                    else
+                    {
+                        // group-hover: group-focus: etc.
+                        
+                        variant = segment.TrimStart("group-") ?? string.Empty;
+                
+                        if (string.IsNullOrEmpty(variant))
+                            return;
+                
+                        var indexOfSlash = variant.LastIndexOf('/');
+
+                        if (indexOfSlash > 0)
+                            variant = variant[..indexOfSlash];
+
+                        if (variant.StartsWith('[') && variant.EndsWith(']'))
+                        {
+                            VariantSegments.Add(segment);
+                        }
+                        else if (AppState.Library.PseudoclassPrefixes.ContainsKey(variant))
+                        {
+                            VariantSegments.Add(segment);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+                else if (segment.StartsWith("peer-"))
+                {
+                    if (segment.StartsWith("peer-has-"))
+                    {
+                        // peer-has-[a]:
+
+                        VariantSegments.Add(segment);
+                    }
+                    else if (segment.StartsWith("peer-aria-"))
+                    {
+                        // peer-aria-checked:
+
+                        VariantSegments.Add(segment);
+                    }
+                    else
+                    {
+                        // peer-hover: peer-focus: etc.
+
+                        variant = segment.TrimStart("peer-") ?? string.Empty;
+                
+                        if (string.IsNullOrEmpty(variant))
+                            return;
+                
+                        var indexOfSlash = variant.LastIndexOf('/');
+
+                        if (indexOfSlash > 0)
+                            variant = variant[..indexOfSlash];
+
+                        if (variant.StartsWith('[') && variant.EndsWith(']'))
+                        {
+                            VariantSegments.Add(segment);
+                        }
+                        else if (AppState.Library.PseudoclassPrefixes.ContainsKey(variant))
+                        {
+                            VariantSegments.Add(segment);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+                else if (segment.StartsWith("in-"))
+                {
+                    // in-hover: in-focus: etc.
+
+                    VariantSegments.Add(segment);
+                }
+                else if (segment.StartsWith("nth-"))
+                {
+                    if (segment.StartsWith("nth-of-type-"))
+                    {
+                        VariantSegments.Add(segment);
+                    }
+                    else if (segment.StartsWith("nth-last-of-type-"))
+                    {
+                        VariantSegments.Add(segment);
+                    }
+                    else if (segment.StartsWith("nth-last-"))
+                    {
+                        VariantSegments.Add(segment);
+                    }
+                    else
+                    {
+                        VariantSegments.Add(segment);
+                    }
+                }
+                else if (segment.StartsWith("has-"))
+                {
+                    // has-hover: has-focus: etc.
+
+                    VariantSegments.Add(segment);
+                }
+                else if (segment.StartsWith("supports-"))
+                {
+                    // supports-[display:grid]:
+                    
+                    VariantSegments.Add(segment);
+                }
+                else if (segment.StartsWith("not-supports-"))
+                {
+                    // not-supports-[display:grid]:
+
+                    VariantSegments.Add(segment);
+                }
+                else if (segment.StartsWith("data-"))
+                {
+                    // data-active: data-myattribute: data-[size=large] etc.
+                    
+                    VariantSegments.Add(segment);
+                }
+                else if ((segment.StartsWith("[&") || segment.StartsWith("[@")) && segment.EndsWith(']'))
+                {
+                    // [&.class] or [&_p] or [@supports(display:grid)] etc.
+                    
+                    VariantSegments.Add(segment);
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
         
         #endregion
         
@@ -155,18 +319,6 @@ public sealed class CssClass
         
         var prefix = AppState.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
         
-        /*
-        foreach (var utility in AppState.Library.ScannerClassNamePrefixes.OrderByDescending(p => p.Length))
-        {
-            if (AllSegments[^1].StartsWith(utility, StringComparison.Ordinal) == false)
-                continue;
-            
-            prefix = utility;
-
-            break;
-        }
-        */
-
         if (string.IsNullOrEmpty(prefix))
             return;
         
