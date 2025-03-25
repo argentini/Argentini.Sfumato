@@ -1557,6 +1557,258 @@ public sealed class Library
         "zoom"
     };
 
+    public Dictionary<string, CssMediaQuery> MediaQueryPrefixes { get; } = new()
+	{
+	    {
+		    "dark",
+		    new CssMediaQuery
+		    {
+			    PrefixOrder = 1,
+			    Priority = int.MaxValue,
+			    PrefixType = "theme",
+			    Statement = "@media (prefers-color-scheme: dark) {"
+		    }
+	    },
+	    {
+		    "portrait",
+			new CssMediaQuery
+			{
+				PrefixOrder = 2,
+				Priority = 128,
+				PrefixType = "orientation",
+				Statement = "@media (orientation: portrait) {"
+			}
+		},
+		{
+			"landscape",
+			new CssMediaQuery
+			{
+				PrefixOrder = 3,
+				Priority = 256,
+				PrefixType = "orientation",
+				Statement = "@media (orientation: landscape) {"
+			}
+		},
+		{
+			"print",
+			new CssMediaQuery
+			{
+				PrefixOrder = 4,
+				Priority = 512,
+				PrefixType = "output",
+				Statement = "@media print {"
+			}
+		},
+		{
+			"motion-safe",
+			new CssMediaQuery
+			{
+				PrefixOrder = 5,
+				Priority = 1024,
+				PrefixType = "animation",
+				Statement = "@media (prefers-reduced-motion: no-preference) {"
+			}
+		},
+		{
+			"motion-reduced",
+			new CssMediaQuery
+			{
+				PrefixOrder = 6,
+				Priority = 2048,
+				PrefixType = "animation",
+				Statement = "@media (prefers-reduced-motion: reduce) {"
+			}
+		},
+		{
+			"supports-backdrop-blur",
+	        new CssMediaQuery
+	        {
+	            PrefixOrder = 7,
+	            Priority = 4096,
+	            PrefixType = "features",
+	            Statement = "@supports ((-webkit-backdrop-filter:blur(0)) or (backdrop-filter:blur(0))) or (-webkit-backdrop-filter:blur(0)) {"
+	        }
+        },
+	    {
+	        "sm",
+			new CssMediaQuery
+			{
+				PrefixOrder = 8,
+				Priority = 4,
+				PrefixType = "breakpoint",
+				Statement = "@media (width >= 40rem) {"
+			}
+		},
+		{
+			"md",
+			new CssMediaQuery
+			{
+				PrefixOrder = 9,
+				Priority = 8,
+				PrefixType = "breakpoint",
+				Statement = "@media (width >= 48rem) {"
+			}
+		},
+		{
+			"lg",
+			new CssMediaQuery
+			{
+				PrefixOrder = 10,
+				Priority = 16,
+				PrefixType = "breakpoint",
+				Statement = "@media (width >= 64rem) {"
+			}
+		},
+		{
+			"xl",
+			new CssMediaQuery
+			{
+				PrefixOrder = 11,
+				Priority = 32,
+				PrefixType = "breakpoint",
+				Statement = "@media (width >= 80rem) {"
+			}
+		},
+			{
+				"2xl",
+				new CssMediaQuery
+				{
+					PrefixOrder = 12,
+					Priority = 64,
+					PrefixType = "breakpoint",
+					Statement = "@media (width >= 96rem}) {"
+				}
+		},
+		{
+			"mobi",
+			new CssMediaQuery
+			{
+				PrefixOrder = 13,
+				Priority = 128,
+				PrefixType = "breakpoint",
+				Statement = "@media screen and (max-aspect-ratio: 0.624999999999) {"
+			}
+		},
+		{
+			"phab",
+			new CssMediaQuery
+			{
+				PrefixOrder = 14,
+				Priority = 256,
+				PrefixType = "breakpoint",
+				Statement = "@media screen and (min-aspect-ratio: 0.575) {"
+			}
+		},
+		{
+			"tabp",
+			new CssMediaQuery
+			{
+				PrefixOrder = 15,
+				Priority = 512,
+				PrefixType = "breakpoint",
+				Statement = "@media screen and (min-aspect-ratio: 0.625) {"
+			}
+		},
+		{
+			"tabl",
+			new CssMediaQuery
+			{
+				PrefixOrder = 16,
+				Priority = 1024,
+				PrefixType = "breakpoint",
+				Statement = "@media screen and (min-aspect-ratio: 1.0) {"
+			}
+		},
+		{
+			"desk",
+			new CssMediaQuery
+			{
+				PrefixOrder = 17,
+				Priority = 2048,
+				PrefixType = "breakpoint",
+				Statement = "@media screen and (min-aspect-ratio: 1.5) {"
+			}
+		},
+		{
+			"wide",
+			new CssMediaQuery
+			{
+				PrefixOrder = 18,
+				Priority = 4096,
+				PrefixType = "breakpoint",
+				Statement = "@media screen and (min-aspect-ratio: 1.77777778) {"
+			}
+		},
+		{
+			"vast",
+			new CssMediaQuery
+			{
+				PrefixOrder = 19,
+				Priority = 8192,
+				PrefixType = "breakpoint",
+				Statement = "@media screen and (min-aspect-ratio: 2.33333333) {"
+			}
+		}
+    };
+
+    public Dictionary<string,string> PseudoclassPrefixes { get; } = new ()
+    {
+        { "hover", ":hover"},
+        { "focus", ":focus" },
+        { "focus-within", ":focus-within" },
+        { "focus-visible", ":focus-visible" },
+        { "active", ":active" },
+        { "visited", ":visited" },
+        { "target", ":target" },
+        { "first", ":first-child" },
+        { "last", ":last-child" },
+        { "only", ":only-child" },
+        { "odd", ":nth-child(odd)" },
+        { "even", ":nth-child(even)" },
+        { "first-of-type", ":first-of-type" },
+        { "last-of-type", ":last-of-type" },
+        { "only-of-type", ":only-of-type" },
+        { "empty", ":empty" },
+        { "disabled", ":disabled" },
+        { "enabled", ":enabled" },
+        { "checked", ":checked" },
+        { "indeterminate", ":indeterminate" },
+        { "default", ":default" },
+        { "required", ":required" },
+        { "valid", ":valid" },
+        { "invalid", ":invalid" },
+        { "in-range", ":in-range" },
+        { "out-of-range", ":out-of-range" },
+        { "placeholder-shown", ":placeholder-shown" },
+        { "autofill", ":autofill" },
+        { "read-only", ":read-only" },
+        { "before", "::before" },
+        { "after", "::after" },
+        { "first-letter", "::first-letter" },
+        { "first-line", "::first-line" },
+        { "marker", "::marker" },
+        { "selection", "::selection" },
+        { "file", "::file-selector-button" },
+        { "backdrop", "::backdrop" },
+        { "placeholder", "::placeholder" },
+        { "open", ":is([open],:popover-open,:open)" },
+        { "closed", ":is([closed],:popover-closed,:closed)" },
+        { "inert", "&[inert]"},
+        { "ltr", ":where(:dir(ltr),[dir=ltr],[dir=ltr] *)"},
+        { "rtl", ":where(:dir(rtl),[dir=rtl],[dir=rtl] *)"},
+        { "aria-busy", "[aria-busy=\"true\"]"},
+        { "aria-checked", "[aria-checked=\"true\"]" },
+        { "aria-disabled", "[aria-disabled=\"true\"]" },
+        { "aria-expanded", "[aria-expanded=\"true\"]" },
+        { "aria-hidden", "[aria-hidden=\"true\"]" },
+        { "aria-pressed", "[aria-pressed=\"true\"]" },
+        { "aria-readonly", "[aria-readonly=\"true\"]" },
+        { "aria-required", "[aria-required=\"true\"]" },
+        { "aria-selected", "[aria-selected=\"true\"]" },
+        { "*", ":where(.system,.system *) > *"},
+        { "**", ":where(.system,.system *)"},
+    };
+
     #endregion
     
     #region Runtime Properties
