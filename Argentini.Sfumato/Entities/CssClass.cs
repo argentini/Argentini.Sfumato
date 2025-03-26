@@ -173,14 +173,12 @@ public sealed class CssClass
 
                     VariantSegments.Add(segment, data);
                 }
-
-                
-
-                else if ((segment.StartsWith("[&") || segment.StartsWith("[@")) && segment.EndsWith(']'))
+                else if (TryVariantIsCustom(variant, out var custom))
                 {
-                    // [&.class] or [&_p] or [@supports(display:grid)] etc.
-                    
-                    VariantSegments.Add(segment);
+                    if (custom is null)
+                        return;
+
+                    VariantSegments.Add(segment, custom);
                 }
                 else
                 {
@@ -521,11 +519,11 @@ public sealed class CssClass
 
             variantValue = variantValue.TrimStart('[').TrimEnd(']');
             
-            VariantSegments.Add(variant, new VariantMetadata
+            group = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 Statement = $":is(:where(.group):has(:is({variantValue.Replace('_', ' ')})) *)"
-            });
+            };
 
             return true;
         }
@@ -542,11 +540,11 @@ public sealed class CssClass
             if (pseudoClass is null)
                 return false;
             
-            VariantSegments.Add(variant, new VariantMetadata
+            group = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 Statement = $":is(:where(.group):has({pseudoClass.Statement}) *)"
-            });
+            };
 
             return true;
         }
@@ -572,11 +570,11 @@ public sealed class CssClass
                 if (string.IsNullOrEmpty(variantValue))
                     return false;
                         
-                VariantSegments.Add(variant, new VariantMetadata
+                group = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
                     Statement = $":is(:where(.group):has({variantValue.Replace('_', ' ')}) *)"
-                });
+                };
 
                 return true;
             }
@@ -588,11 +586,11 @@ public sealed class CssClass
                 if (pseudoClass is null)
                     return false;
             
-                VariantSegments.Add(variant, new VariantMetadata
+                group = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
                     Statement = $":is(:where(.group){pseudoClass.Statement}) *)"
-                });
+                };
 
                 return true;
             }
@@ -616,11 +614,11 @@ public sealed class CssClass
 
             variantValue = variantValue.TrimStart('[').TrimEnd(']');
             
-            VariantSegments.Add(variant, new VariantMetadata
+            peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 Statement = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')}))~*)"
-            });
+            };
 
             return true;
         }
@@ -637,11 +635,11 @@ public sealed class CssClass
             if (pseudoClass is null)
                 return false;
             
-            VariantSegments.Add(variant, new VariantMetadata
+            peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 Statement = $":is(:where(.peer):has({pseudoClass.Statement})~*)"
-            });
+            };
 
             return true;
         }
@@ -667,11 +665,11 @@ public sealed class CssClass
                 if (string.IsNullOrEmpty(variantValue))
                     return false;
                         
-                VariantSegments.Add(variant, new VariantMetadata
+                peer = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
                     Statement = $":is(:where(.peer):has({variantValue.Replace('_', ' ')})~*)"
-                });
+                };
 
                 return true;
             }
@@ -683,11 +681,11 @@ public sealed class CssClass
                 if (pseudoClass is null)
                     return false;
             
-                VariantSegments.Add(variant, new VariantMetadata
+                peer = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
                     Statement = $":is(:where(.peer){pseudoClass.Statement}~*)"
-                });
+                };
 
                 return true;
             }
@@ -743,11 +741,11 @@ public sealed class CssClass
 
             variantValue = variantValue.TrimStart('[').TrimEnd(']');
             
-            VariantSegments.Add(variant, new VariantMetadata
+            has = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 Statement = $":has({variantValue.Replace('_', ' ')})"
-            });
+            };
 
             return true;
         }
@@ -765,11 +763,11 @@ public sealed class CssClass
                 if (pseudoClass is null)
                     return false;
             
-                VariantSegments.Add(variant, new VariantMetadata
+                has = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
                     Statement = $":has({pseudoClass.Statement})"
-                });
+                };
 
                 return true;
             }
@@ -793,11 +791,11 @@ public sealed class CssClass
 
             variantValue = variantValue.TrimStart('[').TrimEnd(']');
             
-            VariantSegments.Add(variant, new VariantMetadata
+            supports = new VariantMetadata
             {
                 PrefixType = "supports",
                 Statement = $"@supports ({variantValue.Replace('_', ' ')}) {{"
-            });
+            };
         }
         else
         {
@@ -813,11 +811,11 @@ public sealed class CssClass
             if (string.IsNullOrEmpty(match))
                 return false;
 
-            VariantSegments.Add(variant, new VariantMetadata
+            supports = new VariantMetadata
             {
                 PrefixType = "supports",
                 Statement = $"@supports ({match}: initial) {{"
-            });
+            };
         }
 
         return true;
@@ -838,11 +836,11 @@ public sealed class CssClass
 
             variantValue = variantValue.TrimStart('[').TrimEnd(']');
             
-            VariantSegments.Add(variant, new VariantMetadata
+            notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
                 Statement = $"@supports not ({variantValue.Replace('_', ' ')}) {{"
-            });
+            };
         }
         else
         {
@@ -858,11 +856,11 @@ public sealed class CssClass
             if (string.IsNullOrEmpty(match))
                 return false;
 
-            VariantSegments.Add(variant, new VariantMetadata
+            notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
                 Statement = $"@supports not ({match}: initial) {{"
-            });
+            };
         }
 
         return true;
@@ -881,30 +879,60 @@ public sealed class CssClass
             if (string.IsNullOrEmpty(variantValue) || variantValue.StartsWith('[') == false || variantValue.EndsWith(']') == false)
                 return false;
 
-            VariantSegments.Add(variant, new VariantMetadata
+            data = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 Statement = variantValue.Replace('_', ' ')
-            });
+            };
         }
         else
         {
             // data-active:
 
-            VariantSegments.Add(variant, new VariantMetadata
+            data = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 Statement = $"[{variant}]"
-            });
+            };
         }
 
         return true;
     }
     
-    
-    
-    
+    public bool TryVariantIsCustom(string variant, out VariantMetadata? custom)
+    {
+        custom = null;
+
+        // [&.active]: or [@supports(display:grid)] etc.
+
+        var variantValue = variant.TrimStart('[').TrimEnd(']');
+
+        if (string.IsNullOrEmpty(variantValue))
+            return false;
+
+        if (variantValue.StartsWith('@'))
+        {
+            custom = new VariantMetadata
+            {
+                PrefixType = "wrapper",
+                Statement = $"{variantValue.Replace('_', ' ')} {{"
+            };
+        }
+        else if (variantValue.StartsWith('&'))
+        {
+            custom = new VariantMetadata
+            {
+                PrefixType = "pseudoclass",
+                Statement = $"{variantValue.TrimStart('&').Replace('_', ' ')}"
+            };
+        }
+        else
+        {
+            return false;
+        }
+        
+        return true;
+    }
     
     #endregion
-    
 }
