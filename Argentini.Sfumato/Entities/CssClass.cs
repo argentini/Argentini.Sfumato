@@ -145,11 +145,12 @@ public sealed class CssClass
 
                     VariantSegments.Add(segment, nth);
                 }
-                else if (segment.StartsWith("has-"))
+                else if (TryVariantIsHas(variant, out var has))
                 {
-                    // has-hover: has-focus: etc.
+                    if (has is null)
+                        return;
 
-                    VariantSegments.Add(segment);
+                    VariantSegments.Add(segment, has);
                 }
                 else if (segment.StartsWith("supports-"))
                 {
@@ -699,6 +700,53 @@ public sealed class CssClass
 
         return true;
     }    
+
+    public bool TryVariantIsHas(string variant, out VariantMetadata? has)
+    {
+        has = null;
+
+        if (variant.StartsWith("has-["))
+        {
+            // has-[a]: or has-[a.link]: etc.
+
+            var variantValue = variant.TrimStart("has-");
+
+            if (string.IsNullOrEmpty(variantValue) || variantValue.StartsWith('[') == false || variantValue.EndsWith(']') == false)
+                return false;
+
+            variantValue = variantValue.TrimStart('[').TrimEnd(']');
+            
+            VariantSegments.Add(variant, new VariantMetadata
+            {
+                PrefixType = "has",
+                Statement = $":has({variantValue})"
+            });
+        }
+        else
+        {
+            // has-hover: has-focus: etc.
+
+            var variantValue = variant.TrimStart("has-");
+
+            if (string.IsNullOrEmpty(variantValue))
+                return false;
+
+            if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
+            {
+                if (pseudoClass is null)
+                    return false;
+            
+                VariantSegments.Add(variant, new VariantMetadata
+                {
+                    PrefixType = "has",
+                    Statement = $":has({pseudoClass.Statement})"
+                });
+            }
+        }
+
+        return false;
+    }
+
     
     #endregion
     
