@@ -617,7 +617,7 @@ public sealed class CssClass
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')}))~*)"
+                Statement = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')})) ~ *)"
             };
 
             return true;
@@ -638,7 +638,7 @@ public sealed class CssClass
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $":is(:where(.peer):has({pseudoClass.Statement})~*)"
+                Statement = $":is(:where(.peer):has({pseudoClass.Statement}) ~ *)"
             };
 
             return true;
@@ -668,7 +668,7 @@ public sealed class CssClass
                 peer = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
-                    Statement = $":is(:where(.peer):has({variantValue.Replace('_', ' ')})~*)"
+                    Statement = $":is(:where(.peer):has({variantValue.Replace('_', ' ')}) ~ *)"
                 };
 
                 return true;
@@ -684,7 +684,7 @@ public sealed class CssClass
                 peer = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
-                    Statement = $":is(:where(.peer){pseudoClass.Statement}~*)"
+                    Statement = $":is(:where(.peer){pseudoClass.Statement} ~ *)"
                 };
 
                 return true;
