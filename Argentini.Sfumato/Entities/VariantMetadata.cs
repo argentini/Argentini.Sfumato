@@ -2,7 +2,7 @@
 
 namespace Argentini.Sfumato.Entities;
 
-public class CssMediaQuery
+public class VariantMetadata
 {
     public int PrefixOrder { get; init; }
     public int Priority { get; init; }

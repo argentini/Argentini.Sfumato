@@ -1557,11 +1557,11 @@ public sealed class Library
         "zoom"
     };
 
-    public Dictionary<string, CssMediaQuery> MediaQueryPrefixes { get; } = new()
+    public Dictionary<string, VariantMetadata> MediaQueryPrefixes { get; } = new()
 	{
 	    {
 		    "dark",
-		    new CssMediaQuery
+		    new VariantMetadata
 		    {
 			    PrefixOrder = 1,
 			    Priority = int.MaxValue,
@@ -1571,7 +1571,7 @@ public sealed class Library
 	    },
 	    {
 		    "portrait",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 2,
 				Priority = 128,
@@ -1581,7 +1581,7 @@ public sealed class Library
 		},
 		{
 			"landscape",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 3,
 				Priority = 256,
@@ -1591,7 +1591,7 @@ public sealed class Library
 		},
 		{
 			"print",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 4,
 				Priority = 512,
@@ -1601,7 +1601,7 @@ public sealed class Library
 		},
 		{
 			"motion-safe",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 5,
 				Priority = 1024,
@@ -1611,7 +1611,7 @@ public sealed class Library
 		},
 		{
 			"motion-reduced",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 6,
 				Priority = 2048,
@@ -1621,7 +1621,7 @@ public sealed class Library
 		},
 		{
 			"supports-backdrop-blur",
-	        new CssMediaQuery
+	        new VariantMetadata
 	        {
 	            PrefixOrder = 7,
 	            Priority = 4096,
@@ -1631,7 +1631,7 @@ public sealed class Library
         },
 	    {
 	        "sm",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 8,
 				Priority = 4,
@@ -1641,7 +1641,7 @@ public sealed class Library
 		},
 		{
 			"md",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 9,
 				Priority = 8,
@@ -1651,7 +1651,7 @@ public sealed class Library
 		},
 		{
 			"lg",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 10,
 				Priority = 16,
@@ -1661,7 +1661,7 @@ public sealed class Library
 		},
 		{
 			"xl",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 11,
 				Priority = 32,
@@ -1671,7 +1671,7 @@ public sealed class Library
 		},
 			{
 				"2xl",
-				new CssMediaQuery
+				new VariantMetadata
 				{
 					PrefixOrder = 12,
 					Priority = 64,
@@ -1681,7 +1681,7 @@ public sealed class Library
 		},
 		{
 			"mobi",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 13,
 				Priority = 128,
@@ -1691,7 +1691,7 @@ public sealed class Library
 		},
 		{
 			"phab",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 14,
 				Priority = 256,
@@ -1701,7 +1701,7 @@ public sealed class Library
 		},
 		{
 			"tabp",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 15,
 				Priority = 512,
@@ -1711,7 +1711,7 @@ public sealed class Library
 		},
 		{
 			"tabl",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 16,
 				Priority = 1024,
@@ -1721,7 +1721,7 @@ public sealed class Library
 		},
 		{
 			"desk",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 17,
 				Priority = 2048,
@@ -1731,7 +1731,7 @@ public sealed class Library
 		},
 		{
 			"wide",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 18,
 				Priority = 4096,
@@ -1741,7 +1741,7 @@ public sealed class Library
 		},
 		{
 			"vast",
-			new CssMediaQuery
+			new VariantMetadata
 			{
 				PrefixOrder = 19,
 				Priority = 8192,
@@ -1751,62 +1751,440 @@ public sealed class Library
 		}
     };
 
-    public Dictionary<string,string> PseudoclassPrefixes { get; } = new ()
+    public Dictionary<string, VariantMetadata> PseudoclassPrefixes { get; } = new ()
     {
-        { "hover", ":hover"},
-        { "focus", ":focus" },
-        { "focus-within", ":focus-within" },
-        { "focus-visible", ":focus-visible" },
-        { "active", ":active" },
-        { "visited", ":visited" },
-        { "target", ":target" },
-        { "first", ":first-child" },
-        { "last", ":last-child" },
-        { "only", ":only-child" },
-        { "odd", ":nth-child(odd)" },
-        { "even", ":nth-child(even)" },
-        { "first-of-type", ":first-of-type" },
-        { "last-of-type", ":last-of-type" },
-        { "only-of-type", ":only-of-type" },
-        { "empty", ":empty" },
-        { "disabled", ":disabled" },
-        { "enabled", ":enabled" },
-        { "checked", ":checked" },
-        { "indeterminate", ":indeterminate" },
-        { "default", ":default" },
-        { "required", ":required" },
-        { "valid", ":valid" },
-        { "invalid", ":invalid" },
-        { "in-range", ":in-range" },
-        { "out-of-range", ":out-of-range" },
-        { "placeholder-shown", ":placeholder-shown" },
-        { "autofill", ":autofill" },
-        { "read-only", ":read-only" },
-        { "before", "::before" },
-        { "after", "::after" },
-        { "first-letter", "::first-letter" },
-        { "first-line", "::first-line" },
-        { "marker", "::marker" },
-        { "selection", "::selection" },
-        { "file", "::file-selector-button" },
-        { "backdrop", "::backdrop" },
-        { "placeholder", "::placeholder" },
-        { "open", ":is([open],:popover-open,:open)" },
-        { "closed", ":is([closed],:popover-closed,:closed)" },
-        { "inert", "&[inert]"},
-        { "ltr", ":where(:dir(ltr),[dir=ltr],[dir=ltr] *)"},
-        { "rtl", ":where(:dir(rtl),[dir=rtl],[dir=rtl] *)"},
-        { "aria-busy", "[aria-busy=\"true\"]"},
-        { "aria-checked", "[aria-checked=\"true\"]" },
-        { "aria-disabled", "[aria-disabled=\"true\"]" },
-        { "aria-expanded", "[aria-expanded=\"true\"]" },
-        { "aria-hidden", "[aria-hidden=\"true\"]" },
-        { "aria-pressed", "[aria-pressed=\"true\"]" },
-        { "aria-readonly", "[aria-readonly=\"true\"]" },
-        { "aria-required", "[aria-required=\"true\"]" },
-        { "aria-selected", "[aria-selected=\"true\"]" },
-        { "*", ":where(.system,.system *) > *"},
-        { "**", ":where(.system,.system *)"},
+        {
+	        "hover",
+	        new VariantMetadata
+	        {
+		        PrefixType = "pseudoclass",
+		        Statement = ":hover"
+	        }
+	    },
+        {
+	        "focus",
+	        new VariantMetadata
+	        {
+		        PrefixType = "pseudoclass",
+		        Statement = ":focus"
+	        }
+	    },
+	    {
+		    "focus-within",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":focus-within"
+		    }
+	    },
+	    {
+		    "focus-visible",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":focus-visible"
+		    }
+	    },
+	    {
+		    "active",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":active"
+		    }
+	    },
+	    {
+		    "visited",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":visited"
+		    }
+	    },
+	    {
+		    "target", 
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":target"
+		    }
+	    },
+	    {
+		    "first", 
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":first-child"
+		    }
+	    },
+	    {
+		    "last",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":last-child"
+		    }
+	    },
+	    {
+		    "only",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":only-child"
+		    }
+	    },
+	    {
+		    "odd",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":nth-child(odd)"
+		    }
+	    },
+	    {
+		    "even",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":nth-child(even)"
+		    }
+	    },
+	    {
+		    "first-of-type",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":first-of-type"
+		    }
+	    },
+	    {
+		    "last-of-type",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":last-of-type"
+		    }
+	    },
+	    {
+		    "only-of-type",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":only-of-type"
+		    }
+	    },
+	    {
+		    "empty",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":empty"
+		    }
+	    },
+	    {
+		    "disabled",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":disabled"
+		    }
+	    },
+	    {
+		    "enabled",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":enabled"
+		    }
+	    },
+	    {
+		    "checked",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":checked"
+		    }
+	    },
+	    {
+		    "indeterminate",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":indeterminate"
+		    }
+	    },
+	    {
+		    "default",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":default"
+		    }
+	    },
+	    {
+		    "required",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":required"
+		    }
+	    },
+	    {
+		    "valid",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":valid"
+		    }
+	    },
+	    {
+		    "invalid",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":invalid"
+		    }
+	    },
+	    {
+		    "in-range",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":in-range"
+		    }
+	    },
+	    {
+		    "out-of-range",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":out-of-range"
+		    }
+	    },
+	    {
+		    "placeholder-shown",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":placeholder-shown"
+		    }
+	    },
+	    {
+		    "autofill",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":autofill"
+		    }
+	    },
+	    {
+		    "read-only",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":read-only"
+		    }
+	    },
+	    {
+		    "before",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::before"
+		    }
+	    },
+	    {
+		    "after",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::after"
+		    }
+	    },
+	    {
+		    "first-letter",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::first-letter"
+		    }
+	    },
+	    {
+		    "first-line",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::first-line"
+		    }
+	    },
+	    {
+		    "marker",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::marker"
+		    }
+	    },
+	    {
+		    "selection",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::selection"
+		    }
+	    },
+	    {
+		    "file",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::file-selector-button"
+		    }
+	    },
+	    {
+		    "backdrop",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::backdrop"
+		    }
+	    },
+	    {
+		    "placeholder",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "::placeholder"
+		    }
+	    },
+	    {
+		    "open",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":is([open],:popover-open,:open)"
+		    }
+	    },
+	    {
+		    "closed",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":is([closed],:popover-closed,:closed)"
+		    }
+	    },
+	    {
+		    "inert",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[inert]"
+		    }
+	    },
+	    {
+		    "ltr",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":where(:dir(ltr),[dir=ltr],[dir=ltr] *)"
+		    }
+	    },
+	    {
+		    "rtl",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":where(:dir(rtl),[dir=rtl],[dir=rtl] *)"
+		    }
+	    },
+	    {
+		    "aria-busy",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-busy=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-checked",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-checked=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-disabled",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-disabled=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-expanded",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-expanded=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-hidden",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-hidden=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-pressed",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-pressed=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-readonly",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-readonly=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-required",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-required=\"true\"]"
+		    }
+	    },
+	    {
+		    "aria-selected",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = "[aria-selected=\"true\"]"
+		    }
+	    },
+	    {
+		    "*",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":where(.system,.system *) > *"
+		    }
+	    },
+	    {
+		    "**",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    Statement = ":where(.system,.system *)"
+		    }
+	    },
     };
 
     #endregion
