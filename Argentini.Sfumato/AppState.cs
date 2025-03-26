@@ -1,4 +1,5 @@
 using Argentini.Sfumato.Entities;
+using Argentini.Sfumato.Entities.Library;
 using Argentini.Sfumato.Entities.Yaml;
 using Argentini.Sfumato.Extensions;
 

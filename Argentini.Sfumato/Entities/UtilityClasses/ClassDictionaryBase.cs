@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Entities;
+namespace Argentini.Sfumato.Entities.UtilityClasses;
 
 public class ClassDictionaryBase
 {

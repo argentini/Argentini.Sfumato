@@ -2,7 +2,7 @@
 
 using Argentini.Sfumato.Extensions;
 
-namespace Argentini.Sfumato.Entities.Typography;
+namespace Argentini.Sfumato.Entities.UtilityClasses.Typography;
 
 public sealed class FontSmoothing : ClassDictionaryBase
 {

@@ -1,6 +1,6 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Argentini.Sfumato.Entities;
+namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public class VariantMetadata
 {

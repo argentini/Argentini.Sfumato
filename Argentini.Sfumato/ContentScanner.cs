@@ -2,6 +2,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using Argentini.Sfumato.Entities;
+using Argentini.Sfumato.Entities.CssClassProcessing;
 
 namespace Argentini.Sfumato;
 

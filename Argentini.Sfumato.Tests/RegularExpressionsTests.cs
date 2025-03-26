@@ -1,6 +1,7 @@
 // ReSharper disable ConvertToPrimaryConstructor
 
 using Argentini.Sfumato.Entities;
+using Argentini.Sfumato.Entities.CssClassProcessing;
 using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;

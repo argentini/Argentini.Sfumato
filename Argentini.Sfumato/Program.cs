@@ -1,4 +1,5 @@
 using Argentini.Sfumato.Entities;
+using Argentini.Sfumato.Entities.Library;
 using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato;
@@ -28,15 +29,15 @@ internal class Program
 			Environment.Exit(0);
 		}
 		
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(appState.Library.MaxConsoleWidth));
+		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 		await Console.Out.WriteLineAsync("Sfumato: A modern CSS generation tool powered by Sass");
 		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / Dart Sass {sassVersion}");
 		
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(appState.Library.MaxConsoleWidth));
+		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 		
 		if (appState.InitMode)
 		{
-            var yaml = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.YamlPath, "sfumato-complete.yml"), appState.Library.FileAccessRetryMs, cancellationTokenSource.Token);
+            var yaml = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.YamlPath, "sfumato-complete.yml"), Library.FileAccessRetryMs, cancellationTokenSource.Token);
 			
 			if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
 				appState.WorkingPath = appState.WorkingPathOverride;
@@ -119,7 +120,7 @@ internal class Program
 
 		await Console.Out.WriteLineAsync($"Working Path     :  {appState.WorkingPath}");
 		await Console.Out.WriteLineAsync($"Transpile        :  {(appState.Minify ? "Minify" : "Expanded")}");
-		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(appState.Library.MaxConsoleWidth));
+		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(Library.MaxConsoleWidth));
 
 		foreach (var project in appState.Settings.Projects)
 		{
@@ -151,7 +152,7 @@ internal class Program
 			}        
 		}
 		
-		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(appState.Library.MaxConsoleWidth));
+		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(Library.MaxConsoleWidth));
 
 		if (appState.DiagnosticMode)
 			appState.DiagnosticOutput.TryAdd("init000", $"Initialized app in {totalTimer.FormatTimer()}{Environment.NewLine}");
