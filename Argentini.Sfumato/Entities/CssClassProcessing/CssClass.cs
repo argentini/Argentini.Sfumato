@@ -108,8 +108,11 @@ public sealed class CssClass
 
         var sb = AppState.StringBuilderPool.Get();
 
-        // todo: 1. set prefix/statement/suffix props in VariantMetadata
+        // todo: 1. set prefix and/or statement props in VariantMetadata
         // todo: 2. set VariantSort and SelectorSort values
+        // todo: 3. generate escaped base selector
+        // todo: 4. generate escaped complete selector (with prefix and pseudoclasses)
+        // todo: 5. create code to iterate, group, and wrap classes with unprocessed variant types (e.g. "media" types)
         
         try
         {
