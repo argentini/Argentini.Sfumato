@@ -12,32 +12,32 @@ public sealed class Library
 {
     #region Utility Class Constants
 
-    public Dictionary<string, string> Colors { get; set; } = LibraryColors.Values;
+    public Dictionary<string, string> Colors { get; set; } = LibraryColors.Values.ToDictionary(StringComparer.Ordinal);
 
-    public HashSet<string> CssDataTypes { get; } = LibraryUnits.CssDataTypes;
+    public HashSet<string> CssDataTypes { get; } = LibraryUnits.CssDataTypes.ToHashSet(StringComparer.Ordinal);
 
-    public HashSet<string> CssLengthUnits { get; } = LibraryUnits.CssLengthUnits;
+    public HashSet<string> CssLengthUnits { get; } = LibraryUnits.CssLengthUnits.ToHashSet(StringComparer.Ordinal);
     
-    public HashSet<string> CssAngleUnits { get; } = LibraryUnits.CssAngleUnits;
+    public HashSet<string> CssAngleUnits { get; } = LibraryUnits.CssAngleUnits.ToHashSet(StringComparer.Ordinal);
 
-    public HashSet<string> CssDurationUnits { get; } = LibraryUnits.CssDurationUnits;
+    public HashSet<string> CssDurationUnits { get; } = LibraryUnits.CssDurationUnits.ToHashSet(StringComparer.Ordinal);
 
-    public HashSet<string> CssFrequencyUnits { get; } = LibraryUnits.CssFrequencyUnits;
+    public HashSet<string> CssFrequencyUnits { get; } = LibraryUnits.CssFrequencyUnits.ToHashSet(StringComparer.Ordinal);
 
-    public HashSet<string> CssResolutionUnits { get; } = LibraryUnits.CssResolutionUnits;
+    public HashSet<string> CssResolutionUnits { get; } = LibraryUnits.CssResolutionUnits.ToHashSet(StringComparer.Ordinal);
     
-    private HashSet<string> ValidSafariCssPropertyNames { get; } = LibraryCssPropertyNames.ValidSafariCssPropertyNames;
+    private HashSet<string> ValidSafariCssPropertyNames { get; } = LibraryCssPropertyNames.ValidSafariCssPropertyNames.ToHashSet(StringComparer.Ordinal);
 
-    private HashSet<string> ValidChromeCssPropertyNames { get; } = LibraryCssPropertyNames.ValidChromeCssPropertyNames;
+    private HashSet<string> ValidChromeCssPropertyNames { get; } = LibraryCssPropertyNames.ValidChromeCssPropertyNames.ToHashSet(StringComparer.Ordinal);
 
-    public Dictionary<string, VariantMetadata> MediaQueryPrefixes { get; } = LibraryMediaQueries.MediaQueryPrefixes;
+    public Dictionary<string, VariantMetadata> MediaQueryPrefixes { get; } = LibraryMediaQueries.MediaQueryPrefixes.ToDictionary(StringComparer.Ordinal);
 
-    public Dictionary<string, VariantMetadata> PseudoclassPrefixes { get; } = LibraryPseudoClasses.PseudoclassPrefixes;
+    public Dictionary<string, VariantMetadata> PseudoclassPrefixes { get; } = LibraryPseudoClasses.PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal);
 
     #endregion
     
     #region Runtime Properties
-    
+
     public static int FileAccessRetryMs => 5000;
     public static int MaxConsoleWidth => GetMaxConsoleWidth();
 
@@ -81,6 +81,15 @@ public sealed class Library
     
     public Library()
     {
+        foreach (var pseudoClass in PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal))
+        {
+            PseudoclassPrefixes.Add($"not-{pseudoClass.Key}", new VariantMetadata
+            {
+                PrefixType = pseudoClass.Value.PrefixType,
+                Statement =$":not({pseudoClass.Value.Statement})"
+            });
+        }
+        
         foreach (var propertyName in ValidSafariCssPropertyNames)
             CssPropertyNamesWithColons.Insert($"{propertyName}:");
         
