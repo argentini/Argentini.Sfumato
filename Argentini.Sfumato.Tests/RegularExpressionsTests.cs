@@ -485,9 +485,21 @@ h1 {
 
         Assert.Single(runner.AppState.UsedClasses);
 
-        // markup = runner.GenerateUtilityScss();
-        //
-        // Assert.Equal(".\\!\\[padding\\:2rem\\] { padding:2rem !important; }".CompactCss(), markup.CompactCss());
+        runner.AppState.UsedClasses.Clear();
+
+        watchedFile = new WatchedFile
+        {
+            FilePath = "test.html",
+            Markup = "<div class=\"group-hover/test:!block\"></div>"
+        };
+
+        await runner.AppState.ProcessFileMatchesAsync(watchedFile);        
+
+        Assert.Single(watchedFile.CoreClassMatches);
+
+        await runner.AppState.ExamineMarkupForUsedClassesAsync(watchedFile);
+
+        Assert.Single(runner.AppState.UsedClasses);
 
         #endregion
     }

@@ -221,6 +221,10 @@ public class SfumatoRunnerTests
         Assert.Equal("group-hover/edit:text-base/1", matches[0].Value);
         Assert.Equal("group-hover:text-base/1", matches[1].Value);
         Assert.Equal("tabp:group-[.selected]:text-base/1", matches[2].Value);
+
+        matches = appState.CoreClassRegex.Matches("""<div class="group-hover/edit:!text-base/1">Test!</div>""");
+        
+        Assert.Single(matches);
     }
 
     [Fact]
