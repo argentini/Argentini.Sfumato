@@ -6,7 +6,7 @@ namespace Argentini.Sfumato.Tests;
 
 public class Benchmarks
 {
-    private AppState AppState { get; set; } = new();
+    private AppState AppState { get; } = new();
     
     private static string Markup => """
                                     <!DOCTYPE html>

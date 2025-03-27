@@ -1,6 +1,5 @@
 // ReSharper disable ConvertToPrimaryConstructor
 
-using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Entities.CssClassProcessing;
 using Xunit.Abstractions;
 
@@ -9,6 +8,7 @@ namespace Argentini.Sfumato.Tests;
 public class RegularExpressionsTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
+    private AppState AppState { get; } = new();
 
     public RegularExpressionsTests(ITestOutputHelper testOutputHelper)
     {
@@ -86,11 +86,9 @@ public class RegularExpressionsTests
             "dark:group-[.is-published]:[&.active]:tabp:hover:text-[length:var(--my-text-size-var)]/5",
         ];
         
-        var appState = new AppState();
-
         foreach (var nightmareClass in nightmareClasses)
         {
-            var result = new CssClass(appState, nightmareClass);
+            var result = new CssClass(AppState, nightmareClass);
 
             Assert.NotNull(result);
 
@@ -106,8 +104,7 @@ public class RegularExpressionsTests
     [Fact]
     public void FileContentParsing()
     {
-        var appState = new AppState();
-        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appState);
+        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, AppState);
 
         _testOutputHelper.WriteLine("FileContentParsing() => Found:");
         _testOutputHelper.WriteLine("");
