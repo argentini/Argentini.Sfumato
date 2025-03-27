@@ -814,9 +814,12 @@ public sealed class CssSelector
 						    
 					    peerGroupBase = selector[(idxOfColon + 1)..];
 					    pseudoClass = selector.Substring(idxOfHyphen + 1, idxOfSlash - idxOfHyphen - 1);
+						
+						// 01234567890123456
+						// group-hover/edit:text-base/1
 
 					    peerGroupPrefix =
-						    $@"{segment}\/{selector.Substring(idxOfSlash + 1, idxOfColon - idxOfSlash - 1)}:{selector.Substring(idxOfHyphen + 1, idxOfSlash - idxOfHyphen - 1)}";
+						    $@"{segment}\/{selector.Substring(idxOfSlash + 1, idxOfColon - idxOfSlash - 1)}:{pseudoClass}";
 					    
 					    if (selector.Contains($":{segment}-", StringComparison.Ordinal))
 						    peerGroupBase = selector[..(selector.IndexOf($":{segment}-", StringComparison.Ordinal) + 1)].Trim(':') + ':' + peerGroupBase;
