@@ -45,7 +45,7 @@ public sealed class CssSelector
     public SfumatoAppState? AppState { get; set; }
     public ScssUtilityClassGroupBase? ScssUtilityClassGroup { get; set; }
     public string ScssMarkup { get; set; } = string.Empty;
-    public int VariantSortOrder { get; set; }
+    public long VariantSortOrder { get; set; }
     public int SelectorSort => ScssUtilityClassGroup?.SelectorSort ?? 0;
 
     #region Selector
