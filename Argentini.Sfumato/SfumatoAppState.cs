@@ -5008,7 +5008,7 @@ public sealed class SfumatoAppState
 			if (idxOfSlash > -1)
 				selector = selector[..idxOfSlash];
 			
-			var result = UtilityClassCollection.ContainsKey(selector);
+			var result = UtilityClassCollection.ContainsKey(selector.Trim('!'));
 
 			return result;
 		}
