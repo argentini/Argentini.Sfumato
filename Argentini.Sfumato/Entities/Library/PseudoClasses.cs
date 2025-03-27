@@ -422,21 +422,5 @@ public static class LibraryPseudoClasses
 			    Statement = "[aria-selected=\"true\"]"
 		    }
 	    },
-	    {
-		    "*",
-		    new VariantMetadata
-		    {
-			    PrefixType = "pseudoclass",
-			    Statement = ":where(.system,.system *) > *"
-		    }
-	    },
-	    {
-		    "**",
-		    new VariantMetadata
-		    {
-			    PrefixType = "pseudoclass",
-			    Statement = ":where(.system,.system *)"
-		    }
-	    },
     };
 }
