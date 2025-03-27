@@ -78,6 +78,10 @@ public sealed class CssClass
     /// </summary>
     public ClassDefinition? ClassDefinition;
 
+    public string Selector { get; set; } = string.Empty;
+    public long VariantSort { get; set; }
+    public long SelectorSort { get; set; }
+
     public bool IsValid { get; set; }
     public bool IsCustomCss { get; set; }
     public bool IsCssCustomPropertyAssignment { get; set; }
@@ -85,7 +89,7 @@ public sealed class CssClass
 
     #endregion
     
-    #region Initialization
+    #region Lifecycle
 
     public CssClass(AppState appState, string name)
     {
@@ -93,304 +97,324 @@ public sealed class CssClass
         Name = name;
     }
 
+    #endregion
+    
+    #region Initialization
+    
     private void ProcessData()
     {
         if (AppState is null || string.IsNullOrEmpty(Name))
             return;
 
-        #region Variants
+        var sb = AppState.StringBuilderPool.Get();
 
-        if (AllSegments.Count > 1)
+        // todo: 1. set prefix/statement/suffix props in VariantMetadata
+        // todo: 2. set VariantSort and SelectorSort values
+        
+        try
         {
-            // One or more invalid variants invalidate the entire utility class
-            
-            foreach (var segment in AllSegments.Take(AllSegments.Count - 1))
+            #region Variants
+
+            if (AllSegments.Count > 1)
             {
-                var variant = segment.TrimStart("max-").TrimStart("not-") ?? string.Empty;
+                // One or more invalid variants invalidate the entire utility class
 
-                if (string.IsNullOrEmpty(variant))
-                    return;
-
-                if (TryVariantIsMediaQuery(variant, out var mediaQuery))
+                foreach (var segment in AllSegments.Take(AllSegments.Count - 1))
                 {
-                    if (mediaQuery is null)
+                    if (string.IsNullOrEmpty(segment))
                         return;
 
-                    VariantSegments.Add(segment, mediaQuery);
-                }
-                else if (TryVariantIsPseudoClass(variant, out var pseudoClass))
-                {
-                    if (pseudoClass is null)
-                        return;
-
-                    VariantSegments.Add(segment, pseudoClass);
-                }
-                else if (TryVariantIsGroup(variant, out var group))
-                {
-                    if (group is null)
-                        return;
-
-                    VariantSegments.Add(segment, group);
-                }
-                else if (TryVariantIsPeer(variant, out var peer))
-                {
-                    if (peer is null)
-                        return;
-
-                    VariantSegments.Add(segment, peer);
-                }
-                else if (TryVariantIsNth(variant, out var nth))
-                {
-                    if (nth is null)
-                        return;
-
-                    VariantSegments.Add(segment, nth);
-                }
-                else if (TryVariantIsHas(variant, out var has))
-                {
-                    if (has is null)
-                        return;
-
-                    VariantSegments.Add(segment, has);
-                }
-                else if (TryVariantIsSupports(variant, out var supports))
-                {
-                    if (supports is null)
-                        return;
-
-                    VariantSegments.Add(segment, supports);
-                }
-                else if (TryVariantIsNotSupports(variant, out var notSupports))
-                {
-                    if (notSupports is null)
-                        return;
-
-                    VariantSegments.Add(segment, notSupports);
-                }
-                else if (TryVariantIsData(variant, out var data))
-                {
-                    if (data is null)
-                        return;
-
-                    VariantSegments.Add(segment, data);
-                }
-                else if (TryVariantIsCustom(variant, out var custom))
-                {
-                    if (custom is null)
-                        return;
-
-                    VariantSegments.Add(segment, custom);
-                }
-                else
-                {
-                    return;
-                }
-            }
-        }
-        
-        #endregion
-        
-        #region Custom CSS
-        
-        if (AllSegments[^1][0] == '[' && AllSegments[^1][^1] == ']')
-        {
-            var trimmedValue = AllSegments[^1].TrimStart('[').TrimEnd(']').Trim('_');
-            var colonIndex = trimmedValue.IndexOf(':');
-            
-            if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
-                return;
-            
-            if (trimmedValue.StartsWith("--", StringComparison.Ordinal))
-            {
-                // [--my-color-var:red]
-                CoreSegments.Add(trimmedValue);
-                IsCssCustomPropertyAssignment = true;
-                IsValid = true;
-                
-                return;
-            }
-            
-            /*
-            if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
-            {
-                // [--my-color-var:red]
-                CoreSegments.Add(trimmedValue);
-                IsCssCustomPropertyAssignment = true;
-                IsValid = true;
-                
-                return;
-            }tr
-            */
-
-            if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue) == false)
-                return;
-
-            // [color:red]
-            CoreSegments.Add(trimmedValue);
-            IsCustomCss = true;
-            IsValid = true;
-                
-            return;
-        }
-
-        #endregion
-
-        #region Utility Classes
-        
-        var prefix = AppState.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
-        
-        if (string.IsNullOrEmpty(prefix))
-            return;
-        
-        var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
-        var modifier = string.Empty;
-        var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
-
-        if (slashSegments.Length == 2)
-        {
-            modifier = slashSegments[^1];
-            value = value.TrimEnd($"/{modifier}") ?? string.Empty;
-        }
-
-        CoreSegments.Add(prefix);
-
-        if (string.IsNullOrEmpty(value) == false)
-            CoreSegments.Add(value);
-
-        if (string.IsNullOrEmpty(modifier) == false)
-            CoreSegments.Add(modifier);
-
-        if ((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')')))
-        {
-            var customValue = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
-
-            // Specified arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
-            if (customValue.StartsWith("alpha:", StringComparison.Ordinal) || customValue.StartsWith("number:", StringComparison.Ordinal))
-                AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("angle:", StringComparison.Ordinal) || customValue.StartsWith("hue:", StringComparison.Ordinal))
-                AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("color:", StringComparison.Ordinal))
-                AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("dimension:", StringComparison.Ordinal) || customValue.StartsWith("length:", StringComparison.Ordinal))
-                AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("duration:", StringComparison.Ordinal) || customValue.StartsWith("time:", StringComparison.Ordinal))
-                AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("flex:", StringComparison.Ordinal))
-                AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("frequency:", StringComparison.Ordinal))
-                AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("image:", StringComparison.Ordinal) || customValue.StartsWith("url:", StringComparison.Ordinal))
-                AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("integer:", StringComparison.Ordinal))
-                AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("percentage:", StringComparison.Ordinal))
-                AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("ratio:", StringComparison.Ordinal))
-                AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("resolution:", StringComparison.Ordinal))
-                AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
-            else if (customValue.StartsWith("string:", StringComparison.Ordinal))
-                AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
-            else
-            {
-                if (value.StartsWith("(--", StringComparison.Ordinal) || value.StartsWith("[var(--", StringComparison.Ordinal))
-                {
-                    AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
-                    
-                    if (ClassDefinition is null)
-                        AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                    
-                    if (ClassDefinition is null)
-                        AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-
-                    if (ClassDefinition is null)
-                        AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
-
-                    if (ClassDefinition is null)
-                        AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-
-                    if (ClassDefinition is null)
-                        AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
-                    
-                    if (ClassDefinition is null)
-                        AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-
-                    if (ClassDefinition is null)
-                        AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-
-                    if (ClassDefinition is null)
-                        AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
-
-                    if (ClassDefinition is null)
-                        AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
-
-                    if (ClassDefinition is null)
-                        AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
-                    
-                    if (ClassDefinition is null)
-                        AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
-                    
-                    if (ClassDefinition is null)
-                        AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
-                }
-                else
-                {
-                    // Auto-detect value type
-
-                    if (ValueIsAlphaNumber(customValue))
+                    if (TryVariantIsMediaQuery(segment, out var mediaQuery))
                     {
-                        if (AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                        if (mediaQuery is null)
+                            return;
+
+                        VariantSegments.Add(segment, mediaQuery);
                     }
-                    else if (ValueIsInteger(customValue))
-                        AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsColorName(customValue) || customValue.IsValidWebColor())
-                        AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsPercentage(customValue))
-                        AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsAngleHue(customValue))
-                        AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsDimensionLength(customValue))
-                        AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsDurationTime(customValue))
-                        AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsFrequency(customValue))
-                        AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsImageUrl(customValue))
-                        AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsRatio(customValue))
-                        AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
-                    else if (ValueIsResolution(customValue))
-                        AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (TryVariantIsPseudoClass(segment, out var pseudoClass))
+                    {
+                        if (pseudoClass is null)
+                            return;
+
+                        VariantSegments.Add(segment, pseudoClass);
+                    }
+                    else if (TryVariantIsGroup(segment, out var group))
+                    {
+                        if (group is null)
+                            return;
+
+                        VariantSegments.Add(segment, group);
+                    }
+                    else if (TryVariantIsPeer(segment, out var peer))
+                    {
+                        if (peer is null)
+                            return;
+
+                        VariantSegments.Add(segment, peer);
+                    }
+                    else if (TryVariantIsNth(segment, out var nth))
+                    {
+                        if (nth is null)
+                            return;
+
+                        VariantSegments.Add(segment, nth);
+                    }
+                    else if (TryVariantIsHas(segment, out var has))
+                    {
+                        if (has is null)
+                            return;
+
+                        VariantSegments.Add(segment, has);
+                    }
+                    else if (TryVariantIsSupports(segment, out var supports))
+                    {
+                        if (supports is null)
+                            return;
+
+                        VariantSegments.Add(segment, supports);
+                    }
+                    else if (TryVariantIsNotSupports(segment, out var notSupports))
+                    {
+                        if (notSupports is null)
+                            return;
+
+                        VariantSegments.Add(segment, notSupports);
+                    }
+                    else if (TryVariantIsData(segment, out var data))
+                    {
+                        if (data is null)
+                            return;
+
+                        VariantSegments.Add(segment, data);
+                    }
+                    else if (TryVariantIsCustom(segment, out var custom))
+                    {
+                        if (custom is null)
+                            return;
+
+                        VariantSegments.Add(segment, custom);
+                    }
                     else
                     {
-                        if (AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                            AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                        return;
                     }
                 }
             }
+
+            #endregion
+
+            #region Custom CSS
+
+            if (AllSegments[^1][0] == '[' && AllSegments[^1][^1] == ']')
+            {
+                var trimmedValue = AllSegments[^1].TrimStart('[').TrimEnd(']').Trim('_');
+                var colonIndex = trimmedValue.IndexOf(':');
+
+                if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
+                    return;
+
+                if (trimmedValue.StartsWith("--", StringComparison.Ordinal))
+                {
+                    // [--my-color-var:red]
+                    CoreSegments.Add(trimmedValue);
+                    IsCssCustomPropertyAssignment = true;
+                    IsValid = true;
+
+                    return;
+                }
+
+                /*
+                if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
+                {
+                    // [--my-color-var:red]
+                    CoreSegments.Add(trimmedValue);
+                    IsCssCustomPropertyAssignment = true;
+                    IsValid = true;
+
+                    return;
+                }tr
+                */
+
+                if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue) == false)
+                    return;
+
+                // [color:red]
+                CoreSegments.Add(trimmedValue);
+                IsCustomCss = true;
+                IsValid = true;
+
+                return;
+            }
+
+            #endregion
+
+            #region Utility Classes
+
+            var prefix = AppState.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
+
+            if (string.IsNullOrEmpty(prefix))
+                return;
+
+            var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
+            var modifier = string.Empty;
+            var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
+
+            if (slashSegments.Length == 2)
+            {
+                modifier = slashSegments[^1];
+                value = value.TrimEnd($"/{modifier}") ?? string.Empty;
+            }
+
+            CoreSegments.Add(prefix);
+
+            if (string.IsNullOrEmpty(value) == false)
+                CoreSegments.Add(value);
+
+            if (string.IsNullOrEmpty(modifier) == false)
+                CoreSegments.Add(modifier);
+
+            if ((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')')))
+            {
+                var customValue = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+
+                // Specified arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
+                if (customValue.StartsWith("alpha:", StringComparison.Ordinal) ||
+                    customValue.StartsWith("number:", StringComparison.Ordinal))
+                    AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("angle:", StringComparison.Ordinal) ||
+                         customValue.StartsWith("hue:", StringComparison.Ordinal))
+                    AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("color:", StringComparison.Ordinal))
+                    AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("dimension:", StringComparison.Ordinal) ||
+                         customValue.StartsWith("length:", StringComparison.Ordinal))
+                    AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("duration:", StringComparison.Ordinal) ||
+                         customValue.StartsWith("time:", StringComparison.Ordinal))
+                    AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("flex:", StringComparison.Ordinal))
+                    AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("frequency:", StringComparison.Ordinal))
+                    AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("image:", StringComparison.Ordinal) ||
+                         customValue.StartsWith("url:", StringComparison.Ordinal))
+                    AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("integer:", StringComparison.Ordinal))
+                    AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("percentage:", StringComparison.Ordinal))
+                    AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("ratio:", StringComparison.Ordinal))
+                    AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("resolution:", StringComparison.Ordinal))
+                    AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                else if (customValue.StartsWith("string:", StringComparison.Ordinal))
+                    AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                else
+                {
+                    if (value.StartsWith("(--", StringComparison.Ordinal) ||
+                        value.StartsWith("[var(--", StringComparison.Ordinal))
+                    {
+                        AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+
+                        if (ClassDefinition is null)
+                            AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+                    else
+                    {
+                        // Auto-detect value type
+
+                        if (ValueIsAlphaNumber(customValue))
+                        {
+                            if (AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                                AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
+                        else if (ValueIsInteger(customValue))
+                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsColorName(customValue) || customValue.IsValidWebColor())
+                            AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsPercentage(customValue))
+                            AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsAngleHue(customValue))
+                            AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsDimensionLength(customValue))
+                            AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsDurationTime(customValue))
+                            AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsFrequency(customValue))
+                            AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsImageUrl(customValue))
+                            AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsRatio(customValue))
+                            AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                        else if (ValueIsResolution(customValue))
+                            AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                        else
+                        {
+                            if (AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                                AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(value))
+                    AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
+
+                else if (ValueIsInteger(value))
+                    AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition);
+
+                else if (ValueIsColorName(value))
+                    AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+            }
+
+            if (ClassDefinition is not null)
+                IsValid = true;
+
+            #endregion
         }
-        else
+        finally
         {
-            if (string.IsNullOrEmpty(value))
-                AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
-
-            else if (ValueIsInteger(value))
-                AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition);
-
-            else if (ValueIsColorName(value))
-                AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+            AppState.StringBuilderPool.Return(sb);
         }
-
-        if (ClassDefinition is not null)
-            IsValid = true;
-
-        #endregion
     }
 
     #endregion
     
-    #region Identify Value Types
+    #region Identify Value Data Types
     
     private string GetUnit(string value)
     {
@@ -509,7 +533,7 @@ public sealed class CssClass
     {
         group = null;
 
-        if (variant.StartsWith("group-has-"))
+        if (variant.StartsWith("group-has-["))
         {
             // group-has-[a]: or group-has-[p.my-class]: etc.
 
@@ -522,14 +546,11 @@ public sealed class CssClass
             
             group = new VariantMetadata
             {
-                PrefixType = "pseudoclass",
+                PrefixType = "group",
                 Statement = $":is(:where(.group):has(:is({variantValue.Replace('_', ' ')})) *)"
             };
-
-            return true;
         }
-
-        if (variant.StartsWith("group-aria-"))
+        else if (variant.StartsWith("group-aria-"))
         {
             // group-aria-checked:
 
@@ -543,21 +564,30 @@ public sealed class CssClass
             
             group = new VariantMetadata
             {
-                PrefixType = "pseudoclass",
-                Statement = $":is(:where(.group):has({pseudoClass.Statement}) *)"
+                PrefixType = "group",
+                Statement = $":is(:where(.group{pseudoClass.Statement}) *)"
             };
-
-            return true;
         }
         else
         {
-            // group-hover: group-focus: etc.
+            // group-hover: group-focus/item: etc.
 
             var variantValue = variant.TrimStart("group-");
-            var indexOfSlash = variantValue?.LastIndexOf('/') ?? -1;
+
+            if (string.IsNullOrEmpty(variantValue))
+                return false;
+            
+            var indexOfSlash = variantValue.LastIndexOf('/');
+            var slashValue = string.Empty;
+
+            if (indexOfSlash == 0 || indexOfSlash >= variantValue.Length)
+                return false;
 
             if (indexOfSlash > 0)
-                variantValue = variantValue?[..indexOfSlash];
+            {
+                slashValue = variantValue[indexOfSlash..];
+                variantValue = variantValue[..indexOfSlash];
+            }
 
             if (string.IsNullOrEmpty(variantValue))
                 return false;
@@ -573,38 +603,37 @@ public sealed class CssClass
                         
                 group = new VariantMetadata
                 {
-                    PrefixType = "pseudoclass",
-                    Statement = $":is(:where(.group):has({variantValue.Replace('_', ' ')}) *)"
+                    PrefixType = "group",
+                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')}",
                 };
-
-                return true;
             }
-
-            if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
+            else if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
             {
                 // group-hover:
-                
+
                 if (pseudoClass is null)
                     return false;
-            
+
                 group = new VariantMetadata
                 {
-                    PrefixType = "pseudoclass",
-                    Statement = $":is(:where(.group){pseudoClass.Statement}) *)"
+                    PrefixType = "group",
+                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{pseudoClass.Statement}",
                 };
-
-                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
     
     public bool TryVariantIsPeer(string variant, out VariantMetadata? peer)
     {
         peer = null;
 
-        if (variant.StartsWith("peer-has-"))
+        if (variant.StartsWith("peer-has-["))
         {
             // peer-has-[a]: or peer-has-[p.my-class]: etc.
 
@@ -620,11 +649,8 @@ public sealed class CssClass
                 PrefixType = "pseudoclass",
                 Statement = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')})) ~ *)"
             };
-
-            return true;
         }
-
-        if (variant.StartsWith("peer-aria-"))
+        else if (variant.StartsWith("peer-aria-"))
         {
             // peer-aria-checked:
 
@@ -639,20 +665,29 @@ public sealed class CssClass
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $":is(:where(.peer):has({pseudoClass.Statement}) ~ *)"
+                Statement = $":is(:where(.peer{pseudoClass.Statement}) ~ *)"
             };
-
-            return true;
         }
         else
         {
             // peer-hover: peer-focus: etc.
 
             var variantValue = variant.TrimStart("peer-");
-            var indexOfSlash = variantValue?.LastIndexOf('/') ?? -1;
+
+            if (string.IsNullOrEmpty(variantValue))
+                return false;
+            
+            var indexOfSlash = variantValue.LastIndexOf('/');
+            var slashValue = string.Empty;
+
+            if (indexOfSlash == 0 || indexOfSlash >= variantValue.Length)
+                return false;
 
             if (indexOfSlash > 0)
-                variantValue = variantValue?[..indexOfSlash];
+            {
+                slashValue = variantValue[indexOfSlash..];
+                variantValue = variantValue[..indexOfSlash];
+            }
 
             if (string.IsNullOrEmpty(variantValue))
                 return false;
@@ -669,30 +704,29 @@ public sealed class CssClass
                 peer = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
-                    Statement = $":is(:where(.peer):has({variantValue.Replace('_', ' ')}) ~ *)"
+                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ~",
                 };
-
-                return true;
             }
-
-            if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
+            else if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
             {
                 // peer-hover:
-                
+
                 if (pseudoClass is null)
                     return false;
-            
+
                 peer = new VariantMetadata
                 {
                     PrefixType = "pseudoclass",
-                    Statement = $":is(:where(.peer){pseudoClass.Statement} ~ *)"
+                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.Statement} ~",
                 };
-
-                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     public bool TryVariantIsNth(string variant, out VariantMetadata? nth)
