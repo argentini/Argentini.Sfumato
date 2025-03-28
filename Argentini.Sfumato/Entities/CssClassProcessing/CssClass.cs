@@ -111,8 +111,8 @@ public sealed class CssClass
 
         var sb = AppState.StringBuilderPool.Get();
 
-        // todo: create code to get class property values
-        // todo: create code to iterate, group, and wrap classes with unprocessed variant types (e.g. "media" types)
+        // todo: create code to get class styles from parsed base class segments
+        // todo: create code to iterate, group, wrap classes, generate actual CSS
         
         try
         {
