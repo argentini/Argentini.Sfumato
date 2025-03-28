@@ -116,7 +116,6 @@ public sealed class CssClass
 
         var sb = AppState.StringBuilderPool.Get();
 
-        // todo: create code to get wrapper classes into an array, combining like queries (e.g. sm: and max-md:, etc.)
         // todo: create code to get class styles from parsed base class segments
         // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
         
