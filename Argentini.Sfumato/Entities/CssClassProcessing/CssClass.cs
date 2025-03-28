@@ -5,7 +5,6 @@
 
 using Argentini.Sfumato.Entities.UtilityClasses;
 using Argentini.Sfumato.Extensions;
-using BenchmarkDotNet.Columns;
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
@@ -30,7 +29,6 @@ public sealed class CssClass
             CssSelector = string.Empty;
             IsValid = false;
 
-            VariantSort = 0;
             SelectorSort = 0;
 
             Wrappers.Clear();
@@ -87,7 +85,6 @@ public sealed class CssClass
     public List<string> Wrappers { get; } = [];
 
     public string Selector { get; set; } = string.Empty;
-    public long VariantSort { get; set; }
     public long SelectorSort { get; set; }
 
     public bool IsValid { get; set; }
@@ -209,9 +206,6 @@ public sealed class CssClass
                 }
             }
 
-            foreach (var variant in VariantSegments)
-                VariantSort += variant.Value.Priority;
-            
             #endregion
 
             #region Custom CSS
@@ -495,9 +489,7 @@ public sealed class CssClass
         
         try
         {
-            var darkVariant = VariantSegments.FirstOrDefault(s => s.Key is "dark").Value;
-            
-            if (darkVariant is not null)
+            if (VariantSegments.TryGetValue("dark", out var darkVariant))
             {
                 Wrappers.Add($"@{darkVariant.PrefixType} {darkVariant.Statement} {{");
             }
@@ -509,7 +501,7 @@ public sealed class CssClass
                     if (escaped.Length == 0)
                         escaped.Append($"@{queryType} ");
                     else
-                        escaped.Append("and ");
+                        escaped.Append(" and ");
                 
                     escaped.Append(variant.Value.Statement);
                 }
@@ -969,7 +961,6 @@ public sealed class CssClass
             {
                 PrefixType = "supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
-                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
                 Statement = $"({variantValue.Replace('_', ' ')})"
             };
         }
@@ -991,7 +982,6 @@ public sealed class CssClass
             {
                 PrefixType = "supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
-                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
                 Statement = $"({match}: initial)"
             };
         }
@@ -1025,7 +1015,6 @@ public sealed class CssClass
             {
                 PrefixType = "not-supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
-                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
                 Statement = $"not ({variantValue.Replace('_', ' ')})"
             };
         }
@@ -1047,7 +1036,6 @@ public sealed class CssClass
             {
                 PrefixType = "not-supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
-                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
                 Statement = $"not ({match}: initial)"
             };
         }
@@ -1117,7 +1105,6 @@ public sealed class CssClass
             {
                 PrefixType = "wrapper",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
-                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
                 Statement = $"{variantValue.Replace('_', ' ')}"
             };
         }

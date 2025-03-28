@@ -107,8 +107,8 @@ public class CssClassTests
         var utilityClasses = new Dictionary<string,string>(StringComparer.Ordinal)
         {
             {
-                "dark:group-[.is-published]:[&.active]:tabp:hover:text-[1rem]/6!",
-                ".group.is-published dark\\:group-\\[\\.is-published\\]\\:\\[\\&\\.active\\]\\:tabp\\:hover\\:text-\\[1rem\\]\\/6\\!.active:hover"
+                "dark:group-[.is-published]:[&.active]:tabp:max-desk:hover:text-[1rem]/6!",
+                ".group.is-published dark\\:group-\\[\\.is-published\\]\\:\\[\\&\\.active\\]\\:tabp\\:max-desk\\:hover\\:text-\\[1rem\\]\\/6\\!.active:hover"
             }
         };
 
@@ -121,7 +121,7 @@ public class CssClassTests
         
         Assert.Equal(2, cssClass.Wrappers.Count);
         Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["dark"].Statement} {{", cssClass.Wrappers[0]);
-        Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{", cssClass.Wrappers[1]);
+        Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} and {AppState.Library.MediaQueryPrefixes["max-desk"].Statement} {{", cssClass.Wrappers[1]);
     }
     
     [Fact]
