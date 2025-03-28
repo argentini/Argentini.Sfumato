@@ -111,6 +111,7 @@ public sealed class CssClass
 
         var sb = AppState.StringBuilderPool.Get();
 
+        // todo: create code to get wrapper classes into an array, combining like queries (e.g. sm: and max-md:, etc.)
         // todo: create code to get class styles from parsed base class segments
         // todo: create code to iterate, group, wrap classes, generate actual CSS
         
@@ -1046,6 +1047,7 @@ public sealed class CssClass
     }
     
     public bool TryVariantIsCustom(string variant, out VariantMetadata? custom)
+    
     {
         custom = null;
 
