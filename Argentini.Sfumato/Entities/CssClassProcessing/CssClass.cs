@@ -29,6 +29,9 @@ public sealed class CssClass
             CssSelector = string.Empty;
             IsValid = false;
 
+            VariantSort = 0;
+            SelectorSort = 0;
+
             AllSegments.Clear();
             VariantSegments.Clear();
             CoreSegments.Clear();
@@ -42,7 +45,7 @@ public sealed class CssClass
 
             IsImportant = _name.EndsWith('!');
 
-            // EscapeCssClassName();
+            GenerateSelector();
         }
     }
     private string _name = string.Empty;
@@ -108,11 +111,8 @@ public sealed class CssClass
 
         var sb = AppState.StringBuilderPool.Get();
 
-        // todo: 1. set prefix and/or statement props in VariantMetadata
-        // todo: 2. set VariantSort and SelectorSort values
-        // todo: 3. generate escaped base selector
-        // todo: 4. generate escaped complete selector (with prefix and pseudoclasses)
-        // todo: 5. create code to iterate, group, and wrap classes with unprocessed variant types (e.g. "media" types)
+        // todo: create code to get class property values
+        // todo: create code to iterate, group, and wrap classes with unprocessed variant types (e.g. "media" types)
         
         try
         {
@@ -204,6 +204,9 @@ public sealed class CssClass
                 }
             }
 
+            foreach (var variant in VariantSegments)
+                VariantSort += variant.Value.Priority;
+            
             #endregion
 
             #region Custom CSS
@@ -408,10 +411,75 @@ public sealed class CssClass
                 IsValid = true;
 
             #endregion
+
+            if (ClassDefinition is not null)
+                SelectorSort = ClassDefinition.SelectorSort;
         }
         finally
         {
             AppState.StringBuilderPool.Return(sb);
+        }
+    }
+
+    private string Escape(string value)
+    {
+        var escaped = AppState?.StringBuilderPool.Get();
+
+        if (escaped is null || string.IsNullOrEmpty(value))
+            return value;
+        
+        try
+        {
+            for (var i = 0; i < value.Length; i++)
+            {
+                var c = value[i];
+
+                if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
+                    escaped.Append('\\');
+
+                escaped.Append(c);
+            }
+
+            return escaped.ToString();
+        }
+        catch
+        {
+            return value;
+        }
+        finally
+        {
+            AppState?.StringBuilderPool.Return(escaped);
+        }
+    }
+
+    private void GenerateSelector()
+    {
+        var escaped = AppState?.StringBuilderPool.Get();
+
+        if (escaped is null)
+            return;
+        
+        try
+        {
+            // Generate raw selector
+            
+            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
+                escaped.Append(variant.Value.SelectorPrefix);
+
+            escaped.Append(Escape(Name));
+            
+            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
+                escaped.Append(variant.Value.SelectorSuffix);
+            
+            Selector = escaped.ToString();
+        }
+        catch
+        {
+            // Ignore
+        }
+        finally
+        {
+            AppState?.StringBuilderPool.Return(escaped);
         }
     }
 
@@ -549,8 +617,8 @@ public sealed class CssClass
             
             group = new VariantMetadata
             {
-                PrefixType = "group",
-                Statement = $":is(:where(.group):has(:is({variantValue.Replace('_', ' ')})) *)"
+                PrefixType = "pseudoclass",
+                SelectorSuffix = $":is(:where(.group):has(:is({variantValue.Replace('_', ' ')})) *)"
             };
         }
         else if (variant.StartsWith("group-aria-"))
@@ -567,11 +635,11 @@ public sealed class CssClass
             
             group = new VariantMetadata
             {
-                PrefixType = "group",
-                Statement = $":is(:where(.group{pseudoClass.Statement}) *)"
+                PrefixType = "pseudoclass",
+                SelectorSuffix = $":is(:where(.group{pseudoClass.Statement}) *)"
             };
         }
-        else
+        else if (variant.StartsWith("group-"))
         {
             // group-hover: group-focus/item: etc.
 
@@ -606,8 +674,8 @@ public sealed class CssClass
                         
                 group = new VariantMetadata
                 {
-                    PrefixType = "group",
-                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')}",
+                    PrefixType = "prefix",
+                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ",
                 };
             }
             else if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
@@ -619,14 +687,18 @@ public sealed class CssClass
 
                 group = new VariantMetadata
                 {
-                    PrefixType = "group",
-                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{pseudoClass.Statement}",
+                    PrefixType = "prefix",
+                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{pseudoClass.Statement} ",
                 };
             }
             else
             {
                 return false;
             }
+        }
+        else
+        {
+            return false;
         }
 
         return true;
@@ -650,7 +722,7 @@ public sealed class CssClass
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')})) ~ *)"
+                SelectorSuffix = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')})) ~ *)"
             };
         }
         else if (variant.StartsWith("peer-aria-"))
@@ -668,10 +740,10 @@ public sealed class CssClass
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $":is(:where(.peer{pseudoClass.Statement}) ~ *)"
+                SelectorSuffix = $":is(:where(.peer{pseudoClass.Statement}) ~ *)"
             };
         }
-        else
+        else if (variant.StartsWith("peer-"))
         {
             // peer-hover: peer-focus: etc.
 
@@ -706,8 +778,8 @@ public sealed class CssClass
                         
                 peer = new VariantMetadata
                 {
-                    PrefixType = "pseudoclass",
-                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ~",
+                    PrefixType = "prefix",
+                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ~ ",
                 };
             }
             else if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
@@ -719,14 +791,18 @@ public sealed class CssClass
 
                 peer = new VariantMetadata
                 {
-                    PrefixType = "pseudoclass",
-                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.Statement} ~",
+                    PrefixType = "prefix",
+                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.Statement} ~ ",
                 };
             }
             else
             {
                 return false;
             }
+        }
+        else
+        {
+            return false;
         }
 
         return true;
@@ -738,7 +814,7 @@ public sealed class CssClass
 
         var variantValue = variant.TrimStart("nth-last-of-type-").TrimStart("nth-of-type-").TrimStart("nth-last-").TrimStart("nth-");
 
-        if (string.IsNullOrEmpty(variantValue))
+        if (string.IsNullOrEmpty(variantValue) || variantValue.Length == variant.Length)
             return false;
 
         if (variantValue.StartsWith('[') == false || variantValue.EndsWith(']') == false)
@@ -758,7 +834,7 @@ public sealed class CssClass
         nth = new VariantMetadata
         {
             PrefixType = "pseudoclass",
-            Statement = $":{variant.Replace('_', ' ')}"
+            SelectorSuffix = $":{variant.Replace('_', ' ')}"
         };
 
         return true;
@@ -782,12 +858,10 @@ public sealed class CssClass
             has = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $":has({variantValue.Replace('_', ' ')})"
+                SelectorSuffix = $":has({variantValue.Replace('_', ' ')})"
             };
-
-            return true;
         }
-        else
+        else if (variant.StartsWith("has-"))
         {
             // has-hover: has-focus: etc.
 
@@ -806,12 +880,14 @@ public sealed class CssClass
                     PrefixType = "pseudoclass",
                     Statement = $":has({pseudoClass.Statement})"
                 };
-
-                return true;
             }
         }
+        else
+        {
+            return false;
+        }
 
-        return false;
+        return true;
     }
 
     public bool TryVariantIsSupports(string variant, out VariantMetadata? supports)
@@ -832,10 +908,12 @@ public sealed class CssClass
             supports = new VariantMetadata
             {
                 PrefixType = "supports",
-                Statement = $"@supports ({variantValue.Replace('_', ' ')}) {{"
+                PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
+                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
+                SelectorPrefix = $"@supports ({variantValue.Replace('_', ' ')}) {{"
             };
         }
-        else
+        else if (variant.StartsWith("supports-"))
         {
             // supports-hover:
 
@@ -852,8 +930,14 @@ public sealed class CssClass
             supports = new VariantMetadata
             {
                 PrefixType = "supports",
-                Statement = $"@supports ({match}: initial) {{"
+                PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
+                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
+                SelectorPrefix = $"@supports ({match}: initial) {{"
             };
+        }
+        else
+        {
+            return false;
         }
 
         return true;
@@ -877,10 +961,12 @@ public sealed class CssClass
             notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
-                Statement = $"@supports not ({variantValue.Replace('_', ' ')}) {{"
+                PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
+                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
+                SelectorPrefix = $"@supports not ({variantValue.Replace('_', ' ')}) {{"
             };
         }
-        else
+        else if (variant.StartsWith("not-supports-"))
         {
             // not-supports-hover:
 
@@ -897,8 +983,14 @@ public sealed class CssClass
             notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
-                Statement = $"@supports not ({match}: initial) {{"
+                PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
+                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
+                SelectorPrefix = $"@supports not ({match}: initial) {{"
             };
+        }
+        else
+        {
+            return false;
         }
 
         return true;
@@ -920,18 +1012,22 @@ public sealed class CssClass
             data = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = variantValue.Replace('_', ' ')
+                SelectorSuffix = variantValue.Replace('_', ' ')
             };
         }
-        else
+        else if (variant.StartsWith("data-"))
         {
             // data-active:
 
             data = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $"[{variant}]"
+                SelectorSuffix = $"[{variant}]"
             };
+        }
+        else
+        {
+            return false;
         }
 
         return true;
@@ -945,7 +1041,7 @@ public sealed class CssClass
 
         var variantValue = variant.TrimStart('[').TrimEnd(']');
 
-        if (string.IsNullOrEmpty(variantValue))
+        if (string.IsNullOrEmpty(variantValue) || variantValue.Length == variant.Length)
             return false;
 
         if (variantValue.StartsWith('@'))
@@ -953,7 +1049,9 @@ public sealed class CssClass
             custom = new VariantMetadata
             {
                 PrefixType = "wrapper",
-                Statement = $"{variantValue.Replace('_', ' ')} {{"
+                PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
+                Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
+                SelectorPrefix = $"{variantValue.Replace('_', ' ')} {{"
             };
         }
         else if (variantValue.StartsWith('&'))
@@ -961,7 +1059,8 @@ public sealed class CssClass
             custom = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                Statement = $"{variantValue.TrimStart('&').Replace('_', ' ')}"
+                PrefixOrder = 1,
+                SelectorSuffix = $"{variantValue.TrimStart('&').Replace('_', ' ')}"
             };
         }
         else
