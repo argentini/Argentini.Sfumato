@@ -118,6 +118,10 @@ public class CssClassTests
         Assert.True(cssClass.IsValid);
         Assert.True(cssClass.IsImportant);
         Assert.Equal(utilityClasses.First().Value, cssClass.Selector);
+        
+        Assert.Equal(2, cssClass.Wrappers.Count);
+        Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["dark"].Statement} {{", cssClass.Wrappers[0]);
+        Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{", cssClass.Wrappers[1]);
     }
     
     [Fact]

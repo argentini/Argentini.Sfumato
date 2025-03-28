@@ -5,6 +5,7 @@
 
 using Argentini.Sfumato.Entities.UtilityClasses;
 using Argentini.Sfumato.Extensions;
+using BenchmarkDotNet.Columns;
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
@@ -32,6 +33,7 @@ public sealed class CssClass
             VariantSort = 0;
             SelectorSort = 0;
 
+            Wrappers.Clear();
             AllSegments.Clear();
             VariantSegments.Clear();
             CoreSegments.Clear();
@@ -46,6 +48,7 @@ public sealed class CssClass
             IsImportant = _name.EndsWith('!');
 
             GenerateSelector();
+            GenerateWrappers();
         }
     }
     private string _name = string.Empty;
@@ -80,6 +83,8 @@ public sealed class CssClass
     /// Master class definition for this utility class.
     /// </summary>
     public ClassDefinition? ClassDefinition;
+
+    public List<string> Wrappers { get; } = [];
 
     public string Selector { get; set; } = string.Empty;
     public long VariantSort { get; set; }
@@ -462,8 +467,6 @@ public sealed class CssClass
         
         try
         {
-            // Generate raw selector
-            
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
                 escaped.Append(variant.Value.SelectorPrefix);
 
@@ -484,6 +487,57 @@ public sealed class CssClass
         }
     }
 
+    private void GenerateWrappers()
+    {
+        var escaped = AppState?.StringBuilderPool.Get();
+
+        if (escaped is null)
+            return;
+        
+        try
+        {
+            var darkVariant = VariantSegments.FirstOrDefault(s => s.Key is "dark").Value;
+            
+            if (darkVariant is not null)
+            {
+                Wrappers.Add($"@{darkVariant.PrefixType} {darkVariant.Statement} {{");
+            }
+
+            foreach (var queryType in new[] { "media", "supports" })
+            {
+                foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderByDescending(s => s.Value.PrefixOrder))
+                {
+                    if (escaped.Length == 0)
+                        escaped.Append($"@{queryType} ");
+                    else
+                        escaped.Append("and ");
+                
+                    escaped.Append(variant.Value.Statement);
+                }
+
+                if (escaped.Length > 0)
+                {
+                    escaped.Append(" {");
+                    Wrappers.Add(escaped.ToString());
+                    escaped.Clear();
+                }
+            }
+
+            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderByDescending(s => s.Value.PrefixOrder))
+            {
+                Wrappers.Add($"{variant.Value.Statement} {{");
+            }
+        }
+        catch
+        {
+            // Ignore
+        }
+        finally
+        {
+            AppState?.StringBuilderPool.Return(escaped);
+        }
+    }
+    
     #endregion
     
     #region Identify Value Data Types
