@@ -5,12 +5,12 @@ using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
 
-public class RegularExpressionsTests
+public class CssClassTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
     private AppState AppState { get; } = new();
 
-    public RegularExpressionsTests(ITestOutputHelper testOutputHelper)
+    public CssClassTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }

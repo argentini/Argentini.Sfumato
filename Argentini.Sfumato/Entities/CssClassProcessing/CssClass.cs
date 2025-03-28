@@ -812,6 +812,9 @@ public sealed class CssClass
     {
         nth = null;
 
+        if (variant.StartsWith("nth-", StringComparison.Ordinal) == false)
+            return false;
+        
         var variantValue = variant.TrimStart("nth-last-of-type-").TrimStart("nth-of-type-").TrimStart("nth-last-").TrimStart("nth-");
 
         if (string.IsNullOrEmpty(variantValue) || variantValue.Length == variant.Length)
@@ -844,6 +847,9 @@ public sealed class CssClass
     {
         has = null;
 
+        if (variant.StartsWith("has-", StringComparison.Ordinal) == false)
+            return false;
+        
         if (variant.StartsWith("has-["))
         {
             // has-[a]: or has-[a.link]: etc.
@@ -870,17 +876,14 @@ public sealed class CssClass
             if (string.IsNullOrEmpty(variantValue))
                 return false;
 
-            if (TryVariantIsPseudoClass(variantValue, out var pseudoClass))
-            {
-                if (pseudoClass is null)
-                    return false;
+            if (TryVariantIsPseudoClass(variantValue, out var pseudoClass) == false)
+                return false;
             
-                has = new VariantMetadata
-                {
-                    PrefixType = "pseudoclass",
-                    Statement = $":has({pseudoClass.Statement})"
-                };
-            }
+            has = new VariantMetadata
+            {
+                PrefixType = "pseudoclass",
+                Statement = $":has({pseudoClass?.SelectorSuffix})"
+            };
         }
         else
         {
@@ -893,6 +896,9 @@ public sealed class CssClass
     public bool TryVariantIsSupports(string variant, out VariantMetadata? supports)
     {
         supports = null;
+
+        if (variant.StartsWith("supports-", StringComparison.Ordinal) == false)
+            return false;
 
         if (variant.StartsWith("supports-["))
         {
@@ -910,7 +916,7 @@ public sealed class CssClass
                 PrefixType = "supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
                 Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
-                SelectorPrefix = $"@supports ({variantValue.Replace('_', ' ')}) {{"
+                Statement = $"({variantValue.Replace('_', ' ')})"
             };
         }
         else if (variant.StartsWith("supports-"))
@@ -932,7 +938,7 @@ public sealed class CssClass
                 PrefixType = "supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
                 Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
-                SelectorPrefix = $"@supports ({match}: initial) {{"
+                Statement = $"({match}: initial)"
             };
         }
         else
@@ -946,6 +952,9 @@ public sealed class CssClass
     public bool TryVariantIsNotSupports(string variant, out VariantMetadata? notSupports)
     {
         notSupports = null;
+
+        if (variant.StartsWith("not-supports-", StringComparison.Ordinal) == false)
+            return false;
 
         if (variant.StartsWith("not-supports-["))
         {
@@ -963,7 +972,7 @@ public sealed class CssClass
                 PrefixType = "not-supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
                 Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
-                SelectorPrefix = $"@supports not ({variantValue.Replace('_', ' ')}) {{"
+                Statement = $"not ({variantValue.Replace('_', ' ')})"
             };
         }
         else if (variant.StartsWith("not-supports-"))
@@ -985,7 +994,7 @@ public sealed class CssClass
                 PrefixType = "not-supports",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
                 Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
-                SelectorPrefix = $"@supports not ({match}: initial) {{"
+                Statement = $"not ({match}: initial)"
             };
         }
         else
@@ -999,6 +1008,9 @@ public sealed class CssClass
     public bool TryVariantIsData(string variant, out VariantMetadata? data)
     {
         data = null;
+
+        if (variant.StartsWith("data-", StringComparison.Ordinal) == false)
+            return false;
 
         if (variant.StartsWith("data-["))
         {
@@ -1037,8 +1049,6 @@ public sealed class CssClass
     {
         custom = null;
 
-        // [&.active]: or [@supports(display:grid)] etc.
-
         var variantValue = variant.TrimStart('[').TrimEnd(']');
 
         if (string.IsNullOrEmpty(variantValue) || variantValue.Length == variant.Length)
@@ -1046,16 +1056,20 @@ public sealed class CssClass
 
         if (variantValue.StartsWith('@'))
         {
+            // [@supports_(display:grid)]
+
             custom = new VariantMetadata
             {
                 PrefixType = "wrapper",
                 PrefixOrder = AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder ?? 0,
                 Priority = (AppState?.Library.MediaQueryPrefixes["supports-backdrop-blur"].Priority ?? 0) / 2,
-                SelectorPrefix = $"{variantValue.Replace('_', ' ')} {{"
+                Statement = $"{variantValue.Replace('_', ' ')}"
             };
         }
         else if (variantValue.StartsWith('&'))
         {
+            // [&.active]:
+
             custom = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
