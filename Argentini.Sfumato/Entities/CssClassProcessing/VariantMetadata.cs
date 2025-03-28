@@ -9,4 +9,5 @@ public class VariantMetadata
     public string PrefixType { get; init; } = string.Empty;
     public string Statement { get; init; } = string.Empty;
     public string SelectorPrefix { get; init; } = string.Empty;
+    public string SelectorSuffix { get; init; } = string.Empty;
 }
