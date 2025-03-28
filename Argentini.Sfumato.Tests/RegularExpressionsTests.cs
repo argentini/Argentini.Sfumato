@@ -64,7 +64,7 @@ public class RegularExpressionsTests
     #endregion
 
     [Fact]
-    public void NightmareUtilityClassParsing()
+    public void BasicUtilityClassParsing()
     {
         string[] nightmareClasses =
         [
@@ -85,7 +85,7 @@ public class RegularExpressionsTests
             "dark:group-[.is-published]:[&.active]:tabp:hover:text-[color:var(--my-color-var)]/[0.1]",
             "dark:group-[.is-published]:[&.active]:tabp:hover:text-[length:var(--my-text-size-var)]/5",
         ];
-        
+
         foreach (var nightmareClass in nightmareClasses)
         {
             var result = new CssClass(AppState, nightmareClass);
@@ -95,10 +95,29 @@ public class RegularExpressionsTests
             _testOutputHelper.WriteLine($"{nightmareClass} => {result.IsValid}");
 
             Assert.True(result.IsValid);
-            
+
             if (nightmareClass.EndsWith('!'))
                 Assert.True(result.IsImportant);
         }
+    }
+
+    [Fact]
+    public void UtilityClassParsing()
+    {
+        var utilityClasses = new Dictionary<string,string>(StringComparer.Ordinal)
+        {
+            {
+                "dark:group-[.is-published]:[&.active]:tabp:hover:text-[1rem]/6!",
+                ".group.is-published dark\\:group-\\[\\.is-published\\]\\:\\[\\&\\.active\\]\\:tabp\\:hover\\:text-\\[1rem\\]\\/6\\!.active:hover"
+            }
+        };
+
+        var cssClass = new CssClass(AppState, utilityClasses.First().Key);
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.True(cssClass.IsImportant);
+        Assert.Equal(utilityClasses.First().Value, cssClass.Selector);
     }
     
     [Fact]
