@@ -11,7 +11,7 @@ public static class LibraryPseudoClasses
 	        new VariantMetadata
 	        {
 		        PrefixType = "pseudoclass",
-		        Statement = ":hover"
+		        SelectorSuffix = ":hover"
 	        }
 	    },
         {
@@ -19,7 +19,7 @@ public static class LibraryPseudoClasses
 	        new VariantMetadata
 	        {
 		        PrefixType = "pseudoclass",
-		        Statement = ":focus"
+		        SelectorSuffix = ":focus"
 	        }
 	    },
 	    {
@@ -27,7 +27,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":focus-within"
+			    SelectorSuffix = ":focus-within"
 		    }
 	    },
 	    {
@@ -35,7 +35,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":focus-visible"
+			    SelectorSuffix = ":focus-visible"
 		    }
 	    },
 	    {
@@ -43,7 +43,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":active"
+			    SelectorSuffix = ":active"
 		    }
 	    },
 	    {
@@ -51,7 +51,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":visited"
+			    SelectorSuffix = ":visited"
 		    }
 	    },
 	    {
@@ -59,7 +59,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":target"
+			    SelectorSuffix = ":target"
 		    }
 	    },
 	    {
@@ -67,7 +67,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":first-child"
+			    SelectorSuffix = ":first-child"
 		    }
 	    },
 	    {
@@ -75,7 +75,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":last-child"
+			    SelectorSuffix = ":last-child"
 		    }
 	    },
 	    {
@@ -83,7 +83,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":only-child"
+			    SelectorSuffix = ":only-child"
 		    }
 	    },
 	    {
@@ -91,7 +91,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":nth-child(odd)"
+			    SelectorSuffix = ":nth-child(odd)"
 		    }
 	    },
 	    {
@@ -99,7 +99,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":nth-child(even)"
+			    SelectorSuffix = ":nth-child(even)"
 		    }
 	    },
 	    {
@@ -107,7 +107,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":first-of-type"
+			    SelectorSuffix = ":first-of-type"
 		    }
 	    },
 	    {
@@ -115,7 +115,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":last-of-type"
+			    SelectorSuffix = ":last-of-type"
 		    }
 	    },
 	    {
@@ -123,7 +123,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":only-of-type"
+			    SelectorSuffix = ":only-of-type"
 		    }
 	    },
 	    {
@@ -131,7 +131,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":empty"
+			    SelectorSuffix = ":empty"
 		    }
 	    },
 	    {
@@ -139,7 +139,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":disabled"
+			    SelectorSuffix = ":disabled"
 		    }
 	    },
 	    {
@@ -147,7 +147,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":enabled"
+			    SelectorSuffix = ":enabled"
 		    }
 	    },
 	    {
@@ -155,7 +155,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":checked"
+			    SelectorSuffix = ":checked"
 		    }
 	    },
 	    {
@@ -163,7 +163,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":indeterminate"
+			    SelectorSuffix = ":indeterminate"
 		    }
 	    },
 	    {
@@ -171,7 +171,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":default"
+			    SelectorSuffix = ":default"
 		    }
 	    },
 	    {
@@ -179,7 +179,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":required"
+			    SelectorSuffix = ":required"
 		    }
 	    },
 	    {
@@ -187,7 +187,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":valid"
+			    SelectorSuffix = ":valid"
 		    }
 	    },
 	    {
@@ -195,7 +195,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":invalid"
+			    SelectorSuffix = ":invalid"
 		    }
 	    },
 	    {
@@ -203,7 +203,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":in-range"
+			    SelectorSuffix = ":in-range"
 		    }
 	    },
 	    {
@@ -211,7 +211,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":out-of-range"
+			    SelectorSuffix = ":out-of-range"
 		    }
 	    },
 	    {
@@ -219,7 +219,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":placeholder-shown"
+			    SelectorSuffix = ":placeholder-shown"
 		    }
 	    },
 	    {
@@ -227,7 +227,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":autofill"
+			    SelectorSuffix = ":autofill"
 		    }
 	    },
 	    {
@@ -235,7 +235,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":read-only"
+			    SelectorSuffix = ":read-only"
 		    }
 	    },
 	    {
@@ -243,7 +243,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::before"
+			    SelectorSuffix = "::before"
 		    }
 	    },
 	    {
@@ -251,7 +251,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::after"
+			    SelectorSuffix = "::after"
 		    }
 	    },
 	    {
@@ -259,7 +259,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::first-letter"
+			    SelectorSuffix = "::first-letter"
 		    }
 	    },
 	    {
@@ -267,7 +267,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::first-line"
+			    SelectorSuffix = "::first-line"
 		    }
 	    },
 	    {
@@ -275,7 +275,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::marker"
+			    SelectorSuffix = "::marker"
 		    }
 	    },
 	    {
@@ -283,7 +283,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::selection"
+			    SelectorSuffix = "::selection"
 		    }
 	    },
 	    {
@@ -291,7 +291,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::file-selector-button"
+			    SelectorSuffix = "::file-selector-button"
 		    }
 	    },
 	    {
@@ -299,7 +299,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::backdrop"
+			    SelectorSuffix = "::backdrop"
 		    }
 	    },
 	    {
@@ -307,7 +307,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "::placeholder"
+			    SelectorSuffix = "::placeholder"
 		    }
 	    },
 	    {
@@ -315,7 +315,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":is([open],:popover-open,:open)"
+			    SelectorSuffix = ":is([open],:popover-open,:open)"
 		    }
 	    },
 	    {
@@ -323,7 +323,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":is([closed],:popover-closed,:closed)"
+			    SelectorSuffix = ":is([closed],:popover-closed,:closed)"
 		    }
 	    },
 	    {
@@ -331,7 +331,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[inert]"
+			    SelectorSuffix = "[inert]"
 		    }
 	    },
 	    {
@@ -339,7 +339,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":where(:dir(ltr),[dir=ltr],[dir=ltr] *)"
+			    SelectorSuffix = ":where(:dir(ltr),[dir=ltr],[dir=ltr] *)"
 		    }
 	    },
 	    {
@@ -347,7 +347,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = ":where(:dir(rtl),[dir=rtl],[dir=rtl] *)"
+			    SelectorSuffix = ":where(:dir(rtl),[dir=rtl],[dir=rtl] *)"
 		    }
 	    },
 	    {
@@ -355,7 +355,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-busy=\"true\"]"
+			    SelectorSuffix = "[aria-busy=\"true\"]"
 		    }
 	    },
 	    {
@@ -363,7 +363,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-checked=\"true\"]"
+			    SelectorSuffix = "[aria-checked=\"true\"]"
 		    }
 	    },
 	    {
@@ -371,7 +371,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-disabled=\"true\"]"
+			    SelectorSuffix = "[aria-disabled=\"true\"]"
 		    }
 	    },
 	    {
@@ -379,7 +379,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-expanded=\"true\"]"
+			    SelectorSuffix = "[aria-expanded=\"true\"]"
 		    }
 	    },
 	    {
@@ -387,7 +387,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-hidden=\"true\"]"
+			    SelectorSuffix = "[aria-hidden=\"true\"]"
 		    }
 	    },
 	    {
@@ -395,7 +395,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-pressed=\"true\"]"
+			    SelectorSuffix = "[aria-pressed=\"true\"]"
 		    }
 	    },
 	    {
@@ -403,7 +403,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-readonly=\"true\"]"
+			    SelectorSuffix = "[aria-readonly=\"true\"]"
 		    }
 	    },
 	    {
@@ -411,7 +411,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-required=\"true\"]"
+			    SelectorSuffix = "[aria-required=\"true\"]"
 		    }
 	    },
 	    {
@@ -419,7 +419,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    Statement = "[aria-selected=\"true\"]"
+			    SelectorSuffix = "[aria-selected=\"true\"]"
 		    }
 	    },
     };
