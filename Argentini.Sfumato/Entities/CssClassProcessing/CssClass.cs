@@ -69,8 +69,7 @@ public sealed partial class CssClass : IDisposable
     public bool IsCssCustomPropertyAssignment { get; set; }
     public bool IsImportant { get; set; }
 
-    private StringBuilder Sb1 { get; set; } = null!;
-    private StringBuilder Sb2 { get; set; } = null!;
+    private StringBuilder? Sb { get; set; }
 
     #endregion
     
@@ -86,13 +85,14 @@ public sealed partial class CssClass : IDisposable
 
     public void Dispose()
     {
-        AppState.StringBuilderPool.Return(Sb1);
-        AppState.StringBuilderPool.Return(Sb2);
+        if (Sb is not null)
+            AppState.StringBuilderPool.Return(Sb);
     }
 
     #endregion
 
     // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
+    // todo: remove unused properties across all entities
 
     #region Initialization
     
@@ -112,18 +112,18 @@ public sealed partial class CssClass : IDisposable
         
         if (IsValid == false)
             ProcessArbitraryCss();
-        
+
         if (IsValid == false)
             ProcessUtilityClasses();
 
-        if (IsValid == false)
-            return;
-                
-        Sb1 = AppState.StringBuilderPool.Get();
-        Sb2 = AppState.StringBuilderPool.Get();
+        if (IsValid)
+        {
+            Sb = AppState.StringBuilderPool.Get();
+            GenerateSelector();
+        }
 
-        GenerateSelector();
-        GenerateWrappers();
+        if (IsValid)
+            GenerateWrappers();
     }
     
     private void ProcessVariants()
@@ -504,24 +504,24 @@ public sealed partial class CssClass : IDisposable
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
 
-            if (string.IsNullOrEmpty(ModifierValue) || string.IsNullOrEmpty(ClassDefinition.ModifierTemplate))
+            if (((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')'))) && string.IsNullOrEmpty(ClassDefinition.ArbitraryCssTemplate) == false)
             {
-                Styles = ClassDefinition.Template
-                    .Replace("{0}", Value, StringComparison.Ordinal);
-
-                if (string.IsNullOrEmpty(ModifierValue) == false)
-                {
-                    Styles = Styles
-                        .Replace("{1}", ModifierValue, StringComparison.Ordinal);
-                }
+                Styles = ClassDefinition.ArbitraryCssTemplate;
+            }
+            else if (string.IsNullOrEmpty(ModifierValue) == false && string.IsNullOrEmpty(ClassDefinition.ModifierTemplate) == false)
+            {
+                Styles = ClassDefinition.ModifierTemplate;
             }
             else
             {
-                Styles = ClassDefinition.ModifierTemplate
-                    .Replace("{0}", Value, StringComparison.Ordinal)
-                    .Replace("{1}", ModifierValue, StringComparison.Ordinal);
+                Styles = ClassDefinition.Template;
             }
 
+            Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);
+
+            if (string.IsNullOrEmpty(ModifierValue) == false)
+                Styles = Styles.Replace("{1}", ModifierValue, StringComparison.Ordinal);
+            
             if (IsImportant)
                 Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
 
@@ -535,30 +535,29 @@ public sealed partial class CssClass : IDisposable
 
     private void GenerateSelector()
     {
-        Sb1.Clear();
-        Sb2.Clear();
+        Sb?.Clear();
         
         try
         {
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
-                Sb1.Append(variant.Value.SelectorPrefix);
+                Sb?.Append(variant.Value.SelectorPrefix);
 
-            Sb1.Append(Selector.CssSelectorEscape(Sb2));
+            Sb?.Append(Selector.CssSelectorEscape());
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
-                Sb1.Append(variant.Value.SelectorSuffix);
+                Sb?.Append(variant.Value.SelectorSuffix);
             
-            EscapedSelector = Sb1.ToString();
+            EscapedSelector = Sb?.ToString() ?? string.Empty;
         }
         catch
         {
-            // Ignored
+            IsValid = false;
         }
     }
 
     private void GenerateWrappers()
     {
-        Sb1.Clear();
+        Sb?.Clear();
 
         try
         {
@@ -571,20 +570,20 @@ public sealed partial class CssClass : IDisposable
             {
                 foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderByDescending(s => s.Value.PrefixOrder))
                 {
-                    if (Sb1.Length == 0)
-                        Sb1.Append($"@{queryType} ");
+                    if (Sb?.Length == 0)
+                        Sb.Append($"@{queryType} ");
                     else
-                        Sb1.Append(" and ");
+                        Sb?.Append(" and ");
                 
-                    Sb1.Append(variant.Value.Statement);
+                    Sb?.Append(variant.Value.Statement);
                 }
 
-                if (Sb1.Length <= 0)
+                if (Sb?.Length <= 0)
                     continue;
                 
-                Sb1.Append(" {");
-                Wrappers.Add(Sb1.ToString());
-                Sb1.Clear();
+                Sb?.Append(" {");
+                Wrappers.Add(Sb?.ToString() ?? string.Empty);
+                Sb?.Clear();
             }
 
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderByDescending(s => s.Value.PrefixOrder))
@@ -594,7 +593,7 @@ public sealed partial class CssClass : IDisposable
         }
         catch
         {
-            // Ignored
+            IsValid = false;
         }
     }
     
