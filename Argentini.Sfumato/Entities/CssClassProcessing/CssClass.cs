@@ -98,6 +98,7 @@ public sealed class CssClass
 
         var sb = AppState.StringBuilderPool.Get();
 
+        // todo: refactor all code to-date to break out separate concerns (e.g. validators)
         // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
         
         try
