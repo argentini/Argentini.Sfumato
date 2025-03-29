@@ -122,6 +122,10 @@ public class CssClassTests
                 "leading-2",
                 ".leading-2"
             },
+            {
+                "text-indigo-400/37",
+                ".text-indigo-400\\/37"
+            },
         };
 
         var cssClass = new CssClass(AppState, utilityClasses.ElementAt(0).Key);
@@ -169,6 +173,16 @@ public class CssClassTests
         Assert.Equal(
             """
             line-height: calc(var(--spacing) * 2);
+            """
+            , cssClass.Styles);
+        
+        cssClass = new CssClass(AppState, utilityClasses.ElementAt(4).Key);
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(
+            """
+            color: oklch(0.673 0.182 276.935 / 0.37);
             """
             , cssClass.Styles);
     }

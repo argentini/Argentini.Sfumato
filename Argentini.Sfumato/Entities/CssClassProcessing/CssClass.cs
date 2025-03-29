@@ -68,6 +68,7 @@ public sealed partial class CssClass : IDisposable
     public bool IsArbitraryCss { get; set; }
     public bool IsCssCustomPropertyAssignment { get; set; }
     public bool IsImportant { get; set; }
+    public bool HasModifierValue { get; set; }
 
     private StringBuilder? Sb { get; set; }
 
@@ -286,6 +287,7 @@ public sealed partial class CssClass : IDisposable
                 ModifierValue = slashSegments[^1];
                 value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
                 ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
+                HasModifierValue = true;
             }
 
             if ((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')')))
@@ -483,16 +485,22 @@ public sealed partial class CssClass : IDisposable
                 else if (value.ValueIsColorName(AppState))
                 {
                     AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if ((ClassDefinition?.UsesColor ?? false) && AppState.Library.Colors.TryGetValue(value, out var colorValue))
+                    {
+                        Value = colorValue;
+
+                        if (HasModifierValue)
+                        {
+                            if (int.TryParse(ModifierValue, out var alphaPct))
+                                Value = colorValue.SetWebColorAlpha(alphaPct);
+                            else if (double.TryParse(ModifierValue, out var alpha))
+                                Value = colorValue.SetWebColorAlpha(alpha);
+                        }
+                    }
                 }
 
-                if (ClassDefinition is not null)
-                {
-                    if (ClassDefinition.UsesColor && AppState.Library.Colors.TryGetValue(value, out var colorValue))
-                        Value = colorValue;
-                    else
-                        Value = value;
-                }
-                else
+                if (ClassDefinition?.UsesColor == false)
                 {
                     Value = value;
                 }
