@@ -26,19 +26,15 @@ public sealed class CssClass
         {
             _name = value;
 
-            CssSelector = string.Empty;
             IsValid = false;
-
+            IsImportant = _name.EndsWith('!');
             SelectorSort = 0;
 
             Wrappers.Clear();
             AllSegments.Clear();
             VariantSegments.Clear();
-            CoreSegments.Clear();
-            
-            AllSegments.AddRange(ContentScanner.SplitByColonsRegex().Split(_name.TrimEnd('!')));
 
-            IsImportant = _name.EndsWith('!');
+            AllSegments.AddRange(ContentScanner.SplitByColonsRegex().Split(_name.TrimEnd('!')));
 
             ProcessData();
 
@@ -62,20 +58,6 @@ public sealed class CssClass
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]"])
     /// </summary>
     public Dictionary<string,VariantMetadata> VariantSegments { get; } = new(StringComparer.Ordinal);
-
-    /// <summary>
-    /// Core class segments; only one segment for static utilities.
-    /// (e.g. "dark:tabp:text-base/6" => ["text-", "base", "6"])
-    /// (e.g. "dark:tabp:-min-w-10" => ["-min-w-", "10"])
-    /// (e.g. "antialiased" => ["antialiased"])
-    /// </summary>
-    public List<string> CoreSegments { get; } = [];
-
-    /// <summary>
-    /// CSS selector generated from the Name; 
-    /// (e.g. "dark:tabp:text-base/6" => ".dark\:tabp\:text-base\/6")
-    /// </summary>
-    public string CssSelector { get; set; } = string.Empty;
 
     /// <summary>
     /// Master class definition for this utility class.
@@ -220,35 +202,23 @@ public sealed class CssClass
                 if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
                     return;
 
-                if (trimmedValue.StartsWith("--", StringComparison.Ordinal))
+                if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
                 {
-                    // [--my-color-var:red]
-                    CoreSegments.Add(trimmedValue);
+                    // [--my-text-size:1rem]
                     IsCssCustomPropertyAssignment = true;
                     IsValid = true;
+                    Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
 
                     return;
                 }
 
-                /*
-                if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
-                {
-                    // [--my-color-var:red]
-                    CoreSegments.Add(trimmedValue);
-                    IsCssCustomPropertyAssignment = true;
-                    IsValid = true;
-
-                    return;
-                }tr
-                */
-
                 if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue) == false)
                     return;
 
-                // [color:red]
-                CoreSegments.Add(trimmedValue);
+                // [font-size:1rem]
                 IsCustomCss = true;
                 IsValid = true;
+                Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
 
                 return;
             }
@@ -271,14 +241,6 @@ public sealed class CssClass
                 value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
                 ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
             }
-
-            CoreSegments.Add(prefix);
-
-            if (string.IsNullOrEmpty(value) == false)
-                CoreSegments.Add(value);
-
-            if (string.IsNullOrEmpty(ModifierValue) == false)
-                CoreSegments.Add(ModifierValue);
 
             if ((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')')))
             {
