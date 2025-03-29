@@ -8,8 +8,27 @@ using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
-public sealed class CssClass
+public sealed partial class CssClass
 {
+    #region Constants
+    
+    private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+_?:_?[^;]+;?$";
+    
+    private const string SplitByColons = @":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
+
+    private const string SplitBySlashes = @"/(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
+    
+    [GeneratedRegex(PatternCssCustomPropertyAssignment, RegexOptions.Compiled)]
+    public static partial Regex PatternCssCustomPropertyAssignmentRegex();
+
+    [GeneratedRegex(SplitByColons, RegexOptions.Compiled)]
+    public static partial Regex SplitByColonsRegex();
+
+    [GeneratedRegex(SplitBySlashes, RegexOptions.Compiled)]
+    public static partial Regex SplitBySlashesRegex();
+    
+    #endregion
+    
     #region Properties
     
     public AppState? AppState { get; set; }
@@ -34,7 +53,7 @@ public sealed class CssClass
             AllSegments.Clear();
             VariantSegments.Clear();
 
-            AllSegments.AddRange(ContentScanner.SplitByColonsRegex().Split(_name.TrimEnd('!')));
+            AllSegments.AddRange(SplitByColonsRegex().Split(_name.TrimEnd('!')));
 
             ProcessData();
 
@@ -103,7 +122,7 @@ public sealed class CssClass
         
         try
         {
-            #region Variants
+            #region Process Variants
 
             if (AllSegments.Count > 1)
             {
@@ -193,9 +212,9 @@ public sealed class CssClass
 
             #endregion
 
-            #region Arbitrary CSS
+            #region Process Arbitrary CSS
 
-            if (AllSegments[^1][0] == '[' && AllSegments[^1][^1] == ']')
+            if (AllSegments[^1].StartsWith('[') && AllSegments[^1].EndsWith(']'))
             {
                 var trimmedValue = AllSegments[^1].TrimStart('[').TrimEnd(']').Trim('_');
                 var colonIndex = trimmedValue.IndexOf(':');
@@ -203,7 +222,7 @@ public sealed class CssClass
                 if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
                     return;
 
-                if (ContentScanner.PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
+                if (PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
                 {
                     // [--my-text-size:1rem]
                     IsCssCustomPropertyAssignment = true;
@@ -226,7 +245,7 @@ public sealed class CssClass
 
             #endregion
 
-            #region Utility Classes
+            #region Process Utility Classes
 
             var prefix = AppState.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
 
@@ -234,7 +253,7 @@ public sealed class CssClass
                 return;
 
             var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
-            var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
+            var slashSegments = SplitBySlashesRegex().Split(value);
 
             if (slashSegments.Length == 2)
             {

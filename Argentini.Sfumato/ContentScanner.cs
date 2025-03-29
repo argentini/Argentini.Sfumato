@@ -1,7 +1,6 @@
 // ReSharper disable ConvertIfStatementToSwitchStatement
 // ReSharper disable MemberCanBePrivate.Global
 
-using Argentini.Sfumato.Entities;
 using Argentini.Sfumato.Entities.CssClassProcessing;
 
 namespace Argentini.Sfumato;
@@ -19,32 +18,12 @@ public static partial class ContentScanner
     
     private const string PatternQuotedSubstrings = @"\S+";
 
-    private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+_?:_?[^;]+;?$";
-    
-    private const string SplitByColons = @":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
-
-    private const string SplitByHyphens = @"-(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
-
-    private const string SplitBySlashes = @"/(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))";
-
     [GeneratedRegex(PatternQuotedStrings, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
     public static partial Regex QuotedStringsRegex();
     
     [GeneratedRegex(PatternQuotedSubstrings, RegexOptions.Compiled)]
     public static partial Regex UtilityClassRegex();
-
-    [GeneratedRegex(PatternCssCustomPropertyAssignment, RegexOptions.Compiled)]
-    public static partial Regex PatternCssCustomPropertyAssignmentRegex();
-
-    [GeneratedRegex(SplitByColons, RegexOptions.Compiled)]
-    public static partial Regex SplitByColonsRegex();
-
-    [GeneratedRegex(SplitByHyphens, RegexOptions.Compiled)]
-    public static partial Regex SplitByHyphensRegex();
-
-    [GeneratedRegex(SplitBySlashes, RegexOptions.Compiled)]
-    public static partial Regex SplitBySlashesRegex();
-
+    
     #endregion
     
     #region File Parsing Methods
