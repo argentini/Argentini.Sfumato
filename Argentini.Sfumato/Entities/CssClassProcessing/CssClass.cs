@@ -383,7 +383,7 @@ public sealed partial class CssClass
                         }
                         else if (customValue.ValueIsInteger())
                             AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (customValue.ValueIsColorName(AppState) || customValue.IsValidWebColor())
+                        else if (customValue.IsValidWebColor())
                             AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
                         else if (customValue.ValueIsPercentage())
                             AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
@@ -422,13 +422,23 @@ public sealed partial class CssClass
                 }
                 else if (value.ValueIsInteger())
                 {
-                    if (AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
-                        Value = value;
+                    AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 else if (value.ValueIsColorName(AppState))
                 {
-                    if (AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition))
+                    AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+
+                if (ClassDefinition is not null)
+                {
+                    if (ClassDefinition.UsesColor && AppState.Library.Colors.TryGetValue(value, out var colorValue))
+                        Value = colorValue;
+                    else
                         Value = value;
+                }
+                else
+                {
+                    Value = value;
                 }
             }
 

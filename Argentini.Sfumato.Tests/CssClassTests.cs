@@ -109,10 +109,22 @@ public class CssClassTests
             {
                 "dark:group-[.is-published]:[&.active]:tabp:max-desk:hover:text-[1rem]/6!",
                 ".group.is-published dark\\:group-\\[\\.is-published\\]\\:\\[\\&\\.active\\]\\:tabp\\:max-desk\\:hover\\:text-\\[1rem\\]\\/6\\!.active:hover"
-            }
+            },
+            {
+                "tabp:text-indigo-400",
+                ".tabp\\:text-indigo-400"
+            },
+            {
+                "leading-none",
+                ".leading-none"
+            },
+            {
+                "leading-2",
+                ".leading-2"
+            },
         };
 
-        var cssClass = new CssClass(AppState, utilityClasses.First().Key);
+        var cssClass = new CssClass(AppState, utilityClasses.ElementAt(0).Key);
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -126,6 +138,37 @@ public class CssClassTests
             """
             font-size: 1rem !important;
             line-height: calc(var(--spacing) * 6) !important;
+            """
+            , cssClass.Styles);
+        
+        cssClass = new CssClass(AppState, utilityClasses.ElementAt(1).Key);
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(AppState.Library.Colors["indigo-400"], cssClass.Value);
+        Assert.Equal(
+            $"""
+            color: {AppState.Library.Colors["indigo-400"]};
+            """
+            , cssClass.Styles);
+        
+        cssClass = new CssClass(AppState, utilityClasses.ElementAt(2).Key);
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(
+            """
+            line-height: 1;
+            """
+            , cssClass.Styles);
+        
+        cssClass = new CssClass(AppState, utilityClasses.ElementAt(3).Key);
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(
+            """
+            line-height: calc(var(--spacing) * 2);
             """
             , cssClass.Styles);
     }
