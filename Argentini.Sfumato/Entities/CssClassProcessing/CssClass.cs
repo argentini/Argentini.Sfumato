@@ -357,30 +357,30 @@ public sealed class CssClass
                     {
                         // Auto-detect value type
 
-                        if (ValueIsAlphaNumber(customValue))
+                        if (customValue.ValueIsAlphaNumber())
                         {
                             if (AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
                                 AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
                         }
-                        else if (ValueIsInteger(customValue))
+                        else if (customValue.ValueIsInteger())
                             AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsColorName(customValue) || customValue.IsValidWebColor())
+                        else if (customValue.ValueIsColorName(AppState) || customValue.IsValidWebColor())
                             AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsPercentage(customValue))
+                        else if (customValue.ValueIsPercentage())
                             AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsAngleHue(customValue))
+                        else if (customValue.ValueIsAngleHue(AppState))
                             AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsDimensionLength(customValue))
+                        else if (customValue.ValueIsDimensionLength(AppState))
                             AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsDurationTime(customValue))
+                        else if (customValue.ValueIsDurationTime(AppState))
                             AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsFrequency(customValue))
+                        else if (customValue.ValueIsFrequency(AppState))
                             AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsImageUrl(customValue))
+                        else if (customValue.ValueIsImageUrl())
                             AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsRatio(customValue))
+                        else if (customValue.ValueIsRatio())
                             AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (ValueIsResolution(customValue))
+                        else if (customValue.ValueIsResolution(AppState))
                             AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
                         else
                         {
@@ -401,12 +401,12 @@ public sealed class CssClass
                 {
                     AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (ValueIsInteger(value))
+                else if (value.ValueIsInteger())
                 {
                     if (AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
                         Value = value;
                 }
-                else if (ValueIsColorName(value))
+                else if (value.ValueIsColorName(AppState))
                 {
                     if (AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition))
                         Value = value;
@@ -559,105 +559,6 @@ public sealed class CssClass
     
     #endregion
     
-    #region Identify Value Data Types
-    
-    private string GetUnit(string value)
-    {
-        var index = 0;
-
-        while (index < value.Length && (char.IsDigit(value[index]) || value[index] == '.'))
-            index++;
-
-        return index >= value.Length ? string.Empty : value[index..];         
-    }
-    
-    private bool ValueIsAlphaNumber(string value)
-    {
-        return value.All(c => char.IsDigit(c) || c == '.');
-    }
-
-    private bool ValueIsAngleHue(string value)
-    {
-        var unit = GetUnit(value);
-
-        if (string.IsNullOrEmpty(unit))
-            return false;
-        
-        return AppState?.Library.CssAngleUnits.Any(u => u == unit) ?? false;
-    }
-
-    private bool ValueIsColorName(string value)
-    {
-        return AppState?.Library.Colors.ContainsKey(value) ?? false;
-    }
-
-    private bool ValueIsDimensionLength(string value)
-    {
-        var unit = GetUnit(value);
-
-        if (string.IsNullOrEmpty(unit))
-            return false;
-        
-        return AppState?.Library.CssLengthUnits.Any(u => u == unit) ?? false;
-    }
-
-    private bool ValueIsDurationTime(string value)
-    {
-        var unit = GetUnit(value);
-
-        if (string.IsNullOrEmpty(unit))
-            return false;
-        
-        return AppState?.Library.CssDurationUnits.Any(u => u == unit) ?? false;
-    }
-
-    private bool ValueIsFrequency(string value)
-    {
-        var unit = GetUnit(value);
-
-        if (string.IsNullOrEmpty(unit))
-            return false;
-        
-        return AppState?.Library.CssFrequencyUnits.Any(u => u == unit) ?? false;
-    }
-
-    private bool ValueIsImageUrl(string value)
-    {
-        return value.StartsWith("url(", StringComparison.Ordinal) || Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out _);
-    }
-
-    private bool ValueIsInteger(string value)
-    {
-        return value.All(char.IsDigit);
-    }
-
-    private bool ValueIsRatio(string value)
-    {
-        var segments = value.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-        if (segments.Length != 2)
-            return false;
-        
-        return int.TryParse(segments[0].Trim(), out _) && int.TryParse(segments[1].Trim(), out _);
-    }
-
-    private bool ValueIsPercentage(string value)
-    {
-        return value.All(c => char.IsDigit(c) || c == '.') && value.EndsWith('%');
-    }
-
-    private bool ValueIsResolution(string value)
-    {
-        var unit = GetUnit(value);
-
-        if (string.IsNullOrEmpty(unit))
-            return false;
-        
-        return AppState?.Library.CssResolutionUnits.Any(u => u == unit) ?? false;
-    }
-
-    #endregion
-
     #region Identify Variants
 
     public bool TryVariantIsMediaQuery(string variant, out VariantMetadata? cssMediaQuery)
