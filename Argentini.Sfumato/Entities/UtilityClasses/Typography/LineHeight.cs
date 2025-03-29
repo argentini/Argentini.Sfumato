@@ -19,7 +19,7 @@ public sealed class LineHeight : ClassDictionaryBase
                     Template = """
                                line-height: calc(var(--spacing) * {0});
                                """,
-                    CustomCssTemplate = """
+                    ArbitraryCssTemplate = """
                                         line-height: {0};
                                         """
                 }
@@ -33,7 +33,7 @@ public sealed class LineHeight : ClassDictionaryBase
                     Template = """
                                line-height: calc(var(--spacing) * {0} * -1);
                                """,
-                    CustomCssTemplate = """
+                    ArbitraryCssTemplate = """
                                         line-height: {0};
                                         """
                 }

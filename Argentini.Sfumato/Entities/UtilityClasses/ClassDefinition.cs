@@ -96,11 +96,11 @@ public sealed class ClassDefinition
     public string ModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
-    /// CSS class property template for custom CSS values (e.g. "text-[1rem]").
+    /// CSS class property template for arbitrary CSS values (e.g. "text-[1rem]").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// </summary>
-    public string CustomCssTemplate { get; set; } = string.Empty;
+    public string ArbitraryCssTemplate { get; set; } = string.Empty;
 
     /// <summary>
     /// CSS class property template for custom CSS values using a modifier (e.g. "text-[1rem]/5").
@@ -108,7 +108,7 @@ public sealed class ClassDefinition
     /// Use placeholder {0} for custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
-    public string CustomCssModifierTemplate { get; set; } = string.Empty;
+    public string ArbitraryCssModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
     /// List of CSS custom property names used by the utility (e.g. --spacing).
@@ -119,10 +119,4 @@ public sealed class ClassDefinition
     /// Order output class declarations by this integer (default is 0).
     /// </summary>
     public int SelectorSort { get; set; } = 0;
-
-
-
-
-
-
 }

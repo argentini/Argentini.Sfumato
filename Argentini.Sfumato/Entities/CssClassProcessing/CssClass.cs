@@ -10,7 +10,7 @@ namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public sealed partial class CssClass : IDisposable
 {
-    #region Constants
+    #region Regular Expressions
     
     private const string PatternCssCustomPropertyAssignment = @"^--[\w-]+_?:_?[^;]+;?$";
     

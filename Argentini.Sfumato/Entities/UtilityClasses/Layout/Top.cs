@@ -71,7 +71,7 @@ public sealed class Top : ClassDictionaryBase
                     Template = """
                                top: calc(var(--spacing) * {0});
                                """,
-                    CustomCssTemplate =
+                    ArbitraryCssTemplate =
                         """
                         top: {0};
                         """
@@ -85,7 +85,7 @@ public sealed class Top : ClassDictionaryBase
                     Template = """
                                top: calc(var(--spacing) * -{0});
                                """,
-                    CustomCssTemplate =
+                    ArbitraryCssTemplate =
                         """
                         top: calc({0} * -1);
                         """
