@@ -437,31 +437,32 @@ public static class Strings
 	
 	#region Transformations
 
-	public static string CssSelectorEscape(this string value, StringBuilder? sb)
+	public static string CssSelectorEscape(this string value)
 	{
 		if (string.IsNullOrEmpty(value))
 			return value;
 
-		try
+		var maxLength = value.Length * 2;
+
+		var buffer = maxLength <= 512 // an arbitrary cutoff
+			? stackalloc char[maxLength]
+			: new char[maxLength]; // fallback to heap if too large
+
+		var position = 0;
+
+		for (var i = 0; i < value.Length; i++)
 		{
-			for (var i = 0; i < value.Length; i++)
-			{
-				var c = value[i];
+			var c = value[i];
+			
+			if ((i == 0 && char.IsDigit(c)) || (!char.IsLetterOrDigit(c) && c != '-' && c != '_'))
+				buffer[position++] = '\\';
 
-				if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
-					sb?.Append('\\');
-
-				sb?.Append(c);
-			}
-
-			return sb?.ToString() ?? string.Empty;
+			buffer[position++] = c;
 		}
-		catch
-		{
-			return value;
-		}
+
+		return new string(buffer[..position]);
 	}
-
+	
     public static string ToSentenceCase(this string input)
     {
         if (string.IsNullOrEmpty(input))
