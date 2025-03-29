@@ -72,7 +72,6 @@ public sealed class Library
     public Dictionary<string, ClassDefinition> FrequencyClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> ImageUrlClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> IntegerClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> PercentageClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> RatioClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> StringClasses { get; set; } = new(StringComparer.Ordinal);
@@ -130,8 +129,6 @@ public sealed class Library
                     ImageUrlClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesInteger)
                     IntegerClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesPercentage)
-                    PercentageClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesRatio)
                     RatioClasses.Add(item.Key, item.Value);
                 else if (item.Value.UsesResolution)

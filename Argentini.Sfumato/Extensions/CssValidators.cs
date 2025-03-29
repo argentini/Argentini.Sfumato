@@ -2,7 +2,21 @@ namespace Argentini.Sfumato.Extensions;
 
 public static class CssValidators
 {
-    #region Identify Value Data Types
+    #region Number Validators
+    
+    public static bool ValueIsFloatNumber(this string value)
+    {
+        return value.All(c => char.IsDigit(c) || c == '.');
+    }
+
+    public static bool ValueIsInteger(this string value)
+    {
+        return value.All(char.IsDigit);
+    }
+
+    #endregion
+    
+    #region Length/Dimension Validators
     
     private static string GetUnit(this string value)
     {
@@ -12,11 +26,6 @@ public static class CssValidators
             index++;
 
         return index >= value.Length ? string.Empty : value[index..];         
-    }
-    
-    public static bool ValueIsAlphaNumber(this string value)
-    {
-        return value.All(c => char.IsDigit(c) || c == '.');
     }
 
     public static bool ValueIsAngleHue(this string value, AppState appState)
@@ -57,11 +66,6 @@ public static class CssValidators
         return value.StartsWith("url(", StringComparison.Ordinal) || Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out _);
     }
 
-    public static bool ValueIsInteger(this string value)
-    {
-        return value.All(char.IsDigit);
-    }
-
     public static bool ValueIsRatio(this string value)
     {
         var segments = value.Split('/', StringSplitOptions.RemoveEmptyEntries);
@@ -70,11 +74,6 @@ public static class CssValidators
             return false;
         
         return int.TryParse(segments[0].Trim(), out _) && int.TryParse(segments[1].Trim(), out _);
-    }
-
-    public static bool ValueIsPercentage(this string value)
-    {
-        return value.All(c => char.IsDigit(c) || c == '.') && value.EndsWith('%');
     }
 
     public static bool ValueIsResolution(this string value, AppState appState)

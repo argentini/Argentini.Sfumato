@@ -21,7 +21,7 @@ public static class LibraryUnits
 
         "rem", "vmin", "vmax",
         "cm", "in", "mm", "pc", "pt", "px",
-        "ch", "em", "ex", "vw", "vh"
+        "ch", "em", "ex", "vw", "vh", "Q", "%",
     };
     
     public static HashSet<string> CssAngleUnits { get; } = new(StringComparer.Ordinal)

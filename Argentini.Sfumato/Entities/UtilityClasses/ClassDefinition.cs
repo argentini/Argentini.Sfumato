@@ -61,11 +61,6 @@ public sealed class ClassDefinition
     public bool UsesInteger { get; set; }
 
     /// <summary>
-    /// Class uses a percentage (e.g. "50.25%")
-    /// </summary>
-    public bool UsesPercentage { get; set; }
-
-    /// <summary>
     /// Class uses a ratio (e.g. "1 / 2")
     /// </summary>
     public bool UsesRatio { get; set; }

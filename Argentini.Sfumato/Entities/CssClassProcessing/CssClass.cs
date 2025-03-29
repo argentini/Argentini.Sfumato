@@ -267,21 +267,29 @@ public sealed partial class CssClass
 
                 // Specified arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
 
-                if (customValue.StartsWith("alpha:", StringComparison.Ordinal) || customValue.StartsWith("number:", StringComparison.Ordinal))
+                if (customValue.StartsWith("dimension:", StringComparison.Ordinal) || customValue.StartsWith("length:", StringComparison.Ordinal) || customValue.StartsWith("percentage:", StringComparison.Ordinal))
                 {
-                    AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
-                }
-                else if (customValue.StartsWith("angle:", StringComparison.Ordinal) || customValue.StartsWith("hue:", StringComparison.Ordinal))
-                {
-                    AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 else if (customValue.StartsWith("color:", StringComparison.Ordinal))
                 {
                     AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("dimension:", StringComparison.Ordinal) || customValue.StartsWith("length:", StringComparison.Ordinal))
+                else if (customValue.StartsWith("integer:", StringComparison.Ordinal))
                 {
-                    AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (customValue.StartsWith("alpha:", StringComparison.Ordinal) || customValue.StartsWith("number:", StringComparison.Ordinal))
+                {
+                    AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (customValue.StartsWith("image:", StringComparison.Ordinal) || customValue.StartsWith("url:", StringComparison.Ordinal))
+                {
+                    AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (customValue.StartsWith("angle:", StringComparison.Ordinal) || customValue.StartsWith("hue:", StringComparison.Ordinal))
+                {
+                    AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 else if (customValue.StartsWith("duration:", StringComparison.Ordinal) || customValue.StartsWith("time:", StringComparison.Ordinal))
                 {
@@ -294,18 +302,6 @@ public sealed partial class CssClass
                 else if (customValue.StartsWith("frequency:", StringComparison.Ordinal))
                 {
                     AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-                }
-                else if (customValue.StartsWith("image:", StringComparison.Ordinal) || customValue.StartsWith("url:", StringComparison.Ordinal))
-                {
-                    AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-                }
-                else if (customValue.StartsWith("integer:", StringComparison.Ordinal))
-                {
-                    AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                }
-                else if (customValue.StartsWith("percentage:", StringComparison.Ordinal))
-                {
-                    AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 else if (customValue.StartsWith("ratio:", StringComparison.Ordinal))
                 {
@@ -326,45 +322,67 @@ public sealed partial class CssClass
                 }
                 else
                 {
+                    // Did not specify data type prefix (e.g. "text-[var(--my-text-size)]" or "text-(--my-text-size)")
+                    // Iterate through all data type classes to find a prefix match
+                    
                     if (value.StartsWith("(--", StringComparison.Ordinal) || value.StartsWith("[var(--", StringComparison.Ordinal))
                     {
-                        AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                        AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
 
                         if (ClassDefinition is null)
-                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-
-                        if (ClassDefinition is null)
+                        {
                             AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
-                            AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                        {
+                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
+                        {
+                            AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
+
+                        if (ClassDefinition is null)
+                        {
                             AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
+                        {
                             AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
+                        {
                             AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
+                        {
                             AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
+                        {
                             AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
-                            AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
-
-                        if (ClassDefinition is null)
+                        {
                             AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
+                        {
                             AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
 
                         if (ClassDefinition is null)
+                        {
                             AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                     }
                     
                     if (ClassDefinition is not null)
@@ -375,31 +393,43 @@ public sealed partial class CssClass
                     {
                         // Auto-detect value type
 
-                        if (customValue.ValueIsAlphaNumber())
+                        if (customValue.ValueIsDimensionLength(AppState))
+                        {
+                            AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
+                        else if (customValue.ValueIsFloatNumber())
                         {
                             if (AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
                                 AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
                         }
-                        else if (customValue.ValueIsInteger())
-                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
                         else if (customValue.IsValidWebColor())
+                        {
                             AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (customValue.ValueIsPercentage())
-                            AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                         else if (customValue.ValueIsAngleHue(AppState))
+                        {
                             AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-                        else if (customValue.ValueIsDimensionLength(AppState))
-                            AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                         else if (customValue.ValueIsDurationTime(AppState))
+                        {
                             AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                         else if (customValue.ValueIsFrequency(AppState))
+                        {
                             AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                         else if (customValue.ValueIsImageUrl())
+                        {
                             AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                         else if (customValue.ValueIsRatio())
+                        {
                             AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                         else if (customValue.ValueIsResolution(AppState))
+                        {
                             AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                        }
                         else
                         {
                             if (AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
@@ -441,32 +471,32 @@ public sealed partial class CssClass
                 }
             }
 
-            if (ClassDefinition is not null)
+            if (ClassDefinition is null)
+                return;
+            
+            IsValid = true;
+            SelectorSort = ClassDefinition.SelectorSort;
+
+            if (string.IsNullOrEmpty(ModifierValue) || string.IsNullOrEmpty(ClassDefinition.ModifierTemplate))
             {
-                IsValid = true;
-                SelectorSort = ClassDefinition.SelectorSort;
+                Styles = ClassDefinition.Template
+                    .Replace("{0}", Value, StringComparison.Ordinal);
 
-                if (string.IsNullOrEmpty(ModifierValue) || string.IsNullOrEmpty(ClassDefinition.ModifierTemplate))
+                if (string.IsNullOrEmpty(ModifierValue) == false)
                 {
-                    Styles = ClassDefinition.Template
-                        .Replace("{0}", Value, StringComparison.Ordinal);
-
-                    if (string.IsNullOrEmpty(ModifierValue) == false)
-                    {
-                        Styles = Styles
-                            .Replace("{1}", ModifierValue, StringComparison.Ordinal);
-                    }
-                }
-                else
-                {
-                    Styles = ClassDefinition.ModifierTemplate
-                        .Replace("{0}", Value, StringComparison.Ordinal)
+                    Styles = Styles
                         .Replace("{1}", ModifierValue, StringComparison.Ordinal);
                 }
-
-                if (IsImportant)
-                    Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
             }
+            else
+            {
+                Styles = ClassDefinition.ModifierTemplate
+                    .Replace("{0}", Value, StringComparison.Ordinal)
+                    .Replace("{1}", ModifierValue, StringComparison.Ordinal);
+            }
+
+            if (IsImportant)
+                Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
 
             #endregion
         }
