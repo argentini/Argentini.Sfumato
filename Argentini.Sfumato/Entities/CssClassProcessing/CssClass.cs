@@ -448,55 +448,25 @@ public sealed class CssClass
         }
     }
 
-    private string Escape(string value)
-    {
-        var escaped = AppState?.StringBuilderPool.Get();
-
-        if (escaped is null || string.IsNullOrEmpty(value))
-            return value;
-        
-        try
-        {
-            for (var i = 0; i < value.Length; i++)
-            {
-                var c = value[i];
-
-                if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
-                    escaped.Append('\\');
-
-                escaped.Append(c);
-            }
-
-            return escaped.ToString();
-        }
-        catch
-        {
-            return value;
-        }
-        finally
-        {
-            AppState?.StringBuilderPool.Return(escaped);
-        }
-    }
-
     private void GenerateSelector()
     {
-        var escaped = AppState?.StringBuilderPool.Get();
+        var selector = AppState?.StringBuilderPool.Get();
+        var sb = AppState?.StringBuilderPool.Get();
 
-        if (escaped is null)
+        if (selector is null || sb is null)
             return;
         
         try
         {
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
-                escaped.Append(variant.Value.SelectorPrefix);
+                selector.Append(variant.Value.SelectorPrefix);
 
-            escaped.Append(Escape(Name));
+            selector.Append(Name.CssSelectorEscape(sb));
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
-                escaped.Append(variant.Value.SelectorSuffix);
+                selector.Append(variant.Value.SelectorSuffix);
             
-            Selector = escaped.ToString();
+            Selector = selector.ToString();
         }
         catch
         {
@@ -504,7 +474,8 @@ public sealed class CssClass
         }
         finally
         {
-            AppState?.StringBuilderPool.Return(escaped);
+            AppState?.StringBuilderPool.Return(selector);
+            AppState?.StringBuilderPool.Return(sb);
         }
     }
 

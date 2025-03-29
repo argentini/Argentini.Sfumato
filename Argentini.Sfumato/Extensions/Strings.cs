@@ -291,7 +291,6 @@ public static class Strings
     /// </summary>
     /// <param name="source"></param>
     /// <param name="value"></param>
-    /// <param name="comparisonType"></param>
     /// <returns></returns>
     public static bool InvariantNotEquals(this string? source, string? value)
     {
@@ -307,7 +306,6 @@ public static class Strings
     /// </summary>
     /// <param name="source"></param>
     /// <param name="value"></param>
-    /// <param name="comparisonType"></param>
     /// <returns></returns>
     public static bool InvariantEquals(this string? source, string? value)
     {
@@ -438,6 +436,31 @@ public static class Strings
 	#endregion
 	
 	#region Transformations
+
+	public static string CssSelectorEscape(this string value, StringBuilder sb)
+	{
+		if (string.IsNullOrEmpty(value))
+			return value;
+
+		try
+		{
+			for (var i = 0; i < value.Length; i++)
+			{
+				var c = value[i];
+
+				if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
+					sb.Append('\\');
+
+				sb.Append(c);
+			}
+
+			return sb.ToString();
+		}
+		catch
+		{
+			return value;
+		}
+	}
 
     public static string ToSentenceCase(this string input)
     {
