@@ -17,6 +17,20 @@ public sealed class LineHeight : ClassDictionaryBase
                     UsesSpacing = true,
                     SelectorSort = 1,
                     Template = """
+                               line-height: calc(var(--spacing) * {0});
+                               """,
+                    CustomCssTemplate = """
+                                        line-height: {0};
+                                        """
+                }
+            },
+            {
+                "-leading-", new ClassDefinition
+                {
+                    UsesDimensionLength = true,
+                    UsesSpacing = true,
+                    SelectorSort = 1,
+                    Template = """
                                line-height: calc(var(--spacing) * {0} * -1);
                                """,
                     CustomCssTemplate = """
