@@ -116,11 +116,6 @@ public sealed class ClassDefinition
     public string CustomCssModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
-    /// Property value inserted into Template (e.g. "1rem").
-    /// </summary>
-    public string Value { get; set; } = string.Empty;
-
-    /// <summary>
     /// List of CSS custom property names used by the utility (e.g. --spacing).
     /// </summary>
     public List<string> UsesCssCustomProperties { get; set; } = [];
