@@ -34,8 +34,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-xs--line-height);
                                """,
                     ModifierTemplate = """
+                               --text-xs--line-height: {1};
                                font-size: var(--text-xs);
-                               line-height: calc(var(--spacing) * {1});
+                               line-height: var(--text-xs--line-height);
                                """
                 }
             },
@@ -49,8 +50,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-sm--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-sm--line-height: {1};
                                        font-size: var(--text-sm);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-sm--line-height);
                                        """
                 }
             },
@@ -64,8 +66,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-base--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-base--line-height: {1};
                                        font-size: var(--text-base);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-base--line-height);
                                        """
                 }
             },
@@ -79,8 +82,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-lg--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-lg--line-height: {1};
                                        font-size: var(--text-lg);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-lg--line-height);
                                        """
                 }
             },
@@ -94,8 +98,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-xl--line-height: {1};
                                        font-size: var(--text-xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-xl--line-height);
                                        """
                 }
             },
@@ -109,8 +114,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-2xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-2xl--line-height: {1};
                                        font-size: var(--text-2xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-2xl--line-height);
                                        """
                 }
             },
@@ -124,8 +130,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-3xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-3xl--line-height: {1};
                                        font-size: var(--text-3xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-3xl--line-height);
                                        """
                 }
             },
@@ -139,8 +146,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-4xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-4xl--line-height: {1};
                                        font-size: var(--text-4xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-4xl--line-height);
                                        """
                 }
             },
@@ -154,8 +162,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-5xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-5xl--line-height: {1};
                                        font-size: var(--text-5xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-5xl--line-height);
                                        """
                 }
             },
@@ -169,8 +178,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-6xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-6xl--line-height: {1};
                                        font-size: var(--text-6xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-6xl--line-height);
                                        """
                 }
             },
@@ -184,8 +194,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-7xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-7xl--line-height: {1};
                                        font-size: var(--text-7xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-7xl--line-height);
                                        """
                 }
             },
@@ -199,8 +210,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-8xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-8xl--line-height: {1};
                                        font-size: var(--text-8xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-8xl--line-height);
                                        """
                 }
             },
@@ -214,8 +226,9 @@ public sealed class FontSize : ClassDictionaryBase
                                line-height: var(--text-9xl--line-height);
                                """,
                     ModifierTemplate = """
+                                       --text-9xl--line-height: {1};
                                        font-size: var(--text-9xl);
-                                       line-height: calc(var(--spacing) * {1});
+                                       line-height: var(--text-9xl--line-height);
                                        """
                 }
             },
