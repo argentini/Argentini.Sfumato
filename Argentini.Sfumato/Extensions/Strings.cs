@@ -437,7 +437,7 @@ public static class Strings
 	
 	#region Transformations
 
-	public static string CssSelectorEscape(this string value, StringBuilder sb)
+	public static string CssSelectorEscape(this string value, StringBuilder? sb)
 	{
 		if (string.IsNullOrEmpty(value))
 			return value;
@@ -449,12 +449,12 @@ public static class Strings
 				var c = value[i];
 
 				if ((i == 0 && char.IsDigit(c)) || (char.IsLetterOrDigit(c) == false && c != '-' && c != '_'))
-					sb.Append('\\');
+					sb?.Append('\\');
 
-				sb.Append(c);
+				sb?.Append(c);
 			}
 
-			return sb.ToString();
+			return sb?.ToString() ?? string.Empty;
 		}
 		catch
 		{

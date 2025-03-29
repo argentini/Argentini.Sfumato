@@ -8,7 +8,7 @@ using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
-public sealed partial class CssClass
+public sealed partial class CssClass : IDisposable
 {
     #region Constants
     
@@ -31,40 +31,13 @@ public sealed partial class CssClass
     
     #region Properties
     
-    public AppState? AppState { get; set; }
+    public AppState AppState { get; set; }
     
     /// <summary>
     /// Utility class name from scanned files.
     /// (e.g. "dark:tabp:text-base/6")
     /// </summary>
-    public string Name
-    {
-        get => _name;
-        
-        set
-        {
-            _name = value;
-
-            IsValid = false;
-            IsImportant = _name.EndsWith('!');
-            SelectorSort = 0;
-
-            Wrappers.Clear();
-            AllSegments.Clear();
-            VariantSegments.Clear();
-
-            AllSegments.AddRange(SplitByColonsRegex().Split(_name.TrimEnd('!')));
-
-            ProcessData();
-
-            if (IsValid == false)
-                return;
-
-            GenerateSelector();
-            GenerateWrappers();
-        }
-    }
-    private string _name = string.Empty;
+    public string Selector { get; set; }
 
     /// <summary>
     /// Name broken into variant and core segments.
@@ -85,7 +58,7 @@ public sealed partial class CssClass
 
     public List<string> Wrappers { get; } = [];
 
-    public string Selector { get; set; } = string.Empty;
+    public string EscapedSelector { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string ModifierValue { get; set; } = string.Empty;
     public string Styles { get; set; } = string.Empty;
@@ -96,154 +69,208 @@ public sealed partial class CssClass
     public bool IsCssCustomPropertyAssignment { get; set; }
     public bool IsImportant { get; set; }
 
+    private StringBuilder Sb1 { get; set; } = null!;
+    private StringBuilder Sb2 { get; set; } = null!;
+
     #endregion
     
     #region Lifecycle
 
-    public CssClass(AppState appState, string name)
+    public CssClass(AppState appState, string selector)
     {
         AppState = appState;
-        Name = name;
+        Selector = selector;
+
+        Initialize();
+    }
+
+    public void Dispose()
+    {
+        AppState.StringBuilderPool.Return(Sb1);
+        AppState.StringBuilderPool.Return(Sb2);
     }
 
     #endregion
-    
+
+    // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
+
     #region Initialization
     
-    private void ProcessData()
+    private void Initialize()
     {
-        if (AppState is null || string.IsNullOrEmpty(Name))
-            return;
+        IsValid = false;
+        IsImportant = Selector.EndsWith('!');
+        SelectorSort = 0;
 
-        var sb = AppState.StringBuilderPool.Get();
+        Wrappers.Clear();
+        AllSegments.Clear();
+        VariantSegments.Clear();
 
-        // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
+        AllSegments.AddRange(SplitByColonsRegex().Split(Selector.TrimEnd('!')));
+
+        ProcessVariants();
         
+        if (IsValid == false)
+            ProcessArbitraryCss();
+        
+        if (IsValid == false)
+            ProcessUtilityClasses();
+
+        if (IsValid == false)
+            return;
+                
+        Sb1 = AppState.StringBuilderPool.Get();
+        Sb2 = AppState.StringBuilderPool.Get();
+
+        GenerateSelector();
+        GenerateWrappers();
+    }
+    
+    private void ProcessVariants()
+    {
         try
         {
             #region Process Variants
 
-            if (AllSegments.Count > 1)
+            if (AllSegments.Count <= 1)
+                return;
+            
+            // One or more invalid variants invalidate the entire utility class
+
+            foreach (var segment in AllSegments.Take(AllSegments.Count - 1))
             {
-                // One or more invalid variants invalidate the entire utility class
-
-                foreach (var segment in AllSegments.Take(AllSegments.Count - 1))
-                {
-                    if (string.IsNullOrEmpty(segment))
-                        return;
-
-                    if (segment.TryVariantIsMediaQuery(AppState, out var mediaQuery))
-                    {
-                        if (mediaQuery is null)
-                            return;
-
-                        VariantSegments.Add(segment, mediaQuery);
-                    }
-                    else if (segment.TryVariantIsPseudoClass(AppState, out var pseudoClass))
-                    {
-                        if (pseudoClass is null)
-                            return;
-
-                        VariantSegments.Add(segment, pseudoClass);
-                    }
-                    else if (segment.TryVariantIsGroup(AppState, out var group))
-                    {
-                        if (group is null)
-                            return;
-
-                        VariantSegments.Add(segment, group);
-                    }
-                    else if (segment.TryVariantIsPeer(AppState, out var peer))
-                    {
-                        if (peer is null)
-                            return;
-
-                        VariantSegments.Add(segment, peer);
-                    }
-                    else if (segment.TryVariantIsNth(out var nth))
-                    {
-                        if (nth is null)
-                            return;
-
-                        VariantSegments.Add(segment, nth);
-                    }
-                    else if (segment.TryVariantIsHas(AppState, out var has))
-                    {
-                        if (has is null)
-                            return;
-
-                        VariantSegments.Add(segment, has);
-                    }
-                    else if (segment.TryVariantIsSupports(AppState, out var supports))
-                    {
-                        if (supports is null)
-                            return;
-
-                        VariantSegments.Add(segment, supports);
-                    }
-                    else if (segment.TryVariantIsNotSupports(AppState, out var notSupports))
-                    {
-                        if (notSupports is null)
-                            return;
-
-                        VariantSegments.Add(segment, notSupports);
-                    }
-                    else if (segment.TryVariantIsData(out var data))
-                    {
-                        if (data is null)
-                            return;
-
-                        VariantSegments.Add(segment, data);
-                    }
-                    else if (segment.TryVariantIsCustom(AppState, out var custom))
-                    {
-                        if (custom is null)
-                            return;
-
-                        VariantSegments.Add(segment, custom);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-            }
-
-            #endregion
-
-            #region Process Arbitrary CSS
-
-            if (AllSegments[^1].StartsWith('[') && AllSegments[^1].EndsWith(']'))
-            {
-                var trimmedValue = AllSegments[^1].TrimStart('[').TrimEnd(']').Trim('_');
-                var colonIndex = trimmedValue.IndexOf(':');
-
-                if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
+                if (string.IsNullOrEmpty(segment))
                     return;
 
-                if (PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
+                if (segment.TryVariantIsMediaQuery(AppState, out var mediaQuery))
                 {
-                    // [--my-text-size:1rem]
-                    IsCssCustomPropertyAssignment = true;
-                    IsValid = true;
-                    Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
-                }
-                else if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue))
-                {
-                    // [font-size:1rem]
-                    IsArbitraryCss = true;
-                    IsValid = true;
-                    Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
-                }
+                    if (mediaQuery is null)
+                        return;
 
-                if (IsValid && IsImportant)
-                    Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
-                
-                return;
+                    VariantSegments.Add(segment, mediaQuery);
+                }
+                else if (segment.TryVariantIsPseudoClass(AppState, out var pseudoClass))
+                {
+                    if (pseudoClass is null)
+                        return;
+
+                    VariantSegments.Add(segment, pseudoClass);
+                }
+                else if (segment.TryVariantIsGroup(AppState, out var group))
+                {
+                    if (group is null)
+                        return;
+
+                    VariantSegments.Add(segment, group);
+                }
+                else if (segment.TryVariantIsPeer(AppState, out var peer))
+                {
+                    if (peer is null)
+                        return;
+
+                    VariantSegments.Add(segment, peer);
+                }
+                else if (segment.TryVariantIsNth(out var nth))
+                {
+                    if (nth is null)
+                        return;
+
+                    VariantSegments.Add(segment, nth);
+                }
+                else if (segment.TryVariantIsHas(AppState, out var has))
+                {
+                    if (has is null)
+                        return;
+
+                    VariantSegments.Add(segment, has);
+                }
+                else if (segment.TryVariantIsSupports(AppState, out var supports))
+                {
+                    if (supports is null)
+                        return;
+
+                    VariantSegments.Add(segment, supports);
+                }
+                else if (segment.TryVariantIsNotSupports(AppState, out var notSupports))
+                {
+                    if (notSupports is null)
+                        return;
+
+                    VariantSegments.Add(segment, notSupports);
+                }
+                else if (segment.TryVariantIsData(out var data))
+                {
+                    if (data is null)
+                        return;
+
+                    VariantSegments.Add(segment, data);
+                }
+                else if (segment.TryVariantIsCustom(AppState, out var custom))
+                {
+                    if (custom is null)
+                        return;
+
+                    VariantSegments.Add(segment, custom);
+                }
+                else
+                {
+                    return;
+                }
             }
 
             #endregion
+        }
+        catch
+        {
+            // Ignored
+        }
+    }
+    
+    private void ProcessArbitraryCss()
+    {
+        try
+        {
+            #region Process Arbitrary CSS
 
+            if (AllSegments[^1].StartsWith('[') == false || AllSegments[^1].EndsWith(']') == false)
+                return;
+            
+            var trimmedValue = AllSegments[^1].TrimStart('[').TrimEnd(']').Trim('_');
+            var colonIndex = trimmedValue.IndexOf(':');
+
+            if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
+                return;
+
+            if (PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
+            {
+                // [--my-text-size:1rem]
+                IsCssCustomPropertyAssignment = true;
+                IsValid = true;
+                Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
+            }
+            else if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue))
+            {
+                // [font-size:1rem]
+                IsArbitraryCss = true;
+                IsValid = true;
+                Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
+            }
+
+            if (IsValid && IsImportant)
+                Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+
+            #endregion
+        }
+        catch
+        {
+            // Ignored
+        }
+    }
+    
+    private void ProcessUtilityClasses()
+    {
+        try
+        {
             #region Process Utility Classes
 
             var prefix = AppState.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
@@ -500,50 +527,39 @@ public sealed partial class CssClass
 
             #endregion
         }
-        finally
+        catch
         {
-            AppState.StringBuilderPool.Return(sb);
+            // Ignored
         }
     }
 
     private void GenerateSelector()
     {
-        var selector = AppState?.StringBuilderPool.Get();
-        var sb = AppState?.StringBuilderPool.Get();
-
-        if (selector is null || sb is null)
-            return;
+        Sb1.Clear();
+        Sb2.Clear();
         
         try
         {
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
-                selector.Append(variant.Value.SelectorPrefix);
+                Sb1.Append(variant.Value.SelectorPrefix);
 
-            selector.Append(Name.CssSelectorEscape(sb));
+            Sb1.Append(Selector.CssSelectorEscape(Sb2));
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
-                selector.Append(variant.Value.SelectorSuffix);
+                Sb1.Append(variant.Value.SelectorSuffix);
             
-            Selector = selector.ToString();
+            EscapedSelector = Sb1.ToString();
         }
         catch
         {
-            // Ignore
-        }
-        finally
-        {
-            AppState?.StringBuilderPool.Return(selector);
-            AppState?.StringBuilderPool.Return(sb);
+            // Ignored
         }
     }
 
     private void GenerateWrappers()
     {
-        var escaped = AppState?.StringBuilderPool.Get();
+        Sb1.Clear();
 
-        if (escaped is null)
-            return;
-        
         try
         {
             if (VariantSegments.TryGetValue("dark", out var darkVariant))
@@ -555,20 +571,20 @@ public sealed partial class CssClass
             {
                 foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderByDescending(s => s.Value.PrefixOrder))
                 {
-                    if (escaped.Length == 0)
-                        escaped.Append($"@{queryType} ");
+                    if (Sb1.Length == 0)
+                        Sb1.Append($"@{queryType} ");
                     else
-                        escaped.Append(" and ");
+                        Sb1.Append(" and ");
                 
-                    escaped.Append(variant.Value.Statement);
+                    Sb1.Append(variant.Value.Statement);
                 }
 
-                if (escaped.Length > 0)
-                {
-                    escaped.Append(" {");
-                    Wrappers.Add(escaped.ToString());
-                    escaped.Clear();
-                }
+                if (Sb1.Length <= 0)
+                    continue;
+                
+                Sb1.Append(" {");
+                Wrappers.Add(Sb1.ToString());
+                Sb1.Clear();
             }
 
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderByDescending(s => s.Value.PrefixOrder))
@@ -578,11 +594,7 @@ public sealed partial class CssClass
         }
         catch
         {
-            // Ignore
-        }
-        finally
-        {
-            AppState?.StringBuilderPool.Return(escaped);
+            // Ignored
         }
     }
     
