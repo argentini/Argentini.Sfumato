@@ -85,6 +85,8 @@ public sealed class CssClass
     public List<string> Wrappers { get; } = [];
 
     public string Selector { get; set; } = string.Empty;
+    public string Value { get; set; } = string.Empty;
+    public string ModifierValue { get; set; } = string.Empty;
     public long SelectorSort { get; set; }
 
     public bool IsValid { get; set; }
@@ -261,13 +263,13 @@ public sealed class CssClass
                 return;
 
             var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
-            var modifier = string.Empty;
             var slashSegments = ContentScanner.SplitBySlashesRegex().Split(value);
 
             if (slashSegments.Length == 2)
             {
-                modifier = slashSegments[^1];
-                value = value.TrimEnd($"/{modifier}") ?? string.Empty;
+                ModifierValue = slashSegments[^1];
+                value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
+                ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
             }
 
             CoreSegments.Add(prefix);
@@ -275,49 +277,75 @@ public sealed class CssClass
             if (string.IsNullOrEmpty(value) == false)
                 CoreSegments.Add(value);
 
-            if (string.IsNullOrEmpty(modifier) == false)
-                CoreSegments.Add(modifier);
+            if (string.IsNullOrEmpty(ModifierValue) == false)
+                CoreSegments.Add(ModifierValue);
 
             if ((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')')))
             {
                 var customValue = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
 
                 // Specified arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
-                if (customValue.StartsWith("alpha:", StringComparison.Ordinal) ||
-                    customValue.StartsWith("number:", StringComparison.Ordinal))
+
+                if (customValue.StartsWith("alpha:", StringComparison.Ordinal) || customValue.StartsWith("number:", StringComparison.Ordinal))
+                {
                     AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
-                else if (customValue.StartsWith("angle:", StringComparison.Ordinal) ||
-                         customValue.StartsWith("hue:", StringComparison.Ordinal))
+                }
+                else if (customValue.StartsWith("angle:", StringComparison.Ordinal) || customValue.StartsWith("hue:", StringComparison.Ordinal))
+                {
                     AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("color:", StringComparison.Ordinal))
+                {
                     AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-                else if (customValue.StartsWith("dimension:", StringComparison.Ordinal) ||
-                         customValue.StartsWith("length:", StringComparison.Ordinal))
+                }
+                else if (customValue.StartsWith("dimension:", StringComparison.Ordinal) || customValue.StartsWith("length:", StringComparison.Ordinal))
+                {
                     AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
-                else if (customValue.StartsWith("duration:", StringComparison.Ordinal) ||
-                         customValue.StartsWith("time:", StringComparison.Ordinal))
+                }
+                else if (customValue.StartsWith("duration:", StringComparison.Ordinal) || customValue.StartsWith("time:", StringComparison.Ordinal))
+                {
                     AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("flex:", StringComparison.Ordinal))
+                {
                     AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("frequency:", StringComparison.Ordinal))
+                {
                     AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-                else if (customValue.StartsWith("image:", StringComparison.Ordinal) ||
-                         customValue.StartsWith("url:", StringComparison.Ordinal))
+                }
+                else if (customValue.StartsWith("image:", StringComparison.Ordinal) || customValue.StartsWith("url:", StringComparison.Ordinal))
+                {
                     AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("integer:", StringComparison.Ordinal))
+                {
                     AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("percentage:", StringComparison.Ordinal))
+                {
                     AppState.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("ratio:", StringComparison.Ordinal))
+                {
                     AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("resolution:", StringComparison.Ordinal))
+                {
                     AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (customValue.StartsWith("string:", StringComparison.Ordinal))
+                {
                     AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+
+                if (ClassDefinition is not null)
+                {
+                    Value = customValue.StartsWith("--", StringComparison.Ordinal) ? $"var({customValue})" : customValue;
+                }
                 else
                 {
-                    if (value.StartsWith("(--", StringComparison.Ordinal) ||
-                        value.StartsWith("[var(--", StringComparison.Ordinal))
+                    if (value.StartsWith("(--", StringComparison.Ordinal) || value.StartsWith("[var(--", StringComparison.Ordinal))
                     {
                         AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
 
@@ -357,6 +385,11 @@ public sealed class CssClass
                         if (ClassDefinition is null)
                             AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
                     }
+                    
+                    if (ClassDefinition is not null)
+                    {
+                        Value = customValue.StartsWith("--", StringComparison.Ordinal) ? $"var({customValue})" : customValue;
+                    }
                     else
                     {
                         // Auto-detect value type
@@ -391,28 +424,39 @@ public sealed class CssClass
                             if (AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
                                 AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
                         }
+                        
+                        if (ClassDefinition is not null)
+                        {
+                            Value = customValue.StartsWith("--", StringComparison.Ordinal) ? $"var({customValue})" : customValue;
+                        }
                     }
                 }
             }
             else
             {
                 if (string.IsNullOrEmpty(value))
+                {
                     AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
-
+                }
                 else if (ValueIsInteger(value))
-                    AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition);
-
+                {
+                    if (AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
+                        Value = value;
+                }
                 else if (ValueIsColorName(value))
-                    AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                {
+                    if (AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition))
+                        Value = value;
+                }
             }
 
             if (ClassDefinition is not null)
+            {
                 IsValid = true;
+                SelectorSort = ClassDefinition.SelectorSort;
+            }
 
             #endregion
-
-            if (ClassDefinition is not null)
-                SelectorSort = ClassDefinition.SelectorSort;
         }
         finally
         {
