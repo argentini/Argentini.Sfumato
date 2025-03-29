@@ -38,12 +38,12 @@ public sealed class CssClass
             
             AllSegments.AddRange(ContentScanner.SplitByColonsRegex().Split(_name.TrimEnd('!')));
 
+            IsImportant = _name.EndsWith('!');
+
             ProcessData();
 
             if (IsValid == false)
                 return;
-
-            IsImportant = _name.EndsWith('!');
 
             GenerateSelector();
             GenerateWrappers();
@@ -87,6 +87,7 @@ public sealed class CssClass
     public string Selector { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string ModifierValue { get; set; } = string.Empty;
+    public string Styles { get; set; } = string.Empty;
     public long SelectorSort { get; set; }
 
     public bool IsValid { get; set; }
@@ -454,6 +455,27 @@ public sealed class CssClass
             {
                 IsValid = true;
                 SelectorSort = ClassDefinition.SelectorSort;
+
+                if (string.IsNullOrEmpty(ModifierValue) || string.IsNullOrEmpty(ClassDefinition.ModifierTemplate))
+                {
+                    Styles = ClassDefinition.Template
+                        .Replace("{0}", Value, StringComparison.Ordinal);
+
+                    if (string.IsNullOrEmpty(ModifierValue) == false)
+                    {
+                        Styles = Styles
+                            .Replace("{1}", ModifierValue, StringComparison.Ordinal);
+                    }
+                }
+                else
+                {
+                    Styles = ClassDefinition.ModifierTemplate
+                        .Replace("{0}", Value, StringComparison.Ordinal)
+                        .Replace("{1}", ModifierValue, StringComparison.Ordinal);
+                }
+
+                if (IsImportant)
+                    Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
             }
 
             #endregion

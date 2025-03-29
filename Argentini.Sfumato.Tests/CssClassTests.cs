@@ -122,6 +122,12 @@ public class CssClassTests
         Assert.Equal(2, cssClass.Wrappers.Count);
         Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["dark"].Statement} {{", cssClass.Wrappers[0]);
         Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} and {AppState.Library.MediaQueryPrefixes["max-desk"].Statement} {{", cssClass.Wrappers[1]);
+        Assert.Equal(
+            """
+            font-size: 1rem !important;
+            line-height: calc(var(--spacing) * 6) !important;
+            """
+            , cssClass.Styles);
     }
     
     [Fact]
