@@ -208,18 +208,18 @@ public sealed class CssClass
                     IsCssCustomPropertyAssignment = true;
                     IsValid = true;
                     Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
-
-                    return;
+                }
+                else if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue))
+                {
+                    // [font-size:1rem]
+                    IsCustomCss = true;
+                    IsValid = true;
+                    Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
                 }
 
-                if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue) == false)
-                    return;
-
-                // [font-size:1rem]
-                IsCustomCss = true;
-                IsValid = true;
-                Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
-
+                if (IsValid && IsImportant)
+                    Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+                
                 return;
             }
 
