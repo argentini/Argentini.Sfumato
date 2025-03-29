@@ -73,7 +73,7 @@ public sealed class CssClass
     public long SelectorSort { get; set; }
 
     public bool IsValid { get; set; }
-    public bool IsCustomCss { get; set; }
+    public bool IsArbitraryCss { get; set; }
     public bool IsCssCustomPropertyAssignment { get; set; }
     public bool IsImportant { get; set; }
 
@@ -193,7 +193,7 @@ public sealed class CssClass
 
             #endregion
 
-            #region Custom CSS
+            #region Arbitrary CSS
 
             if (AllSegments[^1][0] == '[' && AllSegments[^1][^1] == ']')
             {
@@ -213,7 +213,7 @@ public sealed class CssClass
                 else if (AppState.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue))
                 {
                     // [font-size:1rem]
-                    IsCustomCss = true;
+                    IsArbitraryCss = true;
                     IsValid = true;
                     Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
                 }
