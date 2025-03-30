@@ -108,32 +108,44 @@ public sealed class Library
             {
                 if (item.Value.IsSimpleUtility)
                     SimpleClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesSpacing)
+                
+                if (item.Value.UsesSpacing)
                     SpacingClasses.Add(item.Key, item.Value);
 
-                else if (item.Value.UsesAlphaNumber)
+                if (item.Value.UsesAlphaNumber)
                     AlphaNumberClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesAngleHue)
+                
+                if (item.Value.UsesAngleHue)
                     AngleHueClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesColor)
+                
+                if (item.Value.UsesColor)
                     ColorClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesDimensionLength)
+                
+                if (item.Value.UsesDimensionLength)
                     DimensionLengthClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesDurationTime)
+                
+                if (item.Value.UsesDurationTime)
                     DurationTimeClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesFlex)
+                
+                if (item.Value.UsesFlex)
                     FlexClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesFrequency)
+                
+                if (item.Value.UsesFrequency)
                     FrequencyClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesImageUrl)
+                
+                if (item.Value.UsesImageUrl)
                     ImageUrlClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesInteger)
+                
+                if (item.Value.UsesInteger)
                     IntegerClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesRatio)
+                
+                if (item.Value.UsesRatio)
                     RatioClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesResolution)
+                
+                if (item.Value.UsesResolution)
                     ResolutionClasses.Add(item.Key, item.Value);
-                else if (item.Value.UsesString)
+                
+                if (item.Value.UsesString)
                     StringClasses.Add(item.Key, item.Value);
 
                 ScannerClassNamePrefixes.Insert(item.Key);

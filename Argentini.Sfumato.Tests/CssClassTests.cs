@@ -147,6 +147,20 @@ public class CssClassTests
             },
             new ()
             {
+                ClassName = "leading-[1.35]",
+                EscapedClassName = @".leading-\[1\.35\]",
+                IsValid = true,
+                Styles = "line-height: 1.35;"
+            },
+            new ()
+            {
+                ClassName = "leading-[1.5rem]",
+                EscapedClassName = @".leading-\[1\.5rem\]",
+                IsValid = true,
+                Styles = "line-height: 1.5rem;"
+            },
+            new ()
+            {
                 ClassName = "tabp:text-indigo-400",
                 EscapedClassName = @".tabp\:text-indigo-400",
                 Styles =
@@ -218,6 +232,7 @@ public class CssClassTests
                 Assert.Equal(test.Wrappers.ElementAt(i), cssClass.Wrappers.ElementAt(i));
             }
             
+            _testOutputHelper.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
         }
     }
     
