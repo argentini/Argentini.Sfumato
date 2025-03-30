@@ -69,6 +69,7 @@ public sealed partial class CssClass : IDisposable
     public bool IsCssCustomPropertyAssignment { get; set; }
     public bool IsImportant { get; set; }
     public bool HasModifierValue { get; set; }
+    public bool HasArbitraryValue { get; set; }
 
     private StringBuilder? Sb { get; set; }
 
@@ -281,13 +282,14 @@ public sealed partial class CssClass : IDisposable
                 HasModifierValue = true;
             }
 
-            var hasArbitraryValue = (value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')'));
-            var valueNoBrackets = hasArbitraryValue ? value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')') : value;
+            HasArbitraryValue = (value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')'));
+            
+            #region Arbitrary Value With Data Type Prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
 
-            #region Arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
-
-            if (hasArbitraryValue)
+            if (HasArbitraryValue)
             {
+                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+
                 if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
                 {
                     AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
@@ -343,7 +345,7 @@ public sealed partial class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
-                    GenerateStyles(value);
+                    GenerateStyles();
 
                     return;
                 }
@@ -351,9 +353,9 @@ public sealed partial class CssClass : IDisposable
             
             #endregion
 
-            #region Did not specify data type prefix (e.g. "text-[var(--my-text-size)]" or "text-(--my-text-size)")
+            #region Arbitrary Value, No Prefix (e.g. "text-[var(--my-text-size)]" or "text-(--my-text-size)")
             
-            if (hasArbitraryValue && ClassDefinition is null)
+            if (HasArbitraryValue && ClassDefinition is null)
             {
                 // Iterate through all data type classes to find a prefix match
 
@@ -419,11 +421,13 @@ public sealed partial class CssClass : IDisposable
 
                 if (ClassDefinition is not null)
                 {
+                    var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+
                     Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
-                    GenerateStyles(value);
+                    GenerateStyles();
 
                     return;
                 }
@@ -431,10 +435,12 @@ public sealed partial class CssClass : IDisposable
             
             #endregion
 
-            #region Auto-detect value type (e.g. text-[1rem])
+            #region Auto-Detect Value Data Type (e.g. text-[1rem])
             
-            if (hasArbitraryValue && ClassDefinition is null)
+            if (HasArbitraryValue && ClassDefinition is null)
             {
+                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+
                 if (valueNoBrackets.ValueIsDimensionLength(AppState))
                 {
                     AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
@@ -484,7 +490,7 @@ public sealed partial class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
-                    GenerateStyles(value);
+                    GenerateStyles();
 
                     return;
                 }
@@ -492,9 +498,9 @@ public sealed partial class CssClass : IDisposable
             
             #endregion
             
-            #region Static, Spacing, or Color Name values
+            #region Static, Spacing, or Color Name Value
 
-            if (hasArbitraryValue || ClassDefinition is not null)
+            if (HasArbitraryValue || ClassDefinition is not null)
                 return;
             
             if (string.IsNullOrEmpty(value))
@@ -535,7 +541,7 @@ public sealed partial class CssClass : IDisposable
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
 
-            GenerateStyles(value);
+            GenerateStyles();
 
             #endregion
         }
@@ -609,9 +615,9 @@ public sealed partial class CssClass : IDisposable
         }
     }
 
-    private void GenerateStyles(string valueWithBrackets)
+    private void GenerateStyles()
     {
-        if (((valueWithBrackets.StartsWith('[') && valueWithBrackets.EndsWith(']')) || (valueWithBrackets.StartsWith('(') && valueWithBrackets.EndsWith(')'))) && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
+        if (HasArbitraryValue && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
         {
             Styles = ClassDefinition.ArbitraryCssValueTemplate;
         }
