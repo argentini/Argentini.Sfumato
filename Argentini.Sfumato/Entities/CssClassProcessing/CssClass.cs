@@ -92,6 +92,7 @@ public sealed partial class CssClass : IDisposable
 
     #endregion
 
+    // todo: add value post-processing and Styles generation methods; call from relevant places in the logic tree below
     // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
     // todo: remove unused properties across all entities
 
@@ -131,8 +132,6 @@ public sealed partial class CssClass : IDisposable
     {
         try
         {
-            #region Process Variants
-
             if (AllSegments.Count <= 1)
                 return;
             
@@ -218,8 +217,6 @@ public sealed partial class CssClass : IDisposable
                     return;
                 }
             }
-
-            #endregion
         }
         catch
         {
@@ -231,8 +228,6 @@ public sealed partial class CssClass : IDisposable
     {
         try
         {
-            #region Process Arbitrary CSS
-
             if (AllSegments[^1].StartsWith('[') == false || AllSegments[^1].EndsWith(']') == false)
                 return;
             
@@ -259,8 +254,6 @@ public sealed partial class CssClass : IDisposable
 
             if (IsValid && IsImportant)
                 Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
-
-            #endregion
         }
         catch
         {
@@ -272,8 +265,6 @@ public sealed partial class CssClass : IDisposable
     {
         try
         {
-            #region Process Utility Classes
-
             var prefix = AppState.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
 
             if (string.IsNullOrEmpty(prefix))
@@ -488,14 +479,18 @@ public sealed partial class CssClass : IDisposable
 
                     if ((ClassDefinition?.UsesColor ?? false) && AppState.Library.Colors.TryGetValue(value, out var colorValue))
                     {
-                        Value = colorValue;
-
                         if (HasModifierValue)
                         {
                             if (int.TryParse(ModifierValue, out var alphaPct))
                                 Value = colorValue.SetWebColorAlpha(alphaPct);
                             else if (double.TryParse(ModifierValue, out var alpha))
                                 Value = colorValue.SetWebColorAlpha(alpha);
+                            else
+                                Value = colorValue;
+                        }
+                        else
+                        {
+                            Value = colorValue;
                         }
                     }
                 }
@@ -508,6 +503,8 @@ public sealed partial class CssClass : IDisposable
 
             if (ClassDefinition is null)
                 return;
+
+            #region Build Styles
             
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
