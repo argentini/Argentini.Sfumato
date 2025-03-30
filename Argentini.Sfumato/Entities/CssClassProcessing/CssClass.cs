@@ -281,203 +281,236 @@ public sealed partial class CssClass : IDisposable
                 HasModifierValue = true;
             }
 
-            if ((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')')))
+            var hasArbitraryValue = (value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')'));
+            var valueNoBrackets = hasArbitraryValue ? value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')') : value;
+
+            #region Arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
+
+            if (hasArbitraryValue)
             {
-                var customValue = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
-
-                // Specified arbitrary value data type prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
-
-                if (customValue.StartsWith("dimension:", StringComparison.Ordinal) || customValue.StartsWith("length:", StringComparison.Ordinal) || customValue.StartsWith("percentage:", StringComparison.Ordinal))
+                if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
                 {
                     AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("color:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("color:", StringComparison.Ordinal))
                 {
                     AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("integer:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("integer:", StringComparison.Ordinal))
                 {
                     AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("alpha:", StringComparison.Ordinal) || customValue.StartsWith("number:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("alpha:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("number:", StringComparison.Ordinal))
                 {
                     AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("image:", StringComparison.Ordinal) || customValue.StartsWith("url:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("image:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("url:", StringComparison.Ordinal))
                 {
                     AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("angle:", StringComparison.Ordinal) || customValue.StartsWith("hue:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("angle:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("hue:", StringComparison.Ordinal))
                 {
                     AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("duration:", StringComparison.Ordinal) || customValue.StartsWith("time:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("duration:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("time:", StringComparison.Ordinal))
                 {
                     AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("flex:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("flex:", StringComparison.Ordinal))
                 {
                     AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("frequency:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("frequency:", StringComparison.Ordinal))
                 {
                     AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("ratio:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("ratio:", StringComparison.Ordinal))
                 {
                     AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("resolution:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("resolution:", StringComparison.Ordinal))
                 {
                     AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else if (customValue.StartsWith("string:", StringComparison.Ordinal))
+                else if (valueNoBrackets.StartsWith("string:", StringComparison.Ordinal))
                 {
                     AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is not null)
                 {
-                    Value = customValue.StartsWith("--", StringComparison.Ordinal) ? $"var({customValue})" : customValue;
+                    Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
+                    IsValid = true;
+                    SelectorSort = ClassDefinition.SelectorSort;
+
+                    GenerateStyles(value);
+
+                    return;
+                }
+            }
+            
+            #endregion
+
+            #region Did not specify data type prefix (e.g. "text-[var(--my-text-size)]" or "text-(--my-text-size)")
+            
+            if (hasArbitraryValue && ClassDefinition is null)
+            {
+                // Iterate through all data type classes to find a prefix match
+
+                if (value.StartsWith("(--", StringComparison.Ordinal) || value.StartsWith("[var(--", StringComparison.Ordinal))
+                {
+                    AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+
+                    if (ClassDefinition is null)
+                    {
+                        AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+                }
+
+                if (ClassDefinition is not null)
+                {
+                    Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
+                    IsValid = true;
+                    SelectorSort = ClassDefinition.SelectorSort;
+
+                    GenerateStyles(value);
+
+                    return;
+                }
+            }
+            
+            #endregion
+
+            #region Auto-detect value type (e.g. text-[1rem])
+            
+            if (hasArbitraryValue && ClassDefinition is null)
+            {
+                if (valueNoBrackets.ValueIsDimensionLength(AppState))
+                {
+                    AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.ValueIsFloatNumber())
+                {
+                    if (AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                        AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.IsValidWebColor())
+                {
+                    AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.ValueIsAngleHue(AppState))
+                {
+                    AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.ValueIsDurationTime(AppState))
+                {
+                    AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.ValueIsFrequency(AppState))
+                {
+                    AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.ValueIsImageUrl())
+                {
+                    AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.ValueIsRatio())
+                {
+                    AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.ValueIsResolution(AppState))
+                {
+                    AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 else
                 {
-                    // Did not specify data type prefix (e.g. "text-[var(--my-text-size)]" or "text-(--my-text-size)")
-                    // Iterate through all data type classes to find a prefix match
-                    
-                    if (value.StartsWith("(--", StringComparison.Ordinal) || value.StartsWith("[var(--", StringComparison.Ordinal))
-                    {
-                        AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                    if (AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                        AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                
+                if (ClassDefinition is not null)
+                {
+                    Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
+                    IsValid = true;
+                    SelectorSort = ClassDefinition.SelectorSort;
 
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
+                    GenerateStyles(value);
 
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-
-                        if (ClassDefinition is null)
-                        {
-                            AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                    }
-                    
-                    if (ClassDefinition is not null)
-                    {
-                        Value = customValue.StartsWith("--", StringComparison.Ordinal) ? $"var({customValue})" : customValue;
-                    }
-                    else
-                    {
-                        // Auto-detect value type
-
-                        if (customValue.ValueIsDimensionLength(AppState))
-                        {
-                            AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.ValueIsFloatNumber())
-                        {
-                            if (AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                                AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.IsValidWebColor())
-                        {
-                            AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.ValueIsAngleHue(AppState))
-                        {
-                            AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.ValueIsDurationTime(AppState))
-                        {
-                            AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.ValueIsFrequency(AppState))
-                        {
-                            AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.ValueIsImageUrl())
-                        {
-                            AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.ValueIsRatio())
-                        {
-                            AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else if (customValue.ValueIsResolution(AppState))
-                        {
-                            AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        else
-                        {
-                            if (AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                                AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
-                        }
-                        
-                        if (ClassDefinition is not null)
-                        {
-                            Value = customValue.StartsWith("--", StringComparison.Ordinal) ? $"var({customValue})" : customValue;
-                        }
-                    }
+                    return;
                 }
             }
-            else
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
-                }
-                else if (value.ValueIsInteger())
-                {
-                    AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition);
-                }
-                else if (value.ValueIsColorName(AppState))
-                {
-                    AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+            
+            #endregion
+            
+            #region Static, Spacing, or Color Name values
 
-                    if ((ClassDefinition?.UsesColor ?? false) && AppState.Library.Colors.TryGetValue(value, out var colorValue))
+            if (hasArbitraryValue || ClassDefinition is not null)
+                return;
+            
+            if (string.IsNullOrEmpty(value))
+            {
+                AppState.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
+            }
+            else if (value.ValueIsInteger())
+            {
+                if (AppState.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
+                    Value = value;
+            }
+            else if (value.ValueIsColorName(AppState))
+            {
+                if (AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition))
+                {
+                    if (AppState.Library.ColorsByName.TryGetValue(value, out var colorValue))
                     {
                         if (HasModifierValue)
                         {
@@ -494,41 +527,15 @@ public sealed partial class CssClass : IDisposable
                         }
                     }
                 }
-
-                if (ClassDefinition?.UsesColor == false)
-                {
-                    Value = value;
-                }
             }
 
             if (ClassDefinition is null)
                 return;
 
-            #region Build Styles
-            
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
 
-            if (((value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')'))) && string.IsNullOrEmpty(ClassDefinition.ArbitraryCssTemplate) == false)
-            {
-                Styles = ClassDefinition.ArbitraryCssTemplate;
-            }
-            else if (string.IsNullOrEmpty(ModifierValue) == false && string.IsNullOrEmpty(ClassDefinition.ModifierTemplate) == false)
-            {
-                Styles = ClassDefinition.ModifierTemplate;
-            }
-            else
-            {
-                Styles = ClassDefinition.Template;
-            }
-
-            Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);
-
-            if (string.IsNullOrEmpty(ModifierValue) == false)
-                Styles = Styles.Replace("{1}", ModifierValue, StringComparison.Ordinal);
-            
-            if (IsImportant)
-                Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+            GenerateStyles(value);
 
             #endregion
         }
@@ -537,7 +544,7 @@ public sealed partial class CssClass : IDisposable
             // Ignored
         }
     }
-
+   
     private void GenerateSelector()
     {
         Sb?.Clear();
@@ -601,6 +608,30 @@ public sealed partial class CssClass : IDisposable
             IsValid = false;
         }
     }
-    
+
+    private void GenerateStyles(string valueWithBrackets)
+    {
+        if (((valueWithBrackets.StartsWith('[') && valueWithBrackets.EndsWith(']')) || (valueWithBrackets.StartsWith('(') && valueWithBrackets.EndsWith(')'))) && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
+        {
+            Styles = ClassDefinition.ArbitraryCssValueTemplate;
+        }
+        else if (HasModifierValue && string.IsNullOrEmpty(ClassDefinition?.ModifierTemplate) == false)
+        {
+            Styles = ClassDefinition.ModifierTemplate;
+        }
+        else
+        {
+            Styles = ClassDefinition?.Template ?? string.Empty;
+        }
+
+        Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);
+
+        if (HasModifierValue)
+            Styles = Styles.Replace("{1}", ModifierValue, StringComparison.Ordinal);
+            
+        if (IsImportant)
+            Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+    }
+
     #endregion
 }

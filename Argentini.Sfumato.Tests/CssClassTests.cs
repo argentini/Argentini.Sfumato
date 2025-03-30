@@ -149,10 +149,10 @@ public class CssClassTests
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
-        Assert.Equal(AppState.Library.Colors["indigo-400"], cssClass.Value);
+        Assert.Equal(AppState.Library.ColorsByName["indigo-400"], cssClass.Value);
         Assert.Equal(
             $"""
-            color: {AppState.Library.Colors["indigo-400"]};
+            color: {AppState.Library.ColorsByName["indigo-400"]};
             """
             , cssClass.Styles);
         

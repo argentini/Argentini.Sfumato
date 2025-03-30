@@ -100,7 +100,7 @@ public sealed class ClassDefinition
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// </summary>
-    public string ArbitraryCssTemplate { get; set; } = string.Empty;
+    public string ArbitraryCssValueTemplate { get; set; } = string.Empty;
 
     /// <summary>
     /// CSS class property template for custom CSS values using a modifier (e.g. "text-[1rem]/5").

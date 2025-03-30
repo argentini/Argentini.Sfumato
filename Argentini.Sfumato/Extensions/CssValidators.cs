@@ -37,7 +37,7 @@ public static class CssValidators
 
     public static bool ValueIsColorName(this string value, AppState appState)
     {
-        return appState.Library.Colors.ContainsKey(value);
+        return appState.Library.ColorsByName.ContainsKey(value);
     }
 
     public static bool ValueIsDimensionLength(this string value, AppState appState)
