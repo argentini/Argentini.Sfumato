@@ -108,8 +108,8 @@ public class CssClassTests
         {
             new ()
             {
-                ClassName = "dark:group-[.is-published]:[&.active]:tabp:max-desk:hover:text-[1rem]/6!",
-                EscapedClassName = ".group.is-published dark\\:group-\\[\\.is-published\\]\\:\\[\\&\\.active\\]\\:tabp\\:max-desk\\:hover\\:text-\\[1rem\\]\\/6\\!.active:hover",
+                ClassName = "dark:group-[.is-published]:[&.active]:[@supports(display:flex)]:tabp:max-desk:hover:text-[1rem]/6!",
+                EscapedClassName = @".group.is-published .dark\:group-\[\.is-published\]\:\[\&\.active\]\:\[\@supports\(display\:flex\)\]\:tabp\:max-desk\:hover\:text-\[1rem\]\/6\!.active:hover",
                 Styles =
                     """
                     font-size: 1rem !important;
@@ -120,17 +120,16 @@ public class CssClassTests
                 Wrappers =
                 [
                     $"@media {AppState.Library.MediaQueryPrefixes["dark"].Statement} {{",
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} and {AppState.Library.MediaQueryPrefixes["max-desk"].Statement} {{"
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} and {AppState.Library.MediaQueryPrefixes["max-desk"].Statement} {{",
+                    "@supports(display:flex) {",
                 ]
             },
             new ()
             {
                 ClassName = "tabp:text-indigo-400",
-                EscapedClassName = ".tabp\\:text-indigo-400",
+                EscapedClassName = @".tabp\:text-indigo-400",
                 Styles =
-                    $"""
-                    color: {AppState.Library.ColorsByName["indigo-400"]};
-                    """,
+                    $"color: {AppState.Library.ColorsByName["indigo-400"]};",
                 IsValid = true,
                 Wrappers =
                 [
@@ -142,30 +141,21 @@ public class CssClassTests
                 ClassName = "leading-none",
                 EscapedClassName = ".leading-none",
                 IsValid = true,
-                Styles =
-                    """
-                    line-height: 1;
-                    """
+                Styles = "line-height: 1;"
             },
             new ()
             {
                 ClassName = "leading-2",
                 EscapedClassName = ".leading-2",
                 IsValid = true,
-                Styles =
-                    """
-                    line-height: calc(var(--spacing) * 2);
-                    """
+                Styles = "line-height: calc(var(--spacing) * 2);"
             },
             new ()
             {
                 ClassName = "text-indigo-400/37",
-                EscapedClassName = ".text-indigo-400\\/37",
+                EscapedClassName = @".text-indigo-400\/37",
                 IsValid = true,
-                Styles =
-                    """
-                    color: oklch(0.673 0.182 276.935 / 0.37);
-                    """
+                Styles = "color: oklch(0.673 0.182 276.935 / 0.37);"
             },
         };
 
@@ -176,6 +166,7 @@ public class CssClassTests
             Assert.NotNull(cssClass);
             Assert.Equal(test.IsValid, cssClass.IsValid);
             Assert.Equal(test.IsImportant, cssClass.IsImportant);
+            Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
             Assert.Equal(test.Wrappers.Length, cssClass.Wrappers.Count);
             Assert.Equal(test.Styles, cssClass.Styles);
 
