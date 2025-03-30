@@ -102,89 +102,89 @@ public class CssClassTests
     }
 
     [Fact]
-    public void UtilityClassParsing()
+    public void UtilityClassProcessing()
     {
-        var utilityClasses = new Dictionary<string,string>(StringComparer.Ordinal)
+        var testClasses = new List<TestClass>()
         {
+            new ()
             {
-                "dark:group-[.is-published]:[&.active]:tabp:max-desk:hover:text-[1rem]/6!",
-                ".group.is-published dark\\:group-\\[\\.is-published\\]\\:\\[\\&\\.active\\]\\:tabp\\:max-desk\\:hover\\:text-\\[1rem\\]\\/6\\!.active:hover"
+                ClassName = "dark:group-[.is-published]:[&.active]:tabp:max-desk:hover:text-[1rem]/6!",
+                EscapedClassName = ".group.is-published dark\\:group-\\[\\.is-published\\]\\:\\[\\&\\.active\\]\\:tabp\\:max-desk\\:hover\\:text-\\[1rem\\]\\/6\\!.active:hover",
+                Styles =
+                    """
+                    font-size: 1rem !important;
+                    line-height: calc(var(--spacing) * 6) !important;
+                    """,
+                IsValid = true,
+                IsImportant = true,
+                Wrappers =
+                [
+                    $"@media {AppState.Library.MediaQueryPrefixes["dark"].Statement} {{",
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} and {AppState.Library.MediaQueryPrefixes["max-desk"].Statement} {{"
+                ]
             },
+            new ()
             {
-                "tabp:text-indigo-400",
-                ".tabp\\:text-indigo-400"
+                ClassName = "tabp:text-indigo-400",
+                EscapedClassName = ".tabp\\:text-indigo-400",
+                Styles =
+                    $"""
+                    color: {AppState.Library.ColorsByName["indigo-400"]};
+                    """,
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                ]
             },
+            new ()
             {
-                "leading-none",
-                ".leading-none"
+                ClassName = "leading-none",
+                EscapedClassName = ".leading-none",
+                IsValid = true,
+                Styles =
+                    """
+                    line-height: 1;
+                    """
             },
+            new ()
             {
-                "leading-2",
-                ".leading-2"
+                ClassName = "leading-2",
+                EscapedClassName = ".leading-2",
+                IsValid = true,
+                Styles =
+                    """
+                    line-height: calc(var(--spacing) * 2);
+                    """
             },
+            new ()
             {
-                "text-indigo-400/37",
-                ".text-indigo-400\\/37"
+                ClassName = "text-indigo-400/37",
+                EscapedClassName = ".text-indigo-400\\/37",
+                IsValid = true,
+                Styles =
+                    """
+                    color: oklch(0.673 0.182 276.935 / 0.37);
+                    """
             },
         };
 
-        var cssClass = new CssClass(AppState, utilityClasses.ElementAt(0).Key);
+        foreach (var test in testClasses)
+        {
+            var cssClass = new CssClass(AppState, test.ClassName);
 
-        Assert.NotNull(cssClass);
-        Assert.True(cssClass.IsValid);
-        Assert.True(cssClass.IsImportant);
-        Assert.Equal(utilityClasses.First().Value, cssClass.EscapedSelector);
-        
-        Assert.Equal(2, cssClass.Wrappers.Count);
-        Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["dark"].Statement} {{", cssClass.Wrappers[0]);
-        Assert.Equal($"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} and {AppState.Library.MediaQueryPrefixes["max-desk"].Statement} {{", cssClass.Wrappers[1]);
-        Assert.Equal(
-            """
-            font-size: 1rem !important;
-            line-height: calc(var(--spacing) * 6) !important;
-            """
-            , cssClass.Styles);
-        
-        cssClass = new CssClass(AppState, utilityClasses.ElementAt(1).Key);
+            Assert.NotNull(cssClass);
+            Assert.Equal(test.IsValid, cssClass.IsValid);
+            Assert.Equal(test.IsImportant, cssClass.IsImportant);
+            Assert.Equal(test.Wrappers.Length, cssClass.Wrappers.Count);
+            Assert.Equal(test.Styles, cssClass.Styles);
 
-        Assert.NotNull(cssClass);
-        Assert.True(cssClass.IsValid);
-        Assert.Equal(AppState.Library.ColorsByName["indigo-400"], cssClass.Value);
-        Assert.Equal(
-            $"""
-            color: {AppState.Library.ColorsByName["indigo-400"]};
-            """
-            , cssClass.Styles);
-        
-        cssClass = new CssClass(AppState, utilityClasses.ElementAt(2).Key);
-
-        Assert.NotNull(cssClass);
-        Assert.True(cssClass.IsValid);
-        Assert.Equal(
-            """
-            line-height: 1;
-            """
-            , cssClass.Styles);
-        
-        cssClass = new CssClass(AppState, utilityClasses.ElementAt(3).Key);
-
-        Assert.NotNull(cssClass);
-        Assert.True(cssClass.IsValid);
-        Assert.Equal(
-            """
-            line-height: calc(var(--spacing) * 2);
-            """
-            , cssClass.Styles);
-        
-        cssClass = new CssClass(AppState, utilityClasses.ElementAt(4).Key);
-
-        Assert.NotNull(cssClass);
-        Assert.True(cssClass.IsValid);
-        Assert.Equal(
-            """
-            color: oklch(0.673 0.182 276.935 / 0.37);
-            """
-            , cssClass.Styles);
+            for (var i = 0; i < test.Wrappers.Length; i++)
+            {
+                Assert.Equal(test.Wrappers.ElementAt(i), cssClass.Wrappers.ElementAt(i));
+            }
+            
+        }
     }
     
     [Fact]
