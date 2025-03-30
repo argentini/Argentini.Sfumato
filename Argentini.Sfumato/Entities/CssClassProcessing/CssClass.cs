@@ -452,12 +452,7 @@ public sealed partial class CssClass : IDisposable
                 {
                     if (ClassDefinition.UsesColor && HasModifierValue)
                     {
-                        if (int.TryParse(ModifierValue, out var alphaPct))
-                            Value = valueNoBrackets.SetWebColorAlpha(alphaPct);
-                        else if (double.TryParse(ModifierValue, out var alpha))
-                            Value = valueNoBrackets.SetWebColorAlpha(alpha);
-                        else
-                            Value = valueNoBrackets;
+                        Value = int.TryParse(ModifierValue, out var alphaPct) ? valueNoBrackets.SetWebColorAlpha(alphaPct) : valueNoBrackets;
                     }
                     else
                     {
@@ -497,12 +492,7 @@ public sealed partial class CssClass : IDisposable
                     {
                         if (HasModifierValue)
                         {
-                            if (int.TryParse(ModifierValue, out var alphaPct))
-                                Value = colorValue.SetWebColorAlpha(alphaPct);
-                            else if (double.TryParse(ModifierValue, out var alpha))
-                                Value = colorValue.SetWebColorAlpha(alpha);
-                            else
-                                Value = colorValue;
+                            Value = int.TryParse(ModifierValue, out var alphaPct) ? colorValue.SetWebColorAlpha(alphaPct) : colorValue;
                         }
                         else
                         {
