@@ -560,6 +560,7 @@ public sealed partial class CssClass : IDisposable
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
                 Sb?.Append(variant.Value.SelectorPrefix);
 
+            Sb?.Append('.');
             Sb?.Append(Selector.CssSelectorEscape());
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
