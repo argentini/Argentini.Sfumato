@@ -126,18 +126,6 @@ public class CssClassTests
             },
             new ()
             {
-                ClassName = "tabp:text-indigo-400",
-                EscapedClassName = @".tabp\:text-indigo-400",
-                Styles =
-                    $"color: {AppState.Library.ColorsByName["indigo-400"]};",
-                IsValid = true,
-                Wrappers =
-                [
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
-                ]
-            },
-            new ()
-            {
                 ClassName = "leading-none",
                 EscapedClassName = ".leading-none",
                 IsValid = true,
@@ -152,10 +140,65 @@ public class CssClassTests
             },
             new ()
             {
+                ClassName = "-leading-2",
+                EscapedClassName = ".-leading-2",
+                IsValid = true,
+                Styles = "line-height: calc(var(--spacing) * 2 * -1);"
+            },
+            new ()
+            {
+                ClassName = "tabp:text-indigo-400",
+                EscapedClassName = @".tabp\:text-indigo-400",
+                Styles =
+                    $"color: {AppState.Library.ColorsByName["indigo-400"]};",
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                ]
+            },
+            new ()
+            {
                 ClassName = "text-indigo-400/37",
                 EscapedClassName = @".text-indigo-400\/37",
                 IsValid = true,
                 Styles = "color: oklch(0.673 0.182 276.935 / 0.37);"
+            },
+            new ()
+            {
+                ClassName = "tabp:text-[#ffffff]",
+                EscapedClassName = @".tabp\:text-\[\#ffffff\]",
+                Styles =
+                    "color: #ffffff;",
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                ]
+            },
+            new ()
+            {
+                ClassName = "tabp:text-[#ffffff]/50",
+                EscapedClassName = @".tabp\:text-\[\#ffffff\]\/50",
+                Styles =
+                    "color: rgba(255,255,255,0.5);",
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                ]
+            },
+            new ()
+            {
+                ClassName = "tabp:text-[red]/50",
+                EscapedClassName = @".tabp\:text-\[red\]\/50",
+                Styles =
+                    "color: rgba(255,0,0,0.5);",
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                ]
             },
         };
 
