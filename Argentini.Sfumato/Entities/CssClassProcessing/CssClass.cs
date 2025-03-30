@@ -70,6 +70,7 @@ public sealed partial class CssClass : IDisposable
     public bool IsImportant { get; set; }
     public bool HasModifierValue { get; set; }
     public bool HasArbitraryValue { get; set; }
+    public bool HasArbitraryValueWithCssCustomProperty { get; set; }
 
     private StringBuilder? Sb { get; set; }
 
@@ -93,7 +94,7 @@ public sealed partial class CssClass : IDisposable
 
     #endregion
 
-    // todo: add value post-processing and Styles generation methods; call from relevant places in ProcessUtilityClasses
+    // todo: add full-spectrum utility class processing test ("text-..." may be a good one to use)
     // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
     // todo: remove unused properties across all entities
 
@@ -282,11 +283,12 @@ public sealed partial class CssClass : IDisposable
                 HasModifierValue = true;
             }
 
-            HasArbitraryValue = (value.StartsWith('[') && value.EndsWith(']')) || (value.StartsWith('(') && value.EndsWith(')'));
-            
-            #region Arbitrary Value With Data Type Prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
+            HasArbitraryValue = value.StartsWith('[') && value.EndsWith(']');
+            HasArbitraryValueWithCssCustomProperty = (HasArbitraryValue && value.Contains("--", StringComparison.Ordinal)) || (value.StartsWith('(') && value.EndsWith(')') && value.Contains("--", StringComparison.Ordinal));
 
-            if (HasArbitraryValue)
+            #region Arbitrary Value Using CSS Custom Property, Data Type Prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
+
+            if (HasArbitraryValueWithCssCustomProperty)
             {
                 var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
 
@@ -353,71 +355,33 @@ public sealed partial class CssClass : IDisposable
             
             #endregion
 
-            #region Arbitrary Value, No Prefix (e.g. "text-[var(--my-text-size)]" or "text-(--my-text-size)")
+            #region Arbitrary Value Using CSS Custom Property, No Prefix (e.g. "text-[var(--my-text-size)]" or "text-(--my-text-size)")
             
-            if (HasArbitraryValue && ClassDefinition is null)
+            if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
                 // Iterate through all data type classes to find a prefix match
 
-                if (value.StartsWith("(--", StringComparison.Ordinal) || value.StartsWith("[var(--", StringComparison.Ordinal))
+                var classDictionaries = new List<Dictionary<string, ClassDefinition>>
                 {
-                    AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppState.Library.DimensionLengthClasses,
+                    AppState.Library.ColorClasses,
+                    AppState.Library.IntegerClasses,
+                    AppState.Library.AlphaNumberClasses,
+                    AppState.Library.AngleHueClasses,
+                    AppState.Library.DurationTimeClasses,
+                    AppState.Library.FrequencyClasses,
+                    AppState.Library.ImageUrlClasses,
+                    AppState.Library.FlexClasses,
+                    AppState.Library.RatioClasses,
+                    AppState.Library.ResolutionClasses,
+                    AppState.Library.StringClasses
+                };
 
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.AlphaNumberClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.DurationTimeClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-
-                    if (ClassDefinition is null)
-                    {
-                        AppState.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
-                    }
-                }
+                foreach (var dict in classDictionaries)
+                {
+                    if (dict.TryGetValue(prefix, out ClassDefinition))
+                        break;
+                }                
 
                 if (ClassDefinition is not null)
                 {
@@ -437,9 +401,9 @@ public sealed partial class CssClass : IDisposable
 
             #region Auto-Detect Value Data Type (e.g. text-[1rem])
             
-            if (HasArbitraryValue && ClassDefinition is null)
+            if (HasArbitraryValue && HasArbitraryValueWithCssCustomProperty == false && ClassDefinition is null)
             {
-                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+                var valueNoBrackets = value.TrimStart('[').TrimEnd(']');
 
                 if (valueNoBrackets.ValueIsDimensionLength(AppState))
                 {
@@ -486,7 +450,20 @@ public sealed partial class CssClass : IDisposable
                 
                 if (ClassDefinition is not null)
                 {
-                    Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
+                    if (ClassDefinition.UsesColor && HasModifierValue)
+                    {
+                        if (int.TryParse(ModifierValue, out var alphaPct))
+                            Value = valueNoBrackets.SetWebColorAlpha(alphaPct);
+                        else if (double.TryParse(ModifierValue, out var alpha))
+                            Value = valueNoBrackets.SetWebColorAlpha(alpha);
+                        else
+                            Value = valueNoBrackets;
+                    }
+                    else
+                    {
+                        Value = valueNoBrackets;
+                    }
+
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
