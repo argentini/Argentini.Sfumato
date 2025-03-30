@@ -92,7 +92,7 @@ public sealed partial class CssClass : IDisposable
 
     #endregion
 
-    // todo: add value post-processing and Styles generation methods; call from relevant places in the logic tree below
+    // todo: add value post-processing and Styles generation methods; call from relevant places in ProcessUtilityClasses
     // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
     // todo: remove unused properties across all entities
 
