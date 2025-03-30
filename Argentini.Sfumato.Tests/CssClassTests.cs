@@ -270,6 +270,34 @@ public class CssClassTests
                     """,
                 IsValid = true
             },
+            new ()
+            {
+                ClassName = "text-[1.25rem]/[1.35rem]",
+                EscapedClassName = @".text-\[1\.25rem\]\/\[1\.35rem\]",
+                Styles =
+                    """
+                    font-size: 1.25rem;
+                    line-height: 1.35rem;
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "bg-indigo-400",
+                EscapedClassName = ".bg-indigo-400",
+                Styles =
+                    $"""
+                    background-color: {AppState.Library.ColorsByName["indigo-400"]};
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "bg-[url('/images/test.jpg')]",
+                EscapedClassName = @".bg-\[url\(\'\/images\/test\.jpg\'\)\]",
+                Styles = "background-image: url('/images/test.jpg');",
+                IsValid = true
+            },
         };
 
         foreach (var test in testClasses)

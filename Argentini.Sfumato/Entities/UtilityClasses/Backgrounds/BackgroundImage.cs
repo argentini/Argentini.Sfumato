@@ -4,19 +4,18 @@ using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Entities.UtilityClasses.Backgrounds;
 
-public sealed class BackgroundColor : ClassDictionaryBase
+public sealed class BackgroundImage : ClassDictionaryBase
 {
-    public BackgroundColor()
+    public BackgroundImage()
     {
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
                 "bg-", new ClassDefinition
                 {
-                    UsesColor = true,
-                    UsesSlashModifier = true,
+                    UsesImageUrl = true,
                     Template = """
-                               background-color: {0};
+                               background-image: {0};
                                """,
                 }
             },
