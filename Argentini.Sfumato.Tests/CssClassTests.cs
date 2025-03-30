@@ -214,6 +214,39 @@ public class CssClassTests
                     $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
+            new ()
+            {
+                ClassName = "text-base",
+                EscapedClassName = ".text-base",
+                Styles =
+                    """
+                    font-size: var(--text-base);
+                    line-height: var(--text-base--line-height);
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "text-base/5",
+                EscapedClassName = @".text-base\/5",
+                Styles =
+                    """
+                    font-size: var(--text-base);
+                    line-height: calc(var(--spacing) * 5);
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "text-[1.25rem]/5",
+                EscapedClassName = @".text-\[1\.25rem\]\/5",
+                Styles =
+                    """
+                    font-size: 1.25rem;
+                    line-height: calc(var(--spacing) * 5);
+                    """,
+                IsValid = true
+            },
         };
 
         foreach (var test in testClasses)
