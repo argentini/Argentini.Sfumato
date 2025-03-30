@@ -18,9 +18,6 @@ public sealed class Color : ClassDictionaryBase
                     Template = """
                                color: {0};
                                """,
-                    ModifierTemplate = """
-                                       color: {0};
-                                       """
                 }
             },
         });

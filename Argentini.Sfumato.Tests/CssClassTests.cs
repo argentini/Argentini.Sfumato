@@ -216,6 +216,18 @@ public class CssClassTests
             },
             new ()
             {
+                ClassName = "tabp:text-[red]/[0.25]",
+                EscapedClassName = @".tabp\:text-\[red\]\/\[0\.25\]",
+                Styles =
+                    "color: rgba(255,0,0,0.25);",
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                ]
+            },
+            new ()
+            {
                 ClassName = "text-base",
                 EscapedClassName = ".text-base",
                 Styles =
@@ -233,6 +245,17 @@ public class CssClassTests
                     """
                     font-size: var(--text-base);
                     line-height: calc(var(--spacing) * 5);
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "text-base/[1.25rem]",
+                EscapedClassName = @".text-base\/\[1\.25rem\]",
+                Styles =
+                    """
+                    font-size: var(--text-base);
+                    line-height: 1.25rem;
                     """,
                 IsValid = true
             },

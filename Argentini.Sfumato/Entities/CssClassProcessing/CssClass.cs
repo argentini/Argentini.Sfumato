@@ -69,6 +69,7 @@ public sealed partial class CssClass : IDisposable
     public bool IsCssCustomPropertyAssignment { get; set; }
     public bool IsImportant { get; set; }
     public bool HasModifierValue { get; set; }
+    public bool HasArbitraryModifierValue { get; set; }
     public bool HasArbitraryValue { get; set; }
     public bool HasArbitraryValueWithCssCustomProperty { get; set; }
 
@@ -279,6 +280,7 @@ public sealed partial class CssClass : IDisposable
             {
                 ModifierValue = slashSegments[^1];
                 value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
+                HasArbitraryModifierValue = ModifierValue.StartsWith('[');
                 ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
                 HasModifierValue = true;
             }
@@ -452,8 +454,12 @@ public sealed partial class CssClass : IDisposable
                 {
                     if (ClassDefinition.UsesColor && HasModifierValue)
                     {
-                        Value = int.TryParse(ModifierValue, out var alphaPct) ? valueNoBrackets.SetWebColorAlpha(alphaPct) : valueNoBrackets;
-                    }
+                        if (int.TryParse(ModifierValue, out var alphaPct))
+                            Value = valueNoBrackets.SetWebColorAlpha(alphaPct);
+                        else if (double.TryParse(ModifierValue, out var alpha))
+                            Value = valueNoBrackets.SetWebColorAlpha(alpha);
+                        else
+                            Value = valueNoBrackets;                    }
                     else
                     {
                         Value = valueNoBrackets;
@@ -492,8 +498,12 @@ public sealed partial class CssClass : IDisposable
                     {
                         if (HasModifierValue)
                         {
-                            Value = int.TryParse(ModifierValue, out var alphaPct) ? colorValue.SetWebColorAlpha(alphaPct) : colorValue;
-                        }
+                            if (int.TryParse(ModifierValue, out var alphaPct))
+                                Value = colorValue.SetWebColorAlpha(alphaPct);
+                            else if (double.TryParse(ModifierValue, out var alpha))
+                                Value = colorValue.SetWebColorAlpha(alpha);
+                            else
+                                Value = colorValue;                        }
                         else
                         {
                             Value = colorValue;
@@ -589,9 +599,18 @@ public sealed partial class CssClass : IDisposable
         {
             Styles = ClassDefinition.ArbitraryCssValueTemplate;
         }
-        else if (HasModifierValue && string.IsNullOrEmpty(ClassDefinition?.ModifierTemplate) == false)
+        else if (HasModifierValue)
         {
-            Styles = ClassDefinition.ModifierTemplate;
+            if (string.IsNullOrEmpty(ClassDefinition?.ModifierTemplate) == false)
+                Styles = ClassDefinition.ModifierTemplate;
+            else
+                Styles = ClassDefinition?.Template ?? string.Empty;
+            
+            if (HasArbitraryModifierValue)
+            {
+                if (string.IsNullOrEmpty(ClassDefinition?.ArbitraryModifierTemplate) == false)
+                    Styles = ClassDefinition.ArbitraryModifierTemplate;
+            }
         }
         else
         {

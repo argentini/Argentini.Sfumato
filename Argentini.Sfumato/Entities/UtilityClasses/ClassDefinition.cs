@@ -96,6 +96,14 @@ public sealed class ClassDefinition
     public string ModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
+    /// CSS class property template using an arbitrary modifier (e.g. "font-size: {0}; line-height: {1};").
+    /// Can contain more than one property assignment.
+    /// Use placeholder {0} for custom value.
+    /// Use placeholder {1} for slash modifier value.
+    /// </summary>
+    public string ArbitraryModifierTemplate { get; set; } = string.Empty;
+
+    /// <summary>
     /// CSS class property template for arbitrary CSS values (e.g. "text-[1rem]").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
