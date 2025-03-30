@@ -14,6 +14,7 @@ public sealed class LineHeight : ClassDictionaryBase
                 "leading-", new ClassDefinition
                 {
                     UsesDimensionLength = true,
+                    UsesAlphaNumber = true,
                     UsesSpacing = true,
                     SelectorSort = 1,
                     Template = """
@@ -28,6 +29,7 @@ public sealed class LineHeight : ClassDictionaryBase
                 "-leading-", new ClassDefinition
                 {
                     UsesDimensionLength = true,
+                    UsesAlphaNumber = true,
                     UsesSpacing = true,
                     SelectorSort = 1,
                     Template = """
