@@ -345,6 +345,8 @@ public sealed partial class CssClass : IDisposable
 
                 if (ClassDefinition is not null)
                 {
+                    valueNoBrackets = valueNoBrackets[(valueNoBrackets.IndexOf(':') + 1)..];
+                    
                     Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;

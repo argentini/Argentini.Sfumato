@@ -298,6 +298,13 @@ public class CssClassTests
                 Styles = "background-image: url('/images/test.jpg');",
                 IsValid = true
             },
+            new ()
+            {
+                ClassName = "bg-(image:--my-custom-image)",
+                EscapedClassName = @".bg-\(image\:--my-custom-image\)",
+                Styles = "background-image: var(--my-custom-image);",
+                IsValid = true
+            },
         };
 
         foreach (var test in testClasses)
