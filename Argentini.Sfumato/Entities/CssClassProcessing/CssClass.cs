@@ -291,7 +291,7 @@ public sealed partial class CssClass : IDisposable
             
             if (HasArbitraryValue == false && HasArbitraryValueWithCssCustomProperty == false && HasModifierValue && int.TryParse(value, out var numerator) && int.TryParse(ModifierValue, out var denominator))
             {
-                if (numerator != 0 && AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition))
+                if (denominator != 0 && AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition))
                 {
                     Value = $"{(double)numerator/denominator * 100:0.############}%";
                     IsValid = true;
