@@ -95,7 +95,6 @@ public sealed partial class CssClass : IDisposable
 
     #endregion
 
-    // todo: add full-spectrum utility class processing test ("text-..." may be a good one to use)
     // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
     // todo: remove unused properties across all entities
 
@@ -285,12 +284,30 @@ public sealed partial class CssClass : IDisposable
                 HasModifierValue = true;
             }
 
-            HasArbitraryValue = value.StartsWith('[') && value.EndsWith(']');
+            HasArbitraryValue = value.StartsWith('[');
             HasArbitraryValueWithCssCustomProperty = (HasArbitraryValue && value.Contains("--", StringComparison.Ordinal)) || (value.StartsWith('(') && value.EndsWith(')') && value.Contains("--", StringComparison.Ordinal));
 
+            #region Handle Fractions for Length-Based Classes
+            
+            if (HasArbitraryValue == false && HasArbitraryValueWithCssCustomProperty == false && HasModifierValue && int.TryParse(value, out var numerator) && int.TryParse(ModifierValue, out var denominator))
+            {
+                if (numerator != 0 && AppState.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition))
+                {
+                    Value = $"{(double)numerator/denominator * 100:0.############}%";
+                    IsValid = true;
+                    SelectorSort = ClassDefinition.SelectorSort;
+
+                    GenerateStyles(true);
+
+                    return;
+                }
+            }
+            
+            #endregion
+            
             #region Arbitrary Value Using CSS Custom Property, Data Type Prefix (e.g. "text-[length:var(--my-text-size)]" or "text-(length:--my-text-size)")
 
-            if (HasArbitraryValueWithCssCustomProperty)
+            if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
                 var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
 
@@ -595,9 +612,9 @@ public sealed partial class CssClass : IDisposable
         }
     }
 
-    private void GenerateStyles()
+    private void GenerateStyles(bool useArbitraryValue = false)
     {
-        if (HasArbitraryValue && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
+        if ((HasArbitraryValue || useArbitraryValue) && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
         {
             Styles = ClassDefinition.ArbitraryCssValueTemplate;
         }

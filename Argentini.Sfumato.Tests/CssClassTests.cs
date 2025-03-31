@@ -305,6 +305,34 @@ public class CssClassTests
                 Styles = "background-image: var(--my-custom-image);",
                 IsValid = true
             },
+            new ()
+            {
+                ClassName = "top-3",
+                EscapedClassName = @".top-3",
+                Styles = "top: calc(var(--spacing) * 3);",
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "-top-4",
+                EscapedClassName = @".-top-4",
+                Styles = "top: calc(var(--spacing) * -4);",
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "top-1/2",
+                EscapedClassName = @".top-1\/2",
+                Styles = "top: 50%;",
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "top-2/3",
+                EscapedClassName = @".top-2\/3",
+                Styles = "top: 66.666666666667%;",
+                IsValid = true
+            },
         };
 
         foreach (var test in testClasses)
