@@ -94,8 +94,5 @@ public sealed class Top : ClassDictionaryBase
 
             #endregion
         });
-
-        AddFractions("top-", "top: calc(({0} / {1}) * 100%);");
-        AddFractions("-top-", "top: calc(({0} / {1}) * -100%);");
     }
 }
