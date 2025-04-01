@@ -25,7 +25,10 @@ public sealed class FontSize : ClassDictionaryBase
                     ArbitraryModifierTemplate = """
                                        font-size: {0};
                                        line-height: {1};
-                                       """
+                                       """,
+                    UsesCssCustomProperties = [
+                        "--spacing"
+                    ]
                 }
             },
             {
@@ -47,7 +50,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-xs);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-xs", "--text-xs--line-height"
+                    ]
                 }
             },
             {
@@ -69,7 +75,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-sm);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-sm", "--text-sm--line-height"
+                    ]
                 }
             },
             {
@@ -91,7 +100,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-base);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-base", "--text-base--line-height"
+                    ]
                 }
             },
             {
@@ -113,7 +125,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-lg);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-lg", "--text-lg--line-height"
+                    ]
                 }
             },
             {
@@ -135,7 +150,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-xl", "--text-xl--line-height"
+                    ]
                 }
             },
             {
@@ -157,7 +175,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-2xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-2xl", "--text-2xl--line-height"
+                    ]
                 }
             },
             {
@@ -179,7 +200,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-3xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-3xl", "--text-3xl--line-height"
+                    ]
                 }
             },
             {
@@ -201,7 +225,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-4xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-4xl", "--text-4xl--line-height"
+                    ]
                 }
             },
             {
@@ -223,7 +250,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-5xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-5xl", "--text-5xl--line-height"
+                    ]
                 }
             },
             {
@@ -245,7 +275,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-6xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-6xl", "--text-6xl--line-height"
+                    ]
                 }
             },
             {
@@ -267,7 +300,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-7xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-7xl", "--text-7xl--line-height"
+                    ]
                 }
             },
             {
@@ -289,7 +325,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-8xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-8xl", "--text-8xl--line-height"
+                    ]
                 }
             },
             {
@@ -311,7 +350,10 @@ public sealed class FontSize : ClassDictionaryBase
                         """
                         font-size: var(--text-9xl);
                         line-height: {1};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing", "--text-9xl", "--text-9xl--line-height"
+                    ]
                 }
             },
         });

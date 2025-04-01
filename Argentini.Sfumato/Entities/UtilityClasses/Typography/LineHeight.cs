@@ -17,12 +17,17 @@ public sealed class LineHeight : ClassDictionaryBase
                     UsesAlphaNumber = true,
                     UsesSpacing = true,
                     SelectorSort = 1,
-                    Template = """
-                               line-height: calc(var(--spacing) * {0});
-                               """,
-                    ArbitraryCssValueTemplate = """
-                                        line-height: {0};
-                                        """
+                    Template =
+                        """
+                        line-height: calc(var(--spacing) * {0});
+                        """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        line-height: {0};
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing"
+                    ]
                 }
             },
             {
@@ -32,12 +37,17 @@ public sealed class LineHeight : ClassDictionaryBase
                     UsesAlphaNumber = true,
                     UsesSpacing = true,
                     SelectorSort = 1,
-                    Template = """
-                               line-height: calc(var(--spacing) * {0} * -1);
-                               """,
-                    ArbitraryCssValueTemplate = """
-                                        line-height: {0};
-                                        """
+                    Template =
+                        """
+                        line-height: calc(var(--spacing) * {0} * -1);
+                        """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        line-height: {0};
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing"
+                    ]
                 }
             },
             {

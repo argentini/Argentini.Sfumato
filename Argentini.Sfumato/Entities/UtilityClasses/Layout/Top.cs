@@ -74,7 +74,10 @@ public sealed class Top : ClassDictionaryBase
                     ArbitraryCssValueTemplate =
                         """
                         top: {0};
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing"
+                    ]
                 }
             },
             {
@@ -88,7 +91,10 @@ public sealed class Top : ClassDictionaryBase
                     ArbitraryCssValueTemplate =
                         """
                         top: calc({0} * -1);
-                        """
+                        """,
+                    UsesCssCustomProperties = [
+                        "--spacing"
+                    ]
                 }
             },
 

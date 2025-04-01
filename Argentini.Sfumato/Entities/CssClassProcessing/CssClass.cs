@@ -95,9 +95,6 @@ public sealed partial class CssClass : IDisposable
 
     #endregion
 
-    // todo: create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
-    // todo: remove unused properties across all entities
-
     #region Initialization
     
     private void Initialize()
@@ -643,6 +640,9 @@ public sealed partial class CssClass : IDisposable
             
         if (IsImportant)
             Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+
+        foreach (var v in ClassDefinition?.UsesCssCustomProperties ?? [])
+            AppState.Library.UsedCssCustomProperties.Add(v);
     }
 
     #endregion
