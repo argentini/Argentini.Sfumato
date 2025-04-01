@@ -20,6 +20,7 @@ public static class LibraryUnits
         // Order here matters as truncating values like 'em' also work on values ending with 'rem'
 
         "rem", "vmin", "vmax",
+        "cqw", "cqh", "cqi", "cqb", "cqmin", "cqmax", 
         "cm", "in", "mm", "pc", "pt", "px",
         "ch", "em", "ex", "vw", "vh", "Q", "%",
     };
