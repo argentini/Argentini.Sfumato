@@ -333,6 +333,24 @@ public class CssClassTests
                 Styles = "top: 66.666666666667%;",
                 IsValid = true
             },
+            new ()
+            {
+                ClassName = "@container",
+                EscapedClassName = @".\@container",
+                Styles = "container-type: inline-size;",
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "@container/primary",
+                EscapedClassName = @".\@container\/primary",
+                Styles =
+                    """
+                    container-type: inline-size;
+                    container-name: primary;
+                    """,
+                IsValid = true
+            },
         };
 
         foreach (var test in testClasses)
