@@ -32,6 +32,8 @@ public sealed class Library
 
     public Dictionary<string, VariantMetadata> MediaQueryPrefixes { get; } = LibraryMediaQueries.MediaQueryPrefixes.ToDictionary(StringComparer.Ordinal);
 
+    public Dictionary<string, VariantMetadata> ContainerQueryPrefixes { get; } = LibraryContainerQueries.ContainerQueryPrefixes.ToDictionary(StringComparer.Ordinal);
+
     public Dictionary<string, VariantMetadata> PseudoclassPrefixes { get; } = LibraryPseudoClasses.PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal);
 
     #endregion

@@ -351,6 +351,34 @@ public class CssClassTests
                     """,
                 IsValid = true
             },
+            new ()
+            {
+                ClassName = "@sm:@max-lg:leading-none",
+                EscapedClassName = @".\@sm\:\@max-lg\:leading-none",
+                Styles =
+                    """
+                    line-height: 1;
+                    """,
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@container {AppState.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppState.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
+                ]
+            },
+            new ()
+            {
+                ClassName = "@sm/primary:@max-lg/primary:leading-none",
+                EscapedClassName = @".\@sm\/primary\:\@max-lg\/primary\:leading-none",
+                Styles =
+                    """
+                    line-height: 1;
+                    """,
+                IsValid = true,
+                Wrappers =
+                [
+                    $"@container primary {AppState.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppState.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
+                ]
+            },
         };
 
         foreach (var test in testClasses)

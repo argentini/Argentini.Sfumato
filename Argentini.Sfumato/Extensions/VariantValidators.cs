@@ -12,7 +12,23 @@ public static class VariantValidators
 
         return appState.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
     }
-    
+
+    public static bool TryVariantIsContainerQuery(this string variant, AppState appState, out VariantMetadata? cssMediaQuery)
+    {
+        cssMediaQuery = null;
+
+        var variantValue = variant;
+        var indexOfSlash = variant.LastIndexOf('/');
+
+        if (indexOfSlash == 0 || indexOfSlash >= variantValue.Length)
+            return false;
+
+        if (indexOfSlash > 0)
+            variantValue = variantValue[..indexOfSlash];
+
+        return appState.Library.ContainerQueryPrefixes.TryGetValue(variantValue, out cssMediaQuery);
+    }
+
     public static bool TryVariantIsPseudoClass(this string variant, AppState appState, out VariantMetadata? pseudoClass)
     {
         pseudoClass = null;
@@ -80,9 +96,6 @@ public static class VariantValidators
                 variantValue = variantValue[..indexOfSlash];
             }
 
-            if (string.IsNullOrEmpty(variantValue))
-                return false;
-            
             if (variantValue.StartsWith('[') && variantValue.EndsWith(']'))
             {
                 // group-[.is-published]:
@@ -184,9 +197,6 @@ public static class VariantValidators
                 variantValue = variantValue[..indexOfSlash];
             }
 
-            if (string.IsNullOrEmpty(variantValue))
-                return false;
-            
             if (variantValue.StartsWith('[') && variantValue.EndsWith(']'))
             {
                 // peer-[.is-published]:
@@ -462,7 +472,6 @@ public static class VariantValidators
     }
     
     public static bool TryVariantIsCustom(this string variant, AppState appState, out VariantMetadata? custom)
-    
     {
         custom = null;
 

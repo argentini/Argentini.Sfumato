@@ -70,7 +70,7 @@ public static class LibraryMediaQueries
 	        }
         },
 		
-		// Grid Breakpoints
+		// Breakpoints
 
 		{
 			"max-2xl",

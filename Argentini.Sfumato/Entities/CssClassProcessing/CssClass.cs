@@ -148,6 +148,13 @@ public sealed partial class CssClass : IDisposable
 
                     VariantSegments.Add(segment, mediaQuery);
                 }
+                else if (segment.TryVariantIsContainerQuery(AppState, out var containerQuery))
+                {
+                    if (containerQuery is null)
+                        return;
+
+                    VariantSegments.Add(segment, containerQuery);
+                }
                 else if (segment.TryVariantIsPseudoClass(AppState, out var pseudoClass))
                 {
                     if (pseudoClass is null)
@@ -597,7 +604,29 @@ public sealed partial class CssClass : IDisposable
                 Wrappers.Add(Sb?.ToString() ?? string.Empty);
                 Sb?.Clear();
             }
+            
+            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "container").OrderByDescending(s => s.Value.PrefixOrder))
+            {
+                var indexOfSlash = variant.Key.LastIndexOf('/');
+                var modifierValue = string.Empty;
 
+                if (indexOfSlash > 0)
+                    modifierValue = variant.Key[(indexOfSlash + 1)..];
+
+                if (Sb?.Length == 0)
+                    Sb.Append($"@container {(string.IsNullOrEmpty(modifierValue) ? string.Empty : $"{modifierValue} ")}");
+                else
+                    Sb?.Append(" and ");
+            
+                Sb?.Append(variant.Value.Statement);
+            }
+
+            if (Sb?.Length > 0)
+            {
+                Sb?.Append(" {");
+                Wrappers.Add(Sb?.ToString() ?? string.Empty);
+            }
+            
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderByDescending(s => s.Value.PrefixOrder))
             {
                 Wrappers.Add($"{variant.Value.Statement} {{");
