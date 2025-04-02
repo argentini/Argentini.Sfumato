@@ -4,7 +4,6 @@ Sfumato 6 Technical Strategy
 To Do
 =====
 
-0. Container queries? https://tailwindcss.com/docs/responsive-design#container-queries
 1. Refactor to leverage CSS custom properties/namespaces below
 2. Add all utility classes
 3. Create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
