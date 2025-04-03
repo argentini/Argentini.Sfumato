@@ -534,7 +534,7 @@ public static partial class Strings
 	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveZeroUnits();
 
-	[GeneratedRegex(@"/\*[\d\D]*?\#1#", RegexOptions.Compiled)]
+	[GeneratedRegex(@"/\*[\d\D]*?\*/", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveBlockComments();
 	
 	[GeneratedRegex(@"//.*", RegexOptions.Compiled | RegexOptions.Multiline)]
