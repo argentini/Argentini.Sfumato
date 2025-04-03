@@ -3,7 +3,7 @@
 /// <summary>
 /// Various tools for working with strings. 
 /// </summary>
-public static class Strings
+public static partial class Strings
 {
 	#region Constants
 
@@ -492,12 +492,54 @@ public static class Strings
 	/// <returns></returns>
 	public static string CompactCss(this string css)
     {
-        var result = Regex.Replace(css.NormalizeLinebreaks(), @"\s+", " ").Trim();
+	    // Removes the element name before an ID value (e.g. div#main => #main)
+	    var result = CssCompressSelectors().Replace(css, "#");
 
-        result = result.Replace(": ", ":");
+	    // Remove line breaks
+	    result = CssRemoveLineBreaks().Replace(result, string.Empty);
+	    
+	    // Consolidate spaces
+	    result = CssConsolidateSpaces().Replace(result, " ").Trim();
+
+	    // Spaces before delimiters are not needed 
+	    result = CssRemoveDelimiterSpaces().Replace(result, "$1");
+
+	    // Last property value does not need a semicolon
+	    result = result.Replace(";}", "}");
+	    
+	    // 0 values do not need a unit
+	    result = CssRemoveZeroUnits().Replace(result, "$1");
+
+	    // Remove block comments
+	    result = CssRemoveBlockComments().Replace(result, string.Empty);	    
+
+	    // Remove single line comments
+	    result = CssRemoveSingleLineComments().Replace(result, string.Empty);	    
 
         return result;
     }
+
+	[GeneratedRegex(@"[a-zA-Z]+#")]
+	private static partial Regex CssCompressSelectors();
+
+	[GeneratedRegex(@"[\n\r]+\s*")]
+	private static partial Regex CssRemoveLineBreaks();
+    
+	[GeneratedRegex(@"\s+")]
+	private static partial Regex CssConsolidateSpaces();
+    
+	[GeneratedRegex(@"\s?([:,;{}])\s?")]
+	private static partial Regex CssRemoveDelimiterSpaces();
+
+	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)")]
+	private static partial Regex CssRemoveZeroUnits();
+
+	[GeneratedRegex(@"/\*[\d\D]*?\#1#")]
+	private static partial Regex CssRemoveBlockComments();
+	
+	[GeneratedRegex(@"//.*", RegexOptions.Multiline)]
+	private static partial Regex CssRemoveSingleLineComments();	
+	
 	
 	/// <summary>
 	/// Repeat a string a specified number of times.
@@ -964,6 +1006,6 @@ public static class Strings
             Console.WriteLine(line.NormalizeLinebreaks(Environment.NewLine));
         }
     }
-    
+
     #endregion
 }
