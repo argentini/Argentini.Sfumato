@@ -519,25 +519,25 @@ public static partial class Strings
         return result;
     }
 
-	[GeneratedRegex(@"[a-zA-Z]+#")]
+	[GeneratedRegex(@"[a-zA-Z]+#", RegexOptions.Compiled)]
 	private static partial Regex CssCompressSelectors();
 
-	[GeneratedRegex(@"[\n\r]+\s*")]
+	[GeneratedRegex(@"[\n\r]+\s*", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveLineBreaks();
     
-	[GeneratedRegex(@"\s+")]
+	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
 	private static partial Regex CssConsolidateSpaces();
     
-	[GeneratedRegex(@"\s?([:,;{}])\s?")]
+	[GeneratedRegex(@"\s?([:,;{}])\s?", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveDelimiterSpaces();
 
-	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)")]
+	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveZeroUnits();
 
-	[GeneratedRegex(@"/\*[\d\D]*?\#1#")]
+	[GeneratedRegex(@"/\*[\d\D]*?\#1#", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveBlockComments();
 	
-	[GeneratedRegex(@"//.*", RegexOptions.Multiline)]
+	[GeneratedRegex(@"//.*", RegexOptions.Compiled | RegexOptions.Multiline)]
 	private static partial Regex CssRemoveSingleLineComments();	
 	
 	
