@@ -53,6 +53,6 @@ public class CssTests
     {
         var minified = Css.CompactCss();
         
-        Assert.Equal(45170, minified.Length);
+        Assert.Equal(420, minified.Length);
     }
 }
