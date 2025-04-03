@@ -495,52 +495,39 @@ public static partial class Strings
 	    // Removes the element name before an ID value (e.g. div#main => #main)
 	    var result = CssCompressSelectors().Replace(css, "#");
 
-	    // Remove line breaks
-	    result = CssRemoveLineBreaks().Replace(result, string.Empty);
-	    
+	    // Remove line breaks, block comments
+	    result = CssRemovals().Replace(result, string.Empty);
+
 	    // Consolidate spaces
 	    result = CssConsolidateSpaces().Replace(result, " ").Trim();
-
-	    // Spaces before delimiters are not needed 
-	    result = CssRemoveDelimiterSpaces().Replace(result, "$1");
 
 	    // Last property value does not need a semicolon
 	    result = result.Replace(";}", "}");
 	    
+	    // Spaces before delimiters are not needed 
+	    result = CssRemoveDelimiterSpaces().Replace(result, "$1");
+
 	    // 0 values do not need a unit
 	    result = CssRemoveZeroUnits().Replace(result, "$1");
-
-	    // Remove block comments
-	    result = CssRemoveBlockComments().Replace(result, string.Empty);	    
-
-	    // Remove single line comments
-	    result = CssRemoveSingleLineComments().Replace(result, string.Empty);	    
 
         return result;
     }
 
-	[GeneratedRegex(@"[a-zA-Z]+#", RegexOptions.Compiled)]
-	private static partial Regex CssCompressSelectors();
+	[GeneratedRegex(@"([\n\r]+\s*)|(/\*[\d\D]*?\*/)", RegexOptions.Compiled)]
+	private static partial Regex CssRemovals();
 
-	[GeneratedRegex(@"[\n\r]+\s*", RegexOptions.Compiled)]
-	private static partial Regex CssRemoveLineBreaks();
-    
-	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
-	private static partial Regex CssConsolidateSpaces();
-    
 	[GeneratedRegex(@"\s?([:,;{}])\s?", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveDelimiterSpaces();
 
 	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)", RegexOptions.Compiled)]
 	private static partial Regex CssRemoveZeroUnits();
+	
+	[GeneratedRegex(@"[a-zA-Z]+#", RegexOptions.Compiled)]
+	private static partial Regex CssCompressSelectors();
 
-	[GeneratedRegex(@"/\*[\d\D]*?\*/", RegexOptions.Compiled)]
-	private static partial Regex CssRemoveBlockComments();
-	
-	[GeneratedRegex(@"//.*", RegexOptions.Compiled | RegexOptions.Multiline)]
-	private static partial Regex CssRemoveSingleLineComments();	
-	
-	
+	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+	private static partial Regex CssConsolidateSpaces();
+    
 	/// <summary>
 	/// Repeat a string a specified number of times.
 	/// </summary>
