@@ -45,14 +45,16 @@ public class CssTests
                                     /*# sourceMappingURL=app.css.map */
                                     
                                     """;
+
+    private static string Minified => """
+                                      *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:transparent}*{min-width:0;min-height:0}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Aptos","Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"}
+                                      """;
     
     #endregion
 
     [Fact]
     public void CompactCss()
     {
-        var minified = Css.CompactCss();
-        
-        Assert.Equal(420, minified.Length);
+        Assert.Equal(Minified, Css.CompactCss());
     }
 }
