@@ -1,9 +1,41 @@
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable CollectionNeverQueried.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Argentini.Sfumato;
 
-public sealed class AppRunnerSettings
+public partial class AppRunnerSettings
 {
-    public string CssFilePath { get; set; } = string.Empty;
-    public string CssOutputFilePath { get; set; } = "sfumato.css";
+	#region Regular Expressions
+
+	[GeneratedRegex(@"(/\*[\d\D]*?\*/)", RegexOptions.Compiled)]
+	private static partial Regex RemoveBlockCommentsRegex();
+	
+	[GeneratedRegex(@"::sfumato\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
+	private static partial Regex SfumatoCssBlockRegex();
+
+	[GeneratedRegex(@"((?<property>--[\w-]+)\s*:\s*(?<value>(?:""(?:\\.|[^""\\])*""|'(?:\\.|[^'\\])*'|[^;])+)\s*;)", RegexOptions.Compiled)]
+	private static partial Regex CssCustomPropertiesRegex();
+
+	[GeneratedRegex(@"@keyframes\s+(?<name>[a-zA-Z0-9_-]+)\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
+	private static partial Regex CssKeyframeBlocksRegex();
+
+	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+	private static partial Regex ConsolidateSpacesRegex();
+	
+	[GeneratedRegex(@"\s+(?=\r\n|\n)", RegexOptions.Compiled)]
+	private static partial Regex WhitespaceBeforeLineBreakRegex();
+	
+	[GeneratedRegex(@"(?:\r\n|\n){3,}", RegexOptions.Compiled)]
+	private static partial Regex ConsolidateLineBreaksRegex();
+	
+	#endregion
+
+	#region Properties
+	
+	public string CssFilePath { get; set; } = string.Empty;
+	public string CssOutputFilePath { get; set; } = "sfumato.css";
 
     public bool UseMinify { get; set; }
     public bool UseReset { get; set; } = true;
@@ -17,14 +49,20 @@ public sealed class AppRunnerSettings
     public string TrimmedCssContent { get; set; } = string.Empty;
     public Dictionary<string, string> SfumatoBlockItems { get; } = [];
 
+    #endregion
+    
+    /// <summary>
+    /// Extract the Sfumato settings block from the CSS content, remove from CSS content.
+    /// Also removes block comments and whitespace before line breaks.
+    /// </summary>
     public void ExtractCssContent()
     {
 	    try
 	    {
-	        CssContent = AppRunner.WhitespaceBeforeLineBreakRegex().Replace(CssContent, string.Empty);
-	        CssContent = AppRunner.RemoveBlockCommentsRegex().Replace(CssContent, string.Empty);
+	        CssContent = WhitespaceBeforeLineBreakRegex().Replace(CssContent, string.Empty);
+	        CssContent = RemoveBlockCommentsRegex().Replace(CssContent, string.Empty);
 				    
-	        var quoteMatches = AppRunner.SfumatoCssBlockRegex().Matches(CssContent);
+	        var quoteMatches = SfumatoCssBlockRegex().Matches(CssContent);
 
 	        if (quoteMatches.Count == 0)
 	        {
@@ -42,7 +80,7 @@ public sealed class AppRunnerSettings
 
 	        var lineBreaks = CssContent.Contains("\r\n") ? "\r\n\r\n" : "\n\n";
 			    
-	        TrimmedCssContent = AppRunner.ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), lineBreaks);
+	        TrimmedCssContent = ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), lineBreaks);
 	    }
 	    catch (Exception e)
 	    {
@@ -51,18 +89,21 @@ public sealed class AppRunnerSettings
 	    }
     }
     
+    /// <summary>
+    /// Parse Sfumato settings block into dictionary items. 
+    /// </summary>
     public void ExtractSfumatoItems()
     {
 	    try
 	    {
 	        var sfumatoCssBlock = SfumatoCssBlock.Trim()[SfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim();
 
-	        var quoteMatches = AppRunner.CssCustomPropertiesRegex().Matches(sfumatoCssBlock);
+	        var quoteMatches = CssCustomPropertiesRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
 	            SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf(':')].Trim(), match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim());
 			    
-	        quoteMatches = AppRunner.CssKeyframeBlocksRegex().Matches(sfumatoCssBlock);
+	        quoteMatches = CssKeyframeBlocksRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
 	            SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf('{')].Trim(), match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim());
@@ -80,6 +121,10 @@ public sealed class AppRunnerSettings
 	    }
     }
 
+    /// <summary>
+    /// Process project settings from the dictionary.
+    /// Only handles operation settings like minify, paths, etc.
+    /// </summary>
     public void ProcessProjectSettings()
     {
 	    try
@@ -98,7 +143,7 @@ public sealed class AppRunnerSettings
 
 		    if (SfumatoBlockItems.TryGetValue("--paths", out var pathsValue))
 		    {
-			    var paths = AppRunner.ConsolidateSpacesRegex().Replace(pathsValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
+			    var paths = ConsolidateSpacesRegex().Replace(pathsValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
 
 			    if (paths.Length != 0)
 			    {
@@ -109,7 +154,7 @@ public sealed class AppRunnerSettings
 
 		    if (SfumatoBlockItems.TryGetValue("--not-paths", out var notPathsValue))
 		    {
-			    var notPaths = AppRunner.ConsolidateSpacesRegex().Replace(notPathsValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
+			    var notPaths = ConsolidateSpacesRegex().Replace(notPathsValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
 
 			    if (notPaths.Length != 0)
 			    {

@@ -1,66 +1,67 @@
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable CollectionNeverQueried.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 using Argentini.Sfumato.Entities.Library;
 
 namespace Argentini.Sfumato;
 
-public partial class AppRunner
+public sealed class AppRunner
 {
-	#region Regular Expressions
-
-	[GeneratedRegex(@"(/\*[\d\D]*?\*/)", RegexOptions.Compiled)]
-	public static partial Regex RemoveBlockCommentsRegex();
-	
-	[GeneratedRegex(@"::sfumato\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
-	public static partial Regex SfumatoCssBlockRegex();
-
-	[GeneratedRegex(@"((?<property>--[\w-]+)\s*:\s*(?<value>(?:""(?:\\.|[^""\\])*""|'(?:\\.|[^'\\])*'|[^;])+)\s*;)", RegexOptions.Compiled)]
-	public static partial Regex CssCustomPropertiesRegex();
-
-	[GeneratedRegex(@"@keyframes\s+(?<name>[a-zA-Z0-9_-]+)\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
-	public static partial Regex CssKeyframeBlocksRegex();
-
-	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
-	public static partial Regex ConsolidateSpacesRegex();
-	
-	[GeneratedRegex(@"\s+(?=\r\n|\n)", RegexOptions.Compiled)]
-	public static partial Regex WhitespaceBeforeLineBreakRegex();
-	
-	[GeneratedRegex(@"(?:\r\n|\n){3,}", RegexOptions.Compiled)]
-	public static partial Regex ConsolidateLineBreaksRegex();
-	
-	#endregion
-	
 	#region Run Mode Properties
 
 	public AppState AppState { get; }
 	public Library Library { get; } = new();
-	public AppRunnerSettings AppRunnerSettings { get; }
+	public AppRunnerSettings AppRunnerSettings { get; set; }
 
+	private readonly string _cssFilePath;
+	private readonly string _cssContent = string.Empty;
+	private readonly bool _useMinify;
+	
     #endregion
 
     public AppRunner(AppState appState, string cssFilePath = "", bool useMinify = false)
     {
 	    AppState = appState;
 
+	    _cssFilePath = cssFilePath;
+	    _useMinify = useMinify;
+	    
+	    if (string.IsNullOrEmpty(_cssFilePath) == false)
+		    _cssContent = File.ReadAllText(_cssFilePath);
+
 	    AppRunnerSettings = new AppRunnerSettings
 	    {
-			CssFilePath = cssFilePath,
-			UseMinify = useMinify,
+		    CssFilePath = _cssFilePath,
+		    UseMinify = _useMinify,
+		    CssContent = _cssContent
 	    };
-	    
-	    if (string.IsNullOrEmpty(cssFilePath) == false)
-		    AppRunnerSettings.CssContent = File.ReadAllText(AppRunnerSettings.CssFilePath);
     }
 
+    /// <summary>
+    /// Resets settings, loads CSS content, processes CSS content.
+    /// </summary>
     public async Task LoadCssSettingsAsync()
     {
 	    try
 	    {
-		    AppRunnerSettings.ExtractCssContent();
-		    AppRunnerSettings.ExtractSfumatoItems();
-		    AppRunnerSettings.ProcessProjectSettings();
+		    AppRunnerSettings = new AppRunnerSettings
+		    {
+			    CssFilePath = _cssFilePath,
+			    UseMinify = _useMinify,
+			    CssContent = _cssContent
+		    };
+		    
+		    AppRunnerSettings.ExtractCssContent(); // Extract Sfumato settings and CSS content
+		    AppRunnerSettings.ExtractSfumatoItems(); // Parse all the Sfumato settings into a Dictionary<string,string>()
+		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
 
 
 
+		    
+		    
+		    
 
 
 
