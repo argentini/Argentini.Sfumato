@@ -21,6 +21,12 @@ public partial class AppRunner
 	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
 	private static partial Regex ConsolidateSpacesRegex();
 	
+	[GeneratedRegex(@"\s+(?=\r\n|\n)", RegexOptions.Compiled)]
+	private static partial Regex WhitespaceBeforeLineBreakRegex();
+	
+	[GeneratedRegex(@"(?:\r\n|\n){3,}", RegexOptions.Compiled)]
+	private static partial Regex ConsolidateLineBreaksRegex();
+	
 	#endregion
 	
 	#region Run Mode Properties
@@ -49,6 +55,8 @@ public partial class AppRunner
     {
 	    try
 	    {
+		    AppRunnerSettings.CssContent = WhitespaceBeforeLineBreakRegex().Replace(AppRunnerSettings.CssContent, string.Empty);
+
 		    var quoteMatches = SfumatoCssBlockRegex().Matches(AppRunnerSettings.CssContent);
 
 		    if (quoteMatches.Count == 0)
@@ -64,8 +72,11 @@ public partial class AppRunner
 		    }
 
 		    AppRunnerSettings.SfumatoCssBlock = quoteMatches[0].Value;
-		    AppRunnerSettings.TrimmedCssContent = AppRunnerSettings.CssContent.Replace(AppRunnerSettings.SfumatoCssBlock, string.Empty).Trim();
 
+		    var lineBreaks = AppRunnerSettings.CssContent.Contains("\r\n") ? "\r\n\r\n" : "\n\n";
+		    
+		    AppRunnerSettings.TrimmedCssContent = ConsolidateLineBreaksRegex().Replace(AppRunnerSettings.CssContent.Replace(AppRunnerSettings.SfumatoCssBlock, string.Empty), lineBreaks);
+		    
 		    var sfumatoCssBlock = AppRunnerSettings.SfumatoCssBlock.Trim()[AppRunnerSettings.SfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim();
 
 		    sfumatoCssBlock = RemoveBlockCommentsRegex().Replace(sfumatoCssBlock, string.Empty);
@@ -85,7 +96,10 @@ public partial class AppRunner
 		    }
 
 		    if (AppRunnerSettings.SfumatoBlockItems.Count == 0)
-			    return;
+		    {
+			    await Console.Out.WriteLineAsync($"{AppState.CliErrorPrefix}No options specified in file: {AppRunnerSettings.CssFilePath}");
+			    Environment.Exit(1);
+		    }
 
 		    if (AppRunnerSettings.SfumatoBlockItems.TryGetValue("--use-reset", out var useReset))
 			    AppRunnerSettings.UseReset = useReset.Equals("true", StringComparison.Ordinal);
