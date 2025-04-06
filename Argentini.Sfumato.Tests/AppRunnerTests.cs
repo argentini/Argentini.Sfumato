@@ -8,7 +8,6 @@ namespace Argentini.Sfumato.Tests;
 public class AppRunnerTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
-    private AppRunner AppRunner { get; } = new(new AppState(), "");
 
     public AppRunnerTests(ITestOutputHelper testOutputHelper)
     {
@@ -498,10 +497,10 @@ public class AppRunnerTests
     [Fact]
     public async Task SfumatoBlockParsing()
     {
-        AppRunner.AppRunnerSettings.CssContent = Css;
-
-        await AppRunner.LoadCssSettingsAsync();
+        var appRunner = new AppRunner(new AppState(), "../../../sample.css", true);
         
-        Assert.Equal(405, AppRunner.AppRunnerSettings.SfumatoBlockItems.Count);
+        await appRunner.LoadCssSettingsAsync();
+        
+        Assert.Equal(408, appRunner.AppRunnerSettings.SfumatoBlockItems.Count);
     }
 }

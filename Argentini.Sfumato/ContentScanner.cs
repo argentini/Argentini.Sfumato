@@ -9,19 +9,15 @@ public static partial class ContentScanner
 {
     #region Regular Expressions
     
-    public const string PatternQuotedStrings =
+    [GeneratedRegex(
         """
         (?<delim>(\\")|["'`])
         (?<content>(?:(?!\k<delim>)[\s\S])*?)
         \k<delim>
-        """;
-    
-    private const string PatternQuotedSubstrings = @"\S+";
-
-    [GeneratedRegex(PatternQuotedStrings, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
+        """, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
     public static partial Regex QuotedStringsRegex();
     
-    [GeneratedRegex(PatternQuotedSubstrings, RegexOptions.Compiled)]
+    [GeneratedRegex(@"\S+", RegexOptions.Compiled)]
     public static partial Regex UtilityClassRegex();
     
     #endregion
