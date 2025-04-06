@@ -1,0 +1,14 @@
+::sfumato {
+
+    --paths: ["../Models/", "../Views/"]; /* Relative paths for project scanning; required */
+    --output: "output.css"; /* Generated CSS file path; required */
+    --not-paths: ["../Views/temp/"]; /* Relative paths to exclude content scanning */
+
+    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/*
+    Your custom CSS goes here
+*/

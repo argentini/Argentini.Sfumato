@@ -6,14 +6,14 @@ public static class VariantValidators
 {
     #region Identify Variants
 
-    public static bool TryVariantIsMediaQuery(this string variant, AppState appState, out VariantMetadata? cssMediaQuery)
+    public static bool TryVariantIsMediaQuery(this string variant, AppRunner appRunner, out VariantMetadata? cssMediaQuery)
     {
         cssMediaQuery = null;
 
-        return appState.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
+        return appRunner.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
     }
 
-    public static bool TryVariantIsContainerQuery(this string variant, AppState appState, out VariantMetadata? cssMediaQuery)
+    public static bool TryVariantIsContainerQuery(this string variant, AppRunner appRunner, out VariantMetadata? cssMediaQuery)
     {
         cssMediaQuery = null;
 
@@ -26,17 +26,17 @@ public static class VariantValidators
         if (indexOfSlash > 0)
             variantValue = variantValue[..indexOfSlash];
 
-        return appState.Library.ContainerQueryPrefixes.TryGetValue(variantValue, out cssMediaQuery);
+        return appRunner.Library.ContainerQueryPrefixes.TryGetValue(variantValue, out cssMediaQuery);
     }
 
-    public static bool TryVariantIsPseudoClass(this string variant, AppState appState, out VariantMetadata? pseudoClass)
+    public static bool TryVariantIsPseudoClass(this string variant, AppRunner appRunner, out VariantMetadata? pseudoClass)
     {
         pseudoClass = null;
 
-        return appState.Library.PseudoclassPrefixes.TryGetValue(variant, out pseudoClass);
+        return appRunner.Library.PseudoclassPrefixes.TryGetValue(variant, out pseudoClass);
     }
 
-    public static bool TryVariantIsGroup(this string variant, AppState appState, out VariantMetadata? group)
+    public static bool TryVariantIsGroup(this string variant, AppRunner appRunner, out VariantMetadata? group)
     {
         group = null;
 
@@ -63,7 +63,7 @@ public static class VariantValidators
 
             var variantValue = variant.TrimStart("group-aria-");
 
-            if (string.IsNullOrEmpty(variantValue) || TryVariantIsPseudoClass(variantValue, appState, out var pseudoClass) == false)
+            if (string.IsNullOrEmpty(variantValue) || TryVariantIsPseudoClass(variantValue, appRunner, out var pseudoClass) == false)
                 return false;
 
             if (pseudoClass is null)
@@ -111,7 +111,7 @@ public static class VariantValidators
                     SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ",
                 };
             }
-            else if (TryVariantIsPseudoClass(variantValue, appState, out var pseudoClass))
+            else if (TryVariantIsPseudoClass(variantValue, appRunner, out var pseudoClass))
             {
                 // group-hover:
 
@@ -137,7 +137,7 @@ public static class VariantValidators
         return true;
     }
     
-    public static bool TryVariantIsPeer(this string variant, AppState appState, out VariantMetadata? peer)
+    public static bool TryVariantIsPeer(this string variant, AppRunner appRunner, out VariantMetadata? peer)
     {
         peer = null;
 
@@ -164,7 +164,7 @@ public static class VariantValidators
 
             var variantValue = variant.TrimStart("peer-aria-");
 
-            if (string.IsNullOrEmpty(variantValue) || TryVariantIsPseudoClass(variantValue, appState, out var pseudoClass) == false)
+            if (string.IsNullOrEmpty(variantValue) || TryVariantIsPseudoClass(variantValue, appRunner, out var pseudoClass) == false)
                 return false;
 
             if (pseudoClass is null)
@@ -212,7 +212,7 @@ public static class VariantValidators
                     SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ~ ",
                 };
             }
-            else if (TryVariantIsPseudoClass(variantValue, appState, out var pseudoClass))
+            else if (TryVariantIsPseudoClass(variantValue, appRunner, out var pseudoClass))
             {
                 // peer-hover:
 
@@ -273,7 +273,7 @@ public static class VariantValidators
         return true;
     }    
 
-    public static bool TryVariantIsHas(this string variant, AppState appState, out VariantMetadata? has)
+    public static bool TryVariantIsHas(this string variant, AppRunner appRunner, out VariantMetadata? has)
     {
         has = null;
 
@@ -306,7 +306,7 @@ public static class VariantValidators
             if (string.IsNullOrEmpty(variantValue))
                 return false;
 
-            if (TryVariantIsPseudoClass(variantValue, appState, out var pseudoClass) == false)
+            if (TryVariantIsPseudoClass(variantValue, appRunner, out var pseudoClass) == false)
                 return false;
             
             has = new VariantMetadata
@@ -323,7 +323,7 @@ public static class VariantValidators
         return true;
     }
 
-    public static bool TryVariantIsSupports(this string variant, AppState appState, out VariantMetadata? supports)
+    public static bool TryVariantIsSupports(this string variant, AppRunner appRunner, out VariantMetadata? supports)
     {
         supports = null;
 
@@ -344,7 +344,7 @@ public static class VariantValidators
             supports = new VariantMetadata
             {
                 PrefixType = "supports",
-                PrefixOrder = appState.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
                 Statement = $"({variantValue.Replace('_', ' ')})"
             };
         }
@@ -357,7 +357,7 @@ public static class VariantValidators
             if (string.IsNullOrEmpty(variantValue))
                 return false;
 
-            var match = appState.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
+            var match = appRunner.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
 
             if (string.IsNullOrEmpty(match))
                 return false;
@@ -365,7 +365,7 @@ public static class VariantValidators
             supports = new VariantMetadata
             {
                 PrefixType = "supports",
-                PrefixOrder = appState.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
                 Statement = $"({match}: initial)"
             };
         }
@@ -377,7 +377,7 @@ public static class VariantValidators
         return true;
     }
     
-    public static bool TryVariantIsNotSupports(this string variant, AppState appState, out VariantMetadata? notSupports)
+    public static bool TryVariantIsNotSupports(this string variant, AppRunner appRunner, out VariantMetadata? notSupports)
     {
         notSupports = null;
 
@@ -398,7 +398,7 @@ public static class VariantValidators
             notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
-                PrefixOrder = appState.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
                 Statement = $"not ({variantValue.Replace('_', ' ')})"
             };
         }
@@ -411,7 +411,7 @@ public static class VariantValidators
             if (string.IsNullOrEmpty(variantValue))
                 return false;
 
-            var match = appState.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
+            var match = appRunner.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
 
             if (string.IsNullOrEmpty(match))
                 return false;
@@ -419,7 +419,7 @@ public static class VariantValidators
             notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
-                PrefixOrder = appState.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
                 Statement = $"not ({match}: initial)"
             };
         }
@@ -471,7 +471,7 @@ public static class VariantValidators
         return true;
     }
     
-    public static bool TryVariantIsCustom(this string variant, AppState appState, out VariantMetadata? custom)
+    public static bool TryVariantIsCustom(this string variant, AppRunner appRunner, out VariantMetadata? custom)
     {
         custom = null;
 
@@ -487,7 +487,7 @@ public static class VariantValidators
             custom = new VariantMetadata
             {
                 PrefixType = "wrapper",
-                PrefixOrder = appState.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
                 Statement = $"{variantValue.Replace('_', ' ')}"
             };
         }

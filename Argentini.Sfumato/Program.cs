@@ -18,33 +18,33 @@ internal class Program
 		
 		var appState = new AppState();
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
-        var sassVersion = await appState.GetEmbeddedSassVersionAsync();
 
         await appState.InitializeAsync(args);
         
 		if (appState.VersionMode)
 		{
 			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
-            await Console.Out.WriteLineAsync($"Dart Sass Version {sassVersion}");
 			Environment.Exit(0);
 		}
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
-		await Console.Out.WriteLineAsync("Sfumato: A modern CSS generation tool powered by Sass");
-		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / Dart Sass {sassVersion}");
+		await Console.Out.WriteLineAsync("Sfumato: A modern CSS generation tool");
+		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 		
 		if (appState.InitMode)
 		{
-            var yaml = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.YamlPath, "sfumato-complete.yml"), Library.FileAccessRetryMs, cancellationTokenSource.Token);
+            var cssReferenceFile = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.EmbeddedCssPath, "example.css"), Library.FileAccessRetryMs, cancellationTokenSource.Token);
 			
+			/*
 			if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
 				appState.WorkingPath = appState.WorkingPathOverride;
 			
-			await File.WriteAllTextAsync(Path.Combine(appState.WorkingPath, "sfumato.yml"), yaml, cancellationTokenSource.Token);			
+			await File.WriteAllTextAsync(Path.Combine(appState.WorkingPath, "example.css"), cssReferenceFile, cancellationTokenSource.Token);			
 			
-			await Console.Out.WriteLineAsync($"Created sfumato.yml file at {appState.WorkingPath}");
+			await Console.Out.WriteLineAsync($"Created example.css file at {appState.WorkingPath}");
+			*/
 			await Console.Out.WriteLineAsync();
 			
 			Environment.Exit(0);
@@ -55,35 +55,44 @@ internal class Program
             await Console.Out.WriteLineAsync();
 
             const string introText = """
-                                     Sfumato will recursively scan your project directory for SCSS files and transpile them._
-                                     It will also inject Sfumato styles into your generated CSS wherever the appropriate Sfumato directive is found:
+                                     Specify one or more CSS files and Sfumato will scan each for project settings._
+                                     It will then watch each project path for instances of valid utility classes as files are saved._
+                                     The result is an output CSS file containing only the styles for used utility classes, for each specified source CSS file:
                                      
-                                     Directives:
+                                     CSS Settings:
                                      """;
             introText.WriteToConsole(80);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Directives:".Length));
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("CSS Settings:".Length));
 
-            var directivesText = $$"""
-                                 {{Strings.TriangleRight}} `@sfumato base;`
-                                   Embed browser reset and base element styles
+            var directivesText =
+				$$"""
+				::sfumato {
+				    --paths: ["../Models/", "../Views/"];
+				    --output: "output.css";
+				    --not-paths: ["../Views/temp/"];
 
-                                 {{Strings.TriangleRight}} `@sfumato utilities;`
-                                   Embed utility classes based on which ones are being used in your project
-                                   files (configurable in a `sfumato.yml` settings file)
+				    --use-reset: true; /* Inject the CSS reset; default is true */
+				    --use-forms: true; /* Inject form input styles default is true */
+				    --use-minify: false; /* Compress the output CSS by default; default is false */
+				}
 
-                                 {{Strings.TriangleRight}} `@apply [class name] [...];`
-                                   Embed the styles for a specific utility class within your own classes;
-                                   used to create custom classes with one or more utility class styles
-                                   (e.g. `.heading { @apply text-2xl/5 bold }`)
+				{{Strings.TriangleRight}} `@apply [class name] [...];`
+				  Embed the styles for a specific utility class within your own classes;
+				  used to create custom classes with one or more utility class styles
+				  (e.g. `.heading { @apply text-2xl/5 bold; }`)
 
-                                 Command Line Usage:
-                                 """;
+				{{Strings.TriangleRight}} `@variant [variant name] { .. }`
+				  Use @media queries by variant name in your custom CSS code;
+				  (e.g. `@variant dark { heading { @apply text-2xl/5 bold; } }`)
+				
+				Command Line Usage:
+				""";
             directivesText.WriteToConsole(80);
             await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Command Line Usage:".Length));
 
             const string cliUsageText = """
                                         sfumato [help|version]
-                                        sfumato [build|watch] [options]
+                                        sfumato [build|watch] [file] [--minify] [file] [--minify] etc.
 
                                         Commands:
                                         """;
@@ -97,18 +106,11 @@ internal class Program
                                         version   : Show the sfumato version number
                                         help      : Show this help message
 
-                                        * build and watch commands look in the current path for a `sfumato.yml`
-                                          settings file unless using the `--path` option; visit https://sfumato.app
-                                          for more information on creating a sfumato.yml settings file
-
-                                        Options:
                                         """;
             commandsText.WriteToConsole(80);
-            await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
 
             const string optionsText = """
-                                       --path    : Follow with a relative or absolute path to/for your sfumato.yml
-                                                   settings file (e.g. `sfumato watch --path Code/MyProject`)
+                                       [file]    : File path to a CSS file that has imported Sfumato
                                        --minify  : Minify CSS output; use with build and watch commands
                                        """;
             optionsText.WriteToConsole(80);
@@ -118,10 +120,13 @@ internal class Program
 			Environment.Exit(0);
 		}
 
+		/*
 		await Console.Out.WriteLineAsync($"Working Path     :  {appState.WorkingPath}");
 		await Console.Out.WriteLineAsync($"Transpile        :  {(appState.Minify ? "Minify" : "Expanded")}");
+		*/
 		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(Library.MaxConsoleWidth));
 
+		/*
 		foreach (var project in appState.Settings.Projects)
 		{
 			await Console.Out.WriteLineAsync($"Project          :  {project.ProjectName}");
@@ -151,12 +156,10 @@ internal class Program
 				appState.StringBuilderPool.Return(paths);
 			}        
 		}
+		*/
 		
 		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(Library.MaxConsoleWidth));
 
-		if (appState.DiagnosticMode)
-			appState.DiagnosticOutput.TryAdd("init000", $"Initialized app in {totalTimer.FormatTimer()}{Environment.NewLine}");
-		
 		totalTimer.Restart();
 
 		await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
@@ -171,13 +174,6 @@ internal class Program
 		
 		
 		
-		if (appState.DiagnosticMode)
-		{
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("DIAGNOSTICS:");
-			await Console.Out.WriteLineAsync(string.Join(string.Empty, appState.DiagnosticOutput.OrderBy(d => d.Key).Select(v => v.Value)));
-		}
-
 		Environment.Exit(0);
 	}
 }

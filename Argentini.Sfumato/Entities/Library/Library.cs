@@ -10,7 +10,7 @@ namespace Argentini.Sfumato.Entities.Library;
 
 public sealed class Library
 {
-    #region Utility Class Constants
+    #region Theme Properties
 
     public Dictionary<string, string> ColorsByName { get; set; } = LibraryColors.Values.ToDictionary(StringComparer.Ordinal);
 

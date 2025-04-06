@@ -28,7 +28,7 @@ public static partial class ContentScanner
     
     #region File Parsing Methods
     
-    public static Dictionary<string,CssClass> ScanFileForUtilityClasses(string fileContent, AppState appState)
+    public static Dictionary<string,CssClass> ScanFileForUtilityClasses(string fileContent, AppRunner appRunner)
     {
         if (string.IsNullOrEmpty(fileContent))
             return [];
@@ -40,7 +40,7 @@ public static partial class ContentScanner
         var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
 
         foreach (var quotedSubstring in quotedSubstrings)
-            ScanStringForClasses(quotedSubstring, results, appState);
+            ScanStringForClasses(quotedSubstring, results, appRunner);
         
         return results;
     }
@@ -58,11 +58,11 @@ public static partial class ContentScanner
         }
     }
 
-    private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, AppState appState)
+    private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, AppRunner appRunner)
     {
         foreach (Match match in UtilityClassRegex().Matches(quotedString))
         {
-            var cssClass = new CssClass(appState, match.Value);
+            var cssClass = new CssClass(appRunner, match.Value);
             
             if (cssClass.IsValid)
                 results.TryAdd(match.Value, cssClass);

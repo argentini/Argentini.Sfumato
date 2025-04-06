@@ -5,7 +5,7 @@ namespace Argentini.Sfumato.Tests;
 
 public class Benchmarks
 {
-    private AppState AppState { get; } = new();
+    private AppRunner AppRunner { get; } = new(new AppState(), "");
     
     private static string Markup => """
                                     <!DOCTYPE html>
@@ -54,6 +54,6 @@ public class Benchmarks
     [Benchmark]
     public Dictionary<string,CssClass> ScanFileForClasses()
     {
-        return ContentScanner.ScanFileForUtilityClasses(Markup, AppState);
+        return ContentScanner.ScanFileForUtilityClasses(Markup, AppRunner);
     }
 }

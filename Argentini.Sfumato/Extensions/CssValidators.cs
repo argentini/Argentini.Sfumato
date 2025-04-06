@@ -28,37 +28,37 @@ public static class CssValidators
         return index >= value.Length ? string.Empty : value[index..];         
     }
 
-    public static bool ValueIsAngleHue(this string value, AppState appState)
+    public static bool ValueIsAngleHue(this string value, AppRunner appRunner)
     {
         var unit = GetUnit(value);
 
-        return string.IsNullOrEmpty(unit) == false && appState.Library.CssAngleUnits.Any(u => u == unit);
+        return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssAngleUnits.Any(u => u == unit);
     }
 
-    public static bool ValueIsColorName(this string value, AppState appState)
+    public static bool ValueIsColorName(this string value, AppRunner appRunner)
     {
-        return appState.Library.ColorsByName.ContainsKey(value);
+        return appRunner.Library.ColorsByName.ContainsKey(value);
     }
 
-    public static bool ValueIsDimensionLength(this string value, AppState appState)
-    {
-        var unit = GetUnit(value);
-
-        return string.IsNullOrEmpty(unit) == false && appState.Library.CssLengthUnits.Any(u => u == unit);
-    }
-
-    public static bool ValueIsDurationTime(this string value, AppState appState)
+    public static bool ValueIsDimensionLength(this string value, AppRunner appRunner)
     {
         var unit = GetUnit(value);
 
-        return string.IsNullOrEmpty(unit) == false && appState.Library.CssDurationUnits.Any(u => u == unit);
+        return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssLengthUnits.Any(u => u == unit);
     }
 
-    public static bool ValueIsFrequency(this string value, AppState appState)
+    public static bool ValueIsDurationTime(this string value, AppRunner appRunner)
     {
         var unit = GetUnit(value);
 
-        return string.IsNullOrEmpty(unit) == false && appState.Library.CssFrequencyUnits.Any(u => u == unit);
+        return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssDurationUnits.Any(u => u == unit);
+    }
+
+    public static bool ValueIsFrequency(this string value, AppRunner appRunner)
+    {
+        var unit = GetUnit(value);
+
+        return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssFrequencyUnits.Any(u => u == unit);
     }
 
     public static bool ValueIsImageUrl(this string value)
@@ -76,11 +76,11 @@ public static class CssValidators
         return int.TryParse(segments[0].Trim(), out _) && int.TryParse(segments[1].Trim(), out _);
     }
 
-    public static bool ValueIsResolution(this string value, AppState appState)
+    public static bool ValueIsResolution(this string value, AppRunner appRunner)
     {
         var unit = GetUnit(value);
 
-        return string.IsNullOrEmpty(unit) == false && appState.Library.CssResolutionUnits.Any(u => u == unit);
+        return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssResolutionUnits.Any(u => u == unit);
     }
 
     #endregion

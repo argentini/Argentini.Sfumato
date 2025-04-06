@@ -8,7 +8,7 @@ namespace Argentini.Sfumato.Tests;
 public class CssClassTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
-    private AppState AppState { get; } = new();
+    private AppRunner AppRunner { get; } = new(new AppState(), "");
 
     public CssClassTests(ITestOutputHelper testOutputHelper)
     {
@@ -88,7 +88,7 @@ public class CssClassTests
 
         foreach (var nightmareClass in nightmareClasses)
         {
-            var result = new CssClass(AppState, nightmareClass);
+            var result = new CssClass(AppRunner, nightmareClass);
 
             Assert.NotNull(result);
 
@@ -119,8 +119,8 @@ public class CssClassTests
                 IsImportant = true,
                 Wrappers =
                 [
-                    $"@media {AppState.Library.MediaQueryPrefixes["dark"].Statement} {{",
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} and {AppState.Library.MediaQueryPrefixes["max-desk"].Statement} {{",
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["dark"].Statement} {{",
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} and {AppRunner.Library.MediaQueryPrefixes["max-desk"].Statement} {{",
                     "@supports(display:flex) {",
                 ]
             },
@@ -164,11 +164,11 @@ public class CssClassTests
                 ClassName = "tabp:text-indigo-400",
                 EscapedClassName = @".tabp\:text-indigo-400",
                 Styles =
-                    $"color: {AppState.Library.ColorsByName["indigo-400"]};",
+                    $"color: {AppRunner.Library.ColorsByName["indigo-400"]};",
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -187,7 +187,7 @@ public class CssClassTests
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -199,7 +199,7 @@ public class CssClassTests
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -211,7 +211,7 @@ public class CssClassTests
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -223,7 +223,7 @@ public class CssClassTests
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {AppState.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -287,7 +287,7 @@ public class CssClassTests
                 EscapedClassName = ".bg-indigo-400",
                 Styles =
                     $"""
-                    background-color: {AppState.Library.ColorsByName["indigo-400"]};
+                    background-color: {AppRunner.Library.ColorsByName["indigo-400"]};
                     """,
                 IsValid = true
             },
@@ -362,7 +362,7 @@ public class CssClassTests
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@container {AppState.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppState.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
+                    $"@container {AppRunner.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppRunner.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
                 ]
             },
             new ()
@@ -376,14 +376,14 @@ public class CssClassTests
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@container primary {AppState.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppState.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
+                    $"@container primary {AppRunner.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppRunner.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
                 ]
             },
         };
 
         foreach (var test in testClasses)
         {
-            var cssClass = new CssClass(AppState, test.ClassName);
+            var cssClass = new CssClass(AppRunner, test.ClassName);
 
             Assert.NotNull(cssClass);
             Assert.Equal(test.IsValid, cssClass.IsValid);
@@ -404,7 +404,7 @@ public class CssClassTests
     [Fact]
     public void FileContentParsing()
     {
-        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, AppState);
+        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, AppRunner);
 
         _testOutputHelper.WriteLine("FileContentParsing() => Found:");
         _testOutputHelper.WriteLine("");
