@@ -24,7 +24,7 @@ public sealed class AppState
 
     public static string CliErrorPrefix => "Sfumato => ";
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-    public string EmbeddedCssPath { get; set; } = string.Empty;
+    public string EmbeddedCssPath => GetEmbeddedCssPath();
     
     #endregion
 
@@ -38,9 +38,6 @@ public sealed class AppState
     public async Task InitializeAsync(IEnumerable<string> args)
     {
 	    await ProcessCliArgumentsAsync(args);
-	    
-	    if (VersionMode == false && HelpMode == false && InitMode == false)
-		    EmbeddedCssPath = await GetEmbeddedCssPathAsync();
     }
 
     #endregion
@@ -112,36 +109,31 @@ public sealed class AppState
 		}
 	}
 
-    private static async Task<string> GetEmbeddedCssPathAsync()
+    private static string GetEmbeddedCssPath()
     {
 	    var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
 	    while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
 	    {
 		    workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
-            
-#if DEBUG
-		    if (Directory.Exists(Path.Combine(workingPath, "css")) == false)
-			    continue;
 
-		    var tempPath = workingPath; 
+		    if (Directory.Exists(Path.Combine(workingPath, "contentFiles")))
+		    {
+			    workingPath = Path.Combine(workingPath, "contentFiles", "any", "any", "css");
+			    break;
+		    }		    
 			
-		    workingPath = Path.Combine(tempPath, "css");
-#else
-			if (Directory.Exists(Path.Combine(workingPath, "contentFiles")) == false)
-				continue;
-		
-			var tempPath = workingPath; 
-
-			workingPath = Path.Combine(tempPath, "contentFiles", "any", "any", "css");
-#endif
-		    break;
+		    if (Directory.Exists(Path.Combine(workingPath, "css")))
+		    {
+			    workingPath = Path.Combine(workingPath, "css");
+			    break;
+		    }		    
 		}
 
         // ReSharper disable once InvertIf
         if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
         {
-            await Console.Out.WriteLineAsync($"{CliErrorPrefix}Embedded CSS resources cannot be found.");
+            Console.WriteLine($"{CliErrorPrefix}Embedded CSS resources cannot be found.");
             Environment.Exit(1);
         }
         

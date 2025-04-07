@@ -12,7 +12,7 @@ public sealed class Library
 {
     #region Theme Properties
 
-    public Dictionary<string, string> ColorsByName { get; set; } = LibraryColors.Values.ToDictionary(StringComparer.Ordinal);
+    public Dictionary<string, string> ColorsByName { get; set; } = [];
 
     public HashSet<string> CssDataTypes { get; } = LibraryUnits.CssDataTypes.ToHashSet(StringComparer.Ordinal);
 

@@ -34,33 +34,34 @@ public sealed class AppRunner
 		    CssFilePath = _cssFilePath,
 		    UseMinify = _useMinify
 	    };
+	    
+	    try
+	    {
+		    AppRunnerSettings = new AppRunnerSettings();
+		    AppRunnerSettings.ExtractSfumatoItems(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")));
+
+		    ProcessSettings();
+	    }
+	    catch (Exception e)
+	    {
+		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
+		    Environment.Exit(1);
+	    }
     }
 
-    /// <summary>
-    /// Resets settings, loads CSS content, processes CSS content.
-    /// </summary>
     public async Task LoadCssFileAsync()
     {
 	    try
 	    {
-		    AppRunnerSettings = new AppRunnerSettings
-		    {
-			    CssFilePath = _cssFilePath,
-			    UseMinify = _useMinify
-		    };
-		    
+		    AppRunnerSettings.CssFilePath = _cssFilePath;
+		    AppRunnerSettings.UseMinify = _useMinify;
+
 		    AppRunnerSettings.LoadAndExtractCssContent(); // Extract Sfumato settings and CSS content
 		    AppRunnerSettings.ExtractSfumatoItems(); // Parse all the Sfumato settings into a Dictionary<string,string>()
 		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
 		    AppRunnerSettings.ImportPartials(); // Read in all CSS partial files (@import "...")
 
-
-
-
-
-
-
-
+		    ProcessSettings();
 	    }
 	    catch (Exception e)
 	    {
@@ -68,18 +69,24 @@ public sealed class AppRunner
 		    Environment.Exit(1);
 	    }
     }
-    
+
     #endregion
     
     #region Process Settings
 
-    public void LoadDefaultSettings()
+    public void ProcessSettings()
     {
+	    Library.ColorsByName.Clear();
+		    
+	    foreach (var color in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--color-")))
+	    {
+			Library.ColorsByName.Add(color.Key[8..], color.Value);
+	    }
 	    
-    }
-    
-    public void ProcessUserSettings()
-    {
+	    
+	    
+	    
+	    
 	    
     }
     

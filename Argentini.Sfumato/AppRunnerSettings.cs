@@ -44,6 +44,9 @@ public partial class AppRunnerSettings
 		{
 			_cssFilePath = value;
 
+			if (string.IsNullOrEmpty(_cssFilePath))
+				return;
+			
 			NativeCssFilePathOnly = Path.GetFullPath(Path.GetDirectoryName(CssFilePath.SetNativePathSeparators()) ?? string.Empty);
 			CssFileNameOnly = Path.GetFileName(CssFilePath.SetNativePathSeparators());
 			NativeCssOutputFilePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, CssOutputFilePath.SetNativePathSeparators()));
@@ -134,12 +137,14 @@ public partial class AppRunnerSettings
     /// <summary>
     /// Parse Sfumato settings block into dictionary items. 
     /// </summary>
-    public void ExtractSfumatoItems()
+    public void ExtractSfumatoItems(string sfumatoCssBlock = "")
     {
 	    try
 	    {
-	        var sfumatoCssBlock = SfumatoCssBlock.Trim()[SfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim();
-
+		    SfumatoBlockItems.Clear();
+		    
+		    sfumatoCssBlock = string.IsNullOrEmpty(sfumatoCssBlock) ? SfumatoCssBlock.Trim()[SfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim() : sfumatoCssBlock.Trim()[sfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim();
+		    
 	        var quoteMatches = CssCustomPropertiesRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)

@@ -17,7 +17,7 @@ public class AppRunnerTests
     public async Task SfumatoBlockParsing()
     {
         var appRunner = new AppRunner(new AppState(), "../../../sample.css", true);
-        
+
         await appRunner.LoadCssFileAsync();
         
         Assert.Equal(6, appRunner.AppRunnerSettings.SfumatoBlockItems.Count);
