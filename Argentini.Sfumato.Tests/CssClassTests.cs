@@ -63,7 +63,7 @@ public class CssClassTests
     #endregion
 
     [Fact]
-    public async Task BasicUtilityClassParsing()
+    public void BasicUtilityClassParsing()
     {
         string[] nightmareClasses =
         [
@@ -85,7 +85,7 @@ public class CssClassTests
             "dark:group-[.is-published]:[&.active]:tabp:hover:text-[length:var(--my-text-size-var)]/5",
         ];
 
-        var appRunner = new AppRunner(new AppState(), "");
+        var appRunner = new AppRunner(new AppState());
 
         foreach (var nightmareClass in nightmareClasses)
         {
@@ -103,9 +103,9 @@ public class CssClassTests
     }
 
     [Fact]
-    public async Task UtilityClassProcessing()
+    public void UtilityClassProcessing()
     {
-        var appRunner = new AppRunner(new AppState(), "");
+        var appRunner = new AppRunner(new AppState());
         var testClasses = new List<TestClass>()
         {
             new ()
@@ -404,9 +404,9 @@ public class CssClassTests
     }
     
     [Fact]
-    public async Task FileContentParsing()
+    public void FileContentParsing()
     {
-        var appRunner = new AppRunner(new AppState(), "");
+        var appRunner = new AppRunner(new AppState());
         var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appRunner);
 
         _testOutputHelper.WriteLine("FileContentParsing() => Found:");

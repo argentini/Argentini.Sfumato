@@ -520,7 +520,8 @@ public sealed partial class CssClass : IDisposable
                             else if (double.TryParse(ModifierValue, out var alpha))
                                 Value = colorValue.SetWebColorAlpha(alpha);
                             else
-                                Value = colorValue;                        }
+                                Value = colorValue;
+                        }
                         else
                         {
                             Value = colorValue;

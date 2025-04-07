@@ -4,6 +4,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 using Argentini.Sfumato.Entities.Library;
+using Argentini.Sfumato.Entities.UtilityClasses;
 
 namespace Argentini.Sfumato;
 
@@ -76,12 +77,87 @@ public sealed class AppRunner
 
     public void ProcessSettings()
     {
-	    Library.ColorsByName.Clear();
-		    
 	    foreach (var color in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--color-")))
 	    {
 			Library.ColorsByName.Add(color.Key[8..], color.Value);
 	    }
+	    
+	    foreach (var font in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--font-")))
+	    {
+		    if (font.Key.StartsWith("--font-weight-"))
+		    {
+			    var key = $"font-{font.Key["--font-weight-".Length..]}";
+			    var value = new ClassDefinition
+			    {
+					IsSimpleUtility = true,
+					Template = 
+						$"""
+						 font-weight: var({font.Key});"
+						 """,
+					UsesCssCustomProperties = [font.Key]
+			    };
+
+			    if (Library.SimpleClasses.TryAdd(key, value))
+				    Library.ScannerClassNamePrefixes.Insert(key);
+			    else
+				    Library.SimpleClasses[key] = value;
+		    }
+            else if (font.Key.StartsWith("--font-"))
+		    {
+			    var key = font.Key.Trim('-');
+			    var value = new ClassDefinition
+			    {
+				    IsSimpleUtility = true,
+				    Template = 
+					    $"font-family: var({font.Key});",
+				    UsesCssCustomProperties = [font.Key]
+			    };
+
+			    if (Library.SimpleClasses.TryAdd(key, value))
+				    Library.ScannerClassNamePrefixes.Insert(key);
+			    else
+				    Library.SimpleClasses[key] = value;
+		    }
+	    }
+
+	    foreach (var text in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--text-")))
+	    {
+		    if (text.Key.EndsWith("--line-height"))
+			    continue;
+		    
+		    var key = text.Key.Trim('-');
+		    var value = new ClassDefinition
+		    {
+			    IsSimpleUtility = true,
+			    UsesSlashModifier = true,
+			    Template =
+				    $"""
+				    font-size: var({text.Key});
+				    line-height: var({text.Key}--line-height);
+				    """,
+			    ModifierTemplate =
+				    $$"""
+				    font-size: var({{text.Key}});
+				    line-height: calc(var(--spacing) * {1});
+				    """,
+			    ArbitraryModifierTemplate =
+				    $$"""
+				    font-size: var({{text.Key}});
+				    line-height: {1};
+				    """,
+			    UsesCssCustomProperties =
+			    [
+				    "--spacing", text.Key, $"{text.Key}--line-height"
+			    ]
+		    };
+
+		    if (Library.SimpleClasses.TryAdd(key, value))
+			    Library.ScannerClassNamePrefixes.Insert(key);
+		    else
+			    Library.SimpleClasses[key] = value;
+	    }
+	    
+	    
 	    
 	    
 	    
