@@ -18,7 +18,7 @@ public class AppRunnerTests
     {
         var appRunner = new AppRunner(new AppState(), "../../../sample.css", true);
         
-        await appRunner.LoadCssSettingsAsync();
+        await appRunner.LoadCssFileAsync();
         
         Assert.Equal(6, appRunner.AppRunnerSettings.SfumatoBlockItems.Count);
     }

@@ -39,7 +39,7 @@ public sealed class AppRunner
     /// <summary>
     /// Resets settings, loads CSS content, processes CSS content.
     /// </summary>
-    public async Task LoadCssSettingsAsync()
+    public async Task LoadCssFileAsync()
     {
 	    try
 	    {
@@ -49,7 +49,7 @@ public sealed class AppRunner
 			    UseMinify = _useMinify
 		    };
 		    
-		    AppRunnerSettings.ExtractCssContent(); // Extract Sfumato settings and CSS content
+		    AppRunnerSettings.LoadAndExtractCssContent(); // Extract Sfumato settings and CSS content
 		    AppRunnerSettings.ExtractSfumatoItems(); // Parse all the Sfumato settings into a Dictionary<string,string>()
 		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
 		    AppRunnerSettings.ImportPartials(); // Read in all CSS partial files (@import "...")

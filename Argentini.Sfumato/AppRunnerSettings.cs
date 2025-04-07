@@ -92,10 +92,11 @@ public partial class AppRunnerSettings
     #endregion
     
     /// <summary>
-    /// Extract the Sfumato settings block from the CSS content, remove from CSS content.
+    /// Load CSS file content, extract the Sfumato settings block, remove from CSS content.
     /// Also removes block comments and whitespace before line breaks.
+    /// Puts trimmed CSS content into ProcessedCssContent.
     /// </summary>
-    public void ExtractCssContent()
+    public void LoadAndExtractCssContent()
     {
 	    try
 	    {
@@ -162,40 +163,6 @@ public partial class AppRunnerSettings
 	    }
     }
 
-    public void ImportPartials()
-    {
-	    var importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
-	    
-	    while (importIndex != -1)
-	    {
-		    var importStatement = ProcessedCssContent[importIndex..(ProcessedCssContent.IndexOf(';', importIndex) + 1)];
-		    var filePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, importStatement.Replace("@import", string.Empty).Trim().Trim(';').Trim('\"').SetNativePathSeparators()));
-
-		    if (File.Exists(Path.Combine(filePath)) == false)
-		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
-			    Environment.Exit(1);
-		    }
-
-		    try
-		    {
-			    var importedCss = File.ReadAllText(filePath);
-
-			    ProcessedCssContent = ProcessedCssContent.Replace(importStatement, importedCss);
-
-				importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
-
-		    }
-		    catch (Exception e)
-		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}Error reading file: {filePath}; {e.Message}");
-			    Environment.Exit(1);
-		    }
-	    }
-	    
-	    ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(ProcessedCssContent, LineBreak + LineBreak);
-    }
-    
     /// <summary>
     /// Process project settings from the dictionary.
     /// Only handles operation settings like minify, paths, etc.
@@ -255,5 +222,43 @@ public partial class AppRunnerSettings
 		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
 		    Environment.Exit(1);
 	    }
+    }
+    
+    /// <summary>
+    /// Read all nested partial references (e.g. @import "...") from ProcessedCssContent
+    /// and replace import statements with partial file content.
+    /// </summary>
+    public void ImportPartials()
+    {
+	    var importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
+	    
+	    while (importIndex != -1)
+	    {
+		    var importStatement = ProcessedCssContent[importIndex..(ProcessedCssContent.IndexOf(';', importIndex) + 1)];
+		    var filePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, importStatement.Replace("@import", string.Empty).Trim().Trim(';').Trim('\"').SetNativePathSeparators()));
+
+		    if (File.Exists(Path.Combine(filePath)) == false)
+		    {
+			    Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
+			    Environment.Exit(1);
+		    }
+
+		    try
+		    {
+			    var importedCss = File.ReadAllText(filePath);
+
+			    ProcessedCssContent = ProcessedCssContent.Replace(importStatement, importedCss);
+
+			    importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
+
+		    }
+		    catch (Exception e)
+		    {
+			    Console.WriteLine($"{AppState.CliErrorPrefix}Error reading file: {filePath}; {e.Message}");
+			    Environment.Exit(1);
+		    }
+	    }
+	    
+	    ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(ProcessedCssContent, LineBreak + LineBreak);
     }
 }
