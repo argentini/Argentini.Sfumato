@@ -3,6 +3,8 @@
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+using Argentini.Sfumato.Extensions;
+
 namespace Argentini.Sfumato;
 
 public partial class AppRunnerSettings
@@ -33,20 +35,58 @@ public partial class AppRunnerSettings
 	#endregion
 
 	#region Properties
+
+	private string _cssFilePath = string.Empty;
+	public string CssFilePath
+	{
+		get => _cssFilePath;
+		set
+		{
+			_cssFilePath = value;
+
+			NativeCssFilePathOnly = Path.GetFullPath(Path.GetDirectoryName(CssFilePath.SetNativePathSeparators()) ?? string.Empty);
+			CssFileNameOnly = Path.GetFileName(CssFilePath.SetNativePathSeparators());
+			NativeCssOutputFilePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, CssOutputFilePath.SetNativePathSeparators()));
+		}
+	}
+
+	private string _cssOutputFilePath = "sfumato.css";
+	public string CssOutputFilePath
+	{
+		get => _cssOutputFilePath;
+		set
+		{
+			_cssOutputFilePath = value;
+
+			NativeCssOutputFilePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, CssOutputFilePath.SetNativePathSeparators()));
+		}
+	}
+
+	private string _cssContent = string.Empty;
+	public string CssContent
+	{
+		get => _cssContent;
+		private set
+		{
+			_cssContent = value;
+			LineBreak = _cssContent.Contains("\r\n") ? "\r\n" : "\n";
+		}
+	}
+
+	public bool UseMinify { get; set; }
+	public bool UseReset { get; set; } = true;
+	public bool UseForms { get; set; } = true;
+
+	public string NativeCssFilePathOnly { get; private set; } = string.Empty;
+	public string CssFileNameOnly { get; private set; } = string.Empty;
+	public string NativeCssOutputFilePath { get; private set; } = string.Empty;
+	public string LineBreak { get; private set; } = "\n";
 	
-	public string CssFilePath { get; set; } = string.Empty;
-	public string CssOutputFilePath { get; set; } = "sfumato.css";
-
-    public bool UseMinify { get; set; }
-    public bool UseReset { get; set; } = true;
-    public bool UseForms { get; set; } = true;
-
     public List<string> Paths { get; } = [];
     public List<string> NotPaths { get; } = [];
 
-    public string CssContent { get; set; } = string.Empty;
-    public string SfumatoCssBlock { get; set; } = string.Empty;
-    public string TrimmedCssContent { get; set; } = string.Empty;
+    public string SfumatoCssBlock { get; private set; } = string.Empty;
+    public string ProcessedCssContent { get; private set; } = string.Empty;
     public Dictionary<string, string> SfumatoBlockItems { get; } = [];
 
     #endregion
@@ -59,9 +99,12 @@ public partial class AppRunnerSettings
     {
 	    try
 	    {
+		    if (string.IsNullOrEmpty(CssFilePath) == false)
+			    CssContent = File.ReadAllText(Path.GetFullPath(CssFilePath.SetNativePathSeparators()));
+
 	        CssContent = WhitespaceBeforeLineBreakRegex().Replace(CssContent, string.Empty);
 	        CssContent = RemoveBlockCommentsRegex().Replace(CssContent, string.Empty);
-				    
+
 	        var quoteMatches = SfumatoCssBlockRegex().Matches(CssContent);
 
 	        if (quoteMatches.Count == 0)
@@ -78,9 +121,7 @@ public partial class AppRunnerSettings
 
 	        SfumatoCssBlock = quoteMatches[0].Value;
 
-	        var lineBreaks = CssContent.Contains("\r\n") ? "\r\n\r\n" : "\n\n";
-			    
-	        TrimmedCssContent = ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), lineBreaks);
+	        ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), LineBreak + LineBreak);
 	    }
 	    catch (Exception e)
 	    {
@@ -121,6 +162,40 @@ public partial class AppRunnerSettings
 	    }
     }
 
+    public void ImportPartials()
+    {
+	    var importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
+	    
+	    while (importIndex != -1)
+	    {
+		    var importStatement = ProcessedCssContent[importIndex..(ProcessedCssContent.IndexOf(';', importIndex) + 1)];
+		    var filePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, importStatement.Replace("@import", string.Empty).Trim().Trim(';').Trim('\"').SetNativePathSeparators()));
+
+		    if (File.Exists(Path.Combine(filePath)) == false)
+		    {
+			    Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
+			    Environment.Exit(1);
+		    }
+
+		    try
+		    {
+			    var importedCss = File.ReadAllText(filePath);
+
+			    ProcessedCssContent = ProcessedCssContent.Replace(importStatement, importedCss);
+
+				importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
+
+		    }
+		    catch (Exception e)
+		    {
+			    Console.WriteLine($"{AppState.CliErrorPrefix}Error reading file: {filePath}; {e.Message}");
+			    Environment.Exit(1);
+		    }
+	    }
+	    
+	    ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(ProcessedCssContent, LineBreak + LineBreak);
+    }
+    
     /// <summary>
     /// Process project settings from the dictionary.
     /// Only handles operation settings like minify, paths, etc.

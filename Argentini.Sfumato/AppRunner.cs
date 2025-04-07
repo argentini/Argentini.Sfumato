@@ -9,18 +9,19 @@ namespace Argentini.Sfumato;
 
 public sealed class AppRunner
 {
-	#region Run Mode Properties
+	#region Properties
 
 	public AppState AppState { get; }
 	public Library Library { get; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; }
 
 	private readonly string _cssFilePath;
-	private readonly string _cssContent = string.Empty;
 	private readonly bool _useMinify;
 	
     #endregion
 
+    #region Construction
+    
     public AppRunner(AppState appState, string cssFilePath = "", bool useMinify = false)
     {
 	    AppState = appState;
@@ -28,14 +29,10 @@ public sealed class AppRunner
 	    _cssFilePath = cssFilePath;
 	    _useMinify = useMinify;
 	    
-	    if (string.IsNullOrEmpty(_cssFilePath) == false)
-		    _cssContent = File.ReadAllText(_cssFilePath);
-
 	    AppRunnerSettings = new AppRunnerSettings
 	    {
 		    CssFilePath = _cssFilePath,
-		    UseMinify = _useMinify,
-		    CssContent = _cssContent
+		    UseMinify = _useMinify
 	    };
     }
 
@@ -49,19 +46,18 @@ public sealed class AppRunner
 		    AppRunnerSettings = new AppRunnerSettings
 		    {
 			    CssFilePath = _cssFilePath,
-			    UseMinify = _useMinify,
-			    CssContent = _cssContent
+			    UseMinify = _useMinify
 		    };
 		    
 		    AppRunnerSettings.ExtractCssContent(); // Extract Sfumato settings and CSS content
 		    AppRunnerSettings.ExtractSfumatoItems(); // Parse all the Sfumato settings into a Dictionary<string,string>()
 		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
+		    AppRunnerSettings.ImportPartials(); // Read in all CSS partial files (@import "...")
 
 
 
-		    
-		    
-		    
+
+
 
 
 
@@ -72,4 +68,20 @@ public sealed class AppRunner
 		    Environment.Exit(1);
 	    }
     }
+    
+    #endregion
+    
+    #region Process Settings
+
+    public void LoadDefaultSettings()
+    {
+	    
+    }
+    
+    public void ProcessUserSettings()
+    {
+	    
+    }
+    
+    #endregion
 }
