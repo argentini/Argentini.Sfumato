@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>5.2.6.0</AssemblyVersion>
-        <FileVersion>5.2.6.0</FileVersion>
-        <PackageVersion>5.2.6</PackageVersion>
+        <AssemblyVersion>5.2.7.0</AssemblyVersion>
+        <FileVersion>5.2.7.0</FileVersion>
+        <PackageVersion>5.2.7</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -26,7 +26,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Fixed issue with parsing named peer/group</PackageReleaseNotes>
+        <PackageReleaseNotes>Can now specify alternate yml settings file names</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
