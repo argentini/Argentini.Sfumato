@@ -21,4 +21,7 @@ public sealed class BackgroundImage : ClassDictionaryBase
             },
         });
     }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
 }

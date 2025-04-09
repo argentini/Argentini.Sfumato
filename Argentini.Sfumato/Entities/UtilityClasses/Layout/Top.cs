@@ -101,4 +101,7 @@ public sealed class Top : ClassDictionaryBase
             #endregion
         });
     }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
 }

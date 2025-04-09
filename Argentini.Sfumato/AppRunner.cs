@@ -3,6 +3,7 @@
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+using System.Reflection;
 using Argentini.Sfumato.Entities.Library;
 using Argentini.Sfumato.Entities.UtilityClasses;
 
@@ -82,88 +83,17 @@ public sealed class AppRunner
 			Library.ColorsByName.Add(color.Key[8..], color.Value);
 	    }
 	    
-	    foreach (var font in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--font-")))
+	    var derivedTypes = Assembly.GetExecutingAssembly()
+		    .GetTypes()
+		    .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
+
+	    foreach (var type in derivedTypes)
 	    {
-		    if (font.Key.StartsWith("--font-weight-"))
-		    {
-			    var key = $"font-{font.Key["--font-weight-".Length..]}";
-			    var value = new ClassDefinition
-			    {
-					IsSimpleUtility = true,
-					Template = 
-						$"""
-						 font-weight: var({font.Key});"
-						 """,
-					UsesCssCustomProperties = [font.Key]
-			    };
-
-			    if (Library.SimpleClasses.TryAdd(key, value))
-				    Library.ScannerClassNamePrefixes.Insert(key);
-			    else
-				    Library.SimpleClasses[key] = value;
-		    }
-            else if (font.Key.StartsWith("--font-"))
-		    {
-			    var key = font.Key.Trim('-');
-			    var value = new ClassDefinition
-			    {
-				    IsSimpleUtility = true,
-				    Template = 
-					    $"font-family: var({font.Key});",
-				    UsesCssCustomProperties = [font.Key]
-			    };
-
-			    if (Library.SimpleClasses.TryAdd(key, value))
-				    Library.ScannerClassNamePrefixes.Insert(key);
-			    else
-				    Library.SimpleClasses[key] = value;
-		    }
-	    }
-
-	    foreach (var text in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--text-")))
-	    {
-		    if (text.Key.EndsWith("--line-height"))
+		    if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
 			    continue;
 		    
-		    var key = text.Key.Trim('-');
-		    var value = new ClassDefinition
-		    {
-			    IsSimpleUtility = true,
-			    UsesSlashModifier = true,
-			    Template =
-				    $"""
-				    font-size: var({text.Key});
-				    line-height: var({text.Key}--line-height);
-				    """,
-			    ModifierTemplate =
-				    $$"""
-				    font-size: var({{text.Key}});
-				    line-height: calc(var(--spacing) * {1});
-				    """,
-			    ArbitraryModifierTemplate =
-				    $$"""
-				    font-size: var({{text.Key}});
-				    line-height: {1};
-				    """,
-			    UsesCssCustomProperties =
-			    [
-				    "--spacing", text.Key, $"{text.Key}--line-height"
-			    ]
-		    };
-
-		    if (Library.SimpleClasses.TryAdd(key, value))
-			    Library.ScannerClassNamePrefixes.Insert(key);
-		    else
-			    Library.SimpleClasses[key] = value;
+		    instance.ProcessThemeSettings(this);
 	    }
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
     }
     
     #endregion

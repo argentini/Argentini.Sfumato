@@ -66,4 +66,7 @@ public sealed class TextAlign : ClassDictionaryBase
             },
         });
     }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
 }

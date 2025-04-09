@@ -22,4 +22,7 @@ public sealed class BackgroundColor : ClassDictionaryBase
             },
         });
     }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
 }

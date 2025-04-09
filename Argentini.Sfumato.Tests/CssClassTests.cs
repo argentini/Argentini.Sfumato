@@ -18,7 +18,7 @@ public class CssClassTests
 
     private static string Markup => """
                                     <!DOCTYPE html>
-                                    <html lang="en">
+                                    <html lang="en" class="font-sans">
                                     <head>
                                         <meta charset="UTF-8">
                                         <title>Sample Website</title>
@@ -415,6 +415,6 @@ public class CssClassTests
         foreach (var cname in utilityClasses)
             _testOutputHelper.WriteLine($"{cname.Key}");
         
-        Assert.Equal(26, utilityClasses.Count);
+        Assert.Equal(27, utilityClasses.Count);
     }
 }

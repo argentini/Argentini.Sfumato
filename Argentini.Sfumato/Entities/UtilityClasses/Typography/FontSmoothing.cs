@@ -32,4 +32,7 @@ public sealed class FontSmoothing : ClassDictionaryBase
             }
         });
     }
+
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
 }

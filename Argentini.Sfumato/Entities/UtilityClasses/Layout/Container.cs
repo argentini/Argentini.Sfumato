@@ -28,4 +28,7 @@ public sealed class Container : ClassDictionaryBase
             },
         });
     }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
 }

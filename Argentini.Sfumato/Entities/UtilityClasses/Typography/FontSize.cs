@@ -33,4 +33,44 @@ public sealed class FontSize : ClassDictionaryBase
             },
         });
     }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {
+        foreach (var text in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--text-") && i.Key.LastIndexOf("--", StringComparison.Ordinal) == 0))
+        {
+            if (text.Key.EndsWith("--line-height"))
+                continue;
+
+            var key = text.Key.Trim('-');
+            var value = new ClassDefinition
+            {
+                IsSimpleUtility = true,
+                UsesSlashModifier = true,
+                Template =
+                    $"""
+                    font-size: var({text.Key});
+                    line-height: var({text.Key}--line-height);
+                    """,
+                ModifierTemplate =
+                    $$"""
+                    font-size: var({{text.Key}});
+                    line-height: calc(var(--spacing) * {1});
+                    """,
+                ArbitraryModifierTemplate =
+                    $$"""
+                    font-size: var({{text.Key}});
+                    line-height: {1};
+                    """,
+                UsesCssCustomProperties =
+                [
+                    "--spacing", text.Key, $"{text.Key}--line-height"
+                ]
+            };
+
+            if (appRunner.Library.SimpleClasses.TryAdd(key, value))
+                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
+            else
+                appRunner.Library.SimpleClasses[key] = value;
+        }
+    }
 }

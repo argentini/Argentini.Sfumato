@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Entities.UtilityClasses;
 
-public class ClassDictionaryBase
+public abstract class ClassDictionaryBase
 {
     public Dictionary<string, ClassDefinition> Data { get; } = new (StringComparer.Ordinal);
     
@@ -9,4 +9,6 @@ public class ClassDictionaryBase
         get => Data[key];
         set => Data[key] = value;
     }
+
+    public abstract void ProcessThemeSettings(AppRunner appRunner);
 }

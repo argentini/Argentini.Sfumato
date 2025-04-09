@@ -62,4 +62,7 @@ public sealed class LineHeight : ClassDictionaryBase
             },
         });
     }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
 }
