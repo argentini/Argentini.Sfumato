@@ -40,7 +40,7 @@ internal class Program
 			if (string.IsNullOrEmpty(runner.AppState.WorkingPathOverride) == false)
 				runner.AppState.WorkingPath = runner.AppState.WorkingPathOverride;
 			
-			await File.WriteAllTextAsync(Path.Combine(runner.AppState.WorkingPath, "sfumato.yml"), yaml, cancellationTokenSource.Token);			
+			await File.WriteAllTextAsync(Path.Combine(runner.AppState.WorkingPath, runner.AppState.FileNameOverride), yaml, cancellationTokenSource.Token);
 			
 			await Console.Out.WriteLineAsync($"Created sfumato.yml file at {runner.AppState.WorkingPath}");
 			await Console.Out.WriteLineAsync();
@@ -116,6 +116,7 @@ internal class Program
 			Environment.Exit(0);
 		}
 
+		await Console.Out.WriteLineAsync($"Settings Path    :  {Path.Combine(runner.AppState.WorkingPath, runner.AppState.FileNameOverride)}");
 		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "Media Query" : "CSS Classes")}");
 		await Console.Out.WriteLineAsync($"Transpile        :  {(runner.AppState.Minify ? "Minify" : "Expanded")}");
 		await Console.Out.WriteLineAsync($"Project Path     :  {runner.AppState.WorkingPath}");
@@ -173,7 +174,7 @@ internal class Program
 			
 			fileWatchers.Add(await CreateFileChangeWatcherAsync(restartAppQueue, new ProjectPath
 			{
-				Path = runner.AppState.SettingsFilePath.TrimEnd("sfumato.yml") ?? string.Empty,
+				Path = runner.AppState.SettingsFilePath.TrimEnd(runner.AppState.FileNameOverride) ?? string.Empty,
 				Extensions = "yaml"
 				
 			}, false));
@@ -506,7 +507,7 @@ internal class Program
 
 						if (eventArgs.ChangeType is WatcherChangeTypes.Changed or WatcherChangeTypes.Created)
 						{
-							if (eventArgs.Name != "sfumato.yml")
+							if (eventArgs.Name != runner.AppState.FileNameOverride)
 								continue;
 							
 							triggered = true;
@@ -518,7 +519,7 @@ internal class Program
 						
 						var renamedEventArgs = (RenamedEventArgs)eventArgs;
 
-						if (renamedEventArgs.OldName == "sfumato.yml")
+						if (renamedEventArgs.OldName == runner.AppState.FileNameOverride)
 							continue;
 							
 						triggered = true;
@@ -527,7 +528,7 @@ internal class Program
 
 					if (triggered)
 					{
-						await Console.Out.WriteLineAsync($"Modified sfumato.yml at {DateTime.Now:HH:mm:ss.fff}");
+						await Console.Out.WriteLineAsync($"Modified yml at {DateTime.Now:HH:mm:ss.fff}");
 						await Console.Out.WriteLineAsync($"{Strings.TriangleRight} Reload settings and rebuild");
 
 						var timer = new Stopwatch();

@@ -4191,6 +4191,7 @@ public sealed class SfumatoAppState
     public SfumatoSettings Settings { get; set; } = new();
     public ConcurrentDictionary<string,string> DiagnosticOutput { get; set; } = new();
     public string WorkingPathOverride { get; private set; } = string.Empty;
+    public string FileNameOverride { get; private set; } = "sfumato.yml";
     public string SettingsFilePath { get; set; } = string.Empty;
     public string WorkingPath { get; set;  } = GetWorkingPath();
     public string SassCliPath { get; private set; } = string.Empty;
@@ -4425,13 +4426,27 @@ public sealed class SfumatoAppState
 	/// <param name="args"></param>
 	private async Task ProcessCliArgumentsAsync(IEnumerable<string>? args)
 	{
-
-// #if DEBUG
-//         Minify = true;
-// #endif
-
         CliArguments.Clear();
-		CliArguments.AddRange(args?.ToList() ?? new List<string>());
+		CliArguments.AddRange(args?.ToList() ?? []);
+
+#if DEBUG
+
+		/*
+		var workingPath = GetWorkingPath();
+		var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
+		
+		if (index == -1)
+			index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests", StringComparison.InvariantCulture);
+
+		index = workingPath[..index].TrimEnd(Path.DirectorySeparatorChar).LastIndexOf(Path.DirectorySeparatorChar);
+
+		CliArguments.Clear();
+		CliArguments.Add("build");
+		CliArguments.Add("--path");
+		CliArguments.Add(Path.Combine(workingPath[..index], "Coursabi", "Coursabi.Apps", "Coursabi.Apps.Client", "Coursabi.Apps.Client", "sfumato-nih.yml"));
+		*/
+        
+#endif
 
 		if (CliArguments.Count < 1)
 			return;
@@ -4479,6 +4494,9 @@ public sealed class SfumatoAppState
 					{
 						var path = CliArguments[x].SetNativePathSeparators();
 
+                        if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                            FileNameOverride = Path.GetFileName(path);
+
 						if (path.Contains(Path.DirectorySeparatorChar) == false &&
 							path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
 							continue;
@@ -4506,16 +4524,9 @@ public sealed class SfumatoAppState
         var workingPath = Directory.GetCurrentDirectory();
         
 #if DEBUG
+
         var index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
         
-        /*
-        if (index == -1)
-	        index = workingPath.IndexOf(Path.DirectorySeparatorChar + "Argentini.Sfumato.Tests" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.InvariantCulture);
-        index = workingPath[..index].TrimEnd(Path.DirectorySeparatorChar).LastIndexOf(Path.DirectorySeparatorChar);
-        return Path.Combine(workingPath[..index], "Coursabi", "Coursabi.Apps", "Coursabi.Apps.Client", "Coursabi.Apps.Client");        
-        */
-        // return Path.Combine(workingPath[..index], "Fynydd-Website-2024", "UmbracoCms");        
-
         if (index > -1)
         {
             workingPath = Path.Combine(workingPath[..index], "Argentini.Sfumato.Tests", "SampleWebsite");
@@ -4829,7 +4840,7 @@ public sealed class SfumatoAppState
 	/// <param name="extension"></param>
 	private async Task AddProjectFileToCollectionAsync(FileInfo projectFile, string extension)
 	{
-		if (projectFile.Name.Equals("sfumato.yml", StringComparison.OrdinalIgnoreCase))
+        if (projectFile.Name.Equals("sfumato.yml", StringComparison.OrdinalIgnoreCase) || projectFile.Name.Equals(FileNameOverride, StringComparison.OrdinalIgnoreCase))
 			return;
 
 		if (extension == "scss" && projectFile.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))

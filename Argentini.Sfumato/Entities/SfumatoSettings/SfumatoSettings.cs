@@ -13,16 +13,16 @@ public sealed class SfumatoSettings
 
     public async Task LoadSettingsAsync(SfumatoAppState appState)
     {
-        #region Find sfumato.yml file
+        #region Find yml file
 
         if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
             appState.WorkingPath = appState.WorkingPathOverride;
         
-        appState.SettingsFilePath = Path.Combine(appState.WorkingPath, "sfumato.yml");
+        appState.SettingsFilePath = Path.Combine(appState.WorkingPath, appState.FileNameOverride);
 
         if (File.Exists(appState.SettingsFilePath) == false)
         {
-            await Console.Out.WriteLineAsync($"Could not find sfumato.yml settings file at path {appState.WorkingPath}");
+            await Console.Out.WriteLineAsync($"Could not find ${appState.FileNameOverride} settings file at path {appState.WorkingPath}");
             await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
             Environment.Exit(1);
         }
