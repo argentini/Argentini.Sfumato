@@ -175,12 +175,12 @@ public static partial class Strings
     /// <param name="value">String to trim</param>
     /// <param name="count">Number of characters to remove</param>
     /// <returns>Trimmed string</returns>
-	public static string? TrimStart(this string? value, int count)
+	public static string TrimStart(this string? value, int count)
 	{
 		if (value is not null && value.Length >= count)
 			return value.Right(value.Length - count);
 
-		return value;
+		return value ?? string.Empty;
 	}
 
 	/// <summary>
@@ -189,12 +189,12 @@ public static partial class Strings
     /// <param name="value">String to trim</param>
     /// <param name="count">Number of characters to remove</param>
     /// <returns>Trimmed string</returns>
-	public static string? TrimEnd(this string? value, int count)
+	public static string TrimEnd(this string? value, int count)
 	{
 		if (value is not null && value.Length >= count)
 			return value.Left(value.Length - count);
 
-		return value;
+		return value ?? string.Empty;
 	}
 
 	/// <summary>
@@ -209,11 +209,9 @@ public static partial class Strings
 		if (source == null || source.IsEmpty() || substring is null or "")
 			return null;
 
-		var result = new StringBuilder(source);
-		
-		result.TrimStart(substring, stringComparison);
-
-		return result.ToString();
+		return source.StartsWith(substring, stringComparison) 
+			? source[substring.Length..] 
+			: source;
 	}
 
 	/// <summary>
@@ -228,11 +226,9 @@ public static partial class Strings
 		if (source == null || source.IsEmpty() || substring is null or "")
 			return null;
 
-		var result = new StringBuilder(source);
-		
-		result.TrimEnd(substring, stringComparison);
-
-		return result.ToString();
+		return source.EndsWith(substring, stringComparison)
+			? source[..^substring.Length]
+			: source;
 	}
 
 	/// <summary>
@@ -242,10 +238,7 @@ public static partial class Strings
 	/// <returns></returns>
 	public static string TrimEndingPathSeparators(this string? value)
 	{
-		if (string.IsNullOrEmpty(value))
-			return string.Empty;
-
-		return value.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar);
+		return string.IsNullOrEmpty(value) ? string.Empty : value.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar);
 	}
 	
 	#endregion
