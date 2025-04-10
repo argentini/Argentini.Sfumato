@@ -10,3 +10,4 @@ global using System.Text.RegularExpressions;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using Microsoft.Extensions.ObjectPool;
+global using Argentini.Sfumato.Extensions;
