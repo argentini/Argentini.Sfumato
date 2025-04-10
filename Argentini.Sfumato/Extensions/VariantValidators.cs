@@ -10,7 +10,10 @@ public static class VariantValidators
     {
         cssMediaQuery = null;
 
-        return appRunner.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
+        if (appRunner.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery))
+            return true;
+
+        return appRunner.Library.SupportsQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
     }
 
     public static bool TryVariantIsContainerQuery(this string variant, AppRunner appRunner, out VariantMetadata? cssMediaQuery)
@@ -344,7 +347,7 @@ public static class VariantValidators
             supports = new VariantMetadata
             {
                 PrefixType = "supports",
-                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
                 Statement = $"({variantValue.Replace('_', ' ')})"
             };
         }
@@ -365,7 +368,7 @@ public static class VariantValidators
             supports = new VariantMetadata
             {
                 PrefixType = "supports",
-                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
                 Statement = $"({match}: initial)"
             };
         }
@@ -398,7 +401,7 @@ public static class VariantValidators
             notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
-                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
                 Statement = $"not ({variantValue.Replace('_', ' ')})"
             };
         }
@@ -419,7 +422,7 @@ public static class VariantValidators
             notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",
-                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
                 Statement = $"not ({match}: initial)"
             };
         }
@@ -487,7 +490,7 @@ public static class VariantValidators
             custom = new VariantMetadata
             {
                 PrefixType = "wrapper",
-                PrefixOrder = appRunner.Library.MediaQueryPrefixes["supports-backdrop-blur"].PrefixOrder,
+                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
                 Statement = $"{variantValue.Replace('_', ' ')}"
             };
         }

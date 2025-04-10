@@ -4,7 +4,6 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 using Argentini.Sfumato.Entities.UtilityClasses;
-using Argentini.Sfumato.Extensions;
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
@@ -582,7 +581,7 @@ public sealed partial class CssClass : IDisposable
 
             foreach (var queryType in new[] { "media", "supports" })
             {
-                foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderByDescending(s => s.Value.PrefixOrder))
+                foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderBy(s => s.Value.PrefixOrder))
                 {
                     if (Sb?.Length == 0)
                         Sb.Append($"@{queryType} ");
@@ -600,7 +599,7 @@ public sealed partial class CssClass : IDisposable
                 Sb?.Clear();
             }
             
-            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "container").OrderByDescending(s => s.Value.PrefixOrder))
+            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "container").OrderBy(s => s.Value.PrefixOrder))
             {
                 var indexOfSlash = variant.Key.LastIndexOf('/');
                 var modifierValue = string.Empty;
@@ -622,7 +621,7 @@ public sealed partial class CssClass : IDisposable
                 Wrappers.Add(Sb?.ToString() ?? string.Empty);
             }
             
-            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderByDescending(s => s.Value.PrefixOrder))
+            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderBy(s => s.Value.PrefixOrder))
             {
                 Wrappers.Add($"{variant.Value.Statement} {{");
             }

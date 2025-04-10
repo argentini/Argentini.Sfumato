@@ -4,6 +4,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 using System.Reflection;
+using Argentini.Sfumato.Entities.CssClassProcessing;
 using Argentini.Sfumato.Entities.Library;
 using Argentini.Sfumato.Entities.UtilityClasses;
 
@@ -78,10 +79,94 @@ public sealed class AppRunner
 
     public void ProcessSettings()
     {
+	    #region Read color definitions
+	    
 	    foreach (var color in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--color-")))
 	    {
-			Library.ColorsByName.Add(color.Key[8..], color.Value);
+		    var key = color.Key.TrimStart("--color-") ?? string.Empty;
+
+		    if (string.IsNullOrEmpty(key))
+			    continue;
+
+		    Library.ColorsByName.Add(key, color.Value);
 	    }
+	    
+	    #endregion
+
+	    #region Read breakpoints
+	    
+	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--breakpoint-")))
+	    {
+		    var key = breakpoint.Key.TrimStart("--breakpoint-") ?? string.Empty;
+
+		    if (string.IsNullOrEmpty(key))
+			    continue;
+		    
+		    Library.MediaQueryPrefixes.Add(key, new VariantMetadata
+		    {
+			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixType = "media",
+			    Statement = $"(width >= {breakpoint.Value})"
+		    });
+		    
+		    Library.MediaQueryPrefixes.Add($"max-{key}", new VariantMetadata
+		    {
+			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixType = "media",
+			    Statement = $"(width < {breakpoint.Value})"
+		    });
+	    }
+	    
+	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--adaptive-breakpoint-")))
+	    {
+		    var key = breakpoint.Key.TrimStart("--adaptive-breakpoint-") ?? string.Empty;
+
+		    if (string.IsNullOrEmpty(key))
+			    continue;
+
+		    if (double.TryParse(breakpoint.Value, out var maxValue) == false)
+			    continue;
+
+		    Library.MediaQueryPrefixes.Add(key, new VariantMetadata
+		    {
+			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixType = "media",
+			    Statement = $"(min-aspect-ratio: {breakpoint.Value})"
+		    });
+		    
+		    Library.MediaQueryPrefixes.Add($"max-{key}", new VariantMetadata
+		    {
+			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixType = "media",
+			    Statement = $"(max-aspect-ratio: {maxValue - 0.000000000001})"
+		    });
+	    }
+
+	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--container-")))
+	    {
+		    var key = breakpoint.Key.TrimStart("--container-") ?? string.Empty;
+
+		    if (string.IsNullOrEmpty(key))
+			    continue;
+
+		    Library.ContainerQueryPrefixes.Add($"@{key}", new VariantMetadata
+		    {
+			    PrefixOrder = Library.ContainerQueryPrefixes.Count + 1,
+			    PrefixType = "container",
+			    Statement = $"(width >= {breakpoint.Value})"
+		    });
+		    
+		    Library.ContainerQueryPrefixes.Add($"@max-{key}", new VariantMetadata
+		    {
+			    PrefixOrder = Library.ContainerQueryPrefixes.Count + 1,
+			    PrefixType = "container",
+			    Statement = $"(width < {breakpoint.Value})"
+		    });
+	    }
+
+	    #endregion
+	    
+		#region Read theme settings from ClassDictionary instances (e.g. --text-xs, etc.)
 	    
 	    var derivedTypes = Assembly.GetExecutingAssembly()
 		    .GetTypes()
@@ -94,6 +179,8 @@ public sealed class AppRunner
 		    
 		    instance.ProcessThemeSettings(this);
 	    }
+	    
+	    #endregion
     }
     
     #endregion
