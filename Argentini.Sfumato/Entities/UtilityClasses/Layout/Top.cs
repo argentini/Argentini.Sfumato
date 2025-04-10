@@ -1,7 +1,5 @@
 // ReSharper disable RawStringCanBeSimplified
 
-using Argentini.Sfumato.Extensions;
-
 namespace Argentini.Sfumato.Entities.UtilityClasses.Layout;
 
 public sealed class Top : ClassDictionaryBase

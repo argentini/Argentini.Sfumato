@@ -1,7 +1,5 @@
 // ReSharper disable RawStringCanBeSimplified
 
-using Argentini.Sfumato.Extensions;
-
 namespace Argentini.Sfumato.Entities.UtilityClasses.Backgrounds;
 
 public sealed class BackgroundColor : ClassDictionaryBase

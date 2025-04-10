@@ -2,18 +2,27 @@
 
 namespace Argentini.Sfumato.Entities.UtilityClasses.Typography;
 
-public sealed class FontWeight : ClassDictionaryBase
+public sealed class LetterSpacing : ClassDictionaryBase
 {
-    public FontWeight()
+    public LetterSpacing()
     {
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
-                "font-", new ClassDefinition
+                "tracking-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesDimensionLength = true,
                     Template = """
-                               font-weight: {0};
+                               letter-spacing: {0};
+                               """
+                }
+            },
+            {
+                "-tracking-", new ClassDefinition
+                {
+                    UsesDimensionLength = true,
+                    Template = """
+                               letter-spacing: calc({0} * -1);
                                """
                 }
             },
@@ -22,14 +31,15 @@ public sealed class FontWeight : ClassDictionaryBase
     
     public override void ProcessThemeSettings(AppRunner appRunner)
     {
-        foreach (var font in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--font-weight-")))
+        foreach (var font in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--tracking-")))
         {
             var key = font.Key.Trim('-');
             var value = new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = 
-                    $"font-weight: {font.Value};"
+                    $"letter-spacing: var({font.Key});",
+                UsesCssCustomProperties = [ font.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))
