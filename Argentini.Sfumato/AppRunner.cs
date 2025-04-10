@@ -43,6 +43,9 @@ public sealed class AppRunner
     
     #region Process Settings
 
+    /// <summary>
+    /// Clears AppRunnerSettings and loads default settings from defaults.css.
+    /// </summary>
     public void Initialize()
     {
 	    try
@@ -59,6 +62,9 @@ public sealed class AppRunner
 	    }
     }
 
+    /// <summary>
+    /// Loads the CSS file, imports partials, extracts the Sfumato settings block, and processes it.
+    /// </summary>
     public async Task LoadCssFileAsync()
     {
 	    try
@@ -80,6 +86,9 @@ public sealed class AppRunner
 	    }
     }
 
+    /// <summary>
+    /// Processes CSS settings for colors and breakpoints, and uses reflection to load all others per utility class file.  
+    /// </summary>
     public void ProcessCssSettings()
     {
 	    #region Read color definitions
@@ -186,6 +195,17 @@ public sealed class AppRunner
 	    #endregion
     }
 
+
+    
+	// todo: scan file paths for utility classes  
+
+	// todo: watchers
+	
+    
+    
+    /// <summary>
+    /// Gather dependencies from all scanned files, consolidate them, and generate the CSS output file.
+    /// </summary>
     public void BuildCssFile()
 	{
 	    try
@@ -223,14 +243,11 @@ public sealed class AppRunner
 				    UsedCss[usedCss.Key] = value;
 		    }
 
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
+		    // todo: inject dependencies into CSS output
+
+		    // todo: iterate utility classes and inject into CSS output
+
+		    // todo: process @apply and CSS custom property usage in CSS source
 		    
 	    }
 	    catch (Exception e)
