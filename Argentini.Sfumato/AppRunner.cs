@@ -39,6 +39,10 @@ public sealed class AppRunner
 	    Initialize();
     }
 
+    #endregion
+    
+    #region Process Settings
+
     public void Initialize()
     {
 	    try
@@ -46,7 +50,7 @@ public sealed class AppRunner
 		    AppRunnerSettings = new AppRunnerSettings();
 		    AppRunnerSettings.ExtractSfumatoItems(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")));
 
-		    ProcessSettings();
+		    ProcessCssSettings();
 	    }
 	    catch (Exception e)
 	    {
@@ -54,10 +58,6 @@ public sealed class AppRunner
 		    Environment.Exit(1);
 	    }
     }
-
-    #endregion
-    
-    #region Process Settings
 
     public async Task LoadCssFileAsync()
     {
@@ -71,7 +71,7 @@ public sealed class AppRunner
 		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
 		    AppRunnerSettings.ImportPartials(); // Read in all CSS partial files (@import "...")
 
-		    ProcessSettings();
+		    ProcessCssSettings();
 	    }
 	    catch (Exception e)
 	    {
@@ -80,7 +80,7 @@ public sealed class AppRunner
 	    }
     }
 
-    public void ProcessSettings()
+    public void ProcessCssSettings()
     {
 	    #region Read color definitions
 	    
@@ -185,6 +185,60 @@ public sealed class AppRunner
 	    
 	    #endregion
     }
+
+    public void BuildCssFile()
+	{
+	    try
+	    {
+		    #region Consolidate dependencies
+
+		    UsedCssCustomProperties.Clear();
+		    UsedCss.Clear();
+
+		    foreach (var scannedFile in ScannedFiles)
+		    {
+			    foreach (var utilityClass in scannedFile.Value.UtilityClasses)
+			    {
+				    foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
+				    {
+					    if (dependency.StartsWith('@'))
+						    UsedCss.TryAddUpdate(dependency, string.Empty);
+					    else
+						    UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+				    }
+			    }
+		    }
+		    
+		    #endregion
+
+		    foreach (var usedCssCustomProperty in UsedCssCustomProperties)
+		    {
+			    if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
+				    UsedCssCustomProperties[usedCssCustomProperty.Key] = value;
+		    }
+		    
+		    foreach (var usedCss in UsedCss)
+		    {
+			    if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value))
+				    UsedCss[usedCss.Key] = value;
+		    }
+
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+	    }
+	    catch (Exception e)
+	    {
+		    Console.WriteLine($"{AppState.CliErrorPrefix}BuildCssFile() - {e.Message}");
+		    Environment.Exit(1);
+	    }
+	}
     
     #endregion
 }
