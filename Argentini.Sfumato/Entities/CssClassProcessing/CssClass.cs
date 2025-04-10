@@ -525,6 +525,8 @@ public sealed partial class CssClass : IDisposable
                         {
                             Value = colorValue;
                         }
+                        
+                        ClassDefinition.UsesCssCustomProperties.Add($"--color-{value}");
                     }
                 }
             }
