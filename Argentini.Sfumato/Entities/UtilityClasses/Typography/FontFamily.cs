@@ -28,7 +28,11 @@ public sealed class FontFamily : ClassDictionaryBase
             {
                 IsSimpleUtility = true,
                 Template = 
-                    $"font-family: {font.Value};"
+                    $"""
+                     font-family: {font.Value};
+                     font-feature-settings: var({font.Key}--font-feature-settings, normal);
+                     font-variation-settings: var({font.Key}--font-variation-settings, normal);
+                     """
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))
