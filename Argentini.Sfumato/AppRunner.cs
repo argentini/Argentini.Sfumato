@@ -17,7 +17,7 @@ public sealed class AppRunner
 
 	public AppState AppState { get; }
 	public Library Library { get; } = new();
-	public AppRunnerSettings AppRunnerSettings { get; set; }
+	public AppRunnerSettings AppRunnerSettings { get; set; } = new();
 	public Dictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
 	public Dictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);
 	public Dictionary<string,string> UsedCss { get; set; } = new(StringComparer.Ordinal);
@@ -54,7 +54,11 @@ public sealed class AppRunner
 		    Environment.Exit(1);
 	    }
     }
+
+    #endregion
     
+    #region Process Settings
+
     public async Task LoadCssFileAsync()
     {
 	    try
@@ -75,10 +79,6 @@ public sealed class AppRunner
 		    Environment.Exit(1);
 	    }
     }
-
-    #endregion
-    
-    #region Process Settings
 
     public void ProcessSettings()
     {
