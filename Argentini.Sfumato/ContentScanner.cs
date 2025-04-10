@@ -22,6 +22,25 @@ public static partial class ContentScanner
     
     #endregion
     
+    #region Validation
+
+    public static bool ValidForScan(this AppRunner appRunner, string filePath)
+    {
+        if (string.IsNullOrEmpty(filePath))
+            return false;
+
+        var fileExtension = Path.GetExtension(filePath);
+        
+        if (appRunner.Library.ValidFileExtensions.Contains(fileExtension) == false)
+            return false;
+
+        var filePathSegments = filePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+
+        return appRunner.Library.IgnoreFolderNames.Any(filePathSegments.Contains) == false && File.Exists(filePath);
+    }
+    
+    #endregion
+    
     #region File Parsing Methods
     
     public static Dictionary<string,CssClass> ScanFileForUtilityClasses(string fileContent, AppRunner appRunner)
