@@ -6,6 +6,7 @@
 using System.Reflection;
 using Argentini.Sfumato.Entities.CssClassProcessing;
 using Argentini.Sfumato.Entities.Library;
+using Argentini.Sfumato.Entities.Scanning;
 using Argentini.Sfumato.Entities.UtilityClasses;
 
 namespace Argentini.Sfumato;
@@ -17,6 +18,9 @@ public sealed class AppRunner
 	public AppState AppState { get; }
 	public Library Library { get; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; }
+	public Dictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
+	public Dictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);
+	public Dictionary<string,string> UsedCss { get; set; } = new(StringComparer.Ordinal);
 
 	private readonly string _cssFilePath;
 	private readonly bool _useMinify;
@@ -31,13 +35,12 @@ public sealed class AppRunner
 
 	    _cssFilePath = cssFilePath;
 	    _useMinify = useMinify;
-	    
-	    AppRunnerSettings = new AppRunnerSettings
-	    {
-		    CssFilePath = _cssFilePath,
-		    UseMinify = _useMinify
-	    };
-	    
+
+	    Initialize();
+    }
+
+    public void Initialize()
+    {
 	    try
 	    {
 		    AppRunnerSettings = new AppRunnerSettings();
@@ -47,11 +50,11 @@ public sealed class AppRunner
 	    }
 	    catch (Exception e)
 	    {
-		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
+		    Console.WriteLine($"{AppState.CliErrorPrefix}Initialize() - {e.Message}");
 		    Environment.Exit(1);
 	    }
     }
-
+    
     public async Task LoadCssFileAsync()
     {
 	    try
@@ -68,7 +71,7 @@ public sealed class AppRunner
 	    }
 	    catch (Exception e)
 	    {
-		    await Console.Out.WriteLineAsync($"{AppState.CliErrorPrefix}{e.Message}");
+		    await Console.Out.WriteLineAsync($"{AppState.CliErrorPrefix}LoadCssFileAsync() - {e.Message}");
 		    Environment.Exit(1);
 	    }
     }
