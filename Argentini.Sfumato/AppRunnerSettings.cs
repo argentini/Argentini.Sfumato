@@ -18,8 +18,8 @@ public partial class AppRunnerSettings
 	[GeneratedRegex(@"((?<property>--[\w-]+)\s*:\s*(?<value>(?:""(?:\\.|[^""\\])*""|'(?:\\.|[^'\\])*'|[^;])+)\s*;)", RegexOptions.Compiled)]
 	private static partial Regex CssCustomPropertiesRegex();
 
-	[GeneratedRegex(@"@keyframes\s+(?<name>[a-zA-Z0-9_-]+)\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
-	private static partial Regex CssKeyframeBlocksRegex();
+	[GeneratedRegex(@"(\.(?<class>[a-zA-Z0-9_-]+)|(@(?<kind>[a-zA-Z0-9_-]+)\s+(?<name>[a-zA-Z0-9_-]+)))\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
+	private static partial Regex CssAtAndClassBlocksRegex();
 
 	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
 	private static partial Regex ConsolidateSpacesRegex();
@@ -146,12 +146,12 @@ public partial class AppRunnerSettings
 	        var quoteMatches = CssCustomPropertiesRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
-	            SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf(':')].Trim(), match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim());
-			    
-	        quoteMatches = CssKeyframeBlocksRegex().Matches(sfumatoCssBlock);
+		        SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf(':')].Trim(), match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim());
+
+	        quoteMatches = CssAtAndClassBlocksRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
-	            SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf('{')].Trim(), match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim());
+		        SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf('{')].Trim(), match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim());
 
 	        if (SfumatoBlockItems.Count > 0)
 	            return;

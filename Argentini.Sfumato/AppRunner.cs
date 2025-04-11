@@ -221,10 +221,10 @@ public sealed class AppRunner
 			    {
 				    foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
 				    {
-					    if (dependency.StartsWith('@'))
-						    UsedCss.TryAddUpdate(dependency, string.Empty);
-					    else
+					    if (dependency.StartsWith("--", StringComparison.Ordinal))
 						    UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+					    else
+						    UsedCss.TryAddUpdate(dependency, string.Empty);
 				    }
 			    }
 		    }
