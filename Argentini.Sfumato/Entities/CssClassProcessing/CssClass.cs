@@ -49,7 +49,7 @@ public sealed partial class CssClass : IDisposable
     /// </summary>
     public ClassDefinition? ClassDefinition;
 
-    public List<string> Wrappers { get; } = [];
+    public Dictionary<uint,string> Wrappers { get; } = [];
 
     public string EscapedSelector { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
@@ -572,33 +572,38 @@ public sealed partial class CssClass : IDisposable
 
     private void GenerateWrappers()
     {
-        Sb?.Clear();
+        if (Sb is null)
+            return;
+
+        Sb.Clear();
 
         try
         {
             if (VariantSegments.TryGetValue("dark", out var darkVariant))
             {
-                Wrappers.Add($"@{darkVariant.PrefixType} {darkVariant.Statement} {{");
+                var wrapper = $"@{darkVariant.PrefixType} {darkVariant.Statement} {{";
+                
+                Wrappers.Add(wrapper.GenerateCrc32(), wrapper);
             }
 
             foreach (var queryType in new[] { "media", "supports" })
             {
                 foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderBy(s => s.Value.PrefixOrder))
                 {
-                    if (Sb?.Length == 0)
+                    if (Sb.Length == 0)
                         Sb.Append($"@{queryType} ");
                     else
-                        Sb?.Append(" and ");
+                        Sb.Append(" and ");
                 
-                    Sb?.Append(variant.Value.Statement);
+                    Sb.Append(variant.Value.Statement);
                 }
 
-                if (Sb?.Length <= 0)
+                if (Sb.Length <= 0)
                     continue;
                 
-                Sb?.Append(" {");
-                Wrappers.Add(Sb?.ToString() ?? string.Empty);
-                Sb?.Clear();
+                Sb.Append(" {");
+                Wrappers.Add(Sb.GenerateCrc32(), Sb.ToString());
+                Sb.Clear();
             }
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "container").OrderBy(s => s.Value.PrefixOrder))
@@ -609,23 +614,25 @@ public sealed partial class CssClass : IDisposable
                 if (indexOfSlash > 0)
                     modifierValue = variant.Key[(indexOfSlash + 1)..];
 
-                if (Sb?.Length == 0)
+                if (Sb.Length == 0)
                     Sb.Append($"@container {(string.IsNullOrEmpty(modifierValue) ? string.Empty : $"{modifierValue} ")}");
                 else
-                    Sb?.Append(" and ");
+                    Sb.Append(" and ");
             
-                Sb?.Append(variant.Value.Statement);
+                Sb.Append(variant.Value.Statement);
             }
 
-            if (Sb?.Length > 0)
+            if (Sb.Length > 0)
             {
-                Sb?.Append(" {");
-                Wrappers.Add(Sb?.ToString() ?? string.Empty);
+                Sb.Append(" {");
+                Wrappers.Add(Sb.GenerateCrc32(), Sb.ToString());
             }
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderBy(s => s.Value.PrefixOrder))
             {
-                Wrappers.Add($"{variant.Value.Statement} {{");
+                var wrapper = $"{variant.Value.Statement} {{";
+                
+                Wrappers.Add(wrapper.GenerateCrc32(), wrapper);
             }
         }
         catch
