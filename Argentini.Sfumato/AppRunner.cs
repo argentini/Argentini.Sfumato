@@ -21,6 +21,7 @@ public sealed class AppRunner
 	public Dictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
 	public Dictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);
 	public Dictionary<string,string> UsedCss { get; set; } = new(StringComparer.Ordinal);
+	public Dictionary<string,CssClass> UtilityClasses { get; set; } = new(StringComparer.Ordinal);
 
 	private readonly string _cssFilePath;
 	private readonly bool _useMinify;
@@ -208,53 +209,106 @@ public sealed class AppRunner
     /// </summary>
     public void BuildCssFile()
 	{
-	    try
-	    {
-		    #region Consolidate dependencies
+		var outputCss = AppState.StringBuilderPool.Get();
 
-		    UsedCssCustomProperties.Clear();
-		    UsedCss.Clear();
+		try
+		{
+			#region Consolidate dependencies
 
-		    foreach (var scannedFile in ScannedFiles)
-		    {
-			    foreach (var utilityClass in scannedFile.Value.UtilityClasses)
-			    {
-				    foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
-				    {
-					    if (dependency.StartsWith("--", StringComparison.Ordinal))
-						    UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
-					    else
-						    UsedCss.TryAddUpdate(dependency, string.Empty);
-				    }
-			    }
-		    }
-		    
-		    #endregion
+			UsedCssCustomProperties.Clear();
+			UsedCss.Clear();
 
-		    foreach (var usedCssCustomProperty in UsedCssCustomProperties)
-		    {
-			    if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
-				    UsedCssCustomProperties[usedCssCustomProperty.Key] = value;
-		    }
-		    
-		    foreach (var usedCss in UsedCss)
-		    {
-			    if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value))
-				    UsedCss[usedCss.Key] = value;
-		    }
+			foreach (var scannedFile in ScannedFiles)
+			{
+				foreach (var utilityClass in scannedFile.Value.UtilityClasses)
+				{
+					UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
+					
+					foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
+					{
+						if (dependency.StartsWith("--", StringComparison.Ordinal))
+							UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+						else
+							UsedCss.TryAddUpdate(dependency, string.Empty);
+					}
+				}
+			}
 
-		    // todo: inject dependencies into CSS output
+			#endregion
 
-		    // todo: iterate utility classes and inject into CSS output
+			foreach (var usedCssCustomProperty in UsedCssCustomProperties)
+			{
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
+					UsedCssCustomProperties[usedCssCustomProperty.Key] = value;
+			}
 
-		    // todo: process @apply and CSS custom property usage in CSS source
-		    
-	    }
-	    catch (Exception e)
-	    {
-		    Console.WriteLine($"{AppState.CliErrorPrefix}BuildCssFile() - {e.Message}");
-		    Environment.Exit(1);
-	    }
+			foreach (var usedCss in UsedCss)
+			{
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value))
+					UsedCss[usedCss.Key] = value;
+			}
+
+			if (UsedCssCustomProperties.Count > 0)
+			{
+				outputCss.Append(":root {").Append(AppRunnerSettings.LineBreak);
+
+				foreach (var ccp in UsedCssCustomProperties)
+					outputCss.Append(AppRunnerSettings.Indentation).Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';').Append(AppRunnerSettings.LineBreak);
+
+				outputCss.Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+			}
+
+			if (UsedCss.Count > 0)
+			{
+				foreach (var ccp in UsedCss)
+					outputCss.Append(ccp.Key).Append(' ').Append(ccp.Value).Append(AppRunnerSettings.LineBreak);
+
+				outputCss.Append(AppRunnerSettings.LineBreak);
+			}
+
+			if (AppRunnerSettings.UseReset)
+			{
+				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
+			}
+
+			if (AppRunnerSettings.UseForms)
+			{
+				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
+			}
+
+			// todo: iterate utility classes and inject
+
+			var maxWrapperDepth = UtilityClasses.Max(u => u.Value.Wrappers.Count);
+
+			for (var i = 1; i < maxWrapperDepth; i++)
+			{
+				foreach (var uc in UtilityClasses.Where(u => u.Value.Wrappers.Count == i))
+				{
+					
+				}
+				
+				
+				
+				
+			}
+			
+			
+			
+			
+			outputCss.Append(AppRunnerSettings.ProcessedCssContent);
+
+			// todo: process @apply and CSS custom property usage in CSS source
+
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"{AppState.CliErrorPrefix}BuildCssFile() - {e.Message}");
+			Environment.Exit(1);
+		}
+		finally
+		{
+			AppState.StringBuilderPool.Return(outputCss);
+		}
 	}
     
     #endregion

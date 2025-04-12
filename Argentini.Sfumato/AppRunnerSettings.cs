@@ -82,6 +82,8 @@ public partial class AppRunnerSettings
 	public string CssFileNameOnly { get; private set; } = string.Empty;
 	public string NativeCssOutputFilePath { get; private set; } = string.Empty;
 	public string LineBreak { get; private set; } = "\n";
+
+	public const string Indentation = "    ";
 	
     public List<string> Paths { get; } = [];
     public List<string> NotPaths { get; } = [];
