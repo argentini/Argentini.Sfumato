@@ -5,6 +5,15 @@
 /// </summary>
 public static class StringBuilders
 {
+	public static byte[] ToByteArray(this StringBuilder sb, Encoding encoding)
+	{
+		var charCount = sb.Length;
+		var charArray = new char[charCount];
+		sb.CopyTo(0, charArray, 0, charCount);
+
+		return encoding.GetBytes(charArray);
+	}
+	
 	/// <summary>
 	/// Remove a string from the beginning of a StringBuilder
 	/// </summary>
