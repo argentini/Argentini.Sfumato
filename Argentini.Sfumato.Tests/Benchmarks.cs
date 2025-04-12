@@ -1,4 +1,5 @@
 using Argentini.Sfumato.Entities.CssClassProcessing;
+using Argentini.Sfumato.Extensions;
 using BenchmarkDotNet.Attributes;
 
 namespace Argentini.Sfumato.Tests;
@@ -7,9 +8,11 @@ public class Benchmarks
 {
     private AppRunner AppRunner { get; } = new(new AppState(), "");
     
+    #region Constants
+
     private static string Markup => """
                                     <!DOCTYPE html>
-                                    <html lang="en">
+                                    <html lang="en" class="font-sans">
                                     <head>
                                         <meta charset="UTF-8">
                                         <title>Sample Website</title>
@@ -22,7 +25,7 @@ public class Benchmarks
                                             <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
                                         </div>
                                         <div class="content-['Hello!'] [--margin-val6:_1.25rem]! block invisible top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
-                                        <div class=""></div>
+                                        <div class="-top-px"></div>
                                         <div class="top-1/2 antialiased"></div>
                                         <script>
                                             function test() {
@@ -51,9 +54,33 @@ public class Benchmarks
                                     </html>
                                     """;
     
+    #endregion
+    
+    /*
+    [WarmupCount(5)]
+    [IterationCount(5)]
+    */
     [Benchmark]
     public Dictionary<string,CssClass> ScanFileForClasses()
     {
         return ContentScanner.ScanFileForUtilityClasses(Markup, AppRunner);
+    }
+
+    [Benchmark]
+    public void ProcessSimpleCssClass()
+    {
+        _ = new CssClass(AppRunner, "dark:tabp:text-sm");
+    }
+
+    [Benchmark]
+    public void ProcessComplexCssClass()
+    {
+        _ = new CssClass(AppRunner, "dark:group-[.is-published]:[&.active]:[@supports(display:flex)]:tabp:max-desk:hover:text-[1rem]/6!");
+    }
+
+    [Benchmark]
+    public void Crc32()
+    {
+        _ = "@media screen (min-width: 40rem) and (max-width: 80rem) {".GenerateCrc32();
     }
 }

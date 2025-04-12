@@ -21,7 +21,7 @@ public class BenchmarkTests
     }
 
     [Fact]
-    public void ScanContentForClassesBenchmark()
+    public void Benchmarks()
     {
         _testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
         _testOutputHelper.WriteLine("");
@@ -32,7 +32,7 @@ public class BenchmarkTests
         
         _testOutputHelper.WriteLine(GetBenchmarkSummaryText(summary));
     }
-
+    
     private static string GetBenchmarkSummaryText(Summary summary)
     {
         using var writer = new StringWriter();
