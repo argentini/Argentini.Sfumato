@@ -1,5 +1,5 @@
-@import "partial2.css";
+@import "Partial2/partial2.css";
 
 .partial-test {
-    font-size: 1rem;
+    font-weight: 100;
 }

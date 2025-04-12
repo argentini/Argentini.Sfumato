@@ -17,7 +17,7 @@ public sealed class AppRunner
 
 	public AppState AppState { get; }
 	public Library Library { get; } = new();
-	public AppRunnerSettings AppRunnerSettings { get; set; } = new();
+	public AppRunnerSettings AppRunnerSettings { get; set; } = new(null);
 	public Dictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
 	public Dictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);
 	public Dictionary<string,string> UsedCss { get; set; } = new(StringComparer.Ordinal);
@@ -51,7 +51,7 @@ public sealed class AppRunner
     {
 	    try
 	    {
-		    AppRunnerSettings = new AppRunnerSettings();
+		    AppRunnerSettings = new AppRunnerSettings(this);
 		    AppRunnerSettings.ExtractSfumatoItems(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")));
 
 		    ProcessCssSettings();

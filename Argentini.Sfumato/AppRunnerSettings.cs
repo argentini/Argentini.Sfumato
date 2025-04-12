@@ -5,7 +5,7 @@
 
 namespace Argentini.Sfumato;
 
-public partial class AppRunnerSettings
+public partial class AppRunnerSettings(AppRunner? appRunner)
 {
 	#region Regular Expressions
 
@@ -33,6 +33,8 @@ public partial class AppRunnerSettings
 	#endregion
 
 	#region Properties
+
+	private AppRunner? AppRunner { get; set; } = appRunner;
 
 	private string _cssFilePath = string.Empty;
 	public string CssFilePath
@@ -93,7 +95,7 @@ public partial class AppRunnerSettings
     public Dictionary<string, string> SfumatoBlockItems { get; } = [];
 
     #endregion
-    
+
     /// <summary>
     /// Load CSS file content, extract the Sfumato settings block, remove from CSS content.
     /// Also removes block comments and whitespace before line breaks.
@@ -228,42 +230,69 @@ public partial class AppRunnerSettings
 		    Environment.Exit(1);
 	    }
     }
-    
+
+    public void ImportPartials()
+    {
+	    ProcessedCssContent = ImportPartials(ProcessedCssContent, NativeCssFilePathOnly).Trim();
+    }
+
     /// <summary>
     /// Read all nested partial references (e.g. @import "...") from ProcessedCssContent
     /// and replace import statements with partial file content.
     /// </summary>
-    public void ImportPartials()
+    private string ImportPartials(string css, string parentPath = "")
     {
-	    var importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
-	    
-	    while (importIndex != -1)
+	    if (AppRunner is null)
 	    {
-		    var importStatement = ProcessedCssContent[importIndex..(ProcessedCssContent.IndexOf(';', importIndex) + 1)];
-		    var filePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, importStatement.Replace("@import", string.Empty).Trim().Trim(';').Trim('\"').SetNativePathSeparators()));
-
-		    if (File.Exists(Path.Combine(filePath)) == false)
-		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
-			    Environment.Exit(1);
-		    }
-
-		    try
-		    {
-			    var importedCss = File.ReadAllText(filePath);
-
-			    ProcessedCssContent = ProcessedCssContent.Replace(importStatement, importedCss);
-
-			    importIndex = ProcessedCssContent.IndexOf("@import ", StringComparison.Ordinal);
-
-		    }
-		    catch (Exception e)
-		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}Error reading file: {filePath}; {e.Message}");
-			    Environment.Exit(1);
-		    }
+		    Console.WriteLine($"{AppState.CliErrorPrefix}ImportPartials(); No AppRunner");
+		    Environment.Exit(1);
 	    }
 	    
-	    ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(ProcessedCssContent, LineBreak + LineBreak);
+	    var sb = AppRunner.AppState.StringBuilderPool.Get();
+	    var filePath = string.Empty;
+
+	    sb.Append(css);
+	    
+	    try
+	    {
+		    var importIndex = css.IndexOf("@import ", StringComparison.Ordinal);
+
+		    while (importIndex > -1)
+		    {
+			    var importStatement = css[importIndex..(css.IndexOf(';', importIndex) + 1)];
+			    var importPath = importStatement.Replace("@import", string.Empty).Trim().Trim(';').Trim('\"').SetNativePathSeparators();
+			    
+			    filePath = Path.GetFullPath(Path.Combine(parentPath, importPath));
+
+			    if (File.Exists(filePath) == false)
+			    {
+				    Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
+				    Environment.Exit(1);
+			    }
+
+			    var childCss = File.ReadAllText(filePath);
+				var injectedCss = ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty);
+
+			    sb.Replace(importStatement, injectedCss);
+
+			    if (importIndex >= css.Length - 1)
+				    break;
+			    
+			    importIndex = css.IndexOf("@import ", importIndex + 1, StringComparison.Ordinal);
+		    }
+		    
+		    return ConsolidateLineBreaksRegex().Replace(sb.ToString(), LineBreak + LineBreak);
+	    }
+	    catch (Exception e)
+	    {
+		    Console.WriteLine($"{AppState.CliErrorPrefix}Error reading file: {filePath}; {e.Message}");
+		    Environment.Exit(1);
+	    }
+	    finally
+	    {
+		    AppRunner.AppState.StringBuilderPool.Return(sb);
+	    }
+
+	    return css;
     }
 }

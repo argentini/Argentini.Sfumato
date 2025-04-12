@@ -21,5 +21,10 @@ public class AppRunnerTests
         await appRunner.LoadCssFileAsync();
         
         Assert.Equal(6, appRunner.AppRunnerSettings.SfumatoBlockItems.Count);
+        Assert.True(appRunner.AppRunnerSettings.ProcessedCssContent.Contains(".partial-test", StringComparison.Ordinal));
+        Assert.True(appRunner.AppRunnerSettings.ProcessedCssContent.Contains(".partial2-test", StringComparison.Ordinal));
+        Assert.True(appRunner.AppRunnerSettings.ProcessedCssContent.Contains(".partial3-test", StringComparison.Ordinal));
+        Assert.True(appRunner.AppRunnerSettings.ProcessedCssContent.Contains(".partial4-test", StringComparison.Ordinal));
+        Assert.False(appRunner.AppRunnerSettings.ProcessedCssContent.Contains("@import", StringComparison.Ordinal));
     }
 }
