@@ -1,6 +1,8 @@
 // ReSharper disable ConvertToPrimaryConstructor
 
+using System.Text;
 using Argentini.Sfumato.Entities.CssClassProcessing;
+using Argentini.Sfumato.Extensions;
 using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
@@ -100,6 +102,22 @@ public class CssClassTests
             if (nightmareClass.EndsWith('!'))
                 Assert.True(result.IsImportant);
         }
+    }
+
+    [Fact]
+    public void StringCrc32()
+    {
+        Assert.Equal((uint)4044826889, "@media screen (min-width: 40rem) and (max-width: 80rem) {".GenerateCrc32());
+        Assert.Equal((uint)1465918141, "@media screen (min-width: 40rem) and (max-width: 81rem) {".GenerateCrc32());
+        Assert.Equal((uint)3657485972, "@media screen (min-width: 40rem) {".GenerateCrc32());
+    }
+
+    [Fact]
+    public void StringBuilderCrc32()
+    {
+        Assert.Equal((uint)4044826889, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 80rem) {").GenerateCrc32());
+        Assert.Equal((uint)1465918141, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").GenerateCrc32());
+        Assert.Equal((uint)3657485972, new StringBuilder("@media screen (min-width: 40rem) {").GenerateCrc32());
     }
 
     [Fact]
@@ -396,7 +414,7 @@ public class CssClassTests
 
             for (var i = 0; i < test.Wrappers.Length; i++)
             {
-                Assert.Equal(test.Wrappers.ElementAt(i), cssClass.Wrappers.ElementAt(i));
+                Assert.Equal(test.Wrappers.ElementAt(i), cssClass.Wrappers.ElementAt(i).Value);
             }
             
             _testOutputHelper.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
