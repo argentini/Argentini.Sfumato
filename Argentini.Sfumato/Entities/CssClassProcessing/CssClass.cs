@@ -49,7 +49,7 @@ public sealed partial class CssClass : IDisposable
     /// </summary>
     public ClassDefinition? ClassDefinition;
 
-    public Dictionary<uint,string> Wrappers { get; } = [];
+    public Dictionary<ulong, string> Wrappers { get; } = [];
 
     public string EscapedSelector { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
@@ -584,7 +584,7 @@ public sealed partial class CssClass : IDisposable
             {
                 var wrapper = $"@{darkVariant.PrefixType} {darkVariant.Statement} {{";
                 
-                Wrappers.Add(wrapper.GenerateCrc32(), wrapper);
+                Wrappers.Add(wrapper.Fnv1AHash64(), wrapper);
             }
 
             foreach (var queryType in new[] { "media", "supports" })
@@ -603,7 +603,7 @@ public sealed partial class CssClass : IDisposable
                     continue;
                 
                 Sb.Append(" {");
-                Wrappers.Add(Sb.GenerateCrc32(), Sb.ToString());
+                Wrappers.Add(Sb.Fnv1AHash64(), Sb.ToString());
                 Sb.Clear();
             }
             
@@ -626,14 +626,14 @@ public sealed partial class CssClass : IDisposable
             if (Sb.Length > 0)
             {
                 Sb.Append(" {");
-                Wrappers.Add(Sb.GenerateCrc32(), Sb.ToString());
+                Wrappers.Add(Sb.Fnv1AHash64(), Sb.ToString());
             }
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderBy(s => s.Value.PrefixOrder))
             {
                 var wrapper = $"{variant.Value.Statement} {{";
                 
-                Wrappers.Add(wrapper.GenerateCrc32(), wrapper);
+                Wrappers.Add(wrapper.Fnv1AHash64(), wrapper);
             }
         }
         catch

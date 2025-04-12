@@ -121,6 +121,22 @@ public class CssClassTests
     }
 
     [Fact]
+    public void StringFnv1A()
+    {
+        Assert.Equal(16953580889345953351, "@media screen (min-width: 40rem) and (max-width: 80rem) {".Fnv1AHash64());
+        Assert.Equal(14858257461132010124, "@media screen (min-width: 40rem) and (max-width: 81rem) {".Fnv1AHash64());
+        Assert.Equal(11325783342227245128, "@media screen (min-width: 40rem) {".Fnv1AHash64());
+    }
+
+    [Fact]
+    public void StringBuilderFnv1A()
+    {
+        Assert.Equal(16953580889345953351, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 80rem) {").Fnv1AHash64());
+        Assert.Equal(14858257461132010124, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").Fnv1AHash64());
+        Assert.Equal(11325783342227245128, new StringBuilder("@media screen (min-width: 40rem) {").Fnv1AHash64());
+    }
+
+    [Fact]
     public void UtilityClassProcessing()
     {
         var appRunner = new AppRunner(new AppState());
