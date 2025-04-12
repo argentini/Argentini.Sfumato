@@ -36,7 +36,7 @@ public sealed partial class CssClass : IDisposable
     /// Name broken into variant and core segments.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]", "text-base/6"])
     /// </summary>
-    public List<string> AllSegments { get; } = [];
+    public HashSet<string> AllSegments { get; } = [];
 
     /// <summary>
     /// Variant segments used in the class name.
@@ -100,7 +100,8 @@ public sealed partial class CssClass : IDisposable
         AllSegments.Clear();
         VariantSegments.Clear();
 
-        AllSegments.AddRange(SplitByColonsRegex().Split(Selector.TrimEnd('!')));
+        foreach (var segment in SplitByColonsRegex().Split(Selector.TrimEnd('!')))
+            AllSegments.Add(segment);
 
         ProcessVariants();
         
@@ -227,10 +228,10 @@ public sealed partial class CssClass : IDisposable
     {
         try
         {
-            if (AllSegments[^1].StartsWith('[') == false || AllSegments[^1].EndsWith(']') == false)
+            if (AllSegments.Last().StartsWith('[') == false || AllSegments.Last().EndsWith(']') == false)
                 return;
             
-            var trimmedValue = AllSegments[^1].TrimStart('[').TrimEnd(']').Trim('_');
+            var trimmedValue = AllSegments.Last().TrimStart('[').TrimEnd(']').Trim('_');
             var colonIndex = trimmedValue.IndexOf(':');
 
             if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
@@ -264,12 +265,12 @@ public sealed partial class CssClass : IDisposable
     {
         try
         {
-            var prefix = AppRunner.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments[^1]);
+            var prefix = AppRunner.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments.Last());
 
             if (string.IsNullOrEmpty(prefix))
                 return;
 
-            var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
+            var value = AllSegments.Last().TrimStart(prefix) ?? string.Empty;
             var slashSegments = SplitBySlashesRegex().Split(value);
 
             if (slashSegments.Length == 2)

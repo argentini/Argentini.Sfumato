@@ -121,7 +121,7 @@ public sealed class ClassDefinition
     /// <summary>
     /// List of CSS custom property names used by the utility (e.g. --spacing).
     /// </summary>
-    public List<string> UsesCssCustomProperties { get; set; } = [];
+    public HashSet<string> UsesCssCustomProperties { get; set; } = [];
 
     /// <summary>
     /// Order output class declarations by this integer (default is 0).

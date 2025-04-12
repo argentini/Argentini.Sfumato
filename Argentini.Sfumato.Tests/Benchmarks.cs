@@ -1,12 +1,11 @@
 using Argentini.Sfumato.Entities.CssClassProcessing;
-using Argentini.Sfumato.Extensions;
 using BenchmarkDotNet.Attributes;
 
 namespace Argentini.Sfumato.Tests;
 
 public class Benchmarks
 {
-    private AppRunner AppRunner { get; } = new(new AppState(), "");
+    private AppRunner AppRunner { get; } = new(new AppState());
     
     #region Constants
 
@@ -56,10 +55,6 @@ public class Benchmarks
     
     #endregion
     
-    /*
-    [WarmupCount(5)]
-    [IterationCount(5)]
-    */
     [Benchmark]
     public Dictionary<string,CssClass> ScanFileForClasses()
     {
@@ -76,11 +71,5 @@ public class Benchmarks
     public void ProcessComplexCssClass()
     {
         _ = new CssClass(AppRunner, "dark:group-[.is-published]:[&.active]:[@supports(display:flex)]:tabp:max-desk:hover:text-[1rem]/6!");
-    }
-
-    [Benchmark]
-    public void Crc32()
-    {
-        _ = "@media screen (min-width: 40rem) and (max-width: 80rem) {".GenerateCrc32();
     }
 }
