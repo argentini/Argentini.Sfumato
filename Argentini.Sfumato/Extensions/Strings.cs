@@ -331,6 +331,25 @@ public static partial class Strings
 	
 	#endregion
 	
+	#region Conversion
+	
+	/// <summary>
+	/// Convert a string to a byte array.
+	/// </summary>
+	/// <param name="value">String to evaluate</param>
+	/// <returns>Byte array</returns>
+	public static byte[] ToByteArray(this string? value)
+	{
+		if (value is null || string.IsNullOrEmpty(value))
+			return [];
+		
+		var encoding = new UTF8Encoding();
+
+		return encoding.GetBytes(value);
+	}
+	
+	#endregion
+	
 	#region Parsing
 
 	/// <summary>
