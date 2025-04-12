@@ -276,21 +276,11 @@ public sealed class AppRunner
 				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
 			}
 
-			// todo: iterate utility classes and inject
+			
+			
+			
+			// todo: iterate utility classes and inject; order by variant sort order and similar by Wrapper fingerprint
 
-			var maxWrapperDepth = UtilityClasses.Max(u => u.Value.Wrappers.Count);
-
-			for (var i = 1; i < maxWrapperDepth; i++)
-			{
-				foreach (var uc in UtilityClasses.Where(u => u.Value.Wrappers.Count == i))
-				{
-					
-				}
-				
-				
-				
-				
-			}
 			
 			
 			
