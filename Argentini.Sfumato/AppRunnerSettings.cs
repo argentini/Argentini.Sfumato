@@ -231,15 +231,15 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	    }
     }
 
+    /// <summary>
+    /// Read all nested partial references (e.g. @import "...") from ProcessedCssContent
+    /// and replace import statements with partial file content.
+    /// </summary>
     public void ImportPartials()
     {
 	    ProcessedCssContent = ImportPartials(ProcessedCssContent, NativeCssFilePathOnly).Trim();
     }
 
-    /// <summary>
-    /// Read all nested partial references (e.g. @import "...") from ProcessedCssContent
-    /// and replace import statements with partial file content.
-    /// </summary>
     private string ImportPartials(string css, string parentPath = "")
     {
 	    if (AppRunner is null)
