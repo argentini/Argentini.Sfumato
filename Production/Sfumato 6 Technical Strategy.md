@@ -1,23 +1,8 @@
 Sfumato 6 Technical Strategy
 ============================
 
-To Do
-=====
-
-1. Refactor to leverage CSS custom properties/namespaces below
-2. Add all utility classes
-3. Create code to iterate, group, wrap classes, generate actual CSS (perhaps create a list of segments based on like media queries, then stack them in the final CSS)
-4. Remove unused properties across all entities
-
-
-
-
-
-Architecture
-============
-
 New Features
-------------
+============
 
 - Class-compatible with Tailwind CSS v4
 - Even faster performance!
@@ -31,6 +16,20 @@ New Features
 - Container query support
 - Support multiple projects; single YML file to generate multi-project CSS
 - Add more complex features like arbitrary variants (e.g. [&.active]:bg-red)
+
+Architecture
+============
+
+Application
+
+    - AppState
+
+    - App Runners []
+
+        - Library
+        - Scanned Files []
+        - Used Css Custom Properties []
+        - Used Css []
 
 C# Entities
 -----------
