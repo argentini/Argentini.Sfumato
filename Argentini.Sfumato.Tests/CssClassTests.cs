@@ -18,7 +18,7 @@ public class CssClassTests
 
     #region Constants
 
-    private static string Markup => """
+    public static string Markup => """
                                     <!DOCTYPE html>
                                     <html lang="en" class="font-sans">
                                     <head>
@@ -28,11 +28,11 @@ public class CssClassTests
                                         <link rel="stylesheet" href="css/sfumato.css">
                                     </head>
                                     <body class="text-base/5 xl:text-base/[3rem] [-webkit-backdrop-filter:blur(1rem)]">
-                                        <div id="test-home" class="text-[1rem] lg:text-[1.25rem] xl:text-(length:--my-text-size) bg-fuchsia-500 dark:bg-fuchsia-300 dark:text-[length:1rem] xl:text-[#112233] xl:text-[red] xl:text-[--my-color-var] xl:text-[var(--my-color-var)]">
+                                        <div id="test-home" class="text-[1rem] lg:text-[1.25rem] xl:text-(length:--my-text-size) bg-fuchsia-500 dark:sm:bg-fuchsia-300 dark:text-[length:1rem] xl:text-[#112233] xl:text-[red] xl:text-[--my-color-var] xl:text-[var(--my-color-var)]">
                                             <p class="[font-weight:900] sm:[font-weight:900]">Placeholder</p>
                                             <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
                                         </div>
-                                        <div class="content-['Hello!'] [--margin-val6:_1.25rem]! block invisible top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
+                                        <div class="content-['Hello!'] [--margin-val6:_1.25rem]! block invisible lg:max-xl:top-8 sm:supports-backdrop-blur:motion-safe:break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
                                         <div class="-top-px"></div>
                                         <div class="top-1/2 antialiased"></div>
                                         <script>

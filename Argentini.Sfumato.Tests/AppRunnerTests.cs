@@ -1,5 +1,6 @@
 // ReSharper disable ConvertToPrimaryConstructor
 
+using Argentini.Sfumato.Entities.Scanning;
 using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
@@ -26,5 +27,20 @@ public class AppRunnerTests
         Assert.True(appRunner.AppRunnerSettings.ProcessedCssContent.Contains(".partial3-test", StringComparison.Ordinal));
         Assert.True(appRunner.AppRunnerSettings.ProcessedCssContent.Contains(".partial4-test", StringComparison.Ordinal));
         Assert.False(appRunner.AppRunnerSettings.ProcessedCssContent.Contains("@import", StringComparison.Ordinal));
+    }
+    
+    [Fact]
+    public async Task BuildCssFile()
+    {
+        var appRunner = new AppRunner(new AppState(), "../../../sample.css", true);
+
+        await appRunner.LoadCssFileAsync();
+
+        appRunner.ScannedFiles.Add("test", new ScannedFile("")
+        {
+            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, appRunner)
+        });
+
+        appRunner.BuildCssFile();
     }
 }

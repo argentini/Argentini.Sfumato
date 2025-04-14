@@ -2,6 +2,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable CollectionNeverUpdated.Global
 
 using System.Reflection;
 using Argentini.Sfumato.Entities.CssClassProcessing;
@@ -218,19 +219,16 @@ public sealed class AppRunner
 			UsedCssCustomProperties.Clear();
 			UsedCss.Clear();
 
-			foreach (var scannedFile in ScannedFiles)
+			foreach (var utilityClass in ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
 			{
-				foreach (var utilityClass in scannedFile.Value.UtilityClasses)
-				{
-					UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
+				UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
 					
-					foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
-					{
-						if (dependency.StartsWith("--", StringComparison.Ordinal))
-							UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
-						else
-							UsedCss.TryAddUpdate(dependency, string.Empty);
-					}
+				foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
+				{
+					if (dependency.StartsWith("--", StringComparison.Ordinal))
+						UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+					else
+						UsedCss.TryAddUpdate(dependency, string.Empty);
 				}
 			}
 
@@ -281,10 +279,32 @@ public sealed class AppRunner
 			
 			// todo: iterate utility classes and inject; order by variant sort order and similar by Wrapper fingerprint
 
+			var root = new VariantBranch
+			{
+				Fingerprint = 0,
+				Depth = 0,
+				WrapperCss = string.Empty
+			};
+
+			// Build the tree for each CssClass in UtilityClasses
+			foreach (var cssClass in UtilityClasses.Values)
+			{
+				var wrappers = cssClass.Wrappers.ToArray();
+
+				AddWrappersRecursive(root, wrappers, 0, cssClass, depth: 1);
+			}			
+
 			
 			
-			
-			
+
+
+
+
+
+
+
+
+
 			outputCss.Append(AppRunnerSettings.ProcessedCssContent);
 
 			// todo: process @apply and CSS custom property usage in CSS source
@@ -301,5 +321,31 @@ public sealed class AppRunner
 		}
 	}
     
+	private static void AddWrappersRecursive(VariantBranch current, KeyValuePair<ulong, string>[] wrappers, int index, CssClass cssClass, int depth)
+	{
+		if (index >= wrappers.Length)
+		{
+			current.CssClasses.Add(cssClass);
+			return;
+		}
+
+		var (fingerprint, wrapperCss) = wrappers[index];
+
+		var candidate = new VariantBranch
+		{
+			Fingerprint = fingerprint,
+			WrapperCss = wrapperCss,
+			Depth = depth
+		};
+
+		if (current.Branches.TryGetValue(candidate, out var existing) == false)
+		{
+			current.Branches.Add(candidate);
+			existing = candidate;
+		}
+
+		AddWrappersRecursive(existing, wrappers, index + 1, cssClass, depth + 1);
+	}
+	
     #endregion
 }
