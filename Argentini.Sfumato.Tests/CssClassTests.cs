@@ -32,7 +32,7 @@ public class CssClassTests
                                             <p class="[font-weight:900] sm:[font-weight:900]">Placeholder</p>
                                             <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
                                         </div>
-                                        <div class="content-['Hello!'] [--margin-val6:_1.25rem]! block invisible lg:max-xl:top-8 sm:supports-backdrop-blur:motion-safe:break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
+                                        <div class="content-['Hello!'] [--margin-val6:_1.25rem]! dark:sm:supports-backdrop-blur:motion-safe:block invisible lg:max-xl:top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
                                         <div class="-top-px"></div>
                                         <div class="top-1/2 antialiased"></div>
                                         <script>
