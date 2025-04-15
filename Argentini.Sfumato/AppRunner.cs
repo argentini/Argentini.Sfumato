@@ -108,9 +108,14 @@ public sealed class AppRunner
 	    #endregion
 
 	    #region Read breakpoints
-	    
-	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--breakpoint-")))
+
+	    var prefixOrder = 100;
+
+	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems)
 	    {
+		    if (breakpoint.Key.StartsWith("--breakpoint-") == false)
+			    continue;
+		    
 		    var key = breakpoint.Key.TrimStart("--breakpoint-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
@@ -118,21 +123,30 @@ public sealed class AppRunner
 		    
 		    Library.MediaQueryPrefixes.Add(key, new VariantMetadata
 		    {
-			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixOrder = prefixOrder,
 			    PrefixType = "media",
 			    Statement = $"(width >= {breakpoint.Value})"
 		    });
+
+		    if (prefixOrder < int.MaxValue - 100)
+			    prefixOrder += 100;
 		    
 		    Library.MediaQueryPrefixes.Add($"max-{key}", new VariantMetadata
 		    {
-			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixOrder = prefixOrder,
 			    PrefixType = "media",
 			    Statement = $"(width < {breakpoint.Value})"
 		    });
+		    
+		    if (prefixOrder < int.MaxValue - 100)
+			    prefixOrder += 100;
 	    }
 	    
-	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--adaptive-breakpoint-")))
+	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems)
 	    {
+		    if (breakpoint.Key.StartsWith("--adaptive-breakpoint-") == false)
+			    continue;
+
 		    var key = breakpoint.Key.TrimStart("--adaptive-breakpoint-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
@@ -143,17 +157,23 @@ public sealed class AppRunner
 
 		    Library.MediaQueryPrefixes.Add(key, new VariantMetadata
 		    {
-			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixOrder = prefixOrder,
 			    PrefixType = "media",
 			    Statement = $"(min-aspect-ratio: {breakpoint.Value})"
 		    });
 		    
+		    if (prefixOrder < int.MaxValue - 100)
+			    prefixOrder += 100;
+		    
 		    Library.MediaQueryPrefixes.Add($"max-{key}", new VariantMetadata
 		    {
-			    PrefixOrder = Library.MediaQueryPrefixes.Count + 1,
+			    PrefixOrder = prefixOrder,
 			    PrefixType = "media",
 			    Statement = $"(max-aspect-ratio: {maxValue - 0.000000000001})"
 		    });
+		    
+		    if (prefixOrder < int.MaxValue - 100)
+			    prefixOrder += 100;
 	    }
 
 	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--container-")))
@@ -165,17 +185,23 @@ public sealed class AppRunner
 
 		    Library.ContainerQueryPrefixes.Add($"@{key}", new VariantMetadata
 		    {
-			    PrefixOrder = Library.ContainerQueryPrefixes.Count + 1,
+			    PrefixOrder = prefixOrder,
 			    PrefixType = "container",
 			    Statement = $"(width >= {breakpoint.Value})"
 		    });
+
+		    if (prefixOrder < int.MaxValue - 100)
+			    prefixOrder += 100;
 		    
 		    Library.ContainerQueryPrefixes.Add($"@max-{key}", new VariantMetadata
 		    {
-			    PrefixOrder = Library.ContainerQueryPrefixes.Count + 1,
+			    PrefixOrder = prefixOrder,
 			    PrefixType = "container",
 			    Statement = $"(width < {breakpoint.Value})"
 		    });
+		    
+		    if (prefixOrder < int.MaxValue - 100)
+			    prefixOrder += 100;
 	    }
 
 	    #endregion
@@ -234,6 +260,8 @@ public sealed class AppRunner
 
 			#endregion
 
+			#region Process used CSS custom properties and CSS
+			
 			foreach (var usedCssCustomProperty in UsedCssCustomProperties)
 			{
 				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
@@ -263,7 +291,11 @@ public sealed class AppRunner
 
 				outputCss.Append(AppRunnerSettings.LineBreak);
 			}
+			
+			#endregion
 
+			#region Process optional defaults
+			
 			if (AppRunnerSettings.UseReset)
 			{
 				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
@@ -274,11 +306,10 @@ public sealed class AppRunner
 				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
 			}
 
+			#endregion
 			
+			#region Build consolidated variant structure, generate CSS
 			
-			
-			// todo: iterate utility classes and inject; order by variant sort order and similar by Wrapper fingerprint
-
 			var root = new VariantBranch
 			{
 				Fingerprint = 0,
@@ -286,27 +317,21 @@ public sealed class AppRunner
 				WrapperCss = string.Empty
 			};
 
-			// Build the tree for each CssClass in UtilityClasses
-			foreach (var cssClass in UtilityClasses.Values)
+			var test = UtilityClasses.Values.OrderBy(c => c.WrapperSort).ToList();
+			
+			foreach (var cssClass in UtilityClasses.Values.OrderBy(c => c.WrapperSort))
 			{
 				var wrappers = cssClass.Wrappers.ToArray();
 
-				AddWrappersRecursive(root, wrappers, 0, cssClass, depth: 1);
+				ProcessVariantBranchRecursive(root, wrappers, cssClass);
 			}			
 
+			#endregion
+
+			outputCss.Append(AppRunnerSettings.ProcessedCssContent).Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
 			
+			GenerateCssFromVariantTree(root, outputCss);
 			
-
-
-
-
-
-
-
-
-
-			outputCss.Append(AppRunnerSettings.ProcessedCssContent);
-
 			// todo: process @apply and CSS custom property usage in CSS source
 
 		}
@@ -320,32 +345,65 @@ public sealed class AppRunner
 			AppState.StringBuilderPool.Return(outputCss);
 		}
 	}
-    
-	private static void AddWrappersRecursive(VariantBranch current, KeyValuePair<ulong, string>[] wrappers, int index, CssClass cssClass, int depth)
+
+	private static void ProcessVariantBranchRecursive(VariantBranch branch, KeyValuePair<ulong, string>[] wrappers, CssClass cssClass)
 	{
-		if (index >= wrappers.Length)
+		var index = 0;
+		var depth = 1;
+		
+		while (true)
 		{
-			current.CssClasses.Add(cssClass);
-			return;
+			if (index >= wrappers.Length)
+			{
+				branch.CssClasses.Add(cssClass);
+				return;
+			}
+
+			var (fingerprint, wrapperCss) = wrappers[index];
+
+			var candidate = new VariantBranch { Fingerprint = fingerprint, WrapperCss = wrapperCss, Depth = depth };
+
+			if (branch.Branches.TryGetValue(candidate, out var existing) == false)
+			{
+				branch.Branches.Add(candidate);
+				existing = candidate;
+			}
+
+			branch = existing;
+			index += 1;
+			depth += 1;
+		}
+	}
+
+	private void GenerateCssFromVariantTree(VariantBranch branch, StringBuilder outputCss, int depth = 0)
+	{
+		var isWrapped = string.IsNullOrEmpty(branch.WrapperCss) == false;
+		
+		if (isWrapped)
+		{
+			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth - 1)).Append(branch.WrapperCss).Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+		}
+		
+		foreach (var cssClass in branch.CssClasses.OrderBy(c => c.ClassDefinition?.SelectorSort ?? 0))
+		{
+			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth)).Append(cssClass.EscapedSelector).Append(" {").Append(AppRunnerSettings.LineBreak);
+			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth + 1)).Append(cssClass.Styles.Replace(AppRunnerSettings.LineBreak, AppRunnerSettings.LineBreak + AppRunnerSettings.Indentation.Repeat(depth + (isWrapped ? 2 : 1)))).Append(AppRunnerSettings.LineBreak);
+			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth)).Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
 		}
 
-		var (fingerprint, wrapperCss) = wrappers[index];
-
-		var candidate = new VariantBranch
+		if (branch.Branches.Count > 0)
 		{
-			Fingerprint = fingerprint,
-			WrapperCss = wrapperCss,
-			Depth = depth
-		};
-
-		if (current.Branches.TryGetValue(candidate, out var existing) == false)
-		{
-			current.Branches.Add(candidate);
-			existing = candidate;
+			foreach (var subBranch in branch.Branches)
+			{
+				GenerateCssFromVariantTree(subBranch, outputCss, depth + 1);
+			}
 		}
-
-		AddWrappersRecursive(existing, wrappers, index + 1, cssClass, depth + 1);
+		
+		if (string.IsNullOrEmpty(branch.WrapperCss) == false)
+		{
+			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth - 1)).Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+		}
 	}
 	
-    #endregion
+	#endregion
 }

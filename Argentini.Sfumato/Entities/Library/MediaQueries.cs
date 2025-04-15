@@ -10,7 +10,7 @@ public static class LibraryMediaQueries
 		    "dark",
 		    new VariantMetadata
 		    {
-			    PrefixOrder = 1,
+			    PrefixOrder = 99999,
 			    PrefixType = "media",
 			    Statement = "(prefers-color-scheme: dark)"
 		    }
@@ -19,7 +19,7 @@ public static class LibraryMediaQueries
 		    "print",
 		    new VariantMetadata
 		    {
-			    PrefixOrder = 2,
+			    PrefixOrder = 90000,
 			    PrefixType = "media",
 			    Statement = "print"
 		    }
@@ -28,7 +28,7 @@ public static class LibraryMediaQueries
 		    "portrait",
 			new VariantMetadata
 			{
-				PrefixOrder = 3,
+				PrefixOrder = 85000,
 				PrefixType = "media",
 				Statement = "(orientation: portrait)"
 			}
@@ -37,7 +37,7 @@ public static class LibraryMediaQueries
 			"landscape",
 			new VariantMetadata
 			{
-				PrefixOrder = 4,
+				PrefixOrder = 85000,
 				PrefixType = "media",
 				Statement = "(orientation: landscape)"
 			}
@@ -46,7 +46,7 @@ public static class LibraryMediaQueries
 			"motion-safe",
 			new VariantMetadata
 			{
-				PrefixOrder = 5,
+				PrefixOrder = 80000,
 				PrefixType = "media",
 				Statement = "(prefers-reduced-motion: no-preference)"
 			}
@@ -55,7 +55,7 @@ public static class LibraryMediaQueries
 			"motion-reduced",
 			new VariantMetadata
 			{
-				PrefixOrder = 6,
+				PrefixOrder = 80000,
 				PrefixType = "media",
 				Statement = "(prefers-reduced-motion: reduce)"
 			}

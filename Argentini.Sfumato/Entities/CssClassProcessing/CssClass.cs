@@ -55,7 +55,8 @@ public sealed partial class CssClass : IDisposable
     public string Value { get; set; } = string.Empty;
     public string ModifierValue { get; set; } = string.Empty;
     public string Styles { get; set; } = string.Empty;
-    public long SelectorSort { get; set; }
+    public int SelectorSort { get; set; }
+    public int WrapperSort { get; set; }
 
     public bool IsValid { get; set; }
     public bool IsArbitraryCss { get; set; }
@@ -65,6 +66,7 @@ public sealed partial class CssClass : IDisposable
     public bool HasArbitraryModifierValue { get; set; }
     public bool HasArbitraryValue { get; set; }
     public bool HasArbitraryValueWithCssCustomProperty { get; set; }
+    public bool UsesDarkTheme { get; set; }
 
     private StringBuilder? Sb { get; set; }
 
@@ -95,6 +97,8 @@ public sealed partial class CssClass : IDisposable
         IsValid = false;
         IsImportant = Selector.EndsWith('!');
         SelectorSort = 0;
+        WrapperSort = 0;
+        UsesDarkTheme = false;
 
         Wrappers.Clear();
         AllSegments.Clear();
@@ -585,6 +589,9 @@ public sealed partial class CssClass : IDisposable
                 var wrapper = $"@{darkVariant.PrefixType} {darkVariant.Statement} {{";
                 
                 Wrappers.Add(wrapper.Fnv1AHash64(), wrapper);
+                
+                UsesDarkTheme = true;
+                WrapperSort += darkVariant.PrefixOrder;
             }
 
             foreach (var queryType in new[] { "media", "supports" })
@@ -592,10 +599,20 @@ public sealed partial class CssClass : IDisposable
                 foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderBy(s => s.Value.PrefixOrder))
                 {
                     if (Sb.Length == 0)
+                    {
                         Sb.Append($"@{queryType} ");
+                        
+                        if (queryType == "media" && WrapperSort <= int.MaxValue - variant.Value.PrefixOrder)
+                            WrapperSort += variant.Value.PrefixOrder;
+                    }
                     else
+                    {
                         Sb.Append(" and ");
-                
+
+                        if (queryType == "media" && WrapperSort < int.MaxValue)
+                            WrapperSort += 1;
+                    }
+
                     Sb.Append(variant.Value.Statement);
                 }
 
