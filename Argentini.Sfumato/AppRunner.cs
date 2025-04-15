@@ -12,8 +12,15 @@ using Argentini.Sfumato.Entities.UtilityClasses;
 
 namespace Argentini.Sfumato;
 
-public sealed class AppRunner
+public partial class AppRunner
 {
+	#region Regular Expressions
+	
+	[GeneratedRegex(@"@apply\s+[^;]+?;", RegexOptions.Compiled)]
+	private static partial Regex AtApplyRegex();
+	
+	#endregion
+	
 	#region Properties
 
 	public AppState AppState { get; }
@@ -223,13 +230,13 @@ public sealed class AppRunner
 	    #endregion
     }
 
+	#endregion
 
-    
 	// todo: scan file paths for utility classes  
 
 	// todo: watchers
-	
-    
+
+	#region CSS Generation
     
     /// <summary>
     /// Gather dependencies from all scanned files, consolidate them, and generate the CSS output file.
@@ -260,8 +267,46 @@ public sealed class AppRunner
 
 			#endregion
 
-			#region Process used CSS custom properties and CSS
-			
+			// todo: process @apply and CSS custom property usage in CSS source
+
+			var sb = AppState.StringBuilderPool.Get();
+
+			foreach (var match in AtApplyRegex().Matches(outputCss.ToString()).ToList())
+			{
+				var utilityClassStrings = (match.Value.TrimStart("@apply")?.TrimEnd(';').Trim() ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				var utilityClasses = utilityClassStrings
+					.Select(utilityClass => new CssClass(this, utilityClass.Replace("\\", string.Empty)))
+					.Where(cssClass => cssClass.IsValid)
+					.ToList();
+
+				if (utilityClasses.Count > 0)
+				{
+					sb.Clear();
+
+					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
+					{
+						foreach (var dependency in utilityClass.ClassDefinition?.UsesCssCustomProperties ?? [])
+						{
+							if (dependency.StartsWith("--", StringComparison.Ordinal))
+								UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+							else
+								UsedCss.TryAddUpdate(dependency, string.Empty);
+						}
+						
+						if (sb.Length > 0)
+							sb.Append(' ');
+
+						sb.Append(utilityClass.Styles.Replace(AppRunnerSettings.LineBreak, " "));
+					}
+				}
+
+				outputCss.Replace(match.Value, sb.ToString());
+			}
+
+			AppState.StringBuilderPool.Return(sb);
+
+			#region Add values to UsedCssCustomProperties and UsedCss collections
+
 			foreach (var usedCssCustomProperty in UsedCssCustomProperties)
 			{
 				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
@@ -274,6 +319,10 @@ public sealed class AppRunner
 					UsedCss[usedCss.Key] = value;
 			}
 
+			#endregion
+			
+			#region Generate CSS: inject used CSS custom properties and CSS into :root
+			
 			if (UsedCssCustomProperties.Count > 0)
 			{
 				outputCss.Append(":root {").Append(AppRunnerSettings.LineBreak);
@@ -294,7 +343,7 @@ public sealed class AppRunner
 			
 			#endregion
 
-			#region Process optional defaults
+			#region Generate CSS: inject optional reset, forms classes
 			
 			if (AppRunnerSettings.UseReset)
 			{
@@ -307,8 +356,8 @@ public sealed class AppRunner
 			}
 
 			#endregion
-			
-			#region Build consolidated variant structure, generate CSS
+
+			#region Generate CSS: build consolidated variant structure, generate CSS
 			
 			var root = new VariantBranch
 			{
@@ -317,8 +366,6 @@ public sealed class AppRunner
 				WrapperCss = string.Empty
 			};
 
-			var test = UtilityClasses.Values.OrderBy(c => c.WrapperSort).ToList();
-			
 			foreach (var cssClass in UtilityClasses.Values.OrderBy(c => c.WrapperSort))
 			{
 				var wrappers = cssClass.Wrappers.ToArray();
@@ -326,14 +373,18 @@ public sealed class AppRunner
 				ProcessVariantBranchRecursive(root, wrappers, cssClass);
 			}			
 
-			#endregion
-
 			outputCss.Append(AppRunnerSettings.ProcessedCssContent).Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
 			
 			GenerateCssFromVariantTree(root, outputCss);
-			
-			// todo: process @apply and CSS custom property usage in CSS source
 
+			#endregion
+
+			// todo: inject generated CSS where :sfumato was			
+			
+			
+			
+			
+			
 		}
 		catch (Exception e)
 		{

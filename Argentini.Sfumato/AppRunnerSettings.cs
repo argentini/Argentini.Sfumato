@@ -29,7 +29,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	
 	[GeneratedRegex(@"(?:\r\n|\n){3,}", RegexOptions.Compiled)]
 	private static partial Regex ConsolidateLineBreaksRegex();
-	
+
 	#endregion
 
 	#region Properties
