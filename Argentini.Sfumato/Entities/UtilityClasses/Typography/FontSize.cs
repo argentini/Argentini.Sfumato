@@ -47,21 +47,27 @@ public sealed class FontSize : ClassDictionaryBase
                 Template =
                     $"""
                     font-size: var({text.Key});
-                    line-height: var({text.Key}--line-height);
+                    line-height: var({text.Key}--line-height, initial);
+                    letter-spacing: var({text.Key}--letter-spacing, initial);
+                    font-weight: var({text.Key}--font-weight, initial);
                     """,
                 ModifierTemplate =
                     $$"""
                     font-size: var({{text.Key}});
                     line-height: calc(var(--spacing) * {1});
+                    letter-spacing: var({{text.Key}}--letter-spacing, initial);
+                    font-weight: var({{text.Key}}--font-weight, initial);
                     """,
                 ArbitraryModifierTemplate =
                     $$"""
                     font-size: var({{text.Key}});
                     line-height: {1};
+                    letter-spacing: var({{text.Key}}--letter-spacing, initial);
+                    font-weight: var({{text.Key}}--font-weight, initial);
                     """,
                 UsesCssCustomProperties =
                 [
-                    "--spacing", text.Key, $"{text.Key}--line-height"
+                    "--spacing", text.Key, $"{text.Key}--line-height", $"{text.Key}--letter-spacing", $"{text.Key}--font-weight"
                 ]
             };
 
