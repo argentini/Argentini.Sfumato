@@ -32,7 +32,7 @@ public class AppRunnerTests
     [Fact]
     public async Task BuildCssFile()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../sample.css", true);
+        var appRunner = new AppRunner(new AppState(), "../../../sample.css");
 
         await appRunner.LoadCssFileAsync();
 
@@ -43,13 +43,13 @@ public class AppRunnerTests
 
         var css = appRunner.BuildCss();
         
-        var indexOfRoot = css.IndexOf(":root {", StringComparison.Ordinal);
-        var indexOfFontSansClass = css.IndexOf(".font-sans {", StringComparison.Ordinal);
-        var indexOfPartialTestClass = css.IndexOf(".partial-test {", StringComparison.Ordinal);
-        var indexOfPartial2TestClass = css.IndexOf(".partial2-test {", StringComparison.Ordinal);
-        var indexOfPartial3TestClass = css.IndexOf(".partial3-test {", StringComparison.Ordinal);
-        var indexOfPartial4TestClass = css.IndexOf(".partial4-test {", StringComparison.Ordinal);
-        var indexOfTestClass = css.IndexOf(".test {", StringComparison.Ordinal);
+        var indexOfRoot = css.IndexOf(":root", StringComparison.Ordinal);
+        var indexOfFontSansClass = css.IndexOf(".font-sans", StringComparison.Ordinal);
+        var indexOfPartialTestClass = css.IndexOf(".partial-test", StringComparison.Ordinal);
+        var indexOfPartial2TestClass = css.IndexOf(".partial2-test", StringComparison.Ordinal);
+        var indexOfPartial3TestClass = css.IndexOf(".partial3-test", StringComparison.Ordinal);
+        var indexOfPartial4TestClass = css.IndexOf(".partial4-test", StringComparison.Ordinal);
+        var indexOfTestClass = css.IndexOf(".test", StringComparison.Ordinal);
         
         Assert.Equal(0, indexOfRoot);
         Assert.True(indexOfFontSansClass > 0);

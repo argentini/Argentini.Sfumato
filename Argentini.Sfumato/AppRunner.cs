@@ -16,11 +16,17 @@ public partial class AppRunner
 {
 	#region Regular Expressions
 	
-	[GeneratedRegex(@"@apply\s+[^;]+?;", RegexOptions.Compiled)]
+	[GeneratedRegex(@"@apply\s+[^;]+?;")]
 	private static partial Regex AtApplyRegex();
 	
-	[GeneratedRegex(@"--[\w-]+", RegexOptions.Compiled)]
+	[GeneratedRegex(@"--[\w-]+")]
 	private static partial Regex CssCustomPropertiesRegex();
+	
+	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
+	private static partial Regex AtVariantRegex();	
+	
+	[GeneratedRegex(@"(?:\r\n|\n){3,}")]
+	private static partial Regex ConsolidateLineBreaksRegex();
 	
 	#endregion
 	
@@ -393,8 +399,23 @@ public partial class AppRunner
 
 			#endregion
 			
-			// todo: process variants in @media in CSS source
-			
+			#region Process @variant in CSS source
+
+			foreach (var match in AtVariantRegex().Matches(outputCss.ToString()).ToList())
+			{
+				var segment = match.Value
+					.Replace("@variant", string.Empty, StringComparison.Ordinal)
+					.Replace("{", string.Empty, StringComparison.Ordinal)
+					.Trim();
+				
+				if (segment.TryVariantIsMediaQuery(this, out var variant))
+				{
+					outputCss.Replace(match.Value, $"@{variant?.PrefixType} {variant?.Statement} {{");
+				}
+			}
+
+			#endregion
+
 			// todo: process functions, like --alpha()
 			
 			#region Add referenced CSS custom properties used in CSS source
@@ -491,8 +512,7 @@ public partial class AppRunner
 			
 			#endregion
 
-			utilityCss.Trim();
-			outputCss.Replace("::sfumato{}", utilityCss.ToString());
+			outputCss.Replace("::sfumato{}", utilityCss.ToString());			
 		}
 		catch (Exception e)
 		{
@@ -506,7 +526,7 @@ public partial class AppRunner
 			AppState.StringBuilderPool.Return(workingSb);
 		}
 		
-		return outputCss.ToString();
+		return AppRunnerSettings.UseMinify ? outputCss.ToString().CompactCss() : ConsolidateLineBreaksRegex().Replace(outputCss.ToString().Trim(), AppRunnerSettings.LineBreak + AppRunnerSettings.LineBreak);
 	}
 
 	private static void ProcessVariantBranchRecursive(VariantBranch branch, KeyValuePair<ulong, string>[] wrappers, CssClass cssClass)
