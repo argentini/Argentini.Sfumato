@@ -14,10 +14,10 @@ public static partial class ContentScanner
         (?<delim>(\\")|["'`])
         (?<content>(?:(?!\k<delim>)[\s\S])*?)
         \k<delim>
-        """, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace)]
+        """, RegexOptions.IgnorePatternWhitespace)]
     public static partial Regex QuotedStringsRegex();
     
-    [GeneratedRegex(@"\S+", RegexOptions.Compiled)]
+    [GeneratedRegex(@"\S+")]
     public static partial Regex UtilityClassRegex();
     
     #endregion
