@@ -111,21 +111,21 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	        CssContent = WhitespaceBeforeLineBreakRegex().Replace(CssContent, string.Empty);
 	        CssContent = RemoveBlockCommentsRegex().Replace(CssContent, string.Empty);
 
-	        var quoteMatches = SfumatoCssBlockRegex().Matches(CssContent);
+	        var sfumatoBlockMatches = SfumatoCssBlockRegex().Matches(CssContent);
 
-	        if (quoteMatches.Count == 0)
+	        if (sfumatoBlockMatches.Count == 0)
 	        {
 	            Console.WriteLine($"{AppState.CliErrorPrefix}No ::sfumato {{}} block in file: {CssFilePath}");
 	            Environment.Exit(1);
 	        }
 
-	        if (quoteMatches.Count != 1)
+	        if (sfumatoBlockMatches.Count != 1)
 	        {
 	            Console.WriteLine($"{AppState.CliErrorPrefix}Only one ::sfumato {{}} block allowed in file: {CssFilePath}");
 	            Environment.Exit(1);
 	        }
 
-	        SfumatoCssBlock = quoteMatches[0].Value;
+	        SfumatoCssBlock = sfumatoBlockMatches[0].Value;
 
 	        ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), LineBreak + LineBreak);
 	    }
@@ -143,19 +143,23 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
     {
 	    try
 	    {
-		    SfumatoBlockItems.Clear();
-		    
 		    sfumatoCssBlock = string.IsNullOrEmpty(sfumatoCssBlock) ? SfumatoCssBlock.Trim()[SfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim() : sfumatoCssBlock.Trim()[sfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim();
 		    
 	        var quoteMatches = CssCustomPropertiesRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
-		        SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf(':')].Trim(), match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim());
+		        if (SfumatoBlockItems.TryAdd(match.Value[..match.Value.IndexOf(':')].Trim(), match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim()) == false)
+		        {
+			        SfumatoBlockItems[match.Value[..match.Value.IndexOf(':')].Trim()] = match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim();
+		        }
 
 	        quoteMatches = CssAtAndClassBlocksRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
-		        SfumatoBlockItems.Add(match.Value[..match.Value.IndexOf('{')].Trim(), match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim());
+		        if (SfumatoBlockItems.TryAdd(match.Value[..match.Value.IndexOf('{')].Trim(), match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim()) == false)
+		        {
+			        SfumatoBlockItems[match.Value[..match.Value.IndexOf('{')].Trim()] = match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim();
+		        }
 
 	        if (SfumatoBlockItems.Count > 0)
 	            return;

@@ -109,7 +109,8 @@ public partial class AppRunner
 		    if (string.IsNullOrEmpty(key))
 			    continue;
 
-		    Library.ColorsByName.Add(key, color.Value);
+		    if (Library.ColorsByName.TryAdd(key, color.Value) == false)
+			    Library.ColorsByName[key] = color.Value;
 	    }
 	    
 	    #endregion
@@ -127,23 +128,39 @@ public partial class AppRunner
 
 		    if (string.IsNullOrEmpty(key))
 			    continue;
-		    
-		    Library.MediaQueryPrefixes.Add(key, new VariantMetadata
+
+		    if (Library.MediaQueryPrefixes.TryAdd(key, new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "media",
+			        Statement = $"(width >= {breakpoint.Value})"
+		        }) == false)
 		    {
-			    PrefixOrder = prefixOrder,
-			    PrefixType = "media",
-			    Statement = $"(width >= {breakpoint.Value})"
-		    });
+			    Library.MediaQueryPrefixes[key] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "media",
+				    Statement = $"(width >= {breakpoint.Value})"
+			    };
+		    }
 
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
-		    
-		    Library.MediaQueryPrefixes.Add($"max-{key}", new VariantMetadata
+
+		    if (Library.MediaQueryPrefixes.TryAdd($"max-{key}", new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "media",
+			        Statement = $"(width < {breakpoint.Value})"
+		        }) == false)
 		    {
-			    PrefixOrder = prefixOrder,
-			    PrefixType = "media",
-			    Statement = $"(width < {breakpoint.Value})"
-		    });
+			    Library.MediaQueryPrefixes[$"max-{key}"] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "media",
+				    Statement = $"(width < {breakpoint.Value})"
+			    };
+		    }
 		    
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
@@ -162,22 +179,38 @@ public partial class AppRunner
 		    if (double.TryParse(breakpoint.Value, out var maxValue) == false)
 			    continue;
 
-		    Library.MediaQueryPrefixes.Add(key, new VariantMetadata
+		    if (Library.MediaQueryPrefixes.TryAdd(key, new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "media",
+			        Statement = $"(min-aspect-ratio: {breakpoint.Value})"
+		        }) == false)
 		    {
-			    PrefixOrder = prefixOrder,
-			    PrefixType = "media",
-			    Statement = $"(min-aspect-ratio: {breakpoint.Value})"
-		    });
+			    Library.MediaQueryPrefixes[key] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "media",
+				    Statement = $"(min-aspect-ratio: {breakpoint.Value})"
+			    };
+		    }
 		    
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
-		    
-		    Library.MediaQueryPrefixes.Add($"max-{key}", new VariantMetadata
+
+		    if (Library.MediaQueryPrefixes.TryAdd($"max-{key}", new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "media",
+			        Statement = $"(max-aspect-ratio: {maxValue - 0.000000000001})"
+		        }) == false)
 		    {
-			    PrefixOrder = prefixOrder,
-			    PrefixType = "media",
-			    Statement = $"(max-aspect-ratio: {maxValue - 0.000000000001})"
-		    });
+			    Library.MediaQueryPrefixes[$"max-{key}"] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "media",
+				    Statement = $"(max-aspect-ratio: {maxValue - 0.000000000001})"
+			    };
+		    }
 		    
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
@@ -190,22 +223,38 @@ public partial class AppRunner
 		    if (string.IsNullOrEmpty(key))
 			    continue;
 
-		    Library.ContainerQueryPrefixes.Add($"@{key}", new VariantMetadata
+		    if (Library.ContainerQueryPrefixes.TryAdd($"@{key}", new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "container",
+			        Statement = $"(width >= {breakpoint.Value})"
+		        }) == false)
 		    {
-			    PrefixOrder = prefixOrder,
-			    PrefixType = "container",
-			    Statement = $"(width >= {breakpoint.Value})"
-		    });
+			    Library.ContainerQueryPrefixes[$"@{key}"] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "container",
+				    Statement = $"(width >= {breakpoint.Value})"
+			    };
+		    }
 
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
-		    
-		    Library.ContainerQueryPrefixes.Add($"@max-{key}", new VariantMetadata
+
+		    if (Library.ContainerQueryPrefixes.TryAdd($"@max-{key}", new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "container",
+			        Statement = $"(width < {breakpoint.Value})"
+		        }) == false)
 		    {
-			    PrefixOrder = prefixOrder,
-			    PrefixType = "container",
-			    Statement = $"(width < {breakpoint.Value})"
-		    });
+			    Library.ContainerQueryPrefixes[$"@max-{key}"] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "container",
+				    Statement = $"(width < {breakpoint.Value})"
+			    };
+		    }
 		    
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
@@ -244,13 +293,106 @@ public partial class AppRunner
     public void BuildCssFile()
 	{
 		var outputCss = AppState.StringBuilderPool.Get();
+		var generatedCss = AppState.StringBuilderPool.Get();
+		var workingSb = AppState.StringBuilderPool.Get();
 
 		try
 		{
-			#region Consolidate dependencies
-
 			UsedCssCustomProperties.Clear();
 			UsedCss.Clear();
+
+			outputCss.Append(AppRunnerSettings.ProcessedCssContent);
+
+			#region Always include root CSS custom properties
+
+			UsedCssCustomProperties.TryAddUpdate("--spacing", string.Empty);			
+
+			UsedCssCustomProperties.TryAddUpdate("--font-sans", string.Empty);			
+			UsedCssCustomProperties.TryAddUpdate("--font-sans--font-feature-settings", string.Empty);			
+			UsedCssCustomProperties.TryAddUpdate("--font-sans--font-variation-settings", string.Empty);			
+			
+			UsedCssCustomProperties.TryAddUpdate("--font-serif", string.Empty);			
+			UsedCssCustomProperties.TryAddUpdate("--font-serif--font-feature-settings", string.Empty);			
+			UsedCssCustomProperties.TryAddUpdate("--font-serif--font-variation-settings", string.Empty);			
+
+			UsedCssCustomProperties.TryAddUpdate("--font-mono", string.Empty);			
+			UsedCssCustomProperties.TryAddUpdate("--font-mono--font-feature-settings", string.Empty);			
+			UsedCssCustomProperties.TryAddUpdate("--font-mono--font-variation-settings", string.Empty);			
+
+			UsedCssCustomProperties.TryAddUpdate("--default-transition-duration", string.Empty);
+			UsedCssCustomProperties.TryAddUpdate("--default-transition-timing-function", string.Empty);
+			UsedCssCustomProperties.TryAddUpdate("--default-font-family", string.Empty);
+			UsedCssCustomProperties.TryAddUpdate("--default-font-feature-settings", string.Empty);
+			UsedCssCustomProperties.TryAddUpdate("--default-font-variation-settings", string.Empty);
+			UsedCssCustomProperties.TryAddUpdate("--default-mono-font-family", string.Empty);
+			UsedCssCustomProperties.TryAddUpdate("--default-mono-font-feature-settings", string.Empty);
+			UsedCssCustomProperties.TryAddUpdate("--default-mono-font-variation-settings", string.Empty);
+
+			if (AppRunnerSettings.UseForms)
+			{
+				UsedCssCustomProperties.TryAddUpdate("--form-field-background-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-placeholder-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-border-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-focus-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-check-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-button-bg-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-button-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-button-hover-bg-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-button-hover-color", string.Empty);
+    
+				UsedCssCustomProperties.TryAddUpdate("--form-dark-background-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-dark-color", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-dark-placeholder-color", string.Empty);
+
+				UsedCssCustomProperties.TryAddUpdate("--form-field-focus-border-width", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-border-radius", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-border-width", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-padding", string.Empty);
+				UsedCssCustomProperties.TryAddUpdate("--form-field-max-height", string.Empty);
+
+				UsedCssCustomProperties.TryAddUpdate("--form-button-padding", string.Empty);
+			}
+			
+			#endregion
+			
+			#region Process @apply and CSS custom property usage in CSS source
+
+			foreach (var match in AtApplyRegex().Matches(AppRunnerSettings.ProcessedCssContent).ToList())
+			{
+				var utilityClassStrings = (match.Value.TrimStart("@apply")?.TrimEnd(';').Trim() ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				var utilityClasses = utilityClassStrings
+					.Select(utilityClass => new CssClass(this, utilityClass.Replace("\\", string.Empty)))
+					.Where(cssClass => cssClass.IsValid)
+					.ToList();
+
+				if (utilityClasses.Count > 0)
+				{
+					workingSb.Clear();
+
+					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
+					{
+						foreach (var dependency in utilityClass.ClassDefinition?.UsesCssCustomProperties ?? [])
+						{
+							if (dependency.StartsWith("--", StringComparison.Ordinal))
+								UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+							else
+								UsedCss.TryAddUpdate(dependency, string.Empty);
+						}
+						
+						if (workingSb.Length > 0)
+							workingSb.Append(' ');
+
+						workingSb.Append(utilityClass.Styles.Replace(AppRunnerSettings.LineBreak, " "));
+					}
+				}
+
+				outputCss.Replace(match.Value, workingSb.ToString());
+			}
+
+			#endregion
+
+			#region Process scanned file dependencies
 
 			foreach (var utilityClass in ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
 			{
@@ -266,47 +408,9 @@ public partial class AppRunner
 			}
 
 			#endregion
-
-			// todo: process @apply and CSS custom property usage in CSS source
-
-			var sb = AppState.StringBuilderPool.Get();
-
-			foreach (var match in AtApplyRegex().Matches(outputCss.ToString()).ToList())
-			{
-				var utilityClassStrings = (match.Value.TrimStart("@apply")?.TrimEnd(';').Trim() ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-				var utilityClasses = utilityClassStrings
-					.Select(utilityClass => new CssClass(this, utilityClass.Replace("\\", string.Empty)))
-					.Where(cssClass => cssClass.IsValid)
-					.ToList();
-
-				if (utilityClasses.Count > 0)
-				{
-					sb.Clear();
-
-					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
-					{
-						foreach (var dependency in utilityClass.ClassDefinition?.UsesCssCustomProperties ?? [])
-						{
-							if (dependency.StartsWith("--", StringComparison.Ordinal))
-								UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
-							else
-								UsedCss.TryAddUpdate(dependency, string.Empty);
-						}
-						
-						if (sb.Length > 0)
-							sb.Append(' ');
-
-						sb.Append(utilityClass.Styles.Replace(AppRunnerSettings.LineBreak, " "));
-					}
-				}
-
-				outputCss.Replace(match.Value, sb.ToString());
-			}
-
-			AppState.StringBuilderPool.Return(sb);
-
-			#region Add values to UsedCssCustomProperties and UsedCss collections
-
+			
+			#region Add values to CSS custom property dependencies
+			
 			foreach (var usedCssCustomProperty in UsedCssCustomProperties)
 			{
 				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
@@ -320,44 +424,50 @@ public partial class AppRunner
 			}
 
 			#endregion
-			
-			#region Generate CSS: inject used CSS custom properties and CSS into :root
+
+			#region Inject used CSS custom properties and CSS into :root
 			
 			if (UsedCssCustomProperties.Count > 0)
 			{
-				outputCss.Append(":root {").Append(AppRunnerSettings.LineBreak);
+				generatedCss.Append(":root {").Append(AppRunnerSettings.LineBreak);
 
 				foreach (var ccp in UsedCssCustomProperties)
-					outputCss.Append(AppRunnerSettings.Indentation).Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';').Append(AppRunnerSettings.LineBreak);
+					generatedCss.Append(AppRunnerSettings.Indentation).Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';').Append(AppRunnerSettings.LineBreak);
 
-				outputCss.Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+				generatedCss.Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
 			}
 
 			if (UsedCss.Count > 0)
 			{
 				foreach (var ccp in UsedCss)
-					outputCss.Append(ccp.Key).Append(' ').Append(ccp.Value).Append(AppRunnerSettings.LineBreak);
+					generatedCss.Append(ccp.Key).Append(' ').Append(ccp.Value).Append(AppRunnerSettings.LineBreak);
 
-				outputCss.Append(AppRunnerSettings.LineBreak);
+				generatedCss.Append(AppRunnerSettings.LineBreak);
 			}
 			
 			#endregion
 
-			#region Generate CSS: inject optional reset, forms classes
+			#region Inject optional reset
 			
 			if (AppRunnerSettings.UseReset)
 			{
-				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
+				generatedCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
 			}
 
+			#endregion
+
+			#region Inject optional forms classes
+			
 			if (AppRunnerSettings.UseForms)
 			{
-				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
+				generatedCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
 			}
 
 			#endregion
 
 			#region Generate CSS: build consolidated variant structure, generate CSS
+
+			workingSb.Clear();
 			
 			var root = new VariantBranch
 			{
@@ -373,18 +483,11 @@ public partial class AppRunner
 				ProcessVariantBranchRecursive(root, wrappers, cssClass);
 			}			
 
-			outputCss.Append(AppRunnerSettings.ProcessedCssContent).Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
-			
-			GenerateCssFromVariantTree(root, outputCss);
+			GenerateCssFromVariantTree(root, generatedCss);
 
 			#endregion
 
-			// todo: inject generated CSS where :sfumato was			
-			
-			
-			
-			
-			
+			outputCss.Insert(0, generatedCss);
 		}
 		catch (Exception e)
 		{
@@ -394,6 +497,8 @@ public partial class AppRunner
 		finally
 		{
 			AppState.StringBuilderPool.Return(outputCss);
+			AppState.StringBuilderPool.Return(generatedCss);
+			AppState.StringBuilderPool.Return(workingSb);
 		}
 	}
 

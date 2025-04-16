@@ -44,7 +44,11 @@
     --form-button-color: var(--color-white);
     --form-button-hover-bg-color: var(--color-sky-500);
     --form-button-hover-color: var(--color-white);
-    
+
+    --form-dark-background-color: var(--color-white);
+    --form-dark-color: var(--color-black);
+    --form-dark-placeholder-color: var(--color-slate-400);
+
     --form-field-focus-border-width: 0.15rem;
     --form-field-border-radius: 0.175rem;
     --form-field-border-width: 1px;
