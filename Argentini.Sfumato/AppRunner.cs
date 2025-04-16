@@ -293,7 +293,7 @@ public partial class AppRunner
     /// <summary>
     /// Gather dependencies from all scanned files, consolidate them, and generate the CSS output file.
     /// </summary>
-    public void BuildCssFile()
+    public string BuildCss()
 	{
 		var outputCss = AppState.StringBuilderPool.Get();
 		var generatedCss = AppState.StringBuilderPool.Get();
@@ -524,6 +524,8 @@ public partial class AppRunner
 			AppState.StringBuilderPool.Return(generatedCss);
 			AppState.StringBuilderPool.Return(workingSb);
 		}
+		
+		return outputCss.ToString();
 	}
 
 	private static void ProcessVariantBranchRecursive(VariantBranch branch, KeyValuePair<ulong, string>[] wrappers, CssClass cssClass)
