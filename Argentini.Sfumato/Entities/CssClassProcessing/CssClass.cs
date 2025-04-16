@@ -11,13 +11,13 @@ public sealed partial class CssClass : IDisposable
 {
     #region Regular Expressions
     
-    [GeneratedRegex(@"^--[\w-]+_?:_?[^;]+;?$", RegexOptions.Compiled)]
+    [GeneratedRegex(@"^--[\w-]+_?:_?[^;]+;?$")]
     public static partial Regex PatternCssCustomPropertyAssignmentRegex();
 
-    [GeneratedRegex(@":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))", RegexOptions.Compiled)]
+    [GeneratedRegex(@":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))")]
     public static partial Regex SplitByColonsRegex();
 
-    [GeneratedRegex(@"/(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))", RegexOptions.Compiled)]
+    [GeneratedRegex(@"/(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))")]
     public static partial Regex SplitBySlashesRegex();
     
     #endregion
