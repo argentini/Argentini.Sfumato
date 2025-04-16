@@ -305,80 +305,6 @@ public partial class AppRunner
 			UsedCss.Clear();
 
 			outputCss.Append(AppRunnerSettings.ProcessedCssContent);
-
-			#region Always include root CSS custom properties
-
-			UsedCssCustomProperties.TryAddUpdate("--spacing", string.Empty);			
-
-			UsedCssCustomProperties.TryAddUpdate("--font-sans", string.Empty);			
-			UsedCssCustomProperties.TryAddUpdate("--font-sans--font-feature-settings", string.Empty);			
-			UsedCssCustomProperties.TryAddUpdate("--font-sans--font-variation-settings", string.Empty);			
-			
-			UsedCssCustomProperties.TryAddUpdate("--font-serif", string.Empty);			
-			UsedCssCustomProperties.TryAddUpdate("--font-serif--font-feature-settings", string.Empty);			
-			UsedCssCustomProperties.TryAddUpdate("--font-serif--font-variation-settings", string.Empty);			
-
-			UsedCssCustomProperties.TryAddUpdate("--font-mono", string.Empty);			
-			UsedCssCustomProperties.TryAddUpdate("--font-mono--font-feature-settings", string.Empty);			
-			UsedCssCustomProperties.TryAddUpdate("--font-mono--font-variation-settings", string.Empty);			
-
-			UsedCssCustomProperties.TryAddUpdate("--default-transition-duration", string.Empty);
-			UsedCssCustomProperties.TryAddUpdate("--default-transition-timing-function", string.Empty);
-			UsedCssCustomProperties.TryAddUpdate("--default-font-family", string.Empty);
-			UsedCssCustomProperties.TryAddUpdate("--default-font-feature-settings", string.Empty);
-			UsedCssCustomProperties.TryAddUpdate("--default-font-variation-settings", string.Empty);
-			UsedCssCustomProperties.TryAddUpdate("--default-mono-font-family", string.Empty);
-			UsedCssCustomProperties.TryAddUpdate("--default-mono-font-feature-settings", string.Empty);
-			UsedCssCustomProperties.TryAddUpdate("--default-mono-font-variation-settings", string.Empty);
-
-			if (AppRunnerSettings.UseForms)
-			{
-				UsedCssCustomProperties.TryAddUpdate("--form-field-background-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-placeholder-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-border-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-focus-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-check-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-button-bg-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-button-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-button-hover-bg-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-button-hover-color", string.Empty);
-    
-				UsedCssCustomProperties.TryAddUpdate("--form-dark-background-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-dark-color", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-dark-placeholder-color", string.Empty);
-
-				UsedCssCustomProperties.TryAddUpdate("--form-field-focus-border-width", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-border-radius", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-border-width", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-padding", string.Empty);
-				UsedCssCustomProperties.TryAddUpdate("--form-field-max-height", string.Empty);
-
-				UsedCssCustomProperties.TryAddUpdate("--form-button-padding", string.Empty);
-
-				foreach (var item in AppRunnerSettings.SfumatoBlockItems)
-				{
-					if (item.Key.StartsWith("--form-") == false || item.Value.StartsWith("var(") == false)
-						continue;
-					
-					var key = item.Value.TrimStart("var(").TrimEnd(")") ?? string.Empty;
-
-					if (string.IsNullOrEmpty(key) == false)
-						UsedCssCustomProperties.TryAddUpdate(key, string.Empty);
-				}
-			}
-			
-			#endregion
-			
-			#region Process CSS custom properties used in CSS source
-			
-			foreach (var match in CssCustomPropertiesRegex().Matches(AppRunnerSettings.ProcessedCssContent).ToList())
-			{
-				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out _))
-					UsedCssCustomProperties.TryAdd(match.Value, string.Empty);
-			}
-
-			#endregion
 			
 			#region Process scanned file utility class dependencies lists
 
@@ -433,44 +359,6 @@ public partial class AppRunner
 
 			#endregion
 			
-			#region Add values to all tracked CSS custom property dependencies
-			
-			foreach (var usedCssCustomProperty in UsedCssCustomProperties.ToList())
-			{
-				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
-					UsedCssCustomProperties[usedCssCustomProperty.Key] = value;
-			}
-
-			foreach (var usedCss in UsedCss.ToList())
-			{
-				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value))
-					UsedCss[usedCss.Key] = value;
-			}
-
-			#endregion
-
-			#region Inject used CSS custom properties and CSS into :root
-			
-			if (UsedCssCustomProperties.Count > 0)
-			{
-				generatedCss.Append(":root {").Append(AppRunnerSettings.LineBreak);
-
-				foreach (var ccp in UsedCssCustomProperties.Where(c => string.IsNullOrEmpty(c.Value) == false))
-					generatedCss.Append(AppRunnerSettings.Indentation).Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';').Append(AppRunnerSettings.LineBreak);
-
-				generatedCss.Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
-			}
-
-			if (UsedCss.Count > 0)
-			{
-				foreach (var ccp in UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
-					generatedCss.Append(ccp.Key).Append(' ').Append(ccp.Value).Append(AppRunnerSettings.LineBreak);
-
-				generatedCss.Append(AppRunnerSettings.LineBreak);
-			}
-			
-			#endregion
-
 			#region Inject optional reset
 			
 			if (AppRunnerSettings.UseReset)
@@ -487,6 +375,86 @@ public partial class AppRunner
 				generatedCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
 			}
 
+			#endregion
+
+			#region Process CSS custom properties used in CSS source
+
+			foreach (var match in CssCustomPropertiesRegex().Matches(AppRunnerSettings.ProcessedCssContent).ToList())
+			{
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
+					UsedCssCustomProperties.TryAdd(match.Value, value);
+			}
+
+			foreach (var match in CssCustomPropertiesRegex().Matches(generatedCss.ToString()).ToList())
+			{
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
+					UsedCssCustomProperties.TryAdd(match.Value, value);
+			}
+
+			#endregion
+
+			#region Add values to all tracked CSS custom property dependencies, process values as well
+			
+			foreach (var usedCssCustomProperty in UsedCssCustomProperties.ToList())
+			{
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value) == false)
+					continue;
+				
+				UsedCssCustomProperties[usedCssCustomProperty.Key] = value;
+
+				if (value.Contains("--") == false)
+					continue;
+				
+				foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
+				{
+					if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value2))
+						UsedCssCustomProperties.TryAdd(match.Value, value2);
+				}
+			}
+
+			foreach (var usedCss in UsedCss.ToList())
+			{
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value))
+				{
+					UsedCss[usedCss.Key] = value;
+					
+					if (value.Contains("--") == false)
+						continue;
+				
+					foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
+					{
+						if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value2))
+							UsedCssCustomProperties.TryAdd(match.Value, value2);
+					}
+				}
+			}
+
+			#endregion
+
+			#region Inject used CSS custom properties and CSS into :root
+
+			workingSb.Clear();
+			
+			if (UsedCssCustomProperties.Count > 0)
+			{
+				workingSb.Append(":root {").Append(AppRunnerSettings.LineBreak);
+
+				foreach (var ccp in UsedCssCustomProperties.Where(c => string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
+					workingSb.Append(AppRunnerSettings.Indentation).Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';').Append(AppRunnerSettings.LineBreak);
+
+				workingSb.Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+			}
+
+			if (UsedCss.Count > 0)
+			{
+				foreach (var ccp in UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
+					workingSb.Append(ccp.Key).Append(' ').Append(ccp.Value).Append(AppRunnerSettings.LineBreak);
+
+				workingSb.Append(AppRunnerSettings.LineBreak);
+			}
+
+			generatedCss.Insert(0, workingSb);
+			
 			#endregion
 
 			#region Generate CSS: build consolidated variant structure, generate CSS
