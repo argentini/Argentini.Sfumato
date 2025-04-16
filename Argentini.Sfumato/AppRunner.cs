@@ -352,6 +352,17 @@ public partial class AppRunner
 				UsedCssCustomProperties.TryAddUpdate("--form-field-max-height", string.Empty);
 
 				UsedCssCustomProperties.TryAddUpdate("--form-button-padding", string.Empty);
+
+				foreach (var item in AppRunnerSettings.SfumatoBlockItems)
+				{
+					if (item.Key.StartsWith("--form-") == false || item.Value.StartsWith("var(") == false)
+						continue;
+					
+					var key = item.Value.TrimStart("var(").TrimEnd(")") ?? string.Empty;
+
+					if (string.IsNullOrEmpty(key) == false)
+						UsedCssCustomProperties.TryAddUpdate(key, string.Empty);
+				}
 			}
 			
 			#endregion
