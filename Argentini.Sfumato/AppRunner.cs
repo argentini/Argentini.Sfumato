@@ -416,6 +416,8 @@ public partial class AppRunner
 
 			#endregion
 
+			// todo: process custom utilities, like "@utility content-auto {}"
+
 			// todo: process functions, like --alpha()
 			
 			#region Add referenced CSS custom properties used in CSS source
