@@ -525,19 +525,19 @@ public static partial class Strings
         return result;
     }
 
-	[GeneratedRegex(@"([\n\r]+\s*)|(/\*[\d\D]*?\*/)", RegexOptions.Compiled)]
+	[GeneratedRegex(@"([\n\r]+\s*)|(/\*[\d\D]*?\*/)")]
 	private static partial Regex CssRemovals();
 
-	[GeneratedRegex(@"\s?([:,;{}])\s?", RegexOptions.Compiled)]
+	[GeneratedRegex(@"\s?([:,;{}])\s?")]
 	private static partial Regex CssRemoveDelimiterSpaces();
 
-	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)", RegexOptions.Compiled)]
+	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)")]
 	private static partial Regex CssRemoveZeroUnits();
 	
-	[GeneratedRegex(@"[a-zA-Z]+#", RegexOptions.Compiled)]
+	[GeneratedRegex(@"[a-zA-Z]+#")]
 	private static partial Regex CssCompressSelectors();
 
-	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+	[GeneratedRegex(@"\s+")]
 	private static partial Regex CssConsolidateSpaces();
     
 	/// <summary>
