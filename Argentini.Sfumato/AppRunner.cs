@@ -19,6 +19,9 @@ public partial class AppRunner
 	[GeneratedRegex(@"@apply\s+[^;]+?;", RegexOptions.Compiled)]
 	private static partial Regex AtApplyRegex();
 	
+	[GeneratedRegex(@"--[\w-]+", RegexOptions.Compiled)]
+	private static partial Regex CssCustomPropertiesRegex();
+	
 	#endregion
 	
 	#region Properties
@@ -367,7 +370,34 @@ public partial class AppRunner
 			
 			#endregion
 			
-			#region Process @apply and CSS custom property usage in CSS source
+			#region Process CSS custom properties used in CSS source
+			
+			foreach (var match in CssCustomPropertiesRegex().Matches(AppRunnerSettings.ProcessedCssContent).ToList())
+			{
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out _))
+					UsedCssCustomProperties.TryAdd(match.Value, string.Empty);
+			}
+
+			#endregion
+			
+			#region Process scanned file utility class dependencies lists
+
+			foreach (var utilityClass in ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
+			{
+				UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
+					
+				foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
+				{
+					if (dependency.StartsWith("--", StringComparison.Ordinal))
+						UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+					else
+						UsedCss.TryAddUpdate(dependency, string.Empty);
+				}
+			}
+
+			#endregion
+
+			#region Process @apply usage in CSS source, add dependencies to lists
 
 			foreach (var match in AtApplyRegex().Matches(AppRunnerSettings.ProcessedCssContent).ToList())
 			{
@@ -402,33 +432,16 @@ public partial class AppRunner
 			}
 
 			#endregion
-
-			#region Process scanned file dependencies
-
-			foreach (var utilityClass in ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
-			{
-				UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
-					
-				foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
-				{
-					if (dependency.StartsWith("--", StringComparison.Ordinal))
-						UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
-					else
-						UsedCss.TryAddUpdate(dependency, string.Empty);
-				}
-			}
-
-			#endregion
 			
-			#region Add values to CSS custom property dependencies
+			#region Add values to all tracked CSS custom property dependencies
 			
-			foreach (var usedCssCustomProperty in UsedCssCustomProperties)
+			foreach (var usedCssCustomProperty in UsedCssCustomProperties.ToList())
 			{
 				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value))
 					UsedCssCustomProperties[usedCssCustomProperty.Key] = value;
 			}
 
-			foreach (var usedCss in UsedCss)
+			foreach (var usedCss in UsedCss.ToList())
 			{
 				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value))
 					UsedCss[usedCss.Key] = value;
@@ -442,7 +455,7 @@ public partial class AppRunner
 			{
 				generatedCss.Append(":root {").Append(AppRunnerSettings.LineBreak);
 
-				foreach (var ccp in UsedCssCustomProperties)
+				foreach (var ccp in UsedCssCustomProperties.Where(c => string.IsNullOrEmpty(c.Value) == false))
 					generatedCss.Append(AppRunnerSettings.Indentation).Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';').Append(AppRunnerSettings.LineBreak);
 
 				generatedCss.Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
@@ -450,7 +463,7 @@ public partial class AppRunner
 
 			if (UsedCss.Count > 0)
 			{
-				foreach (var ccp in UsedCss)
+				foreach (var ccp in UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
 					generatedCss.Append(ccp.Key).Append(' ').Append(ccp.Value).Append(AppRunnerSettings.LineBreak);
 
 				generatedCss.Append(AppRunnerSettings.LineBreak);
