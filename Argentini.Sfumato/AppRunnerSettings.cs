@@ -9,27 +9,24 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 {
 	#region Regular Expressions
 
-	[GeneratedRegex(@"(/\*[\d\D]*?\*/)", RegexOptions.Compiled)]
+	[GeneratedRegex(@"(/\*[\d\D]*?\*/)")]
 	private static partial Regex RemoveBlockCommentsRegex();
 	
-	[GeneratedRegex(@"::sfumato\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
+	[GeneratedRegex(@"::sfumato\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Singleline)]
 	private static partial Regex SfumatoCssBlockRegex();
 
-	[GeneratedRegex(@"((?<property>--[\w-]+)\s*:\s*(?<value>(?:""(?:\\.|[^""\\])*""|'(?:\\.|[^'\\])*'|[^;])+)\s*;)", RegexOptions.Compiled)]
+	[GeneratedRegex(@"((?<property>--[\w-]+)\s*:\s*(?<value>(?:""(?:\\.|[^""\\])*""|'(?:\\.|[^'\\])*'|[^;])+)\s*;)")]
 	private static partial Regex CssCustomPropertiesRegex();
 
-	[GeneratedRegex(@"(\.(?<class>[a-zA-Z0-9_-]+)|(@(?<kind>[a-zA-Z0-9_-]+)\s+(?<name>[a-zA-Z0-9_-]+)))\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Compiled | RegexOptions.Singleline)]
+	[GeneratedRegex(@"(\.(?<class>[a-zA-Z0-9_-]+)|(@(?<kind>[a-zA-Z0-9_-]+)\s+(?<name>[a-zA-Z0-9_-]+)))\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Singleline)]
 	private static partial Regex CssAtAndClassBlocksRegex();
 
-	[GeneratedRegex(@"\s+", RegexOptions.Compiled)]
+	[GeneratedRegex(@"\s+")]
 	private static partial Regex ConsolidateSpacesRegex();
 	
-	[GeneratedRegex(@"\s+(?=\r\n|\n)", RegexOptions.Compiled)]
+	[GeneratedRegex(@"[ \t]+(?=\r\n|\n)")]
 	private static partial Regex WhitespaceBeforeLineBreakRegex();
 	
-	[GeneratedRegex(@"(?:\r\n|\n){3,}", RegexOptions.Compiled)]
-	private static partial Regex ConsolidateLineBreaksRegex();
-
 	#endregion
 
 	#region Properties
@@ -127,7 +124,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 
 	        SfumatoCssBlock = sfumatoBlockMatches[0].Value;
 
-	        ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), string.Empty);
+	        ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);
 	    }
 	    catch (Exception e)
 	    {
@@ -285,7 +282,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 			    importIndex = css.IndexOf("@import ", importIndex + 1, StringComparison.Ordinal);
 		    }
 		    
-		    return ConsolidateLineBreaksRegex().Replace(sb.ToString(), LineBreak + LineBreak);
+		    return sb.ToString();
 	    }
 	    catch (Exception e)
 	    {
