@@ -127,7 +127,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 
 	        SfumatoCssBlock = sfumatoBlockMatches[0].Value;
 
-	        ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), LineBreak + LineBreak);
+	        ProcessedCssContent = ConsolidateLineBreaksRegex().Replace(CssContent.Replace(SfumatoCssBlock, string.Empty), string.Empty);
 	    }
 	    catch (Exception e)
 	    {

@@ -296,7 +296,7 @@ public partial class AppRunner
     public string BuildCss()
 	{
 		var outputCss = AppState.StringBuilderPool.Get();
-		var generatedCss = AppState.StringBuilderPool.Get();
+		var utilityCss = AppState.StringBuilderPool.Get();
 		var workingSb = AppState.StringBuilderPool.Get();
 
 		try
@@ -304,9 +304,7 @@ public partial class AppRunner
 			UsedCssCustomProperties.Clear();
 			UsedCss.Clear();
 
-			outputCss.Append(AppRunnerSettings.ProcessedCssContent);
-			
-			#region Process scanned file utility class dependencies lists
+			#region Gather scanned file utility class dependencies lists
 
 			foreach (var utilityClass in ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
 			{
@@ -323,9 +321,45 @@ public partial class AppRunner
 
 			#endregion
 
-			#region Process @apply usage in CSS source, add dependencies to lists
+			#region Inject optional reset
+			
+			if (AppRunnerSettings.UseReset)
+			{
+				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim())
+					.Append(AppRunnerSettings.LineBreak)
+					.Append(AppRunnerSettings.LineBreak);
+			}
 
-			foreach (var match in AtApplyRegex().Matches(AppRunnerSettings.ProcessedCssContent).ToList())
+			#endregion
+
+			#region Inject optional forms classes
+			
+			if (AppRunnerSettings.UseForms)
+			{
+				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim())
+					.Append(AppRunnerSettings.LineBreak)
+					.Append(AppRunnerSettings.LineBreak);
+			}
+
+			#endregion
+
+			#region Add temp marker for utility class content
+			
+			outputCss.Append("::sfumato{}")
+				.Append(AppRunnerSettings.LineBreak)
+				.Append(AppRunnerSettings.LineBreak);
+
+			#endregion
+			
+			#region Inject processed source CSS
+			
+			outputCss.Append(AppRunnerSettings.ProcessedCssContent.Trim());
+
+			#endregion
+			
+			#region Process @apply usage (and dependencies)
+
+			foreach (var match in AtApplyRegex().Matches(outputCss.ToString()).ToList())
 			{
 				var utilityClassStrings = (match.Value.TrimStart("@apply")?.TrimEnd(';').Trim() ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
 				var utilityClasses = utilityClassStrings
@@ -359,33 +393,13 @@ public partial class AppRunner
 
 			#endregion
 			
-			#region Inject optional reset
+			// todo: process variants in @media in CSS source
 			
-			if (AppRunnerSettings.UseReset)
-			{
-				generatedCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
-			}
-
-			#endregion
-
-			#region Inject optional forms classes
+			// todo: process functions, like --alpha()
 			
-			if (AppRunnerSettings.UseForms)
-			{
-				generatedCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak)).Append(AppRunnerSettings.LineBreak);
-			}
+			#region Add referenced CSS custom properties used in CSS source
 
-			#endregion
-
-			#region Process CSS custom properties used in CSS source
-
-			foreach (var match in CssCustomPropertiesRegex().Matches(AppRunnerSettings.ProcessedCssContent).ToList())
-			{
-				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
-					UsedCssCustomProperties.TryAdd(match.Value, value);
-			}
-
-			foreach (var match in CssCustomPropertiesRegex().Matches(generatedCss.ToString()).ToList())
+			foreach (var match in CssCustomPropertiesRegex().Matches(outputCss.ToString()).ToList())
 			{
 				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
 					UsedCssCustomProperties.TryAdd(match.Value, value);
@@ -407,31 +421,51 @@ public partial class AppRunner
 				
 				foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
 				{
-					if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value2))
-						UsedCssCustomProperties.TryAdd(match.Value, value2);
+					if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var valueValue))
+						UsedCssCustomProperties.TryAdd(match.Value, valueValue);
 				}
 			}
 
 			foreach (var usedCss in UsedCss.ToList())
 			{
-				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value))
-				{
-					UsedCss[usedCss.Key] = value;
-					
-					if (value.Contains("--") == false)
-						continue;
+				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value) == false)
+					continue;
 				
-					foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
-					{
-						if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value2))
-							UsedCssCustomProperties.TryAdd(match.Value, value2);
-					}
+				UsedCss[usedCss.Key] = value;
+					
+				if (value.Contains("--") == false)
+					continue;
+				
+				foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
+				{
+					if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var valueValue))
+						UsedCssCustomProperties.TryAdd(match.Value, valueValue);
 				}
 			}
 
 			#endregion
 
-			#region Inject used CSS custom properties and CSS into :root
+			#region Build consolidated variant structure, generate utility CSS
+
+			var root = new VariantBranch
+			{
+				Fingerprint = 0,
+				Depth = 0,
+				WrapperCss = string.Empty
+			};
+
+			foreach (var cssClass in UtilityClasses.Values.OrderBy(c => c.WrapperSort))
+			{
+				var wrappers = cssClass.Wrappers.ToArray();
+
+				ProcessVariantBranchRecursive(root, wrappers, cssClass);
+			}			
+
+			GenerateCssFromVariantTree(root, utilityCss);
+
+			#endregion
+
+			#region Build root dependencies, inject at top of generated CSS
 
 			workingSb.Clear();
 			
@@ -453,33 +487,12 @@ public partial class AppRunner
 				workingSb.Append(AppRunnerSettings.LineBreak);
 			}
 
-			generatedCss.Insert(0, workingSb);
+			outputCss.Insert(0, workingSb);
 			
 			#endregion
 
-			#region Generate CSS: build consolidated variant structure, generate CSS
-
-			workingSb.Clear();
-			
-			var root = new VariantBranch
-			{
-				Fingerprint = 0,
-				Depth = 0,
-				WrapperCss = string.Empty
-			};
-
-			foreach (var cssClass in UtilityClasses.Values.OrderBy(c => c.WrapperSort))
-			{
-				var wrappers = cssClass.Wrappers.ToArray();
-
-				ProcessVariantBranchRecursive(root, wrappers, cssClass);
-			}			
-
-			GenerateCssFromVariantTree(root, generatedCss);
-
-			#endregion
-
-			outputCss.Insert(0, generatedCss);
+			utilityCss.Trim();
+			outputCss.Replace("::sfumato{}", utilityCss.ToString());
 		}
 		catch (Exception e)
 		{
@@ -489,7 +502,7 @@ public partial class AppRunner
 		finally
 		{
 			AppState.StringBuilderPool.Return(outputCss);
-			AppState.StringBuilderPool.Return(generatedCss);
+			AppState.StringBuilderPool.Return(utilityCss);
 			AppState.StringBuilderPool.Return(workingSb);
 		}
 		
