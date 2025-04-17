@@ -421,7 +421,9 @@ public partial class AppRunner
 			}
 
 			#endregion
-			
+
+			// todo: process @custom-variant, like @custom-variant theme-midnight {}
+
 			#region Process @variant in CSS source
 
 			foreach (var match in AtVariantRegex().Matches(outputCss.ToString()).ToList())
@@ -440,7 +442,7 @@ public partial class AppRunner
 			#endregion
 
 			// todo: process functions, like --alpha()
-			
+
 			#region Add referenced CSS custom properties used in CSS source
 
 			foreach (var match in CssCustomPropertiesRegex().Matches(outputCss.ToString()).ToList())
