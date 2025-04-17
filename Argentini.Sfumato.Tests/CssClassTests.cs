@@ -269,7 +269,9 @@ public class CssClassTests
                 Styles =
                     """
                     font-size: var(--text-base);
-                    line-height: var(--text-base--line-height);
+                    line-height: var(--text-base--line-height, initial);
+                    letter-spacing: var(--text-base--letter-spacing, initial);
+                    font-weight: var(--text-base--font-weight, initial);
                     """,
                 IsValid = true
             },
@@ -281,6 +283,8 @@ public class CssClassTests
                     """
                     font-size: var(--text-base);
                     line-height: calc(var(--spacing) * 5);
+                    letter-spacing: var(--text-base--letter-spacing, initial);
+                    font-weight: var(--text-base--font-weight, initial);
                     """,
                 IsValid = true
             },
@@ -292,6 +296,8 @@ public class CssClassTests
                     """
                     font-size: var(--text-base);
                     line-height: 1.25rem;
+                    letter-spacing: var(--text-base--letter-spacing, initial);
+                    font-weight: var(--text-base--font-weight, initial);
                     """,
                 IsValid = true
             },
