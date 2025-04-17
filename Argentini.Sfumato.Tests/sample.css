@@ -11,6 +11,10 @@
     --not-paths: ["SampleWebsite/wwwroot/css/", "SampleWebsite/wwwroot/assets/img/"]; /* Relative paths to exclude content scanning */
 }
 
+@utility tab-4 {
+    tab-size: 4;
+}
+
 .test {
 
     display: block;
@@ -18,6 +22,8 @@
     background-color: var(--color-lime-600);
 
     @apply leading-6\! text-base text-rose-400;
+
+    @apply tab-4;
 }
 
 @variant dark {

@@ -24,7 +24,14 @@ public partial class AppRunner
 	
 	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
 	private static partial Regex AtVariantRegex();	
-	
+
+	// Matches:
+	// @utility <name> { ... }
+	//  - group "name"    ⇒ the utility identifier (e.g. "tab-4")
+	//  - group "content" ⇒ everything inside the outer braces, including nested {...}
+	[GeneratedRegex(@"@utility\s+(?<name>[\w-]+)\s*\{\s*(?<content>(?:[^{}]|\{(?<Depth>)|\}(?<-Depth>))*)(?(Depth)(?!))\s*\}")]
+	private static partial Regex AtUtilityRegex();	
+
 	[GeneratedRegex(@"(?:\r\n|\n){3,}")]
 	private static partial Regex ConsolidateLineBreaksRegex();
 	
@@ -362,7 +369,23 @@ public partial class AppRunner
 			outputCss.Append(AppRunnerSettings.ProcessedCssContent.Trim());
 
 			#endregion
-			
+
+			#region Process @utility in CSS source
+
+			foreach (var match in AtUtilityRegex().Matches(outputCss.ToString()).ToList())
+			{
+				if (Library.SimpleClasses.TryAdd(match.Groups["name"].Value, new ClassDefinition
+				    {
+					    IsSimpleUtility = true,
+					    Template = match.Groups["content"].Value.Trim()
+				    }))
+					Library.ScannerClassNamePrefixes.Insert(match.Groups["name"].Value);
+				
+				outputCss.Replace(match.Value, string.Empty);
+			}
+
+			#endregion
+
 			#region Process @apply usage (and dependencies)
 
 			foreach (var match in AtApplyRegex().Matches(outputCss.ToString()).ToList())
@@ -415,8 +438,6 @@ public partial class AppRunner
 			}
 
 			#endregion
-
-			// todo: process custom utilities, like "@utility content-auto {}"
 
 			// todo: process functions, like --alpha()
 			
