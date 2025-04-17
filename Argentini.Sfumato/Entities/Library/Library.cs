@@ -83,8 +83,6 @@ public sealed class Library
     public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> StringClasses { get; set; } = new(StringComparer.Ordinal);
 
-    public HashSet<string> UsedCssCustomProperties { get; } = [];
-
     #endregion
     
     public Library()

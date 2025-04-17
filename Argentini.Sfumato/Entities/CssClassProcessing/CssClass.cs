@@ -690,9 +690,6 @@ public sealed partial class CssClass : IDisposable
             
         if (IsImportant)
             Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
-
-        foreach (var v in ClassDefinition?.UsesCssCustomProperties ?? [])
-            AppRunner.Library.UsedCssCustomProperties.Add(v);
     }
 
     #endregion
