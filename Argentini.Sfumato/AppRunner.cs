@@ -551,17 +551,17 @@ public partial class AppRunner
 				}
 				else if (match.Value.StartsWith("--spacing(", StringComparison.Ordinal) && match.Value.EndsWith(')') && match.Value.Length > 11)
 				{
-					var valueString = match.Value.TrimStart("--spacing(", StringComparison.Ordinal)?.TrimEnd(')').Trim();
+					var valueString = match.Value.TrimStart("--spacing(")?.TrimEnd(')').Trim();
 
 					if (string.IsNullOrEmpty(valueString))
 						continue;
 
-					if (double.TryParse(valueString, out var value))
-					{
-						outputCss.Replace(match.Value, $"calc(var(--spacing) * {value})");
+					if (double.TryParse(valueString, out var value) == false)
+						continue;
+					
+					outputCss.Replace(match.Value, $"calc(var(--spacing) * {value})");
 						
-						UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
-					}
+					UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
 				}
 				else
 				{
@@ -656,7 +656,7 @@ public partial class AppRunner
 			
 			#endregion
 
-			outputCss.Replace("::sfumato{}", utilityCss.ToString());			
+			outputCss.Replace("::sfumato{}", utilityCss.ToString());
 		}
 		catch (Exception e)
 		{
