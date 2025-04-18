@@ -9,10 +9,10 @@
     --paths: ["SampleWebsite/wwwroot/"]; /* Relative paths for project scanning; required */
     --output-path: "sfumato.css"; /* Generated CSS file path; required */
     --not-paths: ["SampleWebsite/wwwroot/css/", "SampleWebsite/wwwroot/assets/img/"]; /* Relative paths to exclude content scanning */
-}
 
-@utility tab-4 {
-    tab-size: 4;
+    @utility tab-4 {
+        tab-size: 4;
+    }
 }
 
 .test {

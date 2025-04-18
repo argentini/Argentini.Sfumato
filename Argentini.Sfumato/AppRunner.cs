@@ -25,12 +25,14 @@ public partial class AppRunner
 	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
 	private static partial Regex AtVariantRegex();	
 
+	/*
 	// Matches:
 	// @utility <name> { ... }
 	//  - group "name"    ⇒ the utility identifier (e.g. "tab-4")
 	//  - group "content" ⇒ everything inside the outer braces, including nested {...}
 	[GeneratedRegex(@"@utility\s+(?<name>[\w-]+)\s*\{\s*(?<content>(?:[^{}]|\{(?<Depth>)|\}(?<-Depth>))*)(?(Depth)(?!))\s*\}")]
-	private static partial Regex AtUtilityRegex();	
+	private static partial Regex AtUtilityRegex();
+	*/
 
 	[GeneratedRegex(@"(?:\r\n|\n){3,}")]
 	private static partial Regex ConsolidateLineBreaksRegex();
@@ -118,15 +120,15 @@ public partial class AppRunner
     {
 	    #region Read color definitions
 	    
-	    foreach (var color in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--color-")))
+	    foreach (var match in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--color-")))
 	    {
-		    var key = color.Key.TrimStart("--color-") ?? string.Empty;
+		    var key = match.Key.TrimStart("--color-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
 			    continue;
 
-		    if (Library.ColorsByName.TryAdd(key, color.Value) == false)
-			    Library.ColorsByName[key] = color.Value;
+		    if (Library.ColorsByName.TryAdd(key, match.Value) == false)
+			    Library.ColorsByName[key] = match.Value;
 	    }
 	    
 	    #endregion
@@ -135,12 +137,12 @@ public partial class AppRunner
 
 	    var prefixOrder = 100;
 
-	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems)
+	    foreach (var match in AppRunnerSettings.SfumatoBlockItems)
 	    {
-		    if (breakpoint.Key.StartsWith("--breakpoint-") == false)
+		    if (match.Key.StartsWith("--breakpoint-") == false)
 			    continue;
 		    
-		    var key = breakpoint.Key.TrimStart("--breakpoint-") ?? string.Empty;
+		    var key = match.Key.TrimStart("--breakpoint-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
 			    continue;
@@ -149,14 +151,14 @@ public partial class AppRunner
 		        {
 			        PrefixOrder = prefixOrder,
 			        PrefixType = "media",
-			        Statement = $"(width >= {breakpoint.Value})"
+			        Statement = $"(width >= {match.Value})"
 		        }) == false)
 		    {
 			    Library.MediaQueryPrefixes[key] = new VariantMetadata
 			    {
 				    PrefixOrder = prefixOrder,
 				    PrefixType = "media",
-				    Statement = $"(width >= {breakpoint.Value})"
+				    Statement = $"(width >= {match.Value})"
 			    };
 		    }
 
@@ -167,14 +169,14 @@ public partial class AppRunner
 		        {
 			        PrefixOrder = prefixOrder,
 			        PrefixType = "media",
-			        Statement = $"(width < {breakpoint.Value})"
+			        Statement = $"(width < {match.Value})"
 		        }) == false)
 		    {
 			    Library.MediaQueryPrefixes[$"max-{key}"] = new VariantMetadata
 			    {
 				    PrefixOrder = prefixOrder,
 				    PrefixType = "media",
-				    Statement = $"(width < {breakpoint.Value})"
+				    Statement = $"(width < {match.Value})"
 			    };
 		    }
 		    
@@ -278,6 +280,30 @@ public partial class AppRunner
 
 	    #endregion
 	    
+	    #region Read @utility items
+
+	    foreach (var match in AppRunnerSettings.SfumatoBlockItems)
+	    {
+		    if (match.Key.StartsWith("@utility") == false)
+			    continue;
+
+		    var segments = match.Key.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+		    if (segments.Length != 2)
+			    continue;
+		    
+		    if (Library.SimpleClasses.TryAdd(segments[1], new ClassDefinition
+		        {
+			        IsSimpleUtility = true,
+			        Template = match.Value.Trim().TrimStart('{').TrimEnd('}').Trim()
+		        }))
+			    Library.ScannerClassNamePrefixes.Insert(segments[1]);
+	    }
+
+	    #endregion
+
+	    // todo: process @custom-variant, like @custom-variant theme-midnight {}
+	    
 		#region Read theme settings from ClassDictionary instances (e.g. --text-xs, etc.)
 	    
 	    var derivedTypes = Assembly.GetExecutingAssembly()
@@ -370,22 +396,6 @@ public partial class AppRunner
 
 			#endregion
 
-			#region Process @utility in CSS source
-
-			foreach (var match in AtUtilityRegex().Matches(outputCss.ToString()).ToList())
-			{
-				if (Library.SimpleClasses.TryAdd(match.Groups["name"].Value, new ClassDefinition
-				    {
-					    IsSimpleUtility = true,
-					    Template = match.Groups["content"].Value.Trim()
-				    }))
-					Library.ScannerClassNamePrefixes.Insert(match.Groups["name"].Value);
-				
-				outputCss.Replace(match.Value, string.Empty);
-			}
-
-			#endregion
-
 			#region Process @apply usage (and dependencies)
 
 			foreach (var match in AtApplyRegex().Matches(outputCss.ToString()).ToList())
@@ -421,8 +431,6 @@ public partial class AppRunner
 			}
 
 			#endregion
-
-			// todo: process @custom-variant, like @custom-variant theme-midnight {}
 
 			#region Process @variant in CSS source
 
