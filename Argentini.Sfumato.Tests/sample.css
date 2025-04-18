@@ -25,18 +25,24 @@
     background-color: var(--color-lime-600);
 
     @apply leading-6\! text-base text-rose-400;
-
     @apply tab-4;
 }
 
 @variant phablet {
-    background-color: var(--color-lime-950);
+    .phablet-bg {
+        padding-top: --spacing(4);
+        background-color: --alpha(var(--color-lime-950) / 50%);
+    }
 }
 
 @variant dark {
-    background-color: var(--color-lime-800);
+    .dark-bg {
+        background-color: var(--color-lime-800);
+    }
 }
 
 @variant tabp {
-    display: inline-block;
+    .tabp-display {
+        display: inline-block;
+    }
 }

@@ -19,7 +19,8 @@ public partial class AppRunner
 	[GeneratedRegex(@"@apply\s+[^;]+?;")]
 	private static partial Regex AtApplyRegex();
 	
-	[GeneratedRegex(@"--[\w-]+")]
+	[GeneratedRegex(@"--[\w-]+(?:\((?>[^()]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))?")]
+	// [GeneratedRegex(@"--[\w-]+")]
 	private static partial Regex CssCustomPropertiesRegex();
 	
 	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
@@ -529,14 +530,44 @@ public partial class AppRunner
 
 			#endregion
 
-			// todo: process functions, like --alpha()
-
-			#region Add referenced CSS custom properties used in CSS source
+			#region Process functions and add referenced CSS custom properties used in CSS source
 
 			foreach (var match in CssCustomPropertiesRegex().Matches(outputCss.ToString()).ToList())
 			{
-				if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
-					UsedCssCustomProperties.TryAdd(match.Value, value);
+				if (match.Value.StartsWith("--alpha(var(--color-", StringComparison.Ordinal) && match.Value.Contains('%'))
+				{
+					var colorKey = match.Value[..match.Value.IndexOf(')')].TrimStart("--alpha(var(").TrimStart("--color-") ?? string.Empty;
+
+					if (string.IsNullOrEmpty(colorKey))
+						continue;
+					
+					if (Library.ColorsByName.TryGetValue(colorKey, out var colorValue) == false)
+						continue;
+					
+					var alphaValue = match.Value[(match.Value.LastIndexOf('/') + 1)..].TrimEnd(')','%',' ').Trim();
+						
+					if (int.TryParse(alphaValue, out var pct))
+						outputCss.Replace(match.Value, colorValue.SetWebColorAlpha(pct));
+				}
+				else if (match.Value.StartsWith("--spacing(", StringComparison.Ordinal) && match.Value.EndsWith(')') && match.Value.Length > 11)
+				{
+					var valueString = match.Value.TrimStart("--spacing(", StringComparison.Ordinal)?.TrimEnd(')').Trim();
+
+					if (string.IsNullOrEmpty(valueString))
+						continue;
+
+					if (double.TryParse(valueString, out var value))
+					{
+						outputCss.Replace(match.Value, $"calc(var(--spacing) * {value})");
+						
+						UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
+					}
+				}
+				else
+				{
+					if (AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
+						UsedCssCustomProperties.TryAdd(match.Value, value);
+				}
 			}
 
 			#endregion
