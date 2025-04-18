@@ -455,6 +455,6 @@ public class CssClassTests
         foreach (var cname in utilityClasses)
             _testOutputHelper.WriteLine($"{cname.Key}");
         
-        Assert.Equal(27, utilityClasses.Count);
+        Assert.Equal(29, utilityClasses.Count);
     }
 }
