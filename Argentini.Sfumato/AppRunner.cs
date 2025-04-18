@@ -25,15 +25,6 @@ public partial class AppRunner
 	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
 	private static partial Regex AtVariantRegex();	
 
-	/*
-	// Matches:
-	// @utility <name> { ... }
-	//  - group "name"    ⇒ the utility identifier (e.g. "tab-4")
-	//  - group "content" ⇒ everything inside the outer braces, including nested {...}
-	[GeneratedRegex(@"@utility\s+(?<name>[\w-]+)\s*\{\s*(?<content>(?:[^{}]|\{(?<Depth>)|\}(?<-Depth>))*)(?(Depth)(?!))\s*\}")]
-	private static partial Regex AtUtilityRegex();
-	*/
-
 	[GeneratedRegex(@"(?:\r\n|\n){3,}")]
 	private static partial Regex ConsolidateLineBreaksRegex();
 	
@@ -280,6 +271,97 @@ public partial class AppRunner
 
 	    #endregion
 	    
+	    #region Read @custom-variant shorthand items
+
+	    foreach (var match in AppRunnerSettings.SfumatoBlockItems)
+	    {
+		    if (match.Key.StartsWith("@custom-variant") == false)
+			    continue;
+
+		    if (match.Value.StartsWith("&:", StringComparison.Ordinal) == false && match.Value.StartsWith('@') == false)
+			    continue;
+
+		    var keySegments = match.Key.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			    
+		    if (keySegments.Length < 2)
+			    continue;
+
+		    var key = keySegments[1];
+
+		    if (match.Value.StartsWith("&:"))
+		    {
+			    if (Library.PseudoclassPrefixes.TryAdd(key, new VariantMetadata
+			        {
+				        PrefixType = "pseudoclass",
+				        SelectorSuffix = $"{match.Value.TrimStart('&')}"
+			        }) == false)
+			    {
+				    Library.PseudoclassPrefixes[key] = new VariantMetadata
+				    {
+					    PrefixType = "pseudoclass",
+					    SelectorSuffix = $"{match.Value.TrimStart('&')}"
+				    };
+			    }
+		    }
+		    else
+		    {
+			    if (string.IsNullOrEmpty(key))
+				    continue;
+
+			    var wrapperSegments = match.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			    
+			    if (wrapperSegments.Length < 2)
+				    continue;
+
+			    var prefixType = wrapperSegments[0].TrimStart('@').TrimStart('&');
+
+			    if (string.IsNullOrEmpty(prefixType))
+				    continue;
+
+			    var statement = $"{match.Value.TrimStart($"@{prefixType}")?.Trim()}";
+			    
+			    if (prefixType.Equals("media", StringComparison.OrdinalIgnoreCase))
+			    {
+				    if (Library.MediaQueryPrefixes.TryAdd(key, new VariantMetadata
+				        {
+					        PrefixOrder = prefixOrder,
+					        PrefixType = prefixType,
+					        Statement = statement
+				        }) == false)
+				    {
+					    Library.MediaQueryPrefixes[key] = new VariantMetadata
+					    {
+						    PrefixOrder = prefixOrder,
+						    PrefixType = prefixType,
+						    Statement = statement
+					    };
+				    }
+
+				    if (prefixOrder < int.MaxValue - 100)
+					    prefixOrder += 100;
+			    }
+			    else if (prefixType.Equals("supports", StringComparison.OrdinalIgnoreCase))
+			    {
+				    if (Library.SupportsQueryPrefixes.TryAdd(key, new VariantMetadata
+				        {
+					        PrefixOrder = Library.SupportsQueryPrefixes.Count + 1,
+					        PrefixType = prefixType,
+					        Statement = statement
+				        }) == false)
+				    {
+					    Library.SupportsQueryPrefixes[key] = new VariantMetadata
+					    {
+						    PrefixOrder = Library.SupportsQueryPrefixes.Count + 1,
+						    PrefixType = prefixType,
+						    Statement = statement
+					    };
+				    }
+			    }
+		    }
+	    }
+	    
+	    #endregion
+	    
 	    #region Read @utility items
 
 	    foreach (var match in AppRunnerSettings.SfumatoBlockItems)
@@ -301,8 +383,6 @@ public partial class AppRunner
 	    }
 
 	    #endregion
-
-	    // todo: process @custom-variant, like @custom-variant theme-midnight {}
 	    
 		#region Read theme settings from ClassDictionary instances (e.g. --text-xs, etc.)
 	    

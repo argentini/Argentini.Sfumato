@@ -21,6 +21,13 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	[GeneratedRegex(@"(\.(?<class>[a-zA-Z0-9_-]+)|(@(?<kind>[a-zA-Z0-9_-]+)\s+(?<name>[a-zA-Z0-9_-]+)))\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Singleline)]
 	private static partial Regex CssAtAndClassBlocksRegex();
 
+	// Matches:
+	// @custom-variant <name> ( ... );
+	//  - group "name"    ⇒ the custom-variant identifier (e.g. "tab-4")
+	//  - group "content" ⇒ everything inside the outer parens, including nested (...)
+	[GeneratedRegex(@"@custom-variant\s+(?<name>[\w-]+)\s*\(\s*(?<content>(?:[^()]|\((?<Depth>)|\)(?<-Depth>))*)(?(Depth)(?!))\s*\);")]
+	private static partial Regex AtCustomVariantRegex();
+
 	[GeneratedRegex(@"\s+")]
 	private static partial Regex ConsolidateSpacesRegex();
 	
@@ -157,6 +164,16 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 		        {
 			        SfumatoBlockItems[match.Value[..match.Value.IndexOf('{')].Trim()] = match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim();
 		        }
+
+	        quoteMatches = AtCustomVariantRegex().Matches(sfumatoCssBlock);
+
+	        foreach (Match match in quoteMatches)
+	        {
+		        if (SfumatoBlockItems.TryAdd($"@custom-variant {match.Groups["name"].Value}", match.Groups["content"].Value.TrimEnd(';')) == false)
+		        {
+			        SfumatoBlockItems[$"@custom-variant {match.Groups["name"].Value}"] = match.Groups["content"].Value.TrimEnd(';');
+		        }
+	        }
 
 	        if (SfumatoBlockItems.Count > 0)
 	            return;

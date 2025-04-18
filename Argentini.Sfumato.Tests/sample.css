@@ -13,6 +13,9 @@
     @utility tab-4 {
         tab-size: 4;
     }
+
+    @custom-variant phablet (@media (width >= 475px));
+    @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
 }
 
 .test {
@@ -24,6 +27,10 @@
     @apply leading-6\! text-base text-rose-400;
 
     @apply tab-4;
+}
+
+@variant phablet {
+    background-color: var(--color-lime-950);
 }
 
 @variant dark {
