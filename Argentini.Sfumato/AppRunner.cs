@@ -17,16 +17,6 @@ public partial class AppRunner
 {
 	#region Regular Expressions
 	
-	[GeneratedRegex(@"@apply\s+[^;]+?;")]
-	private static partial Regex AtApplyRegex();
-	
-	[GeneratedRegex(@"--[\w-]+(?:\((?>[^()]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))?")]
-	// [GeneratedRegex(@"--[\w-]+")]
-	private static partial Regex CssCustomPropertiesRegex();
-	
-	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
-	private static partial Regex AtVariantRegex();	
-
 	[GeneratedRegex(@"(?:\r\n|\n){3,}")]
 	private static partial Regex ConsolidateLineBreaksRegex();
 	
@@ -107,7 +97,7 @@ public partial class AppRunner
     }
 
     /// <summary>
-    /// Processes CSS settings for colors and breakpoints, and uses reflection to load all others per utility class file.  
+    /// Processes CSS settings for colors, breakpoints, etc., and uses reflection to load all others per utility class file.  
     /// </summary>
     public void ProcessCssSettings()
     {
@@ -416,490 +406,62 @@ public partial class AppRunner
     /// </summary>
     public string BuildCss()
 	{
-		var outputCss = AppState.StringBuilderPool.Get();
-		var utilityCss = AppState.StringBuilderPool.Get();
+		var sourceCss = AppState.StringBuilderPool.Get();
 
 		try
 		{
-			UsedCssCustomProperties.Clear();
-			UsedCss.Clear();
+			ProcessScannedFileUtilityClassDependencies(this);
 
-			#region Gather scanned file utility class dependencies lists
+			sourceCss
+				.AppendCssReset(this)
+				.AppendFormsCss(this)
+				.AppendUtilityClassMarker(this)
+				.AppendProcessedCss(this)
 
-			foreach (var utilityClass in ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
-			{
-				UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
-					
-				foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
-				{
-					if (dependency.StartsWith("--", StringComparison.Ordinal))
-						UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
-					else
-						UsedCss.TryAddUpdate(dependency, string.Empty);
-				}
-			}
-
-			#endregion
-
-			#region Inject optional reset
+				.ProcessAtApplyStatementsAndTrackDependencies(this)
+				.ProcessAtVariantStatements(this)
+				.ProcessFunctionsAndTrackDependencies(this)
+				
+				.InjectRootDependenciesCss(this)
+				.InjectUtilityClassesCss(this);
 			
-			if (AppRunnerSettings.UseReset)
-			{
-				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim())
-					.Append(AppRunnerSettings.LineBreak)
-					.Append(AppRunnerSettings.LineBreak);
-			}
-
-			#endregion
-
-			#region Inject optional forms classes
-			
-			if (AppRunnerSettings.UseForms)
-			{
-				outputCss.Append(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim())
-					.Append(AppRunnerSettings.LineBreak)
-					.Append(AppRunnerSettings.LineBreak);
-			}
-
-			#endregion
-
-			#region Add temp marker for utility class content
-			
-			outputCss.Append("::sfumato{}")
-				.Append(AppRunnerSettings.LineBreak)
-				.Append(AppRunnerSettings.LineBreak);
-
-			#endregion
-			
-			outputCss.Append(AppRunnerSettings.ProcessedCssContent.Trim());
-
-			ProcessAtApplyInCss(this, outputCss);
-			ProcessAtVariants(this, outputCss);
-			ProcessFunctions(this, outputCss);
-			SetTrackedDependencyValues(this);
-
-			outputCss.Insert(0, GenerateRootDependenciesCss(this));
-			outputCss.Replace("::sfumato{}", GenerateUtilityClassesCss(this));
+			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss() : ConsolidateLineBreaksRegex().Replace(sourceCss.ToString().Trim(), AppRunnerSettings.LineBreak + AppRunnerSettings.LineBreak);
 		}
 		catch (Exception e)
 		{
 			Console.WriteLine($"{AppState.CliErrorPrefix}BuildCssFile() - {e.Message}");
 			Environment.Exit(1);
+
+			return string.Empty;
 		}
 		finally
 		{
-			AppState.StringBuilderPool.Return(outputCss);
-			AppState.StringBuilderPool.Return(utilityCss);
-		}
-		
-		return AppRunnerSettings.UseMinify ? outputCss.ToString().CompactCss() : ConsolidateLineBreaksRegex().Replace(outputCss.ToString().Trim(), AppRunnerSettings.LineBreak + AppRunnerSettings.LineBreak);
-	}
-
-	/// <summary>
-	/// Generate utility class CSS from the AppRunner.UtilityClasses dictionary. 
-	/// </summary>
-	/// <param name="appRunner"></param>
-	public static string GenerateUtilityClassesCss(AppRunner appRunner)
-	{
-		var root = new VariantBranch
-		{
-			Fingerprint = 0,
-			Depth = 0,
-			WrapperCss = string.Empty
-		};
-
-		foreach (var cssClass in appRunner.UtilityClasses.Values.OrderBy(c => c.WrapperSort))
-			_ProcessVariantBranchRecursive(root, cssClass);
-		
-		var sb = appRunner.AppState.StringBuilderPool.Get();
-
-		try
-		{
-			_GenerateUtilityClassesCss(appRunner, root, sb);
-
-			return sb.ToString();
-		}
-		finally
-		{
-			appRunner.AppState.StringBuilderPool.Return(sb);
-		}
-	}
-	
-	/// <summary>
-	/// Recursive method for traversing the variant tree and generating utility class CSS.
-	/// </summary>
-	/// <param name="appRunner"></param>
-	/// <param name="branch"></param>
-	/// <param name="workingSb"></param>
-	/// <param name="depth"></param>
-	private static void _GenerateUtilityClassesCss(AppRunner appRunner, VariantBranch branch, StringBuilder workingSb, int depth = 0)
-	{
-		var isWrapped = string.IsNullOrEmpty(branch.WrapperCss) == false;
-		
-		if (isWrapped)
-		{
-			if (appRunner.AppRunnerSettings.UseMinify == false)
-				workingSb.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth - 1));
-			
-			workingSb.Append(branch.WrapperCss);
-			
-			if (appRunner.AppRunnerSettings.UseMinify == false)
-				workingSb
-					.Append(appRunner.AppRunnerSettings.LineBreak)
-					.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-		
-		foreach (var cssClass in branch.CssClasses.OrderBy(c => c.ClassDefinition?.SelectorSort ?? 0))
-		{
-			if (appRunner.AppRunnerSettings.UseMinify == false)
-				workingSb
-					.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth))
-					.Append(cssClass.EscapedSelector)
-					.Append(" {")
-					.Append(appRunner.AppRunnerSettings.LineBreak);
-			else			
-				workingSb
-					.Append(cssClass.EscapedSelector)
-					.Append(" {");
-
-			if (appRunner.AppRunnerSettings.UseMinify == false)
-			{
-				var props = cssClass.Styles.NormalizeLinebreaks().Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-				foreach (var prop in props)
-				{
-					workingSb
-						.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth + 1))
-						.Append(prop.Trim())
-						.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-			}
-			else
-				workingSb
-					.Append(cssClass.Styles);
-
-			if (appRunner.AppRunnerSettings.UseMinify == false)
-				workingSb
-					.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth))
-					.Append('}')
-					.Append(appRunner.AppRunnerSettings.LineBreak)
-					.Append(appRunner.AppRunnerSettings.LineBreak);
-			else
-				workingSb
-					.Append('}');
-		}
-
-		if (branch.Branches.Count > 0)
-		{
-			foreach (var subBranch in branch.Branches)
-			{
-				_GenerateUtilityClassesCss(appRunner, subBranch, workingSb, depth + 1);
-			}
-		}
-
-		if (string.IsNullOrEmpty(branch.WrapperCss))
-			return;
-		
-		if (appRunner.AppRunnerSettings.UseMinify == false)
-			workingSb
-				.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth - 1))
-				.Append('}')
-				.Append(appRunner.AppRunnerSettings.LineBreak)
-				.Append(appRunner.AppRunnerSettings.LineBreak);
-		else
-			workingSb
-				.Append('}');
-	}
-
-	/// <summary>
-	/// Traverse the variant branch tree recursively, adding CSS classes to the current branch.
-	/// Essentially performs a recursive traversal but does not actually use recursion.
-	/// </summary>
-	/// <param name="rootBranch"></param>
-	/// <param name="cssClass"></param>
-	private static void _ProcessVariantBranchRecursive(VariantBranch rootBranch, CssClass cssClass)
-	{
-		var wrappers = cssClass.Wrappers.ToArray();
-		var index = 0;
-		var depth = 1;
-		
-		while (true)
-		{
-			if (index >= wrappers.Length)
-			{
-				rootBranch.CssClasses.Add(cssClass);
-				return;
-			}
-
-			var (fingerprint, wrapperCss) = wrappers[index];
-
-			var candidate = new VariantBranch { Fingerprint = fingerprint, WrapperCss = wrapperCss, Depth = depth };
-
-			if (rootBranch.Branches.TryGetValue(candidate, out var existing) == false)
-			{
-				rootBranch.Branches.Add(candidate);
-				existing = candidate;
-			}
-
-			rootBranch = existing;
-			index += 1;
-			depth += 1;
+			AppState.StringBuilderPool.Return(sourceCss);
 		}
 	}
 
     /// <summary>
-    /// Convert @apply statements in source CSS to utility class property statements.
+    /// Gather root dependencies from scanned file utility classes.
     /// </summary>
     /// <param name="appRunner"></param>
-    /// <param name="sourceCss"></param>
-	public static void ProcessAtApplyInCss(AppRunner appRunner, StringBuilder sourceCss)
+	public static void ProcessScannedFileUtilityClassDependencies(AppRunner appRunner)
 	{
-		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+		appRunner.UsedCssCustomProperties.Clear();
+		appRunner.UsedCss.Clear();
 
-		try
+		foreach (var utilityClass in appRunner.ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
 		{
-			foreach (var match in AtApplyRegex().Matches(sourceCss.ToString()).ToList())
-			{
-				var utilityClassStrings = (match.Value.TrimStart("@apply")?.TrimEnd(';').Trim() ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-				var utilityClasses = utilityClassStrings
-					.Select(utilityClass => new CssClass(appRunner, utilityClass.Replace("\\", string.Empty)))
-					.Where(cssClass => cssClass.IsValid)
-					.ToList();
-
-				if (utilityClasses.Count > 0)
-				{
-					workingSb.Clear();
-
-					var depth = 0d;
-						
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-					{
-						var spaceIncrement = 1.0d / (appRunner.AppRunnerSettings.Indentation.Length > 0 ? appRunner.AppRunnerSettings.Indentation.Length : 0.25d);
-
-						if (match.Index > 0)
-						{
-							for (var i = match.Index - 1; i >= 0; i--)
-							{
-								if (sourceCss[i] == ' ')
-									depth += spaceIncrement;
-								else if (sourceCss[i] == '\t')
-									depth += 1;
-								else
-									break;
-							}
-						}
-					}
-
-					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
-					{
-						foreach (var dependency in utilityClass.ClassDefinition?.UsesCssCustomProperties ?? [])
-						{
-							if (dependency.StartsWith("--", StringComparison.Ordinal))
-								appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
-							else
-								appRunner.UsedCss.TryAddUpdate(dependency, string.Empty);
-						}
-
-						if (appRunner.AppRunnerSettings.UseMinify == false)
-						{
-							var props = utilityClass.Styles.NormalizeLinebreaks().Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-							foreach (var prop in props)
-							{
-								workingSb
-									.Append(appRunner.AppRunnerSettings.Indentation.Repeat((int)Math.Ceiling(depth)))
-									.Append(prop.Trim())
-									.Append(appRunner.AppRunnerSettings.LineBreak);
-							}
-						}
-						else
-						{
-							workingSb.Append(utilityClass.Styles);
-						}
-					}
-				}
-
-				sourceCss.Replace(match.Value, workingSb.ToString().Trim());
-			}
-		}
-		finally
-		{
-			appRunner.AppState.StringBuilderPool.Return(workingSb);
-		}
-	}
-
-    /// <summary>
-    /// Convert @variant statements in source CSS to media query statements.
-    /// </summary>
-    /// <param name="appRunner"></param>
-    /// <param name="sourceCss"></param>
-	public static void ProcessAtVariants(AppRunner appRunner, StringBuilder sourceCss)
-	{
-		foreach (var match in AtVariantRegex().Matches(sourceCss.ToString()).ToList())
-		{
-			var segment = match.Value
-				.Replace("@variant", string.Empty, StringComparison.Ordinal)
-				.Replace("{", string.Empty, StringComparison.Ordinal)
-				.Trim();
-				
-			if (segment.TryVariantIsMediaQuery(appRunner, out var variant))
-			{
-				sourceCss.Replace(match.Value, $"@{variant?.PrefixType} {variant?.Statement} {{");
-			}
-		}
-	}
-
-    /// <summary>
-    /// Convert functions in source CSS to CSS statements (e.g. --alpha()).
-    /// </summary>
-    /// <param name="appRunner"></param>
-    /// <param name="sourceCss"></param>
-	public static void ProcessFunctions(AppRunner appRunner, StringBuilder sourceCss)
-	{
-		foreach (var match in CssCustomPropertiesRegex().Matches(sourceCss.ToString()).ToList())
-		{
-			if (match.Value.StartsWith("--alpha(var(--color-", StringComparison.Ordinal) && match.Value.Contains('%'))
-			{
-				var colorKey = match.Value[..match.Value.IndexOf(')')].TrimStart("--alpha(var(").TrimStart("--color-") ?? string.Empty;
-
-				if (string.IsNullOrEmpty(colorKey))
-					continue;
+			appRunner.UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
 					
-				if (appRunner.Library.ColorsByName.TryGetValue(colorKey, out var colorValue) == false)
-					continue;
-					
-				var alphaValue = match.Value[(match.Value.LastIndexOf('/') + 1)..].TrimEnd(')','%',' ').Trim();
-						
-				if (int.TryParse(alphaValue, out var pct))
-					sourceCss.Replace(match.Value, colorValue.SetWebColorAlpha(pct));
-			}
-			else if (match.Value.StartsWith("--spacing(", StringComparison.Ordinal) && match.Value.EndsWith(')') && match.Value.Length > 11)
+			foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
 			{
-				var valueString = match.Value.TrimStart("--spacing(")?.TrimEnd(')').Trim();
-
-				if (string.IsNullOrEmpty(valueString))
-					continue;
-
-				if (double.TryParse(valueString, out var value) == false)
-					continue;
-					
-				sourceCss.Replace(match.Value, $"calc(var(--spacing) * {value})");
-						
-				appRunner.UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
-			}
-			else
-			{
-				if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
-					appRunner.UsedCssCustomProperties.TryAdd(match.Value, value);
+				if (dependency.StartsWith("--", StringComparison.Ordinal))
+					appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+				else
+					appRunner.UsedCss.TryAddUpdate(dependency, string.Empty);
 			}
 		}
 	}
-
-    /// <summary>
-    /// Iterate UsedCssCustomProperties[] and UsedCss[] and set their values from AppRunnerSettings.SfumatoBlockItems[].
-    /// </summary>
-    /// <param name="appRunner"></param>
-	public static void SetTrackedDependencyValues(AppRunner appRunner)
-	{
-		foreach (var usedCssCustomProperty in appRunner.UsedCssCustomProperties.ToList())
-		{
-			if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCssCustomProperty.Key, out var value) == false)
-				continue;
-				
-			appRunner.UsedCssCustomProperties[usedCssCustomProperty.Key] = value;
-
-			if (value.Contains("--") == false)
-				continue;
-				
-			foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
-			{
-				if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var valueValue))
-					appRunner.UsedCssCustomProperties.TryAdd(match.Value, valueValue);
-			}
-		}
-
-		foreach (var usedCss in appRunner.UsedCss.ToList())
-		{
-			if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(usedCss.Key, out var value) == false)
-				continue;
-				
-			appRunner.UsedCss[usedCss.Key] = value;
-					
-			if (value.Contains("--") == false)
-				continue;
-				
-			foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
-			{
-				if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var valueValue))
-					appRunner.UsedCssCustomProperties.TryAdd(match.Value, valueValue);
-			}
-		}
-	}
-
-    /// <summary>
-    /// Generate :root{} CSS from the UsedCssCustomProperties[] and UsedCss[] dictionaries.
-    /// </summary>
-    /// <param name="appRunner"></param>
-    /// <returns></returns>
-	public static string GenerateRootDependenciesCss(AppRunner appRunner)
-	{
-		var workingSb = appRunner.AppState.StringBuilderPool.Get();
-
-		try
-		{
-			if (appRunner.UsedCssCustomProperties.Count > 0)
-			{
-				workingSb
-					.Append(":root {")
-					.Append(appRunner.AppRunnerSettings.LineBreak);
-
-				foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
-				{
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb.Append(appRunner.AppRunnerSettings.Indentation);
-
-					workingSb
-						.Append(ccp.Key)
-						.Append(": ")
-						.Append(ccp.Value)
-						.Append(';');
-
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				workingSb.Append('}');
-
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb
-						.Append(appRunner.AppRunnerSettings.LineBreak)
-						.Append(appRunner.AppRunnerSettings.LineBreak);
-			}
-
-			if (appRunner.UsedCss.Count > 0)
-			{
-				foreach (var ccp in appRunner.UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
-				{
-					workingSb
-						.Append(ccp.Key)
-						.Append(' ')
-						.Append(ccp.Value);
-
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
-			}
-			
-			return workingSb.ToString();
-		}
-		finally
-		{
-			appRunner.AppState.StringBuilderPool.Return(workingSb);
-		}
-	}
-	
+    
 	#endregion
 }
