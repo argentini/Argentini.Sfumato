@@ -24,7 +24,7 @@ public static partial class AppRunnerExtensions
 	/// <param name="sourceCss"></param>
 	/// <param name="appRunner"></param>
 	/// <returns></returns>
-	public static StringBuilder AppendCssReset(this StringBuilder sourceCss, AppRunner appRunner)
+	public static StringBuilder AppendResetCss(this StringBuilder sourceCss, AppRunner appRunner)
 	{
 		if (appRunner.AppRunnerSettings.UseReset)
 		{
@@ -78,7 +78,7 @@ public static partial class AppRunnerExtensions
 	/// <param name="sourceCss"></param>
 	/// <param name="appRunner"></param>
 	/// <returns></returns>
-	public static StringBuilder AppendProcessedCss(this StringBuilder sourceCss, AppRunner appRunner)
+	public static StringBuilder AppendProcessedSourceCss(this StringBuilder sourceCss, AppRunner appRunner)
 	{
 		sourceCss
 			.Append(appRunner.AppRunnerSettings.ProcessedCssContent.Trim());

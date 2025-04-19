@@ -413,10 +413,11 @@ public partial class AppRunner
 			ProcessScannedFileUtilityClassDependencies(this);
 
 			sourceCss
-				.AppendCssReset(this)
+				.AppendResetCss(this)
 				.AppendFormsCss(this)
 				.AppendUtilityClassMarker(this)
-				.AppendProcessedCss(this)
+				
+				.AppendProcessedSourceCss(this)
 
 				.ProcessAtApplyStatementsAndTrackDependencies(this)
 				.ProcessAtVariantStatements(this)
