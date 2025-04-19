@@ -428,13 +428,6 @@ public partial class AppRunner
 			
 			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss() : ConsolidateLineBreaksRegex().Replace(sourceCss.ToString().Trim(), AppRunnerSettings.LineBreak + AppRunnerSettings.LineBreak);
 		}
-		catch (Exception e)
-		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}BuildCssFile() - {e.Message}");
-			Environment.Exit(1);
-
-			return string.Empty;
-		}
 		finally
 		{
 			AppState.StringBuilderPool.Return(sourceCss);
@@ -447,20 +440,28 @@ public partial class AppRunner
     /// <param name="appRunner"></param>
 	public static void ProcessScannedFileUtilityClassDependencies(AppRunner appRunner)
 	{
-		appRunner.UsedCssCustomProperties.Clear();
-		appRunner.UsedCss.Clear();
-
-		foreach (var utilityClass in appRunner.ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
+		try
 		{
-			appRunner.UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
-					
-			foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
+			appRunner.UsedCssCustomProperties.Clear();
+			appRunner.UsedCss.Clear();
+
+			foreach (var utilityClass in appRunner.ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
 			{
-				if (dependency.StartsWith("--", StringComparison.Ordinal))
-					appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
-				else
-					appRunner.UsedCss.TryAddUpdate(dependency, string.Empty);
+				appRunner.UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
+						
+				foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
+				{
+					if (dependency.StartsWith("--", StringComparison.Ordinal))
+						appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+					else
+						appRunner.UsedCss.TryAddUpdate(dependency, string.Empty);
+				}
 			}
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessScannedFileUtilityClassDependencies() - {e.Message}");
+			Environment.Exit(1);
 		}
 	}
     
