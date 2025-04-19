@@ -401,9 +401,10 @@ public partial class AppRunner
 
 	#region CSS Generation
     
-    /// <summary>
-    /// Gather dependencies from all scanned files, consolidate them, and generate the CSS output file.
-    /// </summary>
+	/// <summary>
+	/// Generate the final CSS output.
+	/// </summary>
+	/// <returns></returns>
     public string BuildCss()
 	{
 		var sourceCss = AppState.StringBuilderPool.Get();
@@ -435,7 +436,7 @@ public partial class AppRunner
 	}
 
     /// <summary>
-    /// Gather root dependencies from scanned file utility classes.
+    /// Gather root dependencies from all scanned file utility classes.
     /// </summary>
     /// <param name="appRunner"></param>
 	public static void ProcessScannedFileUtilityClassDependencies(AppRunner appRunner)
