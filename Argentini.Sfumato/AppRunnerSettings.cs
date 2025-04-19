@@ -89,7 +89,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	public string NativeCssOutputFilePath { get; private set; } = string.Empty;
 	public string LineBreak { get; private set; } = "\n";
 
-	public const string Indentation = "    ";
+	public string Indentation { get; set; } = "    ";
 	
     public List<string> Paths { get; } = [];
     public List<string> NotPaths { get; } = [];
@@ -151,6 +151,40 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 		    
 	        var quoteMatches = CssCustomPropertiesRegex().Matches(sfumatoCssBlock);
 
+	        #region Determine Indentation and spaces/tabs from first ::sfumato{} CSS custom property item
+	        
+	        if (quoteMatches.Count > 0)
+	        {
+		        if (quoteMatches[0].Index > 0)
+		        {
+			        var depth = 0;
+			        var usesTabs = false;
+			        
+			        for (var i = quoteMatches[0].Index - 1; i >= 0; i--)
+			        {
+				        if (sfumatoCssBlock[i] == ' ' || sfumatoCssBlock[i] == '\t')
+					        depth += 1;
+				        else
+					        break;
+
+				        if (sfumatoCssBlock[i] == '\t')
+					        usesTabs = true;
+			        }
+
+			        if (depth > 0)
+			        {
+				        Indentation = string.Empty;
+
+				        for (var i = 0; i < depth; i++)
+				        {
+					        Indentation += (usesTabs ? "\t" : " ");
+				        }
+			        }
+		        }
+	        }
+	        
+	        #endregion
+	        
 	        foreach (Match match in quoteMatches)
 		        if (SfumatoBlockItems.TryAdd(match.Value[..match.Value.IndexOf(':')].Trim(), match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim()) == false)
 		        {
