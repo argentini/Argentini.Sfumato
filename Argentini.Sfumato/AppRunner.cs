@@ -491,6 +491,26 @@ public partial class AppRunner
 				{
 					workingSb.Clear();
 
+					var depth = 0d;
+					
+					if (AppRunnerSettings.UseMinify == false)
+					{
+						var spaceIncrement = 1.0d / (AppRunnerSettings.Indentation.Length > 0 ? AppRunnerSettings.Indentation.Length : 0.25d);
+
+						if (match.Index > 0)
+						{
+							for (var i = match.Index - 1; i >= 0; i--)
+							{
+								if (outputCss[i] == ' ')
+									depth += spaceIncrement;
+								else if (outputCss[i] == '\t')
+									depth += 1;
+								else
+									break;
+							}
+						}
+					}
+
 					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
 					{
 						foreach (var dependency in utilityClass.ClassDefinition?.UsesCssCustomProperties ?? [])
@@ -500,15 +520,27 @@ public partial class AppRunner
 							else
 								UsedCss.TryAddUpdate(dependency, string.Empty);
 						}
-						
-						if (workingSb.Length > 0)
-							workingSb.Append(' ');
 
-						workingSb.Append(utilityClass.Styles.Replace(AppRunnerSettings.LineBreak, " "));
+						if (AppRunnerSettings.UseMinify == false)
+						{
+							var props = utilityClass.Styles.NormalizeLinebreaks().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+							foreach (var prop in props)
+							{
+								workingSb
+									.Append(AppRunnerSettings.Indentation.Repeat((int)Math.Ceiling(depth)))
+									.Append(prop.Trim())
+									.Append(AppRunnerSettings.LineBreak);
+							}
+						}
+						else
+						{
+							workingSb.Append(utilityClass.Styles);
+						}
 					}
 				}
 
-				outputCss.Replace(match.Value, workingSb.ToString());
+				outputCss.Replace(match.Value, workingSb.ToString().Trim());
 			}
 
 			#endregion
@@ -639,17 +671,34 @@ public partial class AppRunner
 				workingSb.Append(":root {").Append(AppRunnerSettings.LineBreak);
 
 				foreach (var ccp in UsedCssCustomProperties.Where(c => string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
-					workingSb.Append(AppRunnerSettings.Indentation).Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';').Append(AppRunnerSettings.LineBreak);
+				{
+					if (AppRunnerSettings.UseMinify == false)
+						workingSb.Append(AppRunnerSettings.Indentation);
 
-				workingSb.Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+					workingSb.Append(ccp.Key).Append(": ").Append(ccp.Value).Append(';');
+					
+					if (AppRunnerSettings.UseMinify == false)
+						workingSb.Append(AppRunnerSettings.LineBreak);
+				}
+
+				workingSb.Append('}');
+				
+				if (AppRunnerSettings.UseMinify == false)
+					workingSb.Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
 			}
 
 			if (UsedCss.Count > 0)
 			{
 				foreach (var ccp in UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
-					workingSb.Append(ccp.Key).Append(' ').Append(ccp.Value).Append(AppRunnerSettings.LineBreak);
+				{
+					workingSb.Append(ccp.Key).Append(' ').Append(ccp.Value);
 
-				workingSb.Append(AppRunnerSettings.LineBreak);
+					if (AppRunnerSettings.UseMinify == false)
+						workingSb.Append(AppRunnerSettings.LineBreak);
+				}
+
+				if (AppRunnerSettings.UseMinify == false)
+					workingSb.Append(AppRunnerSettings.LineBreak);
 			}
 
 			outputCss.Insert(0, workingSb);
@@ -708,14 +757,47 @@ public partial class AppRunner
 		
 		if (isWrapped)
 		{
-			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth - 1)).Append(branch.WrapperCss).Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+			if (AppRunnerSettings.UseMinify == false)
+				outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth - 1));
+			
+			outputCss.Append(branch.WrapperCss);
+			
+			if (AppRunnerSettings.UseMinify == false)
+				outputCss.Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
 		}
 		
 		foreach (var cssClass in branch.CssClasses.OrderBy(c => c.ClassDefinition?.SelectorSort ?? 0))
 		{
-			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth)).Append(cssClass.EscapedSelector).Append(" {").Append(AppRunnerSettings.LineBreak);
-			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth + 1)).Append(cssClass.Styles.Replace(AppRunnerSettings.LineBreak, AppRunnerSettings.LineBreak + AppRunnerSettings.Indentation.Repeat(depth + (isWrapped ? 2 : 1)))).Append(AppRunnerSettings.LineBreak);
-			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth)).Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
+			if (AppRunnerSettings.UseMinify == false)
+				outputCss
+					.Append(AppRunnerSettings.Indentation.Repeat(depth))
+					.Append(cssClass.EscapedSelector)
+					.Append(" {")
+					.Append(AppRunnerSettings.LineBreak);
+			else			
+				outputCss
+					.Append(cssClass.EscapedSelector)
+					.Append(" {");
+			
+			if (AppRunnerSettings.UseMinify == false)
+				outputCss
+					.Append(AppRunnerSettings.Indentation.Repeat(depth + 1))
+					.Append(cssClass.Styles
+					.Replace(AppRunnerSettings.LineBreak, AppRunnerSettings.LineBreak + AppRunnerSettings.Indentation.Repeat(depth + (isWrapped ? 1 : 0))))
+					.Append(AppRunnerSettings.LineBreak);
+			else
+				outputCss
+					.Append(cssClass.Styles);
+
+			if (AppRunnerSettings.UseMinify == false)
+				outputCss
+					.Append(AppRunnerSettings.Indentation.Repeat(depth))
+					.Append('}')
+					.Append(AppRunnerSettings.LineBreak)
+					.Append(AppRunnerSettings.LineBreak);
+			else
+				outputCss
+					.Append('}');
 		}
 
 		if (branch.Branches.Count > 0)
@@ -725,11 +807,19 @@ public partial class AppRunner
 				GenerateCssFromVariantTree(subBranch, outputCss, depth + 1);
 			}
 		}
+
+		if (string.IsNullOrEmpty(branch.WrapperCss))
+			return;
 		
-		if (string.IsNullOrEmpty(branch.WrapperCss) == false)
-		{
-			outputCss.Append(AppRunnerSettings.Indentation.Repeat(depth - 1)).Append('}').Append(AppRunnerSettings.LineBreak).Append(AppRunnerSettings.LineBreak);
-		}
+		if (AppRunnerSettings.UseMinify == false)
+			outputCss
+				.Append(AppRunnerSettings.Indentation.Repeat(depth - 1))
+				.Append('}')
+				.Append(AppRunnerSettings.LineBreak)
+				.Append(AppRunnerSettings.LineBreak);
+		else
+			outputCss
+				.Append('}');
 	}
 	
 	#endregion
