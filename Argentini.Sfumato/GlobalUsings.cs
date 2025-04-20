@@ -10,4 +10,12 @@ global using System.Text.RegularExpressions;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using Microsoft.Extensions.ObjectPool;
-global using Argentini.Sfumato.Extensions;
+
+global using Argentini.Sfumato.Entities.CssClassProcessing;
+global using Argentini.Sfumato.Entities.Library;
+global using Argentini.Sfumato.Entities.Runners;
+global using Argentini.Sfumato.Entities.Scanning;
+global using Argentini.Sfumato.Entities.Trie;
+global using Argentini.Sfumato.Entities.UtilityClasses;
+global using Argentini.Sfumato.Helpers;
+global using Argentini.Sfumato.Validators;

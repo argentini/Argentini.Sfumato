@@ -1,7 +1,4 @@
-using Argentini.Sfumato.Entities.CssClassProcessing;
-using Argentini.Sfumato.Entities.Scanning;
-
-namespace Argentini.Sfumato;
+namespace Argentini.Sfumato.Entities.Runners;
 
 public static partial class AppRunnerExtensions
 {

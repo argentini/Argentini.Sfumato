@@ -1,5 +1,3 @@
-using Argentini.Sfumato.Entities.CssClassProcessing;
-
 namespace Argentini.Sfumato.Entities.Library;
 
 public static class LibrarySupportsQueries

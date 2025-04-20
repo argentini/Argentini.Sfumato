@@ -3,7 +3,7 @@
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Argentini.Sfumato;
+namespace Argentini.Sfumato.Entities.Runners;
 
 public partial class AppRunnerSettings(AppRunner? appRunner)
 {

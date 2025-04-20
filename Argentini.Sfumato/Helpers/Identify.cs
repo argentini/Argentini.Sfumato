@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Versioning;
 
-namespace Argentini.Sfumato.Extensions;
+namespace Argentini.Sfumato.Helpers;
 
 public static class Identify
 {

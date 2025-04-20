@@ -1,8 +1,3 @@
-using System.Text;
-using Argentini.Sfumato.Entities.CssClassProcessing;
-using Argentini.Sfumato.Extensions;
-using Xunit.Abstractions;
-
 namespace Argentini.Sfumato.Tests;
 
 public class CssClassTests(ITestOutputHelper testOutputHelper)

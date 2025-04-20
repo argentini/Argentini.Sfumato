@@ -1,6 +1,4 @@
-﻿using Argentini.Sfumato.Entities;
-
-namespace Argentini.Sfumato.Extensions;
+﻿namespace Argentini.Sfumato.Helpers;
 
 public static class Objects
 {

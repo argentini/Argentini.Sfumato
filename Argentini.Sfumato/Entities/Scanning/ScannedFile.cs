@@ -3,8 +3,6 @@
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using Argentini.Sfumato.Entities.CssClassProcessing;
-
 namespace Argentini.Sfumato.Entities.Scanning;
 
 public sealed class ScannedFile

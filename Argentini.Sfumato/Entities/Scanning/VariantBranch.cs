@@ -3,8 +3,6 @@
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using Argentini.Sfumato.Entities.CssClassProcessing;
-
 namespace Argentini.Sfumato.Entities.Scanning;
 
 public sealed class VariantBranch
@@ -14,9 +12,9 @@ public sealed class VariantBranch
     public string WrapperCss { get; set; } = string.Empty;
     public HashSet<VariantBranch> Branches { get; set; } = [];
     public HashSet<CssClass> CssClasses { get; set; } = [];
-    
-    // Ensure we compare branches solely by Fingerprint
+
     public override bool Equals(object? obj) => obj is VariantBranch other && Fingerprint == other.Fingerprint;
 
+    // ReSharper disable once NonReadonlyMemberInGetHashCode
     public override int GetHashCode() => Fingerprint.GetHashCode();    
 }

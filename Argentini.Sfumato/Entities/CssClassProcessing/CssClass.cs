@@ -3,8 +3,6 @@
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-using Argentini.Sfumato.Entities.UtilityClasses;
-
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public sealed partial class CssClass : IDisposable

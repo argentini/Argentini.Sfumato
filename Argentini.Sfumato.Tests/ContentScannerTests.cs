@@ -1,5 +1,3 @@
-using Xunit.Abstractions;
-
 namespace Argentini.Sfumato.Tests;
 
 public class ContentScannerTests(ITestOutputHelper testOutputHelper)

@@ -1,7 +1,7 @@
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 
-namespace Argentini.Sfumato.Extensions;
+namespace Argentini.Sfumato.Helpers;
 
 public static class Encoders
 {

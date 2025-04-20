@@ -1,7 +1,3 @@
-using System.Text;
-using Argentini.Sfumato.Extensions;
-using Xunit.Abstractions;
-
 namespace Argentini.Sfumato.Tests;
 
 public class ExtensionsTests(ITestOutputHelper testOutputHelper)

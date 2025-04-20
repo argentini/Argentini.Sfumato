@@ -6,12 +6,8 @@
 // ReSharper disable InvertIf
 
 using System.Reflection;
-using Argentini.Sfumato.Entities.CssClassProcessing;
-using Argentini.Sfumato.Entities.Library;
-using Argentini.Sfumato.Entities.Scanning;
-using Argentini.Sfumato.Entities.UtilityClasses;
 
-namespace Argentini.Sfumato;
+namespace Argentini.Sfumato.Entities.Runners;
 
 public partial class AppRunner
 {
@@ -25,7 +21,7 @@ public partial class AppRunner
 	#region Properties
 
 	public AppState AppState { get; }
-	public Library Library { get; } = new();
+	public Library.Library Library { get; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new(null);
 	public Dictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
 	public Dictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);

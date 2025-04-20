@@ -1,9 +1,7 @@
 // ReSharper disable ConvertIfStatementToSwitchStatement
 // ReSharper disable MemberCanBePrivate.Global
 
-using Argentini.Sfumato.Entities.CssClassProcessing;
-
-namespace Argentini.Sfumato;
+namespace Argentini.Sfumato.Entities.Scanning;
 
 public static partial class ContentScanner
 {

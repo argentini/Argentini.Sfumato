@@ -5,7 +5,6 @@ using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using Perfolizer.Horology;
-using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests.Benchmarks;
 

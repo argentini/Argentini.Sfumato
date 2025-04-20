@@ -1,4 +1,3 @@
-using Argentini.Sfumato.Entities.CssClassProcessing;
 using BenchmarkDotNet.Attributes;
 
 namespace Argentini.Sfumato.Tests.Benchmarks;

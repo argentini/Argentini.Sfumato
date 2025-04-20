@@ -1,6 +1,4 @@
-using Argentini.Sfumato.Entities.CssClassProcessing;
-
-namespace Argentini.Sfumato.Extensions;
+namespace Argentini.Sfumato.Validators;
 
 public static class VariantValidators
 {

@@ -1,4 +1,4 @@
-﻿namespace Argentini.Sfumato.Extensions;
+﻿namespace Argentini.Sfumato.Helpers;
 
 /// <summary>
 /// Various tools to make using StringBuilders more like using strings. 

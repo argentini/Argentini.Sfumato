@@ -1,7 +1,3 @@
-using System.Text;
-using Argentini.Sfumato.Entities.Scanning;
-using Argentini.Sfumato.Extensions;
-
 namespace Argentini.Sfumato.Tests;
 
 public class AppRunnerTests

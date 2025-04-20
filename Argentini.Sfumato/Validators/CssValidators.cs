@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Extensions;
+namespace Argentini.Sfumato.Validators;
 
 public static class CssValidators
 {
