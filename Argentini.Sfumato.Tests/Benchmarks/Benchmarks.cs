@@ -1,7 +1,7 @@
 using Argentini.Sfumato.Entities.CssClassProcessing;
 using BenchmarkDotNet.Attributes;
 
-namespace Argentini.Sfumato.Tests;
+namespace Argentini.Sfumato.Tests.Benchmarks;
 
 public class Benchmarks
 {

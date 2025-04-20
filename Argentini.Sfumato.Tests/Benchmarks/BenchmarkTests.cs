@@ -1,5 +1,3 @@
-// ReSharper disable ConvertToPrimaryConstructor
-
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
@@ -9,28 +7,21 @@ using BenchmarkDotNet.Running;
 using Perfolizer.Horology;
 using Xunit.Abstractions;
 
-namespace Argentini.Sfumato.Tests;
+namespace Argentini.Sfumato.Tests.Benchmarks;
 
-public class BenchmarkTests
+public class BenchmarkTests(ITestOutputHelper testOutputHelper)
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public BenchmarkTests(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
-
     [Fact]
     public void Benchmarks()
     {
-        _testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
-        _testOutputHelper.WriteLine("");
+        testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
+        testOutputHelper.WriteLine("");
 
         var summary = BenchmarkRunner.Run<Benchmarks>();
 
         Assert.NotNull(summary);
         
-        _testOutputHelper.WriteLine(GetBenchmarkSummaryText(summary));
+        testOutputHelper.WriteLine(GetBenchmarkSummaryText(summary));
     }
     
     private static string GetBenchmarkSummaryText(Summary summary)

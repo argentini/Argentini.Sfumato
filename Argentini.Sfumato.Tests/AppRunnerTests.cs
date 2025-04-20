@@ -24,7 +24,7 @@ public class AppRunnerTests
     [Fact]
     public async Task ProcessAtApplyStatementsAndTrackDependencies()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../sample.css", true);
+        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css", true);
 
         await appRunner.LoadCssFileAsync();
 
@@ -43,11 +43,11 @@ public class AppRunnerTests
     [Fact]
     public void CssImportStatements()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../sample.css")
+        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css")
         {
             AppRunnerSettings =
             {
-                CssFilePath = "../../../sample.css"
+                CssFilePath = "../../../SampleCss/sample.css"
             }
         };
 
@@ -71,11 +71,11 @@ public class AppRunnerTests
     [Fact]
     public void ProcessSfumatoBlock()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../sample.css")
+        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css")
         {
             AppRunnerSettings =
             {
-                CssFilePath = "../../../sample.css"
+                CssFilePath = "../../../SampleCss/sample.css"
             }
         };
 
@@ -98,7 +98,7 @@ public class AppRunnerTests
     [Fact]
     public async Task BuildCssFile()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../sample.css");
+        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css");
 
         await appRunner.LoadCssFileAsync();
 

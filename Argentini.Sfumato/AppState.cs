@@ -1,4 +1,6 @@
-using Argentini.Sfumato.Extensions;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable CollectionNeverQueried.Local
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Argentini.Sfumato;
 
@@ -30,11 +32,6 @@ public sealed class AppState
 
     #region Entry Points
     
-    /// <summary>
-    /// Initialize the app state. Loads settings file from working path.
-    /// Sets up runtime environment for the runner.
-    /// </summary>
-    /// <param name="args">CLI arguments</param>
     public async Task InitializeAsync(IEnumerable<string> args)
     {
 	    await ProcessCliArgumentsAsync(args);
