@@ -95,7 +95,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
     public List<string> NotPaths { get; } = [];
 
     public string SfumatoCssBlock { get; private set; } = string.Empty;
-    public string ProcessedCssContent { get; private set; } = string.Empty;
+    public string ProcessedCssContent { get; set; } = string.Empty;
     public Dictionary<string, string> SfumatoBlockItems { get; } = [];
 
     #endregion

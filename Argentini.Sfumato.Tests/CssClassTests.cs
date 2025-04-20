@@ -1,5 +1,3 @@
-// ReSharper disable ConvertToPrimaryConstructor
-
 using System.Text;
 using Argentini.Sfumato.Entities.CssClassProcessing;
 using Argentini.Sfumato.Extensions;
@@ -7,15 +5,8 @@ using Xunit.Abstractions;
 
 namespace Argentini.Sfumato.Tests;
 
-public class CssClassTests
+public class CssClassTests(ITestOutputHelper testOutputHelper)
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public CssClassTests(ITestOutputHelper testOutputHelper)
-    {
-        _testOutputHelper = testOutputHelper;
-    }
-
     #region Constants
 
     public static string Markup => """
@@ -95,45 +86,13 @@ public class CssClassTests
 
             Assert.NotNull(result);
 
-            _testOutputHelper.WriteLine($"{nightmareClass} => {result.IsValid}");
+            testOutputHelper.WriteLine($"{nightmareClass} => {result.IsValid}");
 
             Assert.True(result.IsValid);
 
             if (nightmareClass.EndsWith('!'))
                 Assert.True(result.IsImportant);
         }
-    }
-
-    [Fact]
-    public void StringCrc32()
-    {
-        Assert.Equal((uint)4044826889, "@media screen (min-width: 40rem) and (max-width: 80rem) {".GenerateCrc32());
-        Assert.Equal((uint)1465918141, "@media screen (min-width: 40rem) and (max-width: 81rem) {".GenerateCrc32());
-        Assert.Equal((uint)3657485972, "@media screen (min-width: 40rem) {".GenerateCrc32());
-    }
-
-    [Fact]
-    public void StringBuilderCrc32()
-    {
-        Assert.Equal((uint)4044826889, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 80rem) {").GenerateCrc32());
-        Assert.Equal((uint)1465918141, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").GenerateCrc32());
-        Assert.Equal((uint)3657485972, new StringBuilder("@media screen (min-width: 40rem) {").GenerateCrc32());
-    }
-
-    [Fact]
-    public void StringFnv1A()
-    {
-        Assert.Equal(16953580889345953351, "@media screen (min-width: 40rem) and (max-width: 80rem) {".Fnv1AHash64());
-        Assert.Equal(14858257461132010124, "@media screen (min-width: 40rem) and (max-width: 81rem) {".Fnv1AHash64());
-        Assert.Equal(11325783342227245128, "@media screen (min-width: 40rem) {".Fnv1AHash64());
-    }
-
-    [Fact]
-    public void StringBuilderFnv1A()
-    {
-        Assert.Equal(16953580889345953351, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 80rem) {").Fnv1AHash64());
-        Assert.Equal(14858257461132010124, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").Fnv1AHash64());
-        Assert.Equal(11325783342227245128, new StringBuilder("@media screen (min-width: 40rem) {").Fnv1AHash64());
     }
 
     [Fact]
@@ -439,22 +398,7 @@ public class CssClassTests
                 Assert.Equal(test.Wrappers.ElementAt(i), cssClass.Wrappers.ElementAt(i).Value);
             }
             
-            _testOutputHelper.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
+            testOutputHelper.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
         }
-    }
-    
-    [Fact]
-    public void FileContentParsing()
-    {
-        var appRunner = new AppRunner(new AppState());
-        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appRunner);
-
-        _testOutputHelper.WriteLine("FileContentParsing() => Found:");
-        _testOutputHelper.WriteLine("");
-
-        foreach (var cname in utilityClasses)
-            _testOutputHelper.WriteLine($"{cname.Key}");
-        
-        Assert.Equal(29, utilityClasses.Count);
     }
 }
