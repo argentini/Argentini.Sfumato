@@ -24,12 +24,13 @@ public sealed class FontWeight : ClassDictionaryBase
     {
         foreach (var font in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--font-weight-")))
         {
-            var key = font.Key.Trim('-');
+            var key = font.Key.Replace("--font-weight", "font");
             var value = new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = 
-                    $"font-weight: {font.Value};"
+                    $"font-weight: var({font.Key});",
+                UsesCssCustomProperties = [ font.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))
