@@ -74,7 +74,7 @@ public class FontWeightTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Typography / FontSize => {test.ClassName}");
+            testOutputHelper.WriteLine($"Typography / FontWeight => {test.ClassName}");
         }
     }
 }
