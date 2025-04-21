@@ -54,6 +54,44 @@ public class FontSizeTests(ITestOutputHelper testOutputHelper)
                 IsImportant = false,
                 UsedCssCustomProperties = [ "--spacing", "--text-base", "--text-base--line-height", "--text-base--letter-spacing", "--text-base--font-weight" ],
             },
+            new ()
+            {
+                ClassName = "text-[1.25rem]",
+                EscapedClassName = @".text-\[1\.25rem\]",
+                Styles =
+                    """
+                    font-size: 1.25rem;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "text-[1.25rem]/6",
+                EscapedClassName = @".text-\[1\.25rem\]\/6",
+                Styles =
+                    """
+                    font-size: 1.25rem;
+                    line-height: calc(var(--spacing) * 6);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "text-[1.25rem]/[1.35rem]",
+                EscapedClassName = @".text-\[1\.25rem\]\/\[1\.35rem\]",
+                Styles =
+                    """
+                    font-size: 1.25rem;
+                    line-height: 1.35rem;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
         };
 
         foreach (var test in testClasses)
