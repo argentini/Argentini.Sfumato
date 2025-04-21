@@ -446,7 +446,7 @@ public partial class AppRunner
 			{
 				appRunner.UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
 						
-				foreach (var dependency in utilityClass.Value.ClassDefinition?.UsesCssCustomProperties ?? [])
+				foreach (var dependency in utilityClass.Value.UsesCssCustomProperties)
 				{
 					if (dependency.StartsWith("--", StringComparison.Ordinal))
 						appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);

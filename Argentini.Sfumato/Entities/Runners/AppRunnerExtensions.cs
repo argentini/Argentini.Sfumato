@@ -165,7 +165,7 @@ public static partial class AppRunnerExtensions
 
 					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
 					{
-						foreach (var dependency in utilityClass.ClassDefinition?.UsesCssCustomProperties ?? [])
+						foreach (var dependency in utilityClass.UsesCssCustomProperties)
 						{
 							if (dependency.StartsWith("--", StringComparison.Ordinal))
 								appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);

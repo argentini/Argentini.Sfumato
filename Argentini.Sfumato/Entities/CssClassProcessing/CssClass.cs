@@ -47,7 +47,15 @@ public sealed partial class CssClass : IDisposable
     /// </summary>
     public ClassDefinition? ClassDefinition;
 
+    /// <summary>
+    /// Ordered list of nested wrapper statements (for variants)
+    /// </summary>
     public Dictionary<ulong, string> Wrappers { get; } = [];
+
+    /// <summary>
+    /// List of CSS custom property names and classes used by the utility (e.g. --spacing).
+    /// </summary>
+    public HashSet<string> UsesCssCustomProperties { get; set; } = [];
 
     public string EscapedSelector { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
@@ -101,6 +109,7 @@ public sealed partial class CssClass : IDisposable
         Wrappers.Clear();
         AllSegments.Clear();
         VariantSegments.Clear();
+        UsesCssCustomProperties.Clear();
 
         foreach (var segment in SplitByColonsRegex().Split(Selector.TrimEnd('!')))
             AllSegments.Add(segment);
@@ -298,6 +307,8 @@ public sealed partial class CssClass : IDisposable
                     SelectorSort = ClassDefinition.SelectorSort;
 
                     GenerateStyles(true);
+                    
+                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
 
                     return;
                 }
@@ -368,6 +379,8 @@ public sealed partial class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
+                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
+
                     GenerateStyles();
 
                     return;
@@ -412,6 +425,8 @@ public sealed partial class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
+                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
+                    
                     GenerateStyles();
 
                     return;
@@ -487,6 +502,8 @@ public sealed partial class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
+                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
+
                     GenerateStyles();
 
                     return;
@@ -517,19 +534,40 @@ public sealed partial class CssClass : IDisposable
                     {
                         if (HasModifierValue)
                         {
-                            if (int.TryParse(ModifierValue, out var alphaPct))
-                                Value = colorValue.SetWebColorAlpha(alphaPct);
-                            else if (double.TryParse(ModifierValue, out var alpha))
-                                Value = colorValue.SetWebColorAlpha(alpha);
+                            if (double.TryParse(ModifierValue, out var pct) == false)
+                                pct = 100;
+
+                            if (pct < 0)
+                                pct = 0;
+
+                            if (pct > 100)
+                                pct = 100;
+                            
+                            if (pct < 100)
+                            {
+                                if (colorValue.Contains("oklch"))
+                                    Value = $"color-mix(in oklab, var(--color-{value}) {pct}%, transparent)";
+                                else if (colorValue.Contains("rgb") || colorValue.Contains('#'))
+                                    Value = $"color-mix(in srgb, var(--color-{value}) {pct}%, transparent)";
+                                else
+                                {
+                                    var colorSpaces = new [] { "srgb-linear", "display-p3", "a98-rgb", "prophoto-rgb", "rec2020", "oklab", "xyz-d50", "xyz-d65", "xyz", "hsl", "hwb", "lch", "lab" };
+                                    var colorSpace = colorSpaces.FirstOrDefault(c => colorValue.Contains(c));
+
+                                    Value = colorSpace is not null ? $"color-mix(in {colorSpace}, var(--color-{value}) {pct}%, transparent)" : colorValue.SetWebColorAlpha(pct);
+                                }
+                            }
                             else
-                                Value = colorValue;
+                            {
+                                Value = $"var(--color-{value})";
+                            }
                         }
                         else
                         {
-                            Value = colorValue;
+                            Value = $"var(--color-{value})";
                         }
                         
-                        ClassDefinition.UsesCssCustomProperties.Add($"--color-{value}");
+                        UsesCssCustomProperties.Add($"--color-{value}");
                     }
                 }
             }
@@ -539,6 +577,9 @@ public sealed partial class CssClass : IDisposable
 
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
+
+            foreach (var prop in ClassDefinition.UsesCssCustomProperties)
+                UsesCssCustomProperties.Add(prop);
 
             GenerateStyles();
 
