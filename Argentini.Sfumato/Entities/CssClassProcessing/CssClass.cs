@@ -482,8 +482,8 @@ public sealed partial class CssClass : IDisposable
                 {
                     if (AppRunner.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
                     {
-                        if (AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                            AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                        if (AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                            AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
                     }
                 }
                 
