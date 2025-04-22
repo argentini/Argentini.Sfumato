@@ -320,7 +320,7 @@ public sealed partial class CssClass : IDisposable
 
             if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
-                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')').Replace('_', ' ');
+                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').Replace('_', ' ');
 
                 if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
                 {
@@ -419,7 +419,7 @@ public sealed partial class CssClass : IDisposable
 
                 if (ClassDefinition is not null)
                 {
-                    var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')').Replace('_', ' ');
+                    var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').Replace('_', ' ');
 
                     Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
                     IsValid = true;
