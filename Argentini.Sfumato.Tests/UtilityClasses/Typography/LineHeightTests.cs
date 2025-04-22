@@ -74,7 +74,7 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Typography / LetterSpacing => {test.ClassName}");
+            testOutputHelper.WriteLine($"Typography / LineHeight => {test.ClassName}");
         }
     }
 }
