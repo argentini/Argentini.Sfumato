@@ -41,7 +41,7 @@ public sealed class LineHeight : ClassDictionaryBase
                         """,
                     ArbitraryCssValueTemplate =
                         """
-                        line-height: {0};
+                        line-height: -{0};
                         """,
                     UsesCssCustomProperties = [
                         "--spacing"
