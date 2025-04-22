@@ -320,7 +320,7 @@ public sealed partial class CssClass : IDisposable
 
             if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
-                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')').Replace('_', ' ');
 
                 if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
                 {
@@ -419,7 +419,7 @@ public sealed partial class CssClass : IDisposable
 
                 if (ClassDefinition is not null)
                 {
-                    var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')');
+                    var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(']').TrimEnd(')').Replace('_', ' ');
 
                     Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
                     IsValid = true;
@@ -439,7 +439,7 @@ public sealed partial class CssClass : IDisposable
             
             if (HasArbitraryValue && HasArbitraryValueWithCssCustomProperty == false && ClassDefinition is null)
             {
-                var valueNoBrackets = value.TrimStart('[').TrimEnd(']');
+                var valueNoBrackets = value.TrimStart('[').TrimEnd(']').Replace('_', ' ');
 
                 if (valueNoBrackets.ValueIsDimensionLength(AppRunner))
                 {
@@ -481,7 +481,10 @@ public sealed partial class CssClass : IDisposable
                 else
                 {
                     if (AppRunner.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                        AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                    {
+                        if (AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                            AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
                 }
                 
                 if (ClassDefinition is not null)
@@ -493,7 +496,8 @@ public sealed partial class CssClass : IDisposable
                         else if (double.TryParse(ModifierValue, out var alpha))
                             Value = valueNoBrackets.SetWebColorAlpha(alpha);
                         else
-                            Value = valueNoBrackets;                    }
+                            Value = valueNoBrackets;
+                    }
                     else
                     {
                         Value = valueNoBrackets;

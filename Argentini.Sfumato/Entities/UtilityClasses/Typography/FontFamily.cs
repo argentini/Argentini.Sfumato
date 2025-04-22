@@ -11,6 +11,7 @@ public sealed class FontFamily : ClassDictionaryBase
             {
                 "font-", new ClassDefinition
                 {
+                    UsesAbstractValue = true,
                     Template = """
                                font-family: {0};
                                """
@@ -29,10 +30,11 @@ public sealed class FontFamily : ClassDictionaryBase
                 IsSimpleUtility = true,
                 Template = 
                     $"""
-                     font-family: {font.Value};
+                     font-family: var({font.Key});
                      font-feature-settings: var({font.Key}--font-feature-settings, normal);
                      font-variation-settings: var({font.Key}--font-variation-settings, normal);
-                     """
+                     """,
+                UsesCssCustomProperties = [ font.Key, $"{font.Key}--font-feature-settings", $"{font.Key}--font-variation-settings" ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

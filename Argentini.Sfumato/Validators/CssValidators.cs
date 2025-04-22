@@ -63,7 +63,7 @@ public static class CssValidators
 
     public static bool ValueIsImageUrl(this string value)
     {
-        return value.StartsWith("url(", StringComparison.Ordinal) || Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out _);
+        return value.StartsWith("url(", StringComparison.Ordinal) || Uri.TryCreate(value, UriKind.Absolute, out _);
     }
 
     public static bool ValueIsRatio(this string value)

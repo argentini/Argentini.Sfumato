@@ -67,6 +67,7 @@ public sealed class Library
     public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> SpacingClasses { get; set; } = new(StringComparer.Ordinal);
     
+    public Dictionary<string, ClassDefinition> AbstractClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> AlphaNumberClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> AngleHueClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = new(StringComparer.Ordinal);
@@ -110,6 +111,9 @@ public sealed class Library
 
             foreach (var item in instance.Data.Where(item => item.Key.EndsWith('(') == false && item.Key.EndsWith('[') == false))
             {
+                if (item.Value.UsesAbstractValue)
+                    AbstractClasses.Add(item.Key, item.Value);
+
                 if (item.Value.IsSimpleUtility)
                     SimpleClasses.Add(item.Key, item.Value);
                 

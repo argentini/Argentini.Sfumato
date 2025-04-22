@@ -66,6 +66,11 @@ public sealed class ClassDefinition
     public bool UsesRatio { get; set; }
 
     /// <summary>
+    /// Class uses abstract value (e.g. "ui-sans-serif, system-ui")
+    /// </summary>
+    public bool UsesAbstractValue { get; set; }
+
+    /// <summary>
     /// Class uses resolution (e.g. "10dpi")
     /// </summary>
     public bool UsesResolution { get; set; }
