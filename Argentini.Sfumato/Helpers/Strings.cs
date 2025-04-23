@@ -170,6 +170,52 @@ public static partial class Strings
 	#region Trimming
 	
 	/// <summary>
+	/// Trim the common prefix of from sourceString from targetString.
+	/// </summary>
+	/// <param name="targetString"></param>
+	/// <param name="sourceString"></param>
+	/// <returns></returns>
+	public static string TrimCommonPrefix(this string targetString, string sourceString)
+	{
+		var minLength = Math.Min(targetString.Length, sourceString.Length);
+		var commonLength = 0;
+
+		for (var i = 0; i < minLength; i++)
+		{
+			if (targetString[i] != sourceString[i])
+				break;
+			
+			commonLength++;
+		}
+
+		return targetString[commonLength..];
+	}
+
+	/// <summary>
+	/// Trim the common prefix from targetString that matches sourceString,
+	/// but only up to the last Path.DirectorySeparatorChar in the matched portion.
+	/// </summary>
+	/// <param name="targetString">The string to trim.</param>
+	/// <param name="sourceString">The source string to match against.</param>
+	/// <returns>The trimmed string.</returns>
+	public static string TrimCommonPathPrefix(this string targetString, string sourceString)
+	{
+		var minLength = Math.Min(targetString.Length, sourceString.Length);
+		var lastSeparatorIndex = 0;
+
+		for (var i = 0; i < minLength; i++)
+		{
+			if (targetString[i] != sourceString[i])
+				break;
+
+			if (targetString[i] == Path.DirectorySeparatorChar)
+				lastSeparatorIndex = i + 1; // include separator in the prefix
+		}
+
+		return targetString[lastSeparatorIndex..];
+	}
+	
+	/// <summary>
     /// Remove a specified number of characters from the beginning of a string
     /// </summary>
     /// <param name="value">String to trim</param>
