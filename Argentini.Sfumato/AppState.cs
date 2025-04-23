@@ -6,6 +6,12 @@ namespace Argentini.Sfumato;
 
 public sealed class AppState
 {
+	#region Services
+	
+	static WeakMessenger Messenger = new ();
+	
+	#endregion
+
     #region Run Mode Properties
 
     public bool WatchMode { get; set; }
@@ -18,7 +24,7 @@ public sealed class AppState
     #region Collection Properties
 
     private List<string> CliArguments { get; } = [];
-    private List<AppRunner> AppRunners { get; } = [];
+    public List<AppRunner> AppRunners { get; } = [];
     
     #endregion
     
@@ -27,6 +33,7 @@ public sealed class AppState
     public static string CliErrorPrefix => "Sfumato => ";
     public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
     public string EmbeddedCssPath => GetEmbeddedCssPath();
+    public string WorkingPath => Directory.GetCurrentDirectory();
     
     #endregion
 
@@ -57,6 +64,7 @@ public sealed class AppState
 		{
 			await Console.Out.WriteLineAsync("Invalid command specified; must be: help, init, version, build, or watch");
 			await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
+
 			Environment.Exit(1);
 		}			
 		
@@ -100,8 +108,14 @@ public sealed class AppState
 				else
 				{
 					await Console.Out.WriteLineAsync($"{CliErrorPrefix}File not found: {arg}");
+
 					Environment.Exit(1);
 				}
+			}
+
+			foreach (var appRunner in AppRunners)
+			{
+				await appRunner.LoadCssFileAsync();
 			}
 		}
 	}
