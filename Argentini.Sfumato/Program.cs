@@ -148,14 +148,18 @@ internal class Program
 		else
 			await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
 
+		foreach (var appRunner in appState.AppRunners)
+		{
+			await appRunner.PerformFullBuild();
+		}
 
-
-
-		
-		
-		
-		
-		
+		if (appState.WatchMode)
+		{
+			foreach (var appRunner in appState.AppRunners)
+			{
+				// todo: initialize watcher
+			}
+		}
 		
 		Environment.Exit(0);
 	}

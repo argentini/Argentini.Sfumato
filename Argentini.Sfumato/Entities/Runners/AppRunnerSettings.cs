@@ -240,7 +240,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 			    UseMinify = useMinify.Equals("true", StringComparison.Ordinal);
 
 		    if (SfumatoBlockItems.TryGetValue("--output-path", out var outputPath))
-			    CssOutputFilePath = string.IsNullOrEmpty(outputPath) ? "sfumato.css" : outputPath;
+			    CssOutputFilePath = (string.IsNullOrEmpty(outputPath) ? "sfumato.css" : outputPath).Trim('\"');
 
 		    if (SfumatoBlockItems.TryGetValue("--paths", out var pathsValue))
 		    {

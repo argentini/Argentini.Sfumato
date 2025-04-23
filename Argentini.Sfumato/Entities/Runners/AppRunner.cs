@@ -397,10 +397,92 @@ public partial class AppRunner
 
 	#endregion
 
-	// todo: scan file paths for utility classes
+	public async Task PerformFullBuild()
+	{
+		var tasks = new List<Task>();
 
-	// todo: watchers
+		ScannedFiles.Clear();
+		
+		/*
+		Initialize();
 
+		await LoadCssFileAsync();
+		*/
+		
+		// Gather files lists
+		
+		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+		foreach (var path in AppRunnerSettings.Paths)
+			tasks.Add(RecurseProjectPathAsync(Path.Combine(AppRunnerSettings.NativeCssFilePathOnly, path)));
+
+		await Task.WhenAll(tasks);
+
+		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, BuildCss());
+
+		/*
+		tasks.Clear();
+
+		foreach (var watchedFile in WatchedFiles)
+			tasks.Add(ProcessFileMatchesAsync(watchedFile.Value));
+
+		await Task.WhenAll(tasks);
+		*/
+	}
+	
+	private async Task RecurseProjectPathAsync(string? sourcePath)
+	{
+		if (string.IsNullOrEmpty(sourcePath))
+			return;
+
+		string path;
+
+		try
+		{
+			path = Path.GetFullPath(sourcePath);
+		}
+		catch
+		{
+			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} WARNING: Source directory could not be found: {sourcePath}");
+			return;
+		}
+		
+		var dir = new DirectoryInfo(path);
+		var dirs = dir.GetDirectories();
+		var files = dir.GetFiles();
+		var tasks = new List<Task>();
+		
+		// ReSharper disable once LoopCanBeConvertedToQuery
+		foreach (var fileInfo in files)
+		{
+			if (Library.ValidFileExtensions.Contains(fileInfo.Extension.TrimStart('.')))
+				tasks.Add(AddProjectFile(fileInfo));
+		}
+
+		await Task.WhenAll(tasks);
+
+		foreach (var subDir in dirs.OrderBy(d => d.Name))
+		{
+			if (AppRunnerSettings.NotPaths.Any(s => s.Equals(subDir.Name, StringComparison.Ordinal)))
+				continue;
+
+			await RecurseProjectPathAsync(subDir.FullName);
+		}
+	}
+	
+	private async Task AddProjectFile(FileInfo fileInfo)
+	{
+		var scannedFile = new ScannedFile(fileInfo.FullName);
+
+		ScannedFiles.TryAdd(fileInfo.FullName, scannedFile);
+
+		await scannedFile.LoadAndScanFileAsync(this);
+	}
+	
+	public async Task StartWatching()
+	{
+		// todo: watchers
+	}
+	
 	#region CSS Generation
     
 	/// <summary>
