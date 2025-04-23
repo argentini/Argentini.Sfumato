@@ -191,7 +191,62 @@ public static partial class Strings
 		return targetString[commonLength..];
 	}
 
-	/// <summary>
+    /// <summary>
+    /// Truncates the middle of the string if it exceeds <paramref name="maxLength"/>, 
+    /// preserving at least <paramref name="minStartLength"/> chars at the start and 
+    /// <paramref name="minEndLength"/> chars at the end, with a Unicode ellipsis in between.
+    /// </summary>
+    /// <param name="path">The original string (e.g. a file or URL path).</param>
+    /// <param name="minStartLength">Minimum number of chars to keep at the start.</param>
+    /// <param name="minEndLength">Minimum number of chars to keep at the end.</param>
+    /// <param name="maxLength">Maximum total length of the returned string (including the ellipsis).</param>
+    /// <returns>
+    /// The original string if it’s short enough; otherwise a truncated version 
+    /// of length ≤ <paramref name="maxLength"/> with ‘ … ’ in the middle.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">If <paramref name="path"/> is null.</exception>
+    /// <exception cref="ArgumentException">
+    /// If <paramref name="maxLength"/> is less than <c>minStartLength + minEndLength + 1</c>.
+    /// </exception>
+    public static string TruncateCenter(this string path, int minStartLength, int minEndLength, int maxLength)
+    {
+        if (string.IsNullOrEmpty(path)) 
+            return string.Empty;
+        
+        if (maxLength < minStartLength + minEndLength + 3) 
+            throw new ArgumentException(
+                $"maxLength must be at least minStartLength + minEndLength + 1 (got {maxLength}).", 
+                nameof(maxLength));
+
+        if (path.Length <= maxLength)
+            return path;
+
+        // Total chars aside from the ellipsis
+        var charsToShow = maxLength - 3;
+
+        // Start by splitting them roughly in half
+        var startLen = charsToShow / 2;
+        var endLen = charsToShow - startLen;
+
+        if (startLen < minStartLength)
+        {
+            startLen = minStartLength;
+            endLen = charsToShow - startLen;
+        }
+
+        if (endLen < minEndLength)
+        {
+            endLen = minEndLength;
+            startLen = charsToShow - endLen;
+        }
+
+        var prefix = path[..startLen];
+        var suffix = path.Substring(path.Length - endLen, endLen);
+
+        return prefix + " \u2026 " + suffix;
+    }
+
+    /// <summary>
 	/// Trim the common prefix from targetString that matches sourceString,
 	/// but only up to the last Path.DirectorySeparatorChar in the matched portion.
 	/// </summary>

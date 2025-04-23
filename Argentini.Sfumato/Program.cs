@@ -130,11 +130,9 @@ internal class Program
 					(appRunner.AppRunnerSettings.UseForms ? "Forms CSS, " : string.Empty) +
 					(appRunner.AppRunnerSettings.UseMinify ? "Compressed Output, " : "Expanded Output, ")
 				).Trim(',', ' ');
-			
-			var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath);
 
-			if (relativePath.Length > Library.MaxConsoleWidth)
-				relativePath = $"\u2026{relativePath[^(Library.MaxConsoleWidth - 15 - 1)..].TrimStart(Path.DirectorySeparatorChar)}";
+			var maxWidth = Library.MaxConsoleWidth - 15;
+			var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 			
 			await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
 			await Console.Out.WriteLineAsync($"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
