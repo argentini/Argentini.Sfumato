@@ -28,16 +28,18 @@ public partial class AppRunner
 	#region Properties
 
 	public Stopwatch Stopwatch { get; set; } = new();
+	public Stopwatch TotalStopwatch { get; set; } = new();
+	public Stopwatch WorkingStopwatch { get; set; } = new();
 	public string LastCss { get; set; } = string.Empty;
 	public List<string> Messages { get; set; } = [];
 	
 	public AppState AppState { get; }
 	public Library.Library Library { get; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new(null);
-	public Dictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
-	public Dictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);
-	public Dictionary<string,string> UsedCss { get; set; } = new(StringComparer.Ordinal);
-	public Dictionary<string,CssClass> UtilityClasses { get; set; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,string> UsedCss { get; set; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,CssClass> UtilityClasses { get; set; } = new(StringComparer.Ordinal);
 
 	private readonly string _cssFilePath;
 	private readonly bool _useMinify;
@@ -101,6 +103,8 @@ public partial class AppRunner
 	    {
 		    Messages.Add($"{AppState.CliErrorPrefix}LoadCssFileAsync() - {e.Message}");
 	    }
+	    
+	    await Task.CompletedTask;
     }
 
     /// <summary>
@@ -404,8 +408,9 @@ public partial class AppRunner
 
 	public async Task PerformFullBuild(bool reInitialize = false)
 	{
-		var tasks = new List<Task>();
+		var tasks = new ConcurrentBag<Task>();
 
+		TotalStopwatch.Restart();
 		ScannedFiles.Clear();
 		
 		if (reInitialize)
@@ -413,22 +418,31 @@ public partial class AppRunner
 
 		await LoadCssFileAsync();
 		
-		Stopwatch.Restart();
+		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d), (int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3, Entities.Library.Library.MaxConsoleWidth);
+			
+		Messages.Add(relativePath);
+		
+		WorkingStopwatch.Restart();
 
-		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 		foreach (var path in AppRunnerSettings.Paths)
-			tasks.Add(RecurseProjectPathAsync(Path.Combine(AppRunnerSettings.NativeCssFilePathOnly, path)));
+			tasks.Add(RecurseProjectPathAsync(Path.Combine(AppRunnerSettings.NativeCssFilePathOnly, path), tasks));
 
 		await Task.WhenAll(tasks);
+		
+		WorkingStopwatch.Stop();
+		Stopwatch.Restart();
 
 		LastCss = BuildCss();
-		
+
 		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
-		Stopwatch.Stop();
+		Messages.Add($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {WorkingStopwatch.FormatTimer()}");
+		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {Stopwatch.FormatTimer()}");
+		Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff} ({TotalStopwatch.FormatTimer()})");
+		Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
 	}
 	
-	private async Task RecurseProjectPathAsync(string? sourcePath)
+	private async Task RecurseProjectPathAsync(string? sourcePath, ConcurrentBag<Task> tasks)
 	{
 		if (string.IsNullOrEmpty(sourcePath))
 			return;
@@ -448,38 +462,39 @@ public partial class AppRunner
 		var dir = new DirectoryInfo(path);
 		var dirs = dir.GetDirectories();
 		var files = dir.GetFiles();
-		var tasks = new List<Task>();
+
+		foreach (var fileInfo in files)
+			tasks.Add(AddProjectFile(fileInfo));
 		
 		// ReSharper disable once LoopCanBeConvertedToQuery
-		foreach (var fileInfo in files)
-		{
-			if (Library.ValidFileExtensions.Contains(fileInfo.Extension.TrimStart('.')))
-				tasks.Add(AddProjectFile(fileInfo));
-		}
-
-		await Task.WhenAll(tasks);
-
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
 		{
-			if (AppRunnerSettings.NotPaths.Any(s => s.Equals(subDir.Name, StringComparison.Ordinal)))
+			if (AppRunnerSettings.AbsoluteNotPaths.Any(s => s.Equals(subDir.Name, StringComparison.Ordinal)))
 				continue;
 
-			await RecurseProjectPathAsync(subDir.FullName);
+			await RecurseProjectPathAsync(subDir.FullName, tasks);
 		}
+		
+		await Task.CompletedTask;
 	}
 	
 	private async Task AddProjectFile(FileInfo fileInfo)
 	{
+		if (Library.ValidFileExtensions.Contains(fileInfo.Extension.TrimStart('.')) == false)
+			return;
+		
 		var scannedFile = new ScannedFile(fileInfo.FullName);
 
-		ScannedFiles.TryAdd(fileInfo.FullName, scannedFile);
-
 		await scannedFile.LoadAndScanFileAsync(this);
+
+		ScannedFiles.TryAdd(fileInfo.FullName, scannedFile);
 	}
 	
 	public async Task StartWatching()
 	{
 		// todo: watchers
+
+		await Task.CompletedTask;
 	}
 	
 	#region CSS Generation
@@ -536,9 +551,9 @@ public partial class AppRunner
 				foreach (var dependency in utilityClass.Value.UsesCssCustomProperties)
 				{
 					if (dependency.StartsWith("--", StringComparison.Ordinal))
-						appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+						appRunner.UsedCssCustomProperties.TryAdd(dependency, string.Empty);
 					else
-						appRunner.UsedCss.TryAddUpdate(dependency, string.Empty);
+						appRunner.UsedCss.TryAdd(dependency, string.Empty);
 				}
 			}
 		}

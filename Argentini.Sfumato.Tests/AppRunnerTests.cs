@@ -7,12 +7,12 @@ public class AppRunnerTests
     {
         var appRunner = new AppRunner(new AppState());
 
-        appRunner.ScannedFiles.Add("test", new ScannedFile("")
+        appRunner.ScannedFiles.TryAdd("test", new ScannedFile("")
         {
             UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, appRunner)
         });
 
-        AppRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
+        appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
         
         Assert.Equal(29, appRunner.UtilityClasses.Count);
     }
@@ -98,7 +98,7 @@ public class AppRunnerTests
 
         await appRunner.LoadCssFileAsync();
 
-        appRunner.ScannedFiles.Add("test", new ScannedFile("")
+        appRunner.ScannedFiles.TryAdd("test", new ScannedFile("")
         {
             UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, appRunner)
         });

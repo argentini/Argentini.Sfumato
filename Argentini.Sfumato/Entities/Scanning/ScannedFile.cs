@@ -38,6 +38,6 @@ public sealed class ScannedFile
         FileContent = await Storage.ReadAllTextWithRetriesAsync(AbsoluteFilePath, 5000);
 
         if (string.IsNullOrEmpty(FileContent) == false)
-            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(FileContent, appRunner);
+            UtilityClasses.AddRange(ContentScanner.ScanFileForUtilityClasses(FileContent, appRunner));
     }
 }

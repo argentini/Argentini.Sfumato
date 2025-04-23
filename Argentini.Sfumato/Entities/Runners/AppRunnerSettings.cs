@@ -93,6 +93,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	
     public List<string> Paths { get; } = [];
     public List<string> NotPaths { get; } = [];
+    public List<string> AbsoluteNotPaths { get; } = [];
 
     public string SfumatoCssBlock { get; private set; } = string.Empty;
     public string ProcessedCssContent { get; set; } = string.Empty;
@@ -260,7 +261,10 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 			    if (notPaths.Length != 0)
 			    {
 				    foreach (var p in notPaths)
+				    {
 					    NotPaths.Add(p.Trim('\"'));
+					    AbsoluteNotPaths.Add(Path.GetFullPath(p.Trim('\"')));
+				    }
 			    }
 		    }
 

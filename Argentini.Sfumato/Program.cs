@@ -18,7 +18,8 @@ internal class Program
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
 #if DEBUG
-		await appState.InitializeAsync(["build", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css"]);
+		//await appState.InitializeAsync(["build", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css"]);
+		await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
 #else		
         await appState.InitializeAsync(args);
 #endif        
@@ -150,32 +151,20 @@ internal class Program
 
 		var tasks = new List<Task>();
 		
+		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 		foreach (var appRunner in appState.AppRunners)
 			tasks.Add(appRunner.PerformFullBuild());
 
 		await Task.WhenAll(tasks);
 
+		totalTimer.Stop();
+		
 		foreach (var appRunner in appState.AppRunners)
 		{
-			var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(Library.MaxConsoleWidth / 3d), (int)Math.Floor((Library.MaxConsoleWidth / 3d) * 2) - 3, Library.MaxConsoleWidth);
-			var utilitiesFound = appRunner.ScannedFiles.Sum(f => f.Value.UtilityClasses.Count);
-			
-			await Console.Out.WriteLineAsync(relativePath);
+			foreach (var message in appRunner.Messages)
+				await Console.Out.WriteLineAsync(message);
 
-			if (appRunner.Messages.Count > 0)
-			{
-				foreach (var message in appRunner.Messages)
-					await Console.Out.WriteLineAsync(message);
-
-				appRunner.Messages.Clear();
-			}
-			else
-			{
-				await Console.Out.WriteLineAsync($"Found {appRunner.ScannedFiles.Count:N0} file{(appRunner.ScannedFiles.Count == 1 ? string.Empty : "s")}, {utilitiesFound:N0} class{(utilitiesFound == 1 ? string.Empty : "es")}");
-				await Console.Out.WriteLineAsync($"{appRunner.LastCss.Length.FormatBytes()} written to {appRunner.AppRunnerSettings.CssOutputFilePath}");
-				await Console.Out.WriteLineAsync($"Build complete at {DateTime.Now:HH:mm:ss.fff} ({appRunner.Stopwatch.FormatTimer()})");
-				await Console.Out.WriteLineAsync(Strings.DotLine.Repeat(Library.MaxConsoleWidth));
-			}
+			appRunner.Messages.Clear();
 		}		
 		
 		await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");

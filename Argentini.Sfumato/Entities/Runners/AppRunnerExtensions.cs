@@ -168,9 +168,9 @@ public static partial class AppRunnerExtensions
 						foreach (var dependency in utilityClass.UsesCssCustomProperties)
 						{
 							if (dependency.StartsWith("--", StringComparison.Ordinal))
-								appRunner.UsedCssCustomProperties.TryAddUpdate(dependency, string.Empty);
+								appRunner.UsedCssCustomProperties.TryAdd(dependency, string.Empty);
 							else
-								appRunner.UsedCss.TryAddUpdate(dependency, string.Empty);
+								appRunner.UsedCss.TryAdd(dependency, string.Empty);
 						}
 
 						if (appRunner.AppRunnerSettings.UseMinify == false)
