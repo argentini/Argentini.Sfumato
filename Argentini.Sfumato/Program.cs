@@ -144,7 +144,7 @@ internal class Program
 		if (appState.WatchMode)
 			await Console.Out.WriteLineAsync($"Started watching at {DateTime.Now:HH:mm:ss.fff}");
 		else
-			await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
+			await Console.Out.WriteLineAsync($"Started full build at {DateTime.Now:HH:mm:ss.fff}");
 
 		foreach (var appRunner in appState.AppRunners)
 		{
@@ -158,6 +158,8 @@ internal class Program
 				// todo: initialize watcher
 			}
 		}
+		
+		await Console.Out.WriteLineAsync($"Stopped at {DateTime.Now:HH:mm:ss.fff}");
 		
 		Environment.Exit(0);
 	}

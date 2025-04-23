@@ -410,15 +410,27 @@ public partial class AppRunner
 		*/
 		
 		// Gather files lists
+
+		var timer = new Stopwatch();
 		
+		timer.Start();
+
 		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 		foreach (var path in AppRunnerSettings.Paths)
 			tasks.Add(RecurseProjectPathAsync(Path.Combine(AppRunnerSettings.NativeCssFilePathOnly, path)));
 
 		await Task.WhenAll(tasks);
 
-		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, BuildCss());
+		await Console.Out.WriteLineAsync($"Found {ScannedFiles.Count:N0} files, {ScannedFiles.Sum(f => f.Value.UtilityClasses.Count):N0} classes");
 
+		var css = BuildCss();
+		
+		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, css);
+
+		await Console.Out.WriteLineAsync($"{css.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {timer.FormatTimer()}");
+
+		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
+		
 		/*
 		tasks.Clear();
 
