@@ -3,6 +3,8 @@ namespace Argentini.Sfumato;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class Program
 {
+	static WeakMessenger Messenger = new ();
+
 	private static async Task Main(string[] args)
 	{
 		var cancellationTokenSource = new CancellationTokenSource();
@@ -15,8 +17,12 @@ internal class Program
 		var appState = new AppState();
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
+#if DEBUG
+		await appState.InitializeAsync(["build", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css"]);
+#else		
         await appState.InitializeAsync(args);
-        
+#endif        
+		
 		if (appState.VersionMode)
 		{
 			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
@@ -116,54 +122,35 @@ internal class Program
 			Environment.Exit(0);
 		}
 
-		/*
-		await Console.Out.WriteLineAsync($"Working Path     :  {appState.WorkingPath}");
-		await Console.Out.WriteLineAsync($"Transpile        :  {(appState.Minify ? "Minify" : "Expanded")}");
-		*/
-		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(Library.MaxConsoleWidth));
-
-		/*
-		foreach (var project in appState.Settings.Projects)
+		foreach (var appRunner in appState.AppRunners)
 		{
-			await Console.Out.WriteLineAsync($"Project          :  {project.ProjectName}");
-			await Console.Out.WriteLineAsync($"Theme Mode       :  {(project.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "Media Query" : "CSS Classes")}");
-
-			if (project.ProjectPaths.Count > 0)
-			{
-				var paths = appState.StringBuilderPool.Get();
-	        
-				foreach (var projectPath in project.ProjectPaths)
-				{
-					if (paths.Length > 0)
-						paths.Append("                 :  ");
-
-					var path  = $".{projectPath.Path.SetNativePathSeparators().TrimStart(appState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{(projectPath.Recurse ? $"**{Path.DirectorySeparatorChar}" : string.Empty)}*.{(projectPath.ExtensionsList.Count == 1 ? projectPath.Extensions : $"[{projectPath.Extensions}]")}";
-
-					if (string.IsNullOrEmpty(projectPath.IgnoreFolders) == false)
-						path += $" (ignore {projectPath.IgnoreFolders.Trim()})";
-
-					path += Environment.NewLine;
-
-					paths.Append(path);
-				}
-	        
-				await Console.Out.WriteLineAsync($"Watch Path(s)    :  {paths.ToString().TrimEnd()}");
+			var options =
+				(
+					(appRunner.AppRunnerSettings.UseReset ? "CSS Reset, " : string.Empty) +
+					(appRunner.AppRunnerSettings.UseForms ? "Forms CSS, " : string.Empty) +
+					(appRunner.AppRunnerSettings.UseMinify ? "Compressed Output, " : "Expanded Output, ")
+				).Trim(',', ' ');
 			
-				appState.StringBuilderPool.Return(paths);
-			}        
+			var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath);
+
+			if (relativePath.Length > Library.MaxConsoleWidth)
+				relativePath = $"\u2026{relativePath[^(Library.MaxConsoleWidth - 15 - 1)..].TrimStart(Path.DirectorySeparatorChar)}";
+			
+			await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
+			await Console.Out.WriteLineAsync($"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(Library.MaxConsoleWidth));
 		}
-		*/
-		
-		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(Library.MaxConsoleWidth));
 
 		totalTimer.Restart();
 
-		await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
+		if (appState.WatchMode)
+			await Console.Out.WriteLineAsync($"Started watching at {DateTime.Now:HH:mm:ss.fff}");
+		else
+			await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
 
 
-		
-		
-		
+
+
 		
 		
 		

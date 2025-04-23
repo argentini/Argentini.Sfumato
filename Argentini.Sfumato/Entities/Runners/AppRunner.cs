@@ -11,6 +11,12 @@ namespace Argentini.Sfumato.Entities.Runners;
 
 public partial class AppRunner
 {
+	#region Services
+
+	static WeakMessenger Messenger = new ();
+	
+	#endregion
+	
 	#region Regular Expressions
 	
 	[GeneratedRegex(@"(?:\r\n|\n){3,}")]
@@ -391,7 +397,7 @@ public partial class AppRunner
 
 	#endregion
 
-	// todo: scan file paths for utility classes  
+	// todo: scan file paths for utility classes
 
 	// todo: watchers
 
