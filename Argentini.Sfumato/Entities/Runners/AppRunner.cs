@@ -412,12 +412,13 @@ public partial class AppRunner
 
 		TotalStopwatch.Restart();
 		ScannedFiles.Clear();
-		
-		if (reInitialize)
-			Initialize();
 
-		await LoadCssFileAsync();
-		
+		if (reInitialize)
+		{
+			Initialize();
+			await LoadCssFileAsync();
+		}
+
 		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d), (int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3, Entities.Library.Library.MaxConsoleWidth);
 			
 		Messages.Add(relativePath);
