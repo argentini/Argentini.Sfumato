@@ -112,11 +112,6 @@ public sealed class AppState
 					Environment.Exit(1);
 				}
 			}
-
-			foreach (var appRunner in AppRunners)
-			{
-				await appRunner.LoadCssFileAsync();
-			}
 		}
 	}
 

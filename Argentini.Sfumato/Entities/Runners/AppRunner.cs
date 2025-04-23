@@ -6,6 +6,7 @@
 // ReSharper disable InvertIf
 
 using System.Reflection;
+using System.Runtime.InteropServices.ObjectiveC;
 
 namespace Argentini.Sfumato.Entities.Runners;
 
@@ -26,6 +27,10 @@ public partial class AppRunner
 	
 	#region Properties
 
+	public Stopwatch Stopwatch { get; set; } = new();
+	public string LastCss { get; set; } = string.Empty;
+	public List<string> Messages { get; set; } = [];
+	
 	public AppState AppState { get; }
 	public Library.Library Library { get; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new(null);
@@ -62,15 +67,19 @@ public partial class AppRunner
     {
 	    try
 	    {
-		    AppRunnerSettings = new AppRunnerSettings(this);
+		    AppRunnerSettings = new AppRunnerSettings(this)
+		    {
+			    CssFilePath = _cssFilePath,
+			    UseMinify = _useMinify
+		    };
+
 		    AppRunnerSettings.ExtractSfumatoItems(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")));
 
 		    ProcessCssSettings();
 	    }
 	    catch (Exception e)
 	    {
-		    Console.WriteLine($"{AppState.CliErrorPrefix}Initialize() - {e.Message}");
-		    Environment.Exit(1);
+		    Messages.Add($"{AppState.CliErrorPrefix}Initialize() - {e.Message}");
 	    }
     }
 
@@ -81,9 +90,6 @@ public partial class AppRunner
     {
 	    try
 	    {
-		    AppRunnerSettings.CssFilePath = _cssFilePath;
-		    AppRunnerSettings.UseMinify = _useMinify;
-
 		    AppRunnerSettings.LoadAndExtractCssContent(); // Extract Sfumato settings and CSS content
 		    AppRunnerSettings.ExtractSfumatoItems(); // Parse all the Sfumato settings into a Dictionary<string,string>()
 		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
@@ -93,8 +99,7 @@ public partial class AppRunner
 	    }
 	    catch (Exception e)
 	    {
-		    await Console.Out.WriteLineAsync($"{AppState.CliErrorPrefix}LoadCssFileAsync() - {e.Message}");
-		    Environment.Exit(1);
+		    Messages.Add($"{AppState.CliErrorPrefix}LoadCssFileAsync() - {e.Message}");
 	    }
     }
 
@@ -397,23 +402,18 @@ public partial class AppRunner
 
 	#endregion
 
-	public async Task PerformFullBuild()
+	public async Task PerformFullBuild(bool reInitialize = false)
 	{
 		var tasks = new List<Task>();
 
 		ScannedFiles.Clear();
 		
-		/*
-		Initialize();
+		if (reInitialize)
+			Initialize();
 
 		await LoadCssFileAsync();
-		*/
 		
-		// Gather files lists
-
-		var timer = new Stopwatch();
-		
-		timer.Start();
+		Stopwatch.Restart();
 
 		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 		foreach (var path in AppRunnerSettings.Paths)
@@ -421,24 +421,11 @@ public partial class AppRunner
 
 		await Task.WhenAll(tasks);
 
-		await Console.Out.WriteLineAsync($"Found {ScannedFiles.Count:N0} files, {ScannedFiles.Sum(f => f.Value.UtilityClasses.Count):N0} classes");
-
-		var css = BuildCss();
+		LastCss = BuildCss();
 		
-		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, css);
+		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
-		await Console.Out.WriteLineAsync($"{css.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {timer.FormatTimer()}");
-
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
-		
-		/*
-		tasks.Clear();
-
-		foreach (var watchedFile in WatchedFiles)
-			tasks.Add(ProcessFileMatchesAsync(watchedFile.Value));
-
-		await Task.WhenAll(tasks);
-		*/
+		Stopwatch.Stop();
 	}
 	
 	private async Task RecurseProjectPathAsync(string? sourcePath)
@@ -454,7 +441,7 @@ public partial class AppRunner
 		}
 		catch
 		{
-			await Console.Out.WriteLineAsync($"{Strings.TriangleRight} WARNING: Source directory could not be found: {sourcePath}");
+			Messages.Add($"{Strings.TriangleRight} WARNING: Source directory could not be found: {sourcePath}");
 			return;
 		}
 		
@@ -535,7 +522,7 @@ public partial class AppRunner
     /// Gather root dependencies from all scanned file utility classes.
     /// </summary>
     /// <param name="appRunner"></param>
-	public static void ProcessScannedFileUtilityClassDependencies(AppRunner appRunner)
+	public void ProcessScannedFileUtilityClassDependencies(AppRunner appRunner)
 	{
 		try
 		{
@@ -557,8 +544,7 @@ public partial class AppRunner
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessScannedFileUtilityClassDependencies() - {e.Message}");
-			Environment.Exit(1);
+			Messages.Add($"{AppState.CliErrorPrefix}ProcessScannedFileUtilityClassDependencies() - {e.Message}");
 		}
 	}
     
