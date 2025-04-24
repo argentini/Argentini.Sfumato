@@ -1,9 +1,6 @@
-// ReSharper disable ConvertIfStatementToSwitchStatement
-// ReSharper disable MemberCanBePrivate.Global
-
 namespace Argentini.Sfumato.Entities.Scanning;
 
-public static partial class ContentScanner
+public static class ContentScanner
 {
     #region Validation
 
@@ -31,11 +28,7 @@ public static partial class ContentScanner
         if (string.IsNullOrEmpty(fileContent))
             return [];
         
-        var quotedSubstrings = new List<string>();
-
-        foreach (var match in QuotedStringScanner.Scan(fileContent))
-            quotedSubstrings.Add(match);
-        
+        var quotedSubstrings = QuotedStringScanner.Scan(fileContent).ToList();
         var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
         
         foreach (var quotedSubstring in quotedSubstrings)
