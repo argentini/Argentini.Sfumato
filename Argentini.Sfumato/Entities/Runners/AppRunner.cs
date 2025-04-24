@@ -409,7 +409,6 @@ public partial class AppRunner
 	{
 		var tasks = new ConcurrentBag<Task>();
 
-		TotalStopwatch.Restart();
 		ScannedFiles.Clear();
 
 		if (reInitialize)
@@ -418,10 +417,7 @@ public partial class AppRunner
 			await LoadCssFileAsync();
 		}
 
-		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d), (int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3, Entities.Library.Library.MaxConsoleWidth);
-			
-		Messages.Add(relativePath);
-		
+		TotalStopwatch.Restart();
 		WorkingStopwatch.Restart();
 
 		foreach (var path in AppRunnerSettings.AbsolutePaths)
@@ -435,6 +431,13 @@ public partial class AppRunner
 		LastCss = BuildCss();
 
 		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
+
+		Stopwatch.Stop();
+		TotalStopwatch.Stop();
+
+		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d), (int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3, Entities.Library.Library.MaxConsoleWidth);
+			
+		Messages.Add(relativePath);
 
 		Messages.Add($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {WorkingStopwatch.FormatTimer()}");
 		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {Stopwatch.FormatTimer()}");
