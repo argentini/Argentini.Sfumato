@@ -455,6 +455,39 @@ public static partial class Strings
 	#region Parsing
 
 	/// <summary>
+	/// Enumerates all substrings of <paramref name="input"/> that consist of one or more non-whitespace characters.
+	/// Equivalent to Regex.Matches(input, @"\S+").
+	/// </summary>
+	public static IEnumerable<string> SplitByNonWhitespace(this string input)
+	{
+		if (string.IsNullOrEmpty(input))
+			yield break;
+
+		var length = input.Length;
+		var pos = 0;
+
+		while (pos < length)
+		{
+			// Skip any leading whitespace
+			while (pos < length && char.IsWhiteSpace(input[pos]))
+				pos++;
+
+			if (pos >= length)
+				yield break;
+
+			// Mark the start of the non-whitespace run
+			var start = pos;
+
+			// Advance until the next whitespace (or end of string)
+			while (pos < length && char.IsWhiteSpace(input[pos]) == false)
+				pos++;
+
+			// Return the chunk
+			yield return input.Substring(start, pos - start);
+		}
+	}
+	
+	/// <summary>
 	/// Get the index of the first non-space character in a string.
 	/// </summary>
 	/// <param name="value"></param>
