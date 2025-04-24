@@ -2,64 +2,155 @@ namespace Argentini.Sfumato.Helpers;
 
 public static class QuotedStringScanner
 {
-    // ReSharper disable once NotAccessedPositionalProperty.Global
-    public readonly record struct Hit(int Start, int Length, string Delimiter);
-
     /// <summary>
-    /// Scans <paramref name="source"/> and yields every quoted substring.
-    /// Recognized sequences:  " … "   ' … '   ` … `   \" … \"
+    /// Scans <paramref name="source"/> and returns every whitespace‑/punctuation‑delimited
+    /// token that appears inside any quoted literal (plain, verbatim, multi‑quote raw, or
+    /// JavaScript template‑literal). **No allow‑list or exclusion filtering is applied** –
+    /// the routine merely breaks on obvious delimiter characters so composite strings like
+    /// <c>text‑sm/1"${myDate...</c> are no longer produced.
     /// </summary>
-    public static IEnumerable<Hit> Scan(string source)
+    public static IReadOnlyCollection<string> Scan(string? source)
     {
         if (string.IsNullOrEmpty(source))
-            yield break;
+            return Array.Empty<string>();
 
-        var n = source.Length;
+        var results = new HashSet<string>(StringComparer.Ordinal);
+        int i = 0, n = source.Length;
 
-        for (var i = 0; i < n;)
+        /* ------------------------------------------------ helpers ---------- */
+        static void SplitAndAdd(ReadOnlySpan<char> span, HashSet<string> bag)
         {
-            var escStart = source[i] == '\\' && i + 1 < n && source[i + 1] == '"';
-            var quote = escStart ? '"' : source[i];
+            // delimiter characters that end a token (besides whitespace)
+            //static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '(' or ')' or '=';
+            static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '=';
 
-            // not a real opener? → skip
-            if (escStart == false && quote is not ('"' or '\'' or '`'))
+            int start = -1;
+            for (int k = 0; k < span.Length; k++)
             {
+                if (IsDelim(span[k]))
+                {
+                    if (start != -1)
+                    {
+                        bag.Add(span[start..k].ToString());
+                        start = -1;
+                    }
+                }
+                else if (start == -1)
+                {
+                    start = k;                 // begin a token
+                }
+            }
+            if (start != -1)
+                bag.Add(span[start..].ToString());
+        }
+
+        void SkipSimpleString(char q)
+        {
+            i++;                               // past the opener
+            while (i < n)
+            {
+                if (source[i] == '\\') { i += 2; continue; }
+                if (source[i] == q)      { i++;      break; }
                 i++;
+            }
+        }
+
+        /* ------------------------------------------------ main walker --------- */
+        while (i < n)
+        {
+            // consume optional $, @ prefix
+            while (i < n && (source[i] == '$' || source[i] == '@')) i++;
+            if (i >= n) break;
+
+            char opener = source[i];
+            if (opener is not ('"' or '\'' or '`')) { i++; continue; }
+
+            // run length of identical opener chars (", """, etc.)
+            int quoteLen = 0;
+            while (i + quoteLen < n && source[i + quoteLen] == opener) quoteLen++;
+            i += quoteLen;
+            int contentStart = i;
+
+            bool backtick = opener == '`';
+            bool multi    = opener == '"' && quoteLen >= 2;         // $"" … "" or $""" … """
+            bool verbatim = source[i - quoteLen - 1] == '@' && opener == '"';
+
+            if (backtick)
+            {
+                int depth = 0;
+                while (i < n)
+                {
+                    if (source[i] == '\\')                   { i += 2; continue; }
+                    if (depth == 0 && source[i] == '`')
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        i++; break;
+                    }
+                    if (depth == 0 && source[i] == '$' && i + 1 < n && source[i + 1] == '{')
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        depth = 1; i += 2; continue;
+                    }
+                    if (depth > 0)
+                    {
+                        if      (source[i] == '{') depth++;
+                        else if (source[i] == '}') depth--;
+                        else if (source[i] is '"' or '\'' or '`') SkipSimpleString(source[i]);
+                        i++;
+                        continue;
+                    }
+                    i++;
+                }
                 continue;
             }
 
-            var contentStart = i + (escStart ? 2 : 1);
-            var j = contentStart;
-
-            while (j < n)
+            if (verbatim)
             {
-                if (source[j] == '\\')
+                while (i < n)
                 {
-                    j += 2; // skip escape + payload
-                    continue;
+                    if (source[i] == '"' && i + 1 < n && source[i + 1] == '"') { i += 2; continue; }
+                    if (source[i] == '"')
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        i++; break;
+                    }
+                    i++;
                 }
-
-                var atCloser = escStart ? source[j] == '\\' && j + 1 < n && source[j + 1] == quote : source[j] == quote;
-
-                if (atCloser)
-                {
-                    var len   = j - contentStart;
-                    var dl = escStart ? "\\\"" : quote.ToString();
-
-                    yield return new Hit(contentStart, len, dl);
-
-                    i = j + (escStart ? 2 : 1); // resume scan
-                    
-                    goto NextOuter;
-                }
-
-                j++;
+                continue;
             }
 
-            // unterminated literal → stop
-            yield break;
+            if (multi)
+            {
+                while (i < n)
+                {
+                    if (source[i] != '"') { i++; continue; }
 
-        NextOuter: ;
+                    int run = 0, k = i;
+                    while (k < n && source[k] == '"') { run++; k++; }
+
+                    if (run >= quoteLen)
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        i = k; break;
+                    }
+                    i = k; // keep scanning
+                }
+                continue;
+            }
+
+            // ordinary "…" or '…'
+            while (i < n)
+            {
+                if (source[i] == '\\') { i += 2; continue; }
+                if (source[i] == opener)
+                {
+                    SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                    i++; break;
+                }
+                i++;
+            }
         }
+
+        return results;
     }
 }
