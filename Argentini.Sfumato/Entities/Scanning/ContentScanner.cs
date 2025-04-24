@@ -5,13 +5,6 @@ namespace Argentini.Sfumato.Entities.Scanning;
 
 public static partial class ContentScanner
 {
-    #region Regular Expressions
-    
-    [GeneratedRegex(@"\S+")]
-    public static partial Regex UtilityClassRegex();
-    
-    #endregion
-    
     #region Validation
 
     public static bool ValidForScan(this AppRunner appRunner, string filePath)
@@ -53,12 +46,12 @@ public static partial class ContentScanner
 
     private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, AppRunner appRunner)
     {
-        foreach (Match match in UtilityClassRegex().Matches(quotedString))
+        foreach (var substring in quotedString.SplitByNonWhitespace())
         {
-            var cssClass = new CssClass(appRunner, match.Value);
+            var cssClass = new CssClass(appRunner, substring);
             
             if (cssClass.IsValid)
-                results.TryAdd(match.Value, cssClass);
+                results.TryAdd(substring, cssClass);
         }
     }
     
