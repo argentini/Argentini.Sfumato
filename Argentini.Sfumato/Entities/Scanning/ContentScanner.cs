@@ -33,8 +33,8 @@ public static partial class ContentScanner
         
         var quotedSubstrings = new List<string>();
 
-        foreach (var hit in QuotedStringScanner.Scan(fileContent))
-            quotedSubstrings.Add(fileContent.Substring(hit.Start, hit.Length));
+        foreach (var match in QuotedStringScanner.Scan(fileContent))
+            quotedSubstrings.Add(match);
         
         var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
         

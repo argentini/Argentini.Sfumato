@@ -18,7 +18,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                             <p class="[font-weight:900] sm:[font-weight:900]">Placeholder</p>
                                             <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
                                         </div>
-                                        <div class="content-['Hello!'] [--margin-val6:_1.25rem]! dark:sm:supports-backdrop-blur:motion-safe:block invisible lg:max-xl:top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
+                                        <div class="[color:#eee;font-weight:500;] content-['Hello!'] [--margin-val6:_1.25rem]! dark:sm:supports-backdrop-blur:motion-safe:block invisible lg:max-xl:top-8 break-after-auto container aspect-screen xxl:aspect-[8/4]"></div>
                                         <div class="-top-px"></div>
                                         <div class="top-1/2 antialiased"></div>
                                         <script>
@@ -30,7 +30,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                                         [font-weight:700]
                                                         md:[font-weight:700]
                                                     `);
-                                                    el.classList.add(`bg-emerald-950`);
+                                                    el.classList.add(`bg-emerald-800`);
                                                     el.classList.add(`[font-weight:600]`);
                                                     el.classList.add(`lg:[font-weight:600]`);
                                               }
@@ -62,6 +62,6 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         foreach (var cname in utilityClasses)
             testOutputHelper.WriteLine($"{cname.Key}");
         
-        Assert.Equal(30, utilityClasses.Count);
+        Assert.Equal(31, utilityClasses.Count);
     }
 }
