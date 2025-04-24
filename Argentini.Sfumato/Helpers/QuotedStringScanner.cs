@@ -17,44 +17,6 @@ public static class QuotedStringScanner
         var results = new HashSet<string>(StringComparer.Ordinal);
         int i = 0, n = source.Length;
 
-        /* ------------------------------------------------ helpers ---------- */
-        static void SplitAndAdd(ReadOnlySpan<char> span, HashSet<string> bag)
-        {
-            // delimiter characters that end a token (besides whitespace)
-            //static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '(' or ')' or '=';
-            static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '=';
-
-            int start = -1;
-            for (int k = 0; k < span.Length; k++)
-            {
-                if (IsDelim(span[k]))
-                {
-                    if (start != -1)
-                    {
-                        bag.Add(span[start..k].ToString());
-                        start = -1;
-                    }
-                }
-                else if (start == -1)
-                {
-                    start = k;                 // begin a token
-                }
-            }
-            if (start != -1)
-                bag.Add(span[start..].ToString());
-        }
-
-        void SkipSimpleString(char q)
-        {
-            i++;                               // past the opener
-            while (i < n)
-            {
-                if (source[i] == '\\') { i += 2; continue; }
-                if (source[i] == q)      { i++;      break; }
-                i++;
-            }
-        }
-
         /* ------------------------------------------------ main walker --------- */
         while (i < n)
         {
@@ -152,5 +114,47 @@ public static class QuotedStringScanner
         }
 
         return results;
+
+        void SkipSimpleString(char q)
+        {
+            i++;                               // past the opener
+            while (i < n)
+            {
+                if (source[i] == '\\') { i += 2; continue; }
+                if (source[i] == q)      { i++;      break; }
+                i++;
+            }
+        }
+
+        /* ------------------------------------------------ helpers ---------- */
+        static void SplitAndAdd(ReadOnlySpan<char> span, HashSet<string> bag)
+        {
+            int start = -1;
+            
+            for (int k = 0; k < span.Length; k++)
+            {
+                if (IsDelim(span[k]))
+                {
+                    if (start != -1)
+                    {
+                        bag.Add(span[start..k].ToString());
+                        start = -1;
+                    }
+                }
+                else if (start == -1)
+                {
+                    start = k;                 // begin a token
+                }
+            }
+            
+            if (start != -1)
+                bag.Add(span[start..].ToString());
+
+            return;
+
+            // delimiter characters that end a token (besides whitespace)
+            //static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '(' or ')' or '=';
+            static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '=';
+        }
     }
 }
