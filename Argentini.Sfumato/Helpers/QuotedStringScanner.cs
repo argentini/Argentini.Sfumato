@@ -107,7 +107,7 @@ public static class QuotedStringScanner
                 if (source[i] == opener)
                 {
                     SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
-                    i++; break;
+                    break;
                 }
                 i++;
             }
