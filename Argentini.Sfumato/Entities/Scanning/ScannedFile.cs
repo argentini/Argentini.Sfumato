@@ -33,11 +33,9 @@ public sealed class ScannedFile
     
     public async Task LoadAndScanFileAsync(AppRunner appRunner)
     {
-        UtilityClasses.Clear();
-
         FileContent = await Storage.ReadAllTextWithRetriesAsync(AbsoluteFilePath, 5000);
 
         if (string.IsNullOrEmpty(FileContent) == false)
-            UtilityClasses.AddRange(ContentScanner.ScanFileForUtilityClasses(FileContent, appRunner));
+            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(FileContent, appRunner);
     }
 }
