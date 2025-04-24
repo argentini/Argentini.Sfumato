@@ -7,14 +7,6 @@ public static partial class ContentScanner
 {
     #region Regular Expressions
     
-    [GeneratedRegex(
-        """
-        (?<delim>(\\")|["'`])
-        (?<content>(?:(?!\k<delim>)[\s\S])*?)
-        \k<delim>
-        """, RegexOptions.IgnorePatternWhitespace)]
-    public static partial Regex QuotedStringsRegex();
-    
     [GeneratedRegex(@"\S+")]
     public static partial Regex UtilityClassRegex();
     
@@ -48,27 +40,15 @@ public static partial class ContentScanner
         
         var quotedSubstrings = new List<string>();
 
-        ScanForQuotedStrings(fileContent, quotedSubstrings);
-
+        foreach (var hit in QuotedStringScanner.Scan(fileContent))
+            quotedSubstrings.Add(fileContent.Substring(hit.Start, hit.Length));
+        
         var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
-
+        
         foreach (var quotedSubstring in quotedSubstrings)
             ScanStringForClasses(quotedSubstring, results, appRunner);
         
         return results;
-    }
-    
-    private static void ScanForQuotedStrings(string input, List<string> quotedSubstrings)
-    {
-        var quoteMatches = QuotedStringsRegex().Matches(input);
-
-        foreach (Match qm in quoteMatches)
-        {
-            quotedSubstrings.Add(qm.Groups["content"].Value);
-            
-            if (qm.Groups["content"].Value.Contains('\"') || qm.Groups["content"].Value.Contains('\'') || qm.Groups["content"].Value.Contains('`'))
-                ScanForQuotedStrings(qm.Groups["content"].Value, quotedSubstrings);
-        }
     }
 
     private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, AppRunner appRunner)
