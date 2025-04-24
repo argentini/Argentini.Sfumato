@@ -78,4 +78,9 @@ public static class LibraryValidFileExtensions
         // Rust
         "rs",
     };
+
+    public static HashSet<string> InvalidFileExtensions { get; } = new(StringComparer.Ordinal)
+    {
+        "min.js",
+    };
 }
