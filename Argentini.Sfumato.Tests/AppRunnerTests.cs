@@ -3,18 +3,14 @@ namespace Argentini.Sfumato.Tests;
 public class AppRunnerTests
 {
     [Fact]
-    public void ProcessScannedFileUtilityClassDependencies()
+    public async Task ProcessScannedFileUtilityClassDependencies()
     {
         var appRunner = new AppRunner(new AppState());
+        var scannedFile = new ScannedFile("../../../SampleWebsite/wwwroot/index.html");
 
-        appRunner.ScannedFiles.TryAdd("test", new ScannedFile("")
-        {
-            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, appRunner)
-        });
-
-        appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
+        await scannedFile.LoadAndScanFileAsync(appRunner);
         
-        Assert.Equal(29, appRunner.UtilityClasses.Count);
+        Assert.Equal(91, scannedFile.UtilityClasses.Count);
     }
 
     [Fact]
