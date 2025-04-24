@@ -6,7 +6,7 @@
 
     --paths: []; /* Relative paths for project scanning; required */
     --not-paths: []; /* Relative paths to exclude from content scanning */
-    --not-folder-names: ["bin", "obj", "node_modules", "temp", "log", "logs"]; /* Folder names to exclude from content scanning */
+    --not-folder-names: [".git", "bin", "log", "logs", "node_modules", "obj", "publish", "temp"]; /* Folder names to exclude from content scanning */
 
     --output-path: "sfumato.css"; /* Generated CSS file path; required */
 

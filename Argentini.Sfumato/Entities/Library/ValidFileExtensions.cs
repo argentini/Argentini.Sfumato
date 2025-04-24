@@ -5,82 +5,82 @@ public static class LibraryValidFileExtensions
     public static HashSet<string> ValidFileExtensions { get; } = new(StringComparer.Ordinal)
     {
         // HTML
-        "html",
-        "pug",
+        ".html",
+        ".pug",
 
         // Glimmer
-        "gjs",
-        "gts",
+        ".gjs",
+        ".gts",
 
         // JS
-        "astro",
-        "cjs",
-        "cts",
-        "jade",
-        "js",
-        "jsx",
-        "mjs",
-        "mts",
-        "svelte",
-        "ts",
-        "tsx",
-        "vue",
+        ".astro",
+        ".cjs",
+        ".cts",
+        ".jade",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".mts",
+        ".svelte",
+        ".ts",
+        ".tsx",
+        ".vue",
 
         // Markdown
-        "md",
-        "mdx",
+        ".md",
+        ".mdx",
 
         // .NET
-        "asp",
-        "ascx",
-        "aspx",
-        "master",
-        "ashx",
-        "axd",
-        "razor",
-        "cshtml",
-        "cs",
-        "csx",
-        "vb",
-        "vbhtml",
-        "fs",
-        "fsx",
+        ".asp",
+        ".ascx",
+        ".aspx",
+        ".master",
+        ".ashx",
+        ".axd",
+        ".razor",
+        ".cshtml",
+        ".cs",
+        ".csx",
+        ".vb",
+        ".vbhtml",
+        ".fs",
+        ".fsx",
 
         // Handlebars
-        "handlebars",
-        "hbs",
-        "mustache",
+        ".handlebars",
+        ".hbs",
+        ".mustache",
 
         // PHP
-        "php",
-        "twig",
+        ".php",
+        ".twig",
 
         // Ruby
-        "erb",
-        "haml",
-        "liquid",
-        "rb",
-        "rhtml",
-        "slim",
+        ".erb",
+        ".haml",
+        ".liquid",
+        ".rb",
+        ".rhtml",
+        ".slim",
 
         // Elixir / Phoenix
-        "eex",
-        "heex",
+        ".eex",
+        ".heex",
 
         // Nunjucks
-        "njk",
-        "nunjucks",
+        ".njk",
+        ".nunjucks",
 
         // Python
-        "py",
-        "tpl",
+        ".py",
+        ".tpl",
 
         // Rust
-        "rs",
+        ".rs",
     };
 
     public static HashSet<string> InvalidFileExtensions { get; } = new(StringComparer.Ordinal)
     {
-        "min.js",
+        ".min.js",
     };
 }

@@ -489,7 +489,7 @@ public partial class AppRunner
 		if (Library.InvalidFileExtensions.Any(e => fileInfo.Name.EndsWith(e, StringComparison.Ordinal)))
 			return;
 
-		if (Library.ValidFileExtensions.Contains(fileInfo.Extension.TrimStart('.')) == false)
+		if (Library.ValidFileExtensions.Any(e => fileInfo.Extension.Equals(e, StringComparison.Ordinal)) == false)
 			return;
 		
 		var scannedFile = new ScannedFile(fileInfo.FullName);
