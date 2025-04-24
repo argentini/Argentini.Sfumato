@@ -18,8 +18,8 @@ internal class Program
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
 #if DEBUG
-		await appState.InitializeAsync(["build", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css"]);
-		//await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		//await appState.InitializeAsync(["build", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css"]);
+		await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
 #else		
         await appState.InitializeAsync(args);
 #endif        
@@ -138,15 +138,15 @@ internal class Program
 			await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
 			await Console.Out.WriteLineAsync($"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
 			
-			foreach (var path in appRunner.AppRunnerSettings.Paths)
+			foreach (var path in appRunner.AppRunnerSettings.AbsolutePaths)
 			{
-				var relativePath2 = Path.GetFullPath(path).TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 				await Console.Out.WriteLineAsync($"Path        :  {relativePath2}");
 			}
 
-			foreach (var path in appRunner.AppRunnerSettings.NotPaths)
+			foreach (var path in appRunner.AppRunnerSettings.AbsoluteNotPaths)
 			{
-				var relativePath2 = Path.GetFullPath(path).TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 				await Console.Out.WriteLineAsync($"Ignore      :  {relativePath2}");
 			}
 			

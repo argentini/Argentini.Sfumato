@@ -24,6 +24,7 @@ public static class Storage
         {
             try
             {
+                // ReSharper disable once PossiblyMistakenUseOfCancellationToken
                 fileContent = await File.ReadAllTextAsync(filePath, cancellationToken);
                 await timerCancellationToken.CancelAsync();
             }

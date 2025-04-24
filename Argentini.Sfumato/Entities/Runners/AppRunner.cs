@@ -6,7 +6,6 @@
 // ReSharper disable InvertIf
 
 using System.Reflection;
-using System.Runtime.InteropServices.ObjectiveC;
 
 namespace Argentini.Sfumato.Entities.Runners;
 
@@ -425,8 +424,8 @@ public partial class AppRunner
 		
 		WorkingStopwatch.Restart();
 
-		foreach (var path in AppRunnerSettings.Paths)
-			tasks.Add(RecurseProjectPathAsync(Path.Combine(AppRunnerSettings.NativeCssFilePathOnly, path), tasks));
+		foreach (var path in AppRunnerSettings.AbsolutePaths)
+			tasks.Add(RecurseProjectPathAsync(path, tasks));
 
 		await Task.WhenAll(tasks);
 		
@@ -481,6 +480,9 @@ public partial class AppRunner
 	
 	private async Task AddProjectFile(FileInfo fileInfo)
 	{
+		if (Library.InvalidFileExtensions.Any(e => fileInfo.Name.EndsWith(e, StringComparison.Ordinal)))
+			return;
+
 		if (Library.ValidFileExtensions.Contains(fileInfo.Extension.TrimStart('.')) == false)
 			return;
 		

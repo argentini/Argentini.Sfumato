@@ -92,6 +92,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	public string Indentation { get; set; } = "    ";
 	
     public List<string> Paths { get; } = [];
+    public List<string> AbsolutePaths { get; } = [];
     public List<string> NotPaths { get; } = [];
     public List<string> AbsoluteNotPaths { get; } = [];
 
@@ -250,7 +251,10 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 			    if (paths.Length != 0)
 			    {
 				    foreach (var p in paths)
+				    {
 					    Paths.Add(p.Trim('\"'));
+					    AbsolutePaths.Add(Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, p.Trim('\"'))));
+				    }
 			    }
 		    }
 
@@ -263,7 +267,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 				    foreach (var p in notPaths)
 				    {
 					    NotPaths.Add(p.Trim('\"'));
-					    AbsoluteNotPaths.Add(Path.GetFullPath(p.Trim('\"')));
+					    AbsoluteNotPaths.Add(Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, p.Trim('\"'))));
 				    }
 			    }
 		    }
