@@ -5,8 +5,10 @@
     --use-minify: false; /* Compress the output CSS by default */
 
     --paths: []; /* Relative paths for project scanning; required */
+    --not-paths: []; /* Relative paths to exclude from content scanning */
+    --not-folder-names: ["bin", "obj", "node_modules", "temp", "log", "logs"]; /* Folder names to exclude from content scanning */
+
     --output-path: "sfumato.css"; /* Generated CSS file path; required */
-    --not-paths: []; /* Relative paths to exclude content scanning */
 
     /* Fonts */
     

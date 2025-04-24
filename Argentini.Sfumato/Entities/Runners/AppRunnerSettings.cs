@@ -95,6 +95,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
     public List<string> AbsolutePaths { get; } = [];
     public List<string> NotPaths { get; } = [];
     public List<string> AbsoluteNotPaths { get; } = [];
+    public List<string> NotFolderNames { get; } = [];
 
     public string SfumatoCssBlock { get; private set; } = string.Empty;
     public string ProcessedCssContent { get; set; } = string.Empty;
@@ -269,6 +270,17 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 					    NotPaths.Add(p.Trim('\"'));
 					    AbsoluteNotPaths.Add(Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, p.Trim('\"'))));
 				    }
+			    }
+		    }
+
+		    if (SfumatoBlockItems.TryGetValue("--not-folder-names", out var notFolderNamesValue))
+		    {
+			    var notFolderNames = ConsolidateSpacesRegex().Replace(notFolderNamesValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
+
+			    if (notFolderNames.Length != 0)
+			    {
+				    foreach (var p in notFolderNames)
+					    NotFolderNames.Add(p.Trim('\"'));
 			    }
 		    }
 

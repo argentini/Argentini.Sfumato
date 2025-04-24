@@ -6,6 +6,8 @@
 
     --paths: ["../Models/", "../Views/"]; /* Relative paths for project scanning; required */
     --not-paths: ["../Views/temp/"]; /* Relative paths to exclude content scanning */
+    --not-folder-names: ["tinymce"]; /* Folder names to exclude from content scanning */
+
     --output-path: "output.css"; /* Generated CSS file path; required */
 
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
