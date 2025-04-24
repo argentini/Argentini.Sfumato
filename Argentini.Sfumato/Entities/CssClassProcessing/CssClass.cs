@@ -100,28 +100,21 @@ public sealed partial class CssClass : IDisposable
     
     private void Initialize()
     {
-        IsValid = false;
         IsImportant = Selector.EndsWith('!');
-        SelectorSort = 0;
-        WrapperSort = 0;
-        UsesDarkTheme = false;
-
-        Wrappers.Clear();
-        AllSegments.Clear();
-        VariantSegments.Clear();
-        UsesCssCustomProperties.Clear();
 
         foreach (var segment in SplitByColonsRegex().Split(Selector.TrimEnd('!')))
             AllSegments.Add(segment);
 
-        ProcessVariants();
+        ProcessArbitraryCss();
         
-        if (IsValid == false)
-            ProcessArbitraryCss();
-
         if (IsValid == false)
             ProcessUtilityClasses();
 
+        if (IsValid == false)
+            return;
+        
+        ProcessVariants();
+        
         if (IsValid)
         {
             Sb = AppRunner.AppState.StringBuilderPool.Get();
@@ -591,7 +584,7 @@ public sealed partial class CssClass : IDisposable
         }
         catch
         {
-            // Ignored
+            IsValid = false;
         }
     }
    
