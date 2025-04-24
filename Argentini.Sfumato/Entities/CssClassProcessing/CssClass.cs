@@ -112,7 +112,7 @@ public sealed partial class CssClass : IDisposable
 
         if (IsValid == false)
             return;
-        
+
         ProcessVariants();
         
         if (IsValid)
@@ -218,6 +218,7 @@ public sealed partial class CssClass : IDisposable
                 }
                 else
                 {
+                    IsValid = false;
                     return;
                 }
             }
