@@ -584,6 +584,57 @@ public static partial class Strings
 	
 	#region Transformations
 
+	/// <summary>
+	/// Removes all C-style block comments ( /* … */ ) from <paramref name="source"/>.
+	/// If a closing <c>*/</c> is missing the rest of the text is treated as a comment.
+	/// Nested block comments are NOT supported; the first closing token ends the comment.
+	/// </summary>
+	public static string RemoveBlockComments(this string? source, StringBuilder sb)
+	{
+		if (string.IsNullOrEmpty(source))
+			return source ?? string.Empty;
+
+		var span = source.AsSpan();
+		var i = 0;
+		var n = span.Length;
+
+		while (i < n)
+		{
+			if (span[i] == '/' && i + 1 < n && span[i + 1] == '*')
+			{
+				var depth = 1; // we just saw the outermost "/*"
+				i += 2;
+
+				// consume until depth returns to 0 or input ends
+				while (i < n && depth > 0)
+				{
+					switch (span[i])
+					{
+						case '/' when i + 1 < n && span[i + 1] == '*':
+							depth++; // nested opener
+							i += 2;
+							break;
+						case '*' when i + 1 < n && span[i + 1] == '/':
+							depth--; // closer
+							i += 2;
+							break;
+						default:
+							i++; // ordinary char inside comment
+							break;
+					}
+				}
+
+				// if EOF hit with depth > 0 the whole tail was a comment → done
+				continue;
+			}
+
+			sb.Append(span[i]);
+			i++;
+		}
+
+		return sb.ToString();
+	}	
+	
 	public static string CssSelectorEscape(this string value)
 	{
 		if (string.IsNullOrEmpty(value))

@@ -9,9 +9,6 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 {
 	#region Regular Expressions
 
-	[GeneratedRegex(@"(/\*[\d\D]*?\*/)")]
-	private static partial Regex RemoveBlockCommentsRegex();
-	
 	[GeneratedRegex(@"::sfumato\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Singleline)]
 	private static partial Regex SfumatoCssBlockRegex();
 
@@ -110,13 +107,18 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
     /// </summary>
     public void LoadAndExtractCssContent()
     {
+	    var sb = appRunner?.AppState.StringBuilderPool.Get();
+
+	    if (sb is null)
+		    return;
+	    
 	    try
 	    {
 		    if (string.IsNullOrEmpty(CssFilePath) == false)
 			    CssContent = File.ReadAllText(Path.GetFullPath(CssFilePath.SetNativePathSeparators()));
 
 	        CssContent = WhitespaceBeforeLineBreakRegex().Replace(CssContent, string.Empty);
-	        CssContent = RemoveBlockCommentsRegex().Replace(CssContent, string.Empty);
+	        CssContent = CssContent.RemoveBlockComments(sb);
 
 	        var sfumatoBlockMatches = SfumatoCssBlockRegex().Matches(CssContent);
 
@@ -141,6 +143,10 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
 		    Environment.Exit(1);
 	    }
+	    finally
+	    {
+		    appRunner?.AppState.StringBuilderPool.Return(sb);
+		}
     }
     
     /// <summary>
