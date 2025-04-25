@@ -91,7 +91,7 @@ public partial class AppRunner
     {
 	    try
 	    {
-		    AppRunnerSettings.LoadAndExtractCssContent(); // Extract Sfumato settings and CSS content
+		    AppRunnerSettings.LoadCssAndExtractSfumatoBlock(); // Extract Sfumato settings and CSS content
 		    AppRunnerSettings.ExtractSfumatoItems(); // Parse all the Sfumato settings into a Dictionary<string,string>()
 		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
 		    AppRunnerSettings.ImportPartials(); // Read in all CSS partial files (@import "...")

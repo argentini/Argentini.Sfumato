@@ -43,7 +43,7 @@ public class AppRunnerTests
             }
         };
 
-        appRunner.AppRunnerSettings.LoadAndExtractCssContent();
+        appRunner.AppRunnerSettings.LoadCssAndExtractSfumatoBlock();
         appRunner.AppRunnerSettings.ImportPartials();
 
         var indexOfPartialTestClass = appRunner.AppRunnerSettings.ProcessedCssContent.IndexOf(".partial-test", StringComparison.Ordinal);
@@ -71,7 +71,7 @@ public class AppRunnerTests
             }
         };
 
-        appRunner.AppRunnerSettings.LoadAndExtractCssContent();
+        appRunner.AppRunnerSettings.LoadCssAndExtractSfumatoBlock();
         appRunner.AppRunnerSettings.ExtractSfumatoItems();
         appRunner.AppRunnerSettings.ProcessProjectSettings();
 

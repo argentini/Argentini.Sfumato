@@ -7,9 +7,6 @@ public static partial class AppRunnerExtensions
 	[GeneratedRegex(@"@apply\s+[^;]+?;")]
 	private static partial Regex AtApplyRegex();
 	
-	[GeneratedRegex(@"--[\w-]+(?:\((?>[^()]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))?")]
-	private static partial Regex CssCustomPropertiesRegex();
-	
 	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
 	private static partial Regex AtVariantRegex();	
 
@@ -250,11 +247,11 @@ public static partial class AppRunnerExtensions
 	{
 		try
 		{
-			foreach (var match in CssCustomPropertiesRegex().Matches(sourceCss.ToString()).ToList())
+			foreach (var span in sourceCss.ToString().EnumerateCssCustomProperties(namesOnly: true))
 			{
-				if (match.Value.StartsWith("--alpha(var(--color-", StringComparison.Ordinal) && match.Value.Contains('%'))
+				if (span.Property.StartsWith("--alpha(var(--color-", StringComparison.Ordinal) && span.Property.Contains('%'))
 				{
-					var colorKey = match.Value[..match.Value.IndexOf(')')].TrimStart("--alpha(var(").TrimStart("--color-") ?? string.Empty;
+					var colorKey = span.Property[..span.Property.IndexOf(')')].TrimStart("--alpha(var(").TrimStart("--color-").ToString();
 
 					if (string.IsNullOrEmpty(colorKey))
 						continue;
@@ -262,14 +259,14 @@ public static partial class AppRunnerExtensions
 					if (appRunner.Library.ColorsByName.TryGetValue(colorKey, out var colorValue) == false)
 						continue;
 						
-					var alphaValue = match.Value[(match.Value.LastIndexOf('/') + 1)..].TrimEnd(')','%',' ').Trim();
+					var alphaValue = span.Property[(span.Property.LastIndexOf('/') + 1)..].ToString().TrimEnd(')','%',' ').Trim();
 							
 					if (int.TryParse(alphaValue, out var pct))
-						sourceCss.Replace(match.Value, colorValue.SetWebColorAlpha(pct));
+						sourceCss.Replace(span.Property, colorValue.SetWebColorAlpha(pct));
 				}
-				else if (match.Value.StartsWith("--spacing(", StringComparison.Ordinal) && match.Value.EndsWith(')') && match.Value.Length > 11)
+				else if (span.Property.StartsWith("--spacing(", StringComparison.Ordinal) && span.Property.EndsWith(')') && span.Property.Length > 11)
 				{
-					var valueString = match.Value.TrimStart("--spacing(")?.TrimEnd(')').Trim();
+					var valueString = span.Property.ToString().TrimStart("--spacing(")?.TrimEnd(')').Trim();
 
 					if (string.IsNullOrEmpty(valueString))
 						continue;
@@ -277,14 +274,14 @@ public static partial class AppRunnerExtensions
 					if (double.TryParse(valueString, out var value) == false)
 						continue;
 						
-					sourceCss.Replace(match.Value, $"calc(var(--spacing) * {value})");
+					sourceCss.Replace(span.Property, $"calc(var(--spacing) * {value})");
 							
 					appRunner.UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
 				}
 				else
 				{
-					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var value))
-						appRunner.UsedCssCustomProperties.TryAdd(match.Value, value);
+					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var value))
+						appRunner.UsedCssCustomProperties.TryAdd(span.Property.ToString(), value);
 				}
 			}
 		}
@@ -315,10 +312,10 @@ public static partial class AppRunnerExtensions
 				if (value.Contains("--") == false)
 					continue;
 					
-				foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
+				foreach (var span in value.EnumerateCssCustomProperties(namesOnly: true))
 				{
-					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var valueValue))
-						appRunner.UsedCssCustomProperties.TryAdd(match.Value, valueValue);
+					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var valueValue))
+						appRunner.UsedCssCustomProperties.TryAdd(span.Property.ToString(), valueValue);
 				}
 			}
 
@@ -332,10 +329,10 @@ public static partial class AppRunnerExtensions
 				if (value.Contains("--") == false)
 					continue;
 					
-				foreach (var match in CssCustomPropertiesRegex().Matches(value).ToList())
+				foreach (var span in value.EnumerateCssCustomProperties(namesOnly: true))
 				{
-					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(match.Value, out var valueValue))
-						appRunner.UsedCssCustomProperties.TryAdd(match.Value, valueValue);
+					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var valueValue))
+						appRunner.UsedCssCustomProperties.TryAdd(span.Property.ToString(), valueValue);
 				}
 			}
 		}

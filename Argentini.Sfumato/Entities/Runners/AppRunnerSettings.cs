@@ -9,12 +9,6 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 {
 	#region Regular Expressions
 
-	[GeneratedRegex(@"::sfumato\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Singleline)]
-	private static partial Regex SfumatoCssBlockRegex();
-
-	[GeneratedRegex(@"((?<property>--[\w-]+)\s*:\s*(?<value>(?:""(?:\\.|[^""\\])*""|'(?:\\.|[^'\\])*'|[^;])+)\s*;)")]
-	private static partial Regex CssCustomPropertiesRegex();
-
 	[GeneratedRegex(@"(\.(?<class>[a-zA-Z0-9_-]+)|(@(?<kind>[a-zA-Z0-9_-]+)\s+(?<name>[a-zA-Z0-9_-]+)))\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Singleline)]
 	private static partial Regex CssAtAndClassBlocksRegex();
 
@@ -105,9 +99,9 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
     /// Also removes block comments and whitespace before line breaks.
     /// Puts trimmed CSS content into ProcessedCssContent.
     /// </summary>
-    public void LoadAndExtractCssContent()
+    public void LoadCssAndExtractSfumatoBlock()
     {
-	    var sb = appRunner?.AppState.StringBuilderPool.Get();
+	    var sb = AppRunner?.AppState.StringBuilderPool.Get();
 
 	    if (sb is null)
 		    return;
@@ -120,23 +114,51 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	        CssContent = WhitespaceBeforeLineBreakRegex().Replace(CssContent, string.Empty);
 	        CssContent = CssContent.RemoveBlockComments(sb);
 
-	        var sfumatoBlockMatches = SfumatoCssBlockRegex().Matches(CssContent);
+	        #region Extract Sfumato settings block
 
-	        if (sfumatoBlockMatches.Count == 0)
-	        {
-	            Console.WriteLine($"{AppState.CliErrorPrefix}No ::sfumato {{}} block in file: {CssFilePath}");
-	            Environment.Exit(1);
-	        }
+		    var sfumatoBlockStart = CssContent.IndexOf("::sfumato", StringComparison.Ordinal);
+	        
+		    if (sfumatoBlockStart < 0)
+		    {
+			    Console.WriteLine($"{AppState.CliErrorPrefix}No ::sfumato {{}} block in file: {CssFilePath}");
+			    Environment.Exit(1);
+		    }
 
-	        if (sfumatoBlockMatches.Count != 1)
-	        {
-	            Console.WriteLine($"{AppState.CliErrorPrefix}Only one ::sfumato {{}} block allowed in file: {CssFilePath}");
-	            Environment.Exit(1);
-	        }
+		    var openBraceIndex = CssContent.IndexOf('{', sfumatoBlockStart);
+	        
+		    if (openBraceIndex <= sfumatoBlockStart)
+		    {
+			    Console.WriteLine($"{AppState.CliErrorPrefix}::sfumato block has no opening {{ in file: {CssFilePath}");
+			    Environment.Exit(1);
+		    }
 
-	        SfumatoCssBlock = sfumatoBlockMatches[0].Value;
+			var braceCount = 0;
+			var closingBraceIndex = -1;
 
-	        ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);
+			for (var i = openBraceIndex; i < CssContent.Length; i++)
+			{
+				if (closingBraceIndex > -1)
+					break;
+				
+				if (CssContent[i] == '{')
+					braceCount++;
+				else if (CssContent[i] == '}')
+					braceCount--;
+
+				if (braceCount == 0)
+					closingBraceIndex = i;
+			}
+
+			if (closingBraceIndex < 0)
+			{
+				Console.WriteLine($"{AppState.CliErrorPrefix}::sfumato block has no closing }} in file: {CssFilePath}");
+				Environment.Exit(1);
+			}
+
+			SfumatoCssBlock = CssContent[sfumatoBlockStart..(closingBraceIndex + 1)];
+			ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);
+
+	        #endregion
 	    }
 	    catch (Exception e)
 	    {
@@ -145,7 +167,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	    }
 	    finally
 	    {
-		    appRunner?.AppState.StringBuilderPool.Return(sb);
+		    AppRunner?.AppState.StringBuilderPool.Return(sb);
 		}
     }
     
@@ -157,50 +179,47 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	    try
 	    {
 		    sfumatoCssBlock = string.IsNullOrEmpty(sfumatoCssBlock) ? SfumatoCssBlock.Trim()[SfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim() : sfumatoCssBlock.Trim()[sfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim();
-		    
-	        var quoteMatches = CssCustomPropertiesRegex().Matches(sfumatoCssBlock);
 
-	        #region Determine Indentation and spaces/tabs from first ::sfumato{} CSS custom property item
+		    var cssCustomPropertyIndex = sfumatoCssBlock.IndexOf("--", StringComparison.Ordinal);
+
+		    #region Determine Indentation and spaces/tabs from first ::sfumato{} CSS custom property item
 	        
-	        if (quoteMatches.Count > 0)
-	        {
-		        if (quoteMatches[0].Index > 0)
+		    if (cssCustomPropertyIndex > 0)
+		    {
+			    var depth = 0;
+			    var usesTabs = false;
+		        
+			    for (var i = cssCustomPropertyIndex - 1; i >= 0; i--)
+			    {
+				    if (sfumatoCssBlock[i] == ' ' || sfumatoCssBlock[i] == '\t')
+					    depth += 1;
+				    else
+					    break;
+
+				    if (sfumatoCssBlock[i] == '\t')
+					    usesTabs = true;
+			    }
+
+			    if (depth > 0)
+			    {
+				    Indentation = string.Empty;
+
+				    for (var i = 0; i < depth; i++)
+				    {
+					    Indentation += (usesTabs ? "\t" : " ");
+				    }
+			    }
+		    }
+	        
+		    #endregion
+	        
+	        foreach (var span in sfumatoCssBlock.EnumerateCssCustomProperties())
+		        if (SfumatoBlockItems.TryAdd(span.Property.ToString(), span.Value.ToString()) == false)
 		        {
-			        var depth = 0;
-			        var usesTabs = false;
-			        
-			        for (var i = quoteMatches[0].Index - 1; i >= 0; i--)
-			        {
-				        if (sfumatoCssBlock[i] == ' ' || sfumatoCssBlock[i] == '\t')
-					        depth += 1;
-				        else
-					        break;
-
-				        if (sfumatoCssBlock[i] == '\t')
-					        usesTabs = true;
-			        }
-
-			        if (depth > 0)
-			        {
-				        Indentation = string.Empty;
-
-				        for (var i = 0; i < depth; i++)
-				        {
-					        Indentation += (usesTabs ? "\t" : " ");
-				        }
-			        }
-		        }
-	        }
-	        
-	        #endregion
-	        
-	        foreach (Match match in quoteMatches)
-		        if (SfumatoBlockItems.TryAdd(match.Value[..match.Value.IndexOf(':')].Trim(), match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim()) == false)
-		        {
-			        SfumatoBlockItems[match.Value[..match.Value.IndexOf(':')].Trim()] = match.Value[(match.Value.IndexOf(':') + 1)..].TrimEnd(';').Trim();
+			        SfumatoBlockItems[span.Property.ToString()] = span.Value.ToString();
 		        }
 
-	        quoteMatches = CssAtAndClassBlocksRegex().Matches(sfumatoCssBlock);
+	        var quoteMatches = CssAtAndClassBlocksRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
 		        if (SfumatoBlockItems.TryAdd(match.Value[..match.Value.IndexOf('{')].Trim(), match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim()) == false)
