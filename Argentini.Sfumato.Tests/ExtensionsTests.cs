@@ -51,7 +51,9 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper)
                                     """;
     
     private static string Css => """
-                                    /* SFUMATO BROWSER RESET */
+                                    /* SFUMATO BROWSER RESET 
+                                        /* Nested comment */
+                                    */
                                     *,
                                     ::before,
                                     ::after {
@@ -121,7 +123,7 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper)
     {
         Assert.Equal(Minified, Css.CompactCss());
     }
-    
+
     [Fact]
     public void IdentifyColor()
     {
