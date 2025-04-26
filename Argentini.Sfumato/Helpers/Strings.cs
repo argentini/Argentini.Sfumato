@@ -3,7 +3,7 @@
 /// <summary>
 /// Various tools for working with strings. 
 /// </summary>
-public static partial class Strings
+public static class Strings
 {
 	#region Constants
 
@@ -589,11 +589,14 @@ public static partial class Strings
 	/// If a closing <c>*/</c> is missing the rest of the text is treated as a comment.
 	/// Nested block comments are NOT supported; the first closing token ends the comment.
 	/// </summary>
-	public static string RemoveBlockComments(this string? source, StringBuilder sb)
+	public static string RemoveBlockComments(this string? source, StringBuilder? sb = null)
 	{
 		if (string.IsNullOrEmpty(source))
 			return source ?? string.Empty;
 
+		sb ??= new StringBuilder(source.Length);
+		sb.Clear();
+		
 		var span = source.AsSpan();
 		var i = 0;
 		var n = span.Length;
@@ -690,43 +693,225 @@ public static partial class Strings
 	/// <param name="workingSb"></param>
 	/// <returns></returns>
 	public static string CompactCss(this string css, StringBuilder? workingSb = null)
-    {
-	    // Removes the element name before an ID value (e.g. div#main => #main)
-	    var result = CssCompressSelectors().Replace(css, "#");
-
+	{
+		workingSb ??= new StringBuilder();
+		workingSb.Clear();
+		
 	    // Remove line breaks, block comments
-	    result = CssRemovals().Replace(result, string.Empty).RemoveBlockComments(workingSb ?? new StringBuilder());
+	    var result = css
+		    .RemoveBlockComments(workingSb)
+			.RemoveCssRemovals(workingSb);
 
 	    // Consolidate spaces
-	    result = CssConsolidateSpaces().Replace(result, " ").Trim();
+	    result = result.ConsolidateSpaces(workingSb).Trim();
+
+	    // Spaces before delimiters are not needed 
+	    result = result.RemoveDelimiterSpaces(workingSb);
 
 	    // Last property value does not need a semicolon
 	    result = result.Replace(";}", "}");
-	    
-	    // Spaces before delimiters are not needed 
-	    result = CssRemoveDelimiterSpaces().Replace(result, "$1");
 
 	    // 0 values do not need a unit
-	    result = CssRemoveZeroUnits().Replace(result, "$1");
+	    result = result.RemoveZeroUnits(workingSb);
 
         return result;
     }
 
-	[GeneratedRegex(@"([\n\r]+\s*)")]
-	private static partial Regex CssRemovals();
+	private static string RemoveCssRemovals(this string css, StringBuilder? workingSb = null)
+	{
+		workingSb ??= new StringBuilder(css.Length);
+		workingSb.Clear();
+		
+		var i = 0;
+		var n = css.Length;
 
-	[GeneratedRegex(@"\s?([:,;{}])\s?")]
-	private static partial Regex CssRemoveDelimiterSpaces();
+		while (i < n)
+		{
+			var c = css[i];
 
-	[GeneratedRegex(@"([\s:]0)(rem|vmin|vmax|cqw|cqh|cqi|cqb|cqmin|cqmax|cm|in|mm|pc|pt|px|ch|em|ex|vw|vh|Q|%)")]
-	private static partial Regex CssRemoveZeroUnits();
+			if (c is '\r' or '\n')
+			{
+				// skip all CR/LF
+				while (i < n && (css[i] == '\r' || css[i] == '\n'))
+					i++;
+
+				// skip any following whitespace (but not newlines)
+				while (i < n && char.IsWhiteSpace(css[i]) && css[i] != '\r' && css[i] != '\n')
+					i++;
+
+				// collapse into single space (unless we're at start or already have one)
+				if (workingSb.Length > 0 && workingSb[^1] != ' ')
+					workingSb.Append(' ');
+			}
+			else
+			{
+				workingSb.Append(c);
+				i++;
+			}
+		}
+
+		return workingSb.ToString();
+	}	
 	
-	[GeneratedRegex(@"[a-zA-Z]+#")]
-	private static partial Regex CssCompressSelectors();
+	private static string ConsolidateSpaces(this string css, StringBuilder? workingSb = null)
+	{
+		workingSb ??= new StringBuilder(css.Length);
+		workingSb.Clear();
 
-	[GeneratedRegex(@"\s+")]
-	private static partial Regex CssConsolidateSpaces();
-    
+		var i = 0;
+		var n = css.Length;
+		var lastWasSpace = false;
+
+		while (i < n)
+		{
+			var c = css[i];
+			
+			if (char.IsWhiteSpace(c))
+			{
+				// append one space if previous char wasn't a space
+				if (lastWasSpace == false)
+				{
+					workingSb.Append(' ');
+					lastWasSpace = true;
+				}
+
+				// skip all following whitespace
+				while (i < n && char.IsWhiteSpace(css[i]))
+					i++;
+			}
+			else
+			{
+				workingSb.Append(c);
+				lastWasSpace = false;
+				i++;
+			}
+		}
+
+		return workingSb.ToString();
+	}	
+	
+	private static string RemoveDelimiterSpaces(this string css, StringBuilder? workingSb = null)
+	{
+		workingSb ??= new StringBuilder(css.Length);
+		workingSb.Clear();
+		
+		if (string.IsNullOrEmpty(css))
+			return css;
+
+		// delimiters we want to “hug”
+		var delimiters = new HashSet<char> { ':', ',', ';', '{', '}' };
+
+		var i = 0;
+		var n = css.Length;
+
+		while (i < n)
+		{
+			var c = css[i];
+
+			// If we see any whitespace, peek to see if it's around a delimiter
+			if (char.IsWhiteSpace(c))
+			{
+				var j = i;
+				
+				// skip all whitespace
+				while (j < n && char.IsWhiteSpace(css[j]))
+					j++;
+
+				// if next real char is a delimiter, emit that and skip trailing whitespace
+				if (j < n && delimiters.Contains(css[j]))
+				{
+					workingSb.Append(css[j]);
+					j++;
+					
+					while (j < n && char.IsWhiteSpace(css[j]))
+						j++;
+					
+					i = j;
+					
+					continue;
+				}
+
+				// otherwise, preserve a single space (optional—remove this if you never want any whitespace here)
+				workingSb.Append(' ');
+
+				i = j;
+			}
+			else if (delimiters.Contains(c))
+			{
+				// emit the delimiter, then skip any whitespace that follows
+				workingSb.Append(c);
+
+				var j = i + 1;
+				
+				while (j < n && char.IsWhiteSpace(css[j]))
+					j++;
+				
+				i = j;
+			}
+			else
+			{
+				workingSb.Append(c);
+
+				i++;
+			}
+		}
+
+		return workingSb.ToString();
+	}
+	
+	private static string RemoveZeroUnits(this string css, StringBuilder? workingSb = null)
+	{
+		workingSb ??= new StringBuilder(css.Length);
+		workingSb.Clear();
+
+		if (string.IsNullOrEmpty(css)) return css;
+
+		// Units sorted by descending length so we match "cqmax" before "cq" etc.
+		string[] units =
+		[
+			"cqmin","cqmax","vmax","vmin","cqw","cqh","cqi","cqb","rem","cm","in","mm","pc","pt","px","ch","em","ex","vw","vh","Q","%"
+		];
+
+		var i = 0;
+		var n = css.Length;
+
+		while (i < n)
+		{
+			var c = css[i];
+
+			// if whitespace or colon, and next char is '0', maybe strip a unit
+			if ((char.IsWhiteSpace(c) || c == ':') && i + 1 < n && css[i + 1] == '0')
+			{
+				var stripped = false;
+
+				// try each unit
+				foreach (var u in units)
+				{
+					var len = u.Length;
+					
+					if (i + 2 + len <= n && string.Compare(css, i + 2, u, 0, len, StringComparison.Ordinal) == 0)
+					{
+						// emit the whitespace/colon + '0', skip over the unit
+						workingSb.Append(c).Append('0');
+						i += 2 + len;
+						stripped = true;
+					
+						break;
+					}
+				}
+
+				if (stripped)
+					continue;
+			}
+
+			// default: copy one char
+			workingSb.Append(c);
+			i++;
+		}
+
+		return workingSb.ToString();
+	}
+	
 	/// <summary>
 	/// Repeat a string a specified number of times.
 	/// </summary>
