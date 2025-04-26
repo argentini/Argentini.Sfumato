@@ -1,14 +1,7 @@
 namespace Argentini.Sfumato.Entities.Runners;
 
-public static partial class AppRunnerExtensions
+public static class AppRunnerExtensions
 {
-	#region Regular Expressions
-	
-	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
-	private static partial Regex AtVariantRegex();	
-
-	#endregion
-
 	/// <summary>
 	/// Appends the CSS reset styles, if enabled.
 	/// </summary>
@@ -210,16 +203,11 @@ public static partial class AppRunnerExtensions
 	{
 		try
 		{
-			foreach (var match in AtVariantRegex().Matches(sourceCss.ToString()).ToList())
+			foreach (var span in sourceCss.ToString().EnumerateAtVariantStatements())
 			{
-				var segment = match.Value
-					.Replace("@variant", string.Empty, StringComparison.Ordinal)
-					.Replace("{", string.Empty, StringComparison.Ordinal)
-					.Trim();
-					
-				if (segment.TryVariantIsMediaQuery(appRunner, out var variant))
+				if (span.Name.ToString().TryVariantIsMediaQuery(appRunner, out var variant))
 				{
-					sourceCss.Replace(match.Value, $"@{variant?.PrefixType} {variant?.Statement} {{");
+					sourceCss.Replace(span.Full, $"@{variant?.PrefixType} {variant?.Statement} {{");
 				}
 			}
 		}

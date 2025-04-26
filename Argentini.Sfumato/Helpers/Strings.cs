@@ -5,7 +5,7 @@ namespace Argentini.Sfumato.Helpers;
 /// <summary>
 /// Various tools for working with strings. 
 /// </summary>
-public static class Strings
+public static partial class Strings
 {
 	#region Constants
 
@@ -1094,20 +1094,6 @@ public static class Strings
     }
     
 	/// <summary>
-	/// When indenting a complex RegEx use this to make it one line again.
-	/// </summary>
-	/// <param name="regex"></param>
-	/// <returns></returns>
-	public static string CleanUpIndentedRegex(this string regex)
-	{
-		return regex
-			.Replace("\r", string.Empty)
-			.Replace("\n", string.Empty)
-			.Replace("\t", string.Empty)
-			.Replace(" ", string.Empty);
-	}
-
-	/// <summary>
 	/// Removes spaces and newlines from a string.
 	/// </summary>
 	/// <param name="css"></param>
@@ -1752,7 +1738,7 @@ public static class Strings
     public static IEnumerable<string> WrapTextAtMaxWidth(string input, int maxLength)
     {
         var result = new List<string>();
-        var indentation = Regex.Match(input, @"^\s+").Value;
+        var indentation = IndentationSpacesRegex().Match(input).Value;
         var words = input.TrimStart().Split(' ');
         var currentLineLength = indentation.Length;
         var currentLine = new StringBuilder(indentation);
@@ -1798,6 +1784,9 @@ public static class Strings
             Console.WriteLine(line.NormalizeLinebreaks(Environment.NewLine));
         }
     }
+
+    [GeneratedRegex(@"^\s+")]
+    private static partial Regex IndentationSpacesRegex();
 
     #endregion
 }

@@ -24,12 +24,16 @@ public class AppRunnerTests
 
         sb.AppendProcessedSourceCss(appRunner);
         sb.ProcessAtApplyStatementsAndTrackDependencies(appRunner);
+        sb.ProcessAtVariantStatements(appRunner);
 
         Assert.False(sb.Contains("@apply"));
         
         Assert.True(sb.Contains("tab-size: 4;"));
         Assert.True(sb.Contains("font-size: var(--text-base);"));
         Assert.True(sb.Contains("line-height: calc(var(--spacing) * 6) !important;"));
+        
+        Assert.False(sb.Contains("@variant"));
+        Assert.True(sb.Contains("@media (width >= 475px) {"));
     }
 
     [Fact]
