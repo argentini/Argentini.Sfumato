@@ -11,8 +11,6 @@ public sealed class Library
 
     public Dictionary<string, string> ColorsByName { get; set; } = [];
 
-    public HashSet<string> CssDataTypes { get; } = LibraryUnits.CssDataTypes.ToHashSet(StringComparer.Ordinal);
-
     public HashSet<string> CssLengthUnits { get; } = LibraryUnits.CssLengthUnits.ToHashSet(StringComparer.Ordinal);
     
     public HashSet<string> CssAngleUnits { get; } = LibraryUnits.CssAngleUnits.ToHashSet(StringComparer.Ordinal);

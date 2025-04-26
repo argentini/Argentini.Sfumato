@@ -2,19 +2,6 @@ namespace Argentini.Sfumato.Entities.Library;
 
 public static class LibraryUnits
 {
-    /// <summary>
-    /// Groups of the same validators:
-    /// alpha, number
-    /// angle, hue
-    /// dimension, length
-    /// duration, time
-    /// image, url
-    /// </summary>
-    public static HashSet<string> CssDataTypes { get; } = new(StringComparer.Ordinal)
-    {
-        "alpha", "angle", "color", "dimension", "duration", "flex", "frequency", "hue", "image", "integer", "length", "number", "percentage", "ratio", "resolution", "string", "time", "url",
-    };
-
     public static HashSet<string> CssLengthUnits { get; } = new(StringComparer.Ordinal)
     {
         // Order here matters as truncating values like 'em' also work on values ending with 'rem'
