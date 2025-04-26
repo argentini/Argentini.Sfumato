@@ -13,6 +13,7 @@ global using Microsoft.Extensions.ObjectPool;
 
 global using Argentini.Sfumato.Entities.CssClassProcessing;
 global using Argentini.Sfumato.Entities.Library;
+global using Argentini.Sfumato.Entities.Messenger;
 global using Argentini.Sfumato.Entities.Runners;
 global using Argentini.Sfumato.Entities.Scanning;
 global using Argentini.Sfumato.Entities.Trie;

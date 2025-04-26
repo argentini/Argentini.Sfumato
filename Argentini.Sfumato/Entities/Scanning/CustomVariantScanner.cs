@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Helpers;
+namespace Argentini.Sfumato.Entities.Scanning;
 
 public static class CustomVariantScanner
 {

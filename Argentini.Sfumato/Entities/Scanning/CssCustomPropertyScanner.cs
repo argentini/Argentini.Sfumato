@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Helpers;
+namespace Argentini.Sfumato.Entities.Scanning;
 
 /// <summary>
 /// Extension entry-point: foreach (var p in css.EnumerateCustomProperties())

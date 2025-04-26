@@ -1,4 +1,4 @@
-namespace Argentini.Sfumato.Helpers;
+namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public static class DelimitedSplitExtensions
 {

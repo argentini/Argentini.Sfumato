@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Argentini.Sfumato.Helpers;
+namespace Argentini.Sfumato.Entities.Messenger;
 
 /// <summary>
 /// <example>
