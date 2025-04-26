@@ -8,14 +8,18 @@ public static class CssCustomPropertyExtensions
     public static CssPropertyEnumerable EnumerateCssCustomProperties(this string? css, bool namesOnly = false) => new(css, namesOnly);
 }
 
-/// <summary>Lightweight record that carries one declaration slice.</summary>
+/// <summary>
+/// Lightweight record that carries one declaration slice.
+/// </summary>
 public readonly ref struct CssPropertySpan(ReadOnlySpan<char> prop, ReadOnlySpan<char> val)
 {
     public readonly ReadOnlySpan<char> Property = prop;
     public readonly ReadOnlySpan<char> Value = val;
 }
 
-/// <summary>The stack-only enumerable / enumerator pair.</summary>
+/// <summary>
+/// The stack-only enumerable / enumerator pair.
+/// </summary>
 public readonly ref struct CssPropertyEnumerable
 {
     private readonly ReadOnlySpan<char> _buffer;
@@ -32,7 +36,7 @@ public readonly ref struct CssPropertyEnumerable
     {
         private readonly ReadOnlySpan<char> _s;
         private readonly bool _namesOnly;
-        private int  _i; // cursor
+        private int  _i;
         private int  _propStart, _propEnd;
         private int  _valStart,  _valEnd;
 
@@ -67,7 +71,7 @@ public readonly ref struct CssPropertyEnumerable
                     i++;
                 
                 if (i == propStart + 2)
-                    continue; // just “--”
+                    continue; // Just “--”
 
                 var propEnd = i;
 
@@ -88,32 +92,32 @@ public readonly ref struct CssPropertyEnumerable
                 {
                     _propStart = propStart;
                     _propEnd   = propEnd;
-                    _valStart  = _valEnd = 0;  // empty span in namesOnly
+                    _valStart  = _valEnd = 0; // Empty span in namesOnly
                     _i = isVarRef
-                        ? i + 1            // consume ')'
-                        : propEnd;         // back up to after identifier to continue scanning value
+                        ? i + 1 // Consume ')'
+                        : propEnd; // Back up to after identifier to continue scanning value
+
                     return true;
                 }
 
-                // namesOnly == false: this is a real declaration, so capture its value…
-
-                // consume the ':'
+                // Consume the ':'
                 i++;
 
-                // skip whitespace before the value
+                // Skip whitespace before the value
                 while (i < len && char.IsWhiteSpace(s[i]))
                     i++;
 
-                // mark start of the value
+                // Mark start of the value
                 var valStart = i;
                 var inS = false;
                 var inD = false;
                 var esc = false;
 
-                // scan until semicolon, respecting quotes and escapes
+                // Scan until semicolon, respecting quotes and escapes
                 for (; i < len; i++)
                 {
                     var c = s[i];
+
                     if (esc)
                     {
                         esc = false;
@@ -126,11 +130,13 @@ public readonly ref struct CssPropertyEnumerable
                     }
                     if (inS)
                     {
-                        if (c == '\'') { inS = false; continue; }
+                        if (c == '\'')
+                            inS = false;
                     }
                     else if (inD)
                     {
-                        if (c == '"') { inD = false; continue; }
+                        if (c == '"')
+                            inD = false;
                     }
                     else if (c == '\'')
                     {
@@ -146,23 +152,23 @@ public readonly ref struct CssPropertyEnumerable
                     }
                 }
 
-                // trim trailing whitespace from the value
+                // Trim trailing whitespace from the value
                 var valEnd = i;
                 
                 while (valEnd > valStart && char.IsWhiteSpace(s[valEnd - 1]))
                     valEnd--;
 
-                // assign the spans
+                // Assign the spans
                 _propStart = propStart;
                 _propEnd   = propEnd;
                 _valStart  = valStart;
                 _valEnd    = valEnd;
 
-                // consume the ';' if present
+                // Consume the ';' if present
                 if (i < len && s[i] == ';')
                     i++;
 
-                // advance cursor and emit
+                // Advance cursor and emit
                 _i = i;
 
                 return true;

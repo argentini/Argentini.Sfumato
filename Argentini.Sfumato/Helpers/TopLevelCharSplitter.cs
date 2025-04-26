@@ -3,13 +3,15 @@ namespace Argentini.Sfumato.Helpers;
 public static class DelimitedSplitExtensions
 {
     /// <summary>
-    /// Enumerates <paramref name="source"/> as slices separated by <paramref name="delimiter"/>
-    /// when that delimiter is **not** inside square-brackets […] or parentheses (…).
+    /// Enumerates source as slices separated by delimiter
+    /// when that delimiter is **not** inside square-brackets or parentheses.
     /// </summary>
     public static DelimitedSplitEnumerable SplitByTopLevel(this string? source, char delimiter) => new(source, delimiter);
 }
 
-/// <summary>Stack-only enumerable / enumerator pair – no regex, no allocations.</summary>
+/// <summary>
+/// Stack-only enumerable / enumerator pair – no regex, no allocations.
+/// </summary>
 public readonly ref struct DelimitedSplitEnumerable
 {
     private readonly ReadOnlySpan<char> _buffer;

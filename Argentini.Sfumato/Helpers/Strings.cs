@@ -1,4 +1,6 @@
-﻿namespace Argentini.Sfumato.Helpers;
+﻿// ReSharper disable MemberCanBePrivate.Global
+
+namespace Argentini.Sfumato.Helpers;
 
 /// <summary>
 /// Various tools for working with strings. 

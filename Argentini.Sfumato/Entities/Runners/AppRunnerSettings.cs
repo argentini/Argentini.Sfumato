@@ -9,9 +9,6 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 {
 	#region Regular Expressions
 
-	[GeneratedRegex(@"(\.(?<class>[a-zA-Z0-9_-]+)|(@(?<kind>[a-zA-Z0-9_-]+)\s+(?<name>[a-zA-Z0-9_-]+)))\s*\{(?:(?>[^{}]+)|\{(?<bal>)|\}(?<-bal>))*(?(bal)(?!))\}", RegexOptions.Singleline)]
-	private static partial Regex CssAtAndClassBlocksRegex();
-
 	// Matches:
 	// @custom-variant <name> ( ... );
 	//  - group "name"    ⇒ the custom-variant identifier (e.g. "tab-4")
@@ -218,15 +215,13 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 			        SfumatoBlockItems[span.Property.ToString()] = span.Value.ToString();
 		        }
 
-	        var quoteMatches = CssAtAndClassBlocksRegex().Matches(sfumatoCssBlock);
-
-	        foreach (Match match in quoteMatches)
-		        if (SfumatoBlockItems.TryAdd(match.Value[..match.Value.IndexOf('{')].Trim(), match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim()) == false)
+	        foreach (var span in sfumatoCssBlock.EnumerateCssClassAndAtBlocks())
+		        if (SfumatoBlockItems.TryAdd(span.Header.ToString(), span.Body.ToString().TrimEnd(';').Trim()) == false)
 		        {
-			        SfumatoBlockItems[match.Value[..match.Value.IndexOf('{')].Trim()] = match.Value[match.Value.IndexOf('{')..].TrimEnd(';').Trim();
+			        SfumatoBlockItems[span.Header.ToString()] = span.Body.ToString().TrimEnd(';').Trim();
 		        }
 
-	        quoteMatches = AtCustomVariantRegex().Matches(sfumatoCssBlock);
+	        var quoteMatches = AtCustomVariantRegex().Matches(sfumatoCssBlock);
 
 	        foreach (Match match in quoteMatches)
 	        {
