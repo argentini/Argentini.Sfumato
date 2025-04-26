@@ -5,24 +5,8 @@
 
 namespace Argentini.Sfumato.Entities.Runners;
 
-public partial class AppRunnerSettings(AppRunner? appRunner)
+public sealed class AppRunnerSettings(AppRunner? appRunner)
 {
-	#region Regular Expressions
-
-	// Matches:
-	// @custom-variant <name> ( ... );
-	//  - group "name"    ⇒ the custom-variant identifier (e.g. "tab-4")
-	//  - group "content" ⇒ everything inside the outer parens, including nested (...)
-	[GeneratedRegex(@"@custom-variant\s+(?<name>[\w-]+)\s*\(\s*(?<content>(?:[^()]|\((?<Depth>)|\)(?<-Depth>))*)(?(Depth)(?!))\s*\);")]
-	private static partial Regex AtCustomVariantRegex();
-
-	/*
-	[GeneratedRegex(@"[ \t]+(?=\r\n|\n)")]
-	private static partial Regex WhitespaceBeforeLineBreakRegex();
-	*/
-	
-	#endregion
-
 	#region Properties
 
 	private AppRunner? AppRunner { get; set; } = appRunner;
@@ -221,15 +205,11 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 			        SfumatoBlockItems[span.Header.ToString()] = span.Body.ToString().TrimEnd(';').Trim();
 		        }
 
-	        var quoteMatches = AtCustomVariantRegex().Matches(sfumatoCssBlock);
-
-	        foreach (Match match in quoteMatches)
-	        {
-		        if (SfumatoBlockItems.TryAdd($"@custom-variant {match.Groups["name"].Value}", match.Groups["content"].Value.TrimEnd(';')) == false)
+	        foreach (var span in sfumatoCssBlock.EnumerateCustomVariants())
+		        if (SfumatoBlockItems.TryAdd($"@custom-variant {span.Name}", span.Content.ToString().TrimEnd(';')) == false)
 		        {
-			        SfumatoBlockItems[$"@custom-variant {match.Groups["name"].Value}"] = match.Groups["content"].Value.TrimEnd(';');
+			        SfumatoBlockItems[$"@custom-variant {span.Name}"] = span.Content.ToString().TrimEnd(';');
 		        }
-	        }
 
 	        if (SfumatoBlockItems.Count > 0)
 	            return;

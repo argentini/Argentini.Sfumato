@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Argentini.Sfumato.Entities.Runners;
 
-public class AppRunner
+public sealed class AppRunner
 {
 	#region Services
 

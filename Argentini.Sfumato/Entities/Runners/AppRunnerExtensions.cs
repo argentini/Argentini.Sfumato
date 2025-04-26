@@ -4,9 +4,6 @@ public static partial class AppRunnerExtensions
 {
 	#region Regular Expressions
 	
-	[GeneratedRegex(@"@apply\s+[^;]+?;")]
-	private static partial Regex AtApplyRegex();
-	
 	[GeneratedRegex(@"@variant\s*([\w-]+)\s*{")]
 	private static partial Regex AtVariantRegex();	
 
@@ -124,11 +121,9 @@ public static partial class AppRunnerExtensions
 
 		try
 		{
-			foreach (var match in AtApplyRegex().Matches(sourceCss.ToString()).ToList())
+			foreach (var span in sourceCss.ToString().EnumerateAtApplyStatements())
 			{
-				var utilityClassStrings =
-					(match.Value.TrimStart("@apply")?.TrimEnd(';').Trim() ?? string.Empty).Split(' ',
-						StringSplitOptions.RemoveEmptyEntries);
+				var utilityClassStrings = span.Arguments.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 				var utilityClasses = utilityClassStrings
 					.Select(utilityClass => new CssClass(appRunner, utilityClass.Replace("\\", string.Empty)))
 					.Where(cssClass => cssClass.IsValid)
@@ -146,9 +141,9 @@ public static partial class AppRunnerExtensions
 							? appRunner.AppRunnerSettings.Indentation.Length
 							: 0.25d);
 
-						if (match.Index > 0)
+						if (span.Index > 0)
 						{
-							for (var i = match.Index - 1; i >= 0; i--)
+							for (var i = span.Index - 1; i >= 0; i--)
 							{
 								if (sourceCss[i] == ' ')
 									depth += spaceIncrement;
@@ -190,7 +185,7 @@ public static partial class AppRunnerExtensions
 					}
 				}
 
-				sourceCss.Replace(match.Value, workingSb.ToString().Trim());
+				sourceCss.Replace(span.Full, workingSb.ToString().Trim());
 			}
 		}
 		catch (Exception e)

@@ -16,7 +16,7 @@ public class AppRunnerTests
     [Fact]
     public async Task ProcessAtApplyStatementsAndTrackDependencies()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css", true);
+        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css");
 
         await appRunner.LoadCssFileAsync();
 
