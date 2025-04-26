@@ -4,7 +4,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
 {
     #region Constants
 
-    public static string Markup => """
+    private static string Markup => """
                                     <!DOCTYPE html>
                                     <html lang="en" class="font-sans">
                                     <head>
@@ -47,7 +47,23 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                     </body>
                                     </html>
                                     """;
-    
+
+    private static string Css => """
+                                 :root {
+                                     --my-prop-var: 1.25rem;
+                                     --my-prop-var2: #112233;
+                                     --my-prop-var3: var(--my-prop-var4);
+                                     --my-prop-var5: 1.25rem;--my-prop-var6: #112233;--my-prop-var7: var(--my-prop-var8);
+                                 }
+
+                                 .test-class {
+                                     font-weight: var(--font-weight);
+                                     font-size: var( --font-size );
+                                     color: var (
+                                         --font-color
+                                         );
+                                 }
+                                 """;
     #endregion
 
     [Fact]
@@ -63,5 +79,29 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
             testOutputHelper.WriteLine($"{cname.Key}");
         
         Assert.Equal(32, utilityClasses.Count);
+    }
+
+    [Fact]
+    public void CssCustomPropertyScanner()
+    {
+        var props = new List<string>();
+
+        foreach (var span in Css.EnumerateCssCustomProperties(namesOnly: true))
+        {
+            testOutputHelper.WriteLine(span.Property.ToString());
+            props.Add(span.Property.ToString());
+        }
+        
+        Assert.Equal(11, props.Count);
+
+        var dict = new Dictionary<string, string>();
+        
+        foreach (var span in Css.EnumerateCssCustomProperties())
+        {
+            testOutputHelper.WriteLine(span.Property.ToString() + " : " + span.Value.ToString());
+            dict.Add(span.Property.ToString(), span.Value.ToString());
+        }
+        
+        Assert.Equal(6, dict.Count);
     }
 }

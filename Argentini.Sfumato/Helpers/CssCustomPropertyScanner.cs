@@ -71,113 +71,100 @@ public readonly ref struct CssPropertyEnumerable
 
                 var propEnd = i;
 
-                // Skip whitespace, then check what terminates the identifier
+                // Skip whitespace, then see if this is a declaration (':') or a var-ref (')')
                 while (i < len && char.IsWhiteSpace(s[i]))
                     i++;
 
-                if (i >= len)                                 // ran off the end
+                if (i >= len)
                     continue;
 
-                // namesOnly: allow var(--foo)
-                if (_namesOnly && s[i] == ')')
-                {
-                    _propStart = propStart;
-                    _propEnd   = propEnd;
-                    _valStart  = _valEnd = 0; // empty span
-                    _i = i + 1; // consume ')'
-                    
-                    return true;
-                }
-
-                /* otherwise we still need ':' to qualify as a declaration */
-                if (s[i] != ':')
-                    continue;
-
-                i++; // past ':'                
+                var isVarRef = _namesOnly && s[i] == ')';
+                var isDecl   = s[i] == ':';
                 
+                if (isVarRef == false && isDecl == false)
+                    continue;
+
                 if (_namesOnly)
                 {
-                    while (i < len && s[i] != ';') // seek ';'
-                            i++;
-
                     _propStart = propStart;
                     _propEnd   = propEnd;
-                    _valStart  = _valEnd = 0; // empty span
-                    
-                    if (i < len && s[i] == ';')
-                        i++; // consume ';'
-                    
-                    _i = i;
-                    
+                    _valStart  = _valEnd = 0;  // empty span in namesOnly
+                    _i = isVarRef
+                        ? i + 1            // consume ')'
+                        : propEnd;         // back up to after identifier to continue scanning value
                     return true;
                 }
-                
+
+                // namesOnly == false: this is a real declaration, so capture its value…
+
+                // consume the ':'
+                i++;
+
+                // skip whitespace before the value
                 while (i < len && char.IsWhiteSpace(s[i]))
                     i++;
 
-                // Capture value
+                // mark start of the value
                 var valStart = i;
                 var inS = false;
                 var inD = false;
                 var esc = false;
 
+                // scan until semicolon, respecting quotes and escapes
                 for (; i < len; i++)
                 {
                     var c = s[i];
-
                     if (esc)
                     {
                         esc = false;
                         continue;
                     }
-
                     if (c == '\\')
                     {
                         esc = true;
                         continue;
                     }
-
                     if (inS)
                     {
-                        if (c == '\'')
-                        {
-                            inS = false;
-                            continue;
-                        }
+                        if (c == '\'') { inS = false; continue; }
                     }
-
-                    if (inD)
+                    else if (inD)
                     {
-                        if (c == '"')
-                        {
-                            inD = false;
-                            continue;
-                        }
+                        if (c == '"') { inD = false; continue; }
                     }
-
-                    if (c == '\'')
+                    else if (c == '\'')
+                    {
                         inS = true;
+                    }
                     else if (c == '"')
+                    {
                         inD = true;
+                    }
                     else if (c == ';')
+                    {
                         break;
+                    }
                 }
 
+                // trim trailing whitespace from the value
                 var valEnd = i;
                 
                 while (valEnd > valStart && char.IsWhiteSpace(s[valEnd - 1]))
                     valEnd--;
 
+                // assign the spans
                 _propStart = propStart;
                 _propEnd   = propEnd;
                 _valStart  = valStart;
                 _valEnd    = valEnd;
 
+                // consume the ';' if present
                 if (i < len && s[i] == ';')
-                    i++; // consume ';'
-                
-                _i = i; // persist cursor
-                
+                    i++;
+
+                // advance cursor and emit
+                _i = i;
+
                 return true;
             }
 
