@@ -19,9 +19,8 @@ public sealed class AppRunner
 	
 	#region Properties
 
-	public Stopwatch Stopwatch { get; set; } = new();
-	public Stopwatch TotalStopwatch { get; set; } = new();
-	public Stopwatch WorkingStopwatch { get; set; } = new();
+	public Stopwatch CssBuildStopwatch { get; set; } = new();
+	public Stopwatch FileScanStopwatch { get; set; } = new();
 	public string LastCss { get; set; } = string.Empty;
 	public List<string> Messages { get; set; } = [];
 	
@@ -398,43 +397,69 @@ public sealed class AppRunner
 
 	#endregion
 
-	public async Task PerformFullBuild(bool reInitialize = false)
+	#region Actions
+
+	public void AddCssPathMessage()
+	{
+		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter(
+			(int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d),
+			(int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3,
+			Entities.Library.Library.MaxConsoleWidth);
+
+		Messages.Add(relativePath);
+	}
+
+	public void AddMessage(string message)
+	{
+		Messages.Add(message);
+	}
+
+	public async Task RenderMessagesAsync(bool clear = true)
+	{
+		foreach (var message in Messages)
+			await Console.Out.WriteLineAsync(message);
+
+		if (clear)
+			Messages.Clear();
+	}
+
+	public async Task ReInitialize()
+	{
+		Initialize();
+		await LoadCssFileAsync();
+	}
+
+	public async Task PerformFileScan()
 	{
 		var tasks = new ConcurrentBag<Task>();
 
 		ScannedFiles.Clear();
-
-		if (reInitialize)
-		{
-			Initialize();
-			await LoadCssFileAsync();
-		}
-
-		TotalStopwatch.Restart();
-		WorkingStopwatch.Restart();
+		FileScanStopwatch.Restart();
 
 		foreach (var path in AppRunnerSettings.AbsolutePaths)
 			tasks.Add(RecurseProjectPathAsync(path, tasks));
 
 		await Task.WhenAll(tasks);
 		
-		WorkingStopwatch.Stop();
-		Stopwatch.Restart();
+		ProcessScannedFileUtilityClassDependencies(this);
+		
+		FileScanStopwatch.Stop();
+		
+		AddMessage($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {FileScanStopwatch.FormatTimer()}");
+	}
+
+	public async Task BuildAndSaveCss()
+	{
+		CssBuildStopwatch.Restart();
 
 		LastCss = BuildCss();
 
 		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
-		Stopwatch.Stop();
-		TotalStopwatch.Stop();
+		CssBuildStopwatch.Stop();
 
-		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d), (int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3, Entities.Library.Library.MaxConsoleWidth);
-			
-		Messages.Add(relativePath);
-
-		Messages.Add($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {WorkingStopwatch.FormatTimer()}");
-		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {Stopwatch.FormatTimer()}");
-		Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff} ({TotalStopwatch.FormatTimer()})");
+		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {CssBuildStopwatch.FormatTimer()}");
+		Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff}");
 		Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
 	}
 	
@@ -499,6 +524,8 @@ public sealed class AppRunner
 		await Task.CompletedTask;
 	}
 	
+	#endregion
+	
 	#region CSS Generation
     
 	/// <summary>
@@ -512,8 +539,6 @@ public sealed class AppRunner
 
 		try
 		{
-			ProcessScannedFileUtilityClassDependencies(this);
-
 			sourceCss
 				.AppendResetCss(this)
 				.AppendFormsCss(this)
@@ -546,6 +571,7 @@ public sealed class AppRunner
 	{
 		try
 		{
+			appRunner.UtilityClasses.Clear();
 			appRunner.UsedCssCustomProperties.Clear();
 			appRunner.UsedCss.Clear();
 

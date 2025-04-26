@@ -3,11 +3,12 @@ namespace Argentini.Sfumato;
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class Program
 {
-	static WeakMessenger Messenger = new ();
+	// static WeakMessenger Messenger = new ();
 
+	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
 	{
-		var cancellationTokenSource = new CancellationTokenSource();
+		//var cancellationTokenSource = new CancellationTokenSource();
 		var totalTimer = new Stopwatch();
 
 		totalTimer.Start();
@@ -38,17 +39,17 @@ internal class Program
 		
 		if (appState.InitMode)
 		{
-            var cssReferenceFile = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.EmbeddedCssPath, "example.css"), Library.FileAccessRetryMs, cancellationTokenSource.Token);
-			
 			/*
+            var cssReferenceFile = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.EmbeddedCssPath, "example.css"), Library.FileAccessRetryMs, cancellationTokenSource.Token);
+
 			if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
 				appState.WorkingPath = appState.WorkingPathOverride;
-			
-			await File.WriteAllTextAsync(Path.Combine(appState.WorkingPath, "example.css"), cssReferenceFile, cancellationTokenSource.Token);			
-			
+
+			await File.WriteAllTextAsync(Path.Combine(appState.WorkingPath, "example.css"), cssReferenceFile, cancellationTokenSource.Token);
+
 			await Console.Out.WriteLineAsync($"Created example.css file at {appState.WorkingPath}");
-			*/
 			await Console.Out.WriteLineAsync();
+			*/
 			
 			Environment.Exit(0);
 		}
@@ -137,13 +138,21 @@ internal class Program
 			
 			await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
 			await Console.Out.WriteLineAsync($"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
+
+			if (appRunner.AppRunnerSettings.AbsolutePaths.Count > 0)
+				await Console.Out.WriteLineAsync(Strings.DotLine.Repeat(Library.MaxConsoleWidth));
 			
+			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 			foreach (var path in appRunner.AppRunnerSettings.AbsolutePaths)
 			{
 				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 				await Console.Out.WriteLineAsync($"Path        :  {relativePath2}");
 			}
 
+			if (appRunner.AppRunnerSettings.AbsoluteNotPaths.Count > 0)
+				await Console.Out.WriteLineAsync(Strings.DotLine.Repeat(Library.MaxConsoleWidth));
+
+			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 			foreach (var path in appRunner.AppRunnerSettings.AbsoluteNotPaths)
 			{
 				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
@@ -153,36 +162,33 @@ internal class Program
 			await Console.Out.WriteLineAsync(appRunner == appState.AppRunners.Last() ? Strings.ThickLine.Repeat(Library.MaxConsoleWidth) : Strings.DotLine.Repeat(Library.MaxConsoleWidth));
 		}
 
-		totalTimer.Restart();
-
-		/*
-		if (appState.WatchMode)
-			await Console.Out.WriteLineAsync($"Started watching at {DateTime.Now:HH:mm:ss.fff}");
-		else
-			await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
-			*/
-
 		var tasks = new List<Task>();
 		
 		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 		foreach (var appRunner in appState.AppRunners)
-			tasks.Add(appRunner.PerformFullBuild());
+		{
+			appRunner.AddCssPathMessage();
+			tasks.Add(appRunner.PerformFileScan());
+		}
 
 		await Task.WhenAll(tasks);
-
+		tasks.Clear();
+		
+		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+		foreach (var appRunner in appState.AppRunners)
+			tasks.Add(appRunner.BuildAndSaveCss());
+		
+		await Task.WhenAll(tasks);
+		
 		totalTimer.Stop();
 		
 		foreach (var appRunner in appState.AppRunners)
-		{
-			foreach (var message in appRunner.Messages)
-				await Console.Out.WriteLineAsync(message);
-
-			appRunner.Messages.Clear();
-		}		
+			await appRunner.RenderMessagesAsync();
 		
 		await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 
+		/*
 		if (appState.WatchMode)
 		{
 			foreach (var appRunner in appState.AppRunners)
@@ -190,6 +196,7 @@ internal class Program
 				// todo: initialize watcher
 			}
 		}
+		*/
 		
 		await Console.Out.WriteLineAsync($"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}");
 		

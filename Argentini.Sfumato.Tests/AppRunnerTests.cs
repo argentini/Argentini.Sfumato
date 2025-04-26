@@ -103,6 +103,8 @@ public class AppRunnerTests
             UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, appRunner)
         });
 
+        appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
+        
         var css = appRunner.BuildCss();
         
         var indexOfRoot = css.IndexOf(":root", StringComparison.Ordinal);
