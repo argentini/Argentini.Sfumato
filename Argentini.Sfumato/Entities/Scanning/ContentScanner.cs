@@ -9,7 +9,7 @@ public static class ContentScanner
         if (string.IsNullOrEmpty(fileContent))
             return [];
         
-        var quotedSubstrings = QuotedStringScanner.Scan(fileContent).ToList();
+        var quotedSubstrings = fileContent.ScanQuotedStrings().ToList();
         var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
         
         foreach (var quotedSubstring in quotedSubstrings)

@@ -5,21 +5,8 @@
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
-public sealed partial class CssClass : IDisposable
+public sealed class CssClass : IDisposable
 {
-    #region Regular Expressions
-    
-    [GeneratedRegex(@"^--[\w-]+_?:_?[^;]+;?$")]
-    public static partial Regex PatternCssCustomPropertyAssignmentRegex();
-
-    [GeneratedRegex(@":(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))")]
-    public static partial Regex SplitByColonsRegex();
-
-    [GeneratedRegex(@"/(?!(?:[^\[\]]*\]))(?!(?:[^\(\)]*\)))")]
-    public static partial Regex SplitBySlashesRegex();
-    
-    #endregion
-    
     #region Properties
     
     public AppRunner AppRunner { get; set; }
@@ -102,8 +89,8 @@ public sealed partial class CssClass : IDisposable
     {
         IsImportant = Selector.EndsWith('!');
 
-        foreach (var segment in SplitByColonsRegex().Split(Selector.TrimEnd('!')))
-            AllSegments.Add(segment);
+        foreach (var segment in Selector.TrimEnd('!').SplitByTopLevel(':'))
+            AllSegments.Add(segment.ToString());
 
         ProcessArbitraryCss();
         
@@ -242,14 +229,15 @@ public sealed partial class CssClass : IDisposable
             if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
                 return;
 
-            if (PatternCssCustomPropertyAssignmentRegex().Match(trimmedValue).Success)
+            foreach (var span in trimmedValue.EnumerateCssCustomProperties())
             {
                 // [--my-text-size:1rem]
                 IsCssCustomPropertyAssignment = true;
                 IsValid = true;
-                Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
+                Styles += $"{span.Property}: {span.Value};".Replace('_', ' ');
             }
-            else if (AppRunner.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue))
+            
+            if (IsValid == false && AppRunner.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue))
             {
                 // [font-size:1rem]
                 IsArbitraryCss = true;
@@ -276,11 +264,14 @@ public sealed partial class CssClass : IDisposable
                 return;
 
             var value = AllSegments.Last().TrimStart(prefix) ?? string.Empty;
-            var slashSegments = SplitBySlashesRegex().Split(value);
+            var slashSegments = new HashSet<string>();
 
-            if (slashSegments.Length == 2)
+            foreach (var segment in value.SplitByTopLevel('/'))
+                slashSegments.Add(segment.ToString());
+
+            if (slashSegments.Count == 2)
             {
-                ModifierValue = slashSegments[^1];
+                ModifierValue = slashSegments.Last();
                 value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
                 HasArbitraryModifierValue = ModifierValue.StartsWith('[');
                 ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');

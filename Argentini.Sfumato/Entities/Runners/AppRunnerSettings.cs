@@ -19,11 +19,10 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 	[GeneratedRegex(@"@custom-variant\s+(?<name>[\w-]+)\s*\(\s*(?<content>(?:[^()]|\((?<Depth>)|\)(?<-Depth>))*)(?(Depth)(?!))\s*\);")]
 	private static partial Regex AtCustomVariantRegex();
 
-	[GeneratedRegex(@"\s+")]
-	private static partial Regex ConsolidateSpacesRegex();
-	
+	/*
 	[GeneratedRegex(@"[ \t]+(?=\r\n|\n)")]
 	private static partial Regex WhitespaceBeforeLineBreakRegex();
+	*/
 	
 	#endregion
 
@@ -111,7 +110,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 		    if (string.IsNullOrEmpty(CssFilePath) == false)
 			    CssContent = File.ReadAllText(Path.GetFullPath(CssFilePath.SetNativePathSeparators()));
 
-	        CssContent = WhitespaceBeforeLineBreakRegex().Replace(CssContent, string.Empty);
+	        CssContent = CssContent.TrimWhitespaceBeforeLineBreaks(sb);
 	        CssContent = CssContent.RemoveBlockComments(sb);
 
 	        #region Extract Sfumato settings block
@@ -256,6 +255,11 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
     /// </summary>
     public void ProcessProjectSettings()
     {
+	    var workingSb = AppRunner?.AppState.StringBuilderPool.Get();
+
+	    if (workingSb is null)
+		    return;
+
 	    try
 	    {
 		    if (SfumatoBlockItems.TryGetValue("--use-reset", out var useReset))
@@ -272,7 +276,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 
 		    if (SfumatoBlockItems.TryGetValue("--paths", out var pathsValue))
 		    {
-			    var paths = ConsolidateSpacesRegex().Replace(pathsValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
+			    var paths = pathsValue.ConsolidateSpaces(workingSb).TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
 
 			    if (paths.Length != 0)
 			    {
@@ -286,7 +290,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 
 		    if (SfumatoBlockItems.TryGetValue("--not-paths", out var notPathsValue))
 		    {
-			    var notPaths = ConsolidateSpacesRegex().Replace(notPathsValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
+			    var notPaths = notPathsValue.ConsolidateSpaces(workingSb).TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
 
 			    if (notPaths.Length != 0)
 			    {
@@ -300,7 +304,7 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 
 		    if (SfumatoBlockItems.TryGetValue("--not-folder-names", out var notFolderNamesValue))
 		    {
-			    var notFolderNames = ConsolidateSpacesRegex().Replace(notFolderNamesValue, " ").TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
+			    var notFolderNames = notFolderNamesValue.ConsolidateSpaces(workingSb).TrimStart('[').TrimEnd(']').Trim().Replace("\", \"", "\",\"").Split("\",\"", StringSplitOptions.RemoveEmptyEntries);
 
 			    if (notFolderNames.Length != 0)
 			    {
@@ -326,6 +330,10 @@ public partial class AppRunnerSettings(AppRunner? appRunner)
 		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
 		    Environment.Exit(1);
 	    }
+	    finally
+	    {
+		    AppRunner?.AppState.StringBuilderPool.Return(workingSb);
+		}
     }
 
     /// <summary>

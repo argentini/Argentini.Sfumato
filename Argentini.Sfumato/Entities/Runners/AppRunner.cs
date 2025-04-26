@@ -9,18 +9,11 @@ using System.Reflection;
 
 namespace Argentini.Sfumato.Entities.Runners;
 
-public partial class AppRunner
+public class AppRunner
 {
 	#region Services
 
 	static WeakMessenger Messenger = new ();
-	
-	#endregion
-	
-	#region Regular Expressions
-	
-	[GeneratedRegex(@"(?:\r\n|\n){3,}")]
-	private static partial Regex ConsolidateLineBreaksRegex();
 	
 	#endregion
 	
@@ -535,7 +528,8 @@ public partial class AppRunner
 				.InjectRootDependenciesCss(this)
 				.InjectUtilityClassesCss(this);
 			
-			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : ConsolidateLineBreaksRegex().Replace(sourceCss.ToString().Trim(), AppRunnerSettings.LineBreak + AppRunnerSettings.LineBreak);
+			//return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString().ConsolidateLineBreaks(AppRunnerSettings.LineBreak.Contains('\r'), workingSb);
+			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString();
 		}
 		finally
 		{

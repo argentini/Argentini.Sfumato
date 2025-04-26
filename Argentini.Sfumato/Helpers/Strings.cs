@@ -454,6 +454,246 @@ public static class Strings
 	
 	#region Parsing
 
+    /// <summary>
+    /// Scans <paramref name="source"/> and returns every whitespace‑/punctuation‑delimited
+    /// token that appears inside any quoted literal (plain, verbatim, multi‑quote raw, or
+    /// JavaScript template‑literal).
+    /// </summary>
+    public static IReadOnlyCollection<string> ScanQuotedStrings(this string? source)
+    {
+        if (string.IsNullOrEmpty(source))
+            return [];
+
+        var results = new HashSet<string>(StringComparer.Ordinal);
+        var i = 0;
+        var n = source.Length;
+
+        while (i < n)
+        {
+            // consume optional $, @ prefix
+            while (i < n && (source[i] == '$' || source[i] == '@'))
+                i++;
+            
+            if (i >= n)
+                break;
+
+            var opener = source[i];
+
+            if (opener is not ('"' or '\'' or '`'))
+            {
+                i++;
+                
+                continue;
+            }
+
+            // run length of identical opener chars (", """, etc.)
+            var quoteLen = 0;
+            
+            while (i + quoteLen < n && source[i + quoteLen] == opener)
+                quoteLen++;
+            
+            i += quoteLen;
+            
+            var contentStart = i;
+
+            var backtick = opener == '`';
+            var multi    = opener == '"' && quoteLen >= 2;         // $"" … "" or $""" … """
+            var verbatim = source[i - quoteLen - 1] == '@' && opener == '"';
+
+            if (backtick)
+            {
+                var depth = 0;
+
+                while (i < n)
+                {
+                    if (source[i] == '\\')
+                    {
+                        i += 2;
+                        
+                        continue;
+                    }
+                    
+                    if (depth == 0 && source[i] == '`')
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        
+                        i++;
+                        
+                        break;
+                    }
+                    
+                    // ReSharper disable once ConvertIfStatementToSwitchStatement
+                    if (depth == 0 && source[i] == '$' && i + 1 < n && source[i + 1] == '{')
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        
+                        depth = 1;
+                        i += 2;
+                        
+                        continue;
+                    }
+                    
+                    if (depth > 0)
+                    {
+                        switch (source[i])
+                        {
+                            case '{':
+                                depth++;
+                                break;
+                            case '}':
+                                depth--;
+                                break;
+                            case '"' or '\'' or '`':
+                                SkipSimpleString(source[i]);
+                                break;
+                        }
+                    }
+
+                    i++;
+                }
+
+                continue;
+            }
+
+            if (verbatim)
+            {
+                while (i < n)
+                {
+                    if (source[i] == '"' && i + 1 < n && source[i + 1] == '"')
+                    {
+                        i += 2;
+
+                        continue;
+                    }
+                    
+                    if (source[i] == '"')
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        
+                        i++;
+                        
+                        break;
+                    }
+                    
+                    i++;
+                }
+
+                continue;
+            }
+
+            if (multi)
+            {
+                while (i < n)
+                {
+                    if (source[i] != '"')
+                    {
+                        i++;
+                        
+                        continue;
+                    }
+
+                    var run = 0;
+                    var k = i;
+
+                    while (k < n && source[k] == '"')
+                    {
+                        run++;
+                        k++;
+                    }
+
+                    if (run >= quoteLen)
+                    {
+                        SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+                        
+                        i = k;
+                        
+                        break;
+                    }
+                    
+                    i = k; // keep scanning
+                }
+
+                continue;
+            }
+
+            // ordinary "…" or '…'
+            while (i < n)
+            {
+                if (source[i] == '\\')
+                {
+                    i += 2;
+
+                    continue;
+                }
+                
+                if (source[i] == opener)
+                {
+                    SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+
+                    break;
+                }
+
+                i++;
+            }
+        }
+
+        return results;
+
+        void SkipSimpleString(char q)
+        {
+            i++; // past the opener
+            
+            while (i < n)
+            {
+                if (source[i] == '\\')
+                {
+                    i += 2;
+                    
+                    continue;
+                }
+
+                if (source[i] == q)
+                {
+                    i++;
+                    
+                    break;
+                }
+
+                i++;
+            }
+        }
+
+        static void SplitAndAdd(ReadOnlySpan<char> span, HashSet<string> bag)
+        {
+            var start = -1;
+            
+            for (var k = 0; k < span.Length; k++)
+            {
+                if (IsDelim(span[k]))
+                {
+                    if (start == -1)
+                        continue;
+                    
+                    bag.Add(span[start..k].ToString());
+                    start = -1;
+                }
+                else if (start == -1)
+                {
+                    start = k; // begin a token
+                }
+            }
+            
+            if (start != -1)
+                bag.Add(span[start..].ToString());
+
+            return;
+
+            // delimiter characters that end a token (besides whitespace)
+            //static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '(' or ')' or '=';
+            static bool IsDelim(char c) => char.IsWhiteSpace(c) || c is '"' or '\'' or '`' or '<' or '>' or '$' or '{' or '}' or '=';
+        }
+    }
+	
 	/// <summary>
 	/// Enumerates all substrings of <paramref name="input"/> that consist of one or more non-whitespace characters.
 	/// Equivalent to Regex.Matches(input, @"\S+").
@@ -584,18 +824,197 @@ public static class Strings
 	
 	#region Transformations
 
+    /// <summary>
+    /// Removes SPACE and TAB characters that appear <em>immediately</em> before
+    /// an LF (<c>"\n"</c>) or CRLF (<c>"\r\n"</c>) sequence.
+    /// </summary>
+    /// <param name="text">Input string (may be <c>null</c> or empty).</param>
+    /// <param name="scratch">
+    /// Optional <see cref="StringBuilder"/> taken from an <em>ObjectPool</em>.  
+    /// If supplied it is cleared up-front and used only when a rewrite
+    /// becomes necessary.</param>
+    public static string TrimWhitespaceBeforeLineBreaks(this string? text, StringBuilder? scratch = null)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text ?? string.Empty;
+
+        var src = text.AsSpan();
+        var len = src.Length;
+
+        scratch?.Clear();
+        StringBuilder? sb  = null;
+        
+        var tail = 0; // start of segment not yet copied
+        var i    = 0;
+
+        while (i < len)
+        {
+            var rel = NextNl(src[i..]);
+            
+            if (rel < 0)
+                break; // no more newlines
+
+            var nlPos = i + rel; // absolute index of first NL char
+
+            // Identify kind of line-break token
+            int tokenLen;
+
+            if (src[nlPos] == '\n')
+            {
+                tokenLen = 1; // LF
+            }
+            else if (nlPos + 1 < len && src[nlPos + 1] == '\n')
+            {
+                tokenLen = 2; // CRLF
+            }
+            else
+            {
+                // Lone CR – not part of CRLF; leave unchanged
+                i = nlPos + 1;
+                continue;
+            }
+
+            // Walk backwards over spaces / tabs
+            var wsStart = nlPos;
+
+            while (wsStart > tail)
+            {
+                var ch = src[wsStart - 1];
+                
+                if (ch != ' ' && ch != '\t')
+	                break;
+                
+                wsStart--;
+            }
+
+            if (wsStart == nlPos)
+            {
+                // No trailing WS on this line
+                i = nlPos + tokenLen;
+                continue;
+            }
+
+            sb ??= (scratch ?? new StringBuilder(text.Length));
+            sb.Append(src.Slice(tail, wsStart - tail)); // Copy up to WS
+            sb.Append(src.Slice(nlPos, tokenLen)); // The newline
+
+            tail = nlPos + tokenLen; // Skip WS + NL
+            i = tail; // Continue scan
+        }
+
+        if (sb is null)
+            return text; // Nothing trimmed, return original string
+
+        sb.Append(src[tail..]); // Copy remainder
+
+        return sb.ToString();
+
+        // SIMD-accelerated search for '\n' or '\r'
+        static int NextNl(ReadOnlySpan<char> span) => span.IndexOfAny('\n', '\r');
+    }	
+	
+    /// <summary>
+    /// Collapses every run of <paramref name="minTokens"/> or more newline
+    /// tokens (LF or CRLF) down to exactly two newline tokens.
+    /// </summary>
+    /// <param name="text">Input. May be <c>null</c> or empty.</param>
+    /// <param name="useCrlf">
+    /// When <c>true</c>, the replacement is “<c>\r\n\r\n</c>”; otherwise
+    /// “<c>\n\n</c>”.</param>
+    /// <param name="scratch">
+    /// Optional <see cref="StringBuilder"/> (typically from an <em>ObjectPool</em>).
+    /// It is always <b>cleared</b> before use.</param>
+    /// <param name="minTokens">Defaults to <c>3</c>.</param>
+    /// <remarks>Returns the original string unchanged when no consolidation is
+    /// required; thus zero allocations on the fast path.</remarks>
+    public static string ConsolidateLineBreaks(this string? text, bool useCrlf = false, StringBuilder? scratch = null, int minTokens = 3)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text ?? string.Empty;
+
+        var src = text.AsSpan();
+
+        /*--------------- FAST VETO -----------------
+         * If we cannot find “minTokens” consecutive LF characters or
+         * “minTokens” consecutive CRLF pairs, we know no rewrite is needed.
+         * The simple IndexOf/Contains calls are heavily vectorised in
+         * CoreCLR and save us from a char-by-char scan in the common case.
+         */
+        if (src.IndexOf("\n\n\n".AsSpan()[..minTokens]) < 0 && src.IndexOf("\r\n\r\n\r\n".AsSpan()[..(minTokens * 2)]) < 0)
+	        return text;
+
+        scratch?.Clear();
+        StringBuilder? sb = null;
+
+        var tail = 0; // start of segment not yet copied
+        var i = 0;
+        var len = src.Length;
+
+        ReadOnlySpan<char> token = useCrlf ? "\r\n\r\n" : "\n\n";
+
+        while (i < len)
+        {
+            // Jump straight to the next \n or \r (if any)
+            var rel = NextNewline(src[i..]);
+
+            if (rel < 0)
+                break; // Remainder has no newlines
+
+            var pos = i + rel; // Absolute index of 1st NL
+            var runTokens = 0; // Length in NL tokens
+
+            while (pos < len)
+            {
+                if (src[pos] == '\n')
+                {
+                    runTokens++; pos++; // LF
+                }
+                else if (src[pos] == '\r' && pos + 1 < len && src[pos + 1] == '\n')
+                {
+                    runTokens++; pos += 2; // CRLF
+                }
+                else
+                {
+                    break; // Not part of NL run
+                }
+            }
+
+            if (runTokens < minTokens)
+            {
+                // Keep it verbatim – move on
+                i = pos;
+                continue;
+            }
+
+            sb ??= (scratch ?? new StringBuilder(text.Length));
+            sb.Append(src.Slice(tail, (i + rel) - tail)); // Copy head
+            sb.Append(token); // Always 2 tokens
+            tail = pos; // Skip the run
+            i = pos; // Resume scanning
+        }
+
+        if (sb is null)
+            return text; // No changes, return original string
+
+        sb.Append(src[tail..]); // Copy tail
+
+        return sb.ToString();
+
+        static int NextNewline(ReadOnlySpan<char> span) => span.IndexOfAny('\n', '\r'); // SIMD-accelerated
+    }
+    
 	/// <summary>
 	/// Removes all C-style block comments ( /* … */ ) from <paramref name="source"/>.
 	/// If a closing <c>*/</c> is missing the rest of the text is treated as a comment.
 	/// Nested block comments are NOT supported; the first closing token ends the comment.
 	/// </summary>
-	public static string RemoveBlockComments(this string? source, StringBuilder? sb = null)
+	public static string RemoveBlockComments(this string? source, StringBuilder? workingSb = null)
 	{
 		if (string.IsNullOrEmpty(source))
 			return source ?? string.Empty;
 
-		sb ??= new StringBuilder(source.Length);
-		sb.Clear();
+		workingSb ??= new StringBuilder(source.Length);
+		workingSb.Clear();
 		
 		var span = source.AsSpan();
 		var i = 0;
@@ -631,11 +1050,11 @@ public static class Strings
 				continue;
 			}
 
-			sb.Append(span[i]);
+			workingSb.Append(span[i]);
 			i++;
 		}
 
-		return sb.ToString();
+		return workingSb.ToString();
 	}	
 	
 	public static string CssSelectorEscape(this string value)
@@ -753,7 +1172,7 @@ public static class Strings
 		return workingSb.ToString();
 	}	
 	
-	private static string ConsolidateSpaces(this string css, StringBuilder? workingSb = null)
+	public static string ConsolidateSpaces(this string css, StringBuilder? workingSb = null)
 	{
 		workingSb ??= new StringBuilder(css.Length);
 		workingSb.Clear();
