@@ -2,7 +2,7 @@
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
-public class VariantMetadata
+public sealed class VariantMetadata
 {
     public int PrefixOrder { get; init; }
     public string PrefixType { get; init; } = string.Empty;

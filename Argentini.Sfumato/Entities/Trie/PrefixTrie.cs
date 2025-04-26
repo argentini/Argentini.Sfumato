@@ -1,6 +1,6 @@
 namespace Argentini.Sfumato.Entities.Trie;
 
-public class PrefixTrie
+public sealed class PrefixTrie
 {
     private readonly TrieNode _root = new();
 

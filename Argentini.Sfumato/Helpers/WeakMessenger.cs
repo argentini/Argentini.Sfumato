@@ -24,7 +24,7 @@ namespace Argentini.Sfumato.Helpers;
 /// </code>
 /// </example>
 /// </summary>
-public class WeakMessenger
+public sealed class WeakMessenger
 {
     private readonly ConcurrentDictionary<Type, List<WeakDelegate>> _handlers = new();
 
@@ -60,7 +60,7 @@ public class WeakMessenger
                 list.Remove(weakDelegate);
     }
 
-    private class WeakDelegate(Delegate handler)
+    private sealed class WeakDelegate(Delegate handler)
     {
         private readonly WeakReference? _targetRef = handler.Target is not null ? new WeakReference(handler.Target) : null;
         private readonly MethodInfo _method = handler.Method;
