@@ -687,14 +687,15 @@ public static partial class Strings
 	/// Removes spaces and newlines from a string.
 	/// </summary>
 	/// <param name="css"></param>
+	/// <param name="workingSb"></param>
 	/// <returns></returns>
-	public static string CompactCss(this string css)
+	public static string CompactCss(this string css, StringBuilder? workingSb = null)
     {
 	    // Removes the element name before an ID value (e.g. div#main => #main)
 	    var result = CssCompressSelectors().Replace(css, "#");
 
 	    // Remove line breaks, block comments
-	    result = CssRemovals().Replace(result, string.Empty);
+	    result = CssRemovals().Replace(result, string.Empty).RemoveBlockComments(workingSb ?? new StringBuilder());
 
 	    // Consolidate spaces
 	    result = CssConsolidateSpaces().Replace(result, " ").Trim();
@@ -711,7 +712,7 @@ public static partial class Strings
         return result;
     }
 
-	[GeneratedRegex(@"([\n\r]+\s*)|(/\*[\d\D]*?\*/)")]
+	[GeneratedRegex(@"([\n\r]+\s*)")]
 	private static partial Regex CssRemovals();
 
 	[GeneratedRegex(@"\s?([:,;{}])\s?")]

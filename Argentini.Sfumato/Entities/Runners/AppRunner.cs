@@ -515,6 +515,7 @@ public partial class AppRunner
     public string BuildCss()
 	{
 		var sourceCss = AppState.StringBuilderPool.Get();
+		var workingSb = AppState.StringBuilderPool.Get();
 
 		try
 		{
@@ -534,11 +535,12 @@ public partial class AppRunner
 				.InjectRootDependenciesCss(this)
 				.InjectUtilityClassesCss(this);
 			
-			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss() : ConsolidateLineBreaksRegex().Replace(sourceCss.ToString().Trim(), AppRunnerSettings.LineBreak + AppRunnerSettings.LineBreak);
+			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : ConsolidateLineBreaksRegex().Replace(sourceCss.ToString().Trim(), AppRunnerSettings.LineBreak + AppRunnerSettings.LineBreak);
 		}
 		finally
 		{
 			AppState.StringBuilderPool.Return(sourceCss);
+			AppState.StringBuilderPool.Return(workingSb);
 		}
 	}
 
