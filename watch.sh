@@ -1,2 +1,2 @@
-dotnet run --project Argentini.Sfumato/Argentini.Sfumato.csproj watch --path Argentini.Sfumato.Tests/SampleWebsite/ --minify
-#dotnet run --project Argentini.Sfumato/Argentini.Sfumato.csproj watch --path /Users/magic/Developer/Tolnedra2/UmbracoCms/
+dotnet run -c Release --project Argentini.Sfumato/Argentini.Sfumato.csproj watch Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css
+#dotnet run -c Release --project Argentini.Sfumato/Argentini.Sfumato.csproj watch "../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"
