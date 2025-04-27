@@ -11,26 +11,22 @@ namespace Argentini.Sfumato.Entities.Runners;
 
 public sealed class AppRunner
 {
-	#region Services
-
-	static WeakMessenger Messenger = new ();
-	
-	#endregion
-	
 	#region Properties
 
-	public Stopwatch CssBuildStopwatch { get; set; } = new();
-	public Stopwatch FileScanStopwatch { get; set; } = new();
+	public Stopwatch CssBuildStopwatch { get; } = new();
+	public Stopwatch FileScanStopwatch { get; } = new();
 	public string LastCss { get; set; } = string.Empty;
-	public List<string> Messages { get; set; } = [];
+	private List<string> Messages { get; } = [];
+	public bool MessagesBusy { get; set; }
+	public bool IsFirstRun { get; set; } = true;
 	
 	public AppState AppState { get; }
 	public Library.Library Library { get; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new(null);
-	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; set; } = new(StringComparer.Ordinal);
-	public ConcurrentDictionary<string,string> UsedCssCustomProperties { get; set; } = new(StringComparer.Ordinal);
-	public ConcurrentDictionary<string,string> UsedCss { get; set; } = new(StringComparer.Ordinal);
-	public ConcurrentDictionary<string,CssClass> UtilityClasses { get; set; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,string> UsedCss { get; } = new(StringComparer.Ordinal);
+	public ConcurrentDictionary<string,CssClass> UtilityClasses { get; } = new(StringComparer.Ordinal);
 
 	private readonly string _cssFilePath;
 	private readonly bool _useMinify;
@@ -399,8 +395,11 @@ public sealed class AppRunner
 
 	#region Actions
 
-	public void AddCssPathMessage()
+	public async Task AddCssPathMessageAsync()
 	{
+		while (MessagesBusy)
+			await Task.Delay(25);
+		
 		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter(
 			(int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d),
 			(int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3,
@@ -409,18 +408,31 @@ public sealed class AppRunner
 		Messages.Add(relativePath);
 	}
 
-	public void AddMessage(string message)
+	public async Task AddMessageAsync(string message)
 	{
+		while (MessagesBusy)
+			await Task.Delay(25);
+
 		Messages.Add(message);
 	}
 
-	public async Task RenderMessagesAsync(bool clear = true)
+	public async Task RenderMessagesAsync()
 	{
-		foreach (var message in Messages)
-			await Console.Out.WriteLineAsync(message);
+		while (MessagesBusy)
+			await Task.Delay(25);
 
-		if (clear)
-			Messages.Clear();
+		MessagesBusy = true;
+
+		if (IsFirstRun == false)
+			Messages.Insert(0, Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
+
+		Program.Dispatcher.Post(Messages.ToList());
+		
+		Messages.Clear();
+		MessagesBusy = false;
+
+		if (IsFirstRun)
+			IsFirstRun = false;
 	}
 
 	public async Task ReInitialize()
@@ -445,7 +457,7 @@ public sealed class AppRunner
 		
 		FileScanStopwatch.Stop();
 		
-		AddMessage($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {FileScanStopwatch.FormatTimer()}");
+		await AddMessageAsync($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {FileScanStopwatch.FormatTimer()}");
 	}
 
 	public async Task BuildAndSaveCss()
@@ -461,6 +473,8 @@ public sealed class AppRunner
 		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {CssBuildStopwatch.FormatTimer()}");
 		Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff}");
 		Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
+
+		await RenderMessagesAsync();
 	}
 	
 	private async Task RecurseProjectPathAsync(string? sourcePath, ConcurrentBag<Task> tasks)

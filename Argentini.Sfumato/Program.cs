@@ -1,9 +1,15 @@
+using System.Threading.Tasks.Dataflow;
+
 namespace Argentini.Sfumato;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class Program
 {
-	// static WeakMessenger Messenger = new ();
+	private static readonly WeakMessenger Messenger = new ();
+	public static readonly ActionBlock<List<string>> Dispatcher = new (
+		messages => Messenger.Send(messages),
+		new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 }
+	);
 
 	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
@@ -18,9 +24,25 @@ internal class Program
 		var appState = new AppState();
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
+		Messenger.Register<List<string>>(async void (messages) =>
+		{
+			try
+			{
+				foreach (var message in messages)
+					await Console.Out.WriteLineAsync(message);
+
+				if (appState.WatchMode)
+					await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
+			}
+			catch
+			{
+				// Ignored
+			}
+		});
+
 #if DEBUG
 		//await appState.InitializeAsync(["build", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css"]);
-		await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		await appState.InitializeAsync(["watch", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
 #else		
         await appState.InitializeAsync(args);
 #endif        
@@ -31,6 +53,7 @@ internal class Program
 			Environment.Exit(0);
 		}
 		
+		await Console.Out.WriteLineAsync();
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 		await Console.Out.WriteLineAsync("Sfumato: A modern CSS generation tool");
 		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
@@ -167,7 +190,8 @@ internal class Program
 		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 		foreach (var appRunner in appState.AppRunners)
 		{
-			appRunner.AddCssPathMessage();
+			await appRunner.AddCssPathMessageAsync();
+
 			tasks.Add(appRunner.PerformFileScan());
 		}
 
@@ -182,23 +206,81 @@ internal class Program
 		
 		totalTimer.Stop();
 		
-		foreach (var appRunner in appState.AppRunners)
-			await appRunner.RenderMessagesAsync();
-		
-		await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
+		// await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
+		// await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 
-		/*
 		if (appState.WatchMode)
 		{
-			foreach (var appRunner in appState.AppRunners)
+			var cancellationTokenSource = new CancellationTokenSource();
+
+			// Support async stdin read
+			if (Console.IsInputRedirected)
 			{
-				// todo: initialize watcher
+				// Read the stream without blocking the main thread.
+				// Check if the escape key is sent to the stdin stream.
+				// If it is, cancel the token source and exit the loop.
+				// This will allow interactive quit when input is redirected.
+				_ = Task.Run(async () =>
+				{
+					while (cancellationTokenSource.IsCancellationRequested == false)
+					{
+						try
+						{
+							await Task.Delay(25, cancellationTokenSource.Token);
+						}
+						catch (TaskCanceledException)
+						{
+							break;
+						}
+
+						if (Console.In.Peek() == -1)
+							continue;
+
+						if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
+							continue;
+
+						await cancellationTokenSource.CancelAsync();
+
+						break;
+					}
+				}, cancellationTokenSource.Token);
+			}
+
+			while ((Console.IsInputRedirected || Console.KeyAvailable == false) && cancellationTokenSource.IsCancellationRequested == false)
+			{
+				try
+				{
+					await Task.Delay(250, cancellationTokenSource.Token);
+				}
+				catch (TaskCanceledException)
+				{
+					break;
+				}
+
+				if (cancellationTokenSource.IsCancellationRequested)
+					break;
+
+				// ReSharper disable once InvertIf
+				if (Console.IsInputRedirected == false)
+				{
+					if (Console.KeyAvailable == false)
+						continue;
+					
+					var keyPress = Console.ReadKey(intercept: true);
+
+					if (keyPress.Key != ConsoleKey.Escape)
+						continue;
+					
+					await cancellationTokenSource.CancelAsync();
+					
+					break;
+				}
 			}
 		}
-		*/
 		
+		await Console.Out.WriteLineAsync();
 		await Console.Out.WriteLineAsync($"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}");
+		await Console.Out.WriteLineAsync();
 		
 		Environment.Exit(0);
 	}
