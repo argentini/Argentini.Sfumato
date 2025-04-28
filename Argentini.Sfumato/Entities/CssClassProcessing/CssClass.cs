@@ -306,7 +306,6 @@ public sealed class CssClass : IDisposable
             if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
                 var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').Replace('_', ' ');
-                var useArbitraryValue = false;
 
                 if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
                 {
@@ -359,7 +358,6 @@ public sealed class CssClass : IDisposable
                 else
                 {
                     AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
-                    useArbitraryValue = true;
                 }
 
                 if (ClassDefinition is not null)
@@ -372,7 +370,7 @@ public sealed class CssClass : IDisposable
 
                     UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
 
-                    GenerateStyles(useArbitraryValue);
+                    GenerateStyles();
 
                     return;
                 }
@@ -384,8 +382,6 @@ public sealed class CssClass : IDisposable
             
             if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
-                var useArbitraryValue = false;
-                
                 // Iterate through all data type classes to find a prefix match
 
                 var classDictionaries = new List<Dictionary<string, ClassDefinition>>
@@ -408,12 +404,7 @@ public sealed class CssClass : IDisposable
                 foreach (var dict in classDictionaries)
                 {
                     if (dict.TryGetValue(prefix, out ClassDefinition))
-                    {
-                        if (dict == AppRunner.Library.AbstractClasses)
-                            useArbitraryValue = true;
-                        
                         break;
-                    }
                 }                
 
                 if (ClassDefinition is not null)
@@ -426,7 +417,7 @@ public sealed class CssClass : IDisposable
 
                     UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
                     
-                    GenerateStyles(useArbitraryValue);
+                    GenerateStyles();
 
                     return;
                 }
@@ -705,7 +696,7 @@ public sealed class CssClass : IDisposable
 
     private void GenerateStyles(bool useArbitraryValue = false)
     {
-        if ((HasArbitraryValue || useArbitraryValue) && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
+        if ((HasArbitraryValue || HasArbitraryValueWithCssCustomProperty || useArbitraryValue) && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
         {
             Styles = ClassDefinition.ArbitraryCssValueTemplate;
         }
