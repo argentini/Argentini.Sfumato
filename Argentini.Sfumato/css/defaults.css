@@ -491,6 +491,21 @@
         }
     }
 
+    --sf-gradient-position: ;
+    --sw-gradient-stops: ;
+
+    --sf-gradient-to: ;
+    --sf-gradient-to-position: ;
+    --sf-gradient-to-stops: ;
+
+    --sf-gradient-from: ;
+    --sf-gradient-from-position: ;
+    --sf-gradient-from-stops: ;
+
+    --sf-gradient-via: ;
+    --sf-gradient-via-position: ;
+    --sf-gradient-via-stops: ;
+
     --blur-xs: 0.25rem;
     --blur-sm: 0.5rem;
     --blur-md: 0.75rem;
