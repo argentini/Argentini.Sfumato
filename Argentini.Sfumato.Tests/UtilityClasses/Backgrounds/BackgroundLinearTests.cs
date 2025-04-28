@@ -20,7 +20,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                     }
                     
                     --sf-gradient-position: 65deg;
-                    background-image: linear-gradient(var(--sw-gradient-stops));
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -37,7 +37,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                     }
 
                     --sf-gradient-position: 65deg;
-                    background-image: linear-gradient(var(--sw-gradient-stops));
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -54,7 +54,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                     }
 
                     --sf-gradient-position: 65deg;
-                    background-image: linear-gradient(var(--sw-gradient-stops));
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -71,7 +71,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                     }
 
                     --sf-gradient-position: -65deg;
-                    background-image: linear-gradient(var(--sw-gradient-stops));
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,

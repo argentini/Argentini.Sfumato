@@ -21,7 +21,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         }
 
                         --sf-gradient-position: {0}deg;
-                        background-image: linear-gradient(var(--sw-gradient-stops));
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -30,7 +30,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         }
 
                         --sf-gradient-position: {0}deg;
-                        background-image: linear-gradient(var(--sw-gradient-stops));
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ArbitraryCssValueTemplate =
                         """
@@ -51,7 +51,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         }
 
                         --sf-gradient-position: -{0}deg;
-                        background-image: linear-gradient(var(--sw-gradient-stops));
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -60,7 +60,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         }
 
                         --sf-gradient-position: -{0}deg;
-                        background-image: linear-gradient(var(--sw-gradient-stops));
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
