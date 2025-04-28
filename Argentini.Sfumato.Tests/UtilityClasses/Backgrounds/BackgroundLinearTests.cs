@@ -45,6 +45,23 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "bg-linear-65/shorter",
+                EscapedClassName = @".bg-linear-65\/shorter",
+                Styles =
+                    """
+                    @supports (background-image:linear-gradient(in lab, red, red)) {
+                        --sf-gradient-position: 65deg in oklch shorter hue;
+                    }
+
+                    --sf-gradient-position: 65deg;
+                    background-image: linear-gradient(var(--sw-gradient-stops));
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
+            },
+            new ()
+            {
                 ClassName = "-bg-linear-65",
                 EscapedClassName = ".-bg-linear-65",
                 Styles =
