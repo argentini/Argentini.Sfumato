@@ -306,6 +306,7 @@ public sealed class CssClass : IDisposable
             if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
                 var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').Replace('_', ' ');
+                var useArbitraryValue = false;
 
                 if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
                 {
@@ -355,6 +356,11 @@ public sealed class CssClass : IDisposable
                 {
                     AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
                 }
+                else
+                {
+                    AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                    useArbitraryValue = true;
+                }
 
                 if (ClassDefinition is not null)
                 {
@@ -366,7 +372,7 @@ public sealed class CssClass : IDisposable
 
                     UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
 
-                    GenerateStyles();
+                    GenerateStyles(useArbitraryValue);
 
                     return;
                 }
@@ -378,10 +384,13 @@ public sealed class CssClass : IDisposable
             
             if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
+                var useArbitraryValue = false;
+                
                 // Iterate through all data type classes to find a prefix match
 
                 var classDictionaries = new List<Dictionary<string, ClassDefinition>>
                 {
+                    AppRunner.Library.AbstractClasses,
                     AppRunner.Library.DimensionLengthClasses,
                     AppRunner.Library.ColorClasses,
                     AppRunner.Library.IntegerClasses,
@@ -393,13 +402,18 @@ public sealed class CssClass : IDisposable
                     AppRunner.Library.FlexClasses,
                     AppRunner.Library.RatioClasses,
                     AppRunner.Library.ResolutionClasses,
-                    AppRunner.Library.StringClasses
+                    AppRunner.Library.StringClasses,
                 };
 
                 foreach (var dict in classDictionaries)
                 {
                     if (dict.TryGetValue(prefix, out ClassDefinition))
+                    {
+                        if (dict == AppRunner.Library.AbstractClasses)
+                            useArbitraryValue = true;
+                        
                         break;
+                    }
                 }                
 
                 if (ClassDefinition is not null)
@@ -412,7 +426,7 @@ public sealed class CssClass : IDisposable
 
                     UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
                     
-                    GenerateStyles();
+                    GenerateStyles(useArbitraryValue);
 
                     return;
                 }
@@ -513,6 +527,8 @@ public sealed class CssClass : IDisposable
             else if (value.ValueIsInteger())
             {
                 if (AppRunner.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
+                    Value = value;
+                else if (AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition))
                     Value = value;
             }
             else if (value.ValueIsColorName(AppRunner))
