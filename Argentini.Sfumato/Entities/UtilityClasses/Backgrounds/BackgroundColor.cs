@@ -18,6 +18,24 @@ public sealed class BackgroundColor : ClassDictionaryBase
                                """,
                 }
             },
+            {
+                "bg-inherit", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               background-color: inherit;
+                               """,
+                }
+            },
+            {
+                "bg-current", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               background-color: currentColor;
+                               """,
+                }
+            },
         });
     }
     
