@@ -627,7 +627,7 @@ public sealed class AppRunner
 	{
 		ShutDownWatchers();
 		
-		FileWatchers.Add(await CreateFileChangeWatcherAsync(RestartAppQueue, AppRunnerSettings.NativeCssFilePathOnly, false));
+		FileWatchers.Add(await CreateFileChangeWatcherAsync(RestartAppQueue, AppRunnerSettings.NativeCssFilePathOnly, true));
 			
 		foreach (var projectPath in AppRunnerSettings.AbsolutePaths)
 			FileWatchers.Add(await CreateFileChangeWatcherAsync(RebuildProjectQueue, projectPath, true));
@@ -686,9 +686,15 @@ public sealed class AppRunner
 	{
 		if (RestartAppQueue.IsEmpty == false)
 		{
-			if (RestartAppQueue.Any(kvp => kvp.Value.FullPath == AppRunnerSettings.NativeCssFilePath && kvp.Value.ChangeType is WatcherChangeTypes.Changed or WatcherChangeTypes.Created))
+			// Imported CSS file has changed
+			var performRebuild = RestartAppQueue.Any(kvp => AppRunnerSettings.Imports.Contains(kvp.Value.FullPath));
+
+			// Source file has changed
+			if (performRebuild == false && RestartAppQueue.Any(kvp => kvp.Value.FullPath == AppRunnerSettings.NativeCssFilePath && kvp.Value.ChangeType is WatcherChangeTypes.Changed or WatcherChangeTypes.Created))
+				performRebuild = true;
+			
+			if (performRebuild)
 			{
-				RestartAppQueue.Clear();
 				RebuildProjectQueue.Clear();
 
 				await AddCssPathMessageAsync();
@@ -697,14 +703,96 @@ public sealed class AppRunner
 				await ReInitializeAsync();
 				await PerformFileScanAsync();
 				await BuildAndSaveCss();
-				
-				return;
 			}
+			
+			RestartAppQueue.Clear();
 		}
 
 		if (RebuildProjectQueue.IsEmpty == false)
 		{
+			var performRebuild = false;
 			
+			foreach (var kvp in RebuildProjectQueue.OrderBy(k => k.Key))
+			{
+				var fcr = kvp.Value;
+				var extension = Path.GetExtension(fcr.Name) ?? string.Empty;
+
+				if (string.IsNullOrEmpty(extension))
+					continue;
+
+				if (Library.InvalidFileExtensions.Any(e => e == extension))
+					continue;
+
+				if (Library.ValidFileExtensions.Any(e => e == extension) == false)
+					continue;
+
+				var pathOnly = fcr.FullPath.TrimEnd(fcr.Name) ?? string.Empty;
+
+				if (string.IsNullOrEmpty(pathOnly))
+					continue;
+
+				if (AppRunnerSettings.AbsoluteNotPaths.Any(s => pathOnly.StartsWith(s, StringComparison.Ordinal)))
+					continue;
+
+				if (AppRunnerSettings.NotFolderNames.Any(s => pathOnly.Contains($"{Path.DirectorySeparatorChar}{s}{Path.DirectorySeparatorChar}", StringComparison.Ordinal)))
+					continue;
+
+				performRebuild = true;
+
+				await AddCssPathMessageAsync();
+
+				FileScanStopwatch.Restart();
+
+				// ReSharper disable once ConvertIfStatementToSwitchStatement
+				if (fcr.ChangeType is WatcherChangeTypes.Changed or WatcherChangeTypes.Created)
+				{
+					if (ScannedFiles.TryGetValue(fcr.FullPath, out var scannedFile))
+					{
+						await scannedFile.LoadAndScanFileAsync(this);
+					}
+					else
+					{
+						var newScannedFile = new ScannedFile(fcr.FullPath);
+
+						await newScannedFile.LoadAndScanFileAsync(this);
+
+						ScannedFiles.TryAdd(fcr.FullPath, newScannedFile);
+					}
+					
+					if (fcr.ChangeType is WatcherChangeTypes.Changed)
+						await AddMessageAsync($"Changed => {fcr.Name}");
+					else
+						await AddMessageAsync($"Added => {fcr.Name}");
+				}
+				else if (fcr.ChangeType is WatcherChangeTypes.Deleted)
+				{
+					ScannedFiles.Remove(fcr.FullPath, out _);
+					
+					await AddMessageAsync($"Deleted => {fcr.Name}");
+				}				
+				else if (fcr.ChangeType is WatcherChangeTypes.Renamed)
+				{
+					var renamedEventArgs = (RenamedEventArgs) fcr;
+					var scannedFile = new ScannedFile(renamedEventArgs.FullPath);
+					
+					await scannedFile.LoadAndScanFileAsync(this);
+					
+					ScannedFiles.TryAdd(renamedEventArgs.FullPath, scannedFile);
+					ScannedFiles.Remove(renamedEventArgs.OldFullPath, out _);
+
+					await AddMessageAsync($"Renamed => {renamedEventArgs.OldName} to {renamedEventArgs.Name}");
+				}
+			}
+
+			RebuildProjectQueue.Clear();
+
+			if (performRebuild)
+			{
+				ProcessScannedFileUtilityClassDependencies(this);
+
+				await AddMessageAsync($"Processed changes in {FileScanStopwatch.FormatTimer()}");
+				await BuildAndSaveCss();
+			}
 		}
 	}
 	

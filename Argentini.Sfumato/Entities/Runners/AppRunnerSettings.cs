@@ -64,6 +64,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 	public string Indentation { get; set; } = "    ";
 	
+	public List<string> Imports { get; } = [];
     public List<string> Paths { get; } = [];
     public List<string> AbsolutePaths { get; } = [];
     public List<string> NotPaths { get; } = [];
@@ -319,6 +320,8 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
     /// </summary>
     public void ImportPartials()
     {
+	    Imports.Clear();
+	    
 	    ProcessedCssContent = ImportPartials(ProcessedCssContent, NativeCssFilePathOnly).Trim();
     }
 
@@ -352,6 +355,8 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 				    Environment.Exit(1);
 			    }
 
+			    Imports.Add(filePath);
+			    
 			    var childCss = File.ReadAllText(filePath);
 				var injectedCss = ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty);
 
