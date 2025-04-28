@@ -113,6 +113,23 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 IsImportant = false,
                 UsedCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
             },
+            new ()
+            {
+                ClassName = "bg-linear-to-t/longer",
+                EscapedClassName = @".bg-linear-to-t\/longer",
+                Styles =
+                    """
+                    @supports (background-image:linear-gradient(in lab, red, red)) {
+                        --sf-gradient-position: to top in oklch longer hue;
+                    }
+
+                    --sf-gradient-position: to top;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
+            },
         };
 
         foreach (var test in testClasses)

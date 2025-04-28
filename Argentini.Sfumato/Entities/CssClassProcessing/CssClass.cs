@@ -275,6 +275,19 @@ public sealed class CssClass : IDisposable
                 value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
                 HasArbitraryModifierValue = ModifierValue.StartsWith('[');
                 ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
+
+                switch (ModifierValue)
+                {
+                    case "longer":
+                        ModifierValue = "oklch longer hue"; break;
+                    case "shorter":
+                        ModifierValue = "oklch shorter hue"; break;
+                    case "increasing":
+                        ModifierValue = "oklch increasing hue"; break;
+                    case "decreasing":
+                        ModifierValue = "oklch decreasing hue"; break;
+                }
+                
                 HasModifierValue = true;
             }
 
