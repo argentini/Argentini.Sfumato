@@ -17,6 +17,15 @@ public sealed class BackgroundImage : ClassDictionaryBase
                                """,
                 }
             },
+            {
+                "bg-none", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               background-image: none;
+                               """,
+                }
+            },
         });
     }
     
