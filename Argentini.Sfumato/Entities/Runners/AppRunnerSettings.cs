@@ -24,6 +24,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 			
 			NativeCssFilePathOnly = Path.GetFullPath(Path.GetDirectoryName(CssFilePath.SetNativePathSeparators()) ?? string.Empty);
 			CssFileNameOnly = Path.GetFileName(CssFilePath.SetNativePathSeparators());
+			NativeCssFilePath = Path.Combine(NativeCssFilePathOnly, CssFileNameOnly);
 			NativeCssOutputFilePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, CssOutputFilePath.SetNativePathSeparators()));
 		}
 	}
@@ -55,6 +56,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	public bool UseReset { get; set; } = true;
 	public bool UseForms { get; set; } = true;
 
+	public string NativeCssFilePath { get; private set; } = string.Empty;
 	public string NativeCssFilePathOnly { get; private set; } = string.Empty;
 	public string CssFileNameOnly { get; private set; } = string.Empty;
 	public string NativeCssOutputFilePath { get; private set; } = string.Empty;

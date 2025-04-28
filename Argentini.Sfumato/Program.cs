@@ -14,7 +14,6 @@ internal class Program
 	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
 	{
-		//var cancellationTokenSource = new CancellationTokenSource();
 		var totalTimer = new Stopwatch();
 
 		totalTimer.Start();
@@ -192,7 +191,7 @@ internal class Program
 		{
 			await appRunner.AddCssPathMessageAsync();
 
-			tasks.Add(appRunner.PerformFileScan());
+			tasks.Add(appRunner.PerformFileScanAsync());
 		}
 
 		await Task.WhenAll(tasks);
@@ -246,6 +245,9 @@ internal class Program
 				}, cancellationTokenSource.Token);
 			}
 
+			foreach (var appRunner in appState.AppRunners)
+				await appRunner.StartWatchingAsync();
+			
 			while ((Console.IsInputRedirected || Console.KeyAvailable == false) && cancellationTokenSource.IsCancellationRequested == false)
 			{
 				try
@@ -260,6 +262,9 @@ internal class Program
 				if (cancellationTokenSource.IsCancellationRequested)
 					break;
 
+				foreach (var appRunner in appState.AppRunners)
+					await appRunner.ProcessWatchQueues();
+				
 				// ReSharper disable once InvertIf
 				if (Console.IsInputRedirected == false)
 				{
@@ -277,8 +282,17 @@ internal class Program
 				}
 			}
 		}
-		
+
 		await Console.Out.WriteLineAsync();
+
+		if (appState.WatchMode)
+		{
+			await Console.Out.WriteLineAsync("Shutting down...");
+
+			foreach (var appRunner in appState.AppRunners)
+				appRunner.ShutDownWatchers();
+		}
+		
 		await Console.Out.WriteLineAsync($"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}");
 		await Console.Out.WriteLineAsync();
 		

@@ -1,10 +1,3 @@
-// ReSharper disable PropertyCanBeMadeInitOnly.Global
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable CollectionNeverQueried.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable CollectionNeverUpdated.Global
-// ReSharper disable InvertIf
-
 using System.Reflection;
 
 namespace Argentini.Sfumato.Entities.Runners;
@@ -30,6 +23,10 @@ public sealed class AppRunner
 
 	private readonly string _cssFilePath;
 	private readonly bool _useMinify;
+
+	private List<FileSystemWatcher> FileWatchers { get; } = [];
+	private ConcurrentDictionary<long, FileSystemEventArgs> RestartAppQueue { get; } = [];
+	private ConcurrentDictionary<long, FileSystemEventArgs> RebuildProjectQueue { get; } = [];
 	
     #endregion
 
@@ -393,7 +390,7 @@ public sealed class AppRunner
 
 	#endregion
 
-	#region Actions
+	#region Messaging
 
 	public async Task AddCssPathMessageAsync()
 	{
@@ -435,13 +432,17 @@ public sealed class AppRunner
 			IsFirstRun = false;
 	}
 
-	public async Task ReInitialize()
+	#endregion
+	
+	#region File Scanning
+	
+	public async Task ReInitializeAsync()
 	{
 		Initialize();
 		await LoadCssFileAsync();
 	}
 
-	public async Task PerformFileScan()
+	public async Task PerformFileScanAsync()
 	{
 		var tasks = new ConcurrentBag<Task>();
 
@@ -460,23 +461,6 @@ public sealed class AppRunner
 		await AddMessageAsync($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {FileScanStopwatch.FormatTimer()}");
 	}
 
-	public async Task BuildAndSaveCss()
-	{
-		CssBuildStopwatch.Restart();
-
-		LastCss = BuildCss();
-
-		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
-
-		CssBuildStopwatch.Stop();
-
-		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {CssBuildStopwatch.FormatTimer()}");
-		Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff}");
-		Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
-
-		await RenderMessagesAsync();
-	}
-	
 	private async Task RecurseProjectPathAsync(string? sourcePath, ConcurrentBag<Task> tasks)
 	{
 		if (string.IsNullOrEmpty(sourcePath))
@@ -531,19 +515,32 @@ public sealed class AppRunner
 		ScannedFiles.TryAdd(fileInfo.FullName, scannedFile);
 	}
 	
-	public async Task StartWatching()
-	{
-		// todo: watchers
-
-		await Task.CompletedTask;
-	}
-	
 	#endregion
 	
 	#region CSS Generation
-    
+
 	/// <summary>
-	/// Generate the final CSS output.
+	/// Build method used by the CLI
+	/// </summary>
+	public async Task BuildAndSaveCss()
+	{
+		CssBuildStopwatch.Restart();
+
+		LastCss = BuildCss();
+
+		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
+
+		CssBuildStopwatch.Stop();
+
+		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {CssBuildStopwatch.FormatTimer()}");
+		Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff}");
+		Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
+
+		await RenderMessagesAsync();
+	}
+
+	/// <summary>
+	/// Generate the final CSS output; used internally and for tests
 	/// </summary>
 	/// <returns></returns>
     public string BuildCss()
@@ -608,5 +605,108 @@ public sealed class AppRunner
 		}
 	}
     
+	#endregion
+	
+	#region Watching
+
+	public void ShutDownWatchers()
+	{
+		if (FileWatchers.Count == 0)
+			return;
+		
+		foreach (var watcher in FileWatchers)
+		{
+			watcher.EnableRaisingEvents = false;
+			watcher.Dispose();
+		}
+
+		FileWatchers.Clear();
+	}
+
+	public async Task StartWatchingAsync()
+	{
+		ShutDownWatchers();
+		
+		FileWatchers.Add(await CreateFileChangeWatcherAsync(RestartAppQueue, AppRunnerSettings.NativeCssFilePathOnly, false));
+			
+		foreach (var projectPath in AppRunnerSettings.AbsolutePaths)
+			FileWatchers.Add(await CreateFileChangeWatcherAsync(RebuildProjectQueue, projectPath, true));
+	}
+	
+	/// <summary>
+	/// Construct a file changes watcher.
+	/// </summary>
+	/// <param name="fileChangeQueue">scss or rebuild</param>
+	/// <param name="projectPath">Path tree to watch for file changes</param>
+	/// <param name="recurse">Also watch subdirectories</param>
+	private static async Task<FileSystemWatcher> CreateFileChangeWatcherAsync(ConcurrentDictionary<long, FileSystemEventArgs> fileChangeQueue, string projectPath, bool recurse)
+	{
+		if (string.IsNullOrEmpty(projectPath))
+		{
+			await Console.Out.WriteLineAsync("Fatal Error: No watch path specified");
+			Environment.Exit(1);
+		}
+        
+		var watcher = new FileSystemWatcher(projectPath)
+		{
+			NotifyFilter = NotifyFilters.Attributes
+			               | NotifyFilters.CreationTime
+			               | NotifyFilters.FileName
+			               | NotifyFilters.LastWrite
+			               | NotifyFilters.Size
+		};
+
+		watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
+		watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
+		watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
+		watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
+        
+		watcher.Filter = string.Empty;
+		watcher.IncludeSubdirectories = recurse;
+		watcher.EnableRaisingEvents = true;
+
+		return watcher;
+	}
+
+	/// <summary>
+	/// Add the change event to a queue for ordered processing.
+	/// </summary>
+	/// <param name="fileChangeQueue"></param>
+	/// <param name="e"></param>
+	private static async Task AddChangeToQueueAsync(ConcurrentDictionary<long, FileSystemEventArgs> fileChangeQueue, FileSystemEventArgs e)
+	{
+		var newKey = DateTimeOffset.UtcNow.UtcTicks;
+
+		fileChangeQueue.TryAdd(newKey, e);
+
+		await Task.CompletedTask;
+	}
+
+	public async Task ProcessWatchQueues()
+	{
+		if (RestartAppQueue.IsEmpty == false)
+		{
+			if (RestartAppQueue.Any(kvp => kvp.Value.FullPath == AppRunnerSettings.NativeCssFilePath && kvp.Value.ChangeType is WatcherChangeTypes.Changed or WatcherChangeTypes.Created))
+			{
+				RestartAppQueue.Clear();
+				RebuildProjectQueue.Clear();
+
+				await AddCssPathMessageAsync();
+				await AddMessageAsync("Source CSS file changed, rebuilding...");
+
+				await ReInitializeAsync();
+				await PerformFileScanAsync();
+				await BuildAndSaveCss();
+				
+				return;
+			}
+		}
+
+		if (RebuildProjectQueue.IsEmpty == false)
+		{
+			
+		}
+	}
+	
 	#endregion
 }
