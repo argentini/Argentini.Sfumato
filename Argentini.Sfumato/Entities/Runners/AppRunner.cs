@@ -405,7 +405,7 @@ public sealed class AppRunner
 		Messages.Add(relativePath);
 	}
 
-	public async Task AddMessageAsync(string message)
+	private async Task AddMessageAsync(string message)
 	{
 		while (MessagesBusy)
 			await Task.Delay(25);
@@ -413,7 +413,7 @@ public sealed class AppRunner
 		Messages.Add(message);
 	}
 
-	public async Task RenderMessagesAsync()
+	private async Task RenderMessagesAsync()
 	{
 		while (MessagesBusy)
 			await Task.Delay(25);
@@ -423,9 +423,11 @@ public sealed class AppRunner
 		if (IsFirstRun == false)
 			Messages.Insert(0, Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
 
-		Program.Dispatcher.Post(Messages.ToList());
-		
-		Messages.Clear();
+		Program.Dispatcher.Post(this);
+
+		while (Messages.Count != 0)
+			await Task.Delay(25);
+			
 		MessagesBusy = false;
 
 		if (IsFirstRun)

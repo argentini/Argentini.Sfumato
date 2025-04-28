@@ -6,16 +6,13 @@ namespace Argentini.Sfumato;
 internal class Program
 {
 	private static readonly WeakMessenger Messenger = new ();
-	public static readonly ActionBlock<List<string>> Dispatcher = new (
-		messages => Messenger.Send(messages),
-		new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 }
+	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 }
 	);
 
 	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
 	{
 		var totalTimer = new Stopwatch();
-		var messagesBusy = false;
 
 		totalTimer.Start();
 		
@@ -24,24 +21,19 @@ internal class Program
 		var appState = new AppState();
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
-		Messenger.Register<List<string>>(async void (messages) =>
+		Messenger.Register<AppRunner>(async void (appRunner) =>
 		{
 			try
 			{
-				messagesBusy = true;
-
-				foreach (var message in messages)
+				foreach (var message in appRunner.Messages)
 					await Console.Out.WriteLineAsync(message);
+
+				appRunner.Messages.Clear();
 			}
 			catch
 			{
 				// Ignored
 			}
-			finally
-			{
-				messagesBusy = false;
-			}
-
 		});
 
 #if DEBUG
@@ -211,9 +203,9 @@ internal class Program
 		{
 			do
 			{
-				await Task.Delay(250);
+				await Task.Delay(25);
 				
-			} while (messagesBusy || appState.AppRunners.Any(r => r.Messages.Count != 0));
+			} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
 
 			await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
 
@@ -283,9 +275,9 @@ internal class Program
 				{
 					do
 					{
-						await Task.Delay(250, cancellationTokenSource.Token);
+						await Task.Delay(25, cancellationTokenSource.Token);
 				
-					} while (messagesBusy || appState.AppRunners.Any(r => r.Messages.Count != 0));
+					} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
 
 					await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
 				}
