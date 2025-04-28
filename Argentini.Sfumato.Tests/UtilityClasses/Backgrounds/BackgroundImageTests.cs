@@ -71,7 +71,7 @@ public class BackgroundImageTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Backgrounds / BackgroundColor => {test.ClassName}");
+            testOutputHelper.WriteLine($"Backgrounds / BackgroundImage => {test.ClassName}");
         }
     }
 }
