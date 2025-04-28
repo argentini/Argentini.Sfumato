@@ -64,7 +64,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 	public string Indentation { get; set; } = "    ";
 	
-	public List<string> Imports { get; } = [];
+	public List<FileInfo> Imports { get; } = [];
     public List<string> Paths { get; } = [];
     public List<string> AbsolutePaths { get; } = [];
     public List<string> NotPaths { get; } = [];
@@ -352,15 +352,18 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 			    if (File.Exists(filePath) == false)
 			    {
 				    Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
-				    Environment.Exit(1);
+				    
+				    sb.Replace(importStatement, $"/* Could not import: {filePath} */");
 			    }
+			    else
+			    {
+				    Imports.Add(new FileInfo(filePath));
 
-			    Imports.Add(filePath);
-			    
-			    var childCss = File.ReadAllText(filePath);
-				var injectedCss = ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty);
+				    var childCss = File.ReadAllText(filePath);
+				    var injectedCss = ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty);
 
-			    sb.Replace(importStatement, injectedCss);
+				    sb.Replace(importStatement, injectedCss);
+			    }
 
 			    if (importIndex >= css.Length - 1)
 				    break;

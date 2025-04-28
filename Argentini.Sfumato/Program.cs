@@ -252,7 +252,7 @@ internal class Program
 			{
 				try
 				{
-					await Task.Delay(250, cancellationTokenSource.Token);
+					await Task.Delay(25, cancellationTokenSource.Token);
 				}
 				catch (TaskCanceledException)
 				{
