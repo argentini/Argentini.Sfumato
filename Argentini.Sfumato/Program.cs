@@ -290,7 +290,7 @@ internal class Program
 			await Console.Out.WriteLineAsync("Shutting down...");
 
 			foreach (var appRunner in appState.AppRunners)
-				appRunner.ShutDownWatchers();
+				await appRunner.ShutDownWatchersAsync();
 		}
 		
 		await Console.Out.WriteLineAsync($"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}");

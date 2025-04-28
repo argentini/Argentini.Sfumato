@@ -609,23 +609,29 @@ public sealed class AppRunner
 	
 	#region Watching
 
-	public void ShutDownWatchers()
+	public async Task ShutDownWatchersAsync()
 	{
 		if (FileWatchers.Count == 0)
 			return;
-		
-		foreach (var watcher in FileWatchers)
-		{
-			watcher.EnableRaisingEvents = false;
-			watcher.Dispose();
-		}
 
-		FileWatchers.Clear();
+		while (FileWatchers.Count != 0)
+		{
+			try
+			{
+				FileWatchers[0].EnableRaisingEvents = false;
+				FileWatchers[0].Dispose();
+				FileWatchers.RemoveAt(0);
+			}
+			catch
+			{
+				await Task.Delay(25);
+			}
+		}
 	}
 
 	public async Task StartWatchingAsync()
 	{
-		ShutDownWatchers();
+		await ShutDownWatchersAsync();
 		
 		FileWatchers.Add(await CreateFileChangeWatcherAsync(RestartAppQueue, AppRunnerSettings.NativeCssFilePathOnly, true));
 			
@@ -704,6 +710,8 @@ public sealed class AppRunner
 		
 		if (performRebuild || RestartAppQueue.IsEmpty == false)
 		{
+			var message = performRebuild ? "Import file(s) change, rebuilding..." : "Source CSS file changed, rebuilding...";
+
 			if (RestartAppQueue.Any(kvp => kvp.Value.FullPath == AppRunnerSettings.NativeCssFilePath))
 				performRebuild = true;
 
@@ -719,9 +727,13 @@ public sealed class AppRunner
 						await Console.Out.WriteLineAsync($"({fcr.FullPath})");
 						await Console.Out.WriteLineAsync("");
 
+						await ShutDownWatchersAsync();
+
 						Environment.Exit(1);
 					}
 
+					message = $"Renamed: {Path.GetFileName(fcr.OldFullPath)} => {Path.GetFileName(fcr.FullPath)}";
+						
 					_cssFilePath = _cssFilePath.TrimEnd(AppRunnerSettings.CssFileNameOnly) + Path.GetFileName(fcr.FullPath);
 					
 					Initialize();
@@ -740,15 +752,18 @@ public sealed class AppRunner
 
 					Environment.Exit(1);
 				}
-				
+
+				await ShutDownWatchersAsync();
+
 				RebuildProjectQueue.Clear();
 
 				await AddCssPathMessageAsync();
-				await AddMessageAsync("Source CSS file changed, rebuilding...");
+				await AddMessageAsync(message);
 
 				await ReInitializeAsync();
 				await PerformFileScanAsync();
 				await BuildAndSaveCss();
+				await StartWatchingAsync();
 			}
 			
 			RestartAppQueue.Clear();
