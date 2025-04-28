@@ -320,7 +320,7 @@ public sealed class CssClass : IDisposable
             {
                 var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').Replace('_', ' ');
 
-                if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
+                if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal))
                 {
                     AppRunner.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
                 }
@@ -331,6 +331,10 @@ public sealed class CssClass : IDisposable
                 else if (valueNoBrackets.StartsWith("integer:", StringComparison.Ordinal))
                 {
                     AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                }
+                else if (valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
+                {
+                    AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("alpha:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("number:", StringComparison.Ordinal))
                 {
@@ -368,10 +372,6 @@ public sealed class CssClass : IDisposable
                 {
                     AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
                 }
-                else
-                {
-                    AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
-                }
 
                 if (ClassDefinition is not null)
                 {
@@ -402,6 +402,7 @@ public sealed class CssClass : IDisposable
                     AppRunner.Library.AbstractClasses,
                     AppRunner.Library.DimensionLengthClasses,
                     AppRunner.Library.ColorClasses,
+                    AppRunner.Library.PercentageClasses,
                     AppRunner.Library.IntegerClasses,
                     AppRunner.Library.AlphaNumberClasses,
                     AppRunner.Library.AngleHueClasses,
@@ -444,7 +445,15 @@ public sealed class CssClass : IDisposable
             {
                 var valueNoBrackets = value.TrimStart('[').TrimEnd(']').Replace('_', ' ');
 
-                if (valueNoBrackets.ValueIsDimensionLength(AppRunner))
+                if (valueNoBrackets.ValueIsPercentage())
+                {
+                    if (AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                    {
+                        if (valueNoBrackets.ValueIsDimensionLength(AppRunner))
+                            AppRunner.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
+                    }
+                }
+                else if (valueNoBrackets.ValueIsDimensionLength(AppRunner))
                 {
                     AppRunner.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition);
                 }
@@ -533,6 +542,11 @@ public sealed class CssClass : IDisposable
                 if (AppRunner.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
                     Value = value;
                 else if (AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition))
+                    Value = value;
+            }
+            else if (value.ValueIsPercentage())
+            {
+                if (AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition))
                     Value = value;
             }
             else if (value.ValueIsColorName(AppRunner))
