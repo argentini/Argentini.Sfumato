@@ -303,6 +303,7 @@
     --color-stone-800: oklch(0.268 0.007 34.298);
     --color-stone-900: oklch(0.216 0.006 56.043);
     --color-stone-950: oklch(0.147 0.004 49.25);
+    --color-transparent: transparent;
     --color-black: #000;
     --color-white: #fff;
     
