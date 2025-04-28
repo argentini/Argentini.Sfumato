@@ -9,7 +9,7 @@ public sealed class AppRunner
 	public Stopwatch CssBuildStopwatch { get; } = new();
 	public Stopwatch FileScanStopwatch { get; } = new();
 	public string LastCss { get; set; } = string.Empty;
-	private List<string> Messages { get; } = [];
+	public List<string> Messages { get; } = [];
 	public bool MessagesBusy { get; set; }
 	public bool IsFirstRun { get; set; } = true;
 	
@@ -704,9 +704,10 @@ public sealed class AppRunner
 		return false;
 	}
 	
-	public async Task ProcessWatchQueues()
+	public async Task<bool> ProcessWatchQueues()
 	{
 		var performRebuild = ImportChangesPending();
+		var performedWork = performRebuild;
 		
 		if (performRebuild || RestartAppQueue.IsEmpty == false)
 		{
@@ -764,6 +765,9 @@ public sealed class AppRunner
 				await PerformFileScanAsync();
 				await BuildAndSaveCss();
 				await StartWatchingAsync();
+				
+				if (performedWork == false)
+					performedWork = true;
 			}
 			
 			RestartAppQueue.Clear();
@@ -842,19 +846,24 @@ public sealed class AppRunner
 
 			RebuildProjectQueue.Clear();
 
-			if (messages.Count != 0)
-			{
-				await AddCssPathMessageAsync();
+			if (messages.Count == 0)
+				return performedWork;
+			
+			await AddCssPathMessageAsync();
 
-				foreach (var message in messages)
-					await AddMessageAsync(message);				
+			foreach (var message in messages)
+				await AddMessageAsync(message);				
 				
-				ProcessScannedFileUtilityClassDependencies(this);
+			ProcessScannedFileUtilityClassDependencies(this);
 
-				await AddMessageAsync($"Processed changes in {FileScanStopwatch.FormatTimer()}");
-				await BuildAndSaveCss();
-			}
+			await AddMessageAsync($"Processed changes in {FileScanStopwatch.FormatTimer()}");
+			await BuildAndSaveCss();
+				
+			if (performedWork == false)
+				performedWork = true;
 		}
+
+		return performedWork;
 	}
 	
 	#endregion

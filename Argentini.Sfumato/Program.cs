@@ -15,6 +15,7 @@ internal class Program
 	private static async Task Main(string[] args)
 	{
 		var totalTimer = new Stopwatch();
+		var messagesBusy = false;
 
 		totalTimer.Start();
 		
@@ -27,21 +28,25 @@ internal class Program
 		{
 			try
 			{
+				messagesBusy = true;
+
 				foreach (var message in messages)
 					await Console.Out.WriteLineAsync(message);
-
-				if (appState.WatchMode)
-					await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
 			}
 			catch
 			{
 				// Ignored
 			}
+			finally
+			{
+				messagesBusy = false;
+			}
+
 		});
 
 #if DEBUG
-		//await appState.InitializeAsync(["build", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css"]);
-		await appState.InitializeAsync(["watch", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		//await appState.InitializeAsync(["watch", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
 #else		
         await appState.InitializeAsync(args);
 #endif        
@@ -161,18 +166,12 @@ internal class Program
 			await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
 			await Console.Out.WriteLineAsync($"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
 
-			if (appRunner.AppRunnerSettings.AbsolutePaths.Count > 0)
-				await Console.Out.WriteLineAsync(Strings.DotLine.Repeat(Library.MaxConsoleWidth));
-			
 			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 			foreach (var path in appRunner.AppRunnerSettings.AbsolutePaths)
 			{
 				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 				await Console.Out.WriteLineAsync($"Path        :  {relativePath2}");
 			}
-
-			if (appRunner.AppRunnerSettings.AbsoluteNotPaths.Count > 0)
-				await Console.Out.WriteLineAsync(Strings.DotLine.Repeat(Library.MaxConsoleWidth));
 
 			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 			foreach (var path in appRunner.AppRunnerSettings.AbsoluteNotPaths)
@@ -202,7 +201,7 @@ internal class Program
 			tasks.Add(appRunner.BuildAndSaveCss());
 		
 		await Task.WhenAll(tasks);
-		
+
 		totalTimer.Stop();
 		
 		// await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
@@ -210,6 +209,14 @@ internal class Program
 
 		if (appState.WatchMode)
 		{
+			do
+			{
+				await Task.Delay(250);
+				
+			} while (messagesBusy || appState.AppRunners.Any(r => r.Messages.Count != 0));
+
+			await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
+
 			var cancellationTokenSource = new CancellationTokenSource();
 
 			// Support async stdin read
@@ -262,9 +269,27 @@ internal class Program
 				if (cancellationTokenSource.IsCancellationRequested)
 					break;
 
-				foreach (var appRunner in appState.AppRunners)
-					await appRunner.ProcessWatchQueues();
+				var performedWork = false;
 				
+				foreach (var appRunner in appState.AppRunners)
+				{
+					var result = await appRunner.ProcessWatchQueues();
+
+					if (performedWork == false && result)
+						performedWork = true;
+				}
+
+				if (performedWork)
+				{
+					do
+					{
+						await Task.Delay(250, cancellationTokenSource.Token);
+				
+					} while (messagesBusy || appState.AppRunners.Any(r => r.Messages.Count != 0));
+
+					await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
+				}
+
 				// ReSharper disable once InvertIf
 				if (Console.IsInputRedirected == false)
 				{
