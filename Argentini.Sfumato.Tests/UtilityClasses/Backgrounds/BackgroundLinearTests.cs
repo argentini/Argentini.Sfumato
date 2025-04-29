@@ -107,7 +107,12 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".bg-linear-to-t",
                 Styles =
                     """
-                    background-image: linear-gradient(to top, var(--sf-gradient-stops));
+                    @supports (background-image:linear-gradient(in lab, red, red)) {
+                        --sf-gradient-position: to top in oklab;
+                    }
+                    
+                    --sf-gradient-position: to top;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -139,7 +144,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: to top in oklch longer hue;
                     }
-
+                    
                     --sf-gradient-position: to top;
                     background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
