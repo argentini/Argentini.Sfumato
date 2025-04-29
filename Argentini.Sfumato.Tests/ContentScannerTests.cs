@@ -62,6 +62,8 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                      color: var (
                                          --font-color
                                          );
+                                     background-color: --alpha(var(--color-lime-500) / 15%);
+                                     top: --spacing(4);
                                  }
                                  """;
     #endregion
@@ -92,7 +94,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
             props.Add(span.Property.ToString());
         }
         
-        Assert.Equal(11, props.Count);
+        Assert.Equal(12, props.Count);
 
         var dict = new Dictionary<string, string>();
         
@@ -103,5 +105,29 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         }
         
         Assert.Equal(6, dict.Count);
+
+        props.Clear();
+
+        var sb = new StringBuilder(Css);
+        
+        foreach (var match in sb.EnumerateTokenWithOuterParenthetical("--alpha"))
+        {
+            testOutputHelper.WriteLine(match);
+            props.Add(match);
+        }
+        
+        Assert.Single(props);
+        Assert.Equal("--alpha(var(--color-lime-500) / 15%)", props[0]);
+        
+        props.Clear();
+
+        foreach (var match in sb.EnumerateTokenWithOuterParenthetical("--spacing"))
+        {
+            testOutputHelper.WriteLine(match);
+            props.Add(match);
+        }
+        
+        Assert.Single(props);
+        Assert.Equal("--spacing(4)", props[0]);
     }
 }
