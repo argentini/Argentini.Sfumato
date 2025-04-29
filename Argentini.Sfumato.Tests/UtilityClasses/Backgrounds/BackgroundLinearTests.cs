@@ -83,7 +83,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".bg-linear-\[25deg\,red_5\%\,yellow_60\%\,lime_90\%\,teal\]",
                 Styles =
                     """
-                    background-image: linear-gradient(25deg,red 5%,yellow 60%,lime 90%,teal);
+                    background-image: linear-gradient(var(--sf-gradient-stops, 25deg,red 5%,yellow 60%,lime 90%,teal))
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -95,7 +95,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".bg-linear-\(--my-gradient\)",
                 Styles =
                     """
-                    background-image: linear-gradient(var(--my-gradient));
+                    background-image: linear-gradient(var(--sf-gradient-stops, var(--my-gradient)))
                     """,
                 IsValid = true,
                 IsImportant = false,

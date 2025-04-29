@@ -34,7 +34,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         """,
                     ArbitraryCssValueTemplate =
                         """
-                        background-image: linear-gradient({0});
+                        background-image: linear-gradient(var(--sf-gradient-stops, {0}))
                         """, 
                     UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }

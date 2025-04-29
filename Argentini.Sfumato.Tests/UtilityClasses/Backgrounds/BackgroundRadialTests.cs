@@ -29,7 +29,7 @@ public class BackgroundRadialTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-position: at 25% 25%;
-                    background-image: radial-gradient(var(--sf-gradient-stops), at 25% 25%);
+                    background-image: radial-gradient(var(--sf-gradient-stops, at 25% 25%));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -42,7 +42,7 @@ public class BackgroundRadialTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-position: var(--my-radial);
-                    background-image: radial-gradient(var(--sf-gradient-stops), var(--my-radial));
+                    background-image: radial-gradient(var(--sf-gradient-stops, var(--my-radial)));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -55,7 +55,7 @@ public class BackgroundRadialTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-position: var(--my-radial);
-                    background-image: radial-gradient(var(--sf-gradient-stops), var(--my-radial));
+                    background-image: radial-gradient(var(--sf-gradient-stops, var(--my-radial)));
                     """,
                 IsValid = true,
                 IsImportant = false,

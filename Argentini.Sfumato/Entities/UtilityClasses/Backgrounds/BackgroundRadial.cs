@@ -15,7 +15,7 @@ public sealed class BackgroundRadial : ClassDictionaryBase
                     ArbitraryCssValueTemplate =
                         """
                         --sf-gradient-position: {0};
-                        background-image: radial-gradient(var(--sf-gradient-stops), {0});
+                        background-image: radial-gradient(var(--sf-gradient-stops, {0}));
                         """, 
                     UsesCssCustomProperties = [ "--sf-gradient-position", "--sf-gradient-stops" ]
                 }
