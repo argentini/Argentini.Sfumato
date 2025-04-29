@@ -72,7 +72,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to top, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to top, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -93,7 +93,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to top right, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to top right, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -114,7 +114,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to right, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to right, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -135,7 +135,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to bottom right, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to bottom right, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -156,7 +156,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to bottom, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to bottom, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -177,7 +177,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to bottom left, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to bottom left, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -198,7 +198,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to left, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to left, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
@@ -219,7 +219,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
-                        background-image: background-image: linear-gradient(to top left, var(--sf-gradient-stops));
+                        background-image: linear-gradient(to top left, var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """

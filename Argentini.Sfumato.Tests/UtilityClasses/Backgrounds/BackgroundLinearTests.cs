@@ -107,7 +107,7 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".bg-linear-to-t",
                 Styles =
                     """
-                    background-image: background-image: linear-gradient(to top, var(--sf-gradient-stops));
+                    background-image: linear-gradient(to top, var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
