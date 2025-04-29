@@ -12,11 +12,14 @@ public sealed class ViaColor : ClassDictionaryBase
                 "via-", new ClassDefinition
                 {
                     UsesColor = true,
+                    SelectorSort = 2,
                     Template =
                         """
                         --sf-gradient-via: {0};
+                        --sf-gradient-via-stops: var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-via) var(--sf-gradient-via-position), var(--sf-gradient-to) var(--sf-gradient-to-position);
+                        --sf-gradient-stops: var(--sf-gradient-via-stops);
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-via" ]
+                    UsesCssCustomProperties = [ "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
                 }
             },
         });

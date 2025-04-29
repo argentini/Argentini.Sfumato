@@ -12,6 +12,7 @@ public sealed class FromPercentage : ClassDictionaryBase
                 "from-", new ClassDefinition
                 {
                     UsesPercentage = true,
+                    SelectorSort = 1,
                     Template =
                         """
                         --sf-gradient-from-position: {0};

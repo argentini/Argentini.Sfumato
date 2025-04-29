@@ -18,10 +18,11 @@ public class FromColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-from: var(--color-lime-800);
+                    --sf-gradient-stops: var(--sf-gradient-via-stops, var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-to) var(--sf-gradient-to-position));
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-lime-800", "--sf-gradient-from" ],
+                UsedCssCustomProperties = [ "--color-lime-800", "--sf-gradient-from", "--sf-gradient-stops", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from-position", "--sf-gradient-to", "--sf-gradient-to-position" ]
             },
             new ()
             {
@@ -30,10 +31,11 @@ public class FromColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-from: var(--my-color);
+                    --sf-gradient-stops: var(--sf-gradient-via-stops, var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-to) var(--sf-gradient-to-position));
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-from" ],
+                UsedCssCustomProperties = [ "--sf-gradient-from", "--sf-gradient-stops", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from-position", "--sf-gradient-to", "--sf-gradient-to-position" ]
             },
             new ()
             {
@@ -42,10 +44,11 @@ public class FromColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-from: #ff0000;
+                    --sf-gradient-stops: var(--sf-gradient-via-stops, var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-to) var(--sf-gradient-to-position));
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-from" ],
+                UsedCssCustomProperties = [ "--sf-gradient-from", "--sf-gradient-stops", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from-position", "--sf-gradient-to", "--sf-gradient-to-position" ]
             },
             new ()
             {
@@ -54,10 +57,11 @@ public class FromColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-from: var(--my-color);
+                    --sf-gradient-stops: var(--sf-gradient-via-stops, var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-to) var(--sf-gradient-to-position));
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-from" ],
+                UsedCssCustomProperties = [ "--sf-gradient-from", "--sf-gradient-stops", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from-position", "--sf-gradient-to", "--sf-gradient-to-position" ]
             },
         };
 

@@ -12,6 +12,7 @@ public sealed class ViaPercentage : ClassDictionaryBase
                 "via-", new ClassDefinition
                 {
                     UsesPercentage = true,
+                    SelectorSort = 2,
                     Template =
                         """
                         --sf-gradient-via-position: {0};

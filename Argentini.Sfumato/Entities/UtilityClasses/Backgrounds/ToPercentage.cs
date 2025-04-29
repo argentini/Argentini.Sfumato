@@ -12,6 +12,7 @@ public sealed class ToPercentage : ClassDictionaryBase
                 "to-", new ClassDefinition
                 {
                     UsesPercentage = true,
+                    SelectorSort = 3,
                     Template =
                         """
                         --sf-gradient-to-position: {0};

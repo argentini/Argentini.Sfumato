@@ -18,10 +18,12 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-via: var(--color-lime-800);
+                    --sf-gradient-via-stops: var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-via) var(--sf-gradient-via-position), var(--sf-gradient-to) var(--sf-gradient-to-position);
+                    --sf-gradient-stops: var(--sf-gradient-via-stops);
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-lime-800", "--sf-gradient-via" ],
+                UsedCssCustomProperties = [ "--color-lime-800", "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
             new ()
             {
@@ -30,10 +32,12 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-via: var(--my-color);
+                    --sf-gradient-via-stops: var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-via) var(--sf-gradient-via-position), var(--sf-gradient-to) var(--sf-gradient-to-position);
+                    --sf-gradient-stops: var(--sf-gradient-via-stops);
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-via" ],
+                UsedCssCustomProperties = [ "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
             new ()
             {
@@ -42,10 +46,12 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-via: #ff0000;
+                    --sf-gradient-via-stops: var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-via) var(--sf-gradient-via-position), var(--sf-gradient-to) var(--sf-gradient-to-position);
+                    --sf-gradient-stops: var(--sf-gradient-via-stops);
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-via" ],
+                UsedCssCustomProperties = [ "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
             new ()
             {
@@ -54,10 +60,12 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-gradient-via: var(--my-color);
+                    --sf-gradient-via-stops: var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-via) var(--sf-gradient-via-position), var(--sf-gradient-to) var(--sf-gradient-to-position);
+                    --sf-gradient-stops: var(--sf-gradient-via-stops);
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-via" ],
+                UsedCssCustomProperties = [ "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
         };
 
