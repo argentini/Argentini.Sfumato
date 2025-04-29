@@ -280,4 +280,90 @@ public static class StringBuilders
 		else if (source.Contains('\n') && linebreak != "\n")
 			source.Replace("\n", linebreak);
 	}
+	
+    /// <summary>
+    /// Enumerates every occurrence of token that is
+    /// immediately followed (optionally after whitespace) by a balanced
+    /// parenthetical expression.
+    /// Each yielded string consists of the token plus the complete outer
+    /// set of parentheses.
+    /// </summary>
+    /// <param name="sb">The source <see cref="StringBuilder"/>.</param>
+    /// <param name="token">The literal text to search for (case-sensitive).</param>
+    /// <returns>IEnumerable&lt;string&gt; of matches, streamed as they are found.</returns>
+    public static IEnumerable<string> EnumerateTokenWithOuterParenthetical(this StringBuilder sb, string token)
+    {
+        if (string.IsNullOrEmpty(token))
+            throw new ArgumentException("Token must be non-empty.", nameof(token));
+
+        var length = sb.Length;
+        var tokenLen = token.Length;
+        var t0 = token[0]; // first char for quick scan
+
+        for (var i = 0; i <= length - tokenLen; i++)
+        {
+            // 1. Quick-fail: first character must match
+            if (sb[i] != t0)
+	            continue;
+
+            // 2. Check the rest of the token
+            var match = true;
+            
+            for (var k = 1; k < tokenLen; k++)
+            {
+                if (sb[i + k] != token[k])
+                {
+                    match = false;
+                    break;
+                }
+            }
+            
+            if (match == false)
+	            continue;
+
+            // 3. Skip whitespace after the token
+            var p = i + tokenLen;
+            
+            while (p < length && char.IsWhiteSpace(sb[p]))
+	            p++;
+
+            // 4. Must see an opening parenthesis
+            if (p >= length || sb[p] != '(')
+	            continue;
+
+            // 5. Walk forward, tracking depth to find the matching ')' for the *outer* '('
+            var depth = 0;
+            var j = p;
+            
+            while (j < length)
+            {
+                var c = sb[j];
+                
+                if (c == '(')
+                {
+                    depth++;
+                }
+                else if (c == ')')
+                {
+                    depth--;
+                
+                    if (depth == 0)
+                    {
+                        // Found the balancing ')' – emit the slice
+                        yield return sb.ToString(i, j - i + 1);
+
+                        // Advance i so we don’t rescan inside the just-matched span
+                        i = j;
+                    
+                        break;
+                    }
+                }
+
+                j++;
+            }
+
+            // If the loop exits without depth hitting zero, parentheses were unbalanced;
+            // we simply fall through and continue searching (no match yielded).
+        }
+    }
 }
