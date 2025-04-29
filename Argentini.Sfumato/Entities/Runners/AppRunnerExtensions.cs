@@ -346,11 +346,16 @@ public static class AppRunnerExtensions
 
 				for (var i = 0; i < wrappers.Length; i++)
 				{
+					var items = appRunner.UsedCssCustomProperties.Where(c => c.Key.StartsWith("--sf-") == (i != 0) && string.IsNullOrEmpty(c.Value) == false).ToList();
+					
+					if (items.Count == 0)
+						continue;
+					
 					workingSb
 						.Append(wrappers[i])
 						.Append(appRunner.AppRunnerSettings.LineBreak);
 
-					foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => c.Key.StartsWith("--sf-") == (i != 0) && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
+					foreach (var ccp in items.OrderBy(c => c.Key))
 					{
 						if (appRunner.AppRunnerSettings.UseMinify == false)
 							workingSb.Append(appRunner.AppRunnerSettings.Indentation);
