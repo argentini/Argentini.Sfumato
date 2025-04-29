@@ -491,21 +491,6 @@
         }
     }
 
-    --sf-gradient-position: ;
-    --sf-gradient-stops: ;
-
-    --sf-gradient-to: ;
-    --sf-gradient-to-position: ;
-    --sf-gradient-to-stops: ;
-
-    --sf-gradient-from: ;
-    --sf-gradient-from-position: ;
-    --sf-gradient-from-stops: ;
-
-    --sf-gradient-via: ;
-    --sf-gradient-via-position: ;
-    --sf-gradient-via-stops: ;
-
     --blur-xs: 0.25rem;
     --blur-sm: 0.5rem;
     --blur-md: 0.75rem;
@@ -524,6 +509,132 @@
     --aspect-video: 16 / 9;
     --aspect-auto: auto;
 
+    /* Output CSS Custom Properties */
+
+    --sf-border-spacing-x: 0;
+    --sf-border-spacing-y: 0;
+    --sf-translate-x: 0;
+    --sf-translate-y: 0;
+    --sf-translate-z: 0;
+    --sf-scale-x: 1;
+    --sf-scale-y: 1;
+    --sf-scale-z: 1;
+    --sf-rotate-x: initial;
+    --sf-rotate-y: initial;
+    --sf-rotate-z: initial;
+    --sf-skew-x: initial;
+    --sf-skew-y: initial;
+    --sf-pan-x: initial;
+    --sf-pan-y: initial;
+    --sf-pinch-zoom: initial;
+    --sf-scroll-snap-strictness: proximity;
+    --sf-space-y-reverse: 0;
+    --sf-space-x-reverse: 0;
+    --sf-divide-x-reverse: 0;
+    --sf-border-style: solid;
+    --sf-divide-y-reverse: 0;
+    --sf-gradient-position: initial;
+    --sf-gradient-from: #0000;
+    --sf-gradient-via: #0000;
+    --sf-gradient-to: #0000;
+    --sf-gradient-stops: initial;
+    --sf-gradient-via-stops: initial;
+    --sf-gradient-from-position: 0%;
+    --sf-gradient-via-position: 50%;
+    --sf-gradient-to-position: 100%;
+    --sf-mask-linear: linear-gradient(#fff, #fff);
+    --sf-mask-radial: linear-gradient(#fff, #fff);
+    --sf-mask-conic: linear-gradient(#fff, #fff);
+    --sf-mask-left: linear-gradient(#fff, #fff);
+    --sf-mask-right: linear-gradient(#fff, #fff);
+    --sf-mask-bottom: linear-gradient(#fff, #fff);
+    --sf-mask-top: linear-gradient(#fff, #fff);
+    --sf-mask-top-from-position: 0%;
+    --sf-mask-top-to-position: 100%;
+    --sf-mask-top-from-color: black;
+    --sf-mask-top-to-color: transparent;
+    --sf-mask-bottom-from-position: 0%;
+    --sf-mask-bottom-to-position: 100%;
+    --sf-mask-bottom-from-color: black;
+    --sf-mask-bottom-to-color: transparent;
+    --sf-mask-right-from-position: 0%;
+    --sf-mask-right-to-position: 100%;
+    --sf-mask-right-from-color: black;
+    --sf-mask-right-to-color: transparent;
+    --sf-mask-left-from-position: 0%;
+    --sf-mask-left-to-position: 100%;
+    --sf-mask-left-from-color: black;
+    --sf-mask-left-to-color: transparent;
+    --sf-mask-linear-position: 0deg;
+    --sf-mask-linear-from-position: 0%;
+    --sf-mask-linear-to-position: 100%;
+    --sf-mask-linear-from-color: black;
+    --sf-mask-linear-to-color: transparent;
+    --sf-mask-radial-from-position: 0%;
+    --sf-mask-radial-to-position: 100%;
+    --sf-mask-radial-from-color: black;
+    --sf-mask-radial-to-color: transparent;
+    --sf-mask-radial-shape: ellipse;
+    --sf-mask-radial-size: farthest-corner;
+    --sf-mask-radial-position: center;
+    --sf-mask-conic-position: 0deg;
+    --sf-mask-conic-from-position: 0%;
+    --sf-mask-conic-to-position: 100%;
+    --sf-mask-conic-from-color: black;
+    --sf-mask-conic-to-color: transparent;
+    --sf-leading: initial;
+    --sf-font-weight: initial;
+    --sf-tracking: initial;
+    --sf-ordinal: initial;
+    --sf-slashed-zero: initial;
+    --sf-numeric-figure: initial;
+    --sf-numeric-spacing: initial;
+    --sf-numeric-fraction: initial;
+    --sf-shadow: 0 0 #0000;
+    --sf-shadow-color: initial;
+    --sf-shadow-alpha: 100%;
+    --sf-inset-shadow: 0 0 #0000;
+    --sf-inset-shadow-color: initial;
+    --sf-inset-shadow-alpha: 100%;
+    --sf-ring-color: initial;
+    --sf-ring-shadow: 0 0 #0000;
+    --sf-inset-ring-color: initial;
+    --sf-inset-ring-shadow: 0 0 #0000;
+    --sf-ring-inset: initial;
+    --sf-ring-offset-width: 0px;
+    --sf-ring-offset-color: #fff;
+    --sf-ring-offset-shadow: 0 0 #0000;
+    --sf-outline-style: solid;
+    --sf-blur: initial;
+    --sf-brightness: initial;
+    --sf-contrast: initial;
+    --sf-grayscale: initial;
+    --sf-hue-rotate: initial;
+    --sf-invert: initial;
+    --sf-opacity: initial;
+    --sf-saturate: initial;
+    --sf-sepia: initial;
+    --sf-drop-shadow: initial;
+    --sf-drop-shadow-color: initial;
+    --sf-drop-shadow-alpha: 100%;
+    --sf-drop-shadow-size: initial;
+    --sf-backdrop-blur: initial;
+    --sf-backdrop-brightness: initial;
+    --sf-backdrop-contrast: initial;
+    --sf-backdrop-grayscale: initial;
+    --sf-backdrop-hue-rotate: initial;
+    --sf-backdrop-invert: initial;
+    --sf-backdrop-opacity: initial;
+    --sf-backdrop-saturate: initial;
+    --sf-backdrop-sepia: initial;
+    --sf-duration: initial;
+    --sf-ease: initial;
+    --sf-content: "";
+    --sf-text-shadow-color: initial;
+    --sf-text-shadow-alpha: 100%;
+
+    /* Defaults */
+    
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans, initial);
