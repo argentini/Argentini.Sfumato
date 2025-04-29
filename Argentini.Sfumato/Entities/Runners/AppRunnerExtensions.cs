@@ -342,31 +342,36 @@ public static class AppRunnerExtensions
 		{
 			if (appRunner.UsedCssCustomProperties.Count > 0)
 			{
-				workingSb
-					.Append(":root {")
-					.Append(appRunner.AppRunnerSettings.LineBreak);
+				var wrappers = new [] { ":root, :host {", "*, :before, :after, ::backdrop {" };
 
-				foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
+				for (var i = 0; i < wrappers.Length; i++)
 				{
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb.Append(appRunner.AppRunnerSettings.Indentation);
-
 					workingSb
-						.Append(ccp.Key)
-						.Append(": ")
-						.Append(ccp.Value)
-						.Append(';');
-
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				workingSb.Append('}');
-
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb
-						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(wrappers[i])
 						.Append(appRunner.AppRunnerSettings.LineBreak);
+
+					foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => c.Key.StartsWith("--sf-") == (i != 0) && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
+					{
+						if (appRunner.AppRunnerSettings.UseMinify == false)
+							workingSb.Append(appRunner.AppRunnerSettings.Indentation);
+
+						workingSb
+							.Append(ccp.Key)
+							.Append(": ")
+							.Append(ccp.Value)
+							.Append(';');
+
+						if (appRunner.AppRunnerSettings.UseMinify == false)
+							workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
+					}
+
+					workingSb.Append('}');
+
+					if (appRunner.AppRunnerSettings.UseMinify == false)
+						workingSb
+							.Append(appRunner.AppRunnerSettings.LineBreak)
+							.Append(appRunner.AppRunnerSettings.LineBreak);
+				}
 			}
 
 			if (appRunner.UsedCss.Count > 0)
