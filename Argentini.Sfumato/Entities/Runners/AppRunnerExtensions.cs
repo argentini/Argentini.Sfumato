@@ -230,11 +230,11 @@ public static class AppRunnerExtensions
 	{
 		try
 		{
-			foreach (var span in sourceCss.ToString().EnumerateCssCustomProperties(namesOnly: true))
+			foreach (var match in sourceCss.EnumerateTokenWithOuterParenthetical("--alpha"))
 			{
-				if (span.Property.StartsWith("--alpha(var(--color-", StringComparison.Ordinal) && span.Property.Contains('%'))
+				if (match.Contains("var(--color-", StringComparison.Ordinal) && match.Contains('%'))
 				{
-					var colorKey = span.Property[..span.Property.IndexOf(')')].TrimStart("--alpha(var(").TrimStart("--color-").ToString();
+					var colorKey = match[..match.IndexOf(')')].TrimStart("--alpha(")?.Trim().TrimStart("var(")?.Trim().TrimStart("--color-");
 
 					if (string.IsNullOrEmpty(colorKey))
 						continue;
@@ -242,30 +242,35 @@ public static class AppRunnerExtensions
 					if (appRunner.Library.ColorsByName.TryGetValue(colorKey, out var colorValue) == false)
 						continue;
 						
-					var alphaValue = span.Property[(span.Property.LastIndexOf('/') + 1)..].ToString().TrimEnd(')','%',' ').Trim();
+					var alphaValue = match[(match.LastIndexOf('/') + 1)..].TrimEnd(')','%',' ').Trim();
 							
 					if (int.TryParse(alphaValue, out var pct))
-						sourceCss.Replace(span.Property, colorValue.SetWebColorAlpha(pct));
+						sourceCss.Replace(match, colorValue.SetWebColorAlpha(pct));
 				}
-				else if (span.Property.StartsWith("--spacing(", StringComparison.Ordinal) && span.Property.EndsWith(')') && span.Property.Length > 11)
-				{
-					var valueString = span.Property.ToString().TrimStart("--spacing(")?.TrimEnd(')').Trim();
+			}
 
-					if (string.IsNullOrEmpty(valueString))
-						continue;
+			foreach (var match in sourceCss.EnumerateTokenWithOuterParenthetical("--spacing"))
+			{
+				if (match.Length <= 11)
+					continue;
+				
+				var valueString = match.TrimStart("--spacing(")?.Trim().TrimEnd(')', ' ');
 
-					if (double.TryParse(valueString, out var value) == false)
-						continue;
+				if (string.IsNullOrEmpty(valueString))
+					continue;
+
+				if (double.TryParse(valueString, out var value) == false)
+					continue;
 						
-					sourceCss.Replace(span.Property, $"calc(var(--spacing) * {value})");
+				sourceCss.Replace(match, $"calc(var(--spacing) * {value})");
 							
-					appRunner.UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
-				}
-				else
-				{
-					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var value))
-						appRunner.UsedCssCustomProperties.TryAdd(span.Property.ToString(), value);
-				}
+				appRunner.UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
+			}
+
+			foreach (var span in sourceCss.ToString().EnumerateCssCustomProperties(namesOnly: true))
+			{
+				if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var value))
+					appRunner.UsedCssCustomProperties.TryAdd(span.Property.ToString(), value);
 			}
 		}
 		catch (Exception e)
