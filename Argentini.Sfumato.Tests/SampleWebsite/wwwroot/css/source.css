@@ -16,7 +16,7 @@
 }
 
 .test-values {
-    background-color: --alpha(var(--color-lime-600) / 10);
+    background-color: --alpha(var(--color-lime-600) / 10%);
     color: var(--color-lime-100);
     padding-top: --spacing(5);
 }
