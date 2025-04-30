@@ -60,7 +60,7 @@ public class BreakAfterTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Layout / BreakAfter => {test.ClassName}");
+            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }

@@ -81,7 +81,7 @@ public class FromColorTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Backgrounds / FromColor => {test.ClassName}");
+            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }

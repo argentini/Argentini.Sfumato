@@ -85,7 +85,7 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Backgrounds / ViaColor => {test.ClassName}");
+            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }

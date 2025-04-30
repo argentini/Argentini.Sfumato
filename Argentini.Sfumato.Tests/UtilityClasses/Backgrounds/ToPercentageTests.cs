@@ -77,7 +77,7 @@ public class ToPercentageTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Backgrounds / ToPercentage => {test.ClassName}");
+            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }

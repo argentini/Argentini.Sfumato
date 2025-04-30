@@ -61,7 +61,7 @@ public class LetterSpacingTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
             }
             
-            testOutputHelper.WriteLine($"Typography / LetterSpacing => {test.ClassName}");
+            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }
