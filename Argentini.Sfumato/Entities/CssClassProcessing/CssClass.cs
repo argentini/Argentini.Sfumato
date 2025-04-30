@@ -84,7 +84,7 @@ public sealed class CssClass : IDisposable
     #endregion
 
     #region Initialization
-    
+
     private void Initialize()
     {
         IsImportant = Selector.EndsWith('!');
@@ -276,19 +276,22 @@ public sealed class CssClass : IDisposable
                 HasArbitraryModifierValue = ModifierValue.StartsWith('[');
                 ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
 
-                switch (ModifierValue)
+                if (string.IsNullOrEmpty(ModifierValue) == false)
                 {
-                    case "longer":
-                        ModifierValue = "oklch longer hue"; break;
-                    case "shorter":
-                        ModifierValue = "oklch shorter hue"; break;
-                    case "increasing":
-                        ModifierValue = "oklch increasing hue"; break;
-                    case "decreasing":
-                        ModifierValue = "oklch decreasing hue"; break;
+                    if (ModifierValue[0] is 'l' or 's' or 'i' or 'd')
+                    {
+                        ModifierValue = ModifierValue switch
+                        {
+                            "longer" => "oklch longer hue",
+                            "shorter" => "oklch shorter hue",
+                            "increasing" => "oklch increasing hue",
+                            "decreasing" => "oklch decreasing hue",
+                            _ => ModifierValue
+                        };
+                    }
+
+                    HasModifierValue = true;
                 }
-                
-                HasModifierValue = true;
             }
 
             HasArbitraryValue = value.StartsWith('[');
