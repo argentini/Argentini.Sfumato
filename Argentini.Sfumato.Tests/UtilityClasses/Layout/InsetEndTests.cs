@@ -1,9 +1,9 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Layout;
 
-public class EndTests(ITestOutputHelper testOutputHelper)
+public class InsetEndTests(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public void End()
+    public void InsetEnd()
     {
         var appRunner = new AppRunner(new AppState());
         

@@ -2,9 +2,9 @@
 
 namespace Argentini.Sfumato.Entities.UtilityClasses.Layout;
 
-public sealed class Start : ClassDictionaryBase
+public sealed class InsetStart : ClassDictionaryBase
 {
-    public Start()
+    public InsetStart()
     {
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

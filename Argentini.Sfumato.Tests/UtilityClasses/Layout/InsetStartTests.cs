@@ -1,9 +1,9 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Layout;
 
-public class StartTests(ITestOutputHelper testOutputHelper)
+public class InsetStartTests(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public void Start()
+    public void InsetStart()
     {
         var appRunner = new AppRunner(new AppState());
         
