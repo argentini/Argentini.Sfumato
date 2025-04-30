@@ -301,17 +301,24 @@ public sealed class CssClass : IDisposable
             
             if (HasArbitraryValue == false && HasArbitraryValueWithCssCustomProperty == false && HasModifierValue && int.TryParse(value, out var numerator) && int.TryParse(ModifierValue, out var denominator))
             {
-                if (denominator != 0 && AppRunner.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition))
+                if (denominator != 0)
                 {
-                    Value = $"{(double)numerator/denominator * 100:0.############}%";
-                    IsValid = true;
-                    SelectorSort = ClassDefinition.SelectorSort;
+                    if (AppRunner.Library.DimensionLengthClasses.TryGetValue(prefix, out ClassDefinition))
+                        Value = $"{(double)numerator / denominator * 100:0.############}%";
+                    else if (AppRunner.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition))
+                        Value = $"{numerator} / {denominator}";
 
-                    GenerateStyles(true);
-                    
-                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
+                    if (ClassDefinition is not null)
+                    {
+                        IsValid = true;
+                        SelectorSort = ClassDefinition.SelectorSort;
 
-                    return;
+                        GenerateStyles(true);
+
+                        UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
+
+                        return;
+                    }
                 }
             }
             
