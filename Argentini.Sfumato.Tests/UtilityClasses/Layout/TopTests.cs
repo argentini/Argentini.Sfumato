@@ -33,6 +33,30 @@ public class TopTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "top-3/4",
+                EscapedClassName = @".top-3\/4",
+                Styles =
+                    """
+                    top: 75%;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "-top-3/4",
+                EscapedClassName = @".-top-3\/4",
+                Styles =
+                    """
+                    top: calc(75% * -1);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
                 ClassName = "top-5",
                 EscapedClassName = ".top-5",
                 Styles =
@@ -74,6 +98,54 @@ public class TopTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     top: calc(1.25rem * -1);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "top-(--my-top)",
+                EscapedClassName = @".top-\(--my-top\)",
+                Styles =
+                    """
+                    top: var(--my-top);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "top-(length:--my-top)",
+                EscapedClassName = @".top-\(length\:--my-top\)",
+                Styles =
+                    """
+                    top: var(--my-top);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "top-[var(--my-top)]",
+                EscapedClassName = @".top-\[var\(--my-top\)\]",
+                Styles =
+                    """
+                    top: var(--my-top);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "top-[length:var(--my-top)]",
+                EscapedClassName = @".top-\[length\:var\(--my-top\)\]",
+                Styles =
+                    """
+                    top: var(--my-top);
                     """,
                 IsValid = true,
                 IsImportant = false,
