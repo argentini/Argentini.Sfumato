@@ -1,0 +1,62 @@
+// ReSharper disable RawStringCanBeSimplified
+
+namespace Argentini.Sfumato.Entities.UtilityClasses.FlexboxAndGrid;
+
+public sealed class Flex : ClassDictionaryBase
+{
+    public Flex()
+    {
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
+        {
+            {
+                "flex-", new ClassDefinition
+                {
+                    UsesInteger = true,
+                    UsesDimensionLength = true,
+                    UsesAbstractValue = true,
+                    Template =
+                        """
+                        flex: {0};
+                        """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        flex: {0};
+                        """,
+                }
+            },
+            {
+                "flex-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        flex: 1 1 auto;
+                        """,
+                }
+            },
+            {
+                "flex-initial", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        flex: 0 1 auto;
+                        """,
+                }
+            },
+            {
+                "flex-none", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        flex: none;
+                        """,
+                }
+            },
+        });
+    }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
+}
