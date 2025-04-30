@@ -1,9 +1,9 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Spacing;
 
-public class PaddingTests(ITestOutputHelper testOutputHelper)
+public class MarginTests(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public void Padding()
+    public void Margin()
     {
         var appRunner = new AppRunner(new AppState());
         
@@ -11,45 +11,33 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
         {
             new ()
             {
-                ClassName = "p-px",
-                EscapedClassName = ".p-px",
+                ClassName = "m-px",
+                EscapedClassName = ".m-px",
                 Styles =
                     """
-                    padding: 1px;
+                    margin: 1px;
                     """,
                 IsValid = true,
                 IsImportant = false,
             },
             new ()
             {
-                ClassName = "-p-px",
-                EscapedClassName = ".-p-px",
+                ClassName = "-m-px",
+                EscapedClassName = ".-m-px",
                 Styles =
                     """
-                    padding: -1px;
+                    margin: -1px;
                     """,
                 IsValid = true,
                 IsImportant = false,
             },
             new ()
             {
-                ClassName = "p-3/4",
-                EscapedClassName = @".p-3\/4",
+                ClassName = "m-3/4",
+                EscapedClassName = @".m-3\/4",
                 Styles =
                     """
-                    padding: 75%;
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            new ()
-            {
-                ClassName = "p-5",
-                EscapedClassName = ".p-5",
-                Styles =
-                    """
-                    padding: calc(var(--spacing) * 5);
+                    margin: 75%;
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -57,11 +45,11 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "-p-5",
-                EscapedClassName = ".-p-5",
+                ClassName = "m-5",
+                EscapedClassName = ".m-5",
                 Styles =
                     """
-                    padding: calc(var(--spacing) * -5);
+                    margin: calc(var(--spacing) * 5);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -69,11 +57,11 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "p-[1.25rem]",
-                EscapedClassName = @".p-\[1\.25rem\]",
+                ClassName = "-m-5",
+                EscapedClassName = ".-m-5",
                 Styles =
                     """
-                    padding: 1.25rem;
+                    margin: calc(var(--spacing) * -5);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -81,11 +69,11 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "p-(--my-padding)",
-                EscapedClassName = @".p-\(--my-padding\)",
+                ClassName = "m-[1.25rem]",
+                EscapedClassName = @".m-\[1\.25rem\]",
                 Styles =
                     """
-                    padding: var(--my-padding);
+                    margin: 1.25rem;
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -93,11 +81,11 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "-p-(--my-padding)",
-                EscapedClassName = @".-p-\(--my-padding\)",
+                ClassName = "m-(--my-margin)",
+                EscapedClassName = @".m-\(--my-margin\)",
                 Styles =
                     """
-                    padding: calc(var(--my-padding) * -1);
+                    margin: var(--my-margin);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -105,11 +93,11 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "p-(length:--my-padding)",
-                EscapedClassName = @".p-\(length\:--my-padding\)",
+                ClassName = "-m-(--my-margin)",
+                EscapedClassName = @".-m-\(--my-margin\)",
                 Styles =
                     """
-                    padding: var(--my-padding);
+                    margin: calc(var(--my-margin) * -1);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -117,11 +105,11 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "p-[var(--my-padding)]",
-                EscapedClassName = @".p-\[var\(--my-padding\)\]",
+                ClassName = "m-(length:--my-margin)",
+                EscapedClassName = @".m-\(length\:--my-margin\)",
                 Styles =
                     """
-                    padding: var(--my-padding);
+                    margin: var(--my-margin);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -129,11 +117,23 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "p-[length:var(--my-padding)]",
-                EscapedClassName = @".p-\[length\:var\(--my-padding\)\]",
+                ClassName = "m-[var(--my-margin)]",
+                EscapedClassName = @".m-\[var\(--my-margin\)\]",
                 Styles =
                     """
-                    padding: var(--my-padding);
+                    margin: var(--my-margin);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "m-[length:var(--my-margin)]",
+                EscapedClassName = @".m-\[length\:var\(--my-margin\)\]",
+                Styles =
+                    """
+                    margin: var(--my-margin);
                     """,
                 IsValid = true,
                 IsImportant = false,

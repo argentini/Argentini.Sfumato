@@ -1,0 +1,492 @@
+// ReSharper disable RawStringCanBeSimplified
+
+namespace Argentini.Sfumato.Entities.UtilityClasses.Spacing;
+
+public sealed class Margin : ClassDictionaryBase
+{
+    public Margin()
+    {
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
+        {
+            #region m
+            
+            {
+                "m-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin: 1px;
+                               """
+                }
+            },
+            {
+                "-m-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin: -1px;
+                               """
+                }
+            },
+            {
+                "m-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-m-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region mx
+            
+            {
+                "mx-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline: 1px;
+                               """
+                }
+            },
+            {
+                "-mx-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline: -1px;
+                               """
+                }
+            },
+            {
+                "mx-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-inline: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-inline: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-mx-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-inline: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-inline: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region my
+            
+            {
+                "my-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-block: 1px;
+                               """
+                }
+            },
+            {
+                "-my-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-block: -1px;
+                               """
+                }
+            },
+            {
+                "my-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-block: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-block: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-my-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-block: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-block: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region ms
+            
+            {
+                "ms-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline-start: 1px;
+                               """
+                }
+            },
+            {
+                "-ms-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline-start: -1px;
+                               """
+                }
+            },
+            {
+                "ms-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-inline-start: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-inline-start: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-ms-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-inline-start: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-inline-start: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region me
+            
+            {
+                "me-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline-end: 1px;
+                               """
+                }
+            },
+            {
+                "-me-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline-end: -1px;
+                               """
+                }
+            },
+            {
+                "me-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-inline-end: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-inline-end: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-me-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-inline-end: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-inline-end: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region mt
+            
+            {
+                "mt-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-top: 1px;
+                               """
+                }
+            },
+            {
+                "-mt-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-top: -1px;
+                               """
+                }
+            },
+            {
+                "mt-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-top: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-top: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-mt-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-top: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-top: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region mr
+            
+            {
+                "mr-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-right: 1px;
+                               """
+                }
+            },
+            {
+                "-mr-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-right: -1px;
+                               """
+                }
+            },
+            {
+                "mr-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-right: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-right: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-mr-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-right: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-right: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region mb
+            
+            {
+                "mb-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-bottom: 1px;
+                               """
+                }
+            },
+            {
+                "-mb-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-bottom: -1px;
+                               """
+                }
+            },
+            {
+                "mb-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-bottom: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-bottom: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-mb-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-bottom: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-bottom: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+            
+            #region ml
+            
+            {
+                "ml-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-left: 1px;
+                               """
+                }
+            },
+            {
+                "-ml-px", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-left: -1px;
+                               """
+                }
+            },
+            {
+                "ml-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-left: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-left: {0};
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+            {
+                "-ml-", new ClassDefinition
+                {
+                    UsesSpacing = true,
+                    UsesDimensionLength = true,
+                    Template = """
+                               margin-left: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-left: calc({0} * -1);
+                        """,
+                    UsesCssCustomProperties = [ "--spacing" ]
+                }
+            },
+
+            #endregion
+        });
+    }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
+}
