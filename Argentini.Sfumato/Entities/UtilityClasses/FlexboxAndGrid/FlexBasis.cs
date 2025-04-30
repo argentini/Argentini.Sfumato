@@ -2,9 +2,9 @@
 
 namespace Argentini.Sfumato.Entities.UtilityClasses.FlexboxAndGrid;
 
-public sealed class FLexBasis : ClassDictionaryBase
+public sealed class FlexBasis : ClassDictionaryBase
 {
-    public FLexBasis()
+    public FlexBasis()
     {
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
