@@ -16,7 +16,7 @@ public static class CssValidators
 
     public static bool ValueIsPercentage(this string value)
     {
-        return value.EndsWith('%') && value.TrimEnd('%').All(char.IsDigit);
+        return value.EndsWith('%') && value.TrimEnd('%').All(c => char.IsDigit(c) || c == '.');
     }
 
     #endregion
