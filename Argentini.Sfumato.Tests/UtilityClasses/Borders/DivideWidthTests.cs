@@ -44,7 +44,6 @@ public class DivideWidthTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     & > :not(:last-child) {
-                        --sf-divide-x-reverse: 0;
                         border-inline-start-width: calc(0px * var(--sf-divide-x-reverse));
                         border-inline-end-width: calc(0px * calc(1 - var(--sf-divide-x-reverse)))
                     }
@@ -60,7 +59,6 @@ public class DivideWidthTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     & > :not(:last-child) {
-                        --sf-divide-x-reverse: 0;
                         border-inline-start-width: calc(4px * var(--sf-divide-x-reverse));
                         border-inline-end-width: calc(4px * calc(1 - var(--sf-divide-x-reverse)))
                     }

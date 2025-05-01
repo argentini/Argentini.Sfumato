@@ -17,7 +17,6 @@ public sealed class DivideWidth : ClassDictionaryBase
                     Template = 
                         """
                         & > :not(:last-child) {
-                            --sf-divide-x-reverse: 0;
                             border-inline-start-width: calc({0}px * var(--sf-divide-x-reverse));
                             border-inline-end-width: calc({0}px * calc(1 - var(--sf-divide-x-reverse)))
                         }
@@ -53,7 +52,6 @@ public sealed class DivideWidth : ClassDictionaryBase
                     Template = 
                         """
                         & > :not(:last-child) {
-                            --sf-divide-y-reverse: 0;
                             border-top-width: calc({0}px * var(--sf-divide-y-reverse));
                             border-bottom-width: calc({0}px * calc(1 - var(--sf-divide-y-reverse)))
                         }
