@@ -2,17 +2,9 @@
 
 namespace Argentini.Sfumato.Entities.UtilityClasses.Borders;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class BorderRadius : ClassDictionaryBase
 {
-    public BorderRadius()
-    {
-        /*
-        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
-        {
-        });
-        */
-    }
-
     public static readonly Dictionary<string, string> Borders = new ()
     {
         {
