@@ -43,6 +43,50 @@ public class LetterSpacingTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 IsImportant = false,
             },
+            new ()
+            {
+                ClassName = "tracking-[var(--my-tracking)]",
+                EscapedClassName = @".tracking-\[var\(--my-tracking\)\]",
+                Styles =
+                    """
+                    letter-spacing: var(--my-tracking);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "tracking-[length:var(--my-tracking)]",
+                EscapedClassName = @".tracking-\[length\:var\(--my-tracking\)\]",
+                Styles =
+                    """
+                    letter-spacing: var(--my-tracking);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "tracking-(--my-tracking)",
+                EscapedClassName = @".tracking-\(--my-tracking\)",
+                Styles =
+                    """
+                    letter-spacing: var(--my-tracking);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "tracking-(length:--my-tracking)",
+                EscapedClassName = @".tracking-\(length\:--my-tracking\)",
+                Styles =
+                    """
+                    letter-spacing: var(--my-tracking);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
         };
 
         foreach (var test in testClasses)
