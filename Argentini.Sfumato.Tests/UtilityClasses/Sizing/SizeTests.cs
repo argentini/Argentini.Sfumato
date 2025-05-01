@@ -1,150 +1,14 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Sizing;
 
-public class WidthSizeTests(ITestOutputHelper testOutputHelper)
+public class SizeTests(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public void WidthSize()
+    public void Size()
     {
         var appRunner = new AppRunner(new AppState());
         
         var testClasses = new List<TestClass>()
         {
-            #region width
-            
-            new ()
-            {
-                ClassName = "w-auto",
-                EscapedClassName = ".w-auto",
-                Styles =
-                    """
-                    width: auto;
-                    """,
-                IsValid = true,
-                IsImportant = false,
-            },
-            new ()
-            {
-                ClassName = "w-px",
-                EscapedClassName = ".w-px",
-                Styles =
-                    """
-                    width: 1px;
-                    """,
-                IsValid = true,
-                IsImportant = false,
-            },
-            new ()
-            {
-                ClassName = "w-fit",
-                EscapedClassName = ".w-fit",
-                Styles =
-                    """
-                    width: fit-content;
-                    """,
-                IsValid = true,
-                IsImportant = false,
-            },
-            new ()
-            {
-                ClassName = "w-xl",
-                EscapedClassName = ".w-xl",
-                Styles =
-                    """
-                    width: var(--container-xl);
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--container-xl" ],
-            },
-            new ()
-            {
-                ClassName = "w-3/4",
-                EscapedClassName = @".w-3\/4",
-                Styles =
-                    """
-                    width: 75%;
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            new ()
-            {
-                ClassName = "w-5",
-                EscapedClassName = ".w-5",
-                Styles =
-                    """
-                    width: calc(var(--spacing) * 5);
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            new ()
-            {
-                ClassName = "w-[1.25rem]",
-                EscapedClassName = @".w-\[1\.25rem\]",
-                Styles =
-                    """
-                    width: 1.25rem;
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            new ()
-            {
-                ClassName = "w-(--my-width)",
-                EscapedClassName = @".w-\(--my-width\)",
-                Styles =
-                    """
-                    width: var(--my-width);
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            new ()
-            {
-                ClassName = "w-(length:--my-width)",
-                EscapedClassName = @".w-\(length\:--my-width\)",
-                Styles =
-                    """
-                    width: var(--my-width);
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            new ()
-            {
-                ClassName = "w-[var(--my-width)]",
-                EscapedClassName = @".w-\[var\(--my-width\)\]",
-                Styles =
-                    """
-                    width: var(--my-width);
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            new ()
-            {
-                ClassName = "w-[length:var(--my-width)]",
-                EscapedClassName = @".w-\[length\:var\(--my-width\)\]",
-                Styles =
-                    """
-                    width: var(--my-width);
-                    """,
-                IsValid = true,
-                IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
-            },
-            
-            #endregion
-            
-            #region size
-            
             new ()
             {
                 ClassName = "size-auto",
@@ -285,8 +149,6 @@ public class WidthSizeTests(ITestOutputHelper testOutputHelper)
                 IsImportant = false,
                 UsedCssCustomProperties = [ "--spacing" ],
             },
-            
-            #endregion
         };
 
         foreach (var test in testClasses)
