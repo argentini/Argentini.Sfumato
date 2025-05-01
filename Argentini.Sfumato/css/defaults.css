@@ -541,8 +541,8 @@
     --sf-scroll-snap-strictness: proximity;
     --sf-space-y-reverse: 0;
     --sf-space-x-reverse: 0;
-    --sf-divide-x-reverse: 0;
     --sf-border-style: solid;
+    --sf-divide-x-reverse: 0;
     --sf-divide-y-reverse: 0;
     --sf-gradient-position: initial;
     --sf-gradient-from: #0000;
