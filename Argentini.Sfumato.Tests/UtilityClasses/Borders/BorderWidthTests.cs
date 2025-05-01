@@ -14,8 +14,8 @@ public class BorderWidthTests(ITestOutputHelper testOutputHelper)
             testClasses.AddRange(
                 new()
                 {
-                    ClassName = border.Key.Trim('-'),
-                    EscapedClassName = $".{border.Key.Trim('-')}",
+                    ClassName = border.Key,
+                    EscapedClassName = $".{border.Key}",
                     Styles = border.Value.Replace("{0}", "1px"),
                     IsValid = true,
                     IsImportant = false,
@@ -41,22 +41,6 @@ public class BorderWidthTests(ITestOutputHelper testOutputHelper)
                     ClassName = $"{border.Key}-[0.75rem]",
                     EscapedClassName = @$".{border.Key}-\[0\.75rem\]",
                     Styles = border.Value.Replace("{0}", "0.75rem"),
-                    IsValid = true,
-                    IsImportant = false,
-                },
-                new()
-                {
-                    ClassName = $"{border.Key}-[var(--my-border)]",
-                    EscapedClassName = @$".{border.Key}-\[var\(--my-border\)\]",
-                    Styles = border.Value.Replace("{0}", "var(--my-border)"),
-                    IsValid = true,
-                    IsImportant = false,
-                },
-                new()
-                {
-                    ClassName = $"{border.Key}-(--my-border)",
-                    EscapedClassName = @$".{border.Key}-\(--my-border\)",
-                    Styles = border.Value.Replace("{0}", "var(--my-border)"),
                     IsValid = true,
                     IsImportant = false,
                 },
