@@ -56,6 +56,54 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 IsImportant = false,
                 UsedCssCustomProperties = [ "--spacing" ],
             },
+            new ()
+            {
+                ClassName = "leading-[var(--my-line-height)]",
+                EscapedClassName = @".leading-\[var\(--my-line-height\)\]",
+                Styles =
+                    """
+                    line-height: var(--my-line-height);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "leading-[number:var(--my-line-height)]",
+                EscapedClassName = @".leading-\[number\:var\(--my-line-height\)\]",
+                Styles =
+                    """
+                    line-height: var(--my-line-height);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "leading-(--my-line-height)",
+                EscapedClassName = @".leading-\(--my-line-height\)",
+                Styles =
+                    """
+                    line-height: var(--my-line-height);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
+                ClassName = "leading-(number:--my-line-height)",
+                EscapedClassName = @".leading-\(number\:--my-line-height\)",
+                Styles =
+                    """
+                    line-height: var(--my-line-height);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
         };
 
         foreach (var test in testClasses)
