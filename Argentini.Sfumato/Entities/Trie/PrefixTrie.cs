@@ -38,17 +38,43 @@ public sealed class PrefixTrie
     public string? GetLongestMatchingPrefix(string input)
     {
         var node = _root;
-        var longestMatch = -1;
+        var lastValidIndex = -1;
 
         for (var i = 0; i < input.Length; i++)
         {
+            // walk the trie
             if (node.Children.TryGetValue(input[i], out node) == false)
                 break;
 
-            if (node.IsWordEnd)
-                longestMatch = i;
+            if (node.IsWordEnd == false)
+                continue;
+            
+            // candidate prefix: input[0‥i]
+            var endsWithDash = input[i] == '-';
+            var atEndOfInput = i == input.Length - 1;
+            var nextIsDash = atEndOfInput == false && input[i + 1] == '-';
+
+            // accept the candidate when it ends with '-' OR is followed by '-' OR is the whole input
+            if (endsWithDash || nextIsDash || atEndOfInput)
+                lastValidIndex = i;
         }
 
-        return longestMatch >= 0 ? input[..(longestMatch + 1)] : null;
+        return lastValidIndex >= 0 ? input[..(lastValidIndex + 1)] : null;
     }
+    
+    public List<string> GetAllWords()
+    {
+        var results = new List<string>();
+        CollectWords(_root, "", results);
+        return results;
+    }
+
+    private static void CollectWords(TrieNode node, string prefix, List<string> output)
+    {
+        if (node.IsWordEnd)
+            output.Add(prefix);
+
+        foreach ((char ch, TrieNode child) in node.Children)
+            CollectWords(child, prefix + ch, output);
+    }    
 }
