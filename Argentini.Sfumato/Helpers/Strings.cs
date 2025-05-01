@@ -630,9 +630,9 @@ public static partial class Strings
                 
                 if (source[i] == opener)
                 {
-                    SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
-
-                    break;
+	                SplitAndAdd(source.AsSpan(contentStart, i - contentStart), results);
+	                i++; // Consume the closing quote
+	                continue; // Jump back to the top of the outer loop
                 }
 
                 i++;
