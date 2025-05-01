@@ -82,7 +82,7 @@ public readonly ref struct CssPropertyEnumerable
                 if (i >= len)
                     continue;
 
-                var isVarRef = _namesOnly && s[i] == ')';
+                var isVarRef = _namesOnly && (s[i] == ')' || s[i] == ',');
                 var isDecl   = s[i] == ':';
                 
                 if (isVarRef == false && isDecl == false)
