@@ -14,7 +14,7 @@ public abstract class ClassDictionaryBase
     
     #region Dictionaries
 
-    protected readonly Dictionary<string, string> Sizes = new ()
+    protected readonly Dictionary<string, string> WidthSizes = new ()
     {
         {
             "auto", "auto"
@@ -56,6 +56,52 @@ public abstract class ClassDictionaryBase
             "fit", "fit-content"
         },
     };
-    
+
+    protected readonly Dictionary<string, string> HeightSizes = new ()
+    {
+        {
+            "px", "1px"
+        },
+        {
+            "none", "none"
+        },
+        {
+            "full", "100%"
+        },
+        {
+            "screen", "100vh"
+        },
+        {
+            "dvw", "100dvw"
+        },
+        {
+            "dvh", "100dvh"
+        },
+        {
+            "lvw", "100lvw"
+        },
+        {
+            "lvh", "100lvh"
+        },
+        {
+            "svw", "100svw"
+        },
+        {
+            "svh", "100svh"
+        },
+        {
+            "min", "min-content"
+        },
+        {
+            "max", "max-content"
+        },
+        {
+            "fit", "fit-content"
+        },
+        {
+            "lh", "1lh"
+        },
+    };
+
     #endregion
 }

@@ -50,7 +50,7 @@ public sealed class Size : ClassDictionaryBase
                 appRunner.Library.SimpleClasses[key] = value;
         }
 
-        foreach (var item in Sizes)
+        foreach (var item in WidthSizes)
         {
             var key = $"size-{item.Key}";
             var value = new ClassDefinition

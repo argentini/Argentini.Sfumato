@@ -47,7 +47,7 @@ public sealed class MinWidth : ClassDictionaryBase
                 appRunner.Library.SimpleClasses[key] = value;
         }
 
-        foreach (var item in Sizes)
+        foreach (var item in WidthSizes)
         {
             var key = $"min-w-{item.Key}";
             var value = new ClassDefinition

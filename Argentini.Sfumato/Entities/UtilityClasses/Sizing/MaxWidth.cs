@@ -62,7 +62,7 @@ public sealed class MaxWidth : ClassDictionaryBase
                 appRunner.Library.SimpleClasses[key] = value;
         }
 
-        foreach (var item in Sizes)
+        foreach (var item in WidthSizes)
         {
             var key = $"max-w-{item.Key}";
             var value = new ClassDefinition

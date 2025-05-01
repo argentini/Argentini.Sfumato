@@ -2,23 +2,23 @@
 
 namespace Argentini.Sfumato.Entities.UtilityClasses.Sizing;
 
-public sealed class Height : ClassDictionaryBase
+public sealed class MaxHeight : ClassDictionaryBase
 {
-    public Height()
+    public MaxHeight()
     {
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
-                "h-", new ClassDefinition
+                "max-h-", new ClassDefinition
                 {
                     UsesSpacing = true,
                     UsesDimensionLength = true,
                     Template = """
-                               height: calc(var(--spacing) * {0});
+                               max-height: calc(var(--spacing) * {0});
                                """,
                     ArbitraryCssValueTemplate =
                         """
-                        height: {0};
+                        max-height: {0};
                         """,
                     UsesCssCustomProperties = [ "--spacing" ]
                 }
@@ -28,34 +28,15 @@ public sealed class Height : ClassDictionaryBase
     
     public override void ProcessThemeSettings(AppRunner appRunner)
     {
-        foreach (var item in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--container-")))
+        foreach (var item in HeightSizes)
         {
-            var key = item.Key.Trim('-').Replace("container", "h");
+            var key = $"max-h-{item.Key}";
             var value = new ClassDefinition
             {
                 IsSimpleUtility = true,
                 Template = 
                     $"""
-                     height: var({item.Key});
-                     """,
-                UsesCssCustomProperties = [ item.Key ]
-            };
-
-            if (appRunner.Library.SimpleClasses.TryAdd(key, value))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
-            else
-                appRunner.Library.SimpleClasses[key] = value;
-        }
-
-        foreach (var item in WidthSizes)
-        {
-            var key = $"h-{item.Key}";
-            var value = new ClassDefinition
-            {
-                IsSimpleUtility = true,
-                Template = 
-                    $"""
-                     height: {item.Value};
+                     max-height: {item.Value};
                      """,
             };
 

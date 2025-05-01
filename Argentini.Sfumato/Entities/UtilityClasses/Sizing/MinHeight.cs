@@ -47,7 +47,7 @@ public sealed class MinHeight : ClassDictionaryBase
                 appRunner.Library.SimpleClasses[key] = value;
         }
 
-        foreach (var item in Sizes)
+        foreach (var item in WidthSizes)
         {
             var key = $"min-h-{item.Key}";
             var value = new ClassDefinition
