@@ -69,6 +69,18 @@ public class PaddingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "px-10",
+                EscapedClassName = ".px-10",
+                Styles =
+                    """
+                    padding-inline: calc(var(--spacing) * 10);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+                UsedCssCustomProperties = [ "--spacing" ],
+            },
+            new ()
+            {
                 ClassName = "p-[1.25rem]",
                 EscapedClassName = @".p-\[1\.25rem\]",
                 Styles =
