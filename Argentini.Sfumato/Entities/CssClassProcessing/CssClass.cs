@@ -258,7 +258,7 @@ public sealed class CssClass : IDisposable
     {
         try
         {
-            var prefix = AppRunner.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments.Last());
+            var prefix = AppRunner.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments.Last().Contains('/') ? AllSegments.Last()[..AllSegments.Last().IndexOf('/')] : AllSegments.Last());
 
             if (string.IsNullOrEmpty(prefix))
                 return;
