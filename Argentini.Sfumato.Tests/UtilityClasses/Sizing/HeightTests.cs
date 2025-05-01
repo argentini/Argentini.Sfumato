@@ -44,15 +44,14 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "h-xl",
-                EscapedClassName = ".h-xl",
+                ClassName = "h-lh",
+                EscapedClassName = ".h-lh",
                 Styles =
                     """
-                    height: var(--container-xl);
+                    height: 1lh;
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--container-xl" ],
             },
             new ()
             {

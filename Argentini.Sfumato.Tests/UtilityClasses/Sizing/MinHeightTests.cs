@@ -11,17 +11,6 @@ public class MinHeightTests(ITestOutputHelper testOutputHelper)
         {
             new ()
             {
-                ClassName = "min-h-auto",
-                EscapedClassName = ".min-h-auto",
-                Styles =
-                    """
-                    min-height: auto;
-                    """,
-                IsValid = true,
-                IsImportant = false,
-            },
-            new ()
-            {
                 ClassName = "min-h-px",
                 EscapedClassName = ".min-h-px",
                 Styles =
@@ -44,15 +33,14 @@ public class MinHeightTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "min-h-xl",
-                EscapedClassName = ".min-h-xl",
+                ClassName = "min-h-lh",
+                EscapedClassName = ".min-h-lh",
                 Styles =
                     """
-                    min-height: var(--container-xl);
+                    min-height: 1lh;
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--container-xl" ],
             },
             new ()
             {

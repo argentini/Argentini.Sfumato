@@ -63,6 +63,9 @@ public abstract class ClassDictionaryBase
             "px", "1px"
         },
         {
+            "auto", "auto"
+        },
+        {
             "none", "none"
         },
         {
