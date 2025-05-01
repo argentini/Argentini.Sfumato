@@ -80,7 +80,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         foreach (var cname in utilityClasses)
             testOutputHelper.WriteLine($"{cname.Key}");
         
-        Assert.Equal(36, utilityClasses.Count);
+        Assert.Equal(38, utilityClasses.Count);
     }
 
     [Fact]
