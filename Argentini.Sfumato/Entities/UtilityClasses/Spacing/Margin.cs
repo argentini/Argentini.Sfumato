@@ -29,6 +29,15 @@ public sealed class Margin : ClassDictionaryBase
                 }
             },
             {
+                "m-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin: auto;
+                               """
+                }
+            },
+            {
                 "m-", new ClassDefinition
                 {
                     UsesSpacing = true,
@@ -78,6 +87,15 @@ public sealed class Margin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template = """
                                margin-inline: -1px;
+                               """
+                }
+            },
+            {
+                "mx-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline: auto;
                                """
                 }
             },
@@ -135,6 +153,15 @@ public sealed class Margin : ClassDictionaryBase
                 }
             },
             {
+                "my-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-block: auto;
+                               """
+                }
+            },
+            {
                 "my-", new ClassDefinition
                 {
                     UsesSpacing = true,
@@ -184,6 +211,15 @@ public sealed class Margin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template = """
                                margin-inline-start: -1px;
+                               """
+                }
+            },
+            {
+                "ms-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline-start: auto;
                                """
                 }
             },
@@ -241,6 +277,15 @@ public sealed class Margin : ClassDictionaryBase
                 }
             },
             {
+                "me-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-inline-end: auto;
+                               """
+                }
+            },
+            {
                 "me-", new ClassDefinition
                 {
                     UsesSpacing = true,
@@ -290,6 +335,15 @@ public sealed class Margin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template = """
                                margin-top: -1px;
+                               """
+                }
+            },
+            {
+                "mt-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-top: auto;
                                """
                 }
             },
@@ -347,6 +401,15 @@ public sealed class Margin : ClassDictionaryBase
                 }
             },
             {
+                "mr-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-right: auto;
+                               """
+                }
+            },
+            {
                 "mr-", new ClassDefinition
                 {
                     UsesSpacing = true,
@@ -400,6 +463,15 @@ public sealed class Margin : ClassDictionaryBase
                 }
             },
             {
+                "mb-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-bottom: auto;
+                               """
+                }
+            },
+            {
                 "mb-", new ClassDefinition
                 {
                     UsesSpacing = true,
@@ -449,6 +521,15 @@ public sealed class Margin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template = """
                                margin-left: -1px;
+                               """
+                }
+            },
+            {
+                "ml-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               margin-left: auto;
                                """
                 }
             },
