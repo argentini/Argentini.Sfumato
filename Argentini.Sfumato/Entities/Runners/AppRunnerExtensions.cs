@@ -368,7 +368,7 @@ public static class AppRunnerExtensions
 						workingSb
 							.Append(ccp.Key)
 							.Append(": ")
-							.Append(ccp.Value)
+							.Append(ccp.Key.StartsWith("--sf-") &&  ccp.Value == "initial" ? string.Empty : ccp.Value)
 							.Append(';');
 
 						if (appRunner.AppRunnerSettings.UseMinify == false)
