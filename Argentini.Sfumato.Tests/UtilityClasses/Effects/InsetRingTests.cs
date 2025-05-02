@@ -39,8 +39,8 @@ public class InsetRingTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "inset-ring-[0_1px_#aabbcc]",
-                EscapedClassName = @".inset-ring-\[0_1px_\#aabbcc\]",
+                ClassName = "inset-ring-[inset_0_1px_#aabbcc]",
+                EscapedClassName = @".inset-ring-\[inset_0_1px_\#aabbcc\]",
                 Styles =
                     """
                     --sf-ring-inset: inset;
