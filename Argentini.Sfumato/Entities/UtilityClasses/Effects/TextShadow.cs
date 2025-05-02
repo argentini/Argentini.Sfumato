@@ -17,7 +17,7 @@ public sealed class TextShadow : ClassDictionaryBase
                         """
                         text-shadow: {0};
                         """,
-                    ArbitraryModifierTemplate =
+                    ArbitraryCssValueTemplate = 
                         """
                         text-shadow: {0};
                         """,
@@ -49,7 +49,7 @@ public sealed class TextShadow : ClassDictionaryBase
                     $"""
                     text-shadow: var({text.Key});
                     """,
-                ArbitraryModifierTemplate =
+                ArbitraryCssValueTemplate = 
                     """
                     text-shadow: {0};
                     """,

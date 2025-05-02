@@ -17,7 +17,7 @@ public sealed class BoxShadow : ClassDictionaryBase
                         """
                         box-shadow: {0};
                         """,
-                    ArbitraryModifierTemplate =
+                    ArbitraryCssValueTemplate = 
                         """
                         box-shadow: {0};
                         """,

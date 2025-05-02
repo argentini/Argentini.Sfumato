@@ -17,7 +17,7 @@ public sealed class InsetShadow : ClassDictionaryBase
                         """
                         box-shadow: inset {0};
                         """,
-                    ArbitraryModifierTemplate =
+                    ArbitraryCssValueTemplate = 
                         """
                         box-shadow: inset {0};
                         """,
