@@ -607,10 +607,10 @@
     --sf-inset-shadow: 0 0 #0000;
     --sf-inset-shadow-color: initial;
     --sf-inset-shadow-alpha: 100%;
-    --sf-ring-color: initial;
-    --sf-ring-shadow: 0 0 #0000;
     --sf-inset-ring-color: initial;
     --sf-inset-ring-shadow: 0 0 #0000;
+    --sf-ring-color: initial;
+    --sf-ring-shadow: 0 0 #0000;
     --sf-ring-inset: initial;
     --sf-ring-offset-width: 0px;
     --sf-ring-offset-color: #fff;
