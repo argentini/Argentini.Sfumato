@@ -15,12 +15,13 @@ public class InsetRingTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".inset-ring",
                 Styles =
                     """
+                    --sf-ring-inset: inset;
                     --sf-inset-ring-shadow: inset 0 0 0 1px var(--sf-inset-ring-color, currentcolor);
                     box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-inset-ring-shadow", "--sf-inset-ring-color", "--sf-inset-shadow", "--sf-ring-offset-shadow", "--sf-ring-shadow", "--sf-shadow" ]
+                UsedCssCustomProperties = [ "--sf-ring-inset", "--sf-inset-ring-shadow", "--sf-inset-ring-color", "--sf-inset-shadow", "--sf-ring-offset-shadow", "--sf-ring-shadow", "--sf-shadow" ]
             },
             new ()
             {
@@ -28,12 +29,13 @@ public class InsetRingTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".inset-ring-4",
                 Styles =
                     """
+                    --sf-ring-inset: inset;
                     --sf-inset-ring-shadow: inset 0 0 0 4px var(--sf-inset-ring-color, currentcolor);
                     box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-inset-ring-shadow", "--sf-inset-ring-color", "--sf-inset-shadow", "--sf-ring-offset-shadow", "--sf-ring-shadow", "--sf-shadow" ]
+                UsedCssCustomProperties = [ "--sf-ring-inset", "--sf-inset-ring-shadow", "--sf-inset-ring-color", "--sf-inset-shadow", "--sf-ring-offset-shadow", "--sf-ring-shadow", "--sf-shadow" ]
             },
             new ()
             {
@@ -41,12 +43,13 @@ public class InsetRingTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".inset-ring-\[0_1px_\#aabbcc\]",
                 Styles =
                     """
+                    --sf-ring-inset: inset;
                     --sf-inset-ring-shadow: inset 0 1px #aabbcc;
                     box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-inset-ring-shadow", "--sf-inset-ring-color", "--sf-inset-shadow", "--sf-ring-offset-shadow", "--sf-ring-shadow", "--sf-shadow" ]
+                UsedCssCustomProperties = [ "--sf-ring-inset", "--sf-inset-ring-shadow", "--sf-inset-ring-color", "--sf-inset-shadow", "--sf-ring-offset-shadow", "--sf-ring-shadow", "--sf-shadow" ]
             },
         };
 
