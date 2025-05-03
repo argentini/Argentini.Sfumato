@@ -15,7 +15,7 @@ public class RingTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".ring",
                 Styles =
                     """
-                    --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(1px + var(--sf-ring-offset-width)) var(--sf-ring-color, currentcolor);
+                    --sf-ring-shadow: var(--sf-ring-inset, ) 0 0 0 calc(1px + var(--sf-ring-offset-width)) var(--sf-ring-color, currentcolor);
                     box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
                 IsValid = true,
@@ -28,7 +28,7 @@ public class RingTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".ring-4",
                 Styles =
                     """
-                    --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(4px + var(--sf-ring-offset-width)) var(--sf-ring-color, currentcolor);
+                    --sf-ring-shadow: var(--sf-ring-inset, ) 0 0 0 calc(4px + var(--sf-ring-offset-width)) var(--sf-ring-color, currentcolor);
                     box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
                 IsValid = true,
