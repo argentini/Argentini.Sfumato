@@ -1,6 +1,6 @@
 // ReSharper disable RawStringCanBeSimplified
 
-namespace Argentini.Sfumato.Entities.UtilityClasses.Backgrounds;
+namespace Argentini.Sfumato.Entities.UtilityClasses.Effects;
 
 public sealed class MaskPercentage : ClassDictionaryBase
 {
