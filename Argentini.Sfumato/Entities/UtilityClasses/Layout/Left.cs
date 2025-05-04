@@ -73,7 +73,6 @@ public sealed class Left : ClassDictionaryBase
                         """
                         left: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -88,7 +87,6 @@ public sealed class Left : ClassDictionaryBase
                         """
                         left: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 

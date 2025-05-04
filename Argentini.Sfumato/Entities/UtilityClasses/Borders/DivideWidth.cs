@@ -28,7 +28,6 @@ public sealed class DivideWidth : ClassDictionaryBase
                             border-inline-end-width: {0};
                         }
                         """,
-                    UsesCssCustomProperties = [ "--sf-divide-x-reverse" ]
                 }
             },
             {
@@ -63,7 +62,6 @@ public sealed class DivideWidth : ClassDictionaryBase
                             border-bottom-width: {0};
                         }
                         """,
-                    UsesCssCustomProperties = [ "--sf-divide-y-reverse" ]
                 }
             },
             {
@@ -88,7 +86,6 @@ public sealed class DivideWidth : ClassDictionaryBase
                         """
                         --sf-divide-x-reverse: 1;
                         """,
-                    UsesCssCustomProperties = [ "--sf-divide-x-reverse" ]
                 }
             },
             {
@@ -100,7 +97,6 @@ public sealed class DivideWidth : ClassDictionaryBase
                         """
                         --sf-divide-y-reverse: 1;
                         """,
-                    UsesCssCustomProperties = [ "--sf-divide-y-reverse" ]
                 }
             },
         });

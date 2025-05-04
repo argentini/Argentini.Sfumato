@@ -24,9 +24,6 @@ public sealed class FontSize : ClassDictionaryBase
                                        font-size: {0};
                                        line-height: {1};
                                        """,
-                    UsesCssCustomProperties = [
-                        "--spacing"
-                    ]
                 }
             },
         });
@@ -65,10 +62,6 @@ public sealed class FontSize : ClassDictionaryBase
                     letter-spacing: var({{text.Key}}--letter-spacing, initial);
                     font-weight: var({{text.Key}}--font-weight, initial);
                     """,
-                UsesCssCustomProperties =
-                [
-                    "--spacing", text.Key, $"{text.Key}--line-height", $"{text.Key}--letter-spacing", $"{text.Key}--font-weight"
-                ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

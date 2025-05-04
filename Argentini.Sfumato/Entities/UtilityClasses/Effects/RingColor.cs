@@ -19,7 +19,6 @@ public sealed class RingColor : ClassDictionaryBase
                         """
                         --sf-ring-color: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-ring-color" ]
                 }
             },
             {
@@ -31,7 +30,6 @@ public sealed class RingColor : ClassDictionaryBase
                         """
                         --sf-ring-color: inherit;
                         """,
-                    UsesCssCustomProperties = [ "--sf-ring-color" ]
                 }
             },
             {
@@ -43,7 +41,6 @@ public sealed class RingColor : ClassDictionaryBase
                         """
                         --sf-ring-color: currentColor;
                         """,
-                    UsesCssCustomProperties = [ "--sf-ring-color" ]
                 }
             },
         });

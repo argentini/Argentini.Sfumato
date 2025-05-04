@@ -19,7 +19,6 @@ public sealed class BoxShadowColor : ClassDictionaryBase
                         """
                         --sf-shadow-color: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-shadow-color" ]
                 }
             },
             {
@@ -31,7 +30,6 @@ public sealed class BoxShadowColor : ClassDictionaryBase
                         """
                         --sf-shadow-color: inherit;
                         """,
-                    UsesCssCustomProperties = [ "--sf-shadow-color" ]
                 }
             },
             {
@@ -43,7 +41,6 @@ public sealed class BoxShadowColor : ClassDictionaryBase
                         """
                         --sf-shadow-color: currentColor;
                         """,
-                    UsesCssCustomProperties = [ "--sf-shadow-color" ]
                 }
             },
         });

@@ -53,7 +53,6 @@ public sealed class InsetShadow : ClassDictionaryBase
                     """
                     box-shadow: inset {0};
                     """,
-                UsesCssCustomProperties = [ text.Key, "--sf-inset-shadow-color" ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

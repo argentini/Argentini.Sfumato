@@ -39,7 +39,6 @@ public sealed class LetterSpacing : ClassDictionaryBase
                 IsSimpleUtility = true,
                 Template = 
                     $"letter-spacing: var({font.Key});",
-                UsesCssCustomProperties = [ font.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

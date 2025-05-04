@@ -47,7 +47,6 @@ public sealed class Columns : ClassDictionaryBase
                     $"""
                      columns: var({item.Key});
                      """,
-                UsesCssCustomProperties = [ item.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

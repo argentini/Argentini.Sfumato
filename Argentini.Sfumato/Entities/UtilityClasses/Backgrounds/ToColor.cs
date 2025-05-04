@@ -18,7 +18,6 @@ public sealed class ToColor : ClassDictionaryBase
                         --sf-gradient-to: {0};
                         --sf-gradient-stops: var(--sf-gradient-via-stops, var(--sf-gradient-position), var(--sf-gradient-from) var(--sf-gradient-from-position), var(--sf-gradient-to) var(--sf-gradient-to-position))
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-to", "--sf-gradient-stops", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-to-position" ]
                 }
             },
         });

@@ -116,7 +116,6 @@ public sealed class BorderRadius : ClassDictionaryBase
                 {
                     IsSimpleUtility = true,
                     Template = border.Value.Replace("{0}", $"var({item.Key})"),
-                    UsesCssCustomProperties = [ item.Key ]
                 };
 
                 if (appRunner.Library.SimpleClasses.TryAdd(key, value))

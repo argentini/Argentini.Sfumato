@@ -30,7 +30,6 @@ public sealed class FontWeight : ClassDictionaryBase
                 IsSimpleUtility = true,
                 Template = 
                     $"font-weight: var({font.Key});",
-                UsesCssCustomProperties = [ font.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

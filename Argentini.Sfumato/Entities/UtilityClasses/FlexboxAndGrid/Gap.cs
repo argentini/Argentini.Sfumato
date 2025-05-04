@@ -20,7 +20,6 @@ public sealed class Gap : ClassDictionaryBase
                         """
                         gap: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -35,7 +34,6 @@ public sealed class Gap : ClassDictionaryBase
                         """
                         column-gap: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -50,7 +48,6 @@ public sealed class Gap : ClassDictionaryBase
                         """
                         row-gap: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
         });

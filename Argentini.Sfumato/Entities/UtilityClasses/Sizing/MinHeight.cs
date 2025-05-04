@@ -20,7 +20,6 @@ public sealed class MinHeight : ClassDictionaryBase
                         """
                         min-height: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
         });

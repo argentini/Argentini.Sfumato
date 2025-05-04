@@ -19,7 +19,6 @@ public sealed class InsetRingColor : ClassDictionaryBase
                         """
                         --sf-inset-ring-color: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-inset-ring-color" ]
                 }
             },
             {
@@ -31,7 +30,6 @@ public sealed class InsetRingColor : ClassDictionaryBase
                         """
                         --sf-inset-ring-color: inherit;
                         """,
-                    UsesCssCustomProperties = [ "--sf-inset-ring-color" ]
                 }
             },
             {
@@ -43,7 +41,6 @@ public sealed class InsetRingColor : ClassDictionaryBase
                         """
                         --sf-inset-ring-color: currentColor;
                         """,
-                    UsesCssCustomProperties = [ "--sf-inset-ring-color" ]
                 }
             },
         });

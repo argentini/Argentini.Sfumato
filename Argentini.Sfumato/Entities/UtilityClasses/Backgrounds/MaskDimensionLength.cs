@@ -26,7 +26,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear-stops", "--sf-mask-linear-position", "--sf-mask-linear-from-color", "--sf-mask-linear-to-color", "--sf-mask-linear-to-position", "--sf-mask-linear", "--sf-mask-linear-from-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -47,7 +46,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear-stops", "--sf-mask-linear-position", "--sf-mask-linear-from-color", "--sf-mask-linear-from-position", "--sf-mask-linear-to-color", "--sf-mask-linear", "--sf-mask-linear-to-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -68,7 +66,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-top-from-color", "--sf-mask-top-to-color", "--sf-mask-top-to-position", "--sf-mask-top-from-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -89,7 +86,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-top-from-position", "--sf-mask-top-from-color", "--sf-mask-top-to-color", "--sf-mask-top-to-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -110,7 +106,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-right-from-color", "--sf-mask-right-to-color", "--sf-mask-right-to-position", "--sf-mask-right-from-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -131,7 +126,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-right-from-color", "--sf-mask-right-from-position", "--sf-mask-right-to-color", "--sf-mask-right-to-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -152,7 +146,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-bottom-from-color", "--sf-mask-bottom-to-color", "--sf-mask-bottom-to-position", "--sf-mask-bottom-from-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -173,7 +166,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-bottom-from-color", "--sf-mask-bottom-from-position", "--sf-mask-bottom-to-color", "--sf-mask-bottom-to-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -194,7 +186,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-left-from-color", "--sf-mask-left-from-position", "--sf-mask-left-to-color", "--sf-mask-left-to-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -215,7 +206,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-left-from-color", "--sf-mask-left-from-position", "--sf-mask-left-to-color", "--sf-mask-left-to-position", "--spacing", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -238,7 +228,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-top-from-color", "--sf-mask-top-from-position", "--sf-mask-top-to-color", "--sf-mask-top-to-position", "--spacing", "--sf-mask-bottom-from-color", "--sf-mask-bottom-from-position", "--sf-mask-bottom-to-color", "--sf-mask-bottom-to-position", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -261,7 +250,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-top-from-color", "--sf-mask-top-from-position", "--sf-mask-top-to-color", "--sf-mask-top-to-position", "--spacing", "--sf-mask-bottom-from-color", "--sf-mask-bottom-from-position", "--sf-mask-bottom-to-color", "--sf-mask-bottom-to-position", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -284,7 +272,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-right-from-color", "--sf-mask-right-from-position", "--sf-mask-right-to-color", "--sf-mask-right-to-position", "--spacing", "--sf-mask-left-from-color", "--sf-mask-left-from-position", "--sf-mask-left-to-color", "--sf-mask-left-to-position", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -307,7 +294,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear", "--sf-mask-left", "--sf-mask-right", "--sf-mask-bottom", "--sf-mask-top", "--sf-mask-right-from-color", "--sf-mask-right-from-position", "--sf-mask-right-to-color", "--sf-mask-right-to-position", "--spacing", "--sf-mask-left-from-color", "--sf-mask-left-from-position", "--sf-mask-left-to-color", "--sf-mask-left-to-position", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -328,7 +314,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-radial-stops", "--sf-mask-radial-shape", "--sf-mask-radial-size", "--sf-mask-radial-position", "--sf-mask-radial-from-color", "--sf-mask-radial-from-position", "--sf-mask-radial-to-color", "--sf-mask-radial-to-position", "--sf-mask-radial", "--spacing", "--sf-mask-linear", "--sf-mask-conic" ]
                 }
             },
             {
@@ -349,7 +334,6 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-radial-stops", "--sf-mask-radial-shape", "--sf-mask-radial-size", "--sf-mask-radial-position", "--sf-mask-radial-from-color", "--sf-mask-radial-from-position", "--sf-mask-radial-to-color", "--sf-mask-radial-to-position", "--sf-mask-radial", "--spacing", "--sf-mask-linear", "--sf-mask-conic" ]
                 }
             },
         });

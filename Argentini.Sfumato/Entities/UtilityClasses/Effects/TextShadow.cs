@@ -53,7 +53,6 @@ public sealed class TextShadow : ClassDictionaryBase
                     """
                     text-shadow: {0};
                     """,
-                UsesCssCustomProperties = [ text.Key, "--sf-text-shadow-color" ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

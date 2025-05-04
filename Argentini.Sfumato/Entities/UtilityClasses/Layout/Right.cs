@@ -73,7 +73,6 @@ public sealed class Right : ClassDictionaryBase
                         """
                         right: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -88,7 +87,6 @@ public sealed class Right : ClassDictionaryBase
                         """
                         right: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 

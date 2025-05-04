@@ -19,7 +19,6 @@ public sealed class InsetShadowColor : ClassDictionaryBase
                         """
                         --sf-inset-shadow-color: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-inset-shadow-color" ]
                 }
             },
             {
@@ -31,7 +30,6 @@ public sealed class InsetShadowColor : ClassDictionaryBase
                         """
                         --sf-inset-shadow-color: inherit;
                         """,
-                    UsesCssCustomProperties = [ "--sf-inset-shadow-color" ]
                 }
             },
             {
@@ -43,7 +41,6 @@ public sealed class InsetShadowColor : ClassDictionaryBase
                         """
                         --sf-inset-shadow-color: currentColor;
                         """,
-                    UsesCssCustomProperties = [ "--sf-inset-shadow-color" ]
                 }
             },
         });

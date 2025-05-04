@@ -17,7 +17,6 @@ public sealed class BackgroundRadial : ClassDictionaryBase
                         --sf-gradient-position: {0};
                         background-image: radial-gradient(var(--sf-gradient-stops, {0}));
                         """, 
-                    UsesCssCustomProperties = [ "--sf-gradient-position", "--sf-gradient-stops" ]
                 }
             },
             {
@@ -29,7 +28,6 @@ public sealed class BackgroundRadial : ClassDictionaryBase
                         --sf-gradient-position: in oklab;
                         background-image: radial-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-position", "--sf-gradient-stops" ]
                 }
             },
         });

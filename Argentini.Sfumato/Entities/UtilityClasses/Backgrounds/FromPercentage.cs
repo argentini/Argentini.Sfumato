@@ -17,7 +17,6 @@ public sealed class FromPercentage : ClassDictionaryBase
                         """
                         --sf-gradient-from-position: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-from-position" ]
                 }
             },
         });

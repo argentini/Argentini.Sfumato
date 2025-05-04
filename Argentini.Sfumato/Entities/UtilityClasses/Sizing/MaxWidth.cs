@@ -20,7 +20,6 @@ public sealed class MaxWidth : ClassDictionaryBase
                         """
                         max-width: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -35,7 +34,6 @@ public sealed class MaxWidth : ClassDictionaryBase
                                @variant xl { max-width: var(--breakpoint-xl); }
                                @variant 2xl { max-width: var(--breakpoint-2xl); }
                                """,
-                    UsesCssCustomProperties = [ "--breakpoint-sm", "--breakpoint-md", "--breakpoint-lg", "--breakpoint-xl", "--breakpoint-2xl" ]
                 }
             },
         });
@@ -53,7 +51,6 @@ public sealed class MaxWidth : ClassDictionaryBase
                     $"""
                      max-width: var({item.Key});
                      """,
-                UsesCssCustomProperties = [ item.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

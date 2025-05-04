@@ -17,7 +17,6 @@ public sealed class ViaPercentage : ClassDictionaryBase
                         """
                         --sf-gradient-via-position: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-via-position" ]
                 }
             },
         });

@@ -22,7 +22,6 @@ public class BackgroundColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-lime-800" ],
             },
             new ()
             {
@@ -34,7 +33,6 @@ public class BackgroundColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-lime-800" ],
             },
             new ()
             {
@@ -46,7 +44,6 @@ public class BackgroundColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-fynydd-hex" ],
             },
             new ()
             {
@@ -58,7 +55,6 @@ public class BackgroundColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-fynydd-rgb" ],
             },
             new ()
             {
@@ -70,7 +66,6 @@ public class BackgroundColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = true,
-                UsedCssCustomProperties = [ "--color-lime-800" ],
             },
         };
 
@@ -82,14 +77,8 @@ public class BackgroundColorTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.IsValid, cssClass.IsValid);
             Assert.Equal(test.IsImportant, cssClass.IsImportant);
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
-            Assert.Equal(test.UsedCssCustomProperties.Length, cssClass.UsesCssCustomProperties.Count);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            for (var i = 0; i < test.UsedCssCustomProperties.Length; i++)
-            {
-                Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
-            }
-            
             testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }

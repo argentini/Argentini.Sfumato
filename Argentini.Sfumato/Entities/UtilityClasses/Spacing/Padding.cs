@@ -40,7 +40,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -55,7 +54,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -93,7 +91,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-inline: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -108,7 +105,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-inline: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -146,7 +142,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-block: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -161,7 +156,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-block: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -199,7 +193,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-inline-start: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -214,7 +207,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-inline-start: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -252,7 +244,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-inline-end: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -267,7 +258,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-inline-end: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -305,7 +295,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-top: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -320,7 +309,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-top: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -358,7 +346,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-right: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -373,7 +360,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-right: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -411,7 +397,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-bottom: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -426,7 +411,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-bottom: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -464,7 +448,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-left: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -479,7 +462,6 @@ public sealed class Padding : ClassDictionaryBase
                         """
                         padding-left: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 

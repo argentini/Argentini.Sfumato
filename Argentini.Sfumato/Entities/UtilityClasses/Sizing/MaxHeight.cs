@@ -20,7 +20,6 @@ public sealed class MaxHeight : ClassDictionaryBase
                         """
                         max-height: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
         });

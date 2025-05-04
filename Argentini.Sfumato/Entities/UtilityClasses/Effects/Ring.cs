@@ -24,7 +24,6 @@ public sealed class Ring : ClassDictionaryBase
                         --sf-ring-shadow: {0};
                         box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                         """,
-                    UsesCssCustomProperties = [ "--sf-ring-shadow", "--sf-ring-inset", "--sf-ring-offset-width", "--sf-ring-color", "--sf-inset-shadow", "--sf-inset-ring-shadow", "--sf-ring-offset-shadow", "--sf-shadow" ]
                 }
             },
             {
@@ -36,7 +35,6 @@ public sealed class Ring : ClassDictionaryBase
                         --sf-ring-shadow: var(--sf-ring-inset, ) 0 0 0 calc(1px + var(--sf-ring-offset-width)) var(--sf-ring-color, currentcolor);
                         box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                         """,
-                    UsesCssCustomProperties = [ "--sf-ring-shadow", "--sf-ring-inset", "--sf-ring-offset-width", "--sf-ring-color", "--sf-inset-shadow", "--sf-inset-ring-shadow", "--sf-ring-offset-shadow", "--sf-shadow" ]
                 }
             },
         });

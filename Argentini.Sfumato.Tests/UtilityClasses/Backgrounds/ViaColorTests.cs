@@ -23,7 +23,6 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-lime-800", "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
             new ()
             {
@@ -37,7 +36,6 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
             new ()
             {
@@ -51,7 +49,6 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
             new ()
             {
@@ -65,7 +62,6 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-gradient-via", "--sf-gradient-via-stops", "--sf-gradient-position", "--sf-gradient-from", "--sf-gradient-from-position", "--sf-gradient-via-position", "--sf-gradient-to", "--sf-gradient-to-position", "--sf-gradient-stops" ]
             },
         };
 
@@ -77,14 +73,8 @@ public class ViaColorTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.IsValid, cssClass.IsValid);
             Assert.Equal(test.IsImportant, cssClass.IsImportant);
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
-            Assert.Equal(test.UsedCssCustomProperties.Length, cssClass.UsesCssCustomProperties.Count);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            for (var i = 0; i < test.UsedCssCustomProperties.Length; i++)
-            {
-                Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
-            }
-            
             testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }

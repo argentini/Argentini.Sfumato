@@ -53,7 +53,6 @@ public sealed class BoxShadow : ClassDictionaryBase
                     """
                     box-shadow: {0};
                     """,
-                UsesCssCustomProperties = [ text.Key, "--sf-shadow-color" ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

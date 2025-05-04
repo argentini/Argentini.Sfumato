@@ -39,11 +39,6 @@ public sealed class CssClass : IDisposable
     /// </summary>
     public Dictionary<ulong, string> Wrappers { get; } = [];
 
-    /// <summary>
-    /// List of CSS custom property names and classes used by the utility (e.g. --spacing).
-    /// </summary>
-    public HashSet<string> UsesCssCustomProperties { get; set; } = [];
-
     public string EscapedSelector { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string ModifierValue { get; set; } = string.Empty;
@@ -315,8 +310,6 @@ public sealed class CssClass : IDisposable
 
                         GenerateStyles(true);
 
-                        UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
-
                         return;
                     }
                 }
@@ -391,8 +384,6 @@ public sealed class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
-                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
-
                     GenerateStyles();
 
                     return;
@@ -439,8 +430,6 @@ public sealed class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
-                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
-                    
                     GenerateStyles();
 
                     return;
@@ -528,8 +517,6 @@ public sealed class CssClass : IDisposable
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
 
-                    UsesCssCustomProperties = ClassDefinition.UsesCssCustomProperties;
-
                     GenerateStyles();
 
                     return;
@@ -599,8 +586,6 @@ public sealed class CssClass : IDisposable
                         {
                             Value = $"var(--color-{value})";
                         }
-                        
-                        UsesCssCustomProperties.Add($"--color-{value}");
                     }
                 }
             }
@@ -610,9 +595,6 @@ public sealed class CssClass : IDisposable
 
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
-
-            foreach (var prop in ClassDefinition.UsesCssCustomProperties)
-                UsesCssCustomProperties.Add(prop);
 
             GenerateStyles();
 

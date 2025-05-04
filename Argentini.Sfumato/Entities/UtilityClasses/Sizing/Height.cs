@@ -20,7 +20,6 @@ public sealed class Height : ClassDictionaryBase
                         """
                         height: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
         });

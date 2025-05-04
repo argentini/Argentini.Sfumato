@@ -19,7 +19,6 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-ring-color" ]
             },
             new()
             {
@@ -31,7 +30,6 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-lime-500", "--sf-ring-color" ]
             },
             new()
             {
@@ -43,7 +41,6 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--color-lime-500", "--sf-ring-color", ]
             },
             new()
             {
@@ -55,7 +52,6 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-ring-color" ]
             },
             new()
             {
@@ -67,7 +63,6 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-ring-color" ]
             },
             new()
             {
@@ -79,7 +74,6 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-ring-color" ]
             },
             new()
             {
@@ -91,7 +85,6 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--sf-ring-color" ]
             }
         };
 
@@ -103,14 +96,8 @@ public class RingColorTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.IsValid, cssClass.IsValid);
             Assert.Equal(test.IsImportant, cssClass.IsImportant);
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
-            Assert.Equal(test.UsedCssCustomProperties.Length, cssClass.UsesCssCustomProperties.Count);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            for (var i = 0; i < test.UsedCssCustomProperties.Length; i++)
-            {
-                Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
-            }
-            
             testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }

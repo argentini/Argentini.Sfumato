@@ -8,5 +8,4 @@ public sealed class TestClass
     public bool IsImportant { get; set; }
     public bool IsValid { get; set; }
     public string[] Wrappers { get; set; } = [];
-    public string[] UsedCssCustomProperties { get; set; } = [];
 }

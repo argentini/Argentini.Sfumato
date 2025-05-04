@@ -38,7 +38,6 @@ public sealed class AspectRatio : ClassDictionaryBase
                     $"""
                      aspect-ratio: var({item.Key});
                      """,
-                UsesCssCustomProperties = [ item.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

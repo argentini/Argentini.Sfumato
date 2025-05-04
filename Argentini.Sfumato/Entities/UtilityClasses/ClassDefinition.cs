@@ -129,11 +129,6 @@ public sealed class ClassDefinition
     public string ArbitraryCssModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
-    /// List of CSS custom property names used by the utility (e.g. --spacing).
-    /// </summary>
-    public HashSet<string> UsesCssCustomProperties { get; set; } = [];
-
-    /// <summary>
     /// Order output class declarations by this integer (default is 0).
     /// </summary>
     public int SelectorSort { get; set; } = 0;

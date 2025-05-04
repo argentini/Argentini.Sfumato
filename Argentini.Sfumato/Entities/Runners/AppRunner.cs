@@ -556,15 +556,15 @@ public sealed class AppRunner
 				.AppendResetCss(this)
 				.AppendFormsCss(this)
 				.AppendUtilityClassMarker(this)
-				
+
 				.AppendProcessedSourceCss(this)
 
 				.ProcessAtApplyStatementsAndTrackDependencies(this)
 				.ProcessAtVariantStatements(this)
+
+				.InjectUtilityClassesCss(this)
 				.ProcessFunctionsAndTrackDependencies(this)
-				
-				.InjectRootDependenciesCss(this)
-				.InjectUtilityClassesCss(this);
+				.InjectRootDependenciesCss(this);
 			
 			//return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString().ConsolidateLineBreaks(AppRunnerSettings.LineBreak.Contains('\r'), workingSb);
 			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString();
@@ -589,17 +589,7 @@ public sealed class AppRunner
 			appRunner.UsedCss.Clear();
 
 			foreach (var utilityClass in appRunner.ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
-			{
 				appRunner.UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
-						
-				foreach (var dependency in utilityClass.Value.UsesCssCustomProperties)
-				{
-					if (dependency.StartsWith("--", StringComparison.Ordinal))
-						appRunner.UsedCssCustomProperties.TryAdd(dependency, string.Empty);
-					else
-						appRunner.UsedCss.TryAdd(dependency, string.Empty);
-				}
-			}
 		}
 		catch (Exception e)
 		{

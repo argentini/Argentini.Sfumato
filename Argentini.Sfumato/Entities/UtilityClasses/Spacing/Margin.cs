@@ -49,7 +49,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -64,7 +63,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -111,7 +109,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-inline: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -126,7 +123,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-inline: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -173,7 +169,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-block: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -188,7 +183,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-block: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -235,7 +229,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-inline-start: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -250,7 +243,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-inline-start: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -297,7 +289,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-inline-end: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -312,7 +303,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-inline-end: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -359,7 +349,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-top: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -374,7 +363,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-top: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -421,7 +409,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-right: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -436,7 +423,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-right: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -483,7 +469,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-bottom: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -498,7 +483,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-bottom: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 
@@ -545,7 +529,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-left: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -560,7 +543,6 @@ public sealed class Margin : ClassDictionaryBase
                         """
                         margin-left: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 

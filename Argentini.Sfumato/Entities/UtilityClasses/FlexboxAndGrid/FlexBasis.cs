@@ -21,7 +21,6 @@ public sealed class FlexBasis : ClassDictionaryBase
                         """
                         flex-basis: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -37,7 +36,6 @@ public sealed class FlexBasis : ClassDictionaryBase
                         """
                         flex-basis: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -75,7 +73,6 @@ public sealed class FlexBasis : ClassDictionaryBase
                     $"""
                      flex-basis: var({item.Key});
                      """,
-                UsesCssCustomProperties = [ item.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

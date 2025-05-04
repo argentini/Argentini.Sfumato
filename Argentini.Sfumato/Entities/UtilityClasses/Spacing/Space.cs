@@ -20,7 +20,6 @@ public sealed class Space : ClassDictionaryBase
                                    margin-inline-end: calc(1px * calc(1 - var(--sf-space-x-reverse)));
                                };
                                """,
-                    UsesCssCustomProperties = [ "--sf-space-x-reverse" ]
                 }
             },
             {
@@ -33,7 +32,6 @@ public sealed class Space : ClassDictionaryBase
                                    margin-inline-end: calc(-1px * calc(1 - var(--sf-space-x-reverse)));
                                };
                                """,
-                    UsesCssCustomProperties = [ "--sf-space-x-reverse" ]
                 }
             },
             {
@@ -54,7 +52,6 @@ public sealed class Space : ClassDictionaryBase
                             margin-inline-end: calc({0} * calc(1 - var(--sf-space-x-reverse)));
                         };
                         """,
-                    UsesCssCustomProperties = [ "--spacing", "--sf-space-x-reverse" ]
                 }
             },
             {
@@ -75,7 +72,6 @@ public sealed class Space : ClassDictionaryBase
                             margin-inline-end: calc(-1 * {0} * calc(1 - var(--sf-space-x-reverse)));
                         };
                         """,
-                    UsesCssCustomProperties = [ "--spacing", "--sf-space-x-reverse" ]
                 }
             },
 
@@ -93,7 +89,6 @@ public sealed class Space : ClassDictionaryBase
                                    margin-block-end: calc(1px * var(--sf-space-y-reverse));
                                };
                                """,
-                    UsesCssCustomProperties = [ "--sf-space-y-reverse" ]
                 }
             },
             {
@@ -106,7 +101,6 @@ public sealed class Space : ClassDictionaryBase
                                    margin-block-end: calc(-1px * var(--sf-space-y-reverse));
                                };
                                """,
-                    UsesCssCustomProperties = [ "--sf-space-y-reverse" ]
                 }
             },
             {
@@ -127,7 +121,6 @@ public sealed class Space : ClassDictionaryBase
                             margin-block-end: calc({0} * var(--sf-space-y-reverse));
                         };
                         """,
-                    UsesCssCustomProperties = [ "--spacing", "--sf-space-y-reverse" ]
                 }
             },
             {
@@ -148,7 +141,6 @@ public sealed class Space : ClassDictionaryBase
                             margin-block-end: calc(-1 * {0} * var(--sf-space-y-reverse));
                         };
                         """,
-                    UsesCssCustomProperties = [ "--spacing", "--sf-space-y-reverse" ]
                 }
             },
 

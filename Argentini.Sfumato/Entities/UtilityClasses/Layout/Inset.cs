@@ -73,7 +73,6 @@ public sealed class Inset : ClassDictionaryBase
                         """
                         inset: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
             {
@@ -88,7 +87,6 @@ public sealed class Inset : ClassDictionaryBase
                         """
                         inset: calc({0} * -1);
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
 

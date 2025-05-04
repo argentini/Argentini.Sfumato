@@ -35,7 +35,6 @@ public sealed class Mask : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear-position", "--sf-mask-linear", "--sf-mask-linear-stops", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -65,7 +64,6 @@ public sealed class Mask : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect;
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-linear-position", "--sf-mask-linear", "--sf-mask-linear-stops", "--sf-mask-radial", "--sf-mask-conic" ]
                 }
             },
             {
@@ -84,7 +82,6 @@ public sealed class Mask : ClassDictionaryBase
                         -webkit-mask-composite: source-in;
                         mask-composite: intersect
                         """,
-                    UsesCssCustomProperties = [ "--sf-mask-radial", "--sf-mask-radial-stops", "--sf-mask-radial-size", "--sf-mask-linear", "--sf-mask-conic" ]
                 }
             },
         });

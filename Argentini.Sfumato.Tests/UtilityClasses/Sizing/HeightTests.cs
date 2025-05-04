@@ -63,7 +63,6 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
             },
             new ()
             {
@@ -75,7 +74,6 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
             },
             new ()
             {
@@ -87,7 +85,6 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
             },
             new ()
             {
@@ -99,7 +96,6 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
             },
             new ()
             {
@@ -111,7 +107,6 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
             },
             new ()
             {
@@ -123,7 +118,6 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
             },
             new ()
             {
@@ -135,7 +129,6 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                     """,
                 IsValid = true,
                 IsImportant = false,
-                UsedCssCustomProperties = [ "--spacing" ],
             },
         };
 
@@ -147,14 +140,8 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.IsValid, cssClass.IsValid);
             Assert.Equal(test.IsImportant, cssClass.IsImportant);
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
-            Assert.Equal(test.UsedCssCustomProperties.Length, cssClass.UsesCssCustomProperties.Count);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            for (var i = 0; i < test.UsedCssCustomProperties.Length; i++)
-            {
-                Assert.Equal(test.UsedCssCustomProperties.ElementAt(i), cssClass.UsesCssCustomProperties.ElementAt(i));
-            }
-            
             testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }

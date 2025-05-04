@@ -17,7 +17,6 @@ public sealed class ToPercentage : ClassDictionaryBase
                         """
                         --sf-gradient-to-position: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-to-position" ]
                 }
             },
         });

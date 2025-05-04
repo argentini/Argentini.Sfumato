@@ -20,7 +20,6 @@ public sealed class MinWidth : ClassDictionaryBase
                         """
                         min-width: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
         });
@@ -38,7 +37,6 @@ public sealed class MinWidth : ClassDictionaryBase
                     $"""
                      min-width: var({item.Key});
                      """,
-                UsesCssCustomProperties = [ item.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

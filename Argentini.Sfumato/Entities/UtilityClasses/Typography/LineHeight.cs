@@ -23,9 +23,6 @@ public sealed class LineHeight : ClassDictionaryBase
                         """
                         line-height: {0};
                         """,
-                    UsesCssCustomProperties = [
-                        "--spacing"
-                    ]
                 }
             },
             {
@@ -43,9 +40,6 @@ public sealed class LineHeight : ClassDictionaryBase
                         """
                         line-height: -{0};
                         """,
-                    UsesCssCustomProperties = [
-                        "--spacing"
-                    ]
                 }
             },
             {
@@ -71,7 +65,6 @@ public sealed class LineHeight : ClassDictionaryBase
                 IsSimpleUtility = true,
                 Template = 
                     $"line-height: var({font.Key});",
-                UsesCssCustomProperties = [ font.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

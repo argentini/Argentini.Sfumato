@@ -19,7 +19,6 @@ public sealed class TextShadowColor : ClassDictionaryBase
                         """
                         --sf-text-shadow-color: {0};
                         """,
-                    UsesCssCustomProperties = [ "--sf-text-shadow-color" ]
                 }
             },
             {
@@ -31,7 +30,6 @@ public sealed class TextShadowColor : ClassDictionaryBase
                         """
                         --sf-text-shadow-color: inherit;
                         """,
-                    UsesCssCustomProperties = [ "--sf-text-shadow-color" ]
                 }
             },
             {
@@ -43,7 +41,6 @@ public sealed class TextShadowColor : ClassDictionaryBase
                         """
                         --sf-text-shadow-color: currentColor;
                         """,
-                    UsesCssCustomProperties = [ "--sf-text-shadow-color" ]
                 }
             },
         });

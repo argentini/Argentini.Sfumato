@@ -29,7 +29,6 @@ public sealed class BackgroundConic : ClassDictionaryBase
                         --sf-gradient-position: {0};
                         background-image: conic-gradient(var(--sf-gradient-stops));
                         """, 
-                    UsesCssCustomProperties = [ "--sf-gradient-position", "--sf-gradient-stops" ]
                 }
             },
             {
@@ -48,7 +47,6 @@ public sealed class BackgroundConic : ClassDictionaryBase
                         --sf-gradient-position: from -{0}deg in {1};
                         background-image: conic-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-position", "--sf-gradient-stops" ]
                 }
             },
             {
@@ -66,7 +64,6 @@ public sealed class BackgroundConic : ClassDictionaryBase
                         --sf-gradient-position: in {1};
                         background-image: conic-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-position", "--sf-gradient-stops" ]
                 }
             },
         });

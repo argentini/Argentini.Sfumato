@@ -22,7 +22,6 @@ public sealed class Size : ClassDictionaryBase
                         width: {0};
                         height: {0};
                         """,
-                    UsesCssCustomProperties = [ "--spacing" ]
                 }
             },
         });
@@ -41,7 +40,6 @@ public sealed class Size : ClassDictionaryBase
                      width: var({item.Key});
                      height: var({item.Key});
                      """,
-                UsesCssCustomProperties = [ item.Key ]
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

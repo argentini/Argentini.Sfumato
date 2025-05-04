@@ -36,7 +36,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         """
                         background-image: linear-gradient(var(--sf-gradient-stops, {0}))
                         """, 
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -62,7 +61,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: -{0}deg;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -88,7 +86,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to top;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -114,7 +111,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to top right;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -140,7 +136,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to right;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -166,7 +161,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to bottom right;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -192,7 +186,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to bottom;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -218,7 +211,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to bottom left;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -244,7 +236,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to left;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
             {
@@ -270,7 +261,6 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                         --sf-gradient-position: to top left;
                         background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
-                    UsesCssCustomProperties = [ "--sf-gradient-stops", "--sf-gradient-position" ]
                 }
             },
         });

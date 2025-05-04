@@ -150,14 +150,6 @@ public static class AppRunnerExtensions
 
 					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
 					{
-						foreach (var dependency in utilityClass.UsesCssCustomProperties)
-						{
-							if (dependency.StartsWith("--", StringComparison.Ordinal))
-								appRunner.UsedCssCustomProperties.TryAdd(dependency, string.Empty);
-							else
-								appRunner.UsedCss.TryAdd(dependency, string.Empty);
-						}
-
 						if (appRunner.AppRunnerSettings.UseMinify == false)
 						{
 							var props = utilityClass.Styles.NormalizeLinebreaks()
@@ -266,7 +258,7 @@ public static class AppRunnerExtensions
 							
 				appRunner.UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
 			}
-
+			
 			foreach (var span in sourceCss.ToString().EnumerateCssCustomProperties(namesOnly: true))
 			{
 				if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var value))
@@ -339,12 +331,12 @@ public static class AppRunnerExtensions
 	/// <returns></returns>
 	public static StringBuilder InjectRootDependenciesCss(this StringBuilder sourceCss, AppRunner appRunner)
 	{
-		ProcessTrackedDependencyValues(appRunner);
-		
 		var workingSb = appRunner.AppState.StringBuilderPool.Get();
 
 		try
 		{
+			ProcessTrackedDependencyValues(appRunner);
+
 			if (appRunner.UsedCssCustomProperties.Count > 0)
 			{
 				var wrappers = new [] { ":root, :host {", "*, :before, :after, ::backdrop {" };
