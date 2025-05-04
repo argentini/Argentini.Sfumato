@@ -13,6 +13,7 @@ public sealed class Mask : ClassDictionaryBase
                 {
                     UsesAlphaNumber = true,
                     UsesInteger = true,
+                    UsesAngleHue = true,
                     Template =
                         """
                         --sf-mask-linear-position: {0}deg;
@@ -42,6 +43,7 @@ public sealed class Mask : ClassDictionaryBase
                 {
                     UsesAlphaNumber = true,
                     UsesInteger = true,
+                    UsesAngleHue = true,
                     Template =
                         """
                         --sf-mask-linear-position: -{0}deg;
@@ -89,6 +91,7 @@ public sealed class Mask : ClassDictionaryBase
                 {
                     UsesAlphaNumber = true,
                     UsesInteger = true,
+                    UsesAngleHue = true,
                     Template =
                         """
                         --sf-mask-conic: conic-gradient(from {0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
@@ -101,7 +104,7 @@ public sealed class Mask : ClassDictionaryBase
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        --sf-mask-conic: conic-gradient(from {0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
+                        --sf-mask-conic: conic-gradient(from {0}, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
                         
                         -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
                         mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
@@ -116,6 +119,7 @@ public sealed class Mask : ClassDictionaryBase
                 {
                     UsesAlphaNumber = true,
                     UsesInteger = true,
+                    UsesAngleHue = true,
                     Template =
                         """
                         --sf-mask-conic: conic-gradient(from -{0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
@@ -128,7 +132,7 @@ public sealed class Mask : ClassDictionaryBase
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        --sf-mask-conic: conic-gradient(from -{0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
+                        --sf-mask-conic: conic-gradient(from -{0}, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
 
                         -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
                         mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
