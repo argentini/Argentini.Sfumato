@@ -85,6 +85,60 @@ public sealed class Mask : ClassDictionaryBase
                 }
             },
             {
+                "mask-conic-", new ClassDefinition
+                {
+                    UsesAlphaNumber = true,
+                    UsesInteger = true,
+                    Template =
+                        """
+                        --sf-mask-conic: conic-gradient(from {0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
+
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                    ArbitraryCssValueTemplate = 
+                        """
+                        --sf-mask-conic: conic-gradient(from {0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
+                        
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                }
+            },
+            {
+                "-mask-conic-", new ClassDefinition
+                {
+                    UsesAlphaNumber = true,
+                    UsesInteger = true,
+                    Template =
+                        """
+                        --sf-mask-conic: conic-gradient(from -{0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
+
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                    ArbitraryCssValueTemplate = 
+                        """
+                        --sf-mask-conic: conic-gradient(from -{0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
+
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                }
+            },
+            {
                 "mask-radial-circle", new ClassDefinition
                 {
                     IsSimpleUtility = true,

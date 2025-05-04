@@ -11,7 +11,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-linear-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -30,7 +30,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-linear-to-", new ClassDefinition
                 {
-                    SelectorSort = 2,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -49,7 +49,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-t-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -68,7 +68,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-t-to-", new ClassDefinition
                 {
-                    SelectorSort = 2,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -87,7 +87,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-r-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -106,7 +106,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-r-to-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -125,7 +125,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-b-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -144,7 +144,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-b-to-", new ClassDefinition
                 {
-                    SelectorSort = 2,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -163,7 +163,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-l-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -182,7 +182,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-l-to-", new ClassDefinition
                 {
-                    SelectorSort = 2,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -201,7 +201,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-y-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -222,7 +222,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-y-to-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -243,7 +243,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-x-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -264,7 +264,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-x-to-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -285,7 +285,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-radial-from-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesColor = true,
                     Template =
                         """
@@ -304,7 +304,7 @@ public sealed class MaskColor : ClassDictionaryBase
             {
                 "mask-radial-to-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 3,
                     UsesColor = true,
                     Template =
                         """
@@ -312,6 +312,44 @@ public sealed class MaskColor : ClassDictionaryBase
                         --sf-mask-radial: radial-gradient(var(--sf-mask-radial-stops));
                         --sf-mask-radial-to-color: {0};
 
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                }
+            },
+            {
+                "mask-conic-from-", new ClassDefinition
+                {
+                    SelectorSort = 2,
+                    UsesColor = true,
+                    Template =
+                        """
+                        --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);
+                        --sf-mask-conic: conic-gradient(var(--sf-mask-conic-stops));
+                        --sf-mask-conic-from-color: {0};
+
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                }
+            },
+            {
+                "mask-conic-to-", new ClassDefinition
+                {
+                    SelectorSort = 3,
+                    UsesColor = true,
+                    Template =
+                        """
+                        --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);
+                        --sf-mask-conic: conic-gradient(var(--sf-mask-conic-stops));
+                        --sf-mask-conic-to-color: {0};
+                        
                         -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
                         mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
 

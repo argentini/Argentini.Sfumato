@@ -233,7 +233,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
             {
                 "mask-y-to-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesDimensionLength = true,
                     UsesSpacing = true,
                     Template =
@@ -277,7 +277,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
             {
                 "mask-x-to-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesDimensionLength = true,
                     UsesSpacing = true,
                     Template =
@@ -319,7 +319,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
             {
                 "mask-radial-to-", new ClassDefinition
                 {
-                    SelectorSort = 1,
+                    SelectorSort = 2,
                     UsesDimensionLength = true,
                     UsesSpacing = true,
                     Template =
@@ -327,6 +327,46 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                         --sf-mask-radial-stops: var(--sf-mask-radial-shape) var(--sf-mask-radial-size) at var(--sf-mask-radial-position), var(--sf-mask-radial-from-color) var(--sf-mask-radial-from-position), var(--sf-mask-radial-to-color) var(--sf-mask-radial-to-position);
                         --sf-mask-radial: radial-gradient(var(--sf-mask-radial-stops));
                         --sf-mask-radial-to-position: calc(var(--spacing) * {0});
+
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                }
+            },
+            {
+                "mask-conic-from-", new ClassDefinition
+                {
+                    SelectorSort = 1,
+                    UsesDimensionLength = true,
+                    UsesSpacing = true,
+                    Template =
+                        """
+                        --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);
+                        --sf-mask-conic: conic-gradient(var(--sf-mask-conic-stops));
+                        --sf-mask-conic-from-position: calc(var(--spacing) * {0});
+
+                        -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+                        mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
+
+                        -webkit-mask-composite: source-in;
+                        mask-composite: intersect
+                        """,
+                }
+            },
+            {
+                "mask-conic-to-", new ClassDefinition
+                {
+                    SelectorSort = 2,
+                    UsesDimensionLength = true,
+                    UsesSpacing = true,
+                    Template =
+                        """
+                        --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);
+                        --sf-mask-conic: conic-gradient(var(--sf-mask-conic-stops));
+                        --sf-mask-conic-to-position: calc(var(--spacing) * {0});
 
                         -webkit-mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
                         mask-image: var(--sf-mask-linear), var(--sf-mask-radial), var(--sf-mask-conic);
