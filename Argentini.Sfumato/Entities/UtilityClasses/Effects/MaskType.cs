@@ -12,6 +12,7 @@ public sealed class MaskType : ClassDictionaryBase
             {
                 "mask-type-alpha", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -22,6 +23,7 @@ public sealed class MaskType : ClassDictionaryBase
             {
                 "mask-type-luminance", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """

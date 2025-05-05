@@ -12,6 +12,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
             {
                 "mask-repeat", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -23,6 +24,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
             {
                 "mask-no-repeat", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -34,6 +36,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
             {
                 "mask-repeat-x", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -45,6 +48,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
             {
                 "mask-repeat-y", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -56,6 +60,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
             {
                 "mask-repeat-space", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -67,6 +72,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
             {
                 "mask-repeat-round", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """

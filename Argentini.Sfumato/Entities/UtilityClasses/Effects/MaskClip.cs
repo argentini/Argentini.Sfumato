@@ -12,6 +12,7 @@ public sealed class MaskClip : ClassDictionaryBase
             {
                 "mask-clip-border", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -23,6 +24,7 @@ public sealed class MaskClip : ClassDictionaryBase
             {
                 "mask-clip-padding", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -34,6 +36,7 @@ public sealed class MaskClip : ClassDictionaryBase
             {
                 "mask-clip-content", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -45,6 +48,7 @@ public sealed class MaskClip : ClassDictionaryBase
             {
                 "mask-clip-fill", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -56,6 +60,7 @@ public sealed class MaskClip : ClassDictionaryBase
             {
                 "mask-clip-stroke", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -67,6 +72,7 @@ public sealed class MaskClip : ClassDictionaryBase
             {
                 "mask-clip-view", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -78,6 +84,7 @@ public sealed class MaskClip : ClassDictionaryBase
             {
                 "mask-no-clip", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """

@@ -12,6 +12,7 @@ public sealed class MaskSize : ClassDictionaryBase
             {
                 "mask-size-", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     UsesAbstractValue = true,
                     Template =
                         """
@@ -23,6 +24,7 @@ public sealed class MaskSize : ClassDictionaryBase
             {
                 "mask-auto", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -34,6 +36,7 @@ public sealed class MaskSize : ClassDictionaryBase
             {
                 "mask-cover", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -45,6 +48,7 @@ public sealed class MaskSize : ClassDictionaryBase
             {
                 "mask-contain", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """

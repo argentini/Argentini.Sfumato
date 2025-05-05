@@ -12,6 +12,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
             {
                 "mask-origin-border", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -23,6 +24,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
             {
                 "mask-origin-padding", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -34,6 +36,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
             {
                 "mask-origin-content", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -45,6 +48,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
             {
                 "mask-origin-fill", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -56,6 +60,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
             {
                 "mask-origin-stroke", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
@@ -67,6 +72,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
             {
                 "mask-origin-view", new ClassDefinition
                 {
+                    SelectorSort = 4,
                     IsSimpleUtility = true,
                     Template =
                         """
