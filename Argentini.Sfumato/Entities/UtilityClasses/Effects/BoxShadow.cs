@@ -44,14 +44,9 @@ public sealed class BoxShadow : ClassDictionaryBase
             var value = new ClassDefinition
             {
                 IsSimpleUtility = true,
-                UsesAbstractValue = true,
                 Template =
                     $"""
                     box-shadow: var({text.Key});
-                    """,
-                ArbitraryModifierTemplate =
-                    """
-                    box-shadow: {0};
                     """,
             };
 
