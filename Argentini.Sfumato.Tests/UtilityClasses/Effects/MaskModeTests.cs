@@ -15,6 +15,7 @@ public class MaskModeTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".mask-alpha",
                 Styles =
                     """
+                    -webkit-mask-source-type: alpha;
                     mask-mode: alpha;
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class MaskModeTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".mask-match",
                 Styles =
                     """
+                    -webkit-mask-source-type: match-source;
                     mask-mode: match-source;
                     """,
                 IsValid = true,

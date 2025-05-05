@@ -15,6 +15,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-origin: border-box;
                         mask-origin: border-box;
                         """,
                 }
@@ -25,6 +26,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-origin: padding-box;
                         mask-origin: padding-box;
                         """,
                 }
@@ -35,6 +37,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-origin: content-box;
                         mask-origin: content-box;
                         """,
                 }
@@ -45,6 +48,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-origin: fill-box;
                         mask-origin: fill-box;
                         """,
                 }
@@ -55,6 +59,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-origin: stroke-box;
                         mask-origin: stroke-box;
                         """,
                 }
@@ -65,6 +70,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-origin: view-box;
                         mask-origin: view-box;
                         """,
                 }

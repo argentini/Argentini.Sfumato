@@ -15,6 +15,7 @@ public class MaskClipTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".mask-clip-border",
                 Styles =
                     """
+                    -webkit-mask-clip: border-box;
                     mask-clip: border-box;
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class MaskClipTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".mask-no-clip",
                 Styles =
                     """
+                    -webkit-mask-clip: no-clip;
                     mask-clip: no-clip;
                     """,
                 IsValid = true,

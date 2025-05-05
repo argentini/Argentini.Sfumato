@@ -14,6 +14,7 @@ public sealed class MaskImage : ClassDictionaryBase
                     UsesAbstractValue = true,
                     UsesImageUrl = true,
                     Template = """
+                               -webkit-mask-image: {0};
                                mask-image: {0};
                                """,
                 }
@@ -23,6 +24,7 @@ public sealed class MaskImage : ClassDictionaryBase
                 {
                     IsSimpleUtility = true,
                     Template = """
+                               -webkit-mask-image: none;
                                mask-image: none;
                                """,
                 }

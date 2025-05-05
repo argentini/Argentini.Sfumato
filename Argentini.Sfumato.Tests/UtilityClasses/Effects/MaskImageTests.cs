@@ -15,6 +15,7 @@ public class MaskImageTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".mask-\[url\(\/img\/mask\.png\)\]",
                 Styles =
                     """
+                    -webkit-mask-image: url(/img/mask.png);
                     mask-image: url(/img/mask.png);
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class MaskImageTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".mask-\(--my-mask\)",
                 Styles =
                     """
+                    -webkit-mask-image: var(--my-mask);
                     mask-image: var(--my-mask);
                     """,
                 IsValid = true,
@@ -37,6 +39,7 @@ public class MaskImageTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".mask-\(url\:--my-mask\)",
                 Styles =
                     """
+                    -webkit-mask-image: var(--my-mask);
                     mask-image: var(--my-mask);
                     """,
                 IsValid = true,
@@ -48,6 +51,7 @@ public class MaskImageTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".mask-none",
                 Styles =
                     """
+                    -webkit-mask-image: none;
                     mask-image: none;
                     """,
                 IsValid = true,

@@ -15,6 +15,7 @@ public sealed class MaskMode : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-source-type: alpha;
                         mask-mode: alpha;
                         """,
                 }
@@ -25,6 +26,7 @@ public sealed class MaskMode : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-source-type: luminance;
                         mask-mode: luminance;
                         """,
                 }
@@ -35,6 +37,7 @@ public sealed class MaskMode : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-source-type: match-source;
                         mask-mode: match-source;
                         """,
                 }

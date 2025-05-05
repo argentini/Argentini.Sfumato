@@ -15,6 +15,7 @@ public class MaskOriginTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".mask-origin-border",
                 Styles =
                     """
+                    -webkit-mask-origin: border-box;
                     mask-origin: border-box;
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class MaskOriginTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".mask-origin-view",
                 Styles =
                     """
+                    -webkit-mask-origin: view-box;
                     mask-origin: view-box;
                     """,
                 IsValid = true,

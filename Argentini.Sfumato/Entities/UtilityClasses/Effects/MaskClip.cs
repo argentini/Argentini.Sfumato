@@ -15,6 +15,7 @@ public sealed class MaskClip : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-clip: border-box;
                         mask-clip: border-box;
                         """,
                 }
@@ -25,6 +26,7 @@ public sealed class MaskClip : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-clip: padding-box;
                         mask-clip: padding-box;
                         """,
                 }
@@ -35,6 +37,7 @@ public sealed class MaskClip : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-clip: content-box;
                         mask-clip: content-box;
                         """,
                 }
@@ -45,6 +48,7 @@ public sealed class MaskClip : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-clip: fill-box;
                         mask-clip: fill-box;
                         """,
                 }
@@ -55,6 +59,7 @@ public sealed class MaskClip : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-clip: stroke-box;
                         mask-clip: stroke-box;
                         """,
                 }
@@ -65,6 +70,7 @@ public sealed class MaskClip : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-clip: view-box;
                         mask-clip: view-box;
                         """,
                 }
@@ -75,6 +81,7 @@ public sealed class MaskClip : ClassDictionaryBase
                     IsSimpleUtility = true,
                     Template =
                         """
+                        -webkit-mask-clip: no-clip;
                         mask-clip: no-clip;
                         """,
                 }
