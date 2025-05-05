@@ -480,6 +480,9 @@ public sealed class CssClass : IDisposable
                 else if (valueNoBrackets.ValueIsImageUrl())
                 {
                     AppRunner.Library.ImageUrlClasses.TryGetValue(prefix, out ClassDefinition);
+
+                    if (ClassDefinition is null)
+                        AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.ValueIsRatio())
                 {
