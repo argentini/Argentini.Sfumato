@@ -35,11 +35,11 @@ public class InvertTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "invert-[37.5]",
-                EscapedClassName = @".invert-\[37\.5\]",
+                ClassName = "invert-[.5]",
+                EscapedClassName = @".invert-\[\.5\]",
                 Styles =
                     """
-                    --sf-invert: invert(37.5%);
+                    --sf-invert: invert(.5);
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,

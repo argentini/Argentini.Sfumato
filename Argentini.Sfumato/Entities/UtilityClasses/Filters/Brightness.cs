@@ -12,7 +12,7 @@ public sealed class Brightness : ClassDictionaryBase
                 "brightness-", new ClassDefinition
                 {
                     UsesInteger = true,
-                    UsesPercentage = true,
+                    UsesAlphaNumber = true,
                     Template =
                         """
                         --sf-brightness: brightness({0}%);

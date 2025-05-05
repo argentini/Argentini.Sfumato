@@ -12,10 +12,15 @@ public sealed class Invert : ClassDictionaryBase
                 "invert-", new ClassDefinition
                 {
                     UsesInteger = true,
-                    UsesAlphaNumber = true,
+                    UsesAbstractValue = true,
                     Template =
                         """
                         --sf-invert: invert({0}%);
+                        filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
+                        """,
+                    ArbitraryCssValueTemplate = 
+                        """
+                        --sf-invert: invert({0});
                         filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                         """,
                 }

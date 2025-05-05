@@ -35,11 +35,11 @@ public class ContrastTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "contrast-[250.5%]",
-                EscapedClassName = @".contrast-\[250\.5\%\]",
+                ClassName = "contrast-[.5]",
+                EscapedClassName = @".contrast-\[\.5\]",
                 Styles =
                     """
-                    --sf-contrast: contrast(250.5%);
+                    --sf-contrast: contrast(.5);
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,

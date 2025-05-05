@@ -35,11 +35,11 @@ public class BrightnessTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "brightness-[250.5%]",
-                EscapedClassName = @".brightness-\[250\.5\%\]",
+                ClassName = "brightness-[.5]",
+                EscapedClassName = @".brightness-\[\.5\]",
                 Styles =
                     """
-                    --sf-brightness: brightness(250.5%);
+                    --sf-brightness: brightness(.5);
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,

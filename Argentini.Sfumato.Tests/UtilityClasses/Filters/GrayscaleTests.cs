@@ -35,11 +35,11 @@ public class GrayscaleTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
-                ClassName = "grayscale-[37.5]",
-                EscapedClassName = @".grayscale-\[37\.5\]",
+                ClassName = "grayscale-[.5]",
+                EscapedClassName = @".grayscale-\[\.5\]",
                 Styles =
                     """
-                    --sf-grayscale: grayscale(37.5%);
+                    --sf-grayscale: grayscale(.5);
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,

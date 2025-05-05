@@ -12,7 +12,7 @@ public sealed class Contrast : ClassDictionaryBase
                 "contrast-", new ClassDefinition
                 {
                     UsesInteger = true,
-                    UsesPercentage = true,
+                    UsesAlphaNumber = true,
                     Template =
                         """
                         --sf-contrast: contrast({0}%);
