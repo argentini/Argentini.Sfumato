@@ -14,7 +14,6 @@ public sealed class TextShadowColor : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesColor = true,
-                    UsesSlashModifier = true,
                     Template = 
                         """
                         --sf-text-shadow-color: {0};

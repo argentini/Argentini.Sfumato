@@ -14,7 +14,6 @@ public sealed class RingColor : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesColor = true,
-                    UsesSlashModifier = true,
                     Template = 
                         """
                         --sf-ring-color: {0};

@@ -14,7 +14,6 @@ public sealed class InsetRingColor : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesColor = true,
-                    UsesSlashModifier = true,
                     Template = 
                         """
                         --sf-inset-ring-color: {0};

@@ -14,7 +14,6 @@ public sealed class BoxShadowColor : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesColor = true,
-                    UsesSlashModifier = true,
                     Template = 
                         """
                         --sf-shadow-color: {0};

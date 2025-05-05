@@ -12,7 +12,6 @@ public sealed class BackgroundColor : ClassDictionaryBase
                 "bg-", new ClassDefinition
                 {
                     UsesColor = true,
-                    UsesSlashModifier = true,
                     Template = """
                                background-color: {0};
                                """,

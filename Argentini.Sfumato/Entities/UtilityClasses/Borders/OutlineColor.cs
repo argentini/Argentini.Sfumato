@@ -13,7 +13,6 @@ public sealed class OutlineColor : ClassDictionaryBase
                 "outline-", new ClassDefinition
                 {
                     UsesColor = true,
-                    UsesSlashModifier = true,
                     Template =
                         """
                         outline-color: {0};

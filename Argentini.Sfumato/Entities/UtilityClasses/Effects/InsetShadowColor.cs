@@ -14,7 +14,6 @@ public sealed class InsetShadowColor : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesColor = true,
-                    UsesSlashModifier = true,
                     Template = 
                         """
                         --sf-inset-shadow-color: {0};
