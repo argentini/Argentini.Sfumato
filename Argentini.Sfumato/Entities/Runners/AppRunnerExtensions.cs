@@ -480,7 +480,7 @@ public static class AppRunnerExtensions
 						.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 			
-			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.ClassDefinition?.SelectorSort ?? 0))
+			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.SelectorSort))
 			{
 				if (appRunner.AppRunnerSettings.UseMinify == false)
 					workingSb
