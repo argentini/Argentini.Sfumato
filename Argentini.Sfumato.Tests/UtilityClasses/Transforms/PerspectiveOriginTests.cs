@@ -33,6 +33,17 @@ public class PerspectiveOriginTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "perspective-origin-top",
+                EscapedClassName = ".perspective-origin-top",
+                Styles =
+                    """
+                    perspective-origin: top;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "perspective-origin-[200%_150%]",
                 EscapedClassName = @".perspective-origin-\[200\%_150\%\]",
                 Styles =

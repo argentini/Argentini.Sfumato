@@ -29,6 +29,76 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
                 }
             },
             {
+                "perspective-origin-top", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        perspective-origin: top;
+                        """,
+                }
+            },
+            {
+                "perspective-origin-top-right", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        perspective-origin: top right;
+                        """,
+                }
+            },
+            {
+                "perspective-origin-right", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        perspective-origin: right;
+                        """,
+                }
+            },
+            {
+                "perspective-origin-bottom-right", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        perspective-origin: bottom right;
+                        """,
+                }
+            },
+            {
+                "perspective-origin-bottom", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        perspective-origin: bottom;
+                        """,
+                }
+            },
+            {
+                "perspective-origin-bottom-left", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        perspective-origin: bottom left;
+                        """,
+                }
+            },
+            {
+                "perspective-origin-left", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template =
+                        """
+                        perspective-origin: left;
+                        """,
+                }
+            },
+            {
                 "perspective-origin-top-left", new ClassDefinition
                 {
                     IsSimpleUtility = true,
