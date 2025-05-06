@@ -17,7 +17,7 @@ public class TransitionPropertyTests(ITestOutputHelper testOutputHelper)
                     """
                     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --sf-gradient-from, --sf-gradient-via, --sf-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter;
                     transition-timing-function: var(--sf-ease, var(--default-transition-timing-function));
-                    transition-duration: var(--sf-duration, var(--default-transition-duration))
+                    transition-duration: var(--sf-duration, var(--default-transition-duration));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -41,7 +41,7 @@ public class TransitionPropertyTests(ITestOutputHelper testOutputHelper)
                     """
                     transition-property: height;
                     transition-timing-function: var(--sf-ease, var(--default-transition-timing-function));
-                    transition-duration: var(--sf-duration, var(--default-transition-duration))
+                    transition-duration: var(--sf-duration, var(--default-transition-duration));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -54,7 +54,7 @@ public class TransitionPropertyTests(ITestOutputHelper testOutputHelper)
                     """
                     transition-property: var(--my-transition);
                     transition-timing-function: var(--sf-ease, var(--default-transition-timing-function));
-                    transition-duration: var(--sf-duration, var(--default-transition-duration))
+                    transition-duration: var(--sf-duration, var(--default-transition-duration));
                     """,
                 IsValid = true,
                 IsImportant = false,
