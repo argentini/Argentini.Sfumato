@@ -2,150 +2,150 @@
 
 namespace Argentini.Sfumato.Entities.UtilityClasses.Transforms;
 
-public sealed class Rotate : ClassDictionaryBase
+public sealed class Scale : ClassDictionaryBase
 {
-    public Rotate()
+    public Scale()
     {
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
-                "rotate-", new ClassDefinition
+                "scale-", new ClassDefinition
+                {
+                    UsesInteger = true,
+                    UsesPercentage = true,
+                    Template =
+                        """
+                        scale: {0}% {0}%;
+                        """,
+                    ArbitraryCssValueTemplate = 
+                        """
+                        scale: {0} {0};
+                        """,
+                }
+            },
+            {
+                "-scale-", new ClassDefinition
+                {
+                    UsesInteger = true,
+                    Template =
+                        """
+                        scale: calc({0}% * -1) calc({0}% * -1);
+                        """,
+                    ArbitraryCssValueTemplate = 
+                        """
+                        scale: calc({0} * -1) calc({0} * -1);
+                        """,
+                }
+            },
+            {
+                "scale-x-", new ClassDefinition
                 {
                     UsesInteger = true,
                     UsesAngleHue = true,
                     Template =
                         """
-                        rotate: {0}deg;
+                        --sf-scale-x: {0}%;
+                        scale: {0}% var(--sf-scale-y);
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        rotate: {0};
+                        --sf-scale-x: {0};
+                        scale: {0} var(--sf-scale-y);
                         """,
                 }
             },
             {
-                "-rotate-", new ClassDefinition
-                {
-                    UsesInteger = true,
-                    Template =
-                        """
-                        rotate: calc({0}deg * -1);
-                        """,
-                    ArbitraryCssValueTemplate = 
-                        """
-                        rotate: calc({0} * -1);
-                        """,
-                }
-            },
-            {
-                "rotate-x-", new ClassDefinition
+                "-scale-x-", new ClassDefinition
                 {
                     UsesInteger = true,
                     UsesAngleHue = true,
                     Template =
                         """
-                        --sf-rotate-x: {0}deg;
-                        transform: rotateX({0}deg) var(--sf-rotate-y);
+                        --sf-scale-x: calc({0}% * -1);
+                        scale: calc({0}% * -1) var(--sf-scale-y);
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        --sf-rotate-x: {0};
-                        transform: rotateX({0}) var(--sf-rotate-y);
+                        --sf-scale-x: calc({0} * -1);
+                        scale: calc({0} * -1) var(--sf-scale-y);
                         """,
                 }
             },
             {
-                "-rotate-x-", new ClassDefinition
+                "scale-y-", new ClassDefinition
                 {
                     UsesInteger = true,
                     UsesAngleHue = true,
                     Template =
                         """
-                        --sf-rotate-x: calc({0}deg * -1);
-                        transform: rotateX(calc({0}deg * -1)) var(--sf-rotate-y);
+                        --sf-scale-y: {0}%;
+                        scale: var(--sf-scale-x) {0}%;
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        --sf-rotate-x: calc({0} * -1);
-                        transform: rotateX(calc({0} * -1)) var(--sf-rotate-y);
+                        --sf-scale-y: {0};
+                        scale: var(--sf-scale-x) {0};
                         """,
                 }
             },
             {
-                "rotate-y-", new ClassDefinition
+                "-scale-y-", new ClassDefinition
                 {
                     UsesInteger = true,
                     UsesAngleHue = true,
                     Template =
                         """
-                        --sf-rotate-y: {0}deg;
-                        transform: var(--sf-rotate-x) rotateY({0}deg);
+                        --sf-scale-y: calc({0}% * -1);
+                        scale: var(--sf-scale-x) calc({0}% * -1);
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        --sf-rotate-y: {0};
-                        transform: var(--sf-rotate-x) rotateY({0});
+                        --sf-scale-y: calc({0} * -1);
+                        scale: var(--sf-scale-x) calc({0} * -1);
                         """,
                 }
             },
             {
-                "-rotate-y-", new ClassDefinition
+                "scale-z-", new ClassDefinition
                 {
                     UsesInteger = true,
                     UsesAngleHue = true,
                     Template =
                         """
-                        --sf-rotate-y: calc({0}deg * -1);
-                        transform: var(--sf-rotate-x) rotateY(calc({0}deg * -1));
+                        --sf-scale-z: {0}%;
+                        scale: var(--sf-scale-x) var(--sf-scale-y) {0}%;
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        --sf-rotate-y: calc({0} * -1);
-                        transform: var(--sf-rotate-x) rotateY(calc({0} * -1));
+                        --sf-scale-z: {0};
+                        scale: var(--sf-scale-x) var(--sf-scale-y) {0};
                         """,
                 }
             },
             {
-                "rotate-z-", new ClassDefinition
+                "-scale-z-", new ClassDefinition
                 {
                     UsesInteger = true,
                     UsesAngleHue = true,
                     Template =
                         """
-                        --sf-rotate-z: {0}deg;
-                        transform: var(--sf-rotate-x) var(--sf-rotate-y) rotateZ({0}deg);
+                        --sf-scale-z: calc({0}% * -1);
+                        scale: var(--sf-scale-x) var(--sf-scale-y) calc({0}% * -1);
                         """,
                     ArbitraryCssValueTemplate = 
                         """
-                        --sf-rotate-z: {0};
-                        transform: var(--sf-rotate-x) var(--sf-rotate-y) rotateZ({0});
+                        --sf-scale-z: calc({0} * -1);
+                        scale: var(--sf-scale-x) var(--sf-scale-y) calc({0} * -1);
                         """,
                 }
             },
             {
-                "-rotate-z-", new ClassDefinition
-                {
-                    UsesInteger = true,
-                    UsesAngleHue = true,
-                    Template =
-                        """
-                        --sf-rotate-z: calc({0}deg * -1);
-                        transform: var(--sf-rotate-x) var(--sf-rotate-y) rotateZ(calc({0}deg * -1));
-                        """,
-                    ArbitraryCssValueTemplate = 
-                        """
-                        --sf-rotate-z: calc({0} * -1);
-                        transform: var(--sf-rotate-x) var(--sf-rotate-y) rotateZ(calc({0} * -1));
-                        """,
-                }
-            },
-            {
-                "rotate-none", new ClassDefinition
+                "scale-3d", new ClassDefinition
                 {
                     IsSimpleUtility = true,
                     Template =
                         """
-                        rotate: none;
+                        scale: var(--sf-scale-x) var(--sf-scale-y) var(--sf-scale-z);
                         """,
                 }
             },
