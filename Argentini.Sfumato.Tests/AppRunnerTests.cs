@@ -10,7 +10,7 @@ public class AppRunnerTests
 
         await scannedFile.LoadAndScanFileAsync(appRunner);
         
-        Assert.Equal(232, scannedFile.UtilityClasses.Count);
+        Assert.Equal(235, scannedFile.UtilityClasses.Count);
     }
 
     [Fact]
