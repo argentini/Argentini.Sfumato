@@ -13,6 +13,8 @@
     @utility tab-4 {
         tab-size: 4;
     }
+
+    @custom-variant dark (&:where(.theme-dark, .theme-dark *));
 }
 
 .test-values {

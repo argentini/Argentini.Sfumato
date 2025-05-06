@@ -96,6 +96,8 @@ public sealed class CssClass : IDisposable
             return;
 
         ProcessVariants();
+
+        SelectorSort += VariantSegments.Count(v => v.Value.PrefixType == "pseudoclass");
         
         if (IsValid)
         {
@@ -641,7 +643,7 @@ public sealed class CssClass : IDisposable
 
         try
         {
-            if (VariantSegments.TryGetValue("dark", out var darkVariant))
+            if (VariantSegments.TryGetValue("dark", out var darkVariant) && darkVariant.PrefixType == "media")
             {
                 var wrapper = $"@{darkVariant.PrefixType} {darkVariant.Statement} {{";
                 
