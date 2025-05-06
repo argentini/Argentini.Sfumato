@@ -17,6 +17,24 @@ public sealed class AccentColor : ClassDictionaryBase
                                """,
                 }
             },
+            {
+                "accent-inherit", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               accent-color: inherit;
+                               """,
+                }
+            },
+            {
+                "accent-current", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               accent-color: currentColor;
+                               """,
+                }
+            },
         });
     }
     

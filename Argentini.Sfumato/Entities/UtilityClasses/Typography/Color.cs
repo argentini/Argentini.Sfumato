@@ -17,6 +17,24 @@ public sealed class Color : ClassDictionaryBase
                                """,
                 }
             },
+            {
+                "text-inherit", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               color: inherit;
+                               """,
+                }
+            },
+            {
+                "text-current", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               color: currentColor;
+                               """,
+                }
+            },
         });
     }
     

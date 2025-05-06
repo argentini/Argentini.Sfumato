@@ -17,6 +17,24 @@ public sealed class CaretColor : ClassDictionaryBase
                                """,
                 }
             },
+            {
+                "caret-inherit", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               caret-color: inherit;
+                               """,
+                }
+            },
+            {
+                "caret-current", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               caret-color: currentColor;
+                               """,
+                }
+            },
         });
     }
     
