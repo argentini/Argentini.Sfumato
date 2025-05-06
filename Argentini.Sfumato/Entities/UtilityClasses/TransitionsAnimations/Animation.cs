@@ -53,10 +53,6 @@ public sealed class Animation : ClassDictionaryBase
                 appRunner.Library.ScannerClassNamePrefixes.Insert(key);
             else
                 appRunner.Library.SimpleClasses[key] = value;
-
-            var keyframesKey = $"@keyframes {key.Split('-')[^1]}";
-
-            appRunner.UsedCss.TryAdd(keyframesKey, $"{{ {item.Value.TrimEnd(';')}; }}");
         }
     }
 }

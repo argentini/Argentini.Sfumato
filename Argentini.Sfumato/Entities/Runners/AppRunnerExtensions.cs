@@ -365,6 +365,14 @@ public static class AppRunnerExtensions
 
 						if (appRunner.AppRunnerSettings.UseMinify == false)
 							workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
+
+						if (ccp.Key.StartsWith("--animate-", StringComparison.Ordinal) == false)
+							continue;
+						
+						var key = $"@keyframes {ccp.Key.TrimStart("--animate-")}";
+
+						if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(key, out var value))
+							appRunner.UsedCss.TryAdd(key, value.Replace($"{appRunner.AppRunnerSettings.LineBreak}{appRunner.AppRunnerSettings.Indentation}", appRunner.AppRunnerSettings.LineBreak));
 					}
 
 					workingSb.Append('}');
