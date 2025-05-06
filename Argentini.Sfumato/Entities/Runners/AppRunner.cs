@@ -14,7 +14,7 @@ public sealed class AppRunner
 	public bool IsFirstRun { get; set; } = true;
 	
 	public AppState AppState { get; }
-	public Library.Library Library { get; } = new();
+	public Library.Library Library { get; set; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new(null);
 	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
 	public ConcurrentDictionary<string,string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
@@ -53,6 +53,8 @@ public sealed class AppRunner
     {
 	    try
 	    {
+		    Library = new Library.Library();
+		    
 		    AppRunnerSettings = new AppRunnerSettings(this)
 		    {
 			    CssFilePath = _cssFilePath,
@@ -289,6 +291,8 @@ public sealed class AppRunner
 					    SelectorSuffix = $"{match.Value.TrimStart('&')}"
 				    };
 			    }
+
+			    Library.MediaQueryPrefixes.Remove(key);
 		    }
 		    else
 		    {
@@ -326,6 +330,8 @@ public sealed class AppRunner
 
 				    if (prefixOrder < int.MaxValue - 100)
 					    prefixOrder += 100;
+				    
+				    Library.PseudoclassPrefixes.Remove(key);
 			    }
 			    else if (prefixType.Equals("supports", StringComparison.OrdinalIgnoreCase))
 			    {
@@ -343,6 +349,8 @@ public sealed class AppRunner
 						    Statement = statement
 					    };
 				    }
+				    
+				    Library.PseudoclassPrefixes.Remove(key);
 			    }
 		    }
 	    }
