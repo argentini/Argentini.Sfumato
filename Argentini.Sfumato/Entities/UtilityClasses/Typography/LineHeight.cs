@@ -11,10 +11,10 @@ public sealed class LineHeight : ClassDictionaryBase
             {
                 "leading-", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     UsesDimensionLength = true,
                     UsesAlphaNumber = true,
                     UsesSpacing = true,
-                    SelectorSort = 1,
                     Template =
                         """
                         line-height: calc(var(--spacing) * {0});
@@ -28,10 +28,10 @@ public sealed class LineHeight : ClassDictionaryBase
             {
                 "-leading-", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     UsesDimensionLength = true,
                     UsesAlphaNumber = true,
                     UsesSpacing = true,
-                    SelectorSort = 1,
                     Template =
                         """
                         line-height: calc(var(--spacing) * {0} * -1);
@@ -45,8 +45,8 @@ public sealed class LineHeight : ClassDictionaryBase
             {
                 "leading-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
                     SelectorSort = 1,
+                    IsSimpleUtility = true,
                     Template = """
                                line-height: 1;
                                """

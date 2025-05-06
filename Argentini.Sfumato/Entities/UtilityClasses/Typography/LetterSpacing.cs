@@ -11,6 +11,7 @@ public sealed class LetterSpacing : ClassDictionaryBase
             {
                 "tracking-", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     UsesDimensionLength = true,
                     Template = """
                                letter-spacing: {0};
@@ -20,6 +21,7 @@ public sealed class LetterSpacing : ClassDictionaryBase
             {
                 "-tracking-", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     UsesDimensionLength = true,
                     Template = """
                                letter-spacing: calc({0} * -1);
@@ -36,6 +38,7 @@ public sealed class LetterSpacing : ClassDictionaryBase
             var key = font.Key.Trim('-');
             var value = new ClassDefinition
             {
+                SelectorSort = 1,
                 IsSimpleUtility = true,
                 Template = 
                     $"letter-spacing: var({font.Key});",

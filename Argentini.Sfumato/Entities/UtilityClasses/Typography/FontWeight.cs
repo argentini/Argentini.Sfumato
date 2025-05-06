@@ -11,6 +11,7 @@ public sealed class FontWeight : ClassDictionaryBase
             {
                 "font-", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     UsesInteger = true,
                     Template = """
                                font-weight: {0};
@@ -27,6 +28,7 @@ public sealed class FontWeight : ClassDictionaryBase
             var key = font.Key.Replace("--font-weight", "font");
             var value = new ClassDefinition
             {
+                SelectorSort = 1,
                 IsSimpleUtility = true,
                 Template = 
                     $"font-weight: var({font.Key});",
