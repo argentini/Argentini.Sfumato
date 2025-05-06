@@ -35,6 +35,18 @@ public class TransitionTimingFunctionTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "ease-in",
+                EscapedClassName = ".ease-in",
+                Styles =
+                    """
+                    --sf-ease: var(--ease-in);
+                    transition-timing-function: var(--ease-in);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "ease-[150ms]",
                 EscapedClassName = @".ease-\[150ms\]",
                 Styles =

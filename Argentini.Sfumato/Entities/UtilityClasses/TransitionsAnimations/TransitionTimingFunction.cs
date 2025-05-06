@@ -37,39 +37,6 @@ public sealed class TransitionTimingFunction : ClassDictionaryBase
                 }
             },
             {
-                "ease-in", new ClassDefinition
-                {
-                    IsSimpleUtility = true,
-                    Template =
-                        """
-                        --sf-ease: var(--ease-in);
-                        transition-timing-function: var(--ease-in);
-                        """,
-                }
-            },
-            {
-                "ease-out", new ClassDefinition
-                {
-                    IsSimpleUtility = true,
-                    Template =
-                        """
-                        --sf-ease: var(--ease-out);
-                        transition-timing-function: var(--ease-out);
-                        """,
-                }
-            },
-            {
-                "ease-in-out", new ClassDefinition
-                {
-                    IsSimpleUtility = true,
-                    Template =
-                        """
-                        --sf-ease: var(--ease-in-out);
-                        transition-timing-function: var(--ease-in-out);
-                        """,
-                }
-            },
-            {
                 "ease-initial", new ClassDefinition
                 {
                     IsSimpleUtility = true,
@@ -84,5 +51,24 @@ public sealed class TransitionTimingFunction : ClassDictionaryBase
     }
 
     public override void ProcessThemeSettings(AppRunner appRunner)
-    {}
+    {
+        foreach (var item in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--ease-")))
+        {
+            var key = item.Key.Trim('-');
+            var value = new ClassDefinition
+            {
+                IsSimpleUtility = true,
+                Template = 
+                    $"""
+                     --sf-ease: var({item.Key});
+                     transition-timing-function: var({item.Key});
+                     """,
+            };
+
+            if (appRunner.Library.SimpleClasses.TryAdd(key, value))
+                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
+            else
+                appRunner.Library.SimpleClasses[key] = value;
+        }
+    }
 }
