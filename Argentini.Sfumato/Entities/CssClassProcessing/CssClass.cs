@@ -143,6 +143,8 @@ public sealed class CssClass : IDisposable
                     VariantSegments.Add(segment, pseudoClass);
                     
                     if (pseudoClass.SelectorSuffix.Contains(":where(", StringComparison.Ordinal))
+                        SelectorSort = 99;
+                    else
                         SelectorSort++;
                 }
                 else if (segment.TryVariantIsGroup(AppRunner, out var group))
