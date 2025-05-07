@@ -33,9 +33,6 @@ public sealed class FontSize : ClassDictionaryBase
     {
         foreach (var text in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--text-") && i.Key.LastIndexOf("--", StringComparison.Ordinal) == 0))
         {
-            if (text.Key.EndsWith("--line-height"))
-                continue;
-
             var key = text.Key.Trim('-');
             var value = new ClassDefinition
             {
@@ -44,23 +41,17 @@ public sealed class FontSize : ClassDictionaryBase
                 Template =
                     $"""
                     font-size: var({text.Key});
-                    line-height: var({text.Key}--line-height, initial);
-                    letter-spacing: var({text.Key}--letter-spacing, initial);
-                    font-weight: var({text.Key}--font-weight, initial);
+                    line-height: var(--sf-leading, var({text.Key}--line-height));
                     """,
                 ModifierTemplate =
                     $$"""
                     font-size: var({{text.Key}});
                     line-height: calc(var(--spacing) * {1});
-                    letter-spacing: var({{text.Key}}--letter-spacing, initial);
-                    font-weight: var({{text.Key}}--font-weight, initial);
                     """,
                 ArbitraryModifierTemplate =
                     $$"""
                     font-size: var({{text.Key}});
                     line-height: {1};
-                    letter-spacing: var({{text.Key}}--letter-spacing, initial);
-                    font-weight: var({{text.Key}}--font-weight, initial);
                     """,
             };
 
