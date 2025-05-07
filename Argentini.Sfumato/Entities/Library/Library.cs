@@ -47,7 +47,7 @@ public sealed class Library
     {
         try
         {
-            return Console.WindowWidth > 120 ? 120 : Console.WindowWidth - 1;
+            return Console.WindowWidth is > 120 or < 1 ? 120 : Console.WindowWidth - 1;
         }
         catch
         {
