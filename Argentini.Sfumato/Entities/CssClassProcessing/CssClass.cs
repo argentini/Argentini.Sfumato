@@ -544,11 +544,11 @@ public sealed class CssClass : IDisposable
             {
                 AppRunner.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition);
             }
-            else if (value.ValueIsInteger())
+            else if (value.ValueIsFloatNumber())
             {
                 if (AppRunner.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
                     Value = value;
-                else if (AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition))
+                else if (value.ValueIsInteger() && AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition))
                     Value = value;
             }
             else if (value.ValueIsPercentage())
