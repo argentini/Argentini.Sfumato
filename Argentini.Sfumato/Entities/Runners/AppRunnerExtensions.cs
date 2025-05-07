@@ -122,10 +122,10 @@ public static class AppRunnerExtensions
 					.Where(cssClass => cssClass.IsValid)
 					.ToList();
 
+				workingSb.Clear();
+
 				if (utilityClasses.Count > 0)
 				{
-					workingSb.Clear();
-
 					var depth = 0d;
 
 					if (appRunner.AppRunnerSettings.UseMinify == false)
