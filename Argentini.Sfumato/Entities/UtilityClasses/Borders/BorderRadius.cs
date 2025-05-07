@@ -111,7 +111,7 @@ public sealed class BorderRadius : ClassDictionaryBase
         {
             foreach (var item in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--radius-")))
             {
-                var key = item.Key.Trim('-').Replace("radius", border.Key);
+                var key = item.Key.Replace("radius", border.Key).Trim('-');
                 var value = new ClassDefinition
                 {
                     IsSimpleUtility = true,
@@ -127,8 +127,9 @@ public sealed class BorderRadius : ClassDictionaryBase
             var aKey = $"{border.Key}-";
             var aValue = new ClassDefinition
             {
+                UsesSpacing = true,
                 UsesDimensionLength = true,
-                Template = border.Value,
+                Template = border.Value.Replace("{0}", "calc(var(--spacing) * {0})"),
                 ArbitraryCssValueTemplate = border.Value,
             };
 
@@ -154,6 +155,18 @@ public sealed class BorderRadius : ClassDictionaryBase
             {
                 IsSimpleUtility = true,
                 Template = border.Value.Replace("{0}", "calc(infinity * 1px)"),
+            };
+
+            if (appRunner.Library.SimpleClasses.TryAdd(aKey, aValue))
+                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey);
+            else
+                appRunner.Library.SimpleClasses[aKey] = aValue;
+
+            aKey = $"{border.Key}";
+            aValue = new ClassDefinition
+            {
+                IsSimpleUtility = true,
+                Template = border.Value.Replace("{0}", "var(--radius-sm)"),
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(aKey, aValue))
