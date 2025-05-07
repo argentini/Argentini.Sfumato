@@ -399,6 +399,22 @@ public static class AppRunnerExtensions
 
 				if (appRunner.AppRunnerSettings.UseMinify == false)
 					workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
+
+				foreach (var ccp in appRunner.UsedCssCustomProperties)
+				{
+					if (ccp.Key.StartsWith('-') == false)
+						continue;
+					
+					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue($"@property {ccp.Key}", out var prop) == false)
+						continue;
+					
+					workingSb
+						.Append($"@property {ccp.Key} ")
+						.Append(prop.Replace(appRunner.AppRunnerSettings.LineBreak + appRunner.AppRunnerSettings.Indentation, appRunner.AppRunnerSettings.LineBreak));
+					
+					if (appRunner.AppRunnerSettings.UseMinify == false)
+						workingSb.Append(appRunner.AppRunnerSettings.LineBreak).Append(appRunner.AppRunnerSettings.LineBreak);
+				}
 			}
 
 			sourceCss.Insert(0, workingSb);

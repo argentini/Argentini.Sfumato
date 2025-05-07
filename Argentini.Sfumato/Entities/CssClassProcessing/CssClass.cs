@@ -97,8 +97,6 @@ public sealed class CssClass : IDisposable
 
         ProcessVariants();
 
-        SelectorSort += VariantSegments.Count(v => v.Value.PrefixType == "pseudoclass");
-        
         if (IsValid)
         {
             Sb = AppRunner.AppState.StringBuilderPool.Get();
@@ -143,6 +141,9 @@ public sealed class CssClass : IDisposable
                         return;
 
                     VariantSegments.Add(segment, pseudoClass);
+                    
+                    if (pseudoClass.SelectorSuffix.Contains(":where(", StringComparison.Ordinal))
+                        SelectorSort++;
                 }
                 else if (segment.TryVariantIsGroup(AppRunner, out var group))
                 {

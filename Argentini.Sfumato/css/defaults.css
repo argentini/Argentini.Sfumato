@@ -643,4 +643,682 @@
     --sf-content: "";
     --sf-text-shadow-color: rgb(0 0 0 / 0.15);
     --sf-text-shadow-alpha: 100%;
+
+    @property --sf-border-spacing-x {
+        syntax: "<length>";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-border-spacing-y {
+        syntax: "<length>";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-translate-x {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-translate-y {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-translate-z {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-scale-x {
+        syntax: "*";
+        inherits: false;
+        initial-value: 1
+    }
+
+    @property --sf-scale-y {
+        syntax: "*";
+        inherits: false;
+        initial-value: 1
+    }
+
+    @property --sf-scale-z {
+        syntax: "*";
+        inherits: false;
+        initial-value: 1
+    }
+
+    @property --sf-rotate-x {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-rotate-y {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-rotate-z {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-skew-x {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-skew-y {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-pan-x {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-pan-y {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-pinch-zoom {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-scroll-snap-strictness {
+        syntax: "*";
+        inherits: false;
+        initial-value: proximity
+    }
+
+    @property --sf-space-y-reverse {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-space-x-reverse {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-divide-x-reverse {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-border-style {
+        syntax: "*";
+        inherits: false;
+        initial-value: solid
+    }
+
+    @property --sf-divide-y-reverse {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-gradient-position {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-gradient-from {
+        syntax: "<color>";
+        inherits: false;
+        initial-value: #0000
+    }
+
+    @property --sf-gradient-via {
+        syntax: "<color>";
+        inherits: false;
+        initial-value: #0000
+    }
+
+    @property --sf-gradient-to {
+        syntax: "<color>";
+        inherits: false;
+        initial-value: #0000
+    }
+
+    @property --sf-gradient-stops {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-gradient-via-stops {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-gradient-from-position {
+        syntax: "<length-percentage>";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-gradient-via-position {
+        syntax: "<length-percentage>";
+        inherits: false;
+        initial-value: 50%
+    }
+
+    @property --sf-gradient-to-position {
+        syntax: "<length-percentage>";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-linear {
+        syntax: "*";
+        inherits: false;
+        initial-value: linear-gradient(#fff, #fff)
+    }
+
+    @property --sf-mask-radial {
+        syntax: "*";
+        inherits: false;
+        initial-value: linear-gradient(#fff, #fff)
+    }
+
+    @property --sf-mask-conic {
+        syntax: "*";
+        inherits: false;
+        initial-value: linear-gradient(#fff, #fff)
+    }
+
+    @property --sf-mask-left {
+        syntax: "*";
+        inherits: false;
+        initial-value: linear-gradient(#fff, #fff)
+    }
+
+    @property --sf-mask-right {
+        syntax: "*";
+        inherits: false;
+        initial-value: linear-gradient(#fff, #fff)
+    }
+
+    @property --sf-mask-bottom {
+        syntax: "*";
+        inherits: false;
+        initial-value: linear-gradient(#fff, #fff)
+    }
+
+    @property --sf-mask-top {
+        syntax: "*";
+        inherits: false;
+        initial-value: linear-gradient(#fff, #fff)
+    }
+
+    @property --sf-mask-top-from-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-mask-top-to-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-top-from-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: black
+    }
+
+    @property --sf-mask-top-to-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: transparent
+    }
+
+    @property --sf-mask-bottom-from-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-mask-bottom-to-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-bottom-from-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: black
+    }
+
+    @property --sf-mask-bottom-to-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: transparent
+    }
+
+    @property --sf-mask-right-from-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-mask-right-to-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-right-from-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: black
+    }
+
+    @property --sf-mask-right-to-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: transparent
+    }
+
+    @property --sf-mask-left-from-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-mask-left-to-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-left-from-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: black
+    }
+
+    @property --sf-mask-left-to-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: transparent
+    }
+
+    @property --sf-mask-linear-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0deg
+    }
+
+    @property --sf-mask-linear-from-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-mask-linear-to-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-linear-from-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: black
+    }
+
+    @property --sf-mask-linear-to-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: transparent
+    }
+
+    @property --sf-mask-radial-from-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-mask-radial-to-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-radial-from-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: black
+    }
+
+    @property --sf-mask-radial-to-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: transparent
+    }
+
+    @property --sf-mask-radial-shape {
+        syntax: "*";
+        inherits: false;
+        initial-value: ellipse
+    }
+
+    @property --sf-mask-radial-size {
+        syntax: "*";
+        inherits: false;
+        initial-value: farthest-corner
+    }
+
+    @property --sf-mask-radial-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: center
+    }
+
+    @property --sf-mask-conic-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0deg
+    }
+
+    @property --sf-mask-conic-from-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0%
+    }
+
+    @property --sf-mask-conic-to-position {
+        syntax: "*";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-mask-conic-from-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: black
+    }
+
+    @property --sf-mask-conic-to-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: transparent
+    }
+
+    @property --sf-leading {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-font-weight {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-tracking {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-ordinal {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-slashed-zero {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-numeric-figure {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-numeric-spacing {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-numeric-fraction {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-shadow {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0 0 #0000
+    }
+
+    @property --sf-shadow-color {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-shadow-alpha {
+        syntax: "<percentage>";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-inset-shadow {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0 0 #0000
+    }
+
+    @property --sf-inset-shadow-color {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-inset-shadow-alpha {
+        syntax: "<percentage>";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-ring-color {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-ring-shadow {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0 0 #0000
+    }
+
+    @property --sf-inset-ring-color {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-inset-ring-shadow {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0 0 #0000
+    }
+
+    @property --sf-ring-inset {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-ring-offset-width {
+        syntax: "<length>";
+        inherits: false;
+        initial-value: 0
+    }
+
+    @property --sf-ring-offset-color {
+        syntax: "*";
+        inherits: false;
+        initial-value: #fff
+    }
+
+    @property --sf-ring-offset-shadow {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0 0 #0000
+    }
+
+    @property --sf-outline-style {
+        syntax: "*";
+        inherits: false;
+        initial-value: solid
+    }
+
+    @property --sf-blur {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-brightness {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-contrast {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-grayscale {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-hue-rotate {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-invert {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-opacity {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-saturate {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-sepia {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-drop-shadow {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-drop-shadow-color {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-drop-shadow-alpha {
+        syntax: "<percentage>";
+        inherits: false;
+        initial-value: 100%
+    }
+
+    @property --sf-drop-shadow-size {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-blur {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-brightness {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-contrast {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-grayscale {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-hue-rotate {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-invert {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-opacity {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-saturate {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-backdrop-sepia {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-duration {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-ease {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-content {
+        syntax: "*";
+        inherits: false;
+        initial-value: ""
+    }
+
+    @property --sf-text-shadow-color {
+        syntax: "*";
+        inherits: false
+    }
+
+    @property --sf-text-shadow-alpha {
+        syntax: "<percentage>";
+        inherits: false;
+        initial-value: 100%
+    }
 }
