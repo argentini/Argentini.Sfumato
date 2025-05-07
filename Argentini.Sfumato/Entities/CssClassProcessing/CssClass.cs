@@ -488,6 +488,8 @@ public sealed class CssClass : IDisposable
 
                     if (ClassDefinition is null)
                         AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                    else if (valueNoBrackets.StartsWith("url(", StringComparison.Ordinal) == false)
+                        valueNoBrackets = $"url({valueNoBrackets})";
                 }
                 else if (valueNoBrackets.ValueIsRatio())
                 {
