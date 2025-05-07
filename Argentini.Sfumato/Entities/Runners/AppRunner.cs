@@ -498,7 +498,7 @@ public sealed class AppRunner
 		// ReSharper disable once LoopCanBeConvertedToQuery
 		foreach (var subDir in dirs.OrderBy(d => d.Name))
 		{
-			if (AppRunnerSettings.AbsoluteNotPaths.Any(s => s.Equals(subDir.FullName, StringComparison.Ordinal)))
+			if (AppRunnerSettings.AbsoluteNotPaths.Any(s => s.Equals(subDir.FullName + Path.DirectorySeparatorChar, StringComparison.Ordinal)))
 				continue;
 
 			if (AppRunnerSettings.NotFolderNames.Any(s => s.Equals(subDir.Name, StringComparison.Ordinal)))

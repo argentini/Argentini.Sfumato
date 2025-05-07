@@ -275,7 +275,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 				    foreach (var p in notPaths)
 				    {
 					    NotPaths.Add(p.Trim('\"'));
-					    AbsoluteNotPaths.Add(Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, p.Trim('\"'))));
+					    AbsoluteNotPaths.Add(Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, p.Trim('\"'))).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar);
 				    }
 			    }
 		    }
