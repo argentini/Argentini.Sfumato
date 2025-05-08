@@ -165,6 +165,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             aKey = $"{border.Key}";
             aValue = new ClassDefinition
             {
+                SelectorSort = -1,
                 IsSimpleUtility = true,
                 Template = border.Value.Replace("{0}", "var(--radius-sm)"),
             };
