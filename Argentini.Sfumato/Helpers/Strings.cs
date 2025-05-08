@@ -489,7 +489,8 @@ public static partial class Strings
 					segment = segment[(delim + 1)..];
 					segment = segment[..(segment.LastIndexOf(']') + 1)];
 
-					bag.Add(segment);
+					if (segment.IsLikelyUtilityClass())
+						bag.Add(segment);
 				}
 				else
 				{
@@ -499,10 +500,32 @@ public static partial class Strings
 			}
 			else
 			{
-				bag.Add(segment);
+				if (segment.IsLikelyUtilityClass())
+					bag.Add(segment);
 			}
 		}
 	}
+
+	private static bool IsLikelyUtilityClass(this string source)
+	{
+		if (source.Length < 3)
+			return false;
+
+		if (source[0] is < 'a' or > 'z' && source[0] != '[' && source[0] != '-' && source[0] != '@' && source[0] != '!')
+			return false;
+
+		if (char.IsAsciiLetterLower(source[^1]) == false && char.IsAsciiDigit(source[^1]) == false && source.EndsWith('%') == false && source.EndsWith('!') == false && source.EndsWith(']') == false && source.EndsWith(')') == false)
+			return false;
+
+		if (source.Count(c => c == '[') != source.Count(c => c == ']'))
+			return false;
+
+		if (source.Count(c => c == '(') != source.Count(c => c == ')'))
+			return false;
+		
+		return true;
+	}
+	
 
 	/// <summary>
 	/// Enumerates all substrings of <paramref name="input"/> that consist of one or more non-whitespace characters.
