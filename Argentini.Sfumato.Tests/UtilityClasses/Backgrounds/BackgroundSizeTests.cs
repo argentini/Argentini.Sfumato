@@ -44,6 +44,17 @@ public class BackgroundSizeTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "bg-size-[200rem]",
+                EscapedClassName = @".bg-size-\[200rem\]",
+                Styles =
+                    """
+                    background-size: 200rem;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "bg-size-[var(--my-size)]",
                 EscapedClassName = @".bg-size-\[var\(--my-size\)\]",
                 Styles =

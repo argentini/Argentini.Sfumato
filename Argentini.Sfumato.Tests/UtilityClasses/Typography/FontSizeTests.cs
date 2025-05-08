@@ -16,9 +16,7 @@ public class FontSizeTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     font-size: var(--text-base);
-                    line-height: var(--text-base--line-height, initial);
-                    letter-spacing: var(--text-base--letter-spacing, initial);
-                    font-weight: var(--text-base--font-weight, initial);
+                    line-height: var(--sf-leading, var(--text-base--line-height));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -31,8 +29,6 @@ public class FontSizeTests(ITestOutputHelper testOutputHelper)
                     """
                     font-size: var(--text-base);
                     line-height: calc(var(--spacing) * 6);
-                    letter-spacing: var(--text-base--letter-spacing, initial);
-                    font-weight: var(--text-base--font-weight, initial);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -45,8 +41,6 @@ public class FontSizeTests(ITestOutputHelper testOutputHelper)
                     """
                     font-size: var(--text-base);
                     line-height: 1.35rem;
-                    letter-spacing: var(--text-base--letter-spacing, initial);
-                    font-weight: var(--text-base--font-weight, initial);
                     """,
                 IsValid = true,
                 IsImportant = false,
