@@ -754,6 +754,8 @@ public sealed class CssClass : IDisposable
             
         if (IsImportant)
             Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+
+        Styles = Styles.Replace("calc(var(--spacing) * 0)", "0", StringComparison.Ordinal);
     }
 
     #endregion
