@@ -456,19 +456,26 @@ public static partial class Strings
 	
 	#region Parsing
 
-
-	public static void ScanQuotedStrings(this string? source, HashSet<string> bag)
+	public static void ScanQuotedStrings(this string? source, HashSet<string>? bag, StringBuilder? sb = null)
 	{
 		var delimiters = new [] { '\"', '\'', '`' };
 		
-		if (string.IsNullOrEmpty(source))
+		if (bag is null || string.IsNullOrEmpty(source))
 			return;
 
-		var splits = source
+		sb ??= new StringBuilder();
+		sb.Clear();
+		sb.Append(source);
+		
+		var splits = sb
 			.Replace("\\\"", "\"")
-			.Replace("\",", "\", ")
-			.Replace("',", "', ")
-			.Replace("`,", "`, ")
+			.Replace("\",\"", "\", \"")
+			.Replace("\",@\"", "\", @\"")
+			.Replace("\",$\"", "\", $\"")
+			.Replace("','", "', '")
+			.Replace("`,`", "`, `")
+			.Replace("`,$`", "`, $`")
+			.ToString()
 			.SplitByNonWhitespace();
 
 		foreach (var split in splits)
@@ -495,7 +502,7 @@ public static partial class Strings
 				else
 				{
 					segment = delimiters.Aggregate(segment, (current, dChar) => current.Replace(dChar, ' '));
-					segment.ScanQuotedStrings(bag);
+					segment.ScanQuotedStrings(bag, sb);
 				}
 			}
 			else

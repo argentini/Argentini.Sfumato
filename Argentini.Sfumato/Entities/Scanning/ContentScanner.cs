@@ -10,9 +10,12 @@ public static class ContentScanner
             return [];
         
         var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
+        var sb = appRunner.AppState.StringBuilderPool.Get();
 
-        fileContent.ScanQuotedStrings(quotedSubstrings);
+        fileContent.ScanQuotedStrings(quotedSubstrings, sb);
 
+        appRunner.AppState.StringBuilderPool.Return(sb);
+        
         var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
         
         foreach (var quotedSubstring in quotedSubstrings)
