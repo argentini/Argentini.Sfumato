@@ -11,7 +11,7 @@ public sealed class BackdropHueRotate : ClassDictionaryBase
             {
                 "backdrop-hue-rotate-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """

@@ -11,7 +11,7 @@ public sealed class BackdropContrast : ClassDictionaryBase
             {
                 "backdrop-contrast-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

@@ -22,6 +22,17 @@ public class OpacityTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "opacity-37.5",
+                EscapedClassName = @".opacity-37\.5",
+                Styles =
+                    """
+                    opacity: calc(37.5 * 0.01);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "opacity-[0.67]",
                 EscapedClassName = @".opacity-\[0\.67\]",
                 Styles =

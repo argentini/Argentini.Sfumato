@@ -38,6 +38,14 @@ public class BorderWidthTests(ITestOutputHelper testOutputHelper)
                 },
                 new()
                 {
+                    ClassName = $"{border.Key}-4.5",
+                    EscapedClassName = @$".{border.Key}-4\.5",
+                    Styles = border.Value.Replace("{0}", "4.5px"),
+                    IsValid = true,
+                    IsImportant = false,
+                },
+                new()
+                {
                     ClassName = $"{border.Key}-[0.75rem]",
                     EscapedClassName = @$".{border.Key}-\[0\.75rem\]",
                     Styles = border.Value.Replace("{0}", "0.75rem"),

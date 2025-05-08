@@ -12,7 +12,7 @@ public sealed class OutlineOffset : ClassDictionaryBase
             {
                 "outline-offset-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesDimensionLength = true,
                     Template = 
                         """
@@ -27,7 +27,7 @@ public sealed class OutlineOffset : ClassDictionaryBase
             {
                 "-outline-offset-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesDimensionLength = true,
                     Template = 
                         """

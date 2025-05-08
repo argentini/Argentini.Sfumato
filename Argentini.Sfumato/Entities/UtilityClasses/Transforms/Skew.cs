@@ -11,7 +11,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "skew-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -30,7 +30,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "-skew-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -49,7 +49,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "skew-x-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -66,7 +66,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "-skew-x-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -83,7 +83,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "skew-y-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -100,7 +100,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "-skew-y-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """

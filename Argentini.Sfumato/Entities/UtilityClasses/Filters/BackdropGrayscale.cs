@@ -11,7 +11,7 @@ public sealed class BackdropGrayscale : ClassDictionaryBase
             {
                 "backdrop-grayscale-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

@@ -11,7 +11,7 @@ public sealed class Grayscale : ClassDictionaryBase
             {
                 "grayscale-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

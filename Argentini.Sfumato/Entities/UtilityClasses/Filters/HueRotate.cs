@@ -11,7 +11,7 @@ public sealed class HueRotate : ClassDictionaryBase
             {
                 "hue-rotate-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """

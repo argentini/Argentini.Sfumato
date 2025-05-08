@@ -11,7 +11,7 @@ public sealed class BackdropOpacity : ClassDictionaryBase
             {
                 "backdrop-opacity-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

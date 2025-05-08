@@ -12,7 +12,7 @@ public sealed class DivideWidth : ClassDictionaryBase
             {
                 "divide-x-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesDimensionLength = true,
                     Template = 
                         """
@@ -46,7 +46,7 @@ public sealed class DivideWidth : ClassDictionaryBase
             {
                 "divide-y-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesDimensionLength = true,
                     Template = 
                         """

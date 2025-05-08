@@ -11,7 +11,7 @@ public sealed class Brightness : ClassDictionaryBase
             {
                 "brightness-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

@@ -67,6 +67,20 @@ public class DivideWidthTests(ITestOutputHelper testOutputHelper)
             },
             new()
             {
+                ClassName = "divide-x-4.5",
+                EscapedClassName = @".divide-x-4\.5",
+                Styles =
+                    """
+                    & > :not(:last-child) {
+                        border-inline-start-width: calc(4.5px * var(--sf-divide-x-reverse));
+                        border-inline-end-width: calc(4.5px * calc(1 - var(--sf-divide-x-reverse)))
+                    }
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new()
+            {
                 ClassName = "divide-x-[0.75rem]",
                 EscapedClassName = @".divide-x-\[0\.75rem\]",
                 Styles =

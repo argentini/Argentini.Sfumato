@@ -12,7 +12,7 @@ public sealed class InsetRing : ClassDictionaryBase
             {
                 "inset-ring-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAbstractValue = true,
                     Template =
                         """

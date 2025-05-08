@@ -12,7 +12,7 @@ public sealed class Ring : ClassDictionaryBase
             {
                 "ring-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAbstractValue = true,
                     Template =
                         """

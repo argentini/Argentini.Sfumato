@@ -11,7 +11,7 @@ public sealed class BackdropSepia : ClassDictionaryBase
             {
                 "backdrop-sepia-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

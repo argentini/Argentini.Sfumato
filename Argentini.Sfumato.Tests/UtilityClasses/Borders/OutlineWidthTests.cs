@@ -44,6 +44,17 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
             },
             new()
             {
+                ClassName = "outline-4.5",
+                EscapedClassName = @".outline-4\.5",
+                Styles =
+                    """
+                    outline-width: 4.5px;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new()
+            {
                 ClassName = "outline-[0.75rem]",
                 EscapedClassName = @".outline-\[0\.75rem\]",
                 Styles =

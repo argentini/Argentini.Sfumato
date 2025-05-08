@@ -11,7 +11,8 @@ public sealed class BackdropInvert : ClassDictionaryBase
             {
                 "backdrop-invert-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
+                    UsesAlphaNumber = true,
                     UsesAbstractValue = true,
                     Template =
                         """

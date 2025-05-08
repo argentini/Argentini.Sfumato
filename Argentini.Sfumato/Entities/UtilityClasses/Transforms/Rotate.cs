@@ -11,7 +11,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -26,7 +26,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     Template =
                         """
                         rotate: calc({0}deg * -1);
@@ -40,7 +40,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-x-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -57,7 +57,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-x-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -74,7 +74,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-y-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -91,7 +91,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-y-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -108,7 +108,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-z-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -125,7 +125,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-z-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    UsesSpacing = true,
                     UsesAngleHue = true,
                     Template =
                         """
