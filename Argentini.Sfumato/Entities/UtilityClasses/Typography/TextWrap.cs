@@ -9,6 +9,24 @@ public sealed class TextWrap : ClassDictionaryBase
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
+                "text-wrap", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               text-wrap: wrap;
+                               """
+                }
+            },
+            {
+                "text-nowrap", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               text-wrap: nowrap;
+                               """
+                }
+            },
+            {
                 "text-pretty", new ClassDefinition
                 {
                     IsSimpleUtility = true,
