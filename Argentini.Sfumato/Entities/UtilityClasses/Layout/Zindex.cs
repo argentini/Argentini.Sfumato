@@ -9,15 +9,6 @@ public sealed class Zindex : ClassDictionaryBase
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
-                "z-auto", new ClassDefinition
-                {
-                    IsSimpleUtility = true,
-                    Template = """
-                               z-index: auto;
-                               """,
-                }
-            },
-            {
                 "z-", new ClassDefinition
                 {
                     UsesInteger = true,
@@ -41,6 +32,15 @@ public sealed class Zindex : ClassDictionaryBase
                         """
                         z-index: -{0};
                         """,
+                }
+            },
+            {
+                "z-auto", new ClassDefinition
+                {
+                    IsSimpleUtility = true,
+                    Template = """
+                               z-index: auto;
+                               """,
                 }
             },
         });
