@@ -70,7 +70,7 @@ public sealed class BorderColor : ClassDictionaryBase
             var key = $"{border.Key}-inherit";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = border.Value.Replace("{0}", "inherit"),
             };
 
@@ -82,7 +82,7 @@ public sealed class BorderColor : ClassDictionaryBase
             key = $"{border.Key}-current";
             value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = border.Value.Replace("{0}", "currentColor"),
             };
 

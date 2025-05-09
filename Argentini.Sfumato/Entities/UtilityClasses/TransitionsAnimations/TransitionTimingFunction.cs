@@ -28,7 +28,7 @@ public sealed class TransitionTimingFunction : ClassDictionaryBase
             {
                 "ease-linear", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-ease: linear;
@@ -39,7 +39,7 @@ public sealed class TransitionTimingFunction : ClassDictionaryBase
             {
                 "ease-initial", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-ease: initial;
@@ -57,7 +57,7 @@ public sealed class TransitionTimingFunction : ClassDictionaryBase
             var key = item.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      --sf-ease: var({item.Key});

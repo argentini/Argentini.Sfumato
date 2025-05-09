@@ -31,7 +31,7 @@ public sealed class MinWidth : ClassDictionaryBase
             var key = item.Key.Trim('-').Replace("container", "min-w");
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      min-width: var({item.Key});
@@ -49,7 +49,7 @@ public sealed class MinWidth : ClassDictionaryBase
             var key = $"min-w-{item.Key}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      min-width: {item.Value};

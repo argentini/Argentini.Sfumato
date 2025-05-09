@@ -31,7 +31,7 @@ public sealed class MaxHeight : ClassDictionaryBase
             var key = $"max-h-{item.Key}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      max-height: {item.Value};

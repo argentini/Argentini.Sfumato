@@ -29,7 +29,7 @@ public sealed class TransitionDuration : ClassDictionaryBase
             {
                 "duration-initial", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-duration: initial;

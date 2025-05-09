@@ -20,7 +20,7 @@ public sealed class BackgroundImage : ClassDictionaryBase
             {
                 "bg-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-image: none;
                                """,

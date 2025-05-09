@@ -22,7 +22,7 @@ public sealed class BackgroundRadial : ClassDictionaryBase
             {
                 "bg-radial", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-gradient-position: in oklab;

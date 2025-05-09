@@ -39,7 +39,7 @@ public sealed class LetterSpacing : ClassDictionaryBase
             var value = new ClassDefinition
             {
                 SelectorSort = 1,
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"letter-spacing: var({font.Key});",
             };

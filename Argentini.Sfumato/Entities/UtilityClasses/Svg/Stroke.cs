@@ -20,7 +20,7 @@ public sealed class Stroke : ClassDictionaryBase
             {
                 "stroke-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                stroke: inherit;
                                """,
@@ -29,7 +29,7 @@ public sealed class Stroke : ClassDictionaryBase
             {
                 "stroke-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                stroke: currentColor;
                                """,

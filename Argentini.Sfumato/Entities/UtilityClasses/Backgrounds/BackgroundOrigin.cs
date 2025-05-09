@@ -11,7 +11,7 @@ public sealed class BackgroundOrigin : ClassDictionaryBase
             {
                 "bg-origin-border", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-origin: border-box;
                                """,
@@ -20,7 +20,7 @@ public sealed class BackgroundOrigin : ClassDictionaryBase
             {
                 "bg-origin-padding", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-origin: padding-box;
                                """,
@@ -29,7 +29,7 @@ public sealed class BackgroundOrigin : ClassDictionaryBase
             {
                 "bg-origin-content", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-origin: content-box;
                                """,

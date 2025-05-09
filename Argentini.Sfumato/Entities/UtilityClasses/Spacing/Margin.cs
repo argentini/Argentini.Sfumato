@@ -13,7 +13,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "m-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin: 1px;
                                """
@@ -22,7 +22,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-m-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin: -1px;
                                """
@@ -31,7 +31,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "m-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin: auto;
                                """
@@ -71,7 +71,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mx-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline: 1px;
                                """
@@ -80,7 +80,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mx-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline: -1px;
                                """
@@ -89,7 +89,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mx-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline: auto;
                                """
@@ -129,7 +129,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "my-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-block: 1px;
                                """
@@ -138,7 +138,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-my-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-block: -1px;
                                """
@@ -147,7 +147,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "my-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-block: auto;
                                """
@@ -187,7 +187,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "ms-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline-start: 1px;
                                """
@@ -196,7 +196,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-ms-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline-start: -1px;
                                """
@@ -205,7 +205,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "ms-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline-start: auto;
                                """
@@ -245,7 +245,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "me-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline-end: 1px;
                                """
@@ -254,7 +254,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-me-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline-end: -1px;
                                """
@@ -263,7 +263,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "me-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-inline-end: auto;
                                """
@@ -303,7 +303,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mt-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-top: 1px;
                                """
@@ -312,7 +312,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mt-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-top: -1px;
                                """
@@ -321,7 +321,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mt-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-top: auto;
                                """
@@ -361,7 +361,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mr-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-right: 1px;
                                """
@@ -370,7 +370,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mr-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-right: -1px;
                                """
@@ -379,7 +379,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mr-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-right: auto;
                                """
@@ -419,7 +419,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mb-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-bottom: 1px;
                                """
@@ -428,7 +428,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mb-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-bottom: -1px;
                                """
@@ -437,7 +437,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mb-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-bottom: auto;
                                """
@@ -477,7 +477,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "ml-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-left: 1px;
                                """
@@ -486,7 +486,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-ml-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-left: -1px;
                                """
@@ -495,7 +495,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "ml-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                margin-left: auto;
                                """

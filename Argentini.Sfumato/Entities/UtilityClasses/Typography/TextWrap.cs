@@ -11,7 +11,7 @@ public sealed class TextWrap : ClassDictionaryBase
             {
                 "text-wrap", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-wrap: wrap;
                                """
@@ -20,7 +20,7 @@ public sealed class TextWrap : ClassDictionaryBase
             {
                 "text-nowrap", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-wrap: nowrap;
                                """
@@ -29,7 +29,7 @@ public sealed class TextWrap : ClassDictionaryBase
             {
                 "text-pretty", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-wrap: pretty;
                                """
@@ -38,7 +38,7 @@ public sealed class TextWrap : ClassDictionaryBase
             {
                 "text-balance", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-wrap: balance;
                                """

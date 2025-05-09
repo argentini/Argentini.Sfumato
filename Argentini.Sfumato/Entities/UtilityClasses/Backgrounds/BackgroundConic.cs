@@ -52,7 +52,7 @@ public sealed class BackgroundConic : ClassDictionaryBase
             {
                 "bg-conic", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """

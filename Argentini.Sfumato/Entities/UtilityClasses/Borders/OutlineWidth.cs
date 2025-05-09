@@ -26,7 +26,7 @@ public sealed class OutlineWidth : ClassDictionaryBase
             {
                 "outline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-width: 1px;

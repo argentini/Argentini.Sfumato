@@ -22,7 +22,7 @@ public sealed class Blur : ClassDictionaryBase
             {
                 "blur-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-blur: ;
@@ -40,7 +40,7 @@ public sealed class Blur : ClassDictionaryBase
             var key = text.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template =
                     $"""
                      --sf-blur: blur(var({text.Key}));

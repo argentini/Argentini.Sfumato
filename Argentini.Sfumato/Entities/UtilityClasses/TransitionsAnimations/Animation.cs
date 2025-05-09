@@ -25,7 +25,7 @@ public sealed class Animation : ClassDictionaryBase
             {
                 "animate-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         animation: none;
@@ -42,7 +42,7 @@ public sealed class Animation : ClassDictionaryBase
             var key = item.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      animation: var({item.Key});

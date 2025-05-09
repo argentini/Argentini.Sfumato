@@ -11,7 +11,7 @@ public sealed class Isolation : ClassDictionaryBase
             {
                 "isolate", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                isolation: isolate;
                                """
@@ -20,7 +20,7 @@ public sealed class Isolation : ClassDictionaryBase
             {
                 "isolate-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                isolation: auto;
                                """

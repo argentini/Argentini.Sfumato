@@ -11,6 +11,7 @@ public sealed class GridAutoRows : ClassDictionaryBase
             {
                 "auto-rows-", new ClassDefinition
                 {
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -25,7 +26,7 @@ public sealed class GridAutoRows : ClassDictionaryBase
             {
                 "auto-rows-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-rows: auto;
@@ -35,7 +36,7 @@ public sealed class GridAutoRows : ClassDictionaryBase
             {
                 "auto-rows-min", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-rows: min-content;
@@ -45,7 +46,7 @@ public sealed class GridAutoRows : ClassDictionaryBase
             {
                 "auto-rows-max", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-rows: max-content;
@@ -55,7 +56,7 @@ public sealed class GridAutoRows : ClassDictionaryBase
             {
                 "auto-rows-fr", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-rows: minmax(0, 1fr);

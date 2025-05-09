@@ -26,7 +26,7 @@ public sealed class BoxShadow : ClassDictionaryBase
             {
                 "shadow-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         box-shadow: 0 0 #0000;
@@ -43,7 +43,7 @@ public sealed class BoxShadow : ClassDictionaryBase
             var key = text.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template =
                     $"""
                     box-shadow: var({text.Key});

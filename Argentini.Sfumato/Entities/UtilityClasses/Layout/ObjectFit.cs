@@ -11,7 +11,7 @@ public sealed class ObjectFit : ClassDictionaryBase
             {
                 "object-contain", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-fit: contain;
                                """
@@ -20,7 +20,7 @@ public sealed class ObjectFit : ClassDictionaryBase
             {
                 "object-cover", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-fit: cover;
                                """
@@ -29,7 +29,7 @@ public sealed class ObjectFit : ClassDictionaryBase
             {
                 "object-fill", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-fit: fill;
                                """
@@ -38,7 +38,7 @@ public sealed class ObjectFit : ClassDictionaryBase
             {
                 "object-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-fit: none;
                                """
@@ -47,7 +47,7 @@ public sealed class ObjectFit : ClassDictionaryBase
             {
                 "object-scale-down", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-fit: scale-down;
                                """

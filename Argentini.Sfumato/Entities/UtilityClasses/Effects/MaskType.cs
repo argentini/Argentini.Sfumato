@@ -13,7 +13,7 @@ public sealed class MaskType : ClassDictionaryBase
                 "mask-type-alpha", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mask-type: alpha;
@@ -24,7 +24,7 @@ public sealed class MaskType : ClassDictionaryBase
                 "mask-type-luminance", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mask-type: luminance;

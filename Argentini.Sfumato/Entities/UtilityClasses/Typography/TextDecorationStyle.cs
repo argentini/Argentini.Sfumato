@@ -11,7 +11,7 @@ public sealed class TextDecorationStyle : ClassDictionaryBase
             {
                 "decoration-solid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-style: solid;
                                """
@@ -20,7 +20,7 @@ public sealed class TextDecorationStyle : ClassDictionaryBase
             {
                 "decoration-double", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-style: double;
                                """
@@ -29,7 +29,7 @@ public sealed class TextDecorationStyle : ClassDictionaryBase
             {
                 "decoration-dotted", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-style: dotted;
                                """
@@ -38,7 +38,7 @@ public sealed class TextDecorationStyle : ClassDictionaryBase
             {
                 "decoration-dashed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-style: dashed;
                                """
@@ -47,7 +47,7 @@ public sealed class TextDecorationStyle : ClassDictionaryBase
             {
                 "decoration-wavy", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-style: wavy;
                                """

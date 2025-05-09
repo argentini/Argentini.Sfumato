@@ -11,7 +11,7 @@ public sealed class JustifySelf : ClassDictionaryBase
             {
                 "justify-self-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-self: auto;
@@ -21,7 +21,7 @@ public sealed class JustifySelf : ClassDictionaryBase
             {
                 "justify-self-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-self: start;
@@ -31,7 +31,7 @@ public sealed class JustifySelf : ClassDictionaryBase
             {
                 "justify-self-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-self: center;
@@ -41,7 +41,7 @@ public sealed class JustifySelf : ClassDictionaryBase
             {
                 "justify-self-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-self: safe center;
@@ -51,7 +51,7 @@ public sealed class JustifySelf : ClassDictionaryBase
             {
                 "justify-self-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-self: end;
@@ -61,7 +61,7 @@ public sealed class JustifySelf : ClassDictionaryBase
             {
                 "justify-self-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-self: safe end;
@@ -71,7 +71,7 @@ public sealed class JustifySelf : ClassDictionaryBase
             {
                 "justify-self-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-self: stretch;

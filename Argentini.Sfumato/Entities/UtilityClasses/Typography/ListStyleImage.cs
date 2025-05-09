@@ -20,7 +20,7 @@ public sealed class ListStyleImage : ClassDictionaryBase
             {
                 "list-image-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                list-style-image: none;
                                """

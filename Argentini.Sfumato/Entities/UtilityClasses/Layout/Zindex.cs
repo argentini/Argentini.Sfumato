@@ -37,7 +37,7 @@ public sealed class Zindex : ClassDictionaryBase
             {
                 "z-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                z-index: auto;
                                """,

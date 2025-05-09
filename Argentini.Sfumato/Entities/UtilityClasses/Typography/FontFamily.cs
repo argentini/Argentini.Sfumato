@@ -27,7 +27,7 @@ public sealed class FontFamily : ClassDictionaryBase
             var key = font.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      font-family: var({font.Key});

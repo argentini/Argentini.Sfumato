@@ -11,7 +11,7 @@ public sealed class CaptionSide : ClassDictionaryBase
             {
                 "caption-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         caption-side: top;
@@ -21,7 +21,7 @@ public sealed class CaptionSide : ClassDictionaryBase
             {
                 "caption-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         caption-side: bottom;

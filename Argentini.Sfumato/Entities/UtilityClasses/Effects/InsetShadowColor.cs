@@ -24,7 +24,7 @@ public sealed class InsetShadowColor : ClassDictionaryBase
                 "inset-shadow-inherit", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-inset-shadow-color: inherit;
@@ -35,7 +35,7 @@ public sealed class InsetShadowColor : ClassDictionaryBase
                 "inset-shadow-current", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-inset-shadow-color: currentColor;

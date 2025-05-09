@@ -11,7 +11,7 @@ public sealed class GridAutoFlow : ClassDictionaryBase
             {
                 "grid-flow-row", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-flow: row;
@@ -21,7 +21,7 @@ public sealed class GridAutoFlow : ClassDictionaryBase
             {
                 "grid-flow-col", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-flow: column;
@@ -31,7 +31,7 @@ public sealed class GridAutoFlow : ClassDictionaryBase
             {
                 "grid-flow-dense", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-flow: dense;
@@ -41,7 +41,7 @@ public sealed class GridAutoFlow : ClassDictionaryBase
             {
                 "grid-flow-row-dense", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-flow: row dense;
@@ -51,7 +51,7 @@ public sealed class GridAutoFlow : ClassDictionaryBase
             {
                 "grid-flow-col-dense", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-auto-flow: column dense;

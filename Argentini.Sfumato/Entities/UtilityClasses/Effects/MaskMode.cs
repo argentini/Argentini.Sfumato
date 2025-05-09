@@ -13,7 +13,7 @@ public sealed class MaskMode : ClassDictionaryBase
                 "mask-alpha", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-source-type: alpha;
@@ -25,7 +25,7 @@ public sealed class MaskMode : ClassDictionaryBase
                 "mask-luminance", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-source-type: luminance;
@@ -37,7 +37,7 @@ public sealed class MaskMode : ClassDictionaryBase
                 "mask-match", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-source-type: match-source;

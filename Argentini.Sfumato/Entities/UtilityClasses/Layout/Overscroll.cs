@@ -11,7 +11,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior: auto;
                                """
@@ -20,7 +20,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-contain", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior: contain;
                                """
@@ -29,7 +29,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior: none;
                                """
@@ -38,7 +38,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-x-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior-x: auto;
                                """
@@ -47,7 +47,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-x-contain", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior-x: contain;
                                """
@@ -56,7 +56,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-x-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior-x: none;
                                """
@@ -65,7 +65,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-y-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior-y: auto;
                                """
@@ -74,7 +74,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-y-contain", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior-y: contain;
                                """
@@ -83,7 +83,7 @@ public sealed class Overscroll : ClassDictionaryBase
             {
                 "overscroll-y-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overscroll-behavior-y: none;
                                """

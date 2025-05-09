@@ -11,7 +11,7 @@ public sealed class Clear : ClassDictionaryBase
             {
                 "clear-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                clear: left;
                                """
@@ -20,7 +20,7 @@ public sealed class Clear : ClassDictionaryBase
             {
                 "clear-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                clear: right;
                                """
@@ -29,7 +29,7 @@ public sealed class Clear : ClassDictionaryBase
             {
                 "clear-both", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                clear: both;
                                """
@@ -38,7 +38,7 @@ public sealed class Clear : ClassDictionaryBase
             {
                 "clear-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                clear: inline-start;
                                """
@@ -47,7 +47,7 @@ public sealed class Clear : ClassDictionaryBase
             {
                 "clear-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                clear: inline-end;
                                """
@@ -56,7 +56,7 @@ public sealed class Clear : ClassDictionaryBase
             {
                 "clear-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                clear: none;
                                """

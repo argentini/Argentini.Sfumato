@@ -11,7 +11,7 @@ public sealed class Hyphens : ClassDictionaryBase
             {
                 "hyphens-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         hyphens: none;
@@ -21,7 +21,7 @@ public sealed class Hyphens : ClassDictionaryBase
             {
                 "hyphens-manual", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         hyphens: manual;
@@ -31,7 +31,7 @@ public sealed class Hyphens : ClassDictionaryBase
             {
                 "hyphens-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         hyphens: auto;

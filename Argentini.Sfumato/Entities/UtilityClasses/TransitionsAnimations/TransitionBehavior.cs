@@ -11,7 +11,7 @@ public sealed class TransitionBehavior : ClassDictionaryBase
             {
                 "transition-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-behavior: normal;
@@ -21,7 +21,7 @@ public sealed class TransitionBehavior : ClassDictionaryBase
             {
                 "transition-discrete", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-behavior: allow-discrete;

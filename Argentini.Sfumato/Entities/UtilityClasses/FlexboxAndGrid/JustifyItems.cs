@@ -11,7 +11,7 @@ public sealed class JustifyItems : ClassDictionaryBase
             {
                 "justify-items-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-items: start;
@@ -21,7 +21,7 @@ public sealed class JustifyItems : ClassDictionaryBase
             {
                 "justify-items-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-items: end;
@@ -31,7 +31,7 @@ public sealed class JustifyItems : ClassDictionaryBase
             {
                 "justify-items-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-items: safe end;
@@ -41,7 +41,7 @@ public sealed class JustifyItems : ClassDictionaryBase
             {
                 "justify-items-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-items: center;
@@ -51,7 +51,7 @@ public sealed class JustifyItems : ClassDictionaryBase
             {
                 "justify-items-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-items: safe center;
@@ -61,7 +61,7 @@ public sealed class JustifyItems : ClassDictionaryBase
             {
                 "justify-items-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-items: stretch;
@@ -71,7 +71,7 @@ public sealed class JustifyItems : ClassDictionaryBase
             {
                 "justify-items-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-items: normal;

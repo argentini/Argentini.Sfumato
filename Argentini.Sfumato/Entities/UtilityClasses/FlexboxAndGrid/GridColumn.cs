@@ -14,6 +14,7 @@ public sealed class GridColumn : ClassDictionaryBase
                 "col-span-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -28,7 +29,7 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-span-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-column: 1 / -1;
@@ -44,6 +45,7 @@ public sealed class GridColumn : ClassDictionaryBase
                 "col-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -59,6 +61,7 @@ public sealed class GridColumn : ClassDictionaryBase
                 "-col-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -73,7 +76,7 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-column: auto;
@@ -89,6 +92,7 @@ public sealed class GridColumn : ClassDictionaryBase
                 "col-start-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -104,6 +108,7 @@ public sealed class GridColumn : ClassDictionaryBase
                 "-col-start-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -118,7 +123,7 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-start-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-column-start: auto;
@@ -134,6 +139,7 @@ public sealed class GridColumn : ClassDictionaryBase
                 "col-end-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -149,6 +155,7 @@ public sealed class GridColumn : ClassDictionaryBase
                 "-col-end-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -163,7 +170,7 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-end-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-column-end: auto;

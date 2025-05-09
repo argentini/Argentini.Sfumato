@@ -11,7 +11,7 @@ public sealed class TableLayout : ClassDictionaryBase
             {
                 "table-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         table-layout: auto;
@@ -21,7 +21,7 @@ public sealed class TableLayout : ClassDictionaryBase
             {
                 "table-fixed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         table-layout: fixed;

@@ -135,7 +135,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-3d", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         scale: var(--sf-scale-x) var(--sf-scale-y) var(--sf-scale-z);

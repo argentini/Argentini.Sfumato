@@ -11,7 +11,7 @@ public sealed class FontSmoothing : ClassDictionaryBase
             {
                 "antialiased", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                -webkit-font-smoothing: antialiased;
                                -moz-osx-font-smoothing: grayscale;
@@ -21,7 +21,7 @@ public sealed class FontSmoothing : ClassDictionaryBase
             {
                 "subpixel-antialiased", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                -webkit-font-smoothing: auto;
                                -moz-osx-font-smoothing: auto;

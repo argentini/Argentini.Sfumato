@@ -13,7 +13,7 @@ public sealed class Bottom : ClassDictionaryBase
             {
                 "bottom-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                bottom: auto;
                                """
@@ -22,7 +22,7 @@ public sealed class Bottom : ClassDictionaryBase
             {
                 "bottom-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                bottom: 1px;
                                """
@@ -31,7 +31,7 @@ public sealed class Bottom : ClassDictionaryBase
             {
                 "bottom-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                bottom: 100%;
                                """
@@ -41,7 +41,7 @@ public sealed class Bottom : ClassDictionaryBase
             {
                 "-bottom-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                bottom: -1px;
                                """
@@ -50,7 +50,7 @@ public sealed class Bottom : ClassDictionaryBase
             {
                 "-bottom-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                bottom: -100%;
                                """

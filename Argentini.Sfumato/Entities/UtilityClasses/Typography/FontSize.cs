@@ -36,7 +36,7 @@ public sealed class FontSize : ClassDictionaryBase
             var key = text.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 UsesSlashModifier = true,
                 Template =
                     $"""

@@ -11,7 +11,7 @@ public sealed class ScrollSnapType : ClassDictionaryBase
             {
                 "snap-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-type: none;
                                """,
@@ -20,7 +20,7 @@ public sealed class ScrollSnapType : ClassDictionaryBase
             {
                 "snap-x", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-type: x var(--sf-scroll-snap-strictness);
                                """,
@@ -29,7 +29,7 @@ public sealed class ScrollSnapType : ClassDictionaryBase
             {
                 "snap-y", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-type: y var(--sf-scroll-snap-strictness);
                                """,
@@ -38,7 +38,7 @@ public sealed class ScrollSnapType : ClassDictionaryBase
             {
                 "snap-both", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-type: both var(--sf-scroll-snap-strictness);
                                """,
@@ -47,7 +47,7 @@ public sealed class ScrollSnapType : ClassDictionaryBase
             {
                 "snap-mandatory", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                --sf-scroll-snap-strictness: mandatory;
                                """,
@@ -56,7 +56,7 @@ public sealed class ScrollSnapType : ClassDictionaryBase
             {
                 "snap-proximity", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                --sf-scroll-snap-strictness: proximity;
                                """,

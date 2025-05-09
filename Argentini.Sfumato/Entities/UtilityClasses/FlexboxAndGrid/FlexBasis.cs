@@ -12,6 +12,7 @@ public sealed class FlexBasis : ClassDictionaryBase
                 "basis-", new ClassDefinition
                 {
                     InLengthCollection = true,
+                    InFlexCollection = true,
                     Template =
                         """
                         flex-basis: calc(var(--spacing) * {0});
@@ -26,6 +27,7 @@ public sealed class FlexBasis : ClassDictionaryBase
                 "-basis-", new ClassDefinition
                 {
                     InLengthCollection = true,
+                    InFlexCollection = true,
                     Template =
                         """
                         flex-basis: calc(var(--spacing) * -{0});
@@ -39,7 +41,7 @@ public sealed class FlexBasis : ClassDictionaryBase
             {
                 "basis-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-basis: 100%;
@@ -49,7 +51,7 @@ public sealed class FlexBasis : ClassDictionaryBase
             {
                 "basis-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-basis: auto;
@@ -66,7 +68,7 @@ public sealed class FlexBasis : ClassDictionaryBase
             var key = item.Key.Trim('-').Replace("container", "basis");
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      flex-basis: var({item.Key});

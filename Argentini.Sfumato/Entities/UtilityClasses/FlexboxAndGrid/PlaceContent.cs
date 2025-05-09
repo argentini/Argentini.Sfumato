@@ -11,7 +11,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: center;
@@ -21,7 +21,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: safe center;
@@ -31,7 +31,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: start;
@@ -41,7 +41,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: end;
@@ -51,7 +51,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: safe end;
@@ -61,7 +61,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-between", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: space-between;
@@ -71,7 +71,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-around", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: space-around;
@@ -81,7 +81,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-evenly", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: space-evenly;
@@ -91,7 +91,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: stretch;
@@ -101,7 +101,7 @@ public sealed class PlaceContent : ClassDictionaryBase
             {
                 "place-baseline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-content: baseline;

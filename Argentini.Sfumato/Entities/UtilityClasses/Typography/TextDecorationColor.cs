@@ -20,7 +20,7 @@ public sealed class TextDecorationColor : ClassDictionaryBase
             {
                 "decoration-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-color: inherit;
                                """,
@@ -29,7 +29,7 @@ public sealed class TextDecorationColor : ClassDictionaryBase
             {
                 "decoration-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-color: currentColor;
                                """,

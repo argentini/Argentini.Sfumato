@@ -70,7 +70,7 @@ public sealed class BorderWidth : ClassDictionaryBase
             var key = border.Key;
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = border.Value.Replace("{0}", "1px"),
             };
 

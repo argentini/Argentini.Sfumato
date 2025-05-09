@@ -11,7 +11,7 @@ public sealed class Appearance : ClassDictionaryBase
             {
                 "appearance-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                appearance: none;
                                """,
@@ -20,7 +20,7 @@ public sealed class Appearance : ClassDictionaryBase
             {
                 "appearance-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                appearance: auto;
                                """,

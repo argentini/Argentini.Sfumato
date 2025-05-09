@@ -25,7 +25,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-ultra-condensed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: ultra-condensed;
                                """
@@ -34,7 +34,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-extra-condensed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: extra-condensed;
                                """
@@ -43,7 +43,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-condensed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: condensed;
                                """
@@ -52,7 +52,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-semi-condensed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: semi-condensed;
                                """
@@ -61,7 +61,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: normal;
                                """
@@ -70,7 +70,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-semi-expanded", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: semi-expanded;
                                """
@@ -79,7 +79,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-expanded", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: expanded;
                                """
@@ -88,7 +88,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-extra-expanded", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: extra-expanded;
                                """
@@ -97,7 +97,7 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-ultra-expanded", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-stretch: ultra-expanded;
                                """

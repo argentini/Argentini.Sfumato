@@ -11,7 +11,7 @@ public sealed class FontStyle : ClassDictionaryBase
             {
                 "italic", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-style: italic;
                                """
@@ -20,7 +20,7 @@ public sealed class FontStyle : ClassDictionaryBase
             {
                 "not-italic", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-style: normal;
                                """

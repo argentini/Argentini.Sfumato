@@ -11,7 +11,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: flex-start;
@@ -21,7 +21,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: flex-end;
@@ -31,7 +31,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: safe flex-end;
@@ -41,7 +41,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: center;
@@ -51,7 +51,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: safe center;
@@ -61,7 +61,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-baseline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: baseline;
@@ -71,7 +71,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-baseline-last", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: last baseline;
@@ -81,7 +81,7 @@ public sealed class AlignItems : ClassDictionaryBase
             {
                 "items-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-items: stretch;

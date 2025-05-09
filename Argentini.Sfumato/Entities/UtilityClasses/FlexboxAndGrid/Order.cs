@@ -25,7 +25,7 @@ public sealed class Order : ClassDictionaryBase
             {
                 "order-first", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         order: calc(-infinity);
@@ -35,7 +35,7 @@ public sealed class Order : ClassDictionaryBase
             {
                 "order-last", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         order: calc(infinity);
@@ -45,7 +45,7 @@ public sealed class Order : ClassDictionaryBase
             {
                 "order-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         order: 0;

@@ -32,7 +32,7 @@ public sealed class DivideWidth : ClassDictionaryBase
             {
                 "divide-x", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -65,7 +65,7 @@ public sealed class DivideWidth : ClassDictionaryBase
             {
                 "divide-y", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -79,7 +79,7 @@ public sealed class DivideWidth : ClassDictionaryBase
                 "divide-x-reverse", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-divide-x-reverse: 1;
@@ -90,7 +90,7 @@ public sealed class DivideWidth : ClassDictionaryBase
                 "divide-y-reverse", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-divide-y-reverse: 1;

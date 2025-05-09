@@ -24,7 +24,7 @@ public sealed class InsetRingColor : ClassDictionaryBase
                 "inset-ring-inherit", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-inset-ring-color: inherit;
@@ -35,7 +35,7 @@ public sealed class InsetRingColor : ClassDictionaryBase
                 "inset-ring-current", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-inset-ring-color: currentColor;

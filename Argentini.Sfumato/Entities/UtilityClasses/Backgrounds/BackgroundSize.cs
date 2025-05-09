@@ -11,8 +11,8 @@ public sealed class BackgroundSize : ClassDictionaryBase
             {
                 "bg-size-", new ClassDefinition
                 {
-                    InAbstractValueCollection = true,
                     InLengthCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         background-size: {0};
@@ -26,7 +26,7 @@ public sealed class BackgroundSize : ClassDictionaryBase
             {
                 "bg-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-size: auto;
@@ -36,7 +36,7 @@ public sealed class BackgroundSize : ClassDictionaryBase
             {
                 "bg-cover", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-size: cover;
@@ -46,7 +46,7 @@ public sealed class BackgroundSize : ClassDictionaryBase
             {
                 "bg-contain", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-size: contain;

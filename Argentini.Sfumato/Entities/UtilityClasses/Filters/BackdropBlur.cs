@@ -23,7 +23,7 @@ public sealed class BackdropBlur : ClassDictionaryBase
             {
                 "backdrop-blur-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-backdrop-blur: ;
@@ -42,7 +42,7 @@ public sealed class BackdropBlur : ClassDictionaryBase
             var key = $"backdrop-{text.Key.Trim('-')}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template =
                     $"""
                      --sf-backdrop-blur: blur(var({text.Key}));

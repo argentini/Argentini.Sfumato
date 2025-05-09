@@ -371,7 +371,7 @@ public sealed class AppRunner
 		    
 		    if (Library.SimpleClasses.TryAdd(segments[1], new ClassDefinition
 		        {
-			        IsSimpleUtility = true,
+			        InSimpleUtilityCollection = true,
 			        Template = match.Value.Trim().TrimStart('{').TrimEnd('}').Trim()
 		        }))
 			    Library.ScannerClassNamePrefixes.Insert(segments[1]);

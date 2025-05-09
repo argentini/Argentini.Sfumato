@@ -24,7 +24,7 @@ public sealed class BoxShadowColor : ClassDictionaryBase
                 "shadow-inherit", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-shadow-color: inherit;
@@ -35,7 +35,7 @@ public sealed class BoxShadowColor : ClassDictionaryBase
                 "shadow-current", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-shadow-color: currentColor;

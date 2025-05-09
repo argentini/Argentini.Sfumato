@@ -22,7 +22,7 @@ public sealed class DropShadowColor : ClassDictionaryBase
             {
                 "drop-shadow-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                --sf-drop-shadow-color: inherit;
                                --sf-drop-shadow: var(--sf-drop-shadow-size)
@@ -32,7 +32,7 @@ public sealed class DropShadowColor : ClassDictionaryBase
             {
                 "drop-shadow-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                --sf-drop-shadow-color: currentColor;
                                --sf-drop-shadow: var(--sf-drop-shadow-size)

@@ -27,7 +27,7 @@ public sealed class Grayscale : ClassDictionaryBase
             {
                 "grayscale", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-grayscale: grayscale(100%);

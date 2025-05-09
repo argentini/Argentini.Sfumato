@@ -13,7 +13,7 @@ public sealed class InsetStart : ClassDictionaryBase
             {
                 "start-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-start: auto;
                                """
@@ -22,7 +22,7 @@ public sealed class InsetStart : ClassDictionaryBase
             {
                 "start-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-start: 1px;
                                """
@@ -31,7 +31,7 @@ public sealed class InsetStart : ClassDictionaryBase
             {
                 "start-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-start: 100%;
                                """
@@ -41,7 +41,7 @@ public sealed class InsetStart : ClassDictionaryBase
             {
                 "-start-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-start: -1px;
                                """
@@ -50,7 +50,7 @@ public sealed class InsetStart : ClassDictionaryBase
             {
                 "-start-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-start: -100%;
                                """

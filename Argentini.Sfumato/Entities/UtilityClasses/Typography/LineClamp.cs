@@ -23,7 +23,7 @@ public sealed class LineClamp : ClassDictionaryBase
             {
                 "line-clamp-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow: visible;
                                display: block;

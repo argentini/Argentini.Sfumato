@@ -11,7 +11,7 @@ public sealed class Container : ClassDictionaryBase
             {
                 "@container", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """

@@ -12,7 +12,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: normal;
@@ -22,7 +22,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-multiply", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: multiply;
@@ -32,7 +32,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-screen", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: screen;
@@ -42,7 +42,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-overlay", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: overlay;
@@ -52,7 +52,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-darken", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: darken;
@@ -62,7 +62,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-lighten", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: lighten;
@@ -72,7 +72,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-color-dodge", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: color-dodge;
@@ -82,7 +82,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-color-burn", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: color-burn;
@@ -92,7 +92,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-hard-light", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: hard-light;
@@ -102,7 +102,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-soft-light", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: soft-light;
@@ -112,7 +112,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-difference", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: difference;
@@ -122,7 +122,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-exclusion", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: exclusion;
@@ -132,7 +132,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-hue", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: hue;
@@ -142,7 +142,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-saturation", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: saturation;
@@ -152,7 +152,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-color", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: color;
@@ -162,7 +162,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
             {
                 "bg-blend-luminosity", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-blend-mode: luminosity;

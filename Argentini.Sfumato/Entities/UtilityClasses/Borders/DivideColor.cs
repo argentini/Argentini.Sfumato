@@ -24,7 +24,7 @@ public sealed class DivideColor : ClassDictionaryBase
             {
                 "divide-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -36,7 +36,7 @@ public sealed class DivideColor : ClassDictionaryBase
             {
                 "divide-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {

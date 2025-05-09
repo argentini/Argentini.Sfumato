@@ -11,7 +11,7 @@ public sealed class Visibility : ClassDictionaryBase
             {
                 "visible", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                visibility: visible;
                                """
@@ -20,7 +20,7 @@ public sealed class Visibility : ClassDictionaryBase
             {
                 "invisible", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                visibility: hidden;
                                """
@@ -29,7 +29,7 @@ public sealed class Visibility : ClassDictionaryBase
             {
                 "collapse", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                visibility: collapse;
                                """

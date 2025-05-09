@@ -25,7 +25,7 @@ public sealed class MaskSize : ClassDictionaryBase
                 "mask-auto", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-size: auto;
@@ -37,7 +37,7 @@ public sealed class MaskSize : ClassDictionaryBase
                 "mask-cover", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-size: cover;
@@ -49,7 +49,7 @@ public sealed class MaskSize : ClassDictionaryBase
                 "mask-contain", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-size: contain;

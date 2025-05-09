@@ -11,7 +11,7 @@ public sealed class BackfaceVisibility : ClassDictionaryBase
             {
                 "backface-hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         backface-visibility: hidden;
@@ -21,7 +21,7 @@ public sealed class BackfaceVisibility : ClassDictionaryBase
             {
                 "backface-visible", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         backface-visibility: visible;

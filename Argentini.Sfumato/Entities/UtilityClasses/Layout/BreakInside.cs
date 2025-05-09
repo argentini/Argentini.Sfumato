@@ -11,7 +11,7 @@ public sealed class BreakInside : ClassDictionaryBase
             {
                 "break-inside-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-inside: auto;
                                """
@@ -20,7 +20,7 @@ public sealed class BreakInside : ClassDictionaryBase
             {
                 "break-inside-avoid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-inside: avoid;
                                """
@@ -29,7 +29,7 @@ public sealed class BreakInside : ClassDictionaryBase
             {
                 "break-inside-avoid-page", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-inside: avoid-page;
                                """
@@ -38,7 +38,7 @@ public sealed class BreakInside : ClassDictionaryBase
             {
                 "break-inside-avoid-column", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-inside: avoid-column;
                                """

@@ -22,7 +22,7 @@ public sealed class OutlineColor : ClassDictionaryBase
             {
                 "outline-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-color: inherit;
@@ -32,7 +32,7 @@ public sealed class OutlineColor : ClassDictionaryBase
             {
                 "outline-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-color: currentColor;

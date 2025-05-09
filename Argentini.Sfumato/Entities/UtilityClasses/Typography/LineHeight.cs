@@ -44,7 +44,7 @@ public sealed class LineHeight : ClassDictionaryBase
                 "leading-none", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                line-height: 1;
                                """
@@ -60,7 +60,7 @@ public sealed class LineHeight : ClassDictionaryBase
             var key = font.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"line-height: var({font.Key});",
             };

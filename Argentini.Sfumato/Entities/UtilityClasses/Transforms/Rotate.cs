@@ -135,7 +135,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         rotate: none;

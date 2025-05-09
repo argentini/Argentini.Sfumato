@@ -11,7 +11,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "inline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: inline;
                                """
@@ -20,7 +20,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "block", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: block;
                                """
@@ -29,7 +29,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "inline-block", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: inline-block;
                                """
@@ -38,7 +38,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "flow-root", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: flow-root;
                                """
@@ -47,7 +47,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "flex", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: flex;
                                """
@@ -56,7 +56,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "inline-flex", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: inline-flex;
                                """
@@ -65,7 +65,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "grid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: grid;
                                """
@@ -74,7 +74,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "inline-grid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: inline-grid;
                                """
@@ -83,7 +83,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "contents", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: contents;
                                """
@@ -92,7 +92,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table;
                                """
@@ -101,7 +101,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "inline-table", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: inline-table;
                                """
@@ -110,7 +110,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-caption", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-caption;
                                """
@@ -119,7 +119,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-cell", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-cell;
                                """
@@ -128,7 +128,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-column", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-column;
                                """
@@ -137,7 +137,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-column-group", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-column-group;
                                """
@@ -146,7 +146,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-footer-group", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-footer-group;
                                """
@@ -155,7 +155,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-header-group", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-header-group;
                                """
@@ -164,7 +164,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-row-group", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-row-group;
                                """
@@ -173,7 +173,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "table-row", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: table-row;
                                """
@@ -182,7 +182,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "list-item", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: list-item;
                                """
@@ -191,7 +191,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                display: none;
                                """
@@ -200,7 +200,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "sr-only", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                position: absolute;
                                width: 1px;
@@ -217,7 +217,7 @@ public sealed class Display : ClassDictionaryBase
             {
                 "not-sr-only", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                position: static;
                                width: auto;

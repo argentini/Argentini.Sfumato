@@ -66,7 +66,7 @@ public static class CssValidators
         return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssFrequencyUnits.Any(u => u == unit);
     }
 
-    public static bool ValueIsImageUrl(this string value)
+    public static bool ValueIsUrl(this string value)
     {
         return value.StartsWith("url(", StringComparison.Ordinal) || Uri.TryCreate(value, UriKind.Absolute, out _);
     }

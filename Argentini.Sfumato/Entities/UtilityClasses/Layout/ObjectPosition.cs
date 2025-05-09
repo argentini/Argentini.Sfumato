@@ -25,7 +25,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-top-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: top left;
                                """
@@ -34,7 +34,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: top;
                                """
@@ -43,7 +43,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-top-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: top right;
                                """
@@ -52,7 +52,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: left;
                                """
@@ -61,7 +61,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: center;
                                """
@@ -70,7 +70,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: right;
                                """
@@ -79,7 +79,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-bottom-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: bottom left;
                                """
@@ -88,7 +88,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: bottom;
                                """
@@ -97,7 +97,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-bottom-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                object-position: bottom right;
                                """

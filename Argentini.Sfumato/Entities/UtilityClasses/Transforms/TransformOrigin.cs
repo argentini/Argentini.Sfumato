@@ -21,7 +21,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: center;
@@ -31,7 +31,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: top;
@@ -41,7 +41,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-top-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: top right;
@@ -51,7 +51,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: right;
@@ -61,7 +61,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-bottom-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: bottom right;
@@ -71,7 +71,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: bottom;
@@ -81,7 +81,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-bottom-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: bottom left;
@@ -91,7 +91,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: left;
@@ -101,7 +101,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-top-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-origin: top left;

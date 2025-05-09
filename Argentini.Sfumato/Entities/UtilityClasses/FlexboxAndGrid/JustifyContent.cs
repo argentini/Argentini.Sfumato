@@ -11,7 +11,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: flex-start;
@@ -21,7 +21,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: flex-end;
@@ -31,7 +31,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: safe flex-end;
@@ -41,7 +41,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: center;
@@ -51,7 +51,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: safe center;
@@ -61,7 +61,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-between", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: space-between;
@@ -71,7 +71,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-around", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: space-around;
@@ -81,7 +81,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-evenly", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: space-evenly;
@@ -91,7 +91,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: stretch;
@@ -101,7 +101,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-baseline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: baseline;
@@ -111,7 +111,7 @@ public sealed class JustifyContent : ClassDictionaryBase
             {
                 "justify-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         justify-content: normal;

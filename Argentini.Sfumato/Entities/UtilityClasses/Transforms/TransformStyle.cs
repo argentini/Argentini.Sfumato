@@ -11,7 +11,7 @@ public sealed class TransformStyle : ClassDictionaryBase
             {
                 "transform-3d", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-style: preserve-3d;
@@ -21,7 +21,7 @@ public sealed class TransformStyle : ClassDictionaryBase
             {
                 "transform-flat", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform-style: flat;

@@ -114,7 +114,7 @@ public sealed class BorderRadius : ClassDictionaryBase
                 var key = item.Key.Replace("radius", border.Key).Trim('-');
                 var value = new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = border.Value.Replace("{0}", $"var({item.Key})"),
                 };
 
@@ -140,7 +140,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             aKey = $"{border.Key}-none";
             aValue = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = border.Value.Replace("{0}", "0"),
             };
 
@@ -152,7 +152,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             aKey = $"{border.Key}-full";
             aValue = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = border.Value.Replace("{0}", "calc(infinity * 1px)"),
             };
 
@@ -165,7 +165,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             aValue = new ClassDefinition
             {
                 SelectorSort = -1,
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = border.Value.Replace("{0}", "var(--radius-sm)"),
             };
 

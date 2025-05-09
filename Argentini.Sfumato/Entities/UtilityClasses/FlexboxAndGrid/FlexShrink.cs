@@ -14,6 +14,7 @@ public sealed class FlexShrink : ClassDictionaryBase
                     InIntegerCollection = true,
                     InFloatNumberCollection = true,
                     InLengthCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -28,7 +29,7 @@ public sealed class FlexShrink : ClassDictionaryBase
             {
                 "shrink", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-shrink: 1;

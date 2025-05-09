@@ -11,7 +11,7 @@ public sealed class Resize : ClassDictionaryBase
             {
                 "resize-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                resize: none;
                                """,
@@ -20,7 +20,7 @@ public sealed class Resize : ClassDictionaryBase
             {
                 "resize", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                resize: both;
                                """,
@@ -29,7 +29,7 @@ public sealed class Resize : ClassDictionaryBase
             {
                 "resize-y", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                resize: vertical;
                                """,
@@ -38,7 +38,7 @@ public sealed class Resize : ClassDictionaryBase
             {
                 "resize-x", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                resize: horizontal;
                                """,

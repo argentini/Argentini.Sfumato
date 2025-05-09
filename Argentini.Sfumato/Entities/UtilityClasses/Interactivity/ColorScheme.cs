@@ -11,7 +11,7 @@ public sealed class ColorScheme : ClassDictionaryBase
             {
                 "scheme-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color-scheme: normal;
                                """,
@@ -20,7 +20,7 @@ public sealed class ColorScheme : ClassDictionaryBase
             {
                 "scheme-dark", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color-scheme: dark;
                                """,
@@ -29,7 +29,7 @@ public sealed class ColorScheme : ClassDictionaryBase
             {
                 "scheme-light", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color-scheme: light;
                                """,
@@ -38,7 +38,7 @@ public sealed class ColorScheme : ClassDictionaryBase
             {
                 "scheme-light-dark", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color-scheme: light dark;
                                """,
@@ -47,7 +47,7 @@ public sealed class ColorScheme : ClassDictionaryBase
             {
                 "scheme-only-dark", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color-scheme: only dark;
                                """,
@@ -56,7 +56,7 @@ public sealed class ColorScheme : ClassDictionaryBase
             {
                 "scheme-only-light", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color-scheme: only light;
                                """,

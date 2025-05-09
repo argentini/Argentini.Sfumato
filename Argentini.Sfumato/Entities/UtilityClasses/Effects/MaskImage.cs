@@ -22,7 +22,7 @@ public sealed class MaskImage : ClassDictionaryBase
             {
                 "mask-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                -webkit-mask-image: none;
                                mask-image: none;

@@ -21,7 +21,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: center;
@@ -31,7 +31,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: top;
@@ -41,7 +41,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-top-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: top right;
@@ -51,7 +51,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: right;
@@ -61,7 +61,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-bottom-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: bottom right;
@@ -71,7 +71,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: bottom;
@@ -81,7 +81,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-bottom-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: bottom left;
@@ -91,7 +91,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: left;
@@ -101,7 +101,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-top-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective-origin: top left;

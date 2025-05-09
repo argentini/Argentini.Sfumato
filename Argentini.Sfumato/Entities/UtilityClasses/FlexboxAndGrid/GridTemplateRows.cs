@@ -12,6 +12,7 @@ public sealed class GridTemplateRows : ClassDictionaryBase
                 "grid-rows-", new ClassDefinition
                 {
                     InIntegerCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -26,7 +27,7 @@ public sealed class GridTemplateRows : ClassDictionaryBase
             {
                 "grid-rows-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-template-rows: none;
@@ -36,7 +37,7 @@ public sealed class GridTemplateRows : ClassDictionaryBase
             {
                 "grid-rows-subgrid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         grid-template-rows: subgrid;

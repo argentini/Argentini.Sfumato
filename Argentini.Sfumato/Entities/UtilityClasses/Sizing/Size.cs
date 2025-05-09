@@ -33,7 +33,7 @@ public sealed class Size : ClassDictionaryBase
             var key = item.Key.Trim('-').Replace("container", "size");
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      width: var({item.Key});
@@ -52,7 +52,7 @@ public sealed class Size : ClassDictionaryBase
             var key = $"size-{item.Key}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      width: {item.Value};

@@ -24,7 +24,7 @@ public sealed class RingColor : ClassDictionaryBase
                 "ring-inherit", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-ring-color: inherit;
@@ -35,7 +35,7 @@ public sealed class RingColor : ClassDictionaryBase
                 "ring-current", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-ring-color: currentColor;

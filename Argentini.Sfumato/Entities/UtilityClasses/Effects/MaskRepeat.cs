@@ -13,7 +13,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
                 "mask-repeat", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-repeat: repeat;
@@ -25,7 +25,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
                 "mask-no-repeat", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-repeat: no-repeat;
@@ -37,7 +37,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
                 "mask-repeat-x", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-repeat: repeat-x;
@@ -49,7 +49,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
                 "mask-repeat-y", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-repeat: repeat-y;
@@ -61,7 +61,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
                 "mask-repeat-space", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-repeat: space;
@@ -73,7 +73,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
                 "mask-repeat-round", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-repeat: round;

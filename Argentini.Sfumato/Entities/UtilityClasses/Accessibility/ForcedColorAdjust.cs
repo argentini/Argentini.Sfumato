@@ -11,7 +11,7 @@ public sealed class ForcedColorAdjust : ClassDictionaryBase
             {
                 "forced-color-adjust-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         forced-color-adjust: auto;
@@ -21,7 +21,7 @@ public sealed class ForcedColorAdjust : ClassDictionaryBase
             {
                 "forced-color-adjust-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         forced-color-adjust: none;

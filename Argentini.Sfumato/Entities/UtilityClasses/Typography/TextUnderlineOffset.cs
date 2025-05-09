@@ -41,7 +41,7 @@ public sealed class TextUnderlineOffset : ClassDictionaryBase
             {
                 "underline-offset-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         text-underline-offset: auto;

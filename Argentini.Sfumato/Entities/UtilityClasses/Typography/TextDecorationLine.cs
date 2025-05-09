@@ -11,7 +11,7 @@ public sealed class TextDecorationLine : ClassDictionaryBase
             {
                 "underline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-line: underline;
                                """
@@ -20,7 +20,7 @@ public sealed class TextDecorationLine : ClassDictionaryBase
             {
                 "overline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-line: overline;
                                """
@@ -29,7 +29,7 @@ public sealed class TextDecorationLine : ClassDictionaryBase
             {
                 "line-through", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-line: line-through;
                                """
@@ -38,7 +38,7 @@ public sealed class TextDecorationLine : ClassDictionaryBase
             {
                 "no-underline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-decoration-line: none;
                                """

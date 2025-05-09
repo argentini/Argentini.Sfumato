@@ -47,7 +47,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: none;
@@ -57,7 +57,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: 100% 100%;
@@ -67,7 +67,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: -100% -100%;
@@ -77,7 +77,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: 1px 1px;
@@ -87,7 +87,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: -1px -1px;
@@ -133,7 +133,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-x-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: 100% var(--sf-translate-y);
@@ -143,7 +143,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-x-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: -100% var(--sf-translate-y);
@@ -153,7 +153,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-x-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: 1px var(--sf-translate-y);
@@ -163,7 +163,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-x-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: -1px var(--sf-translate-y);
@@ -208,7 +208,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-y-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: var(--sf-translate-x) 100%;
@@ -218,7 +218,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-y-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: var(--sf-translate-x) -100%;
@@ -228,7 +228,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-y-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: var(--sf-translate-x) 1px;
@@ -238,7 +238,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-y-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: var(--sf-translate-x) -1px;
@@ -283,7 +283,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-z-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: var(--sf-translate-x) var(--sf-translate-y) 1px;
@@ -293,7 +293,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-z-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         translate: var(--sf-translate-x) var(--sf-translate-y) -1px;

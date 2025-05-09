@@ -31,7 +31,7 @@ public sealed class Width : ClassDictionaryBase
             var key = item.Key.Trim('-').Replace("container", "w");
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      width: var({item.Key});
@@ -49,7 +49,7 @@ public sealed class Width : ClassDictionaryBase
             var key = $"w-{item.Key}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      width: {item.Value};

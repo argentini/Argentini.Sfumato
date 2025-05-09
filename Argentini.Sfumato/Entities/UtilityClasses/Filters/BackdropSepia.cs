@@ -29,7 +29,7 @@ public sealed class BackdropSepia : ClassDictionaryBase
             {
                 "backdrop-sepia", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-backdrop-sepia: sepia(100%);

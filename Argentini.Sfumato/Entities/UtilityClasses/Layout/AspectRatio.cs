@@ -33,7 +33,7 @@ public sealed class AspectRatio : ClassDictionaryBase
             var key = item.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      aspect-ratio: var({item.Key});

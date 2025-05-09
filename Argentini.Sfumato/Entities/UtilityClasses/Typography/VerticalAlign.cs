@@ -21,7 +21,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-baseline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: baseline;
@@ -31,7 +31,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: top;
@@ -41,7 +41,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-middle", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: middle;
@@ -51,7 +51,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: bottom;
@@ -61,7 +61,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-text-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: text-top;
@@ -71,7 +71,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-text-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: text-bottom;
@@ -81,7 +81,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-sub", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: sub;
@@ -91,7 +91,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-super", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         vertical-align: super;

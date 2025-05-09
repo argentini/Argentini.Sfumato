@@ -13,7 +13,7 @@ public sealed class InsetEnd : ClassDictionaryBase
             {
                 "end-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-end: auto;
                                """
@@ -22,7 +22,7 @@ public sealed class InsetEnd : ClassDictionaryBase
             {
                 "end-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-end: 1px;
                                """
@@ -31,7 +31,7 @@ public sealed class InsetEnd : ClassDictionaryBase
             {
                 "end-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-end: 100%;
                                """
@@ -41,7 +41,7 @@ public sealed class InsetEnd : ClassDictionaryBase
             {
                 "-end-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-end: -1px;
                                """
@@ -50,7 +50,7 @@ public sealed class InsetEnd : ClassDictionaryBase
             {
                 "-end-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline-end: -100%;
                                """

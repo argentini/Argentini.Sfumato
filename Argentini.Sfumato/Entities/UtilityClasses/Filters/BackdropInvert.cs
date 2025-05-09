@@ -30,7 +30,7 @@ public sealed class BackdropInvert : ClassDictionaryBase
             {
                 "backdrop-invert", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-backdrop-invert: invert(100%);

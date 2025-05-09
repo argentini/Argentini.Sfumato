@@ -11,7 +11,7 @@ public sealed class UserSelect : ClassDictionaryBase
             {
                 "select-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                user-select: none;
                                """,
@@ -20,7 +20,7 @@ public sealed class UserSelect : ClassDictionaryBase
             {
                 "select-text", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                user-select: text;
                                """,
@@ -29,7 +29,7 @@ public sealed class UserSelect : ClassDictionaryBase
             {
                 "select-all", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                user-select: all;
                                """,
@@ -38,7 +38,7 @@ public sealed class UserSelect : ClassDictionaryBase
             {
                 "select-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                user-select: auto;
                                """,

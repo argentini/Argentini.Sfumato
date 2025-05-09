@@ -20,7 +20,7 @@ public sealed class CaretColor : ClassDictionaryBase
             {
                 "caret-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                caret-color: inherit;
                                """,
@@ -29,7 +29,7 @@ public sealed class CaretColor : ClassDictionaryBase
             {
                 "caret-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                caret-color: currentColor;
                                """,

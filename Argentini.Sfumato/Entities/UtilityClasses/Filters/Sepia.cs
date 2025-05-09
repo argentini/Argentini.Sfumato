@@ -27,7 +27,7 @@ public sealed class Sepia : ClassDictionaryBase
             {
                 "sepia", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-sepia: sepia(100%);

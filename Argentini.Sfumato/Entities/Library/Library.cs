@@ -111,7 +111,7 @@ public sealed class Library
                 if (item.Value.InAbstractValueCollection)
                     AbstractClasses.Add(item.Key, item.Value);
 
-                if (item.Value.IsSimpleUtility)
+                if (item.Value.InSimpleUtilityCollection)
                     SimpleClasses.Add(item.Key, item.Value);
                 
                 if (item.Value.InFloatNumberCollection)

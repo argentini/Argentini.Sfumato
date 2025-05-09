@@ -29,7 +29,7 @@ public sealed class FontWeight : ClassDictionaryBase
             var value = new ClassDefinition
             {
                 SelectorSort = 1,
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"font-weight: var({font.Key});",
             };

@@ -11,7 +11,7 @@ public sealed class BoxSizing : ClassDictionaryBase
             {
                 "box-border", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                box-sizing: border-box;
                                """
@@ -20,7 +20,7 @@ public sealed class BoxSizing : ClassDictionaryBase
             {
                 "box-content", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                box-sizing: content-box;
                                """

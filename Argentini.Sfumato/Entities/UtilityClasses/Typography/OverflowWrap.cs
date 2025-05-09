@@ -11,7 +11,7 @@ public sealed class OverflowWrap : ClassDictionaryBase
             {
                 "wrap-break-word", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         overflow-wrap: break-word;
@@ -21,7 +21,7 @@ public sealed class OverflowWrap : ClassDictionaryBase
             {
                 "wrap-anywhere", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         overflow-wrap: anywhere;
@@ -31,7 +31,7 @@ public sealed class OverflowWrap : ClassDictionaryBase
             {
                 "wrap-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         overflow-wrap: normal;

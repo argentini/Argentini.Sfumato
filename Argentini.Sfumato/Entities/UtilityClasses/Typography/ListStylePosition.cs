@@ -11,7 +11,7 @@ public sealed class ListStylePosition : ClassDictionaryBase
             {
                 "list-inside", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                list-style-position: inside;
                                """
@@ -20,7 +20,7 @@ public sealed class ListStylePosition : ClassDictionaryBase
             {
                 "list-outside", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                list-style-position: outside;
                                """

@@ -21,7 +21,7 @@ public sealed class BackdropFilter : ClassDictionaryBase
             {
                 "backdrop-filter-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         backdrop-filter: none;

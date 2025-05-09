@@ -11,7 +11,7 @@ public sealed class BackgroundClip : ClassDictionaryBase
             {
                 "bg-clip-border", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-clip: border-box;
                                """,
@@ -20,7 +20,7 @@ public sealed class BackgroundClip : ClassDictionaryBase
             {
                 "bg-clip-padding", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-clip: padding-box;
                                """,
@@ -29,7 +29,7 @@ public sealed class BackgroundClip : ClassDictionaryBase
             {
                 "bg-clip-content", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-clip: content-box;
                                """,
@@ -38,7 +38,7 @@ public sealed class BackgroundClip : ClassDictionaryBase
             {
                 "bg-clip-text", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-clip: text;
                                """,

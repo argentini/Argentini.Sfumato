@@ -66,7 +66,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-t", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -91,7 +91,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-tr", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -116,7 +116,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-r", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -141,7 +141,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-br", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -166,7 +166,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-b", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -191,7 +191,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-bl", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -216,7 +216,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-l", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -241,7 +241,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-to-tl", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """

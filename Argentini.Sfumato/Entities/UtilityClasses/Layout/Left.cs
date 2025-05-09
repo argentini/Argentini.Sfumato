@@ -13,7 +13,7 @@ public sealed class Left : ClassDictionaryBase
             {
                 "left-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                left: auto;
                                """
@@ -22,7 +22,7 @@ public sealed class Left : ClassDictionaryBase
             {
                 "left-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                left: 1px;
                                """
@@ -31,7 +31,7 @@ public sealed class Left : ClassDictionaryBase
             {
                 "left-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                left: 100%;
                                """
@@ -41,7 +41,7 @@ public sealed class Left : ClassDictionaryBase
             {
                 "-left-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                left: -1px;
                                """
@@ -50,7 +50,7 @@ public sealed class Left : ClassDictionaryBase
             {
                 "-left-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                left: -100%;
                                """

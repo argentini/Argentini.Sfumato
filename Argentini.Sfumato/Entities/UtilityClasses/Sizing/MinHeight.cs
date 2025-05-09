@@ -31,7 +31,7 @@ public sealed class MinHeight : ClassDictionaryBase
             var key = $"min-h-{item.Key}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      min-height: {item.Value};

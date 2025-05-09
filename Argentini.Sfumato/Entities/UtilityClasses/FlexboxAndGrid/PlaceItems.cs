@@ -11,7 +11,7 @@ public sealed class PlaceItems : ClassDictionaryBase
             {
                 "place-items-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-items: start;
@@ -21,7 +21,7 @@ public sealed class PlaceItems : ClassDictionaryBase
             {
                 "place-items-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-items: end;
@@ -31,7 +31,7 @@ public sealed class PlaceItems : ClassDictionaryBase
             {
                 "place-items-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-items: safe end;
@@ -41,7 +41,7 @@ public sealed class PlaceItems : ClassDictionaryBase
             {
                 "place-items-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-items: center;
@@ -51,7 +51,7 @@ public sealed class PlaceItems : ClassDictionaryBase
             {
                 "place-items-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-items: safe center;
@@ -61,7 +61,7 @@ public sealed class PlaceItems : ClassDictionaryBase
             {
                 "place-items-baseline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-items: baseline;
@@ -71,7 +71,7 @@ public sealed class PlaceItems : ClassDictionaryBase
             {
                 "place-items-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-items: stretch;

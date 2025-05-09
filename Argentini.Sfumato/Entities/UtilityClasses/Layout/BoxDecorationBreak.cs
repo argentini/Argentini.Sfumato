@@ -11,7 +11,7 @@ public sealed class BoxDecorationBreak : ClassDictionaryBase
             {
                 "box-decoration-clone", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                box-decoration-break: clone;
                                """
@@ -20,7 +20,7 @@ public sealed class BoxDecorationBreak : ClassDictionaryBase
             {
                 "box-decoration-slice", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                box-decoration-break: slice;
                                """

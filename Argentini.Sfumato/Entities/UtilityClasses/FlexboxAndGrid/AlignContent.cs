@@ -11,7 +11,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: normal;
@@ -21,7 +21,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: center;
@@ -31,7 +31,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: flex-start;
@@ -41,7 +41,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: flex-end;
@@ -51,7 +51,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-between", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: space-between;
@@ -61,7 +61,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-around", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: space-around;
@@ -71,7 +71,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-evenly", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: space-evenly;
@@ -81,7 +81,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-baseline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: baseline;
@@ -91,7 +91,7 @@ public sealed class AlignContent : ClassDictionaryBase
             {
                 "content-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-content: stretch;

@@ -13,6 +13,7 @@ public sealed class Flex : ClassDictionaryBase
                 {
                     InIntegerCollection = true,
                     InLengthCollection = true,
+                    InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
@@ -27,7 +28,7 @@ public sealed class Flex : ClassDictionaryBase
             {
                 "flex-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex: 1 1 auto;
@@ -37,7 +38,7 @@ public sealed class Flex : ClassDictionaryBase
             {
                 "flex-initial", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex: 0 1 auto;
@@ -47,7 +48,7 @@ public sealed class Flex : ClassDictionaryBase
             {
                 "flex-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex: none;

@@ -20,7 +20,7 @@ public sealed class AccentColor : ClassDictionaryBase
             {
                 "accent-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                accent-color: inherit;
                                """,
@@ -29,7 +29,7 @@ public sealed class AccentColor : ClassDictionaryBase
             {
                 "accent-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                accent-color: currentColor;
                                """,

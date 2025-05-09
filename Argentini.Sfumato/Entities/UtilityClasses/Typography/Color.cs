@@ -20,7 +20,7 @@ public sealed class Color : ClassDictionaryBase
             {
                 "text-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color: inherit;
                                """,
@@ -29,7 +29,7 @@ public sealed class Color : ClassDictionaryBase
             {
                 "text-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                color: currentColor;
                                """,

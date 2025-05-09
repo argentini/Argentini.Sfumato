@@ -11,7 +11,7 @@ public sealed class WhiteSpace : ClassDictionaryBase
             {
                 "whitespace-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         white-space: normal;
@@ -21,7 +21,7 @@ public sealed class WhiteSpace : ClassDictionaryBase
             {
                 "whitespace-nowrap", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         white-space: nowrap;
@@ -31,7 +31,7 @@ public sealed class WhiteSpace : ClassDictionaryBase
             {
                 "whitespace-pre", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         white-space: pre;
@@ -41,7 +41,7 @@ public sealed class WhiteSpace : ClassDictionaryBase
             {
                 "whitespace-pre-line", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         white-space: pre-line;
@@ -51,7 +51,7 @@ public sealed class WhiteSpace : ClassDictionaryBase
             {
                 "whitespace-pre-wrap", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         white-space: pre-wrap;
@@ -61,7 +61,7 @@ public sealed class WhiteSpace : ClassDictionaryBase
             {
                 "whitespace-break-spaces", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         white-space: break-spaces;

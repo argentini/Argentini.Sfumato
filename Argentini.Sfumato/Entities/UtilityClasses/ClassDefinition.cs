@@ -8,7 +8,7 @@ public sealed class ClassDefinition
     /// Is a simple utility with static properties (e.g. "antialiased");
     /// is used as-is and doesn't have any custom properties.
     /// </summary>
-    public bool IsSimpleUtility { get; set; }
+    public bool InSimpleUtilityCollection { get; set; }
 
     /// <summary>
     /// Class uses an integer (e.g. "3%")

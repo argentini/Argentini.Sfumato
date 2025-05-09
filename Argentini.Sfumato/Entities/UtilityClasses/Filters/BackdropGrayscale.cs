@@ -29,7 +29,7 @@ public sealed class BackdropGrayscale : ClassDictionaryBase
             {
                 "backdrop-grayscale", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-backdrop-grayscale: grayscale(100%);

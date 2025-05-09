@@ -20,7 +20,7 @@ public sealed class WillChange : ClassDictionaryBase
             {
                 "will-change-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                will-change: auto;
                                """,
@@ -29,7 +29,7 @@ public sealed class WillChange : ClassDictionaryBase
             {
                 "will-change-scroll", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                will-change: scroll-position;
                                """,
@@ -38,7 +38,7 @@ public sealed class WillChange : ClassDictionaryBase
             {
                 "will-change-contents", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                will-change: contents;
                                """,
@@ -47,7 +47,7 @@ public sealed class WillChange : ClassDictionaryBase
             {
                 "will-change-transform", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                will-change: transform;
                                """,

@@ -26,7 +26,7 @@ public sealed class InsetShadow : ClassDictionaryBase
             {
                 "inset-shadow-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         box-shadow: inset 0 0 #0000;
@@ -43,7 +43,7 @@ public sealed class InsetShadow : ClassDictionaryBase
             var key = text.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 InAbstractValueCollection = true,
                 Template =
                     $"""

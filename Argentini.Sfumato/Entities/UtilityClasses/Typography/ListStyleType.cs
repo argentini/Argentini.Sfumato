@@ -20,7 +20,7 @@ public sealed class ListStyleType : ClassDictionaryBase
             {
                 "list-disc", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                list-style-type: disc;
                                """
@@ -29,7 +29,7 @@ public sealed class ListStyleType : ClassDictionaryBase
             {
                 "list-decimal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                list-style-type: decimal;
                                """
@@ -38,7 +38,7 @@ public sealed class ListStyleType : ClassDictionaryBase
             {
                 "list-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                list-style-type: none;
                                """

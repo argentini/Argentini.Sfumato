@@ -21,7 +21,7 @@ public sealed class Filter : ClassDictionaryBase
             {
                 "filter-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         filter: none;

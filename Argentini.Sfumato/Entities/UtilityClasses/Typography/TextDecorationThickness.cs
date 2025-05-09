@@ -26,7 +26,7 @@ public sealed class TextDecorationThickness : ClassDictionaryBase
             {
                 "decoration-from-font", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         text-decoration-thickness: from-font;
@@ -36,7 +36,7 @@ public sealed class TextDecorationThickness : ClassDictionaryBase
             {
                 "decoration-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         text-decoration-thickness: auto;

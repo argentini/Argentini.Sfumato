@@ -28,7 +28,7 @@ public sealed class Invert : ClassDictionaryBase
             {
                 "invert", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-invert: invert(100%);

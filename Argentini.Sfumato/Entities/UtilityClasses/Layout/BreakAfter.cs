@@ -11,7 +11,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: auto;
                                """
@@ -20,7 +20,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-avoid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: avoid;
                                """
@@ -29,7 +29,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-all", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: all;
                                """
@@ -38,7 +38,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-avoid-page", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: avoid-page;
                                """
@@ -47,7 +47,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-page", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: page;
                                """
@@ -56,7 +56,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: left;
                                """
@@ -65,7 +65,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: right;
                                """
@@ -74,7 +74,7 @@ public sealed class BreakAfter : ClassDictionaryBase
             {
                 "break-after-column", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-after: column;
                                """

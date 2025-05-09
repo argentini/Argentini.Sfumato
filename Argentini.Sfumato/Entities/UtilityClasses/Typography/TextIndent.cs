@@ -41,7 +41,7 @@ public sealed class TextIndent : ClassDictionaryBase
             {
                 "indent-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         text-indent: 1px;
@@ -51,7 +51,7 @@ public sealed class TextIndent : ClassDictionaryBase
             {
                 "-indent-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         text-indent: -1px;

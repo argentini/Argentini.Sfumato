@@ -11,7 +11,7 @@ public sealed class FlexWrap : ClassDictionaryBase
             {
                 "flex-nowrap", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-wrap: nowrap;
@@ -21,7 +21,7 @@ public sealed class FlexWrap : ClassDictionaryBase
             {
                 "flex-wrap", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-wrap: wrap;
@@ -31,7 +31,7 @@ public sealed class FlexWrap : ClassDictionaryBase
             {
                 "flex-wrap-reverse", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-wrap: wrap-reverse;

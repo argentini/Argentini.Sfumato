@@ -20,7 +20,7 @@ public sealed class Fill : ClassDictionaryBase
             {
                 "fill-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                fill: inherit;
                                """,
@@ -29,7 +29,7 @@ public sealed class Fill : ClassDictionaryBase
             {
                 "fill-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                fill: currentColor;
                                """,

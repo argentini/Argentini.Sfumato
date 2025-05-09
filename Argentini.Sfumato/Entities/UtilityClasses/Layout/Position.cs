@@ -11,7 +11,7 @@ public sealed class Position : ClassDictionaryBase
             {
                 "static", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                position: static;
                                """
@@ -20,7 +20,7 @@ public sealed class Position : ClassDictionaryBase
             {
                 "fixed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                position: fixed;
                                """
@@ -29,7 +29,7 @@ public sealed class Position : ClassDictionaryBase
             {
                 "absolute", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                position: absolute;
                                """
@@ -38,7 +38,7 @@ public sealed class Position : ClassDictionaryBase
             {
                 "relative", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                position: relative;
                                """
@@ -47,7 +47,7 @@ public sealed class Position : ClassDictionaryBase
             {
                 "sticky", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                position: sticky;
                                """

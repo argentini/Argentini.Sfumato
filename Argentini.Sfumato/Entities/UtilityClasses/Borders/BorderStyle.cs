@@ -12,7 +12,7 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-solid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-style: solid;
@@ -22,7 +22,7 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-dashed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-style: dashed;
@@ -32,7 +32,7 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-dotted", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-style: dotted;
@@ -42,7 +42,7 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-double", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-style: double;
@@ -52,7 +52,7 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-style: hidden;
@@ -62,7 +62,7 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-style: none;

@@ -11,7 +11,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: auto;
                                """,
@@ -20,7 +20,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: none;
                                """,
@@ -29,7 +29,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-pan-x", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: pan-x;
                                """,
@@ -38,7 +38,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-pan-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: pan-left;
                                """,
@@ -47,7 +47,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-pan-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: pan-right;
                                """,
@@ -56,7 +56,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-pan-y", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: pan-y;
                                """,
@@ -65,7 +65,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-pan-up", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: pan-up;
                                """,
@@ -74,7 +74,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-pan-down", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: pan-down;
                                """,
@@ -83,7 +83,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-pinch-zoom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: pinch-zoom;
                                """,
@@ -92,7 +92,7 @@ public sealed class TouchAction : ClassDictionaryBase
             {
                 "touch-manipulation", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                touch-action: manipulation;
                                """,

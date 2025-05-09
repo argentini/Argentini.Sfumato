@@ -11,7 +11,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "normal-nums", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: normal;
                                """
@@ -20,7 +20,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "ordinal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: ordinal;
                                """
@@ -29,7 +29,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "slashed-zero", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: slashed-zero;
                                """
@@ -38,7 +38,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "lining-nums", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: lining-nums;
                                """
@@ -47,7 +47,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "oldstyle-nums", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: oldstyle-nums;
                                """
@@ -56,7 +56,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "proportional-nums", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: proportional-nums;
                                """
@@ -65,7 +65,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "tabular-nums", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: tabular-nums;
                                """
@@ -74,7 +74,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "diagonal-fractions", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: diagonal-fractions;
                                """
@@ -83,7 +83,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
             {
                 "stacked-fractions", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                font-variant-numeric: stacked-fractions;
                                """

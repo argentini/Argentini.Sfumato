@@ -13,7 +13,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                 "mask-origin-border", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-origin: border-box;
@@ -25,7 +25,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                 "mask-origin-padding", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-origin: padding-box;
@@ -37,7 +37,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                 "mask-origin-content", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-origin: content-box;
@@ -49,7 +49,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                 "mask-origin-fill", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-origin: fill-box;
@@ -61,7 +61,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                 "mask-origin-stroke", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-origin: stroke-box;
@@ -73,7 +73,7 @@ public sealed class MaskOrigin : ClassDictionaryBase
                 "mask-origin-view", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-origin: view-box;

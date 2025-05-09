@@ -11,7 +11,7 @@ public sealed class TextAlign : ClassDictionaryBase
             {
                 "text-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-align: left;
                                """
@@ -20,7 +20,7 @@ public sealed class TextAlign : ClassDictionaryBase
             {
                 "text-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-align: center;
                                """
@@ -29,7 +29,7 @@ public sealed class TextAlign : ClassDictionaryBase
             {
                 "text-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-align: right;
                                """
@@ -38,7 +38,7 @@ public sealed class TextAlign : ClassDictionaryBase
             {
                 "text-justify", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-align: justify;
                                """
@@ -47,7 +47,7 @@ public sealed class TextAlign : ClassDictionaryBase
             {
                 "text-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-align: start;
                                """
@@ -56,7 +56,7 @@ public sealed class TextAlign : ClassDictionaryBase
             {
                 "text-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-align: end;
                                """

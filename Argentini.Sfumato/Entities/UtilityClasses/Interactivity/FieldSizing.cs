@@ -11,7 +11,7 @@ public sealed class FieldSizing : ClassDictionaryBase
             {
                 "field-sizing-fixed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                field-sizing: fixed;
                                """,
@@ -20,7 +20,7 @@ public sealed class FieldSizing : ClassDictionaryBase
             {
                 "field-sizing-content", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                field-sizing: content;
                                """,

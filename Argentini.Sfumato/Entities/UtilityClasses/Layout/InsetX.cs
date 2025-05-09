@@ -13,7 +13,7 @@ public sealed class InsetX : ClassDictionaryBase
             {
                 "inset-x-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline: auto;
                                """
@@ -22,7 +22,7 @@ public sealed class InsetX : ClassDictionaryBase
             {
                 "inset-x-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline: 1px;
                                """
@@ -31,7 +31,7 @@ public sealed class InsetX : ClassDictionaryBase
             {
                 "inset-x-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline: 100%;
                                """
@@ -41,7 +41,7 @@ public sealed class InsetX : ClassDictionaryBase
             {
                 "-inset-x-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline: -1px;
                                """
@@ -50,7 +50,7 @@ public sealed class InsetX : ClassDictionaryBase
             {
                 "-inset-x-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                inset-inline: -100%;
                                """

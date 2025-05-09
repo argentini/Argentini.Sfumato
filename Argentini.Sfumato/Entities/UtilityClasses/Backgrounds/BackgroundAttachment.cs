@@ -11,7 +11,7 @@ public sealed class BackgroundAttachment : ClassDictionaryBase
             {
                 "bg-fixed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-attachment: fixed;
                                """,
@@ -20,7 +20,7 @@ public sealed class BackgroundAttachment : ClassDictionaryBase
             {
                 "bg-local", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-attachment: local;
                                """,
@@ -29,7 +29,7 @@ public sealed class BackgroundAttachment : ClassDictionaryBase
             {
                 "bg-scroll", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-attachment: scroll;
                                """,

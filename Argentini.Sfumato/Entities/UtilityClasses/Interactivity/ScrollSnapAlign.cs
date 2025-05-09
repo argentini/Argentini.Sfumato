@@ -11,7 +11,7 @@ public sealed class ScrollSnapAlign : ClassDictionaryBase
             {
                 "snap-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-align: start;
                                """,
@@ -20,7 +20,7 @@ public sealed class ScrollSnapAlign : ClassDictionaryBase
             {
                 "snap-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-align: end;
                                """,
@@ -29,7 +29,7 @@ public sealed class ScrollSnapAlign : ClassDictionaryBase
             {
                 "snap-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-align: center;
                                """,
@@ -38,7 +38,7 @@ public sealed class ScrollSnapAlign : ClassDictionaryBase
             {
                 "snap-align-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-align: none;
                                """,

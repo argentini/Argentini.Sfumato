@@ -20,7 +20,7 @@ public sealed class BackgroundColor : ClassDictionaryBase
             {
                 "bg-inherit", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-color: inherit;
                                """,
@@ -29,7 +29,7 @@ public sealed class BackgroundColor : ClassDictionaryBase
             {
                 "bg-current", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-color: currentColor;
                                """,

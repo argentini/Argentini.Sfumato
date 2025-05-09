@@ -11,7 +11,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow: auto;
                                """
@@ -20,7 +20,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow: hidden;
                                """
@@ -29,7 +29,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-clip", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow: clip;
                                """
@@ -38,7 +38,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-visible", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow: visible;
                                """
@@ -47,7 +47,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-scroll", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow: scroll;
                                """
@@ -56,7 +56,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-x-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-x: auto;
                                """
@@ -65,7 +65,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-y-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-y: auto;
                                """
@@ -74,7 +74,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-x-hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-x: hidden;
                                """
@@ -83,7 +83,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-y-hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-y: hidden;
                                """
@@ -92,7 +92,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-x-clip", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-x: clip;
                                """
@@ -101,7 +101,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-y-clip", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-y: clip;
                                """
@@ -110,7 +110,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-x-visible", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-x: visible;
                                """
@@ -119,7 +119,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-y-visible", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-y: visible;
                                """
@@ -128,7 +128,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-x-scroll", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-x: scroll;
                                """
@@ -137,7 +137,7 @@ public sealed class Overflow : ClassDictionaryBase
             {
                 "overflow-y-scroll", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow-y: scroll;
                                """

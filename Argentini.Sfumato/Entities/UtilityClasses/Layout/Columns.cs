@@ -25,7 +25,7 @@ public sealed class Columns : ClassDictionaryBase
             {
                 "columns-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         columns: auto;
@@ -42,7 +42,7 @@ public sealed class Columns : ClassDictionaryBase
             var key = item.Key.Trim('-').Replace("container", "columns");
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      columns: var({item.Key});

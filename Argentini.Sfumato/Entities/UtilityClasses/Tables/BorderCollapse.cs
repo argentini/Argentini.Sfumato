@@ -11,7 +11,7 @@ public sealed class BorderCollapse : ClassDictionaryBase
             {
                 "border-collapse", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-collapse: collapse;
@@ -21,7 +21,7 @@ public sealed class BorderCollapse : ClassDictionaryBase
             {
                 "border-separate", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         border-collapse: separate;

@@ -23,7 +23,7 @@ public sealed class DropShadow : ClassDictionaryBase
             {
                 "drop-shadow-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-drop-shadow: ;
@@ -41,7 +41,7 @@ public sealed class DropShadow : ClassDictionaryBase
             var key = text.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template =
                     $"""
                     --sf-drop-shadow-size: drop-shadow({text.Value});

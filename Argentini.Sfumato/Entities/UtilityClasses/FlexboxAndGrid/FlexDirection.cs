@@ -11,7 +11,7 @@ public sealed class FlexDirection : ClassDictionaryBase
             {
                 "flex-row", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-direction: row;
@@ -21,7 +21,7 @@ public sealed class FlexDirection : ClassDictionaryBase
             {
                 "flex-row-reverse", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-direction: row-reverse;
@@ -31,7 +31,7 @@ public sealed class FlexDirection : ClassDictionaryBase
             {
                 "flex-col", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-direction: column;
@@ -41,7 +41,7 @@ public sealed class FlexDirection : ClassDictionaryBase
             {
                 "flex-col-reverse", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         flex-direction: column-reverse;

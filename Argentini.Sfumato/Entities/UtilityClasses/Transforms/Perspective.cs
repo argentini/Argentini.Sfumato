@@ -21,7 +21,7 @@ public sealed class Perspective : ClassDictionaryBase
             {
                 "perspective-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         perspective: none;
@@ -38,7 +38,7 @@ public sealed class Perspective : ClassDictionaryBase
             var key = item.Key.Trim('-');
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      perspective: var({item.Key});

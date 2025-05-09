@@ -13,7 +13,7 @@ public sealed class Top : ClassDictionaryBase
             {
                 "top-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                top: auto;
                                """
@@ -22,7 +22,7 @@ public sealed class Top : ClassDictionaryBase
             {
                 "top-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                top: 1px;
                                """
@@ -31,7 +31,7 @@ public sealed class Top : ClassDictionaryBase
             {
                 "top-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                top: 100%;
                                """
@@ -41,7 +41,7 @@ public sealed class Top : ClassDictionaryBase
             {
                 "-top-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                top: -1px;
                                """
@@ -50,7 +50,7 @@ public sealed class Top : ClassDictionaryBase
             {
                 "-top-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                top: -100%;
                                """

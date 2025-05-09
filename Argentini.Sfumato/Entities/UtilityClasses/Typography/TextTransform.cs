@@ -11,7 +11,7 @@ public sealed class TextTransform : ClassDictionaryBase
             {
                 "uppercase", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-transform: uppercase;
                                """
@@ -20,7 +20,7 @@ public sealed class TextTransform : ClassDictionaryBase
             {
                 "lowercase", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-transform: lowercase;
                                """
@@ -29,7 +29,7 @@ public sealed class TextTransform : ClassDictionaryBase
             {
                 "capitalize", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-transform: capitalize;
                                """
@@ -38,7 +38,7 @@ public sealed class TextTransform : ClassDictionaryBase
             {
                 "normal-case", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-transform: none;
                                """

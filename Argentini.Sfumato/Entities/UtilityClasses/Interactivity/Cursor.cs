@@ -27,7 +27,7 @@ public sealed class Cursor : ClassDictionaryBase
             var key = $"cursor-{item}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      cursor: {item};

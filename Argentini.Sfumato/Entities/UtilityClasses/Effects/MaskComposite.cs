@@ -13,7 +13,7 @@ public sealed class MaskComposite : ClassDictionaryBase
                 "mask-add", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mask-composite: add;
@@ -24,7 +24,7 @@ public sealed class MaskComposite : ClassDictionaryBase
                 "mask-subtract", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mask-composite: subtract;
@@ -35,7 +35,7 @@ public sealed class MaskComposite : ClassDictionaryBase
                 "mask-intersect", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mask-composite: intersect;
@@ -46,7 +46,7 @@ public sealed class MaskComposite : ClassDictionaryBase
                 "mask-exclude", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mask-composite: exclude;

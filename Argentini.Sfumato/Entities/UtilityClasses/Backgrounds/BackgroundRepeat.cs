@@ -11,7 +11,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
             {
                 "bg-repeat", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-repeat: repeat;
                                """,
@@ -20,7 +20,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
             {
                 "bg-repeat-x", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-repeat: repeat-x;
                                """,
@@ -29,7 +29,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
             {
                 "bg-repeat-y", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-repeat: repeat-y;
                                """,
@@ -38,7 +38,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
             {
                 "bg-repeat-space", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-repeat: space;
                                """,
@@ -47,7 +47,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
             {
                 "bg-repeat-round", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-repeat: round;
                                """,
@@ -56,7 +56,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
             {
                 "bg-no-repeat", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                background-repeat: no-repeat;
                                """,

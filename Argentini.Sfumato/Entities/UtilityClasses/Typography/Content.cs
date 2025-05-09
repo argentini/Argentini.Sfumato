@@ -21,7 +21,7 @@ public sealed class Content : ClassDictionaryBase
             {
                 "content-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                content: none;
                                """

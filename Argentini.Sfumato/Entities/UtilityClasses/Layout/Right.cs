@@ -13,7 +13,7 @@ public sealed class Right : ClassDictionaryBase
             {
                 "right-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                right: auto;
                                """
@@ -22,7 +22,7 @@ public sealed class Right : ClassDictionaryBase
             {
                 "right-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                right: 1px;
                                """
@@ -31,7 +31,7 @@ public sealed class Right : ClassDictionaryBase
             {
                 "right-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                right: 100%;
                                """
@@ -41,7 +41,7 @@ public sealed class Right : ClassDictionaryBase
             {
                 "-right-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                right: -1px;
                                """
@@ -50,7 +50,7 @@ public sealed class Right : ClassDictionaryBase
             {
                 "-right-full", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                right: -100%;
                                """

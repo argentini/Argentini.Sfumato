@@ -137,7 +137,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-circle", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-shape: circle;
@@ -147,7 +147,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-ellipse", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-shape: ellipse;
@@ -157,7 +157,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-closest-corner", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-size: closest-corner;
@@ -167,7 +167,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-closest-side", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-size: closest-side;
@@ -177,7 +177,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-farthest-corner", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-size: farthest-corner;
@@ -187,7 +187,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-farthest-side", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-size: farthest-side;
@@ -197,7 +197,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-top-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: top left;
@@ -207,7 +207,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: top;
@@ -217,7 +217,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-top-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: top right;
@@ -227,7 +227,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: left;
@@ -237,7 +237,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: center;
@@ -247,7 +247,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: right;
@@ -257,7 +257,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-bottom-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: bottom left;
@@ -267,7 +267,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: bottom;
@@ -277,7 +277,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-at-bottom-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         --sf-mask-radial-position: bottom right;

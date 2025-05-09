@@ -11,7 +11,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
             {
                 "place-self-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-self: auto;
@@ -21,7 +21,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
             {
                 "place-self-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-self: start;
@@ -31,7 +31,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
             {
                 "place-self-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-self: end;
@@ -41,7 +41,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
             {
                 "place-self-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-self: safe end;
@@ -51,7 +51,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
             {
                 "place-self-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-self: center;
@@ -61,7 +61,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
             {
                 "place-self-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-self: safe center;
@@ -71,7 +71,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
             {
                 "place-self-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         place-self: stretch;

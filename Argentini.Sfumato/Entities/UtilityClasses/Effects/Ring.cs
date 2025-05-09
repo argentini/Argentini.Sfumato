@@ -29,7 +29,7 @@ public sealed class Ring : ClassDictionaryBase
             {
                 "ring", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-ring-shadow: var(--sf-ring-inset, ) 0 0 0 calc(1px + var(--sf-ring-offset-width)) var(--sf-ring-color, currentcolor);

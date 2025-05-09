@@ -11,7 +11,7 @@ public sealed class TextOverflow : ClassDictionaryBase
             {
                 "truncate", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                overflow: hidden;
                                text-overflow: ellipsis;
@@ -22,7 +22,7 @@ public sealed class TextOverflow : ClassDictionaryBase
             {
                 "text-ellipsis", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-overflow: ellipsis;
                                """
@@ -31,7 +31,7 @@ public sealed class TextOverflow : ClassDictionaryBase
             {
                 "text-clip", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                text-overflow: clip;
                                """

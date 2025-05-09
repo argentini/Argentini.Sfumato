@@ -11,7 +11,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: auto;
                                """
@@ -20,7 +20,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-avoid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: avoid;
                                """
@@ -29,7 +29,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-all", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: all;
                                """
@@ -38,7 +38,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-avoid-page", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: avoid-page;
                                """
@@ -47,7 +47,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-page", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: page;
                                """
@@ -56,7 +56,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: left;
                                """
@@ -65,7 +65,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: right;
                                """
@@ -74,7 +74,7 @@ public sealed class BreakBefore : ClassDictionaryBase
             {
                 "break-before-column", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                break-before: column;
                                """

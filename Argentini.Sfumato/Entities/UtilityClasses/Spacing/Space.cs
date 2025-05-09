@@ -13,7 +13,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "space-x-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                & > :not(:last-child) {
                                    margin-inline-start: calc(1px * var(--sf-space-x-reverse));
@@ -25,7 +25,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "-space-x-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                & > :not(:last-child) {
                                    margin-inline-start: calc(-1px * var(--sf-space-x-reverse));
@@ -80,7 +80,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "space-y-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                & > :not(:first-child) {
                                    margin-block-start: calc(1px * calc(1 - var(--sf-space-y-reverse)));
@@ -92,7 +92,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "-space-y-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                & > :not(:first-child) {
                                    margin-block-start: calc(-1px * calc(1 - var(--sf-space-y-reverse)));

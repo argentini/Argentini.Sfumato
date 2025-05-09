@@ -23,7 +23,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --sf-gradient-from, --sf-gradient-via, --sf-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter;
@@ -35,7 +35,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition-all", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-property: all;
@@ -47,7 +47,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition-colors", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --sf-gradient-from, --sf-gradient-via, --sf-gradient-to;
@@ -59,7 +59,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition-opacity", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-property: opacity;
@@ -71,7 +71,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition-shadow", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-property: box-shadow;
@@ -83,7 +83,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition-transform", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-property: transform, translate, scale, rotate;
@@ -95,7 +95,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transition-property: none;

@@ -11,7 +11,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: auto;
@@ -21,7 +21,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: flex-start;
@@ -31,7 +31,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: flex-end;
@@ -41,7 +41,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-end-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: safe flex-end;
@@ -51,7 +51,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: center;
@@ -61,7 +61,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-center-safe", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: safe center;
@@ -71,7 +71,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-baseline", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: baseline;
@@ -81,7 +81,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-baseline-last", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: last baseline;
@@ -91,7 +91,7 @@ public sealed class AlignSelf : ClassDictionaryBase
             {
                 "self-stretch", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         align-self: stretch;

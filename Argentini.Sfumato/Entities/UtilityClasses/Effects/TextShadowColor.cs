@@ -24,7 +24,7 @@ public sealed class TextShadowColor : ClassDictionaryBase
                 "text-shadow-inherit", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-text-shadow-color: inherit;
@@ -35,7 +35,7 @@ public sealed class TextShadowColor : ClassDictionaryBase
                 "text-shadow-current", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = 
                         """
                         --sf-text-shadow-color: currentColor;

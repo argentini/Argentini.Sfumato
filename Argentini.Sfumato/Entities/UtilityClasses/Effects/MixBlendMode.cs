@@ -12,7 +12,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: normal;
@@ -22,7 +22,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-multiply", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: multiply;
@@ -32,7 +32,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-screen", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: screen;
@@ -42,7 +42,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-overlay", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: overlay;
@@ -52,7 +52,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-darken", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: darken;
@@ -62,7 +62,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-lighten", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: lighten;
@@ -72,7 +72,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-color-dodge", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: color-dodge;
@@ -82,7 +82,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-color-burn", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: color-burn;
@@ -92,7 +92,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-hard-light", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: hard-light;
@@ -102,7 +102,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-soft-light", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: soft-light;
@@ -112,7 +112,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-difference", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: difference;
@@ -122,7 +122,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-exclusion", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: exclusion;
@@ -132,7 +132,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-hue", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: hue;
@@ -142,7 +142,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-saturation", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: saturation;
@@ -152,7 +152,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-color", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: color;
@@ -162,7 +162,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-luminosity", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: luminosity;
@@ -172,7 +172,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-plus-darker", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: plus-darker;
@@ -182,7 +182,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
             {
                 "mix-blend-plus-lighter", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         mix-blend-mode: plus-lighter;

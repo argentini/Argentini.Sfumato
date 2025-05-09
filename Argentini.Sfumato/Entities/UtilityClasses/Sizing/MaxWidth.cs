@@ -24,7 +24,7 @@ public sealed class MaxWidth : ClassDictionaryBase
             {
                 "container", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                width: 100%;
                                @variant sm { max-width: var(--breakpoint-sm); }
@@ -45,7 +45,7 @@ public sealed class MaxWidth : ClassDictionaryBase
             var key = item.Key.Trim('-').Replace("container", "max-w");
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      max-width: var({item.Key});
@@ -63,7 +63,7 @@ public sealed class MaxWidth : ClassDictionaryBase
             var key = $"max-w-{item.Key}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      max-width: {item.Value};

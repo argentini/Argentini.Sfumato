@@ -11,7 +11,7 @@ public sealed class ScrollBehavior : ClassDictionaryBase
             {
                 "scroll-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-behavior: auto;
                                """,
@@ -20,7 +20,7 @@ public sealed class ScrollBehavior : ClassDictionaryBase
             {
                 "scroll-smooth", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-behavior: smooth;
                                """,

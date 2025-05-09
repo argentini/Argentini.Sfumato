@@ -25,7 +25,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-top-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: top left;
@@ -35,7 +35,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-top", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: top;
@@ -45,7 +45,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-top-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: top right;
@@ -55,7 +55,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: left;
@@ -65,7 +65,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-center", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: center;
@@ -75,7 +75,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: right;
@@ -85,7 +85,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-bottom-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: bottom left;
@@ -95,7 +95,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-bottom", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: bottom;
@@ -105,7 +105,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-bottom-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         background-position: bottom right;

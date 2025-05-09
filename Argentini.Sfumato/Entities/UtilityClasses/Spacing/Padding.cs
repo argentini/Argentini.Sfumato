@@ -13,7 +13,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "p-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding: 1px;
                                """
@@ -22,7 +22,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-p-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding: -1px;
                                """
@@ -62,7 +62,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "px-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-inline: 1px;
                                """
@@ -71,7 +71,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-px-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-inline: -1px;
                                """
@@ -111,7 +111,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "py-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-block: 1px;
                                """
@@ -120,7 +120,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-py-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-block: -1px;
                                """
@@ -160,7 +160,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "ps-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-inline-start: 1px;
                                """
@@ -169,7 +169,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-ps-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-inline-start: -1px;
                                """
@@ -209,7 +209,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pe-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-inline-end: 1px;
                                """
@@ -218,7 +218,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pe-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-inline-end: -1px;
                                """
@@ -258,7 +258,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pt-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-top: 1px;
                                """
@@ -267,7 +267,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pt-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-top: -1px;
                                """
@@ -307,7 +307,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pr-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-right: 1px;
                                """
@@ -316,7 +316,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pr-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-right: -1px;
                                """
@@ -356,7 +356,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pb-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-bottom: 1px;
                                """
@@ -365,7 +365,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pb-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-bottom: -1px;
                                """
@@ -405,7 +405,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pl-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-left: 1px;
                                """
@@ -414,7 +414,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pl-px", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                padding-left: -1px;
                                """

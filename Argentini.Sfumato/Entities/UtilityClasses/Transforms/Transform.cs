@@ -21,7 +21,7 @@ public sealed class Transform : ClassDictionaryBase
             {
                 "transform", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform: var(--sf-rotate-x, ) var(--sf-rotate-y, ) var(--sf-rotate-z, ) var(--sf-skew-x, ) var(--sf-skew-y, );
@@ -31,7 +31,7 @@ public sealed class Transform : ClassDictionaryBase
             {
                 "transform-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform: none;
@@ -41,7 +41,7 @@ public sealed class Transform : ClassDictionaryBase
             {
                 "transform-cpu", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform: var(--sf-rotate-x, ) var(--sf-rotate-y, ) var(--sf-rotate-z, ) var(--sf-skew-x, ) var(--sf-skew-y, );
@@ -51,7 +51,7 @@ public sealed class Transform : ClassDictionaryBase
             {
                 "transform-gpu", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         transform: translateZ(0) var(--sf-rotate-x, ) var(--sf-rotate-y, ) var(--sf-rotate-z, ) var(--sf-skew-x, ) var(--sf-skew-y, );

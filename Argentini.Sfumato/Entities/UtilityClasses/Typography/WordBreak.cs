@@ -11,7 +11,7 @@ public sealed class WordBreak : ClassDictionaryBase
             {
                 "break-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         word-break: normal;
@@ -21,7 +21,7 @@ public sealed class WordBreak : ClassDictionaryBase
             {
                 "break-all", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         word-break: break-all;
@@ -31,7 +31,7 @@ public sealed class WordBreak : ClassDictionaryBase
             {
                 "break-keep", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         word-break: keep-all;

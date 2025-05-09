@@ -11,7 +11,7 @@ public sealed class PointerEvents : ClassDictionaryBase
             {
                 "pointer-events-auto", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                pointer-events: auto;
                                """,
@@ -20,7 +20,7 @@ public sealed class PointerEvents : ClassDictionaryBase
             {
                 "pointer-events-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                pointer-events: none;
                                """,

@@ -12,7 +12,7 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-solid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-style: solid;
@@ -22,7 +22,7 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-dashed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-style: dashed;
@@ -32,7 +32,7 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-dotted", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-style: dotted;
@@ -42,7 +42,7 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-double", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-style: double;
@@ -52,7 +52,7 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-style: hidden;
@@ -62,7 +62,7 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         outline-style: none;

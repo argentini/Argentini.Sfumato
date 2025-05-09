@@ -31,7 +31,7 @@ public sealed class Height : ClassDictionaryBase
             var key = $"h-{item.Key}";
             var value = new ClassDefinition
             {
-                IsSimpleUtility = true,
+                InSimpleUtilityCollection = true,
                 Template = 
                     $"""
                      height: {item.Value};

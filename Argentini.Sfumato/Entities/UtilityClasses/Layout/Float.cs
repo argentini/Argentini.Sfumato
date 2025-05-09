@@ -11,7 +11,7 @@ public sealed class Float : ClassDictionaryBase
             {
                 "float-right", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                float: right;
                                """
@@ -20,7 +20,7 @@ public sealed class Float : ClassDictionaryBase
             {
                 "float-left", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                float: left;
                                """
@@ -29,7 +29,7 @@ public sealed class Float : ClassDictionaryBase
             {
                 "float-start", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                float: inline-start;
                                """
@@ -38,7 +38,7 @@ public sealed class Float : ClassDictionaryBase
             {
                 "float-end", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                float: inline-end;
                                """
@@ -47,7 +47,7 @@ public sealed class Float : ClassDictionaryBase
             {
                 "float-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                float: none;
                                """

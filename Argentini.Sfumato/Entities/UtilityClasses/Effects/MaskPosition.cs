@@ -25,7 +25,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-top-left", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: top left;
@@ -37,7 +37,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-top", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: top;
@@ -49,7 +49,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-top-right", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: top right;
@@ -61,7 +61,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-left", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: left;
@@ -73,7 +73,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-center", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: center;
@@ -85,7 +85,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-right", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: right;
@@ -97,7 +97,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-bottom-left", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: bottom left;
@@ -109,7 +109,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-bottom", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: bottom;
@@ -121,7 +121,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-bottom-right", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         -webkit-mask-position: bottom right;

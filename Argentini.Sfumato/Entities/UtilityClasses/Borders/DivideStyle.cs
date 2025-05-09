@@ -12,7 +12,7 @@ public sealed class DivideStyle : ClassDictionaryBase
             {
                 "divide-solid", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -24,7 +24,7 @@ public sealed class DivideStyle : ClassDictionaryBase
             {
                 "divide-dashed", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -36,7 +36,7 @@ public sealed class DivideStyle : ClassDictionaryBase
             {
                 "divide-dotted", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -48,7 +48,7 @@ public sealed class DivideStyle : ClassDictionaryBase
             {
                 "divide-double", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -60,7 +60,7 @@ public sealed class DivideStyle : ClassDictionaryBase
             {
                 "divide-hidden", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {
@@ -72,7 +72,7 @@ public sealed class DivideStyle : ClassDictionaryBase
             {
                 "divide-none", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {

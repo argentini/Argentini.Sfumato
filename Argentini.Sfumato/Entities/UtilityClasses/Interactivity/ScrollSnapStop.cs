@@ -11,7 +11,7 @@ public sealed class ScrollSnapStop : ClassDictionaryBase
             {
                 "snap-normal", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-stop: normal;
                                """,
@@ -20,7 +20,7 @@ public sealed class ScrollSnapStop : ClassDictionaryBase
             {
                 "snap-always", new ClassDefinition
                 {
-                    IsSimpleUtility = true,
+                    InSimpleUtilityCollection = true,
                     Template = """
                                scroll-snap-stop: always;
                                """,
