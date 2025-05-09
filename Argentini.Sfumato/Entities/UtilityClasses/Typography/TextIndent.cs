@@ -11,9 +11,8 @@ public sealed class TextIndent : ClassDictionaryBase
             {
                 "indent-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
-                    UsesDimensionLength = true,
+                    InFloatNumberCollection = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         text-indent: calc(var(--spacing) * {0});
@@ -27,9 +26,8 @@ public sealed class TextIndent : ClassDictionaryBase
             {
                 "-indent-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
-                    UsesDimensionLength = true,
+                    InFloatNumberCollection = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         text-indent: calc(var(--spacing) * -{0});

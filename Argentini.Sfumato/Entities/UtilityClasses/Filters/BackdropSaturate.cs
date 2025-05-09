@@ -11,8 +11,7 @@ public sealed class BackdropSaturate : ClassDictionaryBase
             {
                 "backdrop-saturate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-backdrop-saturate: saturate({0}%);

@@ -13,7 +13,7 @@ public sealed class MaskSize : ClassDictionaryBase
                 "mask-size-", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         -webkit-mask-size: {0};

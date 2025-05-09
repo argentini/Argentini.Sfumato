@@ -11,8 +11,7 @@ public sealed class BackdropBrightness : ClassDictionaryBase
             {
                 "backdrop-brightness-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-backdrop-brightness: brightness({0}%);

@@ -11,7 +11,7 @@ public sealed class ViaPercentage : ClassDictionaryBase
             {
                 "via-", new ClassDefinition
                 {
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     SelectorSort = 2,
                     Template =
                         """

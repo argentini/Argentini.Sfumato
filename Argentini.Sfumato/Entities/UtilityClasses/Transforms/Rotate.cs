@@ -11,8 +11,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         rotate: {0}deg;
@@ -26,7 +25,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         rotate: calc({0}deg * -1);
@@ -40,8 +39,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-rotate-x: {0}deg;
@@ -57,8 +55,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-rotate-x: calc({0}deg * -1);
@@ -74,8 +71,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-rotate-y: {0}deg;
@@ -91,8 +87,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-rotate-y: calc({0}deg * -1);
@@ -108,8 +103,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "rotate-z-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-rotate-z: {0}deg;
@@ -125,8 +119,7 @@ public sealed class Rotate : ClassDictionaryBase
             {
                 "-rotate-z-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-rotate-z: calc({0}deg * -1);

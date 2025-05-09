@@ -40,8 +40,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "m-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin: calc(var(--spacing) * {0});
                                """,
@@ -54,8 +53,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-m-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin: calc(var(--spacing) * -{0});
                                """,
@@ -100,8 +98,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mx-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-inline: calc(var(--spacing) * {0});
                                """,
@@ -114,8 +111,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mx-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-inline: calc(var(--spacing) * -{0});
                                """,
@@ -160,8 +156,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "my-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-block: calc(var(--spacing) * {0});
                                """,
@@ -174,8 +169,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-my-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-block: calc(var(--spacing) * -{0});
                                """,
@@ -220,8 +214,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "ms-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-inline-start: calc(var(--spacing) * {0});
                                """,
@@ -234,8 +227,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-ms-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-inline-start: calc(var(--spacing) * -{0});
                                """,
@@ -280,8 +272,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "me-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-inline-end: calc(var(--spacing) * {0});
                                """,
@@ -294,8 +285,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-me-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-inline-end: calc(var(--spacing) * -{0});
                                """,
@@ -340,8 +330,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mt-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-top: calc(var(--spacing) * {0});
                                """,
@@ -354,8 +343,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mt-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-top: calc(var(--spacing) * -{0});
                                """,
@@ -400,8 +388,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mr-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-right: calc(var(--spacing) * {0});
                                """,
@@ -414,8 +401,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mr-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-right: calc(var(--spacing) * -{0});
                                """,
@@ -460,8 +446,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "mb-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-bottom: calc(var(--spacing) * {0});
                                """,
@@ -474,8 +459,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-mb-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-bottom: calc(var(--spacing) * -{0});
                                """,
@@ -520,8 +504,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "ml-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-left: calc(var(--spacing) * {0});
                                """,
@@ -534,8 +517,7 @@ public sealed class Margin : ClassDictionaryBase
             {
                 "-ml-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                margin-left: calc(var(--spacing) * -{0});
                                """,

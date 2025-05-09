@@ -11,7 +11,7 @@ public sealed class FromColor : ClassDictionaryBase
             {
                 "from-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     SelectorSort = 1,
                     Template =
                         """

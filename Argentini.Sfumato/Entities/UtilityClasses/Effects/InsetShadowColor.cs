@@ -13,7 +13,7 @@ public sealed class InsetShadowColor : ClassDictionaryBase
                 "inset-shadow-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = 
                         """
                         --sf-inset-shadow-color: {0};

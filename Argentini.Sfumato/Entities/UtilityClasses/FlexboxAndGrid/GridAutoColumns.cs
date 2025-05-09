@@ -11,7 +11,7 @@ public sealed class GridAutoColumns : ClassDictionaryBase
             {
                 "auto-cols-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-auto-columns: {0};

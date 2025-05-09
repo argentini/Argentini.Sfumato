@@ -11,7 +11,7 @@ public sealed class Blur : ClassDictionaryBase
             {
                 "blur-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-blur: blur({0});

@@ -11,7 +11,7 @@ public sealed class Perspective : ClassDictionaryBase
             {
                 "perspective-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         perspective: {0};

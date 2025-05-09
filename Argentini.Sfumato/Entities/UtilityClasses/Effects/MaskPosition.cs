@@ -13,7 +13,7 @@ public sealed class MaskPosition : ClassDictionaryBase
                 "mask-position-", new ClassDefinition
                 {
                     SelectorSort = 4,
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         -webkit-mask-position: {0};

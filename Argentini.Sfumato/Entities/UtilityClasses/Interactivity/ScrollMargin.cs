@@ -11,8 +11,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-m-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin: calc(var(--spacing) * {0});
@@ -26,8 +25,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mx-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-inline: calc(var(--spacing) * {0});
@@ -41,8 +39,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-my-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-block: calc(var(--spacing) * {0});
@@ -56,8 +53,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-ms-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-inline-start: calc(var(--spacing) * {0});
@@ -71,8 +67,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-me-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-inline-end: calc(var(--spacing) * {0});
@@ -86,8 +81,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mt-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-top: calc(var(--spacing) * {0});
@@ -101,8 +95,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mr-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-right: calc(var(--spacing) * {0});
@@ -116,8 +109,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mb-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-bottom: calc(var(--spacing) * {0});
@@ -131,8 +123,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-ml-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-margin-left: calc(var(--spacing) * {0});

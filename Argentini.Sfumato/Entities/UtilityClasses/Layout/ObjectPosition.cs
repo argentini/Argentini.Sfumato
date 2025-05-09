@@ -11,7 +11,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
             {
                 "object-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         object-position: {0};

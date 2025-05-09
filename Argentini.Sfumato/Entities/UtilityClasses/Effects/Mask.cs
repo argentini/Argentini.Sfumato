@@ -11,8 +11,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-linear-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-mask-linear-position: {0}deg;
@@ -40,8 +39,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "-mask-linear-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-mask-linear-position: -{0}deg;
@@ -69,8 +67,8 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-radial-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
-                    UsesDimensionLength = true,
+                    InAbstractValueCollection = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-mask-radial: radial-gradient(var(--sf-mask-radial-stops, var(--sf-mask-radial-size)));
@@ -87,8 +85,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-conic-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-mask-conic: conic-gradient(from {0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));
@@ -114,8 +111,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "-mask-conic-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-mask-conic: conic-gradient(from -{0}deg, black var(--sf-mask-conic-from), transparent var(--sf-mask-conic-to));

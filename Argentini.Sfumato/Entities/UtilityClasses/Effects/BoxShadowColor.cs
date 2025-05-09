@@ -13,7 +13,7 @@ public sealed class BoxShadowColor : ClassDictionaryBase
                 "shadow-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = 
                         """
                         --sf-shadow-color: {0};

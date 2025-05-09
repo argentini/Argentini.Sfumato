@@ -11,8 +11,7 @@ public sealed class Contrast : ClassDictionaryBase
             {
                 "contrast-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-contrast: contrast({0}%);

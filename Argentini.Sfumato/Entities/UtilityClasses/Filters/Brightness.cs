@@ -11,8 +11,7 @@ public sealed class Brightness : ClassDictionaryBase
             {
                 "brightness-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-brightness: brightness({0}%);

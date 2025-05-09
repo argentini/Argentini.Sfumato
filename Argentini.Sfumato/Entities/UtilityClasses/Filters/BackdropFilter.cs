@@ -11,7 +11,7 @@ public sealed class BackdropFilter : ClassDictionaryBase
             {
                 "backdrop-filter-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         backdrop-filter: {0};

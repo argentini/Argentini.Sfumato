@@ -11,8 +11,7 @@ public sealed class BackdropSepia : ClassDictionaryBase
             {
                 "backdrop-sepia-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-backdrop-sepia: sepia({0}%);

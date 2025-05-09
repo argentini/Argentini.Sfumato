@@ -13,7 +13,7 @@ public sealed class InsetRingColor : ClassDictionaryBase
                 "inset-ring-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = 
                         """
                         --sf-inset-ring-color: {0};

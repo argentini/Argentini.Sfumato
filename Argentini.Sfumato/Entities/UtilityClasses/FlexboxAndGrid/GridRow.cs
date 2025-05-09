@@ -13,8 +13,8 @@ public sealed class GridRow : ClassDictionaryBase
             {
                 "row-span-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-row: span {0} / span {0};
@@ -43,8 +43,8 @@ public sealed class GridRow : ClassDictionaryBase
             {
                 "row-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-row: {0};
@@ -58,8 +58,8 @@ public sealed class GridRow : ClassDictionaryBase
             {
                 "-row-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-row: calc({0} * -1);
@@ -88,8 +88,8 @@ public sealed class GridRow : ClassDictionaryBase
             {
                 "row-start-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-row-start: {0};
@@ -103,8 +103,8 @@ public sealed class GridRow : ClassDictionaryBase
             {
                 "-row-start-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-row-start: calc({0} * -1);
@@ -133,8 +133,8 @@ public sealed class GridRow : ClassDictionaryBase
             {
                 "row-end-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-row-end: {0};
@@ -148,8 +148,8 @@ public sealed class GridRow : ClassDictionaryBase
             {
                 "-row-end-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-row-end: calc({0} * -1);

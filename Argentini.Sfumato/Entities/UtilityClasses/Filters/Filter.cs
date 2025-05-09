@@ -11,7 +11,7 @@ public sealed class Filter : ClassDictionaryBase
             {
                 "filter-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         filter: {0};

@@ -11,8 +11,7 @@ public sealed class BorderSpacing : ClassDictionaryBase
             {
                 "border-spacing-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
-                    UsesNumericSuffix = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-border-spacing-x: calc(var(--spacing) * {0});
@@ -30,8 +29,7 @@ public sealed class BorderSpacing : ClassDictionaryBase
             {
                 "border-spacing-x-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
-                    UsesNumericSuffix = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-border-spacing-x: calc(var(--spacing) * {0});
@@ -47,8 +45,7 @@ public sealed class BorderSpacing : ClassDictionaryBase
             {
                 "border-spacing-y-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
-                    UsesNumericSuffix = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-border-spacing-y: calc(var(--spacing) * {0});

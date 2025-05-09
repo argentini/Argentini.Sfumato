@@ -11,8 +11,7 @@ public sealed class BackdropGrayscale : ClassDictionaryBase
             {
                 "backdrop-grayscale-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-backdrop-grayscale: grayscale({0}%);

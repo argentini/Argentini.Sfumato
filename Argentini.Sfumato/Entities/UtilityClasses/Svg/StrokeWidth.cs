@@ -11,8 +11,7 @@ public sealed class StrokeWidth : ClassDictionaryBase
             {
                 "stroke-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                stroke-width: {0}px;
                                """,

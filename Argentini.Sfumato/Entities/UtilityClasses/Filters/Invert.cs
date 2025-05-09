@@ -11,9 +11,8 @@ public sealed class Invert : ClassDictionaryBase
             {
                 "invert-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
-                    UsesAbstractValue = true,
+                    InFloatNumberCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         --sf-invert: invert({0}%);

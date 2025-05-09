@@ -11,8 +11,7 @@ public sealed class Gap : ClassDictionaryBase
             {
                 "gap-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                gap: calc(var(--spacing) * {0});
                                """,
@@ -25,8 +24,7 @@ public sealed class Gap : ClassDictionaryBase
             {
                 "gap-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                column-gap: calc(var(--spacing) * {0});
                                """,
@@ -39,8 +37,7 @@ public sealed class Gap : ClassDictionaryBase
             {
                 "gap-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                row-gap: calc(var(--spacing) * {0});
                                """,

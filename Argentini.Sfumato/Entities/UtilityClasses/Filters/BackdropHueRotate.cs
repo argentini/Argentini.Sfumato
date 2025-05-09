@@ -11,8 +11,7 @@ public sealed class BackdropHueRotate : ClassDictionaryBase
             {
                 "backdrop-hue-rotate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-backdrop-hue-rotate: hue-rotate({0}deg);

@@ -11,8 +11,8 @@ public sealed class Content : ClassDictionaryBase
             {
                 "content-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
-                    UsesString = true,
+                    InAbstractValueCollection = true,
+                    InStringCollection = true,
                     Template = """
                                content: {0};
                                """

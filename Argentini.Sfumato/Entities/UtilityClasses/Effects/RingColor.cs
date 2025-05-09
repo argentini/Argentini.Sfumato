@@ -13,7 +13,7 @@ public sealed class RingColor : ClassDictionaryBase
                 "ring-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = 
                         """
                         --sf-ring-color: {0};

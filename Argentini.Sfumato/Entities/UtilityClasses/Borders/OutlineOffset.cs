@@ -12,8 +12,7 @@ public sealed class OutlineOffset : ClassDictionaryBase
             {
                 "outline-offset-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = 
                         """
                         outline-offset: {0}px;
@@ -27,8 +26,7 @@ public sealed class OutlineOffset : ClassDictionaryBase
             {
                 "-outline-offset-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = 
                         """
                         outline-offset: calc({0}px * -1);

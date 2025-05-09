@@ -11,79 +11,74 @@ public sealed class ClassDefinition
     public bool IsSimpleUtility { get; set; }
 
     /// <summary>
-    /// Class uses spacing number (e.g. "m-4")
+    /// Class uses an integer (e.g. "3%")
     /// </summary>
-    public bool UsesNumericSuffix { get; set; }
+    public bool InPercentageCollection { get; set; }
 
     /// <summary>
     /// Class uses float (e.g. "leading-[1.3]")
     /// </summary>
-    public bool UsesAlphaNumber { get; set; }
+    public bool InFloatNumberCollection { get; set; }
 
     /// <summary>
     /// Class uses angles (e.g. "90deg")
     /// </summary>
-    public bool UsesAngleHue { get; set; }
+    public bool InAngleHueCollection { get; set; }
 
     /// <summary>
     /// Class uses color (e.g. "#aabbcc")
     /// </summary>
-    public bool UsesColor { get; set; }
+    public bool InColorCollection { get; set; }
 
     /// <summary>
     /// Class uses length (e.g. "1rem")
     /// </summary>
-    public bool UsesDimensionLength { get; set; }
+    public bool InLengthCollection { get; set; }
 
     /// <summary>
     /// Class uses duration (e.g. "10s")
     /// </summary>
-    public bool UsesDurationTime { get; set; }
+    public bool InDurationCollection { get; set; }
 
     /// <summary>
     /// Class uses flex (e.g. "1fr")
     /// </summary>
-    public bool UsesFlex { get; set; }
+    public bool InFlexCollection { get; set; }
 
     /// <summary>
     /// Class uses frequency (e.g. "10Hz")
     /// </summary>
-    public bool UsesFrequency { get; set; }
+    public bool InFrequencyCollection { get; set; }
 
     /// <summary>
     /// Class uses a URL (e.g. "url('/images/bg.jpg')")
     /// </summary>
-    public bool UsesImageUrl { get; set; }
+    public bool InUrlCollection { get; set; }
 
     /// <summary>
     /// Class uses an integer (e.g. "3")
     /// </summary>
-    public bool UsesInteger { get; set; }
-
-    /// <summary>
-    /// Class uses an integer (e.g. "3%")
-    /// </summary>
-    public bool UsesPercentage { get; set; }
+    public bool InIntegerCollection { get; set; }
 
     /// <summary>
     /// Class uses a ratio (e.g. "1 / 2")
     /// </summary>
-    public bool UsesRatio { get; set; }
+    public bool InRatioCollection { get; set; }
 
     /// <summary>
     /// Class uses abstract value (e.g. "ui-sans-serif, system-ui")
     /// </summary>
-    public bool UsesAbstractValue { get; set; }
+    public bool InAbstractValueCollection { get; set; }
 
     /// <summary>
     /// Class uses resolution (e.g. "10dpi")
     /// </summary>
-    public bool UsesResolution { get; set; }
+    public bool InResolutionCollection { get; set; }
 
     /// <summary>
     /// Class uses a string (e.g. "'hello world'")
     /// </summary>
-    public bool UsesString { get; set; }
+    public bool InStringCollection { get; set; }
 
     /// <summary>
     /// Class uses slash modifiers (e.g. "text-base/2")

@@ -12,8 +12,8 @@ public sealed class InsetRing : ClassDictionaryBase
             {
                 "inset-ring-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAbstractValue = true,
+                    InLengthCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         --sf-ring-inset: inset;

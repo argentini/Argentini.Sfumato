@@ -11,7 +11,7 @@ public sealed class BackgroundRadial : ClassDictionaryBase
             {
                 "bg-radial-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     ArbitraryCssValueTemplate =
                         """
                         --sf-gradient-position: {0};

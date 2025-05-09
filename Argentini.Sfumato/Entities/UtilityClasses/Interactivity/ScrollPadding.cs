@@ -11,8 +11,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-p-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding: calc(var(--spacing) * {0});
@@ -26,8 +25,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-px-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-inline: calc(var(--spacing) * {0});
@@ -41,8 +39,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-py-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-block: calc(var(--spacing) * {0});
@@ -56,8 +53,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-ps-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-inline-start: calc(var(--spacing) * {0});
@@ -71,8 +67,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pe-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-inline-end: calc(var(--spacing) * {0});
@@ -86,8 +81,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pt-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-top: calc(var(--spacing) * {0});
@@ -101,8 +95,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pr-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-right: calc(var(--spacing) * {0});
@@ -116,8 +109,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pb-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-bottom: calc(var(--spacing) * {0});
@@ -131,8 +123,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pl-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         scroll-padding-left: calc(var(--spacing) * {0});

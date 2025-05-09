@@ -11,7 +11,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
             {
                 "bg-position-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         background-position: {0};

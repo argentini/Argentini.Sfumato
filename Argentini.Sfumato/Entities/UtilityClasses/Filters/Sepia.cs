@@ -11,8 +11,7 @@ public sealed class Sepia : ClassDictionaryBase
             {
                 "sepia-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-sepia: sepia({0}%);

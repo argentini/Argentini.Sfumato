@@ -11,9 +11,9 @@ public sealed class TransitionDuration : ClassDictionaryBase
             {
                 "duration-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesDurationTime = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InDurationCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         --sf-duration: {0}ms;

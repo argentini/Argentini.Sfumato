@@ -64,8 +64,7 @@ public sealed class InsetEnd : ClassDictionaryBase
             {
                 "end-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                inset-inline-end: calc(var(--spacing) * {0});
                                """,
@@ -78,8 +77,7 @@ public sealed class InsetEnd : ClassDictionaryBase
             {
                 "-end-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                inset-inline-end: calc(var(--spacing) * -{0});
                                """,

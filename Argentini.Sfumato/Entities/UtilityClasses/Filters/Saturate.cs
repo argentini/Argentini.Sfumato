@@ -11,8 +11,7 @@ public sealed class Saturate : ClassDictionaryBase
             {
                 "saturate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-saturate: saturate({0}%);

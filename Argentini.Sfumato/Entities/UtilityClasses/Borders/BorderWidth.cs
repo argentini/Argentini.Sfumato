@@ -82,21 +82,15 @@ public sealed class BorderWidth : ClassDictionaryBase
             key = $"{border.Key}-";
             value = new ClassDefinition
             {
-                UsesNumericSuffix = true,
-                UsesDimensionLength = true,
+                InLengthCollection = true,
                 Template = border.Value.Replace("{0}", "{0}px"),
                 ArbitraryCssValueTemplate = border.Value,
             };
 
-            if (appRunner.Library.NumericSuffixClasses.TryAdd(key, value))
+            if (appRunner.Library.LengthClasses.TryAdd(key, value))
                 appRunner.Library.ScannerClassNamePrefixes.Insert(key);
             else
-                appRunner.Library.NumericSuffixClasses[key] = value;
-
-            if (appRunner.Library.DimensionLengthClasses.TryAdd(key, value))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
-            else
-                appRunner.Library.DimensionLengthClasses[key] = value;
+                appRunner.Library.LengthClasses[key] = value;
         }
     }
 }

@@ -12,7 +12,7 @@ public sealed class DivideColor : ClassDictionaryBase
             {
                 "divide-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template =
                         """
                         & > :not(:last-child) {

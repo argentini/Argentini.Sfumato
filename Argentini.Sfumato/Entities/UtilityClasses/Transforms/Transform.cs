@@ -11,7 +11,7 @@ public sealed class Transform : ClassDictionaryBase
             {
                 "transform-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         transform: {0};

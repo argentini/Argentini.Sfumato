@@ -11,8 +11,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "skew-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-skew-x: skewX({0}deg);
@@ -30,8 +29,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "-skew-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-skew-x: skewX(calc({0}deg * -1));
@@ -49,8 +47,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "skew-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-skew-x: skewX({0}deg);
@@ -66,8 +63,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "-skew-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-skew-x: skewX(calc({0}deg * -1));
@@ -83,8 +79,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "skew-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-skew-y: skewY({0}deg);
@@ -100,8 +95,7 @@ public sealed class Skew : ClassDictionaryBase
             {
                 "-skew-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-skew-y: skewY(calc({0}deg * -1));

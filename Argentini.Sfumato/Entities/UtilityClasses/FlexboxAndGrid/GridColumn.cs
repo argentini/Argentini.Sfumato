@@ -13,8 +13,8 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-span-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-column: span {0} / span {0};
@@ -43,8 +43,8 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-column: {0};
@@ -58,8 +58,8 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "-col-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-column: calc({0} * -1);
@@ -88,8 +88,8 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-start-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-column-start: {0};
@@ -103,8 +103,8 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "-col-start-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-column-start: calc({0} * -1);
@@ -133,8 +133,8 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "col-end-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-column-end: {0};
@@ -148,8 +148,8 @@ public sealed class GridColumn : ClassDictionaryBase
             {
                 "-col-end-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-column-end: calc({0} * -1);

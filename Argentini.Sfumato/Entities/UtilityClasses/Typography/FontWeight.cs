@@ -12,7 +12,7 @@ public sealed class FontWeight : ClassDictionaryBase
                 "font-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesInteger = true,
+                    InIntegerCollection = true,
                     Template = """
                                font-weight: {0};
                                """

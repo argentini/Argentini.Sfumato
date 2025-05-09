@@ -11,7 +11,7 @@ public sealed class Fill : ClassDictionaryBase
             {
                 "fill-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = """
                                fill: {0};
                                """,

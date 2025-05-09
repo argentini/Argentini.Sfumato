@@ -11,7 +11,7 @@ public sealed class Cursor : ClassDictionaryBase
             {
                 "cursor-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template = """
                                cursor: {0};
                                """,

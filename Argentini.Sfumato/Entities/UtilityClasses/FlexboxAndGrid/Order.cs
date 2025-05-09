@@ -11,7 +11,7 @@ public sealed class Order : ClassDictionaryBase
             {
                 "order-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    InIntegerCollection = true,
                     Template =
                         """
                         order: {0};

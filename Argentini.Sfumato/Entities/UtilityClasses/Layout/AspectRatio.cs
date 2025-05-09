@@ -11,8 +11,8 @@ public sealed class AspectRatio : ClassDictionaryBase
             {
                 "aspect-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
-                    UsesRatio = true,
+                    InAbstractValueCollection = true,
+                    InRatioCollection = true,
                     Template =
                         """
                         aspect-ratio: {0};

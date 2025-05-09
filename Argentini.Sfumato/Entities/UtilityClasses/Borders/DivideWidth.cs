@@ -12,8 +12,7 @@ public sealed class DivideWidth : ClassDictionaryBase
             {
                 "divide-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = 
                         """
                         & > :not(:last-child) {
@@ -46,8 +45,7 @@ public sealed class DivideWidth : ClassDictionaryBase
             {
                 "divide-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = 
                         """
                         & > :not(:last-child) {

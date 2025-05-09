@@ -12,7 +12,7 @@ public sealed class TextShadow : ClassDictionaryBase
             {
                 "text-shadow-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         text-shadow: {0};
@@ -44,7 +44,7 @@ public sealed class TextShadow : ClassDictionaryBase
             var value = new ClassDefinition
             {
                 IsSimpleUtility = true,
-                UsesAbstractValue = true,
+                InAbstractValueCollection = true,
                 Template =
                     $"""
                     text-shadow: var({text.Key});

@@ -11,7 +11,7 @@ public sealed class ListStyleType : ClassDictionaryBase
             {
                 "list-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template = """
                                list-style-type: {0};
                                """

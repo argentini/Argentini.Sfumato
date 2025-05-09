@@ -94,7 +94,7 @@ public sealed class BorderColor : ClassDictionaryBase
             key = $"{border.Key}-";
             value = new ClassDefinition
             {
-                UsesColor = true,
+                InColorCollection = true,
                 Template = border.Value,
                 ArbitraryCssValueTemplate = border.Value,
             };

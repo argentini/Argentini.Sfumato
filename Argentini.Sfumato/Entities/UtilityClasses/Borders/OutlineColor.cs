@@ -12,7 +12,7 @@ public sealed class OutlineColor : ClassDictionaryBase
             {
                 "outline-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template =
                         """
                         outline-color: {0};

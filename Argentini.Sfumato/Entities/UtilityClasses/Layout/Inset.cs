@@ -64,8 +64,7 @@ public sealed class Inset : ClassDictionaryBase
             {
                 "inset-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                inset: calc(var(--spacing) * {0});
                                """,
@@ -78,8 +77,7 @@ public sealed class Inset : ClassDictionaryBase
             {
                 "-inset-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                inset: calc(var(--spacing) * -{0});
                                """,

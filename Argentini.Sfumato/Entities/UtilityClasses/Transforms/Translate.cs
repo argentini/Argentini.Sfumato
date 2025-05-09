@@ -11,8 +11,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-x: calc(var(--spacing) * {0});
@@ -30,8 +29,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-x: calc(var(--spacing) * -{0});
@@ -103,8 +101,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-x: calc(var(--spacing) * {0});
@@ -120,8 +117,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-x: calc(var(--spacing) * -{0});
@@ -180,8 +176,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-y: calc(var(--spacing) * {0});
@@ -197,8 +192,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-y: calc(var(--spacing) * -{0});
@@ -257,8 +251,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-z-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-z: calc(var(--spacing) * {0});
@@ -274,8 +267,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-z-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-translate-z: calc(var(--spacing) * -{0});

@@ -11,7 +11,7 @@ public sealed class FontFamily : ClassDictionaryBase
             {
                 "font-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template = """
                                font-family: {0};
                                """

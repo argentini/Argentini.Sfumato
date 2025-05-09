@@ -11,7 +11,7 @@ public sealed class WillChange : ClassDictionaryBase
             {
                 "will-change-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template = """
                                will-change: {0};
                                """,

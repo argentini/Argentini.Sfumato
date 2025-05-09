@@ -11,7 +11,7 @@ public sealed class Animation : ClassDictionaryBase
             {
                 "animate-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         animation: {0};

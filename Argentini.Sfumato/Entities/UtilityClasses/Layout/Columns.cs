@@ -11,7 +11,7 @@ public sealed class Columns : ClassDictionaryBase
             {
                 "columns-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    InIntegerCollection = true,
                     Template =
                         """
                         columns: {0};

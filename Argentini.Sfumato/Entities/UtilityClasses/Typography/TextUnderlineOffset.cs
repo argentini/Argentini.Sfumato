@@ -11,9 +11,8 @@ public sealed class TextUnderlineOffset : ClassDictionaryBase
             {
                 "underline-offset-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
-                    UsesDimensionLength = true,
+                    InFloatNumberCollection = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         text-underline-offset: {0}px;
@@ -27,9 +26,8 @@ public sealed class TextUnderlineOffset : ClassDictionaryBase
             {
                 "-underline-offset-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
-                    UsesDimensionLength = true,
+                    InFloatNumberCollection = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         text-underline-offset: calc({0}px * -1);

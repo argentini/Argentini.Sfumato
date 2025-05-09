@@ -11,7 +11,7 @@ public sealed class BackdropBlur : ClassDictionaryBase
             {
                 "backdrop-blur-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         --sf-backdrop-blur: blur({0});

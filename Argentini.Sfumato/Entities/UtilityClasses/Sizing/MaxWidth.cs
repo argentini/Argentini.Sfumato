@@ -11,8 +11,7 @@ public sealed class MaxWidth : ClassDictionaryBase
             {
                 "max-w-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                max-width: calc(var(--spacing) * {0});
                                """,

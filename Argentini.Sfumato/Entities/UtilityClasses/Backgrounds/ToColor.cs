@@ -11,7 +11,7 @@ public sealed class ToColor : ClassDictionaryBase
             {
                 "to-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     SelectorSort = 3,
                     Template =
                         """

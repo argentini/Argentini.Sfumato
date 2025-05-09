@@ -12,8 +12,7 @@ public sealed class Opacity : ClassDictionaryBase
             {
                 "opacity-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         opacity: calc({0} * 0.01);

@@ -11,7 +11,7 @@ public sealed class FromPercentage : ClassDictionaryBase
             {
                 "from-", new ClassDefinition
                 {
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     SelectorSort = 1,
                     Template =
                         """

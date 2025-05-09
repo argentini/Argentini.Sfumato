@@ -11,10 +11,10 @@ public sealed class FlexShrink : ClassDictionaryBase
             {
                 "shrink-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAlphaNumber = true,
-                    UsesDimensionLength = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InFloatNumberCollection = true,
+                    InLengthCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         flex-shrink: {0};

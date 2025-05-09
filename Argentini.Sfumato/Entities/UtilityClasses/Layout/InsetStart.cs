@@ -64,8 +64,7 @@ public sealed class InsetStart : ClassDictionaryBase
             {
                 "start-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                inset-inline-start: calc(var(--spacing) * {0});
                                """,
@@ -78,8 +77,7 @@ public sealed class InsetStart : ClassDictionaryBase
             {
                 "-start-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                inset-inline-start: calc(var(--spacing) * -{0});
                                """,

@@ -11,7 +11,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
             {
                 "transition-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         transition-property: {0};

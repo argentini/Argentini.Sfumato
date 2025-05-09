@@ -11,7 +11,7 @@ public sealed class ListStyleImage : ClassDictionaryBase
             {
                 "list-image-", new ClassDefinition
                 {
-                    UsesImageUrl = true,
+                    InUrlCollection = true,
                     Template = """
                                list-style-image: {0};
                                """

@@ -11,7 +11,7 @@ public sealed class ViaColor : ClassDictionaryBase
             {
                 "via-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     SelectorSort = 2,
                     Template =
                         """

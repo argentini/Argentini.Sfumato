@@ -11,7 +11,7 @@ public sealed class BackgroundImage : ClassDictionaryBase
             {
                 "bg-", new ClassDefinition
                 {
-                    UsesImageUrl = true,
+                    InUrlCollection = true,
                     Template = """
                                background-image: {0};
                                """,

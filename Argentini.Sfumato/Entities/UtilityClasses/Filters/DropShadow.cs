@@ -11,7 +11,7 @@ public sealed class DropShadow : ClassDictionaryBase
             {
                 "drop-shadow-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         --sf-drop-shadow-size: drop-shadow({0});

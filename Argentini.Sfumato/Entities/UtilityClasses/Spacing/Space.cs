@@ -37,8 +37,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "space-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                & > :not(:last-child) {
                                    margin-inline-start: calc(calc(var(--spacing) * {0}) * var(--sf-space-x-reverse));
@@ -57,8 +56,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "-space-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                & > :not(:last-child) {
                                    margin-inline-start: calc(calc(var(--spacing) * -{0}) * var(--sf-space-x-reverse));
@@ -106,8 +104,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "space-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                & > :not(:first-child) {
                                    margin-block-start: calc(calc(var(--spacing) * {0}) * calc(1 - var(--sf-space-y-reverse)));
@@ -126,8 +123,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "-space-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                & > :not(:first-child) {
                                    margin-block-start: calc(calc(var(--spacing) * -{0}) * calc(1 - var(--sf-space-y-reverse)));

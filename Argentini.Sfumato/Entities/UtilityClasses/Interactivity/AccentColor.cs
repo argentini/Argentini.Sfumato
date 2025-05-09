@@ -11,7 +11,7 @@ public sealed class AccentColor : ClassDictionaryBase
             {
                 "accent-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = """
                                accent-color: {0};
                                """,

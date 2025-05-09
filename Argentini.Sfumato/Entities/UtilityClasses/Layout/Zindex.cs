@@ -11,7 +11,7 @@ public sealed class Zindex : ClassDictionaryBase
             {
                 "z-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    InIntegerCollection = true,
                     Template = """
                                z-index: {0};
                                """,
@@ -24,7 +24,7 @@ public sealed class Zindex : ClassDictionaryBase
             {
                 "-z-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    InIntegerCollection = true,
                     Template = """
                                z-index: -{0};
                                """,

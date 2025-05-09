@@ -11,7 +11,7 @@ public sealed class Stroke : ClassDictionaryBase
             {
                 "stroke-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = """
                                stroke: {0};
                                """,

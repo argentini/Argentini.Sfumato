@@ -12,8 +12,8 @@ public sealed class Ring : ClassDictionaryBase
             {
                 "ring-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAbstractValue = true,
+                    InLengthCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         --sf-ring-shadow: var(--sf-ring-inset, ) 0 0 0 calc({0}px + var(--sf-ring-offset-width)) var(--sf-ring-color, currentcolor);

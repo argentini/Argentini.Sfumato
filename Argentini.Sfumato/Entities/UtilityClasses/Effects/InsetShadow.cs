@@ -12,7 +12,7 @@ public sealed class InsetShadow : ClassDictionaryBase
             {
                 "inset-shadow-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         box-shadow: inset {0};
@@ -44,7 +44,7 @@ public sealed class InsetShadow : ClassDictionaryBase
             var value = new ClassDefinition
             {
                 IsSimpleUtility = true,
-                UsesAbstractValue = true,
+                InAbstractValueCollection = true,
                 Template =
                     $"""
                     box-shadow: var({text.Key});

@@ -12,7 +12,7 @@ public sealed class BoxShadow : ClassDictionaryBase
             {
                 "shadow-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         box-shadow: {0};

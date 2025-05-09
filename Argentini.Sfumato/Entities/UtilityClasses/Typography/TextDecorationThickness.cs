@@ -11,9 +11,8 @@ public sealed class TextDecorationThickness : ClassDictionaryBase
             {
                 "decoration-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
-                    UsesDimensionLength = true,
+                    InFloatNumberCollection = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         text-decoration-thickness: {0}px;

@@ -11,8 +11,7 @@ public sealed class FlexBasis : ClassDictionaryBase
             {
                 "basis-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         flex-basis: calc(var(--spacing) * {0});
@@ -26,8 +25,7 @@ public sealed class FlexBasis : ClassDictionaryBase
             {
                 "-basis-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         flex-basis: calc(var(--spacing) * -{0});

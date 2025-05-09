@@ -11,8 +11,7 @@ public sealed class BackdropContrast : ClassDictionaryBase
             {
                 "backdrop-contrast-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-backdrop-contrast: contrast({0}%);

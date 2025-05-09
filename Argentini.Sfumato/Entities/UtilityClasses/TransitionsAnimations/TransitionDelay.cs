@@ -11,9 +11,9 @@ public sealed class TransitionDelay : ClassDictionaryBase
             {
                 "delay-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesDurationTime = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InDurationCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         transition-delay: {0}ms;

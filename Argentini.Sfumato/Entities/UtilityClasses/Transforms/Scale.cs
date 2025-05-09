@@ -11,8 +11,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         scale: {0}% {0}%;
@@ -26,7 +25,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         scale: calc({0}% * -1) calc({0}% * -1);
@@ -40,8 +39,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-scale-x: {0}%;
@@ -57,8 +55,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-x-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-scale-x: calc({0}% * -1);
@@ -74,8 +71,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-scale-y: {0}%;
@@ -91,8 +87,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-y-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-scale-y: calc({0}% * -1);
@@ -108,8 +103,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-z-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-scale-z: {0}%;
@@ -125,8 +119,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-z-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-scale-z: calc({0}% * -1);

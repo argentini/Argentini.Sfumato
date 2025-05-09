@@ -11,7 +11,7 @@ public sealed class Color : ClassDictionaryBase
             {
                 "text-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = """
                                color: {0};
                                """,

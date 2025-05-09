@@ -11,7 +11,7 @@ public sealed class CaretColor : ClassDictionaryBase
             {
                 "caret-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = """
                                caret-color: {0};
                                """,

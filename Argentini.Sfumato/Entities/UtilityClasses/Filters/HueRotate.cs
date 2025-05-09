@@ -11,8 +11,7 @@ public sealed class HueRotate : ClassDictionaryBase
             {
                 "hue-rotate-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAngleHue = true,
+                    InAngleHueCollection = true,
                     Template =
                         """
                         --sf-hue-rotate: hue-rotate({0}deg);

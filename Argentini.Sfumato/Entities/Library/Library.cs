@@ -63,22 +63,20 @@ public sealed class Library
     public PrefixTrie ScannerClassNamePrefixes { get; set; } = new();
 
     public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> NumericSuffixClasses { get; set; } = new(StringComparer.Ordinal);
-    
     public Dictionary<string, ClassDefinition> AbstractClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> AlphaNumberClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> AngleHueClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> DimensionLengthClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> DurationTimeClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> FlexClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> FloatNumberClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> FrequencyClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> ImageUrlClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> IntegerClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> PercentageClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> RatioClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> StringClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> UrlClasses { get; set; } = new(StringComparer.Ordinal);
 
     #endregion
     
@@ -110,52 +108,49 @@ public sealed class Library
 
             foreach (var item in instance.Data.Where(item => item.Key.EndsWith('(') == false && item.Key.EndsWith('[') == false))
             {
-                if (item.Value.UsesAbstractValue)
+                if (item.Value.InAbstractValueCollection)
                     AbstractClasses.Add(item.Key, item.Value);
 
                 if (item.Value.IsSimpleUtility)
                     SimpleClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesNumericSuffix)
-                    NumericSuffixClasses.Add(item.Key, item.Value);
-
-                if (item.Value.UsesAlphaNumber)
-                    AlphaNumberClasses.Add(item.Key, item.Value);
+                if (item.Value.InFloatNumberCollection)
+                    FloatNumberClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesAngleHue)
+                if (item.Value.InAngleHueCollection)
                     AngleHueClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesColor)
+                if (item.Value.InColorCollection)
                     ColorClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesDimensionLength)
-                    DimensionLengthClasses.Add(item.Key, item.Value);
+                if (item.Value.InLengthCollection)
+                    LengthClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesDurationTime)
-                    DurationTimeClasses.Add(item.Key, item.Value);
+                if (item.Value.InDurationCollection)
+                    DurationClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesFlex)
+                if (item.Value.InFlexCollection)
                     FlexClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesFrequency)
+                if (item.Value.InFrequencyCollection)
                     FrequencyClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesImageUrl)
-                    ImageUrlClasses.Add(item.Key, item.Value);
+                if (item.Value.InUrlCollection)
+                    UrlClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesInteger)
+                if (item.Value.InIntegerCollection)
                     IntegerClasses.Add(item.Key, item.Value);
 
-                if (item.Value.UsesPercentage)
+                if (item.Value.InPercentageCollection)
                     PercentageClasses.Add(item.Key, item.Value);
 
-                if (item.Value.UsesRatio)
+                if (item.Value.InRatioCollection)
                     RatioClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesResolution)
+                if (item.Value.InResolutionCollection)
                     ResolutionClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesString)
+                if (item.Value.InStringCollection)
                     StringClasses.Add(item.Key, item.Value);
 
                 ScannerClassNamePrefixes.Insert(item.Key);

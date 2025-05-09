@@ -11,7 +11,7 @@ public sealed class DropShadowColor : ClassDictionaryBase
             {
                 "drop-shadow-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template =
                         """
                         --sf-drop-shadow-color: {0};

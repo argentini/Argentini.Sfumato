@@ -11,8 +11,8 @@ public sealed class GridTemplateColumns : ClassDictionaryBase
             {
                 "grid-cols-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-template-columns: repeat({0}, minmax(0, 1fr));

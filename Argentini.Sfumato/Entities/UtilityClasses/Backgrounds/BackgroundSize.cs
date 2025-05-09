@@ -11,8 +11,8 @@ public sealed class BackgroundSize : ClassDictionaryBase
             {
                 "bg-size-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
-                    UsesDimensionLength = true,
+                    InAbstractValueCollection = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         background-size: {0};

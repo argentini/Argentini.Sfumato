@@ -11,7 +11,7 @@ public sealed class BackgroundColor : ClassDictionaryBase
             {
                 "bg-", new ClassDefinition
                 {
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = """
                                background-color: {0};
                                """,

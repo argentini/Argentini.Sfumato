@@ -11,7 +11,7 @@ public sealed class GridAutoRows : ClassDictionaryBase
             {
                 "auto-rows-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         grid-auto-rows: {0};

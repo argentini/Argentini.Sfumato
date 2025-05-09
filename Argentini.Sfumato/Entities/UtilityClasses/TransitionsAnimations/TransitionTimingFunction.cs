@@ -11,8 +11,8 @@ public sealed class TransitionTimingFunction : ClassDictionaryBase
             {
                 "ease-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
-                    UsesDurationTime = true,
+                    InAbstractValueCollection = true,
+                    InDurationCollection = true,
                     Template =
                         """
                         --sf-ease: {0};

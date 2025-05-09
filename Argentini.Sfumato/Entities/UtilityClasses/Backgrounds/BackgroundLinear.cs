@@ -11,8 +11,8 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "bg-linear-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAbstractValue = true,
+                    InAngleHueCollection = true,
+                    InAbstractValueCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """
@@ -41,7 +41,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
             {
                 "-bg-linear-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
+                    InAngleHueCollection = true,
                     UsesSlashModifier = true,
                     Template =
                         """

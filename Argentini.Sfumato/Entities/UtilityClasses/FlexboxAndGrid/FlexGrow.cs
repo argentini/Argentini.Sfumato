@@ -11,10 +11,10 @@ public sealed class FlexGrow : ClassDictionaryBase
             {
                 "grow-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesAlphaNumber = true,
-                    UsesDimensionLength = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InFloatNumberCollection = true,
+                    InLengthCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         flex-grow: {0};

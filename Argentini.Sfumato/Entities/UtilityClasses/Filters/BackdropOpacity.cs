@@ -11,8 +11,7 @@ public sealed class BackdropOpacity : ClassDictionaryBase
             {
                 "backdrop-opacity-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-backdrop-opacity: opacity({0}%);

@@ -12,7 +12,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-linear-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear-stops: var(--sf-mask-linear-position), var(--sf-mask-linear-from-color) var(--sf-mask-linear-from-position), var(--sf-mask-linear-to-color) var(--sf-mask-linear-to-position);
@@ -31,7 +31,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-linear-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear-stops: var(--sf-mask-linear-position), var(--sf-mask-linear-from-color) var(--sf-mask-linear-from-position), var(--sf-mask-linear-to-color) var(--sf-mask-linear-to-position);
@@ -50,7 +50,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-t-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -69,7 +69,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-t-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -88,7 +88,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-r-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -107,7 +107,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-r-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -126,7 +126,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-b-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -145,7 +145,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-b-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -164,7 +164,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-l-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -183,7 +183,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-l-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -202,7 +202,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-y-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -223,7 +223,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-y-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -244,7 +244,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-x-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -265,7 +265,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-x-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -286,7 +286,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-radial-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-radial-stops: var(--sf-mask-radial-shape) var(--sf-mask-radial-size) at var(--sf-mask-radial-position), var(--sf-mask-radial-from-color) var(--sf-mask-radial-from-position), var(--sf-mask-radial-to-color) var(--sf-mask-radial-to-position);
@@ -305,7 +305,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-radial-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-radial-stops: var(--sf-mask-radial-shape) var(--sf-mask-radial-size) at var(--sf-mask-radial-position), var(--sf-mask-radial-from-color) var(--sf-mask-radial-from-position), var(--sf-mask-radial-to-color) var(--sf-mask-radial-to-position);
@@ -324,7 +324,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-conic-from-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);
@@ -343,7 +343,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
                 "mask-conic-to-", new ClassDefinition
                 {
                     SelectorSort = 2,
-                    UsesPercentage = true,
+                    InPercentageCollection = true,
                     Template =
                         """
                         --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);

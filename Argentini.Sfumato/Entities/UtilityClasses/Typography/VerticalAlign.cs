@@ -11,7 +11,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
             {
                 "align-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template =
                         """
                         vertical-align: {0};

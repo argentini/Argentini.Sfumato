@@ -11,7 +11,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
             {
                 "origin-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         transform-origin: {0};

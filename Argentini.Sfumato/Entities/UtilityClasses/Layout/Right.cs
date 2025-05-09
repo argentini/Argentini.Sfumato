@@ -64,8 +64,7 @@ public sealed class Right : ClassDictionaryBase
             {
                 "right-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                right: calc(var(--spacing) * {0});
                                """,
@@ -78,8 +77,7 @@ public sealed class Right : ClassDictionaryBase
             {
                 "-right-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                right: calc(var(--spacing) * -{0});
                                """,

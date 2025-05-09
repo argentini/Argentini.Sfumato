@@ -11,8 +11,7 @@ public sealed class Height : ClassDictionaryBase
             {
                 "h-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                height: calc(var(--spacing) * {0});
                                """,

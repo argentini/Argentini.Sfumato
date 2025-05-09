@@ -13,7 +13,7 @@ public sealed class TextShadowColor : ClassDictionaryBase
                 "text-shadow-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesColor = true,
+                    InColorCollection = true,
                     Template = 
                         """
                         --sf-text-shadow-color: {0};

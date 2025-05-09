@@ -11,8 +11,7 @@ public sealed class Grayscale : ClassDictionaryBase
             {
                 "grayscale-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
+                    InFloatNumberCollection = true,
                     Template =
                         """
                         --sf-grayscale: grayscale({0}%);

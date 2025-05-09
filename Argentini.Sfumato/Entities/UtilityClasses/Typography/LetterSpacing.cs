@@ -12,7 +12,7 @@ public sealed class LetterSpacing : ClassDictionaryBase
                 "tracking-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                letter-spacing: {0};
                                """
@@ -22,7 +22,7 @@ public sealed class LetterSpacing : ClassDictionaryBase
                 "-tracking-", new ClassDefinition
                 {
                     SelectorSort = 1,
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     Template = """
                                letter-spacing: calc({0} * -1);
                                """

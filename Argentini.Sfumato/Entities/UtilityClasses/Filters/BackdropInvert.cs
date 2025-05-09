@@ -11,9 +11,8 @@ public sealed class BackdropInvert : ClassDictionaryBase
             {
                 "backdrop-invert-", new ClassDefinition
                 {
-                    UsesNumericSuffix = true,
-                    UsesAlphaNumber = true,
-                    UsesAbstractValue = true,
+                    InFloatNumberCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         --sf-backdrop-invert: invert({0}%);

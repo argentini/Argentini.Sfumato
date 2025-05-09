@@ -11,8 +11,8 @@ public sealed class MaskImage : ClassDictionaryBase
             {
                 "mask-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
-                    UsesImageUrl = true,
+                    InAbstractValueCollection = true,
+                    InUrlCollection = true,
                     Template = """
                                -webkit-mask-image: {0};
                                mask-image: {0};

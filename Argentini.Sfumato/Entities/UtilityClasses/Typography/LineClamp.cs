@@ -11,7 +11,7 @@ public sealed class LineClamp : ClassDictionaryBase
             {
                 "line-clamp-", new ClassDefinition
                 {
-                    UsesInteger = true,
+                    InIntegerCollection = true,
                     Template = """
                                overflow: hidden;
                                display: -webkit-box;

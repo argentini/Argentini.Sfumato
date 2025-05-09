@@ -11,9 +11,9 @@ public sealed class Flex : ClassDictionaryBase
             {
                 "flex-", new ClassDefinition
                 {
-                    UsesInteger = true,
-                    UsesDimensionLength = true,
-                    UsesAbstractValue = true,
+                    InIntegerCollection = true,
+                    InLengthCollection = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         flex: {0};

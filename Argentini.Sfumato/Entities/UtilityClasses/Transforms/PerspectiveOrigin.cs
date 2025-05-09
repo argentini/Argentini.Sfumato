@@ -11,7 +11,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
             {
                 "perspective-origin-", new ClassDefinition
                 {
-                    UsesAbstractValue = true,
+                    InAbstractValueCollection = true,
                     Template =
                         """
                         perspective-origin: {0};

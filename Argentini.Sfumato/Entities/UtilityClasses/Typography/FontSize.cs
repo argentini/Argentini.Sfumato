@@ -11,7 +11,7 @@ public sealed class FontSize : ClassDictionaryBase
             {
                 "text-", new ClassDefinition
                 {
-                    UsesDimensionLength = true,
+                    InLengthCollection = true,
                     UsesSlashModifier = true,
                     Template = """
                                font-size: {0};

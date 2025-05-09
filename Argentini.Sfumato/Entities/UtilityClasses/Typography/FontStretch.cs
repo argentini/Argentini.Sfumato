@@ -11,8 +11,8 @@ public sealed class FontStretch : ClassDictionaryBase
             {
                 "font-stretch-", new ClassDefinition
                 {
-                    UsesPercentage = true,
-                    UsesAbstractValue = true,
+                    InPercentageCollection = true,
+                    InAbstractValueCollection = true,
                     Template = """
                                font-stretch: {0};
                                """,
