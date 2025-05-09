@@ -64,7 +64,7 @@ public sealed class Top : ClassDictionaryBase
             {
                 "top-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                top: calc(var(--spacing) * {0});
@@ -78,7 +78,7 @@ public sealed class Top : ClassDictionaryBase
             {
                 "-top-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                top: calc(var(--spacing) * -{0});

@@ -11,7 +11,7 @@ public sealed class TextDecorationThickness : ClassDictionaryBase
             {
                 "decoration-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     UsesDimensionLength = true,
                     Template =

@@ -13,7 +13,7 @@ public sealed class ClassDefinition
     /// <summary>
     /// Class uses spacing number (e.g. "m-4")
     /// </summary>
-    public bool UsesSpacing { get; set; }
+    public bool UsesNumericSuffix { get; set; }
 
     /// <summary>
     /// Class uses float (e.g. "leading-[1.3]")

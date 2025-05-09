@@ -13,7 +13,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear-stops: var(--sf-mask-linear-position), var(--sf-mask-linear-from-color) var(--sf-mask-linear-from-position), var(--sf-mask-linear-to-color) var(--sf-mask-linear-to-position);
@@ -45,7 +45,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear-stops: var(--sf-mask-linear-position), var(--sf-mask-linear-from-color) var(--sf-mask-linear-from-position), var(--sf-mask-linear-to-color) var(--sf-mask-linear-to-position);
@@ -77,7 +77,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -109,7 +109,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -141,7 +141,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -173,7 +173,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -205,7 +205,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -237,7 +237,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -269,7 +269,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -301,7 +301,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -333,7 +333,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -369,7 +369,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -405,7 +405,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -441,7 +441,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-linear: var(--sf-mask-left), var(--sf-mask-right), var(--sf-mask-bottom), var(--sf-mask-top);
@@ -477,7 +477,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-radial-stops: var(--sf-mask-radial-shape) var(--sf-mask-radial-size) at var(--sf-mask-radial-position), var(--sf-mask-radial-from-color) var(--sf-mask-radial-from-position), var(--sf-mask-radial-to-color) var(--sf-mask-radial-to-position);
@@ -509,7 +509,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-radial-stops: var(--sf-mask-radial-shape) var(--sf-mask-radial-size) at var(--sf-mask-radial-position), var(--sf-mask-radial-from-color) var(--sf-mask-radial-from-position), var(--sf-mask-radial-to-color) var(--sf-mask-radial-to-position);
@@ -541,7 +541,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);
@@ -573,7 +573,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
                 {
                     SelectorSort = 2,
                     UsesDimensionLength = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         --sf-mask-conic-stops: from var(--sf-mask-conic-position), var(--sf-mask-conic-from-color) var(--sf-mask-conic-from-position), var(--sf-mask-conic-to-color) var(--sf-mask-conic-to-position);

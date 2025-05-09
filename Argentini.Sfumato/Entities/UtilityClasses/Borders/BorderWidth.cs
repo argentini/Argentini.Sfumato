@@ -82,16 +82,16 @@ public sealed class BorderWidth : ClassDictionaryBase
             key = $"{border.Key}-";
             value = new ClassDefinition
             {
-                UsesSpacing = true,
+                UsesNumericSuffix = true,
                 UsesDimensionLength = true,
                 Template = border.Value.Replace("{0}", "{0}px"),
                 ArbitraryCssValueTemplate = border.Value,
             };
 
-            if (appRunner.Library.SpacingClasses.TryAdd(key, value))
+            if (appRunner.Library.NumericSuffixClasses.TryAdd(key, value))
                 appRunner.Library.ScannerClassNamePrefixes.Insert(key);
             else
-                appRunner.Library.SpacingClasses[key] = value;
+                appRunner.Library.NumericSuffixClasses[key] = value;
 
             if (appRunner.Library.DimensionLengthClasses.TryAdd(key, value))
                 appRunner.Library.ScannerClassNamePrefixes.Insert(key);

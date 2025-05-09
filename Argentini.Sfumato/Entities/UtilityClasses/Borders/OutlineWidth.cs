@@ -12,7 +12,7 @@ public sealed class OutlineWidth : ClassDictionaryBase
             {
                 "outline-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = 
                         """

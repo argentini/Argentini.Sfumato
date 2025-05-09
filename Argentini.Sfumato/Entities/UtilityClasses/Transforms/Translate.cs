@@ -11,7 +11,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -30,7 +30,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -103,7 +103,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-x-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -120,7 +120,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-x-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -180,7 +180,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-y-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -197,7 +197,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-y-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -257,7 +257,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "translate-z-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -274,7 +274,7 @@ public sealed class Translate : ClassDictionaryBase
             {
                 "-translate-z-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """

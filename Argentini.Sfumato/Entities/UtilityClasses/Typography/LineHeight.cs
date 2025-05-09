@@ -14,7 +14,7 @@ public sealed class LineHeight : ClassDictionaryBase
                     SelectorSort = 1,
                     UsesDimensionLength = true,
                     UsesAlphaNumber = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         line-height: calc(var(--spacing) * {0});
@@ -31,7 +31,7 @@ public sealed class LineHeight : ClassDictionaryBase
                     SelectorSort = 1,
                     UsesDimensionLength = true,
                     UsesAlphaNumber = true,
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         line-height: calc(var(--spacing) * {0} * -1);

@@ -37,7 +37,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "space-x-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                & > :not(:last-child) {
@@ -57,7 +57,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "-space-x-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                & > :not(:last-child) {
@@ -106,7 +106,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "space-y-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                & > :not(:first-child) {
@@ -126,7 +126,7 @@ public sealed class Space : ClassDictionaryBase
             {
                 "-space-y-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                & > :not(:first-child) {

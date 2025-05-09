@@ -11,7 +11,7 @@ public sealed class FlexBasis : ClassDictionaryBase
             {
                 "basis-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -26,7 +26,7 @@ public sealed class FlexBasis : ClassDictionaryBase
             {
                 "-basis-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """

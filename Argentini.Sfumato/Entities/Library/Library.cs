@@ -63,7 +63,7 @@ public sealed class Library
     public PrefixTrie ScannerClassNamePrefixes { get; set; } = new();
 
     public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> SpacingClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> NumericSuffixClasses { get; set; } = new(StringComparer.Ordinal);
     
     public Dictionary<string, ClassDefinition> AbstractClasses { get; set; } = new(StringComparer.Ordinal);
     public Dictionary<string, ClassDefinition> AlphaNumberClasses { get; set; } = new(StringComparer.Ordinal);
@@ -116,8 +116,8 @@ public sealed class Library
                 if (item.Value.IsSimpleUtility)
                     SimpleClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.UsesSpacing)
-                    SpacingClasses.Add(item.Key, item.Value);
+                if (item.Value.UsesNumericSuffix)
+                    NumericSuffixClasses.Add(item.Key, item.Value);
 
                 if (item.Value.UsesAlphaNumber)
                     AlphaNumberClasses.Add(item.Key, item.Value);

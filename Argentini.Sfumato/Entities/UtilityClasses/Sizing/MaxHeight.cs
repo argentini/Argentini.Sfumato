@@ -11,7 +11,7 @@ public sealed class MaxHeight : ClassDictionaryBase
             {
                 "max-h-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                max-height: calc(var(--spacing) * {0});

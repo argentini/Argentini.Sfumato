@@ -12,7 +12,7 @@ public sealed class Opacity : ClassDictionaryBase
             {
                 "opacity-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

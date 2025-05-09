@@ -11,7 +11,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-m-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -26,7 +26,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mx-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -41,7 +41,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-my-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -56,7 +56,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-ms-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -71,7 +71,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-me-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -86,7 +86,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mt-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -101,7 +101,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mr-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -116,7 +116,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-mb-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -131,7 +131,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
             {
                 "scroll-ml-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """

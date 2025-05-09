@@ -11,7 +11,7 @@ public sealed class Width : ClassDictionaryBase
             {
                 "w-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                width: calc(var(--spacing) * {0});

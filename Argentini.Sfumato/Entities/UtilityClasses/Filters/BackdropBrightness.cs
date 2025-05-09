@@ -11,7 +11,7 @@ public sealed class BackdropBrightness : ClassDictionaryBase
             {
                 "backdrop-brightness-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

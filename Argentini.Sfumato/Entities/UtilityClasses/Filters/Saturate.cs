@@ -11,7 +11,7 @@ public sealed class Saturate : ClassDictionaryBase
             {
                 "saturate-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

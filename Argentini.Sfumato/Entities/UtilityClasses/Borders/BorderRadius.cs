@@ -127,7 +127,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             var aKey = $"{border.Key}-";
             var aValue = new ClassDefinition
             {
-                UsesSpacing = true,
+                UsesNumericSuffix = true,
                 UsesDimensionLength = true,
                 Template = border.Value.Replace("{0}", "calc(var(--spacing) * {0})"),
                 ArbitraryCssValueTemplate = border.Value,

@@ -11,7 +11,7 @@ public sealed class Contrast : ClassDictionaryBase
             {
                 "contrast-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

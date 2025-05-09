@@ -31,7 +31,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "p-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding: calc(var(--spacing) * {0});
@@ -45,7 +45,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-p-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding: calc(var(--spacing) * -{0});
@@ -82,7 +82,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "px-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-inline: calc(var(--spacing) * {0});
@@ -96,7 +96,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-px-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-inline: calc(var(--spacing) * -{0});
@@ -133,7 +133,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "py-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-block: calc(var(--spacing) * {0});
@@ -147,7 +147,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-py-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-block: calc(var(--spacing) * -{0});
@@ -184,7 +184,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "ps-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-inline-start: calc(var(--spacing) * {0});
@@ -198,7 +198,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-ps-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-inline-start: calc(var(--spacing) * -{0});
@@ -235,7 +235,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pe-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-inline-end: calc(var(--spacing) * {0});
@@ -249,7 +249,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pe-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-inline-end: calc(var(--spacing) * -{0});
@@ -286,7 +286,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pt-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-top: calc(var(--spacing) * {0});
@@ -300,7 +300,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pt-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-top: calc(var(--spacing) * -{0});
@@ -337,7 +337,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pr-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-right: calc(var(--spacing) * {0});
@@ -351,7 +351,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pr-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-right: calc(var(--spacing) * -{0});
@@ -388,7 +388,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pb-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-bottom: calc(var(--spacing) * {0});
@@ -402,7 +402,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pb-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-bottom: calc(var(--spacing) * -{0});
@@ -439,7 +439,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "pl-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-left: calc(var(--spacing) * {0});
@@ -453,7 +453,7 @@ public sealed class Padding : ClassDictionaryBase
             {
                 "-pl-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                padding-left: calc(var(--spacing) * -{0});

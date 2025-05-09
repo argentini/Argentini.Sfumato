@@ -11,7 +11,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-p-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -26,7 +26,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-px-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -41,7 +41,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-py-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -56,7 +56,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-ps-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -71,7 +71,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pe-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -86,7 +86,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pt-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -101,7 +101,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pr-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -116,7 +116,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pb-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """
@@ -131,7 +131,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
             {
                 "scroll-pl-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template =
                         """

@@ -535,7 +535,7 @@ public sealed class CssClass : IDisposable
             
             #endregion
             
-            #region Static, Spacing, or Color Name Value
+            #region Static, Numeric Suffix, or Color Name Value
 
             if (HasArbitraryValue || ClassDefinition is not null)
                 return;
@@ -546,7 +546,7 @@ public sealed class CssClass : IDisposable
             }
             else if (value.ValueIsFloatNumber())
             {
-                if (AppRunner.Library.SpacingClasses.TryGetValue(prefix, out ClassDefinition))
+                if (AppRunner.Library.NumericSuffixClasses.TryGetValue(prefix, out ClassDefinition))
                     Value = value;
                 else if (value.ValueIsInteger() && AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition))
                     Value = value;

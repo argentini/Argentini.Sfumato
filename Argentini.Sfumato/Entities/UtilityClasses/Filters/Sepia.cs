@@ -11,7 +11,7 @@ public sealed class Sepia : ClassDictionaryBase
             {
                 "sepia-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

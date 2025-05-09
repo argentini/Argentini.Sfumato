@@ -64,7 +64,7 @@ public sealed class Bottom : ClassDictionaryBase
             {
                 "bottom-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                bottom: calc(var(--spacing) * {0});
@@ -78,7 +78,7 @@ public sealed class Bottom : ClassDictionaryBase
             {
                 "-bottom-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                bottom: calc(var(--spacing) * -{0});

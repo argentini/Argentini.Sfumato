@@ -11,7 +11,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-linear-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -40,7 +40,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "-mask-linear-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -87,7 +87,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "mask-conic-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -114,7 +114,7 @@ public sealed class Mask : ClassDictionaryBase
             {
                 "-mask-conic-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """

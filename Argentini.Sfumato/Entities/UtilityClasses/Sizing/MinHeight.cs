@@ -11,7 +11,7 @@ public sealed class MinHeight : ClassDictionaryBase
             {
                 "min-h-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                min-height: calc(var(--spacing) * {0});

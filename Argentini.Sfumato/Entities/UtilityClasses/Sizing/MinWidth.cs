@@ -11,7 +11,7 @@ public sealed class MinWidth : ClassDictionaryBase
             {
                 "min-w-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesDimensionLength = true,
                     Template = """
                                min-width: calc(var(--spacing) * {0});

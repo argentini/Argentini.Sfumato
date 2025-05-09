@@ -11,7 +11,7 @@ public sealed class BackgroundConic : ClassDictionaryBase
             {
                 "bg-conic-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAbstractValue = true,
                     UsesSlashModifier = true,
                     Template =
@@ -34,7 +34,7 @@ public sealed class BackgroundConic : ClassDictionaryBase
             {
                 "-bg-conic-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAbstractValue = true,
                     UsesSlashModifier = true,
                     Template =

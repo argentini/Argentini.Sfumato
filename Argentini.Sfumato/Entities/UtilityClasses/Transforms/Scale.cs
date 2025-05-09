@@ -11,7 +11,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesPercentage = true,
                     Template =
                         """
@@ -26,7 +26,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     Template =
                         """
                         scale: calc({0}% * -1) calc({0}% * -1);
@@ -40,7 +40,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-x-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -57,7 +57,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-x-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -74,7 +74,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-y-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -91,7 +91,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-y-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -108,7 +108,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "scale-z-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """
@@ -125,7 +125,7 @@ public sealed class Scale : ClassDictionaryBase
             {
                 "-scale-z-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAngleHue = true,
                     Template =
                         """

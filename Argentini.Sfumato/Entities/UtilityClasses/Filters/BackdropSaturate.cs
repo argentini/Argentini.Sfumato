@@ -11,7 +11,7 @@ public sealed class BackdropSaturate : ClassDictionaryBase
             {
                 "backdrop-saturate-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     Template =
                         """

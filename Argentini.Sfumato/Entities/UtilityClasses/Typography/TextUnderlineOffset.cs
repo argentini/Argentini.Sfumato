@@ -11,7 +11,7 @@ public sealed class TextUnderlineOffset : ClassDictionaryBase
             {
                 "underline-offset-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     UsesDimensionLength = true,
                     Template =
@@ -27,7 +27,7 @@ public sealed class TextUnderlineOffset : ClassDictionaryBase
             {
                 "-underline-offset-", new ClassDefinition
                 {
-                    UsesSpacing = true,
+                    UsesNumericSuffix = true,
                     UsesAlphaNumber = true,
                     UsesDimensionLength = true,
                     Template =
