@@ -573,6 +573,9 @@ public sealed class AppRunner
 				.InjectUtilityClassesCss(this)
 				.ProcessFunctionsAndTrackDependencies(this)
 				.InjectRootDependenciesCss(this);
+
+			if (AppRunnerSettings.UseDarkThemeClasses)
+				sourceCss.ProcessDarkThemeClasses(this);
 			
 			//return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString().ConsolidateLineBreaks(AppRunnerSettings.LineBreak.Contains('\r'), workingSb);
 			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString();

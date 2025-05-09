@@ -469,6 +469,71 @@ public static class AppRunnerExtensions
 		
 		return sourceCss;
 	}
+
+	/// <summary>
+	/// Find all dark theme media blocks and duplicate as wrapped classes theme-dark
+	/// </summary>
+	/// <param name="sourceCss"></param>
+	/// <param name="appRunner"></param>
+	/// <returns></returns>
+	public static StringBuilder ProcessDarkThemeClasses(this StringBuilder sourceCss, AppRunner appRunner)
+	{
+		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+		var darkSb = appRunner.AppState.StringBuilderPool.Get();
+		
+		const string blockPrefix = "@media (prefers-color-scheme: dark) {";
+
+		try
+		{
+			foreach (var block in sourceCss.FindMediaBlocks(blockPrefix))
+			{
+				workingSb.Clear();
+				workingSb.Append(block.Trim());
+
+				darkSb.Clear();
+				darkSb.Append(block.Trim());
+				darkSb.TrimStart(blockPrefix);
+				darkSb.Trim();
+				
+				if (darkSb.Length > 0 && darkSb[^1] == '}')
+					darkSb.Remove(darkSb.Length - 1, 1);
+
+				foreach (var selector in block.GetCssSelectors().Distinct())
+				{
+					workingSb.Replace($"{selector}{{", $".theme-auto ---{selector}---, .theme-auto---{selector}---{{");
+					workingSb.Replace($"{selector},", $".theme-auto ---{selector}---, .theme-auto---{selector}---,");
+					workingSb.Replace($"{selector}{appRunner.AppRunnerSettings.LineBreak}", $".theme-auto ---{selector}---, .theme-auto---{selector}---{appRunner.AppRunnerSettings.LineBreak}");
+					workingSb.Replace($"{selector} ", $".theme-auto ---{selector}---, .theme-auto---{selector}--- ");
+					workingSb.Replace($"---{selector}---", selector);
+
+					darkSb.Replace($"{selector}{{", $".theme-dark ---{selector}---, .theme-dark---{selector}---{{");
+					darkSb.Replace($"{selector},", $".theme-dark ---{selector}---, .theme-dark---{selector}---,");
+					darkSb.Replace($"{selector}{appRunner.AppRunnerSettings.LineBreak}", $".theme-dark ---{selector}---, .theme-dark---{selector}---{appRunner.AppRunnerSettings.LineBreak}");
+					darkSb.Replace($"{selector} ", $".theme-dark ---{selector}---, .theme-dark---{selector}--- ");
+					darkSb.Replace($"---{selector}---", selector);
+				}
+
+				workingSb
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(darkSb);
+				
+				sourceCss.Replace(block, workingSb.ToString());
+			}
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessDarkThemeClasses() - {e.Message}");
+			Environment.Exit(1);
+		}
+		finally
+		{
+			appRunner.AppState.StringBuilderPool.Return(workingSb);
+			appRunner.AppState.StringBuilderPool.Return(darkSb);
+		}
+		
+		return sourceCss;
+	}
 	
 	/// <summary>
 	/// Recursive method for traversing the variant tree and generating utility class CSS.

@@ -456,6 +456,169 @@ public static partial class Strings
 	
 	#region Parsing
 
+    /// <summary>
+    /// Enumerates all CSS selectors (top‑level and inside @media), skipping other at‑rules.
+    /// </summary>
+    public static IEnumerable<string> GetCssSelectors(this string? css) => GetCssSelectors(css, 0, css?.Length ?? 0);
+
+    private static IEnumerable<string> GetCssSelectors(string? css, int start, int end)
+    {
+        if (string.IsNullOrEmpty(css) || start >= end)
+	        yield break;
+        
+        var pos = start;
+
+        while (pos < end)
+        {
+            // find next '{'
+            var braceOpen = css.IndexOf('{', pos, end - pos);
+
+            if (braceOpen < 0)
+	            yield break;
+
+            // header = text between pos and braceOpen
+            var header = css.Substring(pos, braceOpen - pos).Trim();
+            
+            pos = braceOpen + 1;
+
+            // find matching '}', tracking nested braces
+            var depth = 1;
+            var contentStart = pos;
+            
+            while (pos < end && depth > 0)
+            {
+	            // ReSharper disable once ConvertIfStatementToSwitchStatement
+	            if (css[pos] == '{')
+	                depth++;
+                else if (css[pos] == '}')
+	                depth--;
+                
+                pos++;
+            }
+            
+            var contentEnd = pos - 1; // one past the last '}' matching this block
+
+            // handle at‑rules
+            if (header.StartsWith("@", StringComparison.OrdinalIgnoreCase))
+            {
+	            // recurse into @media
+	            if (header.StartsWith("@media", StringComparison.OrdinalIgnoreCase) == false)
+		            continue;
+	            
+	            foreach (var sel in GetCssSelectors(css, contentStart, contentEnd))
+	                yield return sel;
+            }
+            else
+            {
+                // split comma‑lists at top level
+                foreach (var sel in SplitSelectors(header))
+                    yield return sel;
+            }
+        }
+    }
+
+    // splits a comma‑separated selector string at commas not inside [],(), or quotes
+    private static IEnumerable<string> SplitSelectors(string header)
+    {
+        if (string.IsNullOrWhiteSpace(header))
+            yield break;
+
+        var sb = new StringBuilder();
+        
+        var bracketDepth = 0;
+	    var parenDepth = 0;
+        var inSingle = false;
+	    var inDouble = false;
+
+        foreach (var c in header)
+        {
+	        if (inSingle)
+	        {
+		        sb.Append(c);
+            
+		        if (c == '\'' )
+			        inSingle = false;
+	        }
+	        else if (inDouble)
+	        {
+		        sb.Append(c);
+                
+		        if (c == '"')
+			        inDouble = false;
+	        }
+	        else
+	        {
+		        switch (c)
+		        {
+			        case '\'':
+	                    
+				        inSingle = true;
+				        sb.Append(c);
+                        
+				        break;
+                    
+			        case '"':
+	                    
+				        inDouble = true;
+				        sb.Append(c);
+                        
+				        break;
+                    
+			        case '[':
+	                    
+				        bracketDepth++;
+				        sb.Append(c);
+                        
+				        break;
+                    
+			        case ']':
+                        
+				        bracketDepth = Math.Max(0, bracketDepth - 1);
+				        sb.Append(c);
+
+				        break;
+                    
+			        case '(':
+                        
+				        parenDepth++;
+				        sb.Append(c);
+
+				        break;
+                    
+			        case ')':
+                        
+				        parenDepth = Math.Max(0, parenDepth - 1);
+				        sb.Append(c);
+                    
+				        break;
+                    
+			        case ',' when bracketDepth == 0 && parenDepth == 0:
+                        
+				        var sel = sb.ToString().Trim();
+                        
+				        if (string.IsNullOrEmpty(sel) == false)
+					        yield return sel;
+
+				        sb.Clear();
+                    
+				        break;
+                    
+			        default:
+
+				        sb.Append(c);
+                        
+				        break;
+		        }
+	        }
+        }
+
+        // final selector
+        var last = sb.ToString().Trim();
+        
+        if (string.IsNullOrEmpty(last) == false)
+            yield return last;
+    }
+	
 	public static void ScanQuotedStrings(this string? source, HashSet<string>? bag, StringBuilder? sb = null)
 	{
 		var delimiters = new [] { '\"', '\'', '`' };
