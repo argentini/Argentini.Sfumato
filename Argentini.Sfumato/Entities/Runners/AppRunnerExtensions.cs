@@ -126,48 +126,8 @@ public static class AppRunnerExtensions
 
 				if (utilityClasses.Count > 0)
 				{
-					var depth = 0d;
-
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-					{
-						var spaceIncrement = 1.0d / (appRunner.AppRunnerSettings.Indentation.Length > 0
-							? appRunner.AppRunnerSettings.Indentation.Length
-							: 0.25d);
-
-						if (span.Index > 0)
-						{
-							for (var i = span.Index - 1; i >= 0; i--)
-							{
-								if (sourceCss[i] == ' ')
-									depth += spaceIncrement;
-								else if (sourceCss[i] == '\t')
-									depth += 1;
-								else
-									break;
-							}
-						}
-					}
-
 					foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
-					{
-						if (appRunner.AppRunnerSettings.UseMinify == false)
-						{
-							var props = utilityClass.Styles.NormalizeLinebreaks()
-								.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-							foreach (var prop in props)
-							{
-								workingSb
-									.Append(appRunner.AppRunnerSettings.Indentation.Repeat((int)Math.Ceiling(depth)))
-									.Append(prop.Trim())
-									.Append(appRunner.AppRunnerSettings.LineBreak);
-							}
-						}
-						else
-						{
-							workingSb.Append(utilityClass.Styles);
-						}
-					}
+						workingSb.Append(utilityClass.Styles);
 				}
 
 				sourceCss.Replace(span.Full, workingSb.ToString().Trim());
@@ -354,17 +314,11 @@ public static class AppRunnerExtensions
 
 					foreach (var ccp in items.OrderBy(c => c.Key))
 					{
-						if (appRunner.AppRunnerSettings.UseMinify == false)
-							workingSb.Append(appRunner.AppRunnerSettings.Indentation);
-
 						workingSb
 							.Append(ccp.Key)
 							.Append(": ")
 							.Append(ccp.Value)
 							.Append(';');
-
-						if (appRunner.AppRunnerSettings.UseMinify == false)
-							workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
 
 						if (ccp.Key.StartsWith("--animate-", StringComparison.Ordinal) == false)
 							continue;
@@ -376,11 +330,6 @@ public static class AppRunnerExtensions
 					}
 
 					workingSb.Append('}');
-
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb
-							.Append(appRunner.AppRunnerSettings.LineBreak)
-							.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 			}
 
@@ -392,13 +341,7 @@ public static class AppRunnerExtensions
 						.Append(ccp.Key)
 						.Append(' ')
 						.Append(ccp.Value);
-
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
-
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb.Append(appRunner.AppRunnerSettings.LineBreak);
 
 				foreach (var ccp in appRunner.UsedCssCustomProperties)
 				{
@@ -411,9 +354,6 @@ public static class AppRunnerExtensions
 					workingSb
 						.Append($"@property {ccp.Key} ")
 						.Append(prop.Replace(appRunner.AppRunnerSettings.LineBreak + appRunner.AppRunnerSettings.Indentation, appRunner.AppRunnerSettings.LineBreak));
-					
-					if (appRunner.AppRunnerSettings.UseMinify == false)
-						workingSb.Append(appRunner.AppRunnerSettings.LineBreak).Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 			}
 
@@ -453,7 +393,7 @@ public static class AppRunnerExtensions
 
 		try
 		{
-			_GenerateUtilityClassesCss(appRunner, root, sb);
+			_GenerateUtilityClassesCss(root, sb);
 
 			sourceCss.Replace("::sfumato{}", sb.ToString());
 		}
@@ -538,89 +478,35 @@ public static class AppRunnerExtensions
 	/// <summary>
 	/// Recursive method for traversing the variant tree and generating utility class CSS.
 	/// </summary>
-	/// <param name="appRunner"></param>
 	/// <param name="branch"></param>
 	/// <param name="workingSb"></param>
-	/// <param name="depth"></param>
-	private static void _GenerateUtilityClassesCss(AppRunner appRunner, VariantBranch branch, StringBuilder workingSb, int depth = 0)
+	private static void _GenerateUtilityClassesCss(VariantBranch branch, StringBuilder workingSb)
 	{
 		try
 		{
 			var isWrapped = string.IsNullOrEmpty(branch.WrapperCss) == false;
 			
 			if (isWrapped)
-			{
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth - 1));
-				
 				workingSb.Append(branch.WrapperCss);
-				
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb
-						.Append(appRunner.AppRunnerSettings.LineBreak)
-						.Append(appRunner.AppRunnerSettings.LineBreak);
-			}
 			
 			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.SelectorSort))
-			{
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb
-						.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth))
-						.Append(cssClass.EscapedSelector)
-						.Append(" {")
-						.Append(appRunner.AppRunnerSettings.LineBreak);
-				else			
-					workingSb
-						.Append(cssClass.EscapedSelector)
-						.Append(" {");
-
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-				{
-					var props = cssClass.Styles.NormalizeLinebreaks().Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-					foreach (var prop in props)
-					{
-						workingSb
-							.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth + 1))
-							.Append(prop.Trim())
-							.Append(appRunner.AppRunnerSettings.LineBreak);
-					}
-				}
-				else
-					workingSb
-						.Append(cssClass.Styles);
-
-				if (appRunner.AppRunnerSettings.UseMinify == false)
-					workingSb
-						.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth))
-						.Append('}')
-						.Append(appRunner.AppRunnerSettings.LineBreak)
-						.Append(appRunner.AppRunnerSettings.LineBreak);
-				else
-					workingSb
-						.Append('}');
-			}
+				workingSb
+					.Append(cssClass.EscapedSelector)
+					.Append(" {")
+					.Append(cssClass.Styles)
+					.Append('}');
 
 			if (branch.Branches.Count > 0)
 			{
 				foreach (var subBranch in branch.Branches)
-				{
-					_GenerateUtilityClassesCss(appRunner, subBranch, workingSb, depth + 1);
-				}
+					_GenerateUtilityClassesCss(subBranch, workingSb);
 			}
 
 			if (string.IsNullOrEmpty(branch.WrapperCss))
 				return;
 			
-			if (appRunner.AppRunnerSettings.UseMinify == false)
-				workingSb
-					.Append(appRunner.AppRunnerSettings.Indentation.Repeat(depth - 1))
-					.Append('}')
-					.Append(appRunner.AppRunnerSettings.LineBreak)
-					.Append(appRunner.AppRunnerSettings.LineBreak);
-			else
-				workingSb
-					.Append('}');
+			workingSb
+				.Append('}');
 		}
 		catch (Exception e)
 		{
