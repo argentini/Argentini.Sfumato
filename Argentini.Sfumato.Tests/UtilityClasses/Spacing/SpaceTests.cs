@@ -18,7 +18,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(1px * var(--sf-space-x-reverse));
                         margin-inline-end: calc(1px * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -32,7 +32,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(-1px * var(--sf-space-x-reverse));
                         margin-inline-end: calc(-1px * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -46,7 +46,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(75% * var(--sf-space-x-reverse));
                         margin-inline-end: calc(75% * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -60,7 +60,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(calc(var(--spacing) * 5) * var(--sf-space-x-reverse));
                         margin-inline-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -74,7 +74,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(calc(var(--spacing) * -5) * var(--sf-space-x-reverse));
                         margin-inline-end: calc(calc(var(--spacing) * -5) * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -88,7 +88,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(1.25rem * var(--sf-space-x-reverse));
                         margin-inline-end: calc(1.25rem * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -102,7 +102,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(var(--my-margin) * var(--sf-space-x-reverse));
                         margin-inline-end: calc(var(--my-margin) * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -116,7 +116,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(-1 * var(--my-margin) * var(--sf-space-x-reverse));
                         margin-inline-end: calc(-1 * var(--my-margin) * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -130,7 +130,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(var(--my-margin) * var(--sf-space-x-reverse));
                         margin-inline-end: calc(var(--my-margin) * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -144,7 +144,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(var(--my-margin) * var(--sf-space-x-reverse));
                         margin-inline-end: calc(var(--my-margin) * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -158,7 +158,7 @@ public class SpaceTests(ITestOutputHelper testOutputHelper)
                     & > :not(:last-child) {
                         margin-inline-start: calc(var(--my-margin) * var(--sf-space-x-reverse));
                         margin-inline-end: calc(var(--my-margin) * calc(1 - var(--sf-space-x-reverse)));
-                    };
+                    }
                     """,
                 IsValid = true,
                 IsImportant = false,
