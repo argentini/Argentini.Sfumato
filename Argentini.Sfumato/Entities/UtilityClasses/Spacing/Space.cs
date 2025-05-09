@@ -18,7 +18,7 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:last-child) {
                                    margin-inline-start: calc(1px * var(--sf-space-x-reverse));
                                    margin-inline-end: calc(1px * calc(1 - var(--sf-space-x-reverse)));
-                               };
+                               }
                                """,
                 }
             },
@@ -30,7 +30,7 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:last-child) {
                                    margin-inline-start: calc(-1px * var(--sf-space-x-reverse));
                                    margin-inline-end: calc(-1px * calc(1 - var(--sf-space-x-reverse)));
-                               };
+                               }
                                """,
                 }
             },
@@ -43,14 +43,14 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:last-child) {
                                    margin-inline-start: calc(calc(var(--spacing) * {0}) * var(--sf-space-x-reverse));
                                    margin-inline-end: calc(calc(var(--spacing) * {0}) * calc(1 - var(--sf-space-x-reverse)));
-                               };
+                               }
                                """,
                     ArbitraryCssValueTemplate =
                         """
                         & > :not(:last-child) {
                             margin-inline-start: calc({0} * var(--sf-space-x-reverse));
                             margin-inline-end: calc({0} * calc(1 - var(--sf-space-x-reverse)));
-                        };
+                        }
                         """,
                 }
             },
@@ -63,14 +63,14 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:last-child) {
                                    margin-inline-start: calc(calc(var(--spacing) * -{0}) * var(--sf-space-x-reverse));
                                    margin-inline-end: calc(calc(var(--spacing) * -{0}) * calc(1 - var(--sf-space-x-reverse)));
-                               };
+                               }
                                """,
                     ArbitraryCssValueTemplate =
                         """
                         & > :not(:last-child) {
                             margin-inline-start: calc(-1 * {0} * var(--sf-space-x-reverse));
                             margin-inline-end: calc(-1 * {0} * calc(1 - var(--sf-space-x-reverse)));
-                        };
+                        }
                         """,
                 }
             },
@@ -87,7 +87,7 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:first-child) {
                                    margin-block-start: calc(1px * calc(1 - var(--sf-space-y-reverse)));
                                    margin-block-end: calc(1px * var(--sf-space-y-reverse));
-                               };
+                               }
                                """,
                 }
             },
@@ -99,7 +99,7 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:first-child) {
                                    margin-block-start: calc(-1px * calc(1 - var(--sf-space-y-reverse)));
                                    margin-block-end: calc(-1px * var(--sf-space-y-reverse));
-                               };
+                               }
                                """,
                 }
             },
@@ -112,7 +112,7 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:first-child) {
                                    margin-block-start: calc(calc(var(--spacing) * {0}) * calc(1 - var(--sf-space-y-reverse)));
                                    margin-block-end: calc(calc(var(--spacing) * {0}) * var(--sf-space-y-reverse));
-                               };
+                               }
                                """,
                     ArbitraryCssValueTemplate =
                         """
@@ -132,14 +132,14 @@ public sealed class Space : ClassDictionaryBase
                                & > :not(:first-child) {
                                    margin-block-start: calc(calc(var(--spacing) * -{0}) * calc(1 - var(--sf-space-y-reverse)));
                                    margin-block-end: calc(calc(var(--spacing) * -{0}) * var(--sf-space-y-reverse));
-                               };
+                               }
                                """,
                     ArbitraryCssValueTemplate =
                         """
                         & > :not(:first-child) {
                             margin-block-start: calc(-1 * {0} * calc(1 - var(--sf-space-y-reverse)));
                             margin-block-end: calc(-1 * {0} * var(--sf-space-y-reverse));
-                        };
+                        }
                         """,
                 }
             },
