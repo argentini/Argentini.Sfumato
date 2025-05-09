@@ -100,11 +100,11 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 	        #region Extract Sfumato settings block
 
-		    var sfumatoBlockStart = CssContent.IndexOf("::sfumato", StringComparison.Ordinal);
+		    var sfumatoBlockStart = CssContent.IndexOf("@theme sfumato", StringComparison.Ordinal);
 	        
 		    if (sfumatoBlockStart < 0)
 		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}No ::sfumato {{}} block in file: {CssFilePath}");
+			    Console.WriteLine($"{AppState.CliErrorPrefix}No @theme sfumato {{}} block in file: {CssFilePath}");
 			    Environment.Exit(1);
 		    }
 
@@ -112,7 +112,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	        
 		    if (openBraceIndex <= sfumatoBlockStart)
 		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}::sfumato block has no opening {{ in file: {CssFilePath}");
+			    Console.WriteLine($"{AppState.CliErrorPrefix}@theme sfumato block has no opening {{ in file: {CssFilePath}");
 			    Environment.Exit(1);
 		    }
 
@@ -135,7 +135,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 			if (closingBraceIndex < 0)
 			{
-				Console.WriteLine($"{AppState.CliErrorPrefix}::sfumato block has no closing }} in file: {CssFilePath}");
+				Console.WriteLine($"{AppState.CliErrorPrefix}@theme sfumato block has no closing }} in file: {CssFilePath}");
 				Environment.Exit(1);
 			}
 
@@ -166,7 +166,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 		    var cssCustomPropertyIndex = sfumatoCssBlock.IndexOf("--", StringComparison.Ordinal);
 
-		    #region Determine Indentation and spaces/tabs from first ::sfumato{} CSS custom property item
+		    #region Determine Indentation and spaces/tabs from first @theme sfumato {} CSS custom property item
 	        
 		    if (cssCustomPropertyIndex > 0)
 		    {

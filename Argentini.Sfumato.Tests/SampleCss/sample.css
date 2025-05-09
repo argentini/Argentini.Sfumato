@@ -1,6 +1,6 @@
 @import "partial.css";
 
-::sfumato {
+@theme sfumato {
 
     --use-reset: true; /* Inject the CSS reset */
     --use-forms: true; /* Inject form input styles */

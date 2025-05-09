@@ -90,7 +90,7 @@ internal class Program
 
             var directivesText =
 				$$"""
-				::sfumato {
+				@theme sfumato {
 				    --paths: ["../Models/", "../Views/"];
 				    --output: "output.css";
 				    --not-paths: ["../Views/temp/"];
