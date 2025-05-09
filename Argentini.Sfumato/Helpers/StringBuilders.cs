@@ -6,6 +6,178 @@
 public static class StringBuilders
 {
 	/// <summary>
+	/// Reformats the CSS in this StringBuilder so that each block is indented
+	/// by <paramref name="indentSize"/> spaces per nesting level.
+	/// Also, properly indents /* … */ comments (both standalone and inline).
+	/// </summary>
+	/// <param name="source">The StringBuilder containing the CSS to reformat.</param>
+	/// <param name="workingSb">Working StringBuilder instance (will be cleared).</param>
+	/// <param name="indentSize">Number of spaces per indentation level (default: 4).</param>
+	/// <returns>The same StringBuilder, now cleared and repopulated with formatted CSS.</returns>
+	public static StringBuilder ReformatCss(this StringBuilder source, StringBuilder workingSb, int indentSize = 4)
+	{
+	    var css = source.ToString();
+	    var depth = 0;
+	    var inString = false;
+	    var stringDelimiter = '\0';
+	    var inComment = false;
+
+	    for (var i = 0; i < css.Length; i++)
+	    {
+	        var c    = css[i];
+	        var next = i + 1 < css.Length ? css[i + 1] : '\0';
+
+	        // Enter comment?
+	        if (inString == false && inComment == false && c == '/' && next == '*')
+	        {
+	            var atLineStart = workingSb.Length == 0 || workingSb[^1] == '\n';
+
+	            if (atLineStart)
+	                AppendIndent();
+	            else
+	                workingSb.Append(' ');
+
+	            workingSb.Append("/*");
+	            inComment = true;
+	            i++; // consume '*'
+	            
+	            continue;
+	        }
+
+	        // Inside comment: copy until "*/", indent newlines
+	        if (inComment)
+	        {
+		        // ReSharper disable once ConvertIfStatementToSwitchStatement
+		        if (c == '*' && next == '/')
+	            {
+	                workingSb.Append("*/");
+	                inComment = false;
+	                i++; // consume '/'
+	                workingSb.AppendLine();
+	                AppendIndent();
+	            }
+	            else if (c == '\n')
+	            {
+	                workingSb.AppendLine();
+	                AppendIndent();
+	            }
+	            else if (c != '\r')
+	            {
+	                workingSb.Append(c);
+	            }
+
+		        continue;
+	        }
+
+	        // Toggle string state
+	        // ReSharper disable once ConvertIfStatementToSwitchStatement
+	        if (inString == false && c is '"' or '\'')
+	        {
+	            inString = true;
+	            stringDelimiter = c;
+	            workingSb.Append(c);
+
+	            continue;
+	        }
+	        
+	        if (inString && c == stringDelimiter)
+	        {
+	            inString = false;
+	            workingSb.Append(c);
+	            
+	            continue;
+	        }
+	        
+	        if (inString == false)
+	        {
+	            // Outside strings: handle braces and semicolons
+	            switch (c)
+	            {
+	                case '{':
+	                    workingSb.Append(c);
+	                    workingSb.AppendLine();
+	                    depth++;
+	                    AppendIndent();
+	                    break;
+
+	                case '}':
+	                    workingSb.AppendLine();
+	                    depth = Math.Max(0, depth - 1);
+	                    AppendIndent();
+	                    workingSb.Append(c);
+	                    workingSb.AppendLine();
+	                    AppendIndent();
+	                    break;
+
+	                case ';':
+	                    workingSb.Append(c);
+	                    var hasInlineComment = false;
+	                    for (var j = i + 1; j < css.Length; j++)
+	                    {
+	                        if (char.IsWhiteSpace(css[j]))
+	                        {
+	                            continue;
+	                        }
+	                        if (css[j] == '/' && j + 1 < css.Length && css[j + 1] == '*')
+	                        {
+	                            hasInlineComment = true;
+	                        }
+	                        break;
+	                    }
+	                    if (hasInlineComment)
+	                    {
+	                        workingSb.Append(' ');
+	                    }
+	                    else
+	                    {
+	                        workingSb.AppendLine();
+	                        AppendIndent();
+	                    }
+	                    break;
+
+	                default:
+	                    if (char.IsWhiteSpace(c))
+	                    {
+	                        if (workingSb.Length > 0 && !char.IsWhiteSpace(workingSb[^1]))
+	                        {
+	                            workingSb.Append(' ');
+	                        }
+	                    }
+	                    else
+	                    {
+	                        workingSb.Append(c);
+	                    }
+	                    break;
+	            }
+	            
+	            continue;
+	        }
+
+	        // Inside string: copy verbatim
+	        workingSb.Append(c);
+	    }
+
+	    // Remove blank or whitespace‑only lines
+	    var lines = workingSb
+		    .ToString()
+		    .Split(["\r\n", "\n"], StringSplitOptions.None);
+
+	    workingSb.Clear();
+
+	    foreach (var line in lines)
+	    {
+		    if (line.Trim().Length > 0)
+			    workingSb.AppendLine(line);
+	    }
+	    
+	    source.Clear();
+
+	    return source.Append(workingSb);
+
+	    void AppendIndent() => workingSb.Append(new string(' ', depth * indentSize));
+	}
+
+    /// <summary>
 	/// Finds all blocks like “@media (prefers-color-scheme: dark) { … }” blocks in this StringBuilder,
 	/// matching braces even if there are nested blocks inside.
 	/// </summary>
@@ -310,6 +482,7 @@ public static class StringBuilders
 
 		for (var x = 0; x < source.Length; x++)
 		{
+			// ReSharper disable once SuspiciousTypeConversion.Global
 			if (source.Substring(x, 1).Equals(character.Value) == false)
 				continue;
 

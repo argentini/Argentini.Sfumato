@@ -578,7 +578,7 @@ public sealed class AppRunner
 				sourceCss.ProcessDarkThemeClasses(this);
 			
 			//return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString().ConsolidateLineBreaks(AppRunnerSettings.LineBreak.Contains('\r'), workingSb);
-			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ToString();
+			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ReformatCss(workingSb).ToString();
 		}
 		finally
 		{
