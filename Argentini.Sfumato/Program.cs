@@ -1,6 +1,4 @@
 using System.Threading.Tasks.Dataflow;
-using CliWrap;
-using CliWrap.Buffered;
 
 namespace Argentini.Sfumato;
 
@@ -8,58 +6,108 @@ namespace Argentini.Sfumato;
 internal class Program
 {
 	private static readonly WeakMessenger Messenger = new ();
-	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 }
-	);
+
+	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
 	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
 	{
 		var appState = new AppState();
 
-		if (args.Length > 1)
+		// args = ["watch", "--path", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/"];
+
+		if (args.Length > 1 && args.Any(a => a.EndsWith(".css")) == false)
 		{
-			if (args.Any(a => a.EndsWith(".css")) == false)
+			#region Try to launch prior version
+			
+			try
 			{
-				#region Try to launch prior version
-				
-				try
+				var processStartInfo = new ProcessStartInfo
 				{
-					var result = await Cli.Wrap("sfumato-scss")
-						.WithArguments("version")
-						.WithValidation(CommandResultValidation.None)
-						.ExecuteBufferedAsync();
+					FileName = "sfumato-scss",
+					Arguments = string.Join(" ", args),
+					RedirectStandardInput = false,  // Redirect input
+					RedirectStandardOutput = true, // Redirect output
+					RedirectStandardError = true,  // Redirect error
+					UseShellExecute = false,       // Required for redirection
+					CreateNoWindow = false         // Ensure the console window is visible
+				};
 
-					if (result.ExitCode == 0)
+				using var process = Process.Start(processStartInfo);
+
+				if (process is not null)
+				{
+					// Redirect input
+					_ = Task.Run(async () =>
 					{
-						var sb = appState.StringBuilderPool.Get();
+						await using var inputWriter = process.StandardInput;
+						var buffer = new char[4096];
 
-						try
+						while (true)
 						{
-							var cmd = Cli.Wrap("sfumato-scss")
-								.WithArguments(args);
+							if (Console.IsInputRedirected)
+							{
+								if (Console.In.Peek() == -1)
+									continue;
 
-							await cmd.ExecuteAsync();
+								var charsRead = await Console.In.ReadAsync(buffer, 0, buffer.Length);
 
-							return;
+								if (charsRead <= 0)
+									continue;
+
+								if (buffer[0] == (char)27) // Check for ESCAPE key (ASCII 27)
+									break;
+
+								await inputWriter.WriteAsync(buffer, 0, charsRead);
+								await inputWriter.FlushAsync();
+							}
+							else if (Console.KeyAvailable)
+							{
+								var key = Console.ReadKey(intercept: true);
+
+								if (key.Key == ConsoleKey.Escape)
+									break;
+
+								await inputWriter.WriteAsync(key.KeyChar.ToString());
+								await inputWriter.FlushAsync();
+							}
 						}
-						catch
+					});
+
+					// Redirect output
+					_ = Task.Run(async () =>
+					{
+						using var outputReader = process.StandardOutput;
+
+						while (await outputReader.ReadLineAsync() is { } line)
 						{
-							await Console.Out.WriteLineAsync("Dart Sass is embedded but cannot be found.");
-							Environment.Exit(1);
+							await Console.Out.WriteLineAsync(line);
 						}
-						finally
+					});
+
+					// Redirect error
+					_ = Task.Run(async () =>
+					{
+						using var errorReader = process.StandardError;
+
+						while (await errorReader.ReadLineAsync() is { } line)
 						{
-							appState.StringBuilderPool.Return(sb);
+							await Console.Error.WriteLineAsync(line);
 						}
-					}
+					});
+
+					// Wait for the child process to exit
+					await process.WaitForExitAsync();
+
+					Environment.Exit(0); // Exit the parent process
 				}
-				catch
-				{
-					// ignored
-				}
-
-				#endregion
 			}
+			catch
+			{
+				// ignored
+			}
+
+			#endregion
 		}
 		
 		var totalTimer = new Stopwatch();
@@ -88,7 +136,8 @@ internal class Program
 #if DEBUG
 		//await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
 		//await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
-		await appState.InitializeAsync(["watch", "../../../../../Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
+		//await appState.InitializeAsync(["watch", "../../../../../Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
+		//await appState.InitializeAsync(["watch", "../../../../../Fynydd-Website-2024/UmbracoCms/"]);
 #else		
         await appState.InitializeAsync(args);
 #endif        
