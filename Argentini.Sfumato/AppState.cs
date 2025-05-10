@@ -6,12 +6,6 @@ namespace Argentini.Sfumato;
 
 public sealed class AppState
 {
-	#region Services
-	
-	static WeakMessenger Messenger = new ();
-	
-	#endregion
-
     #region Run Mode Properties
 
     public bool WatchMode { get; set; }
@@ -39,9 +33,9 @@ public sealed class AppState
 
     #region Entry Points
     
-    public async Task InitializeAsync(IEnumerable<string> args)
+    public async Task<string> InitializeAsync(IEnumerable<string> args)
     {
-	    await ProcessCliArgumentsAsync(args);
+	    return await ProcessCliArgumentsAsync(args);
     }
 
     #endregion
@@ -52,7 +46,7 @@ public sealed class AppState
 	/// Process CLI arguments and set properties accordingly.
 	/// </summary>
 	/// <param name="args"></param>
-	private async Task ProcessCliArgumentsAsync(IEnumerable<string>? args)
+	private async Task<string> ProcessCliArgumentsAsync(IEnumerable<string>? args)
 	{
         CliArguments.Clear();
 		CliArguments.AddRange(args?.ToList() ?? []);
@@ -65,57 +59,57 @@ public sealed class AppState
 			await Console.Out.WriteLineAsync("Invalid command specified; must be: help, init, version, build, or watch");
 			await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
 
-			Environment.Exit(1);
+			return string.Empty;
 		}			
 		
 		switch (CliArguments[0])
 		{
 			case "help":
 				HelpMode = true;
-				return;
+				return string.Empty;
 			case "version":
 				VersionMode = true;
-				return;
+				return string.Empty;
+			case "init":
+				InitMode = true;
+				return string.Empty;
 			case "watch":
 				WatchMode = true;
 				break;
-			case "init":
-				InitMode = true;
-				break;
 		}
 
-		if (CliArguments.Count > 1)
+		if (CliArguments.Count < 2)
+			return $"{CliErrorPrefix}Must include one or more CSS files";
+
+		for (var x = 1; x < CliArguments.Count; x++)
 		{
-			for (var x = 1; x < CliArguments.Count; x++)
+			if (string.IsNullOrEmpty(CliArguments[x]) || string.IsNullOrWhiteSpace(CliArguments[x]))
+				continue;
+				
+			var arg = CliArguments[x].SetNativePathSeparators();
+
+			if (arg.EndsWith(".css", StringComparison.OrdinalIgnoreCase) == false)
+				return $"{CliErrorPrefix}Invalid CSS file argument: {arg}";
+
+			if (File.Exists(arg))
 			{
-				if (string.IsNullOrEmpty(CliArguments[x]) || string.IsNullOrWhiteSpace(CliArguments[x]))
-					continue;
-				
-				var arg = CliArguments[x].SetNativePathSeparators();
+				var useMinify = CliArguments.Count >= x + 2 && CliArguments[x + 1] == "--minify";
 
-				if (arg.EndsWith(".css", StringComparison.OrdinalIgnoreCase) == false)
-					continue;
-				
-				if (File.Exists(arg))
-				{
-					var useMinify = CliArguments.Count >= x + 2 && CliArguments[x + 1] == "--minify";
+				if (useMinify)
+					x++;
 
-					if (useMinify)
-						x++;
-
-					AppRunners.Add(new AppRunner(this, arg, useMinify));
-				}
-				else
-				{
-					await Console.Out.WriteLineAsync($"{CliErrorPrefix}File not found: {arg}");
-
-					Environment.Exit(1);
-				}
+				AppRunners.Add(new AppRunner(this, arg, useMinify));
 			}
-
-			foreach (var appRunner in AppRunners)
-				await appRunner.LoadCssFileAsync();
+			else
+			{
+				return $"{CliErrorPrefix}CSS file not found: {arg}";
+			}
 		}
+
+		foreach (var appRunner in AppRunners)
+			await appRunner.LoadCssFileAsync();
+
+		return string.Empty;
 	}
 
     private static string GetEmbeddedCssPath()

@@ -18,93 +18,38 @@ internal class Program
 
 		if (args.Length > 1 && args.Any(a => a.EndsWith(".css")) == false)
 		{
-			#region Try to launch prior version
+			#region Try to launch SCSS (prior) version
 			
 			try
 			{
-				var processStartInfo = new ProcessStartInfo
+				var psi = new ProcessStartInfo("sfumato-scss", string.Join(' ', args))
 				{
-					FileName = "sfumato-scss",
-					Arguments = string.Join(" ", args),
-					RedirectStandardInput = false,  // Redirect input
-					RedirectStandardOutput = true, // Redirect output
-					RedirectStandardError = true,  // Redirect error
-					UseShellExecute = false,       // Required for redirection
-					CreateNoWindow = false         // Ensure the console window is visible
+					RedirectStandardInput  = false, // inherit console → interactive
+					RedirectStandardOutput = false, // inherit console → live output
+					RedirectStandardError  = false,
+					UseShellExecute        = false
 				};
 
-				using var process = Process.Start(processStartInfo);
+				using var proc = Process.Start(psi);
 
-				if (process is not null)
+				if (proc is null)
 				{
-					// Redirect input
-					_ = Task.Run(async () =>
-					{
-						await using var inputWriter = process.StandardInput;
-						var buffer = new char[4096];
-
-						while (true)
-						{
-							if (Console.IsInputRedirected)
-							{
-								if (Console.In.Peek() == -1)
-									continue;
-
-								var charsRead = await Console.In.ReadAsync(buffer, 0, buffer.Length);
-
-								if (charsRead <= 0)
-									continue;
-
-								if (buffer[0] == (char)27) // Check for ESCAPE key (ASCII 27)
-									break;
-
-								await inputWriter.WriteAsync(buffer, 0, charsRead);
-								await inputWriter.FlushAsync();
-							}
-							else if (Console.KeyAvailable)
-							{
-								var key = Console.ReadKey(intercept: true);
-
-								if (key.Key == ConsoleKey.Escape)
-									break;
-
-								await inputWriter.WriteAsync(key.KeyChar.ToString());
-								await inputWriter.FlushAsync();
-							}
-						}
-					});
-
-					// Redirect output
-					_ = Task.Run(async () =>
-					{
-						using var outputReader = process.StandardOutput;
-
-						while (await outputReader.ReadLineAsync() is { } line)
-						{
-							await Console.Out.WriteLineAsync(line);
-						}
-					});
-
-					// Redirect error
-					_ = Task.Run(async () =>
-					{
-						using var errorReader = process.StandardError;
-
-						while (await errorReader.ReadLineAsync() is { } line)
-						{
-							await Console.Error.WriteLineAsync(line);
-						}
-					});
-
-					// Wait for the child process to exit
-					await process.WaitForExitAsync();
-
-					Environment.Exit(0); // Exit the parent process
+					throw new Exception();
 				}
+
+				await proc.WaitForExitAsync();
+
+				Environment.ExitCode = proc.ExitCode;
+				return;
 			}
 			catch
 			{
-				// ignored
+				await Console.Out.WriteLineAsync("CLI arguments used are for legacy sfumato-scss; failed to start.");
+				await Console.Out.WriteLineAsync("Install the compatibility tool using:");
+				await Console.Out.WriteLineAsync("dotnet tool install --global argentini.sfumato-scss");
+				
+				Environment.Exit(1);
+				return;
 			}
 
 			#endregion
@@ -134,27 +79,33 @@ internal class Program
 		});
 
 #if DEBUG
-		//await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
-		//await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
-		//await appState.InitializeAsync(["watch", "../../../../../Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
-		//await appState.InitializeAsync(["watch", "../../../../../Fynydd-Website-2024/UmbracoCms/"]);
+		//var argumentErrorMessage = await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		//var argumentErrorMessage = await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		var argumentErrorMessage = await appState.InitializeAsync(["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
 #else		
-        await appState.InitializeAsync(args);
-#endif        
-		
+        var argumentErrorMessage = await appState.InitializeAsync(args);
+#endif
+
 		if (appState.VersionMode)
 		{
 			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
 			Environment.Exit(0);
+			return;
 		}
 		
-		await Console.Out.WriteLineAsync();
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 		await Console.Out.WriteLineAsync("Sfumato: A modern CSS generation tool");
 		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
-		
+
+		if (string.IsNullOrEmpty(argumentErrorMessage) == false)
+		{
+			await Console.Out.WriteLineAsync(argumentErrorMessage);
+			Environment.Exit(0);
+			return;
+		}
+
 		if (appState.InitMode)
 		{
 			/*
@@ -170,6 +121,7 @@ internal class Program
 			*/
 			
 			Environment.Exit(0);
+			return;
 		}
 		
 		if (appState.HelpMode)
@@ -240,6 +192,8 @@ internal class Program
             await Console.Out.WriteLineAsync();
 
 			Environment.Exit(0);
+
+			return;
 		}
 
 		foreach (var appRunner in appState.AppRunners)
