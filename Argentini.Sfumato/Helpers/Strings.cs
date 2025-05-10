@@ -349,6 +349,14 @@ public static partial class Strings
 	
 	#region Comparison	
 
+	public static bool StartsWithAny(this string? str, char[]? any)
+	{
+		if (string.IsNullOrEmpty(str) || any is null || any.Length == 0)
+			return false;
+
+		return str.AsSpan().IndexOfAny(any) == 0;
+	}
+	
 	/// <summary>
 	/// Determines if a string has a value (is not null and not empty).
 	/// </summary>
