@@ -423,6 +423,10 @@ public static class AppRunnerExtensions
 		
 		const string blockPrefix = "@media (prefers-color-scheme: dark) {";
 
+		char[] selectorPrefixes = [ '.', '#', '[', ':', '*', '>', '+', '~' ];
+		string[] prefixes = [ " ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "}", "{" ];
+		string[] suffixes = [ " ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "{" ];
+
 		try
 		{
 			foreach (var block in sourceCss.FindMediaBlocks(blockPrefix))
@@ -438,18 +442,59 @@ public static class AppRunnerExtensions
 				if (darkSb.Length > 0 && darkSb[^1] == '}')
 					darkSb.Remove(darkSb.Length - 1, 1);
 
-				foreach (var selector in block.GetCssSelectors().Distinct())
+				var distinctSelectors = block.GetCssSelectors().Distinct().ToList();
+				
+				foreach (var selector in distinctSelectors)
 				{
-					workingSb.Replace($"{selector}{{", $".theme-auto ---{selector}---, .theme-auto---{selector}---{{");
-					workingSb.Replace($"{selector},", $".theme-auto ---{selector}---, .theme-auto---{selector}---,");
-					workingSb.Replace($"{selector}{appRunner.AppRunnerSettings.LineBreak}", $".theme-auto ---{selector}---, .theme-auto---{selector}---{appRunner.AppRunnerSettings.LineBreak}");
-					workingSb.Replace($"{selector} ", $".theme-auto ---{selector}---, .theme-auto---{selector}--- ");
-					workingSb.Replace($"---{selector}---", selector);
+					if (selector.StartsWithAny(selectorPrefixes))
+					{
+						foreach (var suffix in suffixes)
+						{
+							var sel = $"{selector}{suffix}";
 
-					darkSb.Replace($"{selector}{{", $".theme-dark ---{selector}---, .theme-dark---{selector}---{{");
-					darkSb.Replace($"{selector},", $".theme-dark ---{selector}---, .theme-dark---{selector}---,");
-					darkSb.Replace($"{selector}{appRunner.AppRunnerSettings.LineBreak}", $".theme-dark ---{selector}---, .theme-dark---{selector}---{appRunner.AppRunnerSettings.LineBreak}");
-					darkSb.Replace($"{selector} ", $".theme-dark ---{selector}---, .theme-dark---{selector}--- ");
+							if (workingSb.StartsWith(sel))
+								workingSb.Remove(0, sel.Length).Insert(0, $".theme-auto ---{selector}---, .theme-auto---{selector}---{suffix}");
+	
+							if (darkSb.StartsWith(sel))
+								darkSb.Remove(0, sel.Length).Insert(0, $".theme-dark ---{selector}---, .theme-dark---{selector}---{suffix}");
+						}
+
+						foreach (var prefix in prefixes)
+						{
+							foreach (var suffix in suffixes)
+							{
+								workingSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-auto ---{selector}---, .theme-auto---{selector}---{suffix}");
+								darkSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-dark ---{selector}---, .theme-dark---{selector}---{suffix}");
+							}
+						}
+					}
+					else
+					{
+						foreach (var suffix in suffixes)
+						{
+							var sel = $"{selector}{suffix}";
+
+							if (workingSb.StartsWith(sel))
+								workingSb.Remove(0, sel.Length).Insert(0, $".theme-auto ---{selector}---{suffix}");
+	
+							if (darkSb.StartsWith(sel))
+								darkSb.Remove(0, sel.Length).Insert(0, $".theme-dark ---{selector}---{suffix}");
+						}
+
+						foreach (var prefix in prefixes)
+						{
+							foreach (var suffix in suffixes)
+							{
+								workingSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-auto ---{selector}---{suffix}");
+								darkSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-dark ---{selector}---{suffix}");
+							}
+						}
+					}
+				}
+
+				foreach (var selector in distinctSelectors)
+				{
+					workingSb.Replace($"---{selector}---", selector);
 					darkSb.Replace($"---{selector}---", selector);
 				}
 
