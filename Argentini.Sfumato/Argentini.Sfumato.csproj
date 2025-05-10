@@ -11,7 +11,7 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato-scss</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <PackageId>argentini.sfumato</PackageId>
+        <PackageId>argentini.sfumato-scss</PackageId>
         <Authors>Michael Argentini</Authors>
         <Company>Argentini Unlimited, Ltd.</Company>
         <PackageTags>Sass;SCSS;CSS;CLI;Responsive;HTML;UI;UX;Framework</PackageTags>
