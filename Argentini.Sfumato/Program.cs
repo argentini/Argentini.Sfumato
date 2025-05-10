@@ -1,4 +1,6 @@
 using System.Threading.Tasks.Dataflow;
+using CliWrap;
+using CliWrap.Buffered;
 
 namespace Argentini.Sfumato;
 
@@ -12,13 +14,60 @@ internal class Program
 	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
 	{
+		var appState = new AppState();
+
+		if (args.Length > 1)
+		{
+			if (args.Any(a => a.EndsWith(".css")) == false)
+			{
+				#region Try to launch prior version
+				
+				try
+				{
+					var result = await Cli.Wrap("sfumato-scss")
+						.WithArguments("version")
+						.WithValidation(CommandResultValidation.None)
+						.ExecuteBufferedAsync();
+
+					if (result.ExitCode == 0)
+					{
+						var sb = appState.StringBuilderPool.Get();
+
+						try
+						{
+							var cmd = Cli.Wrap("sfumato-scss")
+								.WithArguments(args);
+
+							await cmd.ExecuteAsync();
+
+							return;
+						}
+						catch
+						{
+							await Console.Out.WriteLineAsync("Dart Sass is embedded but cannot be found.");
+							Environment.Exit(1);
+						}
+						finally
+						{
+							appState.StringBuilderPool.Return(sb);
+						}
+					}
+				}
+				catch
+				{
+					// ignored
+				}
+
+				#endregion
+			}
+		}
+		
 		var totalTimer = new Stopwatch();
 
 		totalTimer.Start();
 		
 		Console.OutputEncoding = Encoding.UTF8;
 		
-		var appState = new AppState();
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
 		Messenger.Register<AppRunner>(async void (appRunner) =>
