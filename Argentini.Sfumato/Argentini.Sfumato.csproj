@@ -5,15 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-<<<<<<< HEAD
-        <AssemblyVersion>5.2.7.0</AssemblyVersion>
-        <FileVersion>5.2.7.0</FileVersion>
-        <PackageVersion>5.2.7</PackageVersion>
-=======
         <AssemblyVersion>6.0.0.0</AssemblyVersion>
         <FileVersion>6.0.0.0</FileVersion>
         <PackageVersion>6.0.0</PackageVersion>
->>>>>>> v6
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -32,34 +26,19 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-<<<<<<< HEAD
-        <PackageReleaseNotes>Can now specify alternate yml settings file names</PackageReleaseNotes>
-=======
         <PackageReleaseNotes>Initial release of version 6.0</PackageReleaseNotes>
->>>>>>> v6
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
-<<<<<<< HEAD
-        <PackageReference Include="HtmlAgilityPack" Version="1.12.0" />
-        <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.3" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.3" />
-        <PackageReference Include="CliWrap" Version="3.8.2" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.3" />
-        <PackageReference Include="YamlDotNet" Version="16.3.0" />
-=======
         <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
         <PackageReference Include="Mapster" Version="7.4.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.4" />
->>>>>>> v6
     </ItemGroup>
     
     <ItemGroup>
