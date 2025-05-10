@@ -1,4 +1,6 @@
-﻿namespace Argentini.Sfumato.Helpers;
+﻿using System.Globalization;
+
+namespace Argentini.Sfumato.Helpers;
 
 /// <summary>
 /// Various tools to make using StringBuilders more like using strings. 
@@ -412,15 +414,65 @@ public static class StringBuilders
 	/// <summary>
 	/// Determine if a StringBuilder object starts with a string.
 	/// </summary>
-	/// <param name="source">The StringBuilder object to evaluate</param>
-	/// <param name="substring">Substring to find</param>
-	/// <param name="caseInsensitive">Ignore case if true</param>
-	/// <returns>True is the StringBuilder object starts with the substring</returns>
-	public static bool StartsWith(this StringBuilder source, string substring, bool caseInsensitive = false)
+	/// <returns>True if the StringBuilder object starts with the substring</returns>
+	public static bool StartsWith(this StringBuilder? sb, string? prefix, StringComparison comparison = StringComparison.Ordinal)
 	{
-		return (caseInsensitive ? Substring(source, 0, substring.Length).ToUpper() : Substring(source, 0, substring.Length)) == (caseInsensitive ? substring.ToUpper() : substring);
-	}
+		if (sb is null)
+			return false;
+		
+		if (prefix is null)
+			return false;
 
+		var len = prefix.Length;
+	
+		if (len > sb.Length)
+			return false;
+
+		switch (comparison)
+        {
+            case StringComparison.Ordinal:
+                
+                for (var i = 0; i < len; i++)
+                    if (sb[i] != prefix[i])
+                        return false;
+                
+                return true;
+
+            case StringComparison.OrdinalIgnoreCase:
+                
+                for (var i = 0; i < len; i++)
+                    if (char.ToUpperInvariant(sb[i]) != char.ToUpperInvariant(prefix[i]))
+                        return false;
+                
+                return true;
+
+            case StringComparison.CurrentCulture:
+            case StringComparison.CurrentCultureIgnoreCase:
+            case StringComparison.InvariantCulture:
+            case StringComparison.InvariantCultureIgnoreCase:
+
+                Span<char> buffer = stackalloc char[len];
+                
+                for (var i = 0; i < len; i++)
+                    buffer[i] = sb[i];
+
+                var pattern = prefix.AsSpan();
+                var options = comparison is StringComparison.CurrentCultureIgnoreCase or StringComparison.InvariantCultureIgnoreCase
+                        ? CompareOptions.IgnoreCase
+                        : CompareOptions.None;
+                var culture = comparison is StringComparison.InvariantCulture or StringComparison.InvariantCultureIgnoreCase
+                        ? CultureInfo.InvariantCulture
+                        : CultureInfo.CurrentCulture;
+
+                return culture.CompareInfo.IsPrefix(buffer, pattern, options);
+
+            default:
+
+	            var segment = sb.ToString(0, len);
+                return segment.StartsWith(prefix, comparison);
+        }
+	}
+	
 	/// <summary>
 	/// Determine if a StringBuilder object ends with a string.
 	/// </summary>
