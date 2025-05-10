@@ -80,8 +80,8 @@ internal class Program
             await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Command Line Usage:".Length));
 
             const string cliUsageText = """
-                                        sfumato [help|version]
-                                        sfumato [build|watch] [options]
+                                        sfumato-scss [help|version]
+                                        sfumato-scss [build|watch] [options]
 
                                         Commands:
                                         """;
@@ -96,8 +96,7 @@ internal class Program
                                         help      : Show this help message
 
                                         * build and watch commands look in the current path for a `sfumato.yml`
-                                          settings file unless using the `--path` option; visit https://sfumato.app
-                                          for more information on creating a sfumato.yml settings file
+                                          settings file unless using the `--path` option
 
                                         Options:
                                         """;
@@ -106,7 +105,7 @@ internal class Program
 
             const string optionsText = """
                                        --path    : Follow with a relative or absolute path to/for your sfumato.yml
-                                                   settings file (e.g. `sfumato watch --path Code/MyProject`)
+                                                   settings file (e.g. `sfumato-scss watch --path Code/MyProject`)
                                        --minify  : Minify CSS output; use with build and watch commands
                                        """;
             optionsText.WriteToConsole(80);

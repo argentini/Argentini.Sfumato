@@ -23,7 +23,7 @@ public sealed class SfumatoSettings
         if (File.Exists(appState.SettingsFilePath) == false)
         {
             await Console.Out.WriteLineAsync($"Could not find ${appState.FileNameOverride} settings file at path {appState.WorkingPath}");
-            await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
+            await Console.Out.WriteLineAsync("Use command `sfumato-scss help` for assistance");
             Environment.Exit(1);
         }
 

@@ -4443,7 +4443,7 @@ public sealed class SfumatoAppState
 		CliArguments.Clear();
 		CliArguments.Add("build");
 		CliArguments.Add("--path");
-		CliArguments.Add(Path.Combine(workingPath[..index], "Coursabi", "Coursabi.Apps", "Coursabi.Apps.Client", "Coursabi.Apps.Client", "sfumato-nih.yml"));
+		CliArguments.Add(Path.Combine(workingPath[..index], "Coursabi", "Coursabi.Apps", "Coursabi.Apps.Client", "Coursabi.Apps.Client", "sfumato.yml"));
 		*/
         
 #endif
@@ -4454,7 +4454,7 @@ public sealed class SfumatoAppState
 		if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch" && CliArguments[0] != "init")
 		{
 			await Console.Out.WriteLineAsync("Invalid command specified; must be: help, init, version, build, or watch");
-			await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
+			await Console.Out.WriteLineAsync("Use command `sfumato-scss help` for assistance");
 			Environment.Exit(1);
 		}			
 		
