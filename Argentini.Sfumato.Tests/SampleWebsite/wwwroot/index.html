@@ -26,14 +26,14 @@
     <script src="./assets/js/charts-pie.js" defer></script>
   </head>
   <body>
-    <div class="outline-1.5 basis-0 top-16 !top-16 -top-16 !-top-16 text-[0.75rem]/1 text-lg/5    tabp:top-16 tabp:!top-16 tabp:-top-16 tabp:!-top-16    break-anywhere supports-backdrop-blur:bg-white/60 mobi:backdrop-blur blur-sm space-y-6 max-w-screen-xl -ml-6 sm:-ml-12 grow grow-0 shrink shrink-0 basis-full basis-96 text-balance text-base/6 leading-0 bg-repeat-x"></div>
+    <div class="outline-1.5 basis-0 top-16 top-16! -top-16 -top-16! text-[0.75rem]/1 text-lg/5    tabp:top-16 tabp:top-16! tabp:-top-16 tabp:-top-16!    break-anywhere supports-backdrop-blur:bg-white/60 mobi:backdrop-blur blur-sm space-y-6 max-w-screen-xl -ml-6 sm:-ml-12 grow grow-0 shrink shrink-0 basis-full basis-96 text-balance text-base/6 leading-0 bg-repeat-x"></div>
     <div
       class="flex h-screen bg-gray-50 dark:bg-gray-900"
       :class="{ 'overflow-hidden': isSideMenuOpen }"
     >
       <!-- Desktop sidebar -->
       <aside
-        class="z-20 min-w-40 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0"
+        class="z-20 min-w-40 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block shrink-0"
       >
         <div class="py-4 text-gray-500 dark:text-gray-400">
           <a
@@ -305,7 +305,7 @@
         class="fixed inset-0 z-10 flex items-end bg-black/50 sm:items-center sm:justify-center"
       ></div>
       <aside
-        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 md:hidden"
+        class="fixed inset-y-0 z-20 shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 md:hidden"
         x-show="isSideMenuOpen"
         x-transition:enter="transition ease-in-out duration-150"
         x-transition:enter-start="opacity-0 transform -translate-x-20"
@@ -624,7 +624,7 @@
                 />
               </div>
             </div>
-            <ul class="flex items-center flex-shrink-0 space-x-6">
+            <ul class="flex items-center shrink-0 space-x-6">
               <!-- Theme toggler -->
               <li class="flex">
                 <button
@@ -839,7 +839,7 @@
             </h2>
 
             <!-- CTA -->
-            <a class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple bg-gradient-to-b from-blue-700 from-30% via-violet-700 via-50% to-amber-500 to-90%" href="https://github.com/estevanmaito/windmill-dashboard">
+            <a class="flex items-center justify-between p-4 mb-8 text-sm font-semibold text-purple-100 bg-purple-600 rounded-lg shadow-md focus:outline-none focus:shadow-outline-purple bg-linear-to-b from-blue-700 from-30% via-violet-700 via-50% to-amber-500 to-90%" href="https://github.com/estevanmaito/windmill-dashboard">
               <div class="flex items-center">
                 <svg
                   class="w-5 h-5 mr-2"
@@ -1392,7 +1392,7 @@
                       </li>
                       <li>
                         <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
+                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple ring-2 ring-pink-300"
                         >
                           2
                         </button>
@@ -1406,7 +1406,7 @@
                       </li>
                       <li>
                         <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:ring-pink-300 focus:ring-2 focus:ring-inset"
+                          class="px-3 py-1 rounded-md focus:outline-none inset-ring-2 inset-ring-pink-300"
                         >
                           4
                         </button>

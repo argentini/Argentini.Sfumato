@@ -5,18 +5,24 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
+<<<<<<< HEAD
         <AssemblyVersion>5.2.7.0</AssemblyVersion>
         <FileVersion>5.2.7.0</FileVersion>
         <PackageVersion>5.2.7</PackageVersion>
+=======
+        <AssemblyVersion>6.0.0.0</AssemblyVersion>
+        <FileVersion>6.0.0.0</FileVersion>
+        <PackageVersion>6.0.0</PackageVersion>
+>>>>>>> v6
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>argentini.sfumato</PackageId>
         <Authors>Michael Argentini</Authors>
         <Company>Argentini Unlimited, Ltd.</Company>
-        <PackageTags>Sass;SCSS;CSS;CLI;Responsive;HTML;UI;UX;Framework</PackageTags>
+        <PackageTags>CSS;CLI;Responsive;Adaptive;HTML;UI;UX;Framework</PackageTags>
         <Description>
-            Sfumato is a lean, modern, utility-based CSS framework with relative UI scaling built-in. Create one simple "sfumato.yml" file for your web-based app or website project and run the Sfumato CLI command. It will watch you as you work, keep track of your markup changes, and generate a custom, tiny CSS library based on only what you use in your project. Sfumato has Dart Sass built-in (cross platform) so you gain all the benefits of SCSS logic and features as part of your stylesheet development. And Sfumato uses the same class naming convention as Tailwind CSS.
+            Sfumato is a lean, modern, utility-based CSS framework with relative UI scaling and adaptive design built-in. Add few lines to your CSS file and point Sfumato to the file and it will watch your project as you work, keeping track of changes, and generate a custom, tiny CSS file based only on what you use in your project. And Sfumato uses the same class naming convention as Tailwind CSS.
 
             Install dotnet 9 from https://dotnet.microsoft.com/en-us/download and then install Sfumato with the following command:
             
@@ -26,13 +32,18 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+<<<<<<< HEAD
         <PackageReleaseNotes>Can now specify alternate yml settings file names</PackageReleaseNotes>
+=======
+        <PackageReleaseNotes>Initial release of version 6.0</PackageReleaseNotes>
+>>>>>>> v6
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
+<<<<<<< HEAD
         <PackageReference Include="HtmlAgilityPack" Version="1.12.0" />
         <PackageReference Include="Mapster" Version="7.4.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
@@ -41,27 +52,30 @@
         <PackageReference Include="CliWrap" Version="3.8.2" />
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.3" />
         <PackageReference Include="YamlDotNet" Version="16.3.0" />
+=======
+        <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+        <PackageReference Include="Mapster" Version="7.4.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.4" />
+>>>>>>> v6
     </ItemGroup>
     
     <ItemGroup>
-        <None Include="scss\**" Exclude="**\.DS_Store">
+        <None Include="css\**" Exclude="**\.DS_Store">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Pack>true</Pack>
-            <PackagePath>contentFiles\any\any\scss\</PackagePath>
-        </None>
-        <None Include="sass\**" Exclude="**\.DS_Store">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Pack>true</Pack>
-            <PackagePath>contentFiles\any\any\sass\</PackagePath>
-        </None>
-        <None Include="yaml\**" Exclude="**\.DS_Store">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Pack>true</Pack>
-            <PackagePath>contentFiles\any\any\yaml\</PackagePath>
+            <PackagePath>contentFiles\any\any\css\</PackagePath>
         </None>
         <None Include="README.md" Pack="true" PackagePath="" />
         <None Include="LICENSE.txt" Pack="true" PackagePath="" />
         <None Include="sfumato-icon.png" Pack="true" PackagePath="" />
+        <None Update="css\defaults.css">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <Pack>true</Pack>
+          <PackagePath>contentFiles\any\any\css\</PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>

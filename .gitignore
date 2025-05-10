@@ -50,3 +50,4 @@ msbuild.wrn
 **/SampleWebsite/wwwroot/css/sfumato.css.map
 /Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/app.css
 /Argentini.Sfumato.Tests/SampleWebsite/wwwroot/index.html.css
+/Argentini.Sfumato.Tests/SampleCss/sfumato.css

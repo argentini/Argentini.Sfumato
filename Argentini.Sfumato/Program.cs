@@ -1,40 +1,65 @@
-using Mapster;
+using System.Threading.Tasks.Dataflow;
 
 namespace Argentini.Sfumato;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 internal class Program
 {
+	private static readonly WeakMessenger Messenger = new ();
+	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 }
+	);
+
+	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
 	{
-		var cancellationTokenSource = new CancellationTokenSource();
-		
 		var totalTimer = new Stopwatch();
 
 		totalTimer.Start();
 		
 		Console.OutputEncoding = Encoding.UTF8;
 		
-		var runner = new SfumatoRunner();
+		var appState = new AppState();
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
-        var sassVersion = await runner.AppState.GetEmbeddedSassVersionAsync();
 
-		await runner.InitializeAsync(args);
-        
-		if (runner.AppState.VersionMode)
+		Messenger.Register<AppRunner>(async void (appRunner) =>
+		{
+			try
+			{
+				foreach (var message in appRunner.Messages)
+					await Console.Out.WriteLineAsync(message);
+
+				appRunner.Messages.Clear();
+			}
+			catch
+			{
+				// Ignored
+			}
+		});
+
+#if DEBUG
+		//await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		//await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		await appState.InitializeAsync(["watch", "../../../../../Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
+#else		
+        await appState.InitializeAsync(args);
+#endif        
+		
+		if (appState.VersionMode)
 		{
 			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
-            await Console.Out.WriteLineAsync($"Dart Sass Version {sassVersion}");
 			Environment.Exit(0);
 		}
 		
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
-		await Console.Out.WriteLineAsync("Sfumato: The lean, modern, utility-based SCSS/CSS framework generation tool");
-		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()}) / Dart Sass {sassVersion} / {runner.AppState.UtilityClassCollection.Count:N0} Utility Classes");
+		await Console.Out.WriteLineAsync();
+		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
+		await Console.Out.WriteLineAsync("Sfumato: A modern CSS generation tool");
+		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
 		
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(SfumatoRunner.MaxConsoleWidth));
+		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 		
-		if (runner.AppState.InitMode)
+		if (appState.InitMode)
 		{
+<<<<<<< HEAD
             var yaml = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(runner.AppState.YamlPath, "sfumato-complete.yml"), SfumatoAppState.FileAccessRetryMs, cancellationTokenSource.Token);
 			
 			if (string.IsNullOrEmpty(runner.AppState.WorkingPathOverride) == false)
@@ -43,45 +68,66 @@ internal class Program
 			await File.WriteAllTextAsync(Path.Combine(runner.AppState.WorkingPath, runner.AppState.FileNameOverride), yaml, cancellationTokenSource.Token);
 			
 			await Console.Out.WriteLineAsync($"Created sfumato.yml file at {runner.AppState.WorkingPath}");
+=======
+			/*
+            var cssReferenceFile = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.EmbeddedCssPath, "example.css"), Library.FileAccessRetryMs, cancellationTokenSource.Token);
+
+			if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
+				appState.WorkingPath = appState.WorkingPathOverride;
+
+			await File.WriteAllTextAsync(Path.Combine(appState.WorkingPath, "example.css"), cssReferenceFile, cancellationTokenSource.Token);
+
+			await Console.Out.WriteLineAsync($"Created example.css file at {appState.WorkingPath}");
+>>>>>>> v6
 			await Console.Out.WriteLineAsync();
+			*/
 			
 			Environment.Exit(0);
 		}
 		
-		if (runner.AppState.HelpMode)
+		if (appState.HelpMode)
         {
             await Console.Out.WriteLineAsync();
 
             const string introText = """
-                                     Sfumato will recursively scan your project directory for SCSS files and transpile them._
-                                     It will also inject Sfumato styles into your generated CSS wherever the appropriate Sfumato directive is found:
+                                     Specify one or more CSS files and Sfumato will scan each for project settings._
+                                     It will then watch each project path for instances of valid utility classes as files are saved._
+                                     The result is an output CSS file containing only the styles for used utility classes, for each specified source CSS file:
                                      
-                                     Directives:
+                                     CSS Settings:
                                      """;
             introText.WriteToConsole(80);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Directives:".Length));
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("CSS Settings:".Length));
 
-            var directivesText = $$"""
-                                 {{Strings.TriangleRight}} `@sfumato base;`
-                                   Embed browser reset and base element styles
+            var directivesText =
+				$$"""
+				@theme sfumato {
+				    --paths: ["../Models/", "../Views/"];
+				    --output: "output.css";
+				    --not-paths: ["../Views/temp/"];
 
-                                 {{Strings.TriangleRight}} `@sfumato utilities;`
-                                   Embed utility classes based on which ones are being used in your project
-                                   files (configurable in a `sfumato.yml` settings file)
+				    --use-reset: true; /* Inject the CSS reset; default is true */
+				    --use-forms: true; /* Inject form input styles default is true */
+				    --use-minify: false; /* Compress the output CSS by default; default is false */
+				}
 
-                                 {{Strings.TriangleRight}} `@apply [class name] [...];`
-                                   Embed the styles for a specific utility class within your own classes;
-                                   used to create custom classes with one or more utility class styles
-                                   (e.g. `.heading { @apply text-2xl/5 bold }`)
+				{{Strings.TriangleRight}} `@apply [class name] [...];`
+				  Embed the styles for a specific utility class within your own classes;
+				  used to create custom classes with one or more utility class styles
+				  (e.g. `.heading { @apply text-2xl/5 bold; }`)
 
-                                 Command Line Usage:
-                                 """;
+				{{Strings.TriangleRight}} `@variant [variant name] { .. }`
+				  Use @media queries by variant name in your custom CSS code;
+				  (e.g. `@variant dark { heading { @apply text-2xl/5 bold; } }`)
+				
+				Command Line Usage:
+				""";
             directivesText.WriteToConsole(80);
             await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Command Line Usage:".Length));
 
             const string cliUsageText = """
                                         sfumato [help|version]
-                                        sfumato [build|watch] [options]
+                                        sfumato [build|watch] [file] [--minify] [file] [--minify] etc.
 
                                         Commands:
                                         """;
@@ -95,18 +141,11 @@ internal class Program
                                         version   : Show the sfumato version number
                                         help      : Show this help message
 
-                                        * build and watch commands look in the current path for a `sfumato.yml`
-                                          settings file unless using the `--path` option; visit https://sfumato.app
-                                          for more information on creating a sfumato.yml settings file
-
-                                        Options:
                                         """;
             commandsText.WriteToConsole(80);
-            await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Options:".Length));
 
             const string optionsText = """
-                                       --path    : Follow with a relative or absolute path to/for your sfumato.yml
-                                                   settings file (e.g. `sfumato watch --path Code/MyProject`)
+                                       [file]    : File path to a CSS file that has imported Sfumato
                                        --minify  : Minify CSS output; use with build and watch commands
                                        """;
             optionsText.WriteToConsole(80);
@@ -116,136 +155,126 @@ internal class Program
 			Environment.Exit(0);
 		}
 
+<<<<<<< HEAD
 		await Console.Out.WriteLineAsync($"Settings Path    :  {Path.Combine(runner.AppState.WorkingPath, runner.AppState.FileNameOverride)}");
 		await Console.Out.WriteLineAsync($"Theme Mode       :  {(runner.AppState.Settings.DarkMode.Equals("media", StringComparison.OrdinalIgnoreCase) ? "Media Query" : "CSS Classes")}");
 		await Console.Out.WriteLineAsync($"Transpile        :  {(runner.AppState.Minify ? "Minify" : "Expanded")}");
 		await Console.Out.WriteLineAsync($"Project Path     :  {runner.AppState.WorkingPath}");
 
 		if (runner.AppState.Settings.ProjectPaths.Count > 0)
+=======
+		foreach (var appRunner in appState.AppRunners)
+>>>>>>> v6
 		{
-			var paths = runner.AppState.StringBuilderPool.Get();
-	        
-			foreach (var path in runner.AppState.Settings.ProjectPaths)
+			var options =
+				(
+					(appRunner.AppRunnerSettings.UseReset ? "CSS Reset, " : string.Empty) +
+					(appRunner.AppRunnerSettings.UseForms ? "Forms CSS, " : string.Empty) +
+					(appRunner.AppRunnerSettings.UseMinify ? "Compressed Output, " : "Expanded Output, ")
+				).Trim(',', ' ');
+
+			var maxWidth = Library.MaxConsoleWidth - 15;
+			var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+			
+			await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
+			await Console.Out.WriteLineAsync($"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
+
+			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+			foreach (var path in appRunner.AppRunnerSettings.AbsolutePaths)
 			{
-				if (paths.Length > 0)
-					paths.Append("                 :  ");
-
-				var _path  = $".{path.Path.SetNativePathSeparators().TrimStart(runner.AppState.WorkingPath).TrimEndingPathSeparators()}{Path.DirectorySeparatorChar}{(path.Recurse ? $"**{Path.DirectorySeparatorChar}" : string.Empty)}*.{(path.ExtensionsList.Count == 1 ? path.Extensions : $"[{path.Extensions}]")}";
-
-                if (string.IsNullOrEmpty(path.IgnoreFolders) == false)
-                    _path += $" (ignore {path.IgnoreFolders.Trim()})";
-
-                _path += Environment.NewLine;
-
-                paths.Append(_path);
+				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+				await Console.Out.WriteLineAsync($"Path        :  {relativePath2}");
 			}
-	        
-			await Console.Out.WriteLineAsync($"Watch Path(s)    :  {paths.ToString().TrimEnd()}");
-			
-			runner.AppState.StringBuilderPool.Return(paths);
-		}        
 
-		await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat(SfumatoRunner.MaxConsoleWidth));
-
-		if (runner.AppState.DiagnosticMode)
-			runner.AppState.DiagnosticOutput.TryAdd("init000", $"Initialized app in {totalTimer.FormatTimer()}{Environment.NewLine}");
-		
-		totalTimer.Restart();
-
-		await Console.Out.WriteLineAsync($"Started build at {DateTime.Now:HH:mm:ss.fff}");
-
-		await runner.AppState.GatherWatchedFilesAsync();
-        await runner.PerformCoreBuildAsync(totalTimer);
-
-		#region Watcher Mode
-
-		if (runner.AppState.WatchMode)
-		{
-			var fileWatchers = new List<FileSystemWatcher>();
-			var restartAppQueue = new ConcurrentDictionary<long, FileChangeRequest>();
-			var rebuildProjectQueue = new ConcurrentDictionary<long, FileChangeRequest>();
-			var scssTranspileQueue = new ConcurrentDictionary<long, FileChangeRequest>();
-
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync($"Started watching for changes at {DateTime.Now:HH:mm:ss.fff}");
-			await Console.Out.WriteLineAsync();
-			
-			#region Create Watchers
-			
-			fileWatchers.Add(await CreateFileChangeWatcherAsync(restartAppQueue, new ProjectPath
+			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+			foreach (var path in appRunner.AppRunnerSettings.AbsoluteNotPaths)
 			{
+				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+				await Console.Out.WriteLineAsync($"Ignore      :  {relativePath2}");
+			}
+			
+			await Console.Out.WriteLineAsync(appRunner == appState.AppRunners.Last() ? Strings.ThickLine.Repeat(Library.MaxConsoleWidth) : Strings.DotLine.Repeat(Library.MaxConsoleWidth));
+		}
+
+		var tasks = new List<Task>();
+		
+		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+		foreach (var appRunner in appState.AppRunners)
+		{
+			await appRunner.AddCssPathMessageAsync();
+
+			tasks.Add(appRunner.PerformFileScanAsync());
+		}
+
+		await Task.WhenAll(tasks);
+		tasks.Clear();
+		
+		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+		foreach (var appRunner in appState.AppRunners)
+			tasks.Add(appRunner.BuildAndSaveCss());
+		
+		await Task.WhenAll(tasks);
+
+		totalTimer.Stop();
+		
+		// await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
+		// await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
+
+		if (appState.WatchMode)
+		{
+			do
+			{
+<<<<<<< HEAD
 				Path = runner.AppState.SettingsFilePath.TrimEnd(runner.AppState.FileNameOverride) ?? string.Empty,
 				Extensions = "yaml"
+=======
+				await Task.Delay(25);
+>>>>>>> v6
 				
-			}, false));
-			
-			foreach (var projectPath in runner.AppState.Settings.ProjectPaths)
-            {
-                if (projectPath.ExtensionsList.Count == 0 || Directory.Exists(projectPath.Path) == false)
-                    continue;
+			} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
 
-				if (projectPath.ExtensionsList.Count != 0 && projectPath.ExtensionsList.Contains("scss"))
-                {
-                    var newProjectPath = new ProjectPath
-                    {
-                        Path = projectPath.Path,
-                        Extensions = "scss",
-                        Recurse = projectPath.Recurse
-                    };
-                    
-					fileWatchers.Add(await CreateFileChangeWatcherAsync(scssTranspileQueue, newProjectPath, projectPath.Recurse));
+			await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
 
-                    projectPath.Extensions = projectPath.Extensions.TrimStart("scss,")?.TrimEnd(",scss")?.Replace(",scss,", ",") ?? string.Empty;
-                }
+			var cancellationTokenSource = new CancellationTokenSource();
 
-                if (projectPath.ExtensionsList.Count != 0 && projectPath.ExtensionsList.Contains("scss") == false)
-                {
-					fileWatchers.Add(await CreateFileChangeWatcherAsync(rebuildProjectQueue, projectPath, projectPath.Recurse));
-                }
+			// Support async stdin read
+			if (Console.IsInputRedirected)
+			{
+				// Read the stream without blocking the main thread.
+				// Check if the escape key is sent to the stdin stream.
+				// If it is, cancel the token source and exit the loop.
+				// This will allow interactive quit when input is redirected.
+				_ = Task.Run(async () =>
+				{
+					while (cancellationTokenSource.IsCancellationRequested == false)
+					{
+						try
+						{
+							await Task.Delay(25, cancellationTokenSource.Token);
+						}
+						catch (TaskCanceledException)
+						{
+							break;
+						}
+
+						if (Console.In.Peek() == -1)
+							continue;
+
+						if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
+							continue;
+
+						await cancellationTokenSource.CancelAsync();
+
+						break;
+					}
+				}, cancellationTokenSource.Token);
 			}
-			
-			#endregion
 
-			#region Watch
-
-			var watchTimer = new Stopwatch();
-
-            // Support async stdin read
-            if (Console.IsInputRedirected)
-            {
-                // Read the stream without blocking the main thread.
-                // Check if the escape key is sent to the stdin stream.
-                // If it is, cancel the token source and exit the loop.
-                // This will allow interactive quit when input is redirected.
-                _ = Task.Run(async () =>
-                {
-                    while (cancellationTokenSource.IsCancellationRequested == false)
-                    {
-                        try
-                        {
-                            await Task.Delay(25, cancellationTokenSource.Token);
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            break;
-                        }
-
-                        if (Console.In.Peek() == -1)
-                            continue;
-
-                        if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
-                            continue;
-
-                        await cancellationTokenSource.CancelAsync();
-                        break;
-                    }
-                }, cancellationTokenSource.Token);
-            }
+			foreach (var appRunner in appState.AppRunners)
+				await appRunner.StartWatchingAsync();
 			
 			while ((Console.IsInputRedirected || Console.KeyAvailable == false) && cancellationTokenSource.IsCancellationRequested == false)
 			{
-				var processedFiles = false;
-
 				try
 				{
 					await Task.Delay(25, cancellationTokenSource.Token);
@@ -254,6 +283,7 @@ internal class Program
 				{
 					break;
 				}
+<<<<<<< HEAD
 				
 				watchTimer.Restart();
 
@@ -552,11 +582,34 @@ internal class Program
 					await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
 					await Console.Out.WriteLineAsync();
 				}
+=======
+>>>>>>> v6
 
 				if (cancellationTokenSource.IsCancellationRequested)
 					break;
 
-				// Handle normal console input
+				var performedWork = false;
+				
+				foreach (var appRunner in appState.AppRunners)
+				{
+					var result = await appRunner.ProcessWatchQueues();
+
+					if (performedWork == false && result)
+						performedWork = true;
+				}
+
+				if (performedWork)
+				{
+					do
+					{
+						await Task.Delay(25, cancellationTokenSource.Token);
+				
+					} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
+
+					await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
+				}
+
+				// ReSharper disable once InvertIf
 				if (Console.IsInputRedirected == false)
 				{
 					if (Console.KeyAvailable == false)
@@ -572,85 +625,21 @@ internal class Program
 					break;
 				}
 			}
-			
-			#endregion
-
-			#region Cleanup Watchers
-			
-			foreach (var watcher in fileWatchers)
-				watcher.Dispose();
-
-			#endregion
-			
-			await Console.Out.WriteLineAsync($"Total watch time {TimeSpan.FromMilliseconds(totalTimer.ElapsedMilliseconds).FormatTimer()}");
 		}
 
-		#endregion
-		
-		if (runner.AppState.DiagnosticMode)
+		await Console.Out.WriteLineAsync();
+
+		if (appState.WatchMode)
 		{
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync("DIAGNOSTICS:");
-			await Console.Out.WriteLineAsync(string.Join(string.Empty, runner.AppState.DiagnosticOutput.OrderBy(d => d.Key).Select(v => v.Value)));
-		}
+			await Console.Out.WriteLineAsync("Shutting down...");
 
+			foreach (var appRunner in appState.AppRunners)
+				await appRunner.ShutDownWatchersAsync();
+		}
+		
+		await Console.Out.WriteLineAsync($"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}");
+		await Console.Out.WriteLineAsync();
+		
 		Environment.Exit(0);
 	}
-	
-    /// <summary>
-    /// Construct a file changes watcher.
-    /// </summary>
-    /// <param name="fileChangeQueue">scss or rebuild</param>
-    /// <param name="projectPath">Path tree to watch for file changes</param>
-    /// <param name="recurse">Also watch subdirectories</param>
-    private static async Task<FileSystemWatcher> CreateFileChangeWatcherAsync(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, ProjectPath projectPath, bool recurse)
-    {
-	    if (string.IsNullOrEmpty(projectPath.Path))
-	    {
-		    await Console.Out.WriteLineAsync("Fatal Error: No watch path specified");
-		    Environment.Exit(1);
-	    }
-        
-	    var filePath = projectPath.Path;
-	    var watcher = new FileSystemWatcher(filePath)
-        {
-            NotifyFilter = NotifyFilters.Attributes
-                           | NotifyFilters.CreationTime
-                           | NotifyFilters.FileName
-                           | NotifyFilters.LastWrite
-                           | NotifyFilters.Size
-        };
-
-        watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
-        watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
-        watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
-        watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, projectPath.Extensions, projectPath.IgnoreFolders);
-        
-        watcher.Filter = string.Empty;
-        watcher.IncludeSubdirectories = recurse;
-        watcher.EnableRaisingEvents = true;
-
-        return watcher;
-    }
-
-    /// <summary>
-    /// Add the change event to a queue for ordered processing.
-    /// </summary>
-    /// <param name="fileChangeQueue"></param>
-    /// <param name="e"></param>
-    /// <param name="extensions"></param>
-    private static async Task AddChangeToQueueAsync(ConcurrentDictionary<long, FileChangeRequest> fileChangeQueue, FileSystemEventArgs e, string extensions, string ignoreFolders)
-    {
-	    var newKey = DateTimeOffset.UtcNow.UtcTicks;
-	    var fcr = new FileChangeRequest
-	    {
-		    FileSystemEventArgs = e,
-            IgnoreFolders = ignoreFolders,
-		    Extensions = extensions
-	    };
-
-	    fileChangeQueue.TryAdd(newKey, fcr);
-
-	    await Task.CompletedTask;
-    }
 }

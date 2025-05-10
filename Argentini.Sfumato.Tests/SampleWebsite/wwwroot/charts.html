@@ -33,7 +33,7 @@
     >
       <!-- Desktop sidebar -->
       <aside
-        class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0"
+        class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block shrink-0"
       >
         <div class="py-4 text-gray-500 dark:text-gray-400">
           <a
@@ -305,7 +305,7 @@
         class="fixed inset-0 z-10 flex items-end bg-black/50 sm:items-center sm:justify-center"
       ></div>
       <aside
-        class="fixed inset-y-0 z-20 flex-shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 md:hidden"
+        class="fixed inset-y-0 z-20 shrink-0 w-64 mt-16 overflow-y-auto bg-white dark:bg-gray-800 md:hidden"
         x-show="isSideMenuOpen"
         x-transition:enter="transition ease-in-out duration-150"
         x-transition:enter-start="opacity-0 transform -translate-x-20"
@@ -624,7 +624,7 @@
                 />
               </div>
             </div>
-            <ul class="flex items-center flex-shrink-0 space-x-6">
+            <ul class="flex items-center shrink-0 space-x-6">
               <!-- Theme toggler -->
               <li class="flex">
                 <button

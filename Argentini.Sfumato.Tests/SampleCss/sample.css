@@ -1,0 +1,48 @@
+@import "partial.css";
+
+@theme sfumato {
+
+    --use-reset: true; /* Inject the CSS reset */
+    --use-forms: true; /* Inject form input styles */
+    --use-minify: false; /* Compress the output CSS by default */
+
+    --paths: ["./"]; /* Relative paths for project scanning; required */
+    --output-path: "sfumato.css"; /* Generated CSS file path; required */
+    --not-paths: []; /* Relative paths to exclude content scanning */
+
+    @utility tab-4 {
+        tab-size: 4;
+    }
+
+    @custom-variant phablet (@media (width >= 475px));
+    @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
+}
+
+.test {
+
+    display: block;
+    width: var(--breakpoint-sm);
+    background-color: var(--color-lime-600);
+
+    @apply leading-6\! text-base text-rose-400;
+    @apply tab-4;
+}
+
+@variant phablet {
+    .phablet-bg {
+        padding-top: --spacing(4);
+        background-color: --alpha(var(--color-lime-950) / 50%);
+    }
+}
+
+@variant dark {
+    .dark-bg {
+        background-color: var(--color-lime-800);
+    }
+}
+
+@variant tabp {
+    .tabp-display {
+        display: inline-block;
+    }
+}

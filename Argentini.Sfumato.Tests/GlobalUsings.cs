@@ -1,1 +1,9 @@
+global using System;
+global using System.Text;
+global using System.Collections;
 global using Xunit;
+global using Xunit.Abstractions;
+global using Argentini.Sfumato.Entities.CssClassProcessing;
+global using Argentini.Sfumato.Entities.Runners;
+global using Argentini.Sfumato.Entities.Scanning;
+global using Argentini.Sfumato.Helpers;

@@ -1,0 +1,59 @@
+// ReSharper disable RawStringCanBeSimplified
+
+namespace Argentini.Sfumato.Entities.UtilityClasses.Effects;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+public sealed class BoxShadow : ClassDictionaryBase
+{
+    public BoxShadow()
+    {
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
+        {
+            {
+                "shadow-", new ClassDefinition
+                {
+                    InAbstractValueCollection = true,
+                    Template =
+                        """
+                        box-shadow: {0};
+                        """,
+                    ArbitraryCssValueTemplate = 
+                        """
+                        box-shadow: {0};
+                        """,
+                }
+            },
+            {
+                "shadow-none", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = 
+                        """
+                        box-shadow: 0 0 #0000;
+                        """,
+                }
+            },
+        });
+    }
+
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {
+        foreach (var text in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--shadow-")))
+        {
+            var key = text.Key.Trim('-');
+            var value = new ClassDefinition
+            {
+                InSimpleUtilityCollection = true,
+                Template =
+                    $"""
+                    box-shadow: var({text.Key});
+                    """,
+            };
+
+            if (appRunner.Library.SimpleClasses.TryAdd(key, value))
+                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
+            else
+                appRunner.Library.SimpleClasses[key] = value;
+        }
+    }
+}
