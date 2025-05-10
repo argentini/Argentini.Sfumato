@@ -8,6 +8,7 @@ public sealed class AppState
 {
     #region Run Mode Properties
 
+    public bool BuildMode { get; set; }
     public bool WatchMode { get; set; }
     public bool VersionMode { get; set; }
     public bool InitMode { get; set; }
@@ -73,6 +74,9 @@ public sealed class AppState
 			case "init":
 				InitMode = true;
 				return string.Empty;
+			case "build":
+				BuildMode = true;
+				break;
 			case "watch":
 				WatchMode = true;
 				break;
