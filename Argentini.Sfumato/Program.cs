@@ -1,25 +1,27 @@
+// ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+// ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+// ReSharper disable ClassNeverInstantiated.Global
+
 using System.Threading.Tasks.Dataflow;
 
 namespace Argentini.Sfumato;
 
-// ReSharper disable once ClassNeverInstantiated.Global
 internal class Program
 {
 	private static readonly WeakMessenger Messenger = new ();
 
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
-	// ReSharper disable once UnusedParameter.Local
 	private static async Task Main(string[] args)
 	{
 		var appState = new AppState();
+
+		#region Launch SCSS (prior) version when args indicate
 
 		// args = ["watch", "--path", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/"];
 
 		if (args.Length > 1 && args.Any(a => a.EndsWith(".css")) == false)
 		{
-			#region Try to launch SCSS (prior) version
-			
 			try
 			{
 				var psi = new ProcessStartInfo("sfumato-scss", string.Join(' ', args))
@@ -51,10 +53,10 @@ internal class Program
 				Environment.Exit(1);
 				return;
 			}
-
-			#endregion
 		}
-		
+
+		#endregion
+
 		var totalTimer = new Stopwatch();
 
 		totalTimer.Start();
@@ -78,12 +80,16 @@ internal class Program
 			}
 		});
 
+		// ReSharper disable once RedundantAssignment
+		var argumentErrorMessage = string.Empty;
+		
 #if DEBUG
-		//var argumentErrorMessage = await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
-		//var argumentErrorMessage = await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
-		var argumentErrorMessage = await appState.InitializeAsync(["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
+		//argumentErrorMessage = await appState.InitializeAsync(args);
+		//argumentErrorMessage = await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		//argumentErrorMessage = await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
+		argumentErrorMessage = await appState.InitializeAsync(["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
 #else		
-        var argumentErrorMessage = await appState.InitializeAsync(args);
+        argumentErrorMessage = await appState.InitializeAsync(args);
 #endif
 
 		if (appState.VersionMode)
@@ -94,7 +100,7 @@ internal class Program
 		}
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
-		await Console.Out.WriteLineAsync("Sfumato: A modern CSS generation tool");
+		await Console.Out.WriteLineAsync("Sfumato: The Ultra-Fast CSS Generation Tool");
 		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
@@ -196,173 +202,178 @@ internal class Program
 			return;
 		}
 
-		foreach (var appRunner in appState.AppRunners)
+		if (appState.BuildMode || appState.WatchMode)
 		{
-			var options =
+			foreach (var appRunner in appState.AppRunners)
+			{
+				var options =
 				(
 					(appRunner.AppRunnerSettings.UseReset ? "CSS Reset, " : string.Empty) +
 					(appRunner.AppRunnerSettings.UseForms ? "Forms CSS, " : string.Empty) +
 					(appRunner.AppRunnerSettings.UseMinify ? "Compressed Output, " : "Expanded Output, ")
 				).Trim(',', ' ');
 
-			var maxWidth = Library.MaxConsoleWidth - 15;
-			var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath).TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
-			
-			await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
-			await Console.Out.WriteLineAsync($"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
+				var maxWidth = Library.MaxConsoleWidth - 15;
+				var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath)
+					.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 
-			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-			foreach (var path in appRunner.AppRunnerSettings.AbsolutePaths)
-			{
-				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
-				await Console.Out.WriteLineAsync($"Path        :  {relativePath2}");
-			}
+				await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
+				await Console.Out.WriteLineAsync(
+					$"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
 
-			// ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
-			foreach (var path in appRunner.AppRunnerSettings.AbsoluteNotPaths)
-			{
-				var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
-				await Console.Out.WriteLineAsync($"Ignore      :  {relativePath2}");
-			}
-			
-			await Console.Out.WriteLineAsync(appRunner == appState.AppRunners.Last() ? Strings.ThickLine.Repeat(Library.MaxConsoleWidth) : Strings.DotLine.Repeat(Library.MaxConsoleWidth));
-		}
-
-		var tasks = new List<Task>();
-		
-		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-		foreach (var appRunner in appState.AppRunners)
-		{
-			await appRunner.AddCssPathMessageAsync();
-
-			tasks.Add(appRunner.PerformFileScanAsync());
-		}
-
-		await Task.WhenAll(tasks);
-		tasks.Clear();
-		
-		// ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-		foreach (var appRunner in appState.AppRunners)
-			tasks.Add(appRunner.BuildAndSaveCss());
-		
-		await Task.WhenAll(tasks);
-
-		totalTimer.Stop();
-		
-		// await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
-		// await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
-
-		if (appState.WatchMode)
-		{
-			do
-			{
-				await Task.Delay(25);
-				
-			} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
-
-			await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
-
-			var cancellationTokenSource = new CancellationTokenSource();
-
-			// Support async stdin read
-			if (Console.IsInputRedirected)
-			{
-				// Read the stream without blocking the main thread.
-				// Check if the escape key is sent to the stdin stream.
-				// If it is, cancel the token source and exit the loop.
-				// This will allow interactive quit when input is redirected.
-				_ = Task.Run(async () =>
+				foreach (var path in appRunner.AppRunnerSettings.AbsolutePaths)
 				{
-					while (cancellationTokenSource.IsCancellationRequested == false)
-					{
-						try
-						{
-							await Task.Delay(25, cancellationTokenSource.Token);
-						}
-						catch (TaskCanceledException)
-						{
-							break;
-						}
+					var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d),
+						(int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+					await Console.Out.WriteLineAsync($"Path        :  {relativePath2}");
+				}
 
-						if (Console.In.Peek() == -1)
-							continue;
+				foreach (var path in appRunner.AppRunnerSettings.AbsoluteNotPaths)
+				{
+					var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d),
+						(int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+					await Console.Out.WriteLineAsync($"Ignore      :  {relativePath2}");
+				}
 
-						if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
-							continue;
-
-						await cancellationTokenSource.CancelAsync();
-
-						break;
-					}
-				}, cancellationTokenSource.Token);
+				await Console.Out.WriteLineAsync(appRunner == appState.AppRunners.Last()
+					? Strings.ThickLine.Repeat(Library.MaxConsoleWidth)
+					: Strings.DotLine.Repeat(Library.MaxConsoleWidth));
 			}
+
+			var tasks = new List<Task>();
 
 			foreach (var appRunner in appState.AppRunners)
-				await appRunner.StartWatchingAsync();
-			
-			while ((Console.IsInputRedirected || Console.KeyAvailable == false) && cancellationTokenSource.IsCancellationRequested == false)
 			{
-				try
+				await appRunner.AddCssPathMessageAsync();
+
+				tasks.Add(appRunner.PerformFileScanAsync());
+			}
+
+			await Task.WhenAll(tasks);
+			tasks.Clear();
+
+			foreach (var appRunner in appState.AppRunners)
+				tasks.Add(appRunner.BuildAndSaveCss());
+
+			await Task.WhenAll(tasks);
+
+			totalTimer.Stop();
+
+			// await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
+			// await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
+
+			if (appState.WatchMode)
+			{
+				do
 				{
-					await Task.Delay(25, cancellationTokenSource.Token);
-				}
-				catch (TaskCanceledException)
+					await Task.Delay(25);
+
+				} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
+
+				await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
+
+				var cancellationTokenSource = new CancellationTokenSource();
+
+				// Support async stdin read
+				if (Console.IsInputRedirected)
 				{
-					break;
+					// Read the stream without blocking the main thread.
+					// Check if the escape key is sent to the stdin stream.
+					// If it is, cancel the token source and exit the loop.
+					// This will allow interactive quit when input is redirected.
+					_ = Task.Run(async () =>
+					{
+						while (cancellationTokenSource.IsCancellationRequested == false)
+						{
+							try
+							{
+								await Task.Delay(25, cancellationTokenSource.Token);
+							}
+							catch (TaskCanceledException)
+							{
+								break;
+							}
+
+							if (Console.In.Peek() == -1)
+								continue;
+
+							if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
+								continue;
+
+							await cancellationTokenSource.CancelAsync();
+
+							break;
+						}
+					}, cancellationTokenSource.Token);
 				}
 
-				if (cancellationTokenSource.IsCancellationRequested)
-					break;
-
-				var performedWork = false;
-				
 				foreach (var appRunner in appState.AppRunners)
-				{
-					var result = await appRunner.ProcessWatchQueues();
+					await appRunner.StartWatchingAsync();
 
-					if (performedWork == false && result)
-						performedWork = true;
-				}
-
-				if (performedWork)
+				while ((Console.IsInputRedirected || Console.KeyAvailable == false) &&
+				       cancellationTokenSource.IsCancellationRequested == false)
 				{
-					do
+					try
 					{
 						await Task.Delay(25, cancellationTokenSource.Token);
-				
-					} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
+					}
+					catch (TaskCanceledException)
+					{
+						break;
+					}
 
-					await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
-				}
+					if (cancellationTokenSource.IsCancellationRequested)
+						break;
 
-				// ReSharper disable once InvertIf
-				if (Console.IsInputRedirected == false)
-				{
-					if (Console.KeyAvailable == false)
+					var performedWork = false;
+
+					foreach (var appRunner in appState.AppRunners)
+					{
+						var result = await appRunner.ProcessWatchQueues();
+
+						if (performedWork == false && result)
+							performedWork = true;
+					}
+
+					if (performedWork)
+					{
+						do
+						{
+							await Task.Delay(25, cancellationTokenSource.Token);
+
+						} while (appState.AppRunners.Any(r => r.Messages.Count != 0));
+
+						await Console.Out.WriteLineAsync("Watching; Press ESC to Exit");
+					}
+
+					if (Console.IsInputRedirected)
 						continue;
 					
+					if (Console.KeyAvailable == false)
+						continue;
+
 					var keyPress = Console.ReadKey(intercept: true);
 
 					if (keyPress.Key != ConsoleKey.Escape)
 						continue;
-					
+
 					await cancellationTokenSource.CancelAsync();
-					
+
 					break;
 				}
 			}
+
+			await Console.Out.WriteLineAsync();
+
+			if (appState.WatchMode)
+			{
+				await Console.Out.WriteLineAsync("Shutting down...");
+
+				foreach (var appRunner in appState.AppRunners)
+					await appRunner.ShutDownWatchersAsync();
+			}
 		}
 
-		await Console.Out.WriteLineAsync();
-
-		if (appState.WatchMode)
-		{
-			await Console.Out.WriteLineAsync("Shutting down...");
-
-			foreach (var appRunner in appState.AppRunners)
-				await appRunner.ShutDownWatchersAsync();
-		}
-		
 		await Console.Out.WriteLineAsync($"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}");
 		await Console.Out.WriteLineAsync();
 		
