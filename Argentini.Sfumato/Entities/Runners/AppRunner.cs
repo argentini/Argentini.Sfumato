@@ -577,7 +577,7 @@ public sealed class AppRunner
 			if (AppRunnerSettings.UseDarkThemeClasses)
 				sourceCss.ProcessDarkThemeClasses(this);
 			
-			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ReformatCss(workingSb).ToString();
+			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ReformatCss(workingSb).ToString().NormalizeLinebreaks(AppRunnerSettings.LineBreak);
 		}
 		finally
 		{
