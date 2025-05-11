@@ -133,13 +133,13 @@ internal class Program
 		if (appState.HelpMode)
         {
 			"""
-			Sfumato copies one or more specified CSS files to new output files that have additional styles for all utility class references in your project files._
-			You use the output files in your project instead of the originals._
-			It can do this once or watch project files for changes and regenerate the CSS as needed.
+			Sfumato copies one or more specified source CSS files to new output files that have additional styles for all utility class references in project files._
+			You then use the output files instead of the source CSS files._
+			Sfumato can build once or watch project files for changes and regenerate the CSS as needed.
 			
-			Additionally, Sfumato can build/watch multiple CSS files (projects) at once.
+			Additionally, Sfumato can build/watch multiple source CSS files at once!
 
-			Add a `@theme sfumato { }` block to the top of your CSS files to add project settings._
+			Add Sfumato project settings to your source CSS files by adding a `@theme sfumato { }` block to the top, but below any @import statements._
 			Run the `init` command (below) to create an example CSS file in the current path.
 			
 			USAGE:
