@@ -114,17 +114,13 @@ internal class Program
 
 		if (appState.InitMode)
 		{
-			/*
-            var cssReferenceFile = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.EmbeddedCssPath, "example.css"), Library.FileAccessRetryMs, cancellationTokenSource.Token);
+            var cssReferenceFile = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(appState.EmbeddedCssPath, "sfumato-example.css"), Library.FileAccessRetryMs);
 
-			if (string.IsNullOrEmpty(appState.WorkingPathOverride) == false)
-				appState.WorkingPath = appState.WorkingPathOverride;
+			await File.WriteAllTextAsync(Path.Combine(appState.WorkingPath, "sfumato-example.css"), cssReferenceFile);
 
-			await File.WriteAllTextAsync(Path.Combine(appState.WorkingPath, "example.css"), cssReferenceFile, cancellationTokenSource.Token);
-
-			await Console.Out.WriteLineAsync($"Created example.css file at {appState.WorkingPath}");
 			await Console.Out.WriteLineAsync();
-			*/
+			await Console.Out.WriteLineAsync($"Created sfumato-example.css file at {appState.WorkingPath}");
+			await Console.Out.WriteLineAsync();
 			
 			Environment.Exit(0);
 			return;
