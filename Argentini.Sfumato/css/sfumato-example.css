@@ -1,0 +1,74 @@
+/*
+    SFUMATO Example CSS File
+    ========================
+
+    @import statements must be first; Sfumato imports them at build time so
+    you can use Sfumato functions and directives in them (e.g. @apply).
+*/
+
+@import "sample/my-partial.css";
+
+@theme sfumato {
+
+    /*
+        Settings not marked "REQUIRED" can be deleted if you're not changing
+        their values.
+    
+        Settings marked "EXAMPLE" are just examples that should also be deleted.
+    */
+    
+    /* Inject the CSS reset */
+    --use-reset: true;
+
+    /* Inject form input styles */
+    --use-forms: true;
+
+    /* Compress the output CSS by default */
+    --use-minify: false;
+
+    /*
+        When true, dark mode is triggered by html.theme-auto
+        (when prefers-color-scheme: dark) and html.theme-dark.
+        
+        When false, "prefers-color-scheme: dark" triggers dark mode.
+    */
+    --use-dark-theme-classes: false;
+
+    /* REQUIRED: Paths for project scanning, relative to this CSS file */
+    --paths: ["../example-1/", "../example-2/"];
+
+    /* Paths to exclude from content scanning, relative to this CSS file */
+    --not-paths: ["../example"];
+
+    /* Folder names to exclude from content scanning */
+    --not-folder-names: [".git", "bin", "log", "logs", "node_modules", "obj", "publish", "temp"];
+
+    /* REQUIRED: Generated CSS file path, relative to this CSS file */
+    --output-path: "sfumato.css";
+
+    /* EXAMPLE: Add custom named colors */
+    --color-primary: oklch(62.3% .214 259.815);
+    --color-canvas: white;
+    --color-dark-canvas: #0e1c29;
+    
+    /* EXAMPLE: Add custom utility classes */
+    @utility tab-4 {
+        tab-size: 4;
+    }
+
+    /* EXAMPLE: Add custom @media or pseudo class variants */
+    @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
+    @custom-variant widescreen (@media (width >= 96rem));
+}
+
+/* EXAMPLE: Use a variant in your CSS file */
+@variant md {
+
+    .body-text {
+
+        /* EXAMPLE: Use utility classes in your CSS file */
+        @apply text-base/6 text-black;
+    }
+}
+
+/* The rest of your CSS goes here */

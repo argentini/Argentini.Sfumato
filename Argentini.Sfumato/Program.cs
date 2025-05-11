@@ -84,10 +84,10 @@ internal class Program
 		var argumentErrorMessage = string.Empty;
 		
 #if DEBUG
-		//argumentErrorMessage = await appState.InitializeAsync(args);
+		argumentErrorMessage = await appState.InitializeAsync(args);
 		//argumentErrorMessage = await appState.InitializeAsync(["watch", "../../../../Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css", "../../../../Argentini.Sfumato.Tests/SampleCss/sample.css", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
 		//argumentErrorMessage = await appState.InitializeAsync(["build", "../../../../../Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
-		argumentErrorMessage = await appState.InitializeAsync(["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
+		//argumentErrorMessage = await appState.InitializeAsync(["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
 #else		
         argumentErrorMessage = await appState.InitializeAsync(args);
 #endif
@@ -132,69 +132,65 @@ internal class Program
 		
 		if (appState.HelpMode)
         {
-            await Console.Out.WriteLineAsync();
+			"""
+			Sfumato copies one or more specified CSS files to new output files that have additional styles for all utility class references in your project files._
+			You use the output files in your project instead of the originals._
+			It can do this once or watch project files for changes and regenerate the CSS as needed.
+			
+			Additionally, Sfumato can build/watch multiple CSS files (projects) at once.
 
-            const string introText = """
-                                     Specify one or more CSS files and Sfumato will scan each for project settings._
-                                     It will then watch each project path for instances of valid utility classes as files are saved._
-                                     The result is an output CSS file containing only the styles for used utility classes, for each specified source CSS file:
-                                     
-                                     CSS Settings:
-                                     """;
-            introText.WriteToConsole(80);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("CSS Settings:".Length));
+			Add a `@theme sfumato { }` block to the top of your CSS files to add project settings._
+			Run the `init` command (below) to create an example CSS file in the current path.
+			
+			USAGE:
+			""".WriteToConsole(Library.MaxConsoleWidth);
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("USAGE:".Length));
 
-            var directivesText =
-				$$"""
-				@theme sfumato {
-				    --paths: ["../Models/", "../Views/"];
-				    --output: "output.css";
-				    --not-paths: ["../Views/temp/"];
+			"""
+			sfumato [command] [options]
 
-				    --use-reset: true; /* Inject the CSS reset; default is true */
-				    --use-forms: true; /* Inject form input styles default is true */
-				    --use-minify: false; /* Compress the output CSS by default; default is false */
-				}
+			COMMANDS:
+			""".WriteToConsole(Library.MaxConsoleWidth);
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("COMMANDS:".Length));
 
-				{{Strings.TriangleRight}} `@apply [class name] [...];`
-				  Embed the styles for a specific utility class within your own classes;
-				  used to create custom classes with one or more utility class styles
-				  (e.g. `.heading { @apply text-2xl/5 bold; }`)
+			"""
+			help     : Show this help message
+			init     : Create sfumato-example.css file in the current path
+			version  : Show the Sfumato version number
+			build    : Perform a build of the specified file(s)
+			watch    : Perform a build of the specified file(s) and watch for changes
 
-				{{Strings.TriangleRight}} `@variant [variant name] { .. }`
-				  Use @media queries by variant name in your custom CSS code;
-				  (e.g. `@variant dark { heading { @apply text-2xl/5 bold; } }`)
-				
-				Command Line Usage:
-				""";
-            directivesText.WriteToConsole(80);
-            await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Command Line Usage:".Length));
+			OPTIONS:
+			""".WriteToConsole(Library.MaxConsoleWidth);
+            await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("OPTIONS:".Length));
 
-            const string cliUsageText = """
-                                        sfumato [help|version]
-                                        sfumato [build|watch] [file] [--minify] [file] [--minify] etc.
+			"""
+			[file]   : Path to a CSS file that has Sfumato project settings
+			--minify : Minify CSS output; overrides project setting
 
-                                        Commands:
-                                        """;
-            cliUsageText.WriteToConsole(80);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("Commands:".Length));
+			Options must be specified as [file] [--minify] and repeat in pairs.
+			
+			EXAMPLE:
+			""".WriteToConsole(Library.MaxConsoleWidth);
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("EXAMPLE:".Length));
+			
+			"""
+			sfumato watch client/css/source.css --minify server/css/source.css --minify
 
-            const string commandsText = """
-                                        init      : Create a sample sfumato.yml file (can use --path)
-                                        build     : Perform a single complete build
-                                        watch     : Perform a complete build and then watch for changes
-                                        version   : Show the sfumato version number
-                                        help      : Show this help message
-
-                                        """;
-            commandsText.WriteToConsole(80);
-
-            const string optionsText = """
-                                       [file]    : File path to a CSS file that has imported Sfumato
-                                       --minify  : Minify CSS output; use with build and watch commands
-                                       """;
-            optionsText.WriteToConsole(80);
-
+			COMPATIBILITY:
+			""".WriteToConsole(Library.MaxConsoleWidth);
+			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("COMPATIBILITY:".Length));
+			
+			"""
+			If you need to continue to use the prior version of Sfumato, install the sfumato-scss compatibility tool._
+			This allows the `sfumato` command to launch the older version when it sees CLI arguments for that version._
+			Install the compatibility tool with the command below: 
+			
+			dotnet tool install --global argentini.sfumato-scss
+			
+			This older version can also be run by itself with the command `sfumato-scss`.
+			""".WriteToConsole(Library.MaxConsoleWidth);
+			
             await Console.Out.WriteLineAsync();
 
 			Environment.Exit(0);
