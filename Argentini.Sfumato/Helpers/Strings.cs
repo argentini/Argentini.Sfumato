@@ -1548,6 +1548,19 @@ public static partial class Strings
 	}
 
 	/// <summary>
+	/// Convert a web color to a rgba() value.
+	/// Handles rgb() and hex colors.
+	/// Optionally set a new opacity value (0-100).
+	/// </summary>
+	/// <param name="color"></param>
+	/// <param name="opacityPct"></param>
+	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
+	public static string SetWebColorAlphaByPercentage(this string color, double opacityPct)
+	{
+		return color.SetWebColorAlpha(opacityPct / 100);
+	}
+
+	/// <summary>
 	/// Add an alpha value to a web color (hex, rgb, rgba, oklch, etc.).
 	/// </summary>
 	/// <param name="color"></param>
