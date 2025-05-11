@@ -26,6 +26,9 @@
     /* Compress the output CSS by default */
     --use-minify: false;
 
+    /* Will use more compatible styles (e.g. avoid color-mix(), etc.) */
+    --use-compatibility-mode: true;
+
     /*
         When true, dark mode is triggered by html.theme-auto
         (when prefers-color-scheme: dark) and html.theme-dark.

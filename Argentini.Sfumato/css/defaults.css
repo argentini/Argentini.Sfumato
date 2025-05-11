@@ -4,6 +4,7 @@
     --use-forms: true; /* Inject form input styles */
     --use-minify: false; /* Compress the output CSS by default */
     --use-dark-theme-classes: false; /* Dark mode triggered by html.theme-auto (when prefers-color-scheme: dark), and html.theme-dark */
+    --use-compatibility-mode: true; /* Will use more compatible styles (e.g. avoid color-mix(), etc.) */
 
     --paths: []; /* Relative paths for project scanning; required */
     --not-paths: []; /* Relative paths to exclude from content scanning */

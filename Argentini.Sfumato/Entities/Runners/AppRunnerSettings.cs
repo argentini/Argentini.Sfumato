@@ -56,6 +56,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	public bool UseReset { get; set; } = true;
 	public bool UseForms { get; set; } = true;
 	public bool UseDarkThemeClasses { get; set; }
+	public bool UseCompatibilityMode { get; set; }
 
 	public string NativeCssFilePath { get; private set; } = string.Empty;
 	public string NativeCssFilePathOnly { get; private set; } = string.Empty;
@@ -252,6 +253,9 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 		    if (SfumatoBlockItems.TryGetValue("--use-dark-theme-classes", out var useDarkThemeClasses))
 			    UseDarkThemeClasses = useDarkThemeClasses.Equals("true", StringComparison.Ordinal);
+
+		    if (SfumatoBlockItems.TryGetValue("--use-compatibility-mode", out var useCompatibilityMode))
+			    UseCompatibilityMode = useCompatibilityMode.Equals("true", StringComparison.Ordinal);
 
 		    if (SfumatoBlockItems.TryGetValue("--output-path", out var outputPath))
 			    CssOutputFilePath = (string.IsNullOrEmpty(outputPath) ? "sfumato.css" : outputPath).Trim('\"');

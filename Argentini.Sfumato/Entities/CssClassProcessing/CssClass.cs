@@ -621,15 +621,22 @@ public sealed class CssClass : IDisposable
                             
                             if (pct < 100)
                             {
-                                if (colorValue.Contains("oklch"))
-                                    Value = $"color-mix(in oklab, var(--color-{value}) {pct}%, transparent)";
-                                else if (colorValue.Contains("rgb") || colorValue.Contains('#'))
-                                    Value = $"color-mix(in srgb, var(--color-{value}) {pct}%, transparent)";
+                                if (AppRunner.AppRunnerSettings.UseCompatibilityMode)
+                                {
+                                    Value = colorValue.SetWebColorAlphaByPercentage(pct);
+                                }
                                 else
                                 {
-                                    var colorSpace = AppRunner.Library.ColorSpaces.FirstOrDefault(c => colorValue.Contains(c));
+                                    if (colorValue.Contains("oklch"))
+                                        Value = $"color-mix(in oklab, var(--color-{value}) {pct}%, transparent)";
+                                    else if (colorValue.Contains("rgb") || colorValue.Contains('#'))
+                                        Value = $"color-mix(in srgb, var(--color-{value}) {pct}%, transparent)";
+                                    else
+                                    {
+                                        var colorSpace = AppRunner.Library.ColorSpaces.FirstOrDefault(c => colorValue.Contains(c));
 
-                                    Value = colorSpace is not null ? $"color-mix(in {colorSpace}, var(--color-{value}) {pct}%, transparent)" : colorValue.SetWebColorAlpha(pct);
+                                        Value = colorSpace is not null ? $"color-mix(in {colorSpace}, var(--color-{value}) {pct}%, transparent)" : colorValue.SetWebColorAlphaByPercentage(pct);
+                                    }
                                 }
                             }
                             else
