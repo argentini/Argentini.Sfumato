@@ -627,8 +627,7 @@ public sealed class CssClass : IDisposable
                                     Value = $"color-mix(in srgb, var(--color-{value}) {pct}%, transparent)";
                                 else
                                 {
-                                    var colorSpaces = new [] { "srgb-linear", "display-p3", "a98-rgb", "prophoto-rgb", "rec2020", "oklab", "xyz-d50", "xyz-d65", "xyz", "hsl", "hwb", "lch", "lab" };
-                                    var colorSpace = colorSpaces.FirstOrDefault(c => colorValue.Contains(c));
+                                    var colorSpace = AppRunner.Library.ColorSpaces.FirstOrDefault(c => colorValue.Contains(c));
 
                                     Value = colorSpace is not null ? $"color-mix(in {colorSpace}, var(--color-{value}) {pct}%, transparent)" : colorValue.SetWebColorAlpha(pct);
                                 }
