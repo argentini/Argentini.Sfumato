@@ -68,6 +68,15 @@
 
         /* EXAMPLE: Use utility classes in your CSS file */
         @apply text-base/6 text-black;
+
+        /* EXAMPLE: Use --alpha() to use a named color with opacity */
+        color: --alpha(var(--color-lime-500) / 15%);
+
+        /*
+            EXAMPLE: Use --spacing() for spacing lengths;
+            equivalent to calc(var(--spacing) * 4)
+        */
+        padding-top: --spacing(4);
     }
 }
 
