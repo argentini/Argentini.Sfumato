@@ -1,1 +1,1 @@
-dotnet run --project Argentini.Sfumato\Argentini.Sfumato.csproj help
+dotnet run --project Argentini.Sfumato\Argentini.Sfumato.csproj -- help

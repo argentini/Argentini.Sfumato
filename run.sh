@@ -1,1 +1,1 @@
-dotnet run -c Release --project Argentini.Sfumato/Argentini.Sfumato.csproj build Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css
+dotnet run --configuration Release --project Argentini.Sfumato/Argentini.Sfumato.csproj -- build Argentini.Sfumato.Tests/SampleWebsite/wwwroot/css/source.css
