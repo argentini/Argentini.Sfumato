@@ -11,6 +11,7 @@ public sealed class AppRunner
 	public string LastCss { get; set; } = string.Empty;
 	public List<string> Messages { get; } = [];
 	public bool MessagesBusy { get; set; }
+	public bool ProcessingWatchQueue { get; set; }
 	public bool IsFirstRun { get; set; } = true;
 	
 	public AppState AppState { get; }
@@ -635,19 +636,20 @@ public sealed class AppRunner
 	{
 		await ShutDownWatchersAsync();
 		
-		FileWatchers.Add(await CreateFileChangeWatcherAsync(RestartAppQueue, AppRunnerSettings.NativeCssFilePathOnly, true));
+		FileWatchers.Add(await CreateFileChangeWatcherAsync(RestartAppQueue, AppRunnerSettings.NativeCssFilePathOnly, true, this));
 			
 		foreach (var projectPath in AppRunnerSettings.AbsolutePaths)
-			FileWatchers.Add(await CreateFileChangeWatcherAsync(RebuildProjectQueue, projectPath, true));
+			FileWatchers.Add(await CreateFileChangeWatcherAsync(RebuildProjectQueue, projectPath, true, this));
 	}
-	
+
 	/// <summary>
 	/// Construct a file changes watcher.
 	/// </summary>
 	/// <param name="fileChangeQueue">scss or rebuild</param>
 	/// <param name="projectPath">Path tree to watch for file changes</param>
 	/// <param name="recurse">Also watch subdirectories</param>
-	private static async Task<FileSystemWatcher> CreateFileChangeWatcherAsync(ConcurrentDictionary<long, FileSystemEventArgs> fileChangeQueue, string projectPath, bool recurse)
+	/// <param name="appRunner"></param>
+	private static async Task<FileSystemWatcher> CreateFileChangeWatcherAsync(ConcurrentDictionary<long, FileSystemEventArgs> fileChangeQueue, string projectPath, bool recurse, AppRunner appRunner)
 	{
 		if (string.IsNullOrEmpty(projectPath))
 		{
@@ -664,10 +666,10 @@ public sealed class AppRunner
 			               | NotifyFilters.Size
 		};
 
-		watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
-		watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
-		watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
-		watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e);
+		watcher.Changed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, appRunner);
+		watcher.Created += async(_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, appRunner);
+		watcher.Deleted += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, appRunner);
+		watcher.Renamed += async (_, e) => await AddChangeToQueueAsync(fileChangeQueue, e, appRunner);
         
 		watcher.Filter = string.Empty;
 		watcher.IncludeSubdirectories = recurse;
@@ -681,8 +683,12 @@ public sealed class AppRunner
 	/// </summary>
 	/// <param name="fileChangeQueue"></param>
 	/// <param name="e"></param>
-	private static async Task AddChangeToQueueAsync(ConcurrentDictionary<long, FileSystemEventArgs> fileChangeQueue, FileSystemEventArgs e)
+	/// <param name="appRunner"></param>
+	private static async Task AddChangeToQueueAsync(ConcurrentDictionary<long, FileSystemEventArgs> fileChangeQueue, FileSystemEventArgs e, AppRunner appRunner)
 	{
+		while (appRunner.ProcessingWatchQueue)
+			await Task.Delay(25);
+		
 		var newKey = DateTimeOffset.UtcNow.UtcTicks;
 
 		fileChangeQueue.TryAdd(newKey, e);
@@ -708,6 +714,11 @@ public sealed class AppRunner
 	
 	public async Task<bool> ProcessWatchQueues()
 	{
+		while (ProcessingWatchQueue)
+			await Task.Delay(25);
+
+		ProcessingWatchQueue = true;
+		
 		var performRebuild = ImportChangesPending();
 		var performedWork = performRebuild;
 		
@@ -778,8 +789,10 @@ public sealed class AppRunner
 		if (RebuildProjectQueue.IsEmpty == false)
 		{
 			var messages = new List<string>();
+
+			var rebuildProjectQueue = RebuildProjectQueue.ToList();
 			
-			foreach (var kvp in RebuildProjectQueue.OrderBy(k => k.Key))
+			foreach (var kvp in rebuildProjectQueue.OrderBy(k => k.Key))
 			{
 				var fcr = kvp.Value;
 				var extension = Path.GetExtension(fcr.Name) ?? string.Empty;
@@ -846,11 +859,19 @@ public sealed class AppRunner
 				}
 			}
 
-			RebuildProjectQueue.Clear();
+			if (rebuildProjectQueue.Count == RebuildProjectQueue.Count)
+				RebuildProjectQueue.Clear();
+			else
+				foreach (var item in rebuildProjectQueue)
+					RebuildProjectQueue.Remove(item.Key, out _);
 
 			if (messages.Count == 0)
+			{
+				ProcessingWatchQueue = false;
+
 				return performedWork;
-			
+			}
+
 			await AddCssPathMessageAsync();
 
 			foreach (var message in messages)
@@ -864,6 +885,8 @@ public sealed class AppRunner
 			if (performedWork == false)
 				performedWork = true;
 		}
+
+		ProcessingWatchQueue = false;
 
 		return performedWork;
 	}
