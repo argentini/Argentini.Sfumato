@@ -10,50 +10,53 @@
 
 @theme sfumato {
 
-    /*
-        Settings not marked "REQUIRED" should be deleted if you're not changing
-        their values.
-    
-        Settings marked "EXAMPLE" are just examples that should also be deleted.
-    */
-    
-    /* Inject the CSS reset */
-    --use-reset: true;
+    :root {
 
-    /* Inject form input styles */
-    --use-forms: true;
-
-    /* Compress the output CSS by default */
-    --use-minify: false;
-
-    /* Will use more compatible styles (e.g. avoid color-mix(), etc.) */
-    --use-compatibility-mode: true;
-
-    /*
-        When true, dark mode is triggered by html.theme-auto
-        (when prefers-color-scheme: dark) and html.theme-dark.
+        /*
+            Settings not marked "REQUIRED" should be deleted if you're not changing
+            their values.
         
-        When false, "prefers-color-scheme: dark" triggers dark mode.
-    */
-    --use-dark-theme-classes: false;
+            Settings marked "EXAMPLE" are just examples that should also be deleted.
+        */
+        
+        /* Inject the CSS reset */
+        --use-reset: true;
 
-    /* REQUIRED: Paths for project scanning, relative to this CSS file */
-    --paths: ["../example-1/", "../example-2/"];
+        /* Inject form input styles */
+        --use-forms: true;
 
-    /* Paths to exclude from content scanning, relative to this CSS file */
-    --not-paths: ["../example"];
+        /* Compress the output CSS by default */
+        --use-minify: false;
 
-    /* Folder names to exclude from content scanning */
-    --not-folder-names: [".git", "bin", "log", "logs", "node_modules", "obj", "publish", "temp"];
+        /* Will use more compatible styles (e.g. avoid color-mix(), etc.) */
+        --use-compatibility-mode: true;
 
-    /* REQUIRED: Generated CSS file path, relative to this CSS file */
-    --output-path: "sfumato.css";
+        /*
+            When true, dark mode is triggered by html.theme-auto
+            (when prefers-color-scheme: dark) and html.theme-dark.
+            
+            When false, "prefers-color-scheme: dark" triggers dark mode.
+        */
+        --use-dark-theme-classes: false;
 
-    /* EXAMPLE: Add custom named colors */
-    --color-primary: oklch(62.3% .214 259.815);
-    --color-canvas: white;
-    --color-dark-canvas: #0e1c29;
-    
+        /* REQUIRED: Paths for project scanning, relative to this CSS file */
+        --paths: ["../example-1/", "../example-2/"];
+
+        /* Paths to exclude from content scanning, relative to this CSS file */
+        --not-paths: ["../example"];
+
+        /* Folder names to exclude from content scanning */
+        --not-folder-names: [".git", "bin", "log", "logs", "node_modules", "obj", "publish", "temp"];
+
+        /* REQUIRED: Generated CSS file path, relative to this CSS file */
+        --output-path: "sfumato.css";
+
+        /* EXAMPLE: Add custom named colors */
+        --color-primary: oklch(62.3% .214 259.815);
+        --color-canvas: white;
+        --color-dark-canvas: #0e1c29;
+    }
+        
     /* EXAMPLE: Add custom utility classes */
     @utility tab-4 {
         tab-size: 4;
