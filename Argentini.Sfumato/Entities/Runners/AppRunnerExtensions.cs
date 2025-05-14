@@ -153,20 +153,28 @@ public static class AppRunnerExtensions
     /// <param name="sourceCss"></param>
 	public static StringBuilder ProcessAtVariantStatements(this StringBuilder sourceCss, AppRunner appRunner)
 	{
+		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+
 		try
 		{
+			workingSb.Append(sourceCss);
+			
 			foreach (var span in sourceCss.ToString().EnumerateAtVariantStatements())
 			{
 				if (span.Name.ToString().TryVariantIsMediaQuery(appRunner, out var variant))
-				{
-					sourceCss.Replace(span.Full, $"@{variant?.PrefixType} {variant?.Statement} {{");
-				}
+					workingSb.Replace(span.Full, $"@{variant?.PrefixType} {variant?.Statement} {{");
 			}
+
+			sourceCss.Clear().Append(workingSb);
 		}
 		catch (Exception e)
 		{
 			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessAtVariantStatements() - {e.Message}");
 			Environment.Exit(1);
+		}
+		finally
+		{
+			appRunner.AppState.StringBuilderPool.Return(workingSb);
 		}
 
 		return sourceCss;
@@ -180,32 +188,39 @@ public static class AppRunnerExtensions
     /// <param name="sourceCss"></param>
 	public static StringBuilder ProcessFunctionsAndTrackDependencies(this StringBuilder sourceCss, AppRunner appRunner)
 	{
+		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+
 		try
 		{
+			workingSb.Append(sourceCss);
+
 			foreach (var match in sourceCss.EnumerateTokenWithOuterParenthetical("--alpha"))
 			{
-				if (match.Contains("var(--color-", StringComparison.Ordinal) && match.Contains('%'))
-				{
-					var colorKey = match[..match.IndexOf(')')].TrimStart("--alpha(")?.Trim().TrimStart("var(")?.Trim().TrimStart("--color-");
+				if (match.Contains("var(--color-", StringComparison.Ordinal) == false || match.Contains('%') == false)
+					continue;
+				
+				var colorKey = match[..match.IndexOf(')')]
+					.TrimStart("--alpha(")?.Trim()
+					.TrimStart("var(")?.Trim()
+					.TrimStart("--color-");
 
-					if (string.IsNullOrEmpty(colorKey))
-						continue;
-						
-					if (appRunner.Library.ColorsByName.TryGetValue(colorKey, out var colorValue) == false)
-						continue;
-						
-					var alphaValue = match[(match.LastIndexOf('/') + 1)..].TrimEnd(')','%',' ').Trim();
-							
-					if (int.TryParse(alphaValue, out var pct))
-						sourceCss.Replace(match, colorValue.SetWebColorAlpha(pct));
-				}
+				if (string.IsNullOrEmpty(colorKey))
+					continue;
+
+				if (appRunner.Library.ColorsByName.TryGetValue(colorKey, out var colorValue) == false)
+					continue;
+
+				var alphaValue = match[(match.LastIndexOf('/') + 1)..].TrimEnd(')', '%', ' ').Trim();
+
+				if (int.TryParse(alphaValue, out var pct))
+					workingSb.Replace(match, colorValue.SetWebColorAlpha(pct));
 			}
-
+			
 			foreach (var match in sourceCss.EnumerateTokenWithOuterParenthetical("--spacing"))
 			{
 				if (match.Length <= 11)
 					continue;
-				
+
 				var valueString = match.TrimStart("--spacing(")?.Trim().TrimEnd(')', ' ');
 
 				if (string.IsNullOrEmpty(valueString))
@@ -213,11 +228,13 @@ public static class AppRunnerExtensions
 
 				if (double.TryParse(valueString, out var value) == false)
 					continue;
-						
-				sourceCss.Replace(match, $"calc(var(--spacing) * {value})");
-							
+
+				workingSb.Replace(match, $"calc(var(--spacing) * {value})");
+
 				appRunner.UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
 			}
+
+			sourceCss.Clear().Append(workingSb);
 			
 			foreach (var span in sourceCss.ToString().EnumerateCssCustomProperties(namesOnly: true))
 			{
@@ -230,7 +247,11 @@ public static class AppRunnerExtensions
 			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessFunctionsAndTrackDependencies() - {e.Message}");
 			Environment.Exit(1);
 		}
-		
+		finally
+		{
+			appRunner.AppState.StringBuilderPool.Return(workingSb);
+		}
+
 		return sourceCss;
 	}
 	
@@ -297,7 +318,7 @@ public static class AppRunnerExtensions
 		{
 			ProcessTrackedDependencyValues(appRunner);
 
-			if (appRunner.UsedCssCustomProperties.Count > 0)
+			if (appRunner.UsedCssCustomProperties.IsEmpty == false)
 			{
 				var wrappers = new [] { ":root, :host {", "*, ::before, ::after, ::backdrop {" };
 
@@ -429,7 +450,7 @@ public static class AppRunnerExtensions
 
 		try
 		{
-			foreach (var block in sourceCss.FindMediaBlocks(blockPrefix))
+			foreach (var block in sourceCss.ToString().FindMediaBlocks(blockPrefix))
 			{
 				workingSb.Clear();
 				workingSb.Append(block.Trim());

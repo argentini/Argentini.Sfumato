@@ -82,11 +82,12 @@ internal class Program
 
 		// ReSharper disable once RedundantAssignment
 		var argumentErrorMessage = string.Empty;
-		
+
 #if DEBUG
 		argumentErrorMessage = await appState.InitializeAsync(args);
 		//argumentErrorMessage = await appState.InitializeAsync(["watch", @"c:\code\Fynydd-Website-2024\UmbracoCms\wwwroot\stylesheets\source.css"]);
 		//argumentErrorMessage = await appState.InitializeAsync(["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
+		//argumentErrorMessage = await appState.InitializeAsync(["watch", "/Users/magic/Developer/Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
 #else		
         argumentErrorMessage = await appState.InitializeAsync(args);
 #endif

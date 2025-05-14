@@ -464,6 +464,64 @@ public static partial class Strings
 	
 	#region Parsing
 
+	/// <summary>
+	/// Finds all blocks like “@media (prefers-color-scheme: dark) { … }” blocks in this StringBuilder,
+	/// matching braces even if there are nested blocks inside.
+	/// </summary>
+	/// <param name="content">Source CSS</param>
+	/// <param name="cssBlockDeclaration">Set as block declaration value like "@media (prefers-color-scheme: dark) {"</param>
+	public static IEnumerable<string> FindMediaBlocks(this string? content, string cssBlockDeclaration)
+	{
+		if (string.IsNullOrEmpty(content))
+			yield break;
+
+		// Grab the full content once
+		var searchPos = 0;
+
+		while (true)
+		{
+			// Find the next css block declaration start
+			var startIdx = content.IndexOf(cssBlockDeclaration, searchPos, StringComparison.Ordinal);
+			
+			if (startIdx == -1)
+				yield break;
+
+			// The “{” is the last character of cssBlockDeclaration
+			var braceIdx = startIdx + cssBlockDeclaration.Length - 1;
+			var pos = braceIdx + 1;
+			var depth = 1;
+
+			// Advance, adjusting depth for every { or }
+			while (pos < content.Length && depth > 0)
+			{
+				var c = content[pos];
+				
+				if (c == '{')
+					depth++;
+				else if (c == '}')
+					depth--;
+				
+				pos++;
+			}
+
+			// If we closed everything, slice it out
+			if (depth == 0)
+			{
+				var length = pos - startIdx; 
+				
+				yield return content.Substring(startIdx, length);
+				
+				// Continue searching after this block
+				searchPos = pos;
+			}
+			else
+			{
+				// Unbalanced braces—stop scanning
+				yield break;
+			}
+		}
+	}
+
     /// <summary>
     /// Enumerates all CSS selectors (top‑level and inside @media), skipping other at‑rules.
     /// </summary>
