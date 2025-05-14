@@ -130,6 +130,17 @@ public class HeightTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 IsImportant = false,
             },
+            new ()
+            {
+                ClassName = "tabp:h-[calc(100vh_-_6rem)]",
+                EscapedClassName = @".tabp\:h-\[calc\(100vh_-_6rem\)\]",
+                Styles =
+                    """
+                    height: calc(100vh - 6rem);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
         };
 
         foreach (var test in testClasses)

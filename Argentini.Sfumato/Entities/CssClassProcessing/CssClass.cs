@@ -475,7 +475,7 @@ public sealed class CssClass : IDisposable
                     AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
                 }
 
-                if (ClassDefinition is null && valueNoBrackets.ValueIsDimensionLength(AppRunner))
+                if (ClassDefinition is null && (valueNoBrackets.ValueIsDimensionLength(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
                     AppRunner.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition);
                 }
@@ -491,17 +491,17 @@ public sealed class CssClass : IDisposable
                     AppRunner.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
                 }
 
-                if (ClassDefinition is null && valueNoBrackets.ValueIsAngleHue(AppRunner))
+                if (ClassDefinition is null && (valueNoBrackets.ValueIsAngleHue(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
                     AppRunner.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
                 }
 
-                if (ClassDefinition is null && valueNoBrackets.ValueIsDurationTime(AppRunner))
+                if (ClassDefinition is null && (valueNoBrackets.ValueIsDurationTime(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
                     AppRunner.Library.DurationClasses.TryGetValue(prefix, out ClassDefinition);
                 }
 
-                if (ClassDefinition is null && valueNoBrackets.ValueIsFrequency(AppRunner))
+                if (ClassDefinition is null && (valueNoBrackets.ValueIsFrequency(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
                     AppRunner.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
                 }
@@ -521,7 +521,7 @@ public sealed class CssClass : IDisposable
                     AppRunner.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
                 }
                 
-                if (ClassDefinition is null && valueNoBrackets.ValueIsResolution(AppRunner))
+                if (ClassDefinition is null && (valueNoBrackets.ValueIsResolution(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
                     AppRunner.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
                 }
