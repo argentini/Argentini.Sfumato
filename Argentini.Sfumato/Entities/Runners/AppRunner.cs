@@ -793,7 +793,7 @@ public sealed class AppRunner
 				if (Library.ValidFileExtensions.Any(e => e == extension) == false)
 					continue;
 
-				var pathOnly = fcr.FullPath.TrimEnd(fcr.Name) ?? string.Empty;
+				var pathOnly = string.IsNullOrEmpty(extension) ? fcr.FullPath : fcr.FullPath.TrimEnd(Path.GetFileName(fcr.FullPath)) ?? string.Empty;
 
 				if (string.IsNullOrEmpty(pathOnly))
 					continue;
