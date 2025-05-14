@@ -347,7 +347,7 @@ public static class AppRunnerExtensions
 						var key = $"@keyframes {ccp.Key.TrimStart("--animate-")}";
 
 						if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(key, out var value))
-							appRunner.UsedCss.TryAdd(key, value.Replace($"{appRunner.AppRunnerSettings.LineBreak}{appRunner.AppRunnerSettings.Indentation}", appRunner.AppRunnerSettings.LineBreak));
+							appRunner.UsedCss.TryAdd(key, value);
 					}
 
 					workingSb.Append('}');
@@ -374,7 +374,7 @@ public static class AppRunnerExtensions
 					
 					workingSb
 						.Append($"@property {ccp.Key} ")
-						.Append(prop.Replace(appRunner.AppRunnerSettings.LineBreak + appRunner.AppRunnerSettings.Indentation, appRunner.AppRunnerSettings.LineBreak));
+						.Append(prop);
 				}
 			}
 

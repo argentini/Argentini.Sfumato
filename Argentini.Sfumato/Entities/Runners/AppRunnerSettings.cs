@@ -64,8 +64,6 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	public string NativeCssOutputFilePath { get; private set; } = string.Empty;
 	public string LineBreak { get; private set; } = "\n";
 
-	public string Indentation { get; set; } = "    ";
-	
 	public List<FileInfo> Imports { get; } = [];
     public List<string> Paths { get; } = [];
     public List<string> AbsolutePaths { get; } = [];
@@ -165,39 +163,6 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	    {
 		    sfumatoCssBlock = string.IsNullOrEmpty(sfumatoCssBlock) ? SfumatoCssBlock.Trim()[SfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim() : sfumatoCssBlock.Trim()[sfumatoCssBlock.IndexOf('{')..].TrimEnd('}').Trim();
 
-		    var cssCustomPropertyIndex = sfumatoCssBlock.IndexOf("--", StringComparison.Ordinal);
-
-		    #region Determine Indentation and spaces/tabs from first @theme sfumato {} CSS custom property item
-	        
-		    if (cssCustomPropertyIndex > 0)
-		    {
-			    var depth = 0;
-			    var usesTabs = false;
-		        
-			    for (var i = cssCustomPropertyIndex - 1; i >= 0; i--)
-			    {
-				    if (sfumatoCssBlock[i] == ' ' || sfumatoCssBlock[i] == '\t')
-					    depth += 1;
-				    else
-					    break;
-
-				    if (sfumatoCssBlock[i] == '\t')
-					    usesTabs = true;
-			    }
-
-			    if (depth > 0)
-			    {
-				    Indentation = string.Empty;
-
-				    for (var i = 0; i < depth; i++)
-				    {
-					    Indentation += (usesTabs ? "\t" : " ");
-				    }
-			    }
-		    }
-	        
-		    #endregion
-	        
 	        foreach (var span in sfumatoCssBlock.EnumerateCssCustomProperties())
 		        if (SfumatoBlockItems.TryAdd(span.Property.ToString(), span.Value.ToString()) == false)
 		        {
