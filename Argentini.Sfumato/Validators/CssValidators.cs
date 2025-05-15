@@ -35,6 +35,9 @@ public static class CssValidators
 
     public static bool ValueIsAngleHue(this string value, AppRunner appRunner)
     {
+        if (value == "0")
+            return true;
+
         var unit = GetUnit(value);
 
         return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssAngleUnits.Any(u => u == unit);
@@ -47,6 +50,9 @@ public static class CssValidators
 
     public static bool ValueIsDimensionLength(this string value, AppRunner appRunner)
     {
+        if (value == "0")
+            return true;
+        
         var unit = GetUnit(value);
 
         return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssLengthUnits.Any(u => u == unit);
@@ -54,6 +60,9 @@ public static class CssValidators
 
     public static bool ValueIsDurationTime(this string value, AppRunner appRunner)
     {
+        if (value == "0")
+            return true;
+
         var unit = GetUnit(value);
 
         return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssDurationUnits.Any(u => u == unit);
@@ -61,6 +70,9 @@ public static class CssValidators
 
     public static bool ValueIsFrequency(this string value, AppRunner appRunner)
     {
+        if (value == "0")
+            return true;
+
         var unit = GetUnit(value);
 
         return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssFrequencyUnits.Any(u => u == unit);
@@ -83,6 +95,9 @@ public static class CssValidators
 
     public static bool ValueIsResolution(this string value, AppRunner appRunner)
     {
+        if (value == "0")
+            return true;
+
         var unit = GetUnit(value);
 
         return string.IsNullOrEmpty(unit) == false && appRunner.Library.CssResolutionUnits.Any(u => u == unit);

@@ -11,6 +11,18 @@ public class FontSizeTests(ITestOutputHelper testOutputHelper)
         {
             new ()
             {
+                ClassName = "text-0/0",
+                EscapedClassName = @".text-0\/0",
+                Styles =
+                    """
+                    font-size: 0;
+                    line-height: 0;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "text-base",
                 EscapedClassName = ".text-base",
                 Styles =
@@ -76,6 +88,40 @@ public class FontSizeTests(ITestOutputHelper testOutputHelper)
                     """
                     font-size: 1.25rem;
                     line-height: 1.35rem;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "text-[0]",
+                EscapedClassName = @".text-\[0\]",
+                Styles =
+                    """
+                    font-size: 0;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "text-0",
+                EscapedClassName = ".text-0",
+                Styles =
+                    """
+                    font-size: 0;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "text-[0]/0",
+                EscapedClassName = @".text-\[0\]\/0",
+                Styles =
+                    """
+                    font-size: 0;
+                    line-height: 0;
                     """,
                 IsValid = true,
                 IsImportant = false,

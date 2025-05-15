@@ -264,33 +264,37 @@ public sealed class CssClass : IDisposable
                 return;
 
             var value = AllSegments.Last().TrimStart(prefix) ?? string.Empty;
-            var slashSegments = new HashSet<string>();
 
-            foreach (var segment in value.SplitByTopLevel('/'))
-                slashSegments.Add(segment.ToString());
-
-            if (slashSegments.Count == 2)
+            if (value.Contains('/'))
             {
-                ModifierValue = slashSegments.Last();
-                value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
-                HasArbitraryModifierValue = ModifierValue.StartsWith('[');
-                ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
+                var slashSegments = new List<string>();
+                
+                foreach (var segment in value.SplitByTopLevel('/'))
+                    slashSegments.Add(segment.ToString());
 
-                if (string.IsNullOrEmpty(ModifierValue) == false)
+                if (slashSegments.Count == 2)
                 {
-                    if (ModifierValue[0] is 'l' or 's' or 'i' or 'd')
-                    {
-                        ModifierValue = ModifierValue switch
-                        {
-                            "longer" => "oklch longer hue",
-                            "shorter" => "oklch shorter hue",
-                            "increasing" => "oklch increasing hue",
-                            "decreasing" => "oklch decreasing hue",
-                            _ => ModifierValue
-                        };
-                    }
+                    ModifierValue = slashSegments.Last();
+                    value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
+                    HasArbitraryModifierValue = ModifierValue.StartsWith('[');
+                    ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
 
-                    HasModifierValue = true;
+                    if (string.IsNullOrEmpty(ModifierValue) == false)
+                    {
+                        if (ModifierValue[0] is 'l' or 's' or 'i' or 'd')
+                        {
+                            ModifierValue = ModifierValue switch
+                            {
+                                "longer" => "oklch longer hue",
+                                "shorter" => "oklch shorter hue",
+                                "increasing" => "oklch increasing hue",
+                                "decreasing" => "oklch decreasing hue",
+                                _ => ModifierValue
+                            };
+                        }
+
+                        HasModifierValue = true;
+                    }
                 }
             }
 

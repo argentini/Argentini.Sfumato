@@ -22,6 +22,28 @@ public class RotateTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "rotate-0",
+                EscapedClassName = ".rotate-0",
+                Styles =
+                    """
+                    rotate: 0deg;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "rotate-[0]",
+                EscapedClassName = @".rotate-\[0\]",
+                Styles =
+                    """
+                    rotate: 0;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "rotate-37",
                 EscapedClassName = ".rotate-37",
                 Styles =
