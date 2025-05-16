@@ -893,6 +893,17 @@ public static partial class Strings
 	
 	#region Transformations
 
+	/// <summary>
+	/// Convert Pascal casing to spaced string.
+	/// (e.g. "MyXMLParser" => "My XML Parser")
+	/// </summary>
+	/// <param name="input"></param>
+	/// <returns></returns>
+	public static string PascalCaseToSpaced(this string input)
+	{
+		return PascalCaseToSpacedRegex().Replace(input, " $1");
+	}
+	
     /// <summary>
     /// Removes SPACE and TAB characters that appear <em>immediately</em> before
     /// an LF (<c>"\n"</c>) or CRLF (<c>"\r\n"</c>) sequence.
@@ -1867,6 +1878,9 @@ public static partial class Strings
 
     [GeneratedRegex(@"^\s+")]
     private static partial Regex IndentationSpacesRegex();
+
+    [GeneratedRegex("(?<!^)([A-Z])")]
+    private static partial Regex PascalCaseToSpacedRegex();
 
     #endregion
 }
