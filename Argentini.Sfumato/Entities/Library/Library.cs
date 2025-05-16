@@ -2,6 +2,8 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Argentini.Sfumato.Entities.Library;
 
@@ -36,7 +38,7 @@ public sealed class Library
 
     public Dictionary<string, VariantMetadata> PseudoclassPrefixes { get; } = LibraryPseudoClasses.PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal);
 
-    public string[] ColorSpaces = ["srgb-linear", "display-p3", "a98-rgb", "prophoto-rgb", "rec2020", "oklab", "xyz-d50", "xyz-d65", "xyz", "hsl", "hwb", "lch", "lab"];
+    public readonly string[] ColorSpaces = ["srgb-linear", "display-p3", "a98-rgb", "prophoto-rgb", "rec2020", "oklab", "xyz-d50", "xyz-d65", "xyz", "hsl", "hwb", "lch", "lab"];
     
     #endregion
     
@@ -158,5 +160,55 @@ public sealed class Library
                 ScannerClassNamePrefixes.Insert(item.Key);
             }
         }        
+    }
+
+    // ReSharper disable UnusedAutoPropertyAccessor.Local
+    // ReSharper disable CollectionNeverQueried.Local
+    private sealed class ExportItem
+    {
+        public string Category { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public Dictionary<string,ClassDefinition> Usages { get; } = [];
+    }
+    
+    public string ExportDefinitions()
+    {
+        var exportItems = new List<ExportItem>();
+        var derivedTypes = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
+
+        foreach (var type in derivedTypes.OrderBy(t => t.AssemblyQualifiedName))
+        {
+            if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
+                continue;
+
+            var segments = type.FullName?.Split('.') ?? [];
+
+            if (segments.Length < 2)
+                continue;
+
+            var exportItem = new ExportItem
+            {
+                Category = segments[^2].PascalCaseToSpaced(),
+                Name = segments[^1].PascalCaseToSpaced()
+            };
+            
+            foreach (var item in instance.Data)
+                exportItem.Usages.Add(item.Key, item.Value);
+            
+            exportItems.Add(exportItem);
+        }
+
+        var json = JsonSerializer.Serialize(exportItems, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+            IncludeFields = true,
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
+
+        return json;
     }
 }
