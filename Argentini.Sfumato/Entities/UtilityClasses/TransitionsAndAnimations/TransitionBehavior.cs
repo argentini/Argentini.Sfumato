@@ -1,6 +1,6 @@
 // ReSharper disable RawStringCanBeSimplified
 
-namespace Argentini.Sfumato.Entities.UtilityClasses.TransitionsAnimations;
+namespace Argentini.Sfumato.Entities.UtilityClasses.TransitionsAndAnimations;
 
 public sealed class TransitionBehavior : ClassDictionaryBase
 {
