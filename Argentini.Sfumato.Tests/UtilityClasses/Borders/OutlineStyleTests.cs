@@ -15,6 +15,7 @@ public class OutlineStyleTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".outline-solid",
                 Styles =
                     """
+                    --sf-outline-style: solid;
                     outline-style: solid;
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class OutlineStyleTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".outline-hidden",
                 Styles =
                     """
+                    --sf-outline-style: hidden;
                     outline-style: hidden;
                     """,
                 IsValid = true,
@@ -37,6 +39,7 @@ public class OutlineStyleTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".outline-none",
                 Styles =
                     """
+                    --sf-outline-style: none;
                     outline-style: none;
                     """,
                 IsValid = true,

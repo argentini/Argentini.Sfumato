@@ -12,9 +12,11 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-solid", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-border-style: solid;
                         border-style: solid;
                         """,
                 }
@@ -22,9 +24,11 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-dashed", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-border-style: dashed;
                         border-style: dashed;
                         """,
                 }
@@ -32,9 +36,11 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-dotted", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-border-style: dotted;
                         border-style: dotted;
                         """,
                 }
@@ -42,9 +48,11 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-double", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-border-style: double;
                         border-style: double;
                         """,
                 }
@@ -52,9 +60,11 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-hidden", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-border-style: hidden;
                         border-style: hidden;
                         """,
                 }
@@ -62,9 +72,11 @@ public sealed class BorderStyle : ClassDictionaryBase
             {
                 "border-none", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-border-style: none;
                         border-style: none;
                         """,
                 }

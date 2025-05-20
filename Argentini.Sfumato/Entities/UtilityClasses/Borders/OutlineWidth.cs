@@ -15,10 +15,12 @@ public sealed class OutlineWidth : ClassDictionaryBase
                     InLengthCollection = true,
                     Template = 
                         """
+                        outline-style: var(--sf-outline-style);
                         outline-width: {0}px;
                         """,
                     ArbitraryCssValueTemplate = 
                         """
+                        outline-style: var(--sf-outline-style);
                         outline-width: {0};
                         """,
                 }
@@ -29,6 +31,7 @@ public sealed class OutlineWidth : ClassDictionaryBase
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        outline-style: var(--sf-outline-style);
                         outline-width: 1px;
                         """,
                 }

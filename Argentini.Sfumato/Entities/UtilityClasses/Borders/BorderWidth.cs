@@ -10,54 +10,63 @@ public sealed class BorderWidth : ClassDictionaryBase
         {
             "border",
             """
+            border-style: var(--sf-border-style);
             border-width: {0};
             """
         },
         {
             "border-x",
             """
+            border-inline-style: var(--sf-border-style);
             border-inline-width: {0};
             """
         },
         {
             "border-y",
             """
+            border-block-style: var(--sf-border-style);
             border-block-width: {0};
             """
         },
         {
             "border-s",
             """
+            border-inline-start-style: var(--sf-border-style);
             border-inline-start-width: {0};
             """
         },
         {
             "border-e",
             """
+            border-inline-end-style: var(--sf-border-style);
             border-inline-end-width: {0};
             """
         },
         {
             "border-t",
             """
+            border-top-style: var(--sf-border-style);
             border-top-width: {0};
             """
         },
         {
             "border-r",
             """
+            border-right-style: var(--sf-border-style);
             border-right-width: {0};
             """
         },
         {
             "border-b",
             """
+            border-bottom-style: var(--sf-border-style);
             border-bottom-width: {0};
             """
         },
         {
             "border-l",
             """
+            border-left-style: var(--sf-border-style);
             border-left-width: {0};
             """
         },

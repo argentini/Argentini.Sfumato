@@ -15,6 +15,7 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".outline",
                 Styles =
                     """
+                    outline-style: var(--sf-outline-style);
                     outline-width: 1px;
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".outline-0",
                 Styles =
                     """
+                    outline-style: var(--sf-outline-style);
                     outline-width: 0px;
                     """,
                 IsValid = true,
@@ -37,6 +39,7 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".outline-4",
                 Styles =
                     """
+                    outline-style: var(--sf-outline-style);
                     outline-width: 4px;
                     """,
                 IsValid = true,
@@ -48,6 +51,7 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".outline-4\.5",
                 Styles =
                     """
+                    outline-style: var(--sf-outline-style);
                     outline-width: 4.5px;
                     """,
                 IsValid = true,
@@ -59,6 +63,7 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".outline-\[0\.75rem\]",
                 Styles =
                     """
+                    outline-style: var(--sf-outline-style);
                     outline-width: 0.75rem;
                     """,
                 IsValid = true,
@@ -70,6 +75,7 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".outline-\[length\:var\(--my-border\)\]",
                 Styles = 
                     """
+                    outline-style: var(--sf-outline-style);
                     outline-width: var(--my-border);
                     """,
                 IsValid = true,
@@ -81,6 +87,7 @@ public class OutlineWidthTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".outline-\(length\:--my-border\)",
                 Styles = 
                     """
+                    outline-style: var(--sf-outline-style);
                     outline-width: var(--my-border);
                     """,
                 IsValid = true,

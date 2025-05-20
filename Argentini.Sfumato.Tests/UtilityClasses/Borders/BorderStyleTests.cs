@@ -15,6 +15,7 @@ public class BorderStyleTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".border-solid",
                 Styles =
                     """
+                    --sf-border-style: solid;
                     border-style: solid;
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class BorderStyleTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".border-hidden",
                 Styles =
                     """
+                    --sf-border-style: hidden;
                     border-style: hidden;
                     """,
                 IsValid = true,
@@ -37,6 +39,7 @@ public class BorderStyleTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".border-none",
                 Styles =
                     """
+                    --sf-border-style: none;
                     border-style: none;
                     """,
                 IsValid = true,

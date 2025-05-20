@@ -12,9 +12,11 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-solid", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-outline-style: solid;
                         outline-style: solid;
                         """,
                 }
@@ -22,9 +24,11 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-dashed", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-outline-style: dashed;
                         outline-style: dashed;
                         """,
                 }
@@ -32,9 +36,11 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-dotted", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-outline-style: dotted;
                         outline-style: dotted;
                         """,
                 }
@@ -42,9 +48,11 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-double", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-outline-style: double;
                         outline-style: double;
                         """,
                 }
@@ -52,9 +60,11 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-hidden", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-outline-style: hidden;
                         outline-style: hidden;
                         """,
                 }
@@ -62,9 +72,11 @@ public sealed class OutlineStyle : ClassDictionaryBase
             {
                 "outline-none", new ClassDefinition
                 {
+                    SelectorSort = 2,
                     InSimpleUtilityCollection = true,
                     Template =
                         """
+                        --sf-outline-style: none;
                         outline-style: none;
                         """,
                 }
