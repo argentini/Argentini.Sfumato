@@ -22,6 +22,18 @@ public class TouchActionTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "touch-pan-y",
+                EscapedClassName = ".touch-pan-y",
+                Styles =
+                    """
+                    --sf-pan-y: pan-y;
+                    touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "touch-manipulation",
                 EscapedClassName = ".touch-manipulation",
                 Styles =

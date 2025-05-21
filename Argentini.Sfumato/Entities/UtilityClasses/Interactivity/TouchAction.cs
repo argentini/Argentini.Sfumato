@@ -31,7 +31,8 @@ public sealed class TouchAction : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               touch-action: pan-x;
+                               --sf-pan-x: pan-x;
+                               touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
                                """,
                 }
             },
@@ -40,7 +41,8 @@ public sealed class TouchAction : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               touch-action: pan-left;
+                               --sf-pan-x: pan-left;
+                               touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
                                """,
                 }
             },
@@ -49,7 +51,8 @@ public sealed class TouchAction : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               touch-action: pan-right;
+                               --sf-pan-x: pan-right;
+                               touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
                                """,
                 }
             },
@@ -58,7 +61,8 @@ public sealed class TouchAction : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               touch-action: pan-y;
+                               --sf-pan-y: pan-y;
+                               touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
                                """,
                 }
             },
@@ -67,7 +71,8 @@ public sealed class TouchAction : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               touch-action: pan-up;
+                               --sf-pan-y: pan-up;
+                               touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
                                """,
                 }
             },
@@ -76,7 +81,8 @@ public sealed class TouchAction : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               touch-action: pan-down;
+                               --sf-pan-y: pan-down;
+                               touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
                                """,
                 }
             },
@@ -85,7 +91,8 @@ public sealed class TouchAction : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               touch-action: pinch-zoom;
+                               --sf-pinch-zoom: pinch-zoom;
+                               touch-action: var(--sf-pan-x) var(--sf-pan-y) var(--sf-pinch-zoom);
                                """,
                 }
             },
