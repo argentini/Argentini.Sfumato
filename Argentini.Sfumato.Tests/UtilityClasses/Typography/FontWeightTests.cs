@@ -15,6 +15,7 @@ public class FontWeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".font-thin",
                 Styles =
                     """
+                    --sf-font-weight: var(--font-weight-thin);
                     font-weight: var(--font-weight-thin);
                     """,
                 IsValid = true,
@@ -26,6 +27,7 @@ public class FontWeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".font-bold",
                 Styles =
                     """
+                    --sf-font-weight: var(--font-weight-bold);
                     font-weight: var(--font-weight-bold);
                     """,
                 IsValid = true,
@@ -37,6 +39,7 @@ public class FontWeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".font-light\!",
                 Styles =
                     """
+                    --sf-font-weight: var(--font-weight-light) !important;
                     font-weight: var(--font-weight-light) !important;
                     """,
                 IsValid = true,

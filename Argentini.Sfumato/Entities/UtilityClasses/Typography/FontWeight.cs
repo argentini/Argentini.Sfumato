@@ -31,7 +31,10 @@ public sealed class FontWeight : ClassDictionaryBase
                 SelectorSort = 1,
                 InSimpleUtilityCollection = true,
                 Template = 
-                    $"font-weight: var({font.Key});",
+                    $"""
+                    --sf-font-weight: var({font.Key});
+                    font-weight: var({font.Key});
+                    """,
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))
