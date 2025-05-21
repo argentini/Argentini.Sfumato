@@ -182,20 +182,22 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper)
     {
         Assert.Equal("rgba(10,20,30,0.5)", "rgba(10,20,30,1.0)".SetWebColorAlpha(50));
         Assert.Equal("rgba(10,20,30,0.5)", "rgba(10,20,30,1.0)".SetWebColorAlpha(0.5));
-        Assert.Equal("rgba(10,20,30,0.25)", "rgba(10,20,30,0.5)".SetWebColorAlpha(50));
+        Assert.Equal("rgba(10,20,30,0.25)", "rgba(10,20,30,0.5)".SetWebColorAlpha(25));
         Assert.Equal("rgb(10,20,30)", "rgba(10, 20, 30, 0.5)".SetWebColorAlpha(100));
 
         Assert.Equal("rgba(170,187,204,0.5)", "#aabbcc".SetWebColorAlpha(0.5));
         Assert.Equal("rgba(170,170,187,0.5)", "#aab".SetWebColorAlpha(0.5));
-        Assert.Equal("rgba(170,187,204,0.435)", "#abcd".SetWebColorAlpha(0.5));
+        Assert.Equal("rgba(170,187,204,0.5)", "#abcd".SetWebColorAlpha(0.5));
 
         Assert.Equal("rgba(127,255,212,0.5)", "aquamarine".SetWebColorAlpha(0.5));
 
         Assert.Equal("oklch(0.704 0.191 22.216)", "oklch(0.704 0.191 22.216)".SetWebColorAlpha());
         Assert.Equal("oklch(0.704 0.191 22.216 / 0.5)", "oklch(0.704 0.191 22.216)".SetWebColorAlpha(50));
         Assert.Equal("oklch(0.704 0.191 22.216 / 0.5)", "oklch(0.704 0.191 22.216)".SetWebColorAlpha(0.5));
-        Assert.Equal("oklch(0.704 0.191 22.216 / 0.25)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha(0.5));
-        Assert.Equal("oklch(0.704 0.191 22.216 / 0.25)", "oklch(0.704 0.191 22.216/0.5)".SetWebColorAlpha(0.5));
-        Assert.Equal("oklch(0.704 0.191 22.216)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha());
+        Assert.Equal("oklch(0.704 0.191 22.216 / 0.25)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha(0.25));
+        Assert.Equal("oklch(0.704 0.191 22.216 / 0.25)", "oklch(0.704 0.191 22.216/0.5)".SetWebColorAlpha(0.25));
+        Assert.Equal("oklch(0.704 0.191 22.216 / 0.5)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha());
+        Assert.Equal("oklch(0.704 0.191 22.216)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha(1.0d));
+        Assert.Equal("oklch(0.704 0.191 22.216)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha(100));
     }
 }
