@@ -41,7 +41,10 @@ public sealed class LetterSpacing : ClassDictionaryBase
                 SelectorSort = 1,
                 InSimpleUtilityCollection = true,
                 Template = 
-                    $"letter-spacing: var({font.Key});",
+                    $"""
+                     --sf-tracking: var({font.Key});
+                     letter-spacing: var({font.Key});
+                     """,
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

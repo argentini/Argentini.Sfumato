@@ -15,6 +15,7 @@ public class LetterSpacingTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".tracking-tighter",
                 Styles =
                     """
+                    --sf-tracking: var(--tracking-tighter);
                     letter-spacing: var(--tracking-tighter);
                     """,
                 IsValid = true,
