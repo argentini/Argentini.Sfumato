@@ -1635,7 +1635,7 @@ public static partial class Strings
 	/// <param name="color"></param>
 	/// <param name="opacity">0.0 to 1.0</param>
 	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
-	public static string SetWebColorAlpha(this string color, double opacity = 1.0)
+	public static string SetWebColorAlpha(this string color, double opacity = -1)
 	{
 		if (string.IsNullOrEmpty(color.Trim()))
 			return string.Empty;
@@ -1662,15 +1662,7 @@ public static partial class Strings
 			if (segments.Length != 3 && segments.Length != 5)
 				return color;
 
-			var alpha = opacity;
-
-			if (segments.Length == 5 && opacity < 1.0d)
-			{
-				if (double.TryParse(segments[4], out var existing))
-					alpha = (opacity > 0 ? existing * opacity : 0);
-			}
-			
-			return alpha >= 1.0d ? $"oklch({segments[0]} {segments[1]} {segments[2]})" : $"oklch({segments[0]} {segments[1]} {segments[2]} / {$"{alpha:0.#######}".TrimEnd('0')})";
+			return opacity >= 1.0d ? $"oklch({segments[0]} {segments[1]} {segments[2]})" : $"oklch({segments[0]} {segments[1]} {segments[2]} / {$"{opacity:0.#######}".TrimEnd('0')})";
 		}
         
 		#endregion
@@ -1682,6 +1674,7 @@ public static partial class Strings
 
 		#region Named Color Conversion
 		
+		// ReSharper disable once ConvertIfStatementToSwitchStatement
 		if (hexIndex == -1 && rgbIndex == -1)
 		{
 			if (CssNamedColors.TryGetValue(color, out var namedColor))
@@ -1711,23 +1704,15 @@ public static partial class Strings
 			var red = Convert.ToInt32(color[..2], 16);
 			var green = Convert.ToInt32(color.Substring(2, 2), 16);
 			var blue = Convert.ToInt32(color.Substring(4, 2), 16);
-			var alpha = 1d;
 
-			if (color.Length == 8 && opacity < 1.0d)
-			{
-				var a = Convert.ToInt32(color[6..], 16);
-				alpha = Math.Round((double)a / 255, 2);
-			}
-
-			var o1 = opacity > 0 ? alpha * opacity : 0;
-
-			return o1 >= 1.0d ?  $"rgb({red},{green},{blue})" : $"rgba({red},{green},{blue},{$"{o1:0.#######}".TrimEnd('0')})";
+			return opacity >= 1.0d ?  $"rgb({red},{green},{blue})" : $"rgba({red},{green},{blue},{$"{opacity:0.#######}".TrimEnd('0')})";
 		}		
 		
 		#endregion		
 		
 		#region RGB/A Color
 
+		// ReSharper disable once InvertIf
 		if (rgbIndex == 0)
 		{
 			color = color.TrimStart("rgb(") ?? string.Empty;
@@ -1755,23 +1740,7 @@ public static partial class Strings
 			if (red > 255 || green > 255 || blue > 255)
 				return color;
 			
-			var alpha = 1d;
-
-			if (opacity < 1.0d)
-			{
-				if (segments.Length == 4)
-					_ = double.TryParse(segments[3].Trim('-'), out alpha);
-
-				if (alpha < 0)
-					alpha = 0;
-
-				if (alpha > 1)
-					alpha = 1;
-			}
-
-			var o1 = opacity > 0 ? alpha * opacity : 0;
-
-			return o1 >= 1.0d ?  $"rgb({red},{green},{blue})" : $"rgba({red},{green},{blue},{$"{o1:0.#######}".TrimEnd('0')})";
+			return opacity >= 1.0d ?  $"rgb({red},{green},{blue})" : $"rgba({red},{green},{blue},{$"{opacity:0.#######}".TrimEnd('0')})";
 		}
 
 		#endregion
@@ -1779,6 +1748,181 @@ public static partial class Strings
 		return color;
 	}
 	
+    /// <summary>
+    /// Scans the input once and returns every percentage literal it finds
+    /// that is immediately preceded by whitespace or '/':
+    /// e.g. " 12.5%", "/.75%", " 8%", " /12.%" etc.
+    /// </summary>
+    public static IEnumerable<string> ExtractPercentages(this string s)
+    {
+        if (string.IsNullOrEmpty(s))
+            yield break;
+
+        var len = s.Length;
+
+        for (var i = 0; i < len; i++)
+        {
+            var c = s[i];
+
+            // possible start of a percentage: digit or '.' with digit after
+            var looksLikeNumberStart =
+                c is >= '0' and <= '9' || (c == '.' && i + 1 < len && s[i + 1] >= '0' && s[i + 1] <= '9');
+
+            if (looksLikeNumberStart == false)
+                continue;
+
+            // enforce preceding char is whitespace or '/'
+            // (user guarantee: it always will be, but we guard anyway)
+            if (i > 0 && !(char.IsWhiteSpace(s[i - 1]) || s[i - 1] == '/'))
+                continue;
+
+            var start = i;
+            var hasDigits = false;
+            var seenDecimal = false;
+            var j = i;
+
+            // if we start on '.', consume it as decimal point
+            if (s[j] == '.')
+            {
+                seenDecimal = true;
+                j++;
+            }
+
+            // consume integer digits
+            while (j < len && s[j] >= '0' && s[j] <= '9')
+            {
+                hasDigits = true;
+                j++;
+            }
+
+            // optional fractional part if we haven't yet seen a decimal
+            if (seenDecimal == false && j < len && s[j] == '.')
+            {
+                seenDecimal = true;
+                j++;
+
+                while (j < len && s[j] >= '0' && s[j] <= '9')
+                {
+                    hasDigits = true;
+                    j++;
+                }
+            }
+
+            // final check for '%' suffix
+            if (hasDigits && j < len && s[j] == '%')
+            {
+                yield return s.Substring(start, j - start + 1);
+                i = j;  // skip past it
+            }
+
+            // else fall through and continue scanning
+        }
+    }	
+	
+    /// <summary>
+    /// Scans the input once and returns every CSS web‑color literal it finds:
+    /// #RGB, #RGBA, #RRGGBB, #RRGGBBAA, rgb(...), rgba(...), oklch(...).
+    /// </summary>
+    public static IEnumerable<string> ExtractWebColors(this string s)
+    {
+        if (string.IsNullOrEmpty(s))
+            yield break;
+
+        var len = s.Length;
+
+        for (var i = 0; i < len; i++)
+        {
+            var c = s[i];
+
+            // ---- 1) Hex codes: # then 3–8 hex digits ----
+            if (c == '#')
+            {
+                var start = i;
+                var j = i + 1;
+                
+                // scan up to 8 hex digits
+                while (j < len && j - start - 1 < 8 && IsHexDigit(s[j]))
+                    j++;
+
+                var count = j - start - 1;
+                
+                if (count is 3 or 4 or 6 or 8)
+                    yield return s.Substring(start, 1 + count);
+
+                // skip whatever we consumed (valid or not), move i to last checked
+                i = j - 1;
+
+                continue;
+            }
+
+            // ---- 2) rgba(...) first (so we don't mistake it for rgb(...)) ----
+            if (i + 4 < len
+                && (s[i] == 'r' || s[i] == 'R')
+                && (s[i+1] == 'g' || s[i+1] == 'G')
+                && (s[i+2] == 'b' || s[i+2] == 'B')
+                && (s[i+3] == 'a' || s[i+3] == 'A')
+                && s[i+4] == '(')
+            {
+                yield return ExtractFunction(s, ref i, 5);
+                continue;
+            }
+
+            // ---- 3) rgb(...) ----
+            if (i + 3 < len
+                && (s[i] == 'r' || s[i] == 'R')
+                && (s[i+1] == 'g' || s[i+1] == 'G')
+                && (s[i+2] == 'b' || s[i+2] == 'B')
+                && s[i+3] == '(')
+            {
+                yield return ExtractFunction(s, ref i, 4);
+                continue;
+            }
+
+            // ---- 4) oklch(...) ----
+            if (i + 5 < len
+                && (s[i] == 'o' || s[i] == 'O')
+                && (s[i+1] == 'k' || s[i+1] == 'K')
+                && (s[i+2] == 'l' || s[i+2] == 'L')
+                && (s[i+3] == 'c' || s[i+3] == 'C')
+                && (s[i+4] == 'h' || s[i+4] == 'H')
+                && s[i+5] == '(')
+            {
+                yield return ExtractFunction(s, ref i, 6);
+            }
+        }
+    }
+
+    // Helper: pull out a "(...)" block starting at s[i], where 'offset' is length of "name(".
+    // Advances i to the last character of the function, and returns the full substring.
+    private static string ExtractFunction(string s, ref int i, int offset)
+    {
+        var start = i;
+        var len = s.Length;
+        var depth = 1;
+        
+        i += offset; // position right after the opening '('
+
+        // consume until matching ')'
+        while (i < len && depth > 0)
+        {
+            if (s[i] == '(')
+	            depth++;
+            else if (s[i] == ')')
+	            depth--;
+            
+            i++;
+        }
+
+        // substring from start to current i (i is one past the ')')
+        return s.Substring(start, i - start);
+    }
+
+    // Simple inline hex‑digit check
+    private static bool IsHexDigit(char c)
+    {
+        return c is >= '0' and <= '9' or >= 'A' and <= 'F' or >= 'a' and <= 'f';
+    }
+        
 	#endregion
 	
 	#region Time
