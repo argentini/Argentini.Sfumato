@@ -15,7 +15,24 @@ public class InsetShadowTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".inset-shadow-sm",
                 Styles =
                     """
-                    box-shadow: var(--inset-shadow-sm);
+                    --sf-inset-shadow-alpha: 5%;
+                    --sf-inset-shadow-color: oklch(0 0 0 / var(--sf-inset-shadow-alpha));
+                    --sf-inset-shadow: inset 0 2px 4px var(--sf-inset-shadow-color);
+                    box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "inset-shadow-sm/25",
+                EscapedClassName = @".inset-shadow-sm\/25",
+                Styles =
+                    """
+                    --sf-inset-shadow-alpha: 25%;
+                    --sf-inset-shadow-color: oklch(0 0 0 / var(--sf-inset-shadow-alpha));
+                    --sf-inset-shadow: inset 0 2px 4px var(--sf-inset-shadow-color);
+                    box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
                 IsValid = true,
                 IsImportant = false,
