@@ -324,7 +324,7 @@ public static class AppRunnerExtensions
 
 				for (var i = 0; i < wrappers.Length; i++)
 				{
-					var items = appRunner.UsedCssCustomProperties.Where(c => (c.Key == "--spacing" || (c.Key.StartsWith("--sf-") == (i != 0))) && string.IsNullOrEmpty(c.Value) == false).ToList();
+					var items = appRunner.UsedCssCustomProperties.Where(c => (c.Key == "--spacing" || (c.Key.StartsWith("--sf-") == (i != 0)) || (c.Key.StartsWith("--form-") == (i != 0))) && string.IsNullOrEmpty(c.Value) == false).ToList();
 					
 					if (items.Count == 0)
 						continue;
