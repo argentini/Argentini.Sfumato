@@ -13,7 +13,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: normal;
+                               --sf-ordinal: normal;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -22,7 +23,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: ordinal;
+                               --sf-ordinal: ordinal;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -31,7 +33,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: slashed-zero;
+                               --sf-slashed-zero: slashed-zero;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -40,7 +43,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: lining-nums;
+                               --sf-numeric-figure: lining-nums;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -49,7 +53,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: oldstyle-nums;
+                               --sf-numeric-figure: oldstyle-nums;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -58,7 +63,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: proportional-nums;
+                               --sf-numeric-spacing: proportional-nums;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -67,7 +73,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: tabular-nums;
+                               --sf-numeric-spacing: tabular-nums;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -76,7 +83,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: diagonal-fractions;
+                               --sf-numeric-fraction: diagonal-fractions;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },
@@ -85,7 +93,8 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               font-variant-numeric: stacked-fractions;
+                               --sf-numeric-fraction: stacked-fractions;
+                               font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                                """
                 }
             },

@@ -15,7 +15,8 @@ public class FontVariantNumericTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".normal-nums",
                 Styles =
                     """
-                    font-variant-numeric: normal;
+                    --sf-ordinal: normal;
+                    font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -26,7 +27,8 @@ public class FontVariantNumericTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".diagonal-fractions",
                 Styles =
                     """
-                    font-variant-numeric: diagonal-fractions;
+                    --sf-numeric-fraction: diagonal-fractions;
+                    font-variant-numeric: var(--sf-ordinal) var(--sf-slashed-zero) var(--sf-numeric-figure) var(--sf-numeric-spacing) var(--sf-numeric-fraction);
                     """,
                 IsValid = true,
                 IsImportant = false,
