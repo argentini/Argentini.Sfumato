@@ -21,6 +21,10 @@ public sealed class BoxShadow : ClassDictionaryBase
                         """
                         box-shadow: {0};
                         """,
+                    ModifierTemplate = 
+                        """
+                        box-shadow: {0};
+                        """
                 }
             },
             {
@@ -41,12 +45,30 @@ public sealed class BoxShadow : ClassDictionaryBase
         foreach (var text in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--shadow-")))
         {
             var key = text.Key.Trim('-');
+            var newValue = text.Value;
+            var color = newValue.ExtractWebColors().FirstOrDefault() ?? "oklch(0 0 0 / 10%)";
+            var pct = color.ExtractPercentages().FirstOrDefault() ?? "10%";
+
+            newValue = newValue.Replace(color, "var(--sf-shadow-color)");
+            color = color.Replace(pct, "var(--sf-shadow-alpha)");
+            
             var value = new ClassDefinition
             {
                 InSimpleUtilityCollection = true,
+                UsesSlashModifier = true,
                 Template =
-                    $"""
-                    box-shadow: var({text.Key});
+                    $$"""
+                    --sf-shadow-alpha: {{pct}};
+                    --sf-shadow-color: {{color}};
+                    --sf-shadow: {{newValue}};
+                    box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
+                    """,
+                ModifierTemplate = 
+                    $$"""
+                    --sf-shadow-alpha: {1}%;
+                    --sf-shadow-color: {{color}};
+                    --sf-shadow: {{newValue}};
+                    box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
             };
 

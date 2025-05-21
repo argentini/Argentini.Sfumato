@@ -14,8 +14,25 @@ public class BoxShadowTests(ITestOutputHelper testOutputHelper)
                 ClassName = "shadow-md",
                 EscapedClassName = ".shadow-md",
                 Styles =
+                    $"""
+                     --sf-shadow-alpha: 10%;
+                     --sf-shadow-color: oklch(0 0 0 / var(--sf-shadow-alpha));
+                     --sf-shadow: 0 4px 6px -1px var(--sf-shadow-color), 0 2px 4px -2px var(--sf-shadow-color);
+                     box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
+                     """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "shadow-md/25",
+                EscapedClassName = @".shadow-md\/25",
+                Styles =
                     """
-                    box-shadow: var(--shadow-md);
+                    --sf-shadow-alpha: 25%;
+                    --sf-shadow-color: oklch(0 0 0 / var(--sf-shadow-alpha));
+                    --sf-shadow: 0 4px 6px -1px var(--sf-shadow-color), 0 2px 4px -2px var(--sf-shadow-color);
+                    box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
                 IsValid = true,
                 IsImportant = false,
