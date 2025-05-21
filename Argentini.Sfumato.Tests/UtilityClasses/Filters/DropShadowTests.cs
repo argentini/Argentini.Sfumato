@@ -27,8 +27,23 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".drop-shadow-xs",
                 Styles =
                     """
-                    --sf-drop-shadow-size: drop-shadow(0 1px 1px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.05)));
-                    --sf-drop-shadow: drop-shadow(var(--drop-shadow-xs));
+                    --sf-drop-shadow-alpha: 5%;
+                    --sf-drop-shadow-color: oklch(0 0 0 / var(--sf-drop-shadow-alpha));
+                    --sf-drop-shadow: 0 1px 1px var(--sf-drop-shadow-color);
+                    filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "drop-shadow-xs/37",
+                EscapedClassName = @".drop-shadow-xs\/37",
+                Styles =
+                    """
+                    --sf-drop-shadow-alpha: 37%;
+                    --sf-drop-shadow-color: oklch(0 0 0 / var(--sf-drop-shadow-alpha));
+                    --sf-drop-shadow: 0 1px 1px var(--sf-drop-shadow-color);
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,
@@ -40,8 +55,9 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".drop-shadow-2xl",
                 Styles =
                     """
-                    --sf-drop-shadow-size: drop-shadow(0 25px 25px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.15)));
-                    --sf-drop-shadow: drop-shadow(var(--drop-shadow-2xl));
+                    --sf-drop-shadow-alpha: 15%;
+                    --sf-drop-shadow-color: oklch(0 0 0 / var(--sf-drop-shadow-alpha));
+                    --sf-drop-shadow: 0 25px 25px var(--sf-drop-shadow-color);
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,
