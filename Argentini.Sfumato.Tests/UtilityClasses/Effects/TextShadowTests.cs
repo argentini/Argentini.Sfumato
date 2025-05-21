@@ -15,7 +15,24 @@ public class TextShadowTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".text-shadow-md",
                 Styles =
                     """
-                    text-shadow: var(--text-shadow-md);
+                    --sf-text-shadow-alpha: 10%;
+                    --sf-text-shadow-color: oklch(0 0 0 / var(--sf-text-shadow-alpha));
+                    --sf-text-shadow: 0 1px 1px var(--sf-text-shadow-color), 0 1px 2px var(--sf-text-shadow-color), 0 2px 4px var(--sf-text-shadow-color);
+                    text-shadow: var(--sf-text-shadow);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "text-shadow-md/25",
+                EscapedClassName = @".text-shadow-md\/25",
+                Styles =
+                    """
+                    --sf-text-shadow-alpha: 25%;
+                    --sf-text-shadow-color: oklch(0 0 0 / var(--sf-text-shadow-alpha));
+                    --sf-text-shadow: 0 1px 1px var(--sf-text-shadow-color), 0 1px 2px var(--sf-text-shadow-color), 0 2px 4px var(--sf-text-shadow-color);
+                    text-shadow: var(--sf-text-shadow);
                     """,
                 IsValid = true,
                 IsImportant = false,
