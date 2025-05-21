@@ -38,31 +38,6 @@
         --font-weight-extrabold: 800;
         --font-weight-black: 900;
         
-        /* Form Field Styles */
-        
-        --form-field-background-color: var(--color-white);
-        --form-field-color: var(--color-black);
-        --form-field-placeholder-color: var(--color-slate-400);
-        --form-field-border-color: var(--color-slate-500);
-        --form-field-focus-color: var(--color-sky-300);
-        --form-field-check-color: var(--color-sky-500);
-        --form-button-bg-color: var(--color-sky-600);
-        --form-button-color: var(--color-white);
-        --form-button-hover-bg-color: var(--color-sky-500);
-        --form-button-hover-color: var(--color-white);
-
-        --form-dark-background-color: var(--color-white);
-        --form-dark-color: var(--color-black);
-        --form-dark-placeholder-color: var(--color-slate-400);
-
-        --form-field-focus-border-width: 0.15rem;
-        --form-field-border-radius: 0.175rem;
-        --form-field-border-width: 1px;
-        --form-field-padding: 0.75rem 0.75rem;
-        --form-field-max-height: 2.8rem;
-        
-        --form-button-padding: 0.75rem 1rem;
-
         /* Colors */
 
         --color-red-50: oklch(0.971 0.013 17.38);
@@ -402,30 +377,32 @@
         --radius-3xl: 1.5rem;
         --radius-4xl: 2rem;
 
-        --shadow-2xs: 0 1px var(--sf-shadow-color, rgb(0 0 0 / 0.05));
-        --shadow-xs: 0 1px 2px 0 var(--sf-shadow-color, rgb(0 0 0 / 0.05));
-        --shadow-sm: 0 1px 3px 0 var(--sf-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--sf-shadow-color, rgb(0 0 0 / 0.1));
-        --shadow-md: 0 4px 6px -1px var(--sf-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--sf-shadow-color, rgb(0 0 0 / 0.1));
-        --shadow-lg: 0 10px 15px -3px var(--sf-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--sf-shadow-color, rgb(0 0 0 / 0.1));
-        --shadow-xl: 0 20px 25px -5px var(--sf-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--sf-shadow-color, rgb(0 0 0 / 0.1));
-        --shadow-2xl: 0 25px 50px -12px var(--sf-shadow-color, rgb(0 0 0 / 0.25));
+        /* Keep shadow colors in oklch() format to support alpha modifiers */
+        
+        --shadow-2xs: 0 1px oklch(0 0 0 / 5%);
+        --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 5%);
+        --shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 10%), 0 1px 2px -1px oklch(0 0 0 / 10%);
+        --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 10%), 0 2px 4px -2px oklch(0 0 0 / 10%);
+        --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 10%), 0 4px 6px -4px oklch(0 0 0 / 10%);
+        --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 10%), 0 8px 10px -6px oklch(0 0 0 / 10%);
+        --shadow-2xl: 0 25px 50px -12px oklch(0 0 0 / 25%);
 
-        --inset-shadow-2xs: inset 0 1px var(--sf-inset-shadow-color, rgb(0 0 0 / 0.05));
-        --inset-shadow-xs: inset 0 1px 1px var(--sf-inset-shadow-color, rgb(0 0 0 / 0.05));
-        --inset-shadow-sm: inset 0 2px 4px var(--sf-inset-shadow-color, rgb(0 0 0 / 0.05));
+        --inset-shadow-2xs: inset 0 1px oklch(0 0 0 / 5%);
+        --inset-shadow-xs: inset 0 1px 1px oklch(0 0 0 / 5%);
+        --inset-shadow-sm: inset 0 2px 4px oklch(0 0 0 / 5%);
 
-        --drop-shadow-xs: 0 1px 1px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.05));
-        --drop-shadow-sm: 0 1px 2px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.15));
-        --drop-shadow-md: 0 3px 3px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.12));
-        --drop-shadow-lg: 0 4px 4px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.15));
-        --drop-shadow-xl: 0 9px 7px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.1));
-        --drop-shadow-2xl: 0 25px 25px var(--sf-drop-shadow-color, rgb(0 0 0 / 0.15));
+        --drop-shadow-xs: 0 1px 1px oklch(0 0 0 / 5%);
+        --drop-shadow-sm: 0 1px 2px oklch(0 0 0 / 15%);
+        --drop-shadow-md: 0 3px 3px oklch(0 0 0 / 10%);
+        --drop-shadow-lg: 0 4px 4px oklch(0 0 0 / 15%);
+        --drop-shadow-xl: 0 9px 7px oklch(0 0 0 / 10%);
+        --drop-shadow-2xl: 0 25px 25px oklch(0 0 0 / 15%);
 
-        --text-shadow-2xs: 0px 1px 0px var(--sf-text-shadow-color, rgb(0 0 0 / 0.15));
-        --text-shadow-xs: 0px 1px 1px var(--sf-text-shadow-color, rgb(0 0 0 / 0.2));
-        --text-shadow-sm: 0px 1px 0px var(--sf-text-shadow-color, rgb(0 0 0 / 0.075)), 0px 1px 1px var(--sf-text-shadow-color, rgb(0 0 0 / 0.075)), 0px 2px 2px var(--sf-text-shadow-color, rgb(0 0 0 / 0.075));
-        --text-shadow-md: 0px 1px 1px var(--sf-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 1px 2px var(--sf-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 2px 4px var(--sf-text-shadow-color, rgb(0 0 0 / 0.1));
-        --text-shadow-lg: 0px 1px 2px var(--sf-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 3px 2px var(--sf-text-shadow-color, rgb(0 0 0 / 0.1)), 0px 4px 8px var(--sf-text-shadow-color, rgb(0 0 0 / 0.1));
+        --text-shadow-2xs: 0 1px 0px oklch(0 0 0 / 15%);
+        --text-shadow-xs: 0 1px 1px oklch(0 0 0 / 20%);
+        --text-shadow-sm: 0 1px 0px oklch(0 0 0 / 7.5%), 0 1px 1px oklch(0 0 0 / 7.5%), 0 2px 2px oklch(0 0 0 / 7.5%);
+        --text-shadow-md: 0 1px 1px oklch(0 0 0 / 10%), 0 1px 2px oklch(0 0 0 / 10%), 0 2px 4px oklch(0 0 0 / 10%);
+        --text-shadow-lg: 0 1px 2px oklch(0 0 0 / 10%), 0 3px 2px oklch(0 0 0 / 10%), 0 4px 8px oklch(0 0 0 / 10%);
 
         --ease-in: cubic-bezier(0.4, 0, 1, 1);
         --ease-out: cubic-bezier(0, 0, 0.2, 1);
@@ -466,8 +443,31 @@
         --default-mono-font-feature-settings: var(--font-mono--font-feature-settings, initial);
         --default-mono-font-variation-settings: var(--font-mono--font-variation-settings, initial);
 
-        /* Element CSS Custom Properties  */
+        /* Element Scoped CSS Custom Properties  */
 
+        --form-field-background-color: var(--color-white);
+        --form-field-color: var(--color-black);
+        --form-field-placeholder-color: var(--color-slate-400);
+        --form-field-border-color: var(--color-slate-500);
+        --form-field-focus-color: var(--color-sky-300);
+        --form-field-check-color: var(--color-sky-500);
+        --form-button-bg-color: var(--color-sky-600);
+        --form-button-color: var(--color-white);
+        --form-button-hover-bg-color: var(--color-sky-500);
+        --form-button-hover-color: var(--color-white);
+
+        --form-dark-background-color: var(--color-white);
+        --form-dark-color: var(--color-black);
+        --form-dark-placeholder-color: var(--color-slate-400);
+
+        --form-field-focus-border-width: 0.15rem;
+        --form-field-border-radius: 0.175rem;
+        --form-field-border-width: 1px;
+        --form-field-padding: 0.75rem 0.75rem;
+        --form-field-max-height: 2.8rem;
+
+        --form-button-padding: 0.75rem 1rem;
+        
         --sf-border-spacing-x: 0;
         --sf-border-spacing-y: 0;
         --sf-translate-x: 0;
@@ -548,11 +548,11 @@
         --sf-numeric-spacing: initial;
         --sf-numeric-fraction: initial;
         --sf-shadow: 0 0 #0000;
-        --sf-shadow-color: rgb(0 0 0 / 0.15);
-        --sf-shadow-alpha: 100%;
+        --sf-shadow-alpha: 15%;
+        --sf-shadow-color: rgb(0 0 0 / var(--sf-shadow-alpha));
         --sf-inset-shadow: 0 0 #0000;
-        --sf-inset-shadow-color: rgb(0 0 0 / 0.15);
-        --sf-inset-shadow-alpha: 100%;
+        --sf-inset-shadow-alpha: 15%;
+        --sf-inset-shadow-color: rgb(0 0 0 / var(--sf-inset-shadow-alpha));
         --sf-inset-ring-color: currentColor;
         --sf-inset-ring-shadow: 0 0 #0000;
         --sf-ring-color: currentColor;
@@ -572,8 +572,8 @@
         --sf-saturate: initial;
         --sf-sepia: initial;
         --sf-drop-shadow: initial;
-        --sf-drop-shadow-color: rgb(0 0 0 / 0.15);
-        --sf-drop-shadow-alpha: 100%;
+        --sf-drop-shadow-alpha: 15%;
+        --sf-drop-shadow-color: rgb(0 0 0 / var(--sf-drop-shadow-alpha));
         --sf-drop-shadow-size: initial;
         --sf-backdrop-blur: initial;
         --sf-backdrop-brightness: initial;
@@ -586,9 +586,9 @@
         --sf-backdrop-sepia: initial;
         --sf-duration: initial;
         --sf-ease: initial;
-        --sf-content: "";
-        --sf-text-shadow-color: rgb(0 0 0 / 0.15);
-        --sf-text-shadow-alpha: 100%;
+        --sf-content: none;
+        --sf-text-shadow-alpha: 15%;
+        --sf-text-shadow-color: rgb(0 0 0 / var(--sf-text-shadow-alpha));
     }
     
     @keyframes spin {
