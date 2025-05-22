@@ -23,7 +23,7 @@ public sealed class FontFamily : ClassDictionaryBase
     
     public override void ProcessThemeSettings(AppRunner appRunner)
     {
-        foreach (var font in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--font-") && i.Key.LastIndexOf("--", StringComparison.Ordinal) == 0))
+        foreach (var font in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--font-") && i.Key.StartsWith("--font-weight-") == false && i.Key.LastIndexOf("--", StringComparison.Ordinal) == 0))
         {
             var key = font.Key.Trim('-');
             var value = new ClassDefinition
