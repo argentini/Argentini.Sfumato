@@ -5,16 +5,19 @@ namespace Argentini.Sfumato.Tests;
 public class ExportTests(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public void ExportJson()
+    public async Task ExportJsonAsync()
     {
-        var library = new Library();
-        var json = library.ExportDefinitions();
+        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css");
+
+        await appRunner.LoadCssFileAsync();
+        
+        var json = appRunner.Library.ExportDefinitions(appRunner);
         
         Assert.True(json.Length > 10);
 
         var path = Path.GetFullPath(Path.Combine("../../../sfumato-export.json"));
         
-        File.WriteAllText(path, json);
+        await File.WriteAllTextAsync(path, json);
 
         testOutputHelper.WriteLine($"JSON written to {path}");
     }

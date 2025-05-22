@@ -171,7 +171,7 @@ public sealed class Library
         public Dictionary<string,ClassDefinition> Usages { get; } = [];
     }
     
-    public string ExportDefinitions()
+    public string ExportDefinitions(AppRunner appRunner)
     {
         var exportItems = new List<ExportItem>();
         var derivedTypes = Assembly.GetExecutingAssembly()
@@ -183,6 +183,24 @@ public sealed class Library
             if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
                 continue;
 
+            SimpleClasses.Clear();
+            AbstractClasses.Clear();
+            AngleHueClasses.Clear();
+            ColorClasses.Clear();
+            DurationClasses.Clear();
+            FlexClasses.Clear();
+            FloatNumberClasses.Clear();
+            FrequencyClasses.Clear();
+            IntegerClasses.Clear();
+            LengthClasses.Clear();
+            PercentageClasses.Clear();
+            RatioClasses.Clear();
+            ResolutionClasses.Clear();
+            StringClasses.Clear();
+            UrlClasses.Clear();
+            
+            instance.ProcessThemeSettings(appRunner);
+            
             var segments = type.FullName?.Split('.') ?? [];
 
             if (segments.Length < 2)
@@ -195,6 +213,51 @@ public sealed class Library
             };
             
             foreach (var item in instance.Data)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in SimpleClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+            
+            foreach (var item in AbstractClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in AngleHueClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in ColorClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in DurationClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in FlexClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in FloatNumberClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in FrequencyClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in IntegerClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in LengthClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in PercentageClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in RatioClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in ResolutionClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in StringClasses)
+                exportItem.Usages.Add(item.Key, item.Value);
+
+            foreach (var item in UrlClasses)
                 exportItem.Usages.Add(item.Key, item.Value);
             
             exportItems.Add(exportItem);
