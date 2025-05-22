@@ -6,7 +6,7 @@ public sealed class ObjectFit : ClassDictionaryBase
 {
     public ObjectFit()
     {
-        Description = "";
+        Description = "Utilities for controlling how replaced content fits within its box.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

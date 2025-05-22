@@ -6,7 +6,7 @@ public sealed class FromColor : ClassDictionaryBase
 {
     public FromColor()
     {
-        Description = "";
+        Description = "Utilities for configuring fromcolor.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

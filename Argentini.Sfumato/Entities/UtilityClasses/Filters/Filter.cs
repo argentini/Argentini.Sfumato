@@ -6,7 +6,7 @@ public sealed class Filter : ClassDictionaryBase
 {
     public Filter()
     {
-        Description = "";
+        Description = "Utilities for applying general filter effects to elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

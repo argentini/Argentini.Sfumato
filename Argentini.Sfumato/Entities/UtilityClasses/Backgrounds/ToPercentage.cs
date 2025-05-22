@@ -6,7 +6,7 @@ public sealed class ToPercentage : ClassDictionaryBase
 {
     public ToPercentage()
     {
-        Description = "";
+        Description = "Utilities for configuring topercentage.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class Sepia : ClassDictionaryBase
 {
     public Sepia()
     {
-        Description = "";
+        Description = "Utilities for applying sepia tone filter.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

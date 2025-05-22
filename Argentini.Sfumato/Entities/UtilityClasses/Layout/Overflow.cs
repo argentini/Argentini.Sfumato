@@ -6,7 +6,7 @@ public sealed class Overflow : ClassDictionaryBase
 {
     public Overflow()
     {
-        Description = "";
+        Description = "Utilities for controlling how content is clipped and scrolled.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

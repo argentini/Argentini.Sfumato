@@ -6,7 +6,7 @@ public sealed class Container : ClassDictionaryBase
 {
     public Container()
     {
-        Description = "";
+        Description = "Utilities for constraining and centering layout containers.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

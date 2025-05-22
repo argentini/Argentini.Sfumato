@@ -6,7 +6,7 @@ public sealed class BackdropBrightness : ClassDictionaryBase
 {
     public BackdropBrightness()
     {
-        Description = "";
+        Description = "Utilities for adjusting the background brightness behind elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

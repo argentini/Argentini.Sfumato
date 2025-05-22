@@ -6,7 +6,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
 {
     public TransitionProperty()
     {
-        Description = "";
+        Description = "Utilities for specifying which properties are affected by transitions.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

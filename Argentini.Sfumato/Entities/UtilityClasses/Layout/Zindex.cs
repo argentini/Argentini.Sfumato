@@ -6,7 +6,7 @@ public sealed class Zindex : ClassDictionaryBase
 {
     public Zindex()
     {
-        Description = "";
+        Description = "Utilities for controlling the stack order of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

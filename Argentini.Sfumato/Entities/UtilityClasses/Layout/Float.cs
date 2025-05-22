@@ -6,7 +6,7 @@ public sealed class Float : ClassDictionaryBase
 {
     public Float()
     {
-        Description = "";
+        Description = "Utilities for floating elements to the left or right.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

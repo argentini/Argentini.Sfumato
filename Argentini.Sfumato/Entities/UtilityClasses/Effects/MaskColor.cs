@@ -6,7 +6,7 @@ public sealed class MaskColor : ClassDictionaryBase
 {
     public MaskColor()
     {
-        Description = "";
+        Description = "Utilities for setting mask color.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

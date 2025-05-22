@@ -6,7 +6,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
 {
     public PerspectiveOrigin()
     {
-        Description = "";
+        Description = "Utilities for setting the origin for perspective transforms.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

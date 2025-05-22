@@ -6,7 +6,7 @@ public sealed class FromPercentage : ClassDictionaryBase
 {
     public FromPercentage()
     {
-        Description = "";
+        Description = "Utilities for configuring frompercentage.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

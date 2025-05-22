@@ -6,7 +6,7 @@ public sealed class BackdropFilter : ClassDictionaryBase
 {
     public BackdropFilter()
     {
-        Description = "";
+        Description = "Utilities for applying visual effects to the background area behind an element.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

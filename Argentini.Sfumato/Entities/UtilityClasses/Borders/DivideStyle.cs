@@ -7,7 +7,7 @@ public sealed class DivideStyle : ClassDictionaryBase
 {
     public DivideStyle()
     {
-        Description = "";
+        Description = "Utilities for setting divider style between elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

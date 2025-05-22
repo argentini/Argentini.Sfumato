@@ -6,7 +6,7 @@ public sealed class BackgroundConic : ClassDictionaryBase
 {
     public BackgroundConic()
     {
-        Description = "";
+        Description = "Utilities for applying conic gradient backgrounds to elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

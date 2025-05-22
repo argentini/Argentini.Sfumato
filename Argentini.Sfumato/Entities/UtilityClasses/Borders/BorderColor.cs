@@ -7,7 +7,7 @@ public sealed class BorderColor : ClassDictionaryBase
 {
     public BorderColor()
     {
-        Description = "";
+        Description = "Utilities for setting border color.";
     }
 
     public static readonly Dictionary<string, string> BorderColors = new ()

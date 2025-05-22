@@ -6,7 +6,7 @@ public sealed class CaptionSide : ClassDictionaryBase
 {
     public CaptionSide()
     {
-        Description = "";
+        Description = "Utilities for configuring captionside.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

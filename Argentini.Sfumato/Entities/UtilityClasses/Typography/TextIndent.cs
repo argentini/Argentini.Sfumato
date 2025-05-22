@@ -6,7 +6,7 @@ public sealed class TextIndent : ClassDictionaryBase
 {
     public TextIndent()
     {
-        Description = "";
+        Description = "Utilities for setting text indentation.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

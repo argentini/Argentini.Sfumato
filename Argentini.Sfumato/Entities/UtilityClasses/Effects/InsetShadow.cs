@@ -7,7 +7,7 @@ public sealed class InsetShadow : ClassDictionaryBase
 {
     public InsetShadow()
     {
-        Description = "";
+        Description = "Utilities for creating inner shadow effects.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class AspectRatio : ClassDictionaryBase
 {
     public AspectRatio()
     {
-        Description = "";
+        Description = "Utilities for specifying the aspect ratio of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class FontFamily : ClassDictionaryBase
 {
     public FontFamily()
     {
-        Description = "";
+        Description = "Utilities for specifying font families.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -7,7 +7,7 @@ public sealed class InsetRing : ClassDictionaryBase
 {
     public InsetRing()
     {
-        Description = "";
+        Description = "Utilities for creating inset rings inside elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

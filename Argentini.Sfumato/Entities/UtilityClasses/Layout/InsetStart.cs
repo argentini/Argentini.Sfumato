@@ -6,7 +6,7 @@ public sealed class InsetStart : ClassDictionaryBase
 {
     public InsetStart()
     {
-        Description = "";
+        Description = "Utilities for setting the logical start edge inset.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics

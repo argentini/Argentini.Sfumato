@@ -6,7 +6,7 @@ public sealed class Fill : ClassDictionaryBase
 {
     public Fill()
     {
-        Description = "";
+        Description = "Utilities for setting SVG fill color.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -7,7 +7,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
 {
     public MixBlendMode()
     {
-        Description = "";
+        Description = "Utilities for controlling how elements blend with backgrounds.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

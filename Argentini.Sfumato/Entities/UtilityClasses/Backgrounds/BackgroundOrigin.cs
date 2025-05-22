@@ -6,7 +6,7 @@ public sealed class BackgroundOrigin : ClassDictionaryBase
 {
     public BackgroundOrigin()
     {
-        Description = "";
+        Description = "Utilities for setting the origin position of background images.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

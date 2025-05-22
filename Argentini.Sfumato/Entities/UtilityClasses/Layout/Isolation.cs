@@ -6,7 +6,7 @@ public sealed class Isolation : ClassDictionaryBase
 {
     public Isolation()
     {
-        Description = "";
+        Description = "Utilities for controlling isolation and stacking context.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

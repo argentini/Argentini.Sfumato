@@ -6,7 +6,7 @@ public sealed class Stroke : ClassDictionaryBase
 {
     public Stroke()
     {
-        Description = "";
+        Description = "Utilities for setting SVG stroke color.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

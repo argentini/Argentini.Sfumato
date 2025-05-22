@@ -6,7 +6,7 @@ public sealed class ToColor : ClassDictionaryBase
 {
     public ToColor()
     {
-        Description = "";
+        Description = "Utilities for configuring tocolor.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

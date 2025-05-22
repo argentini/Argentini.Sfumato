@@ -6,7 +6,7 @@ public sealed class BoxDecorationBreak : ClassDictionaryBase
 {
     public BoxDecorationBreak()
     {
-        Description = "";
+        Description = "Utilities for controlling box decoration break for fragments.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

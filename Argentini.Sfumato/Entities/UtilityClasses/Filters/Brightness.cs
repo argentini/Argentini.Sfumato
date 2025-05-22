@@ -6,7 +6,7 @@ public sealed class Brightness : ClassDictionaryBase
 {
     public Brightness()
     {
-        Description = "";
+        Description = "Utilities for adjusting the brightness of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class BackgroundColor : ClassDictionaryBase
 {
     public BackgroundColor()
     {
-        Description = "";
+        Description = "Utilities for setting background color.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

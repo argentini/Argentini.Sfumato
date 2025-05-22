@@ -6,7 +6,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
 {
     public PlaceSelf()
     {
-        Description = "";
+        Description = "Utilities for aligning individual grid or flex items.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

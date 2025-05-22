@@ -6,7 +6,7 @@ public sealed class MinWidth : ClassDictionaryBase
 {
     public MinWidth()
     {
-        Description = "";
+        Description = "Utilities for setting minimum width of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

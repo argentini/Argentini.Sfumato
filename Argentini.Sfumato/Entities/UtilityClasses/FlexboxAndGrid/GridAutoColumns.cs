@@ -6,7 +6,7 @@ public sealed class GridAutoColumns : ClassDictionaryBase
 {
     public GridAutoColumns()
     {
-        Description = "";
+        Description = "Utilities for specifying the size of automatically created grid columns.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

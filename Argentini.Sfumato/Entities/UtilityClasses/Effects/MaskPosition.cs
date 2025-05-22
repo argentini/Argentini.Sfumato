@@ -7,7 +7,7 @@ public sealed class MaskPosition : ClassDictionaryBase
 {
     public MaskPosition()
     {
-        Description = "";
+        Description = "Utilities for positioning masks.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

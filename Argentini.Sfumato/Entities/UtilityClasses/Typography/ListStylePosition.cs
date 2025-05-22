@@ -6,7 +6,7 @@ public sealed class ListStylePosition : ClassDictionaryBase
 {
     public ListStylePosition()
     {
-        Description = "";
+        Description = "Utilities for controlling position of list markers.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

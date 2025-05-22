@@ -6,7 +6,7 @@ public sealed class FontStyle : ClassDictionaryBase
 {
     public FontStyle()
     {
-        Description = "";
+        Description = "Utilities for setting font style.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

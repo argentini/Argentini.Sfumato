@@ -6,7 +6,7 @@ public sealed class TransitionDelay : ClassDictionaryBase
 {
     public TransitionDelay()
     {
-        Description = "";
+        Description = "Utilities for defining delays before transitions start.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

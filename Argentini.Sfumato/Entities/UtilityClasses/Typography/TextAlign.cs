@@ -6,7 +6,7 @@ public sealed class TextAlign : ClassDictionaryBase
 {
     public TextAlign()
     {
-        Description = "";
+        Description = "Utilities for setting text alignment.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

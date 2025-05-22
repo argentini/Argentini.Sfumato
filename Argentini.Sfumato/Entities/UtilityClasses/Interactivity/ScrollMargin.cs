@@ -6,7 +6,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
 {
     public ScrollMargin()
     {
-        Description = "";
+        Description = "Utilities for setting margin at scroll snap points.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

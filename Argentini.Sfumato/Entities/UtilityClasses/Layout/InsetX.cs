@@ -6,7 +6,7 @@ public sealed class InsetX : ClassDictionaryBase
 {
     public InsetX()
     {
-        Description = "";
+        Description = "Utilities for setting horizontal insets.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics

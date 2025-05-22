@@ -6,7 +6,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
 {
     public ObjectPosition()
     {
-        Description = "";
+        Description = "Utilities for setting the alignment of replaced content.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

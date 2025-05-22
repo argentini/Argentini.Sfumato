@@ -7,7 +7,7 @@ public sealed class InsetShadowColor : ClassDictionaryBase
 {
     public InsetShadowColor()
     {
-        Description = "";
+        Description = "Utilities for customizing the color of inner shadows.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

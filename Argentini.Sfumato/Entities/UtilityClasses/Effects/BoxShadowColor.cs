@@ -7,7 +7,7 @@ public sealed class BoxShadowColor : ClassDictionaryBase
 {
     public BoxShadowColor()
     {
-        Description = "";
+        Description = "Utilities for configuring boxshadowcolor.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

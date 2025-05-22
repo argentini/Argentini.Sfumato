@@ -6,7 +6,7 @@ public sealed class FlexGrow : ClassDictionaryBase
 {
     public FlexGrow()
     {
-        Description = "";
+        Description = "Utilities for controlling how flex items grow to fill space.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

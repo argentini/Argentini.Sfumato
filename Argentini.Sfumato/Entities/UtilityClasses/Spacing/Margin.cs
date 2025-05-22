@@ -6,7 +6,7 @@ public sealed class Margin : ClassDictionaryBase
 {
     public Margin()
     {
-        Description = "";
+        Description = "Utilities for setting the margin around elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region m

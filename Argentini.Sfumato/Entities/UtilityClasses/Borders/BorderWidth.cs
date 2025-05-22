@@ -7,7 +7,7 @@ public sealed class BorderWidth : ClassDictionaryBase
 {
     public BorderWidth()
     {
-        Description = "";
+        Description = "Utilities for setting border width.";
     }
 
     public static readonly Dictionary<string, string> BorderWidths = new ()

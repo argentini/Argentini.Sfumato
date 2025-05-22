@@ -6,7 +6,7 @@ public sealed class MaskImage : ClassDictionaryBase
 {
     public MaskImage()
     {
-        Description = "";
+        Description = "Utilities for applying image-based masks.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class BackdropSepia : ClassDictionaryBase
 {
     public BackdropSepia()
     {
-        Description = "";
+        Description = "Utilities for applying sepia tone to backgrounds.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

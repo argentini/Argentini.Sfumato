@@ -6,7 +6,7 @@ public sealed class FlexShrink : ClassDictionaryBase
 {
     public FlexShrink()
     {
-        Description = "";
+        Description = "Utilities for controlling how flex items shrink to fit space.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

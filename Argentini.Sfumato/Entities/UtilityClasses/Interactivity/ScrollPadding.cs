@@ -6,7 +6,7 @@ public sealed class ScrollPadding : ClassDictionaryBase
 {
     public ScrollPadding()
     {
-        Description = "";
+        Description = "Utilities for configuring scrollpadding.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

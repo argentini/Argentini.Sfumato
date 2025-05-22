@@ -6,7 +6,7 @@ public sealed class WillChange : ClassDictionaryBase
 {
     public WillChange()
     {
-        Description = "";
+        Description = "Utilities for hinting which properties will change.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

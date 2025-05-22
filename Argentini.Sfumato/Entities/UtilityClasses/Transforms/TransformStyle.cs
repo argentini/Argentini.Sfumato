@@ -6,7 +6,7 @@ public sealed class TransformStyle : ClassDictionaryBase
 {
     public TransformStyle()
     {
-        Description = "";
+        Description = "Utilities for setting the style for nested transforms.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

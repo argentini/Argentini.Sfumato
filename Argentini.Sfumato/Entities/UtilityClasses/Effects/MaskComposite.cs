@@ -7,7 +7,7 @@ public sealed class MaskComposite : ClassDictionaryBase
 {
     public MaskComposite()
     {
-        Description = "";
+        Description = "Utilities for controlling mask compositing.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

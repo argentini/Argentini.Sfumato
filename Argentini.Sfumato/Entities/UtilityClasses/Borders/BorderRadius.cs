@@ -7,7 +7,7 @@ public sealed class BorderRadius : ClassDictionaryBase
 {
     public BorderRadius()
     {
-        Description = "";
+        Description = "Utilities for setting border radius for rounded corners.";
     }
 
     public static readonly Dictionary<string, string> Borders = new ()

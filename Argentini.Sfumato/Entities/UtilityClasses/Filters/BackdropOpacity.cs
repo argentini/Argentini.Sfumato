@@ -6,7 +6,7 @@ public sealed class BackdropOpacity : ClassDictionaryBase
 {
     public BackdropOpacity()
     {
-        Description = "";
+        Description = "Utilities for adjusting background opacity behind elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

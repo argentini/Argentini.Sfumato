@@ -6,7 +6,7 @@ public sealed class BackdropContrast : ClassDictionaryBase
 {
     public BackdropContrast()
     {
-        Description = "";
+        Description = "Utilities for adjusting the background contrast behind elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

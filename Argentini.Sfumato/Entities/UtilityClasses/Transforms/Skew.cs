@@ -6,7 +6,7 @@ public sealed class Skew : ClassDictionaryBase
 {
     public Skew()
     {
-        Description = "";
+        Description = "Utilities for skewing elements along the X and Y axes.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class Right : ClassDictionaryBase
 {
     public Right()
     {
-        Description = "";
+        Description = "Utilities for setting the right offset of positioned elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics

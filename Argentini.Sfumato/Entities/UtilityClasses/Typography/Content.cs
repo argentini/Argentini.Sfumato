@@ -6,7 +6,7 @@ public sealed class Content : ClassDictionaryBase
 {
     public Content()
     {
-        Description = "";
+        Description = "Utilities for setting the generated content of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

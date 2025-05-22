@@ -6,7 +6,7 @@ public sealed class TextOverflow : ClassDictionaryBase
 {
     public TextOverflow()
     {
-        Description = "";
+        Description = "Utilities for controlling text overflow and ellipsis.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

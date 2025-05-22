@@ -6,7 +6,7 @@ public sealed class TextWrap : ClassDictionaryBase
 {
     public TextWrap()
     {
-        Description = "";
+        Description = "Utilities for controlling how text wraps within an element.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

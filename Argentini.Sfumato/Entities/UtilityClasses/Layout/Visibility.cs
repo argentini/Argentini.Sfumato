@@ -6,7 +6,7 @@ public sealed class Visibility : ClassDictionaryBase
 {
     public Visibility()
     {
-        Description = "";
+        Description = "Utilities for controlling the visibility of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

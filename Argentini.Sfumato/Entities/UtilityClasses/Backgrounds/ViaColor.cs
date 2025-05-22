@@ -6,7 +6,7 @@ public sealed class ViaColor : ClassDictionaryBase
 {
     public ViaColor()
     {
-        Description = "";
+        Description = "Utilities for configuring viacolor.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

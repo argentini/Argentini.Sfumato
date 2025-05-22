@@ -6,7 +6,7 @@ public sealed class TransitionDuration : ClassDictionaryBase
 {
     public TransitionDuration()
     {
-        Description = "";
+        Description = "Utilities for setting transition duration.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

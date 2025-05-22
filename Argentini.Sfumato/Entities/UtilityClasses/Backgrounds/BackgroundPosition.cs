@@ -6,7 +6,7 @@ public sealed class BackgroundPosition : ClassDictionaryBase
 {
     public BackgroundPosition()
     {
-        Description = "";
+        Description = "Utilities for positioning background images.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

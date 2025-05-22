@@ -6,7 +6,7 @@ public sealed class Height : ClassDictionaryBase
 {
     public Height()
     {
-        Description = "";
+        Description = "Utilities for specifying element height.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

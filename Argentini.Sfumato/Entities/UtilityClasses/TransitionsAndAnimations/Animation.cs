@@ -6,7 +6,7 @@ public sealed class Animation : ClassDictionaryBase
 {
     public Animation()
     {
-        Description = "";
+        Description = "Utilities for configuring keyframe animation properties.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

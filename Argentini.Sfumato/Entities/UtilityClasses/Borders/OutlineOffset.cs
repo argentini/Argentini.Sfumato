@@ -7,7 +7,7 @@ public sealed class OutlineOffset : ClassDictionaryBase
 {
     public OutlineOffset()
     {
-        Description = "";
+        Description = "Utilities for setting the distance between outline and element edge.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

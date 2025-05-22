@@ -7,7 +7,7 @@ public sealed class MaskClip : ClassDictionaryBase
 {
     public MaskClip()
     {
-        Description = "";
+        Description = "Utilities for controlling the mask clipping area.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

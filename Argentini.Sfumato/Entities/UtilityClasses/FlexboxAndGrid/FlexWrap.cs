@@ -6,7 +6,7 @@ public sealed class FlexWrap : ClassDictionaryBase
 {
     public FlexWrap()
     {
-        Description = "";
+        Description = "Utilities for controlling flex wrapping behavior.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class PlaceContent : ClassDictionaryBase
 {
     public PlaceContent()
     {
-        Description = "";
+        Description = "Utilities for aligning content within grid or flex containers.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

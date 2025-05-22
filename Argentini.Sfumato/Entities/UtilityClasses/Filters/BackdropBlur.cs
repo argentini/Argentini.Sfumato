@@ -6,7 +6,7 @@ public sealed class BackdropBlur : ClassDictionaryBase
 {
     public BackdropBlur()
     {
-        Description = "";
+        Description = "Utilities for applying blur effects to the background behind elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

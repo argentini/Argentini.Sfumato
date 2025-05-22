@@ -6,7 +6,7 @@ public sealed class Flex : ClassDictionaryBase
 {
     public Flex()
     {
-        Description = "";
+        Description = "Utilities for setting flexible box layout properties.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

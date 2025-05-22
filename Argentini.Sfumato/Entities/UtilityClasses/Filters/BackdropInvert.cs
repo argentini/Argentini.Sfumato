@@ -6,7 +6,7 @@ public sealed class BackdropInvert : ClassDictionaryBase
 {
     public BackdropInvert()
     {
-        Description = "";
+        Description = "Utilities for inverting the background area behind elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

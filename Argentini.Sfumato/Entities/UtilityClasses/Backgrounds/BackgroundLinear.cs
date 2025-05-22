@@ -6,7 +6,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
 {
     public BackgroundLinear()
     {
-        Description = "";
+        Description = "Utilities for applying linear gradient backgrounds.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,7 +6,7 @@ public sealed class ViaPercentage : ClassDictionaryBase
 {
     public ViaPercentage()
     {
-        Description = "";
+        Description = "Utilities for specifying gradient intermediate positions as percentages.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

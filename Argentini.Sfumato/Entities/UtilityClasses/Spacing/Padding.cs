@@ -6,7 +6,7 @@ public sealed class Padding : ClassDictionaryBase
 {
     public Padding()
     {
-        Description = "";
+        Description = "Utilities for setting the padding inside elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region p

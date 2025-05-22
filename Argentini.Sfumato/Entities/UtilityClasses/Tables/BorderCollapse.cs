@@ -6,7 +6,7 @@ public sealed class BorderCollapse : ClassDictionaryBase
 {
     public BorderCollapse()
     {
-        Description = "";
+        Description = "Utilities for controlling border collapse in tables.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

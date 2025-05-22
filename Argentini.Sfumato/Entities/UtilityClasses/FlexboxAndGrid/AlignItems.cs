@@ -6,7 +6,7 @@ public sealed class AlignItems : ClassDictionaryBase
 {
     public AlignItems()
     {
-        Description = "";
+        Description = "Utilities for aligning items along the cross axis.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

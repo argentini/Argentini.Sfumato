@@ -6,7 +6,7 @@ public sealed class JustifySelf : ClassDictionaryBase
 {
     public JustifySelf()
     {
-        Description = "";
+        Description = "Utilities for aligning a single item along the main axis.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

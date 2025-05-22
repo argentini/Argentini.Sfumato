@@ -6,7 +6,7 @@ public sealed class FlexDirection : ClassDictionaryBase
 {
     public FlexDirection()
     {
-        Description = "";
+        Description = "Utilities for setting the direction of flex container items.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
