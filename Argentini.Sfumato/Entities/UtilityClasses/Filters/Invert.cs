@@ -6,6 +6,7 @@ public sealed class Invert : ClassDictionaryBase
 {
     public Invert()
     {
+        Group = "filter/invert";
         Description = "Utilities for inverting the color of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

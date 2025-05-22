@@ -6,6 +6,7 @@ public sealed class Scale : ClassDictionaryBase
 {
     public Scale()
     {
+        Group = "scale";
         Description = "Utilities for scaling elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

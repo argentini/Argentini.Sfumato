@@ -6,6 +6,7 @@ public sealed class BackdropGrayscale : ClassDictionaryBase
 {
     public BackdropGrayscale()
     {
+        Group = "backdrop-filter/grayscale";
         Description = "Utilities for rendering backgrounds in grayscale.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

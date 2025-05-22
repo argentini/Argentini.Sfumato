@@ -6,6 +6,7 @@ public sealed class Size : ClassDictionaryBase
 {
     public Size()
     {
+        Group = "width,height";
         Description = "Utilities for setting width and height together.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

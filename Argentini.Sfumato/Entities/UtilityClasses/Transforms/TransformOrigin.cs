@@ -6,6 +6,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
 {
     public TransformOrigin()
     {
+        Group = "transform-origin";
         Description = "Utilities for setting the origin point of transforms.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

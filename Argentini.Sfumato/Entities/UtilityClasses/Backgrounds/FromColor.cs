@@ -6,7 +6,8 @@ public sealed class FromColor : ClassDictionaryBase
 {
     public FromColor()
     {
-        Description = "Utilities for configuring fromcolor.";
+        Group = "background-image";
+        Description = "Utilities for configuring background gradient from color.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

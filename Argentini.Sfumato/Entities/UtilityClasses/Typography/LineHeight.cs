@@ -6,6 +6,7 @@ public sealed class LineHeight : ClassDictionaryBase
 {
     public LineHeight()
     {
+        Group = "line-height";
         Description = "Utilities for setting line height.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

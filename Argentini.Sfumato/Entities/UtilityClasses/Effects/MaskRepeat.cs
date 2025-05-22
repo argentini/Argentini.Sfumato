@@ -7,6 +7,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
 {
     public MaskRepeat()
     {
+        Group = "mask-repeat";
         Description = "Utilities for specifying repetition of masks.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

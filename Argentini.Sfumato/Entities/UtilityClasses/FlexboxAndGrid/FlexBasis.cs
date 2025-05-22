@@ -6,6 +6,7 @@ public sealed class FlexBasis : ClassDictionaryBase
 {
     public FlexBasis()
     {
+        Group = "flex-basis";
         Description = "Utilities for specifying the initial main size of a flex item.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

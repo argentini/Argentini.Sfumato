@@ -7,6 +7,7 @@ public sealed class OutlineWidth : ClassDictionaryBase
 {
     public OutlineWidth()
     {
+        Group = "outline-width";
         Description = "Utilities for setting outline width.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

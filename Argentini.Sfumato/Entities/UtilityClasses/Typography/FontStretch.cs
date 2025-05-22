@@ -6,6 +6,7 @@ public sealed class FontStretch : ClassDictionaryBase
 {
     public FontStretch()
     {
+        Group = "font-stretch";
         Description = "Utilities for setting font stretch.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

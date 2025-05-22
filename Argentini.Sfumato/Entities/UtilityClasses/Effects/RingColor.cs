@@ -7,6 +7,7 @@ public sealed class RingColor : ClassDictionaryBase
 {
     public RingColor()
     {
+        Group = "box-shadow";
         Description = "Utilities for setting the color of outline rings.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

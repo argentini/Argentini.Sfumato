@@ -6,6 +6,7 @@ public sealed class ListStyleType : ClassDictionaryBase
 {
     public ListStyleType()
     {
+        Group = "list-style-type";
         Description = "Utilities for setting the type of list marker.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

@@ -6,6 +6,7 @@ public sealed class Transform : ClassDictionaryBase
 {
     public Transform()
     {
+        Group = "transform";
         Description = "Utilities for applying 2D and 3D transforms to elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

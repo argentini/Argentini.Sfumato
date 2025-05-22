@@ -6,6 +6,7 @@ public sealed class TextDecorationLine : ClassDictionaryBase
 {
     public TextDecorationLine()
     {
+        Group = "text-decoration-line";
         Description = "Utilities for setting which text decoration lines are drawn.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

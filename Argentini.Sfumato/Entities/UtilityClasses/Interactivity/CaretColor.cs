@@ -6,6 +6,7 @@ public sealed class CaretColor : ClassDictionaryBase
 {
     public CaretColor()
     {
+        Group = "caret-color";
         Description = "Utilities for customizing the caret color in inputs and textareas.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

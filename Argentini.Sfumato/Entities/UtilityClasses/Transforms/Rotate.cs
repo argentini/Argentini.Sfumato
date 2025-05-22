@@ -6,6 +6,7 @@ public sealed class Rotate : ClassDictionaryBase
 {
     public Rotate()
     {
+        Group = "rotate";
         Description = "Utilities for rotating elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

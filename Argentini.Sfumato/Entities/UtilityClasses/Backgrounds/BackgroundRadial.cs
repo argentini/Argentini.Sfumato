@@ -6,6 +6,7 @@ public sealed class BackgroundRadial : ClassDictionaryBase
 {
     public BackgroundRadial()
     {
+        Group = "background-image";
         Description = "Utilities for applying radial gradient backgrounds.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

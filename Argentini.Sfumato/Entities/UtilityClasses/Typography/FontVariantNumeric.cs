@@ -6,6 +6,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
 {
     public FontVariantNumeric()
     {
+        Group = "font-variant-numeric";
         Description = "Utilities for controlling numeric font variant features.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

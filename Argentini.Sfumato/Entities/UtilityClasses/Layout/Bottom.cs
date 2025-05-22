@@ -6,6 +6,7 @@ public sealed class Bottom : ClassDictionaryBase
 {
     public Bottom()
     {
+        Group = "bottom";
         Description = "Utilities for setting the bottom offset of positioned elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

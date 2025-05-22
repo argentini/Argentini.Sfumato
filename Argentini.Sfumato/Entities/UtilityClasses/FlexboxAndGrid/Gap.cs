@@ -6,6 +6,7 @@ public sealed class Gap : ClassDictionaryBase
 {
     public Gap()
     {
+        Group = "gap";
         Description = "Utilities for defining gaps between flex or grid items.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

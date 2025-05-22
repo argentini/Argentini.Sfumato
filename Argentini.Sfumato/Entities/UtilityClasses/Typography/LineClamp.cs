@@ -6,6 +6,7 @@ public sealed class LineClamp : ClassDictionaryBase
 {
     public LineClamp()
     {
+        Group = "line-clamp";
         Description = "Utilities for truncating text after a fixed number of lines.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

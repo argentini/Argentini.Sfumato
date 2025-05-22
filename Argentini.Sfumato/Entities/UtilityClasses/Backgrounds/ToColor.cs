@@ -6,7 +6,8 @@ public sealed class ToColor : ClassDictionaryBase
 {
     public ToColor()
     {
-        Description = "Utilities for configuring tocolor.";
+        Group = "background-image";
+        Description = "Utilities for configuring background gradient to color.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

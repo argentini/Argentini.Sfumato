@@ -6,6 +6,7 @@ public sealed class HueRotate : ClassDictionaryBase
 {
     public HueRotate()
     {
+        Group = "filter/hue-rotate";
         Description = "Utilities for rotating the hue of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

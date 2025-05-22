@@ -6,6 +6,7 @@ public sealed class TextDecorationStyle : ClassDictionaryBase
 {
     public TextDecorationStyle()
     {
+        Group = "text-decoration-style";
         Description = "Utilities for setting the style of text decorations.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

@@ -6,6 +6,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
 {
     public VerticalAlign()
     {
+        Group = "vertical-align";
         Description = "Utilities for setting vertical alignment of inline elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

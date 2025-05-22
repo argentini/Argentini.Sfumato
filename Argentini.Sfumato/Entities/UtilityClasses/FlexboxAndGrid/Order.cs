@@ -6,6 +6,7 @@ public sealed class Order : ClassDictionaryBase
 {
     public Order()
     {
+        Group = "order";
         Description = "Utilities for controlling the order of flex or grid items.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

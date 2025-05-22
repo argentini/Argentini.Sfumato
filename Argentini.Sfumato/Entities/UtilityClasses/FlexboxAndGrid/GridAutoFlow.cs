@@ -6,6 +6,7 @@ public sealed class GridAutoFlow : ClassDictionaryBase
 {
     public GridAutoFlow()
     {
+        Group = "grid-auto-flow";
         Description = "Utilities for controlling grid auto-placement flow.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

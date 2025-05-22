@@ -6,6 +6,7 @@ public sealed class TransitionTimingFunction : ClassDictionaryBase
 {
     public TransitionTimingFunction()
     {
+        Group = "transition-timing-function";
         Description = "Utilities for setting the timing function for transitions and animations.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

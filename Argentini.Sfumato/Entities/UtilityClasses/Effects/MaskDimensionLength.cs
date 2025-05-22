@@ -6,6 +6,7 @@ public sealed class MaskDimensionLength : ClassDictionaryBase
 {
     public MaskDimensionLength()
     {
+        Group = "mask-image";
         Description = "Utilities for setting custom mask dimension lengths.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

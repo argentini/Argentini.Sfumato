@@ -6,6 +6,7 @@ public sealed class Cursor : ClassDictionaryBase
 {
     public Cursor()
     {
+        Group = "cursor";
         Description = "Utilities for changing the cursor appearance.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

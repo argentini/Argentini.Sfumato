@@ -7,6 +7,7 @@ public sealed class DivideWidth : ClassDictionaryBase
 {
     public DivideWidth()
     {
+        Group = "border-width";
         Description = "Utilities for setting divider width between elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

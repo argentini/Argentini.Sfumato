@@ -6,7 +6,8 @@ public sealed class BreakAfter : ClassDictionaryBase
 {
     public BreakAfter()
     {
-        Description = "Utilities for configuring breakafter.";
+        Group = "break-after";
+        Description = "Utilities for configuring break after.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class BackgroundSize : ClassDictionaryBase
 {
     public BackgroundSize()
     {
+        Group = "background-size";
         Description = "Utilities for setting background image size.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

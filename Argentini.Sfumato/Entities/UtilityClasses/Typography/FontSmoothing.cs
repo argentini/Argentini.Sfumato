@@ -6,6 +6,7 @@ public sealed class FontSmoothing : ClassDictionaryBase
 {
     public FontSmoothing()
     {
+        Group = "font-smoothing";
         Description = "Utilities for controlling font smoothing and antialiasing.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

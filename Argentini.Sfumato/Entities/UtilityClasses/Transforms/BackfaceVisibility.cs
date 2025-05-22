@@ -6,6 +6,7 @@ public sealed class BackfaceVisibility : ClassDictionaryBase
 {
     public BackfaceVisibility()
     {
+        Group = "backface-visibility";
         Description = "Utilities for controlling the visibility of the back face of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

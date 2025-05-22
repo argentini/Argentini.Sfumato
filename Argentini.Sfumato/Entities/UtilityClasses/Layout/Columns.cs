@@ -6,6 +6,7 @@ public sealed class Columns : ClassDictionaryBase
 {
     public Columns()
     {
+        Group = "columns";
         Description = "Utilities for defining the number and width of columns in multi-column layouts.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

@@ -7,6 +7,7 @@ public sealed class Ring : ClassDictionaryBase
 {
     public Ring()
     {
+        Group = "box-shadow";
         Description = "Utilities for creating outline rings around elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

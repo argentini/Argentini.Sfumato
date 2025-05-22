@@ -7,6 +7,7 @@ public sealed class BorderRadius : ClassDictionaryBase
 {
     public BorderRadius()
     {
+        Group = "border-radius";
         Description = "Utilities for setting border radius for rounded corners.";
     }
 

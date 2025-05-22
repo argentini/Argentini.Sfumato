@@ -7,6 +7,7 @@ public sealed class DivideColor : ClassDictionaryBase
 {
     public DivideColor()
     {
+        Group = "border-color";
         Description = "Utilities for setting divider color between elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

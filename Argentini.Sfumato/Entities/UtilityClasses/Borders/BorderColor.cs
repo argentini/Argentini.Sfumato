@@ -7,6 +7,7 @@ public sealed class BorderColor : ClassDictionaryBase
 {
     public BorderColor()
     {
+        Group = "border-color";
         Description = "Utilities for setting border color.";
     }
 

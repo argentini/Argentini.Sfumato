@@ -6,6 +6,7 @@ public sealed class FontSize : ClassDictionaryBase
 {
     public FontSize()
     {
+        Group = "font-size";
         Description = "Utilities for setting font size.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

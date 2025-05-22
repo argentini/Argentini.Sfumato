@@ -6,6 +6,7 @@ public sealed class TextTransform : ClassDictionaryBase
 {
     public TextTransform()
     {
+        Group = "text-transform";
         Description = "Utilities for transforming text case.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

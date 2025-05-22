@@ -6,6 +6,7 @@ public sealed class MinHeight : ClassDictionaryBase
 {
     public MinHeight()
     {
+        Group = "min-height";
         Description = "Utilities for setting minimum height of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

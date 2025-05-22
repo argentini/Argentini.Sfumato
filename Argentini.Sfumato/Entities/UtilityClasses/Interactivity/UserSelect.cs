@@ -6,6 +6,7 @@ public sealed class UserSelect : ClassDictionaryBase
 {
     public UserSelect()
     {
+        Group = "user-select";
         Description = "Utilities for controlling text selection.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

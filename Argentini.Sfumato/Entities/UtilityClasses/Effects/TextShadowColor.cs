@@ -7,6 +7,7 @@ public sealed class TextShadowColor : ClassDictionaryBase
 {
     public TextShadowColor()
     {
+        Group = "text-shadow";
         Description = "Utilities for configuring text shadow color.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

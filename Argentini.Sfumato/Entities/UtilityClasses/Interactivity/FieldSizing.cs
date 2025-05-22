@@ -6,6 +6,7 @@ public sealed class FieldSizing : ClassDictionaryBase
 {
     public FieldSizing()
     {
+        Group = "field-sizing";
         Description = "Utilities for controlling the sizing of form fields.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

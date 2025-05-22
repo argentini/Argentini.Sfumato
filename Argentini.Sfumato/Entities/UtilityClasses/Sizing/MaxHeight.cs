@@ -6,6 +6,7 @@ public sealed class MaxHeight : ClassDictionaryBase
 {
     public MaxHeight()
     {
+        Group = "max-height";
         Description = "Utilities for setting maximum height of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

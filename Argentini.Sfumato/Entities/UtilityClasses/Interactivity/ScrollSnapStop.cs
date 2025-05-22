@@ -6,6 +6,7 @@ public sealed class ScrollSnapStop : ClassDictionaryBase
 {
     public ScrollSnapStop()
     {
+        Group = "scroll-snap-stop";
         Description = "Utilities for setting scroll snap stop behavior.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

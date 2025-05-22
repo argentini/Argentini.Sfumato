@@ -6,6 +6,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
 {
     public MaskPercentage()
     {
+        Group = "mask-image";
         Description = "Utilities for specifying mask size or position as a percentage.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

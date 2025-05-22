@@ -6,6 +6,7 @@ public sealed class Width : ClassDictionaryBase
 {
     public Width()
     {
+        Group = "width";
         Description = "Utilities for specifying element width.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

@@ -6,6 +6,7 @@ public sealed class Translate : ClassDictionaryBase
 {
     public Translate()
     {
+        Group = "translate";
         Description = "Utilities for moving elements along the X and Y axes.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

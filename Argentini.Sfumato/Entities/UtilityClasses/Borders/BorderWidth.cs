@@ -7,6 +7,7 @@ public sealed class BorderWidth : ClassDictionaryBase
 {
     public BorderWidth()
     {
+        Group = "border-width";
         Description = "Utilities for setting border width.";
     }
 

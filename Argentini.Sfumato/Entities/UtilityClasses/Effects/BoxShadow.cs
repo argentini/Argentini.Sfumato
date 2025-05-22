@@ -7,6 +7,7 @@ public sealed class BoxShadow : ClassDictionaryBase
 {
     public BoxShadow()
     {
+        Group = "box-shadow";
         Description = "Utilities for adding shadow effects to element boxes.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

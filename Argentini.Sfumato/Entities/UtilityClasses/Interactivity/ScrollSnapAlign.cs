@@ -6,6 +6,7 @@ public sealed class ScrollSnapAlign : ClassDictionaryBase
 {
     public ScrollSnapAlign()
     {
+        Group = "scroll-snap-align";
         Description = "Utilities for aligning elements to snap points during scrolling.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

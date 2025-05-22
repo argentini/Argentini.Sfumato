@@ -6,6 +6,7 @@ public sealed class BackdropSaturate : ClassDictionaryBase
 {
     public BackdropSaturate()
     {
+        Group = "backdrop-filter/saturate";
         Description = "Utilities for controlling background saturation behind elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

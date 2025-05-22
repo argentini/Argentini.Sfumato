@@ -6,6 +6,7 @@ public sealed class Hyphens : ClassDictionaryBase
 {
     public Hyphens()
     {
+        Group = "hyphens";
         Description = "Utilities for enabling or disabling automatic hyphenation.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

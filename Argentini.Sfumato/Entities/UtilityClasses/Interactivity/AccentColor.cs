@@ -6,6 +6,7 @@ public sealed class AccentColor : ClassDictionaryBase
 {
     public AccentColor()
     {
+        Group = "accent-color";
         Description = "Utilities for customizing accent color for user interface controls.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

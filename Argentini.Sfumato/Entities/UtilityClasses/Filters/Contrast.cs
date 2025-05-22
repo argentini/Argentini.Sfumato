@@ -6,6 +6,7 @@ public sealed class Contrast : ClassDictionaryBase
 {
     public Contrast()
     {
+        Group = "filter/contrast";
         Description = "Utilities for adjusting the contrast of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

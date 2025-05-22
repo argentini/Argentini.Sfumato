@@ -6,6 +6,7 @@ public sealed class Appearance : ClassDictionaryBase
 {
     public Appearance()
     {
+        Group = "appearance";
         Description = "Utilities for toggling native UI appearance.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

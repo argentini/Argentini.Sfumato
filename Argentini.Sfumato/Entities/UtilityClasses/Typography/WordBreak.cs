@@ -6,6 +6,7 @@ public sealed class WordBreak : ClassDictionaryBase
 {
     public WordBreak()
     {
+        Group = "word-break";
         Description = "Utilities for controlling how words break across lines.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

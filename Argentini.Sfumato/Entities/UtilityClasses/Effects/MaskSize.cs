@@ -7,6 +7,7 @@ public sealed class MaskSize : ClassDictionaryBase
 {
     public MaskSize()
     {
+        Group = "mask-size";
         Description = "Utilities for defining the size of masks.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

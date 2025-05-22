@@ -1,9 +1,13 @@
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBeProtected.Global
+
 namespace Argentini.Sfumato.Entities.UtilityClasses;
 
 public abstract class ClassDictionaryBase
 {
     public Dictionary<string, ClassDefinition> Data { get; } = new (StringComparer.Ordinal);
     public string Description { get; set; } = string.Empty;
+    public string Group { get; set; } = string.Empty;
     
     public ClassDefinition this[string key]
     {

@@ -6,6 +6,7 @@ public sealed class BackgroundAttachment : ClassDictionaryBase
 {
     public BackgroundAttachment()
     {
+        Group = "background-attachment";
         Description = "Utilities for controlling background attachment to the viewport.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

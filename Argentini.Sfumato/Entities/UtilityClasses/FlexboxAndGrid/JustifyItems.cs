@@ -6,6 +6,7 @@ public sealed class JustifyItems : ClassDictionaryBase
 {
     public JustifyItems()
     {
+        Group = "justify-items";
         Description = "Utilities for aligning items along the main axis.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

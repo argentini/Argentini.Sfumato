@@ -6,6 +6,7 @@ public sealed class LetterSpacing : ClassDictionaryBase
 {
     public LetterSpacing()
     {
+        Group = "letter-spacing";
         Description = "Utilities for controlling letter spacing.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

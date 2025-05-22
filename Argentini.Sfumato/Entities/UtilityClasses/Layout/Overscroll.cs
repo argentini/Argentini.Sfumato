@@ -6,6 +6,7 @@ public sealed class Overscroll : ClassDictionaryBase
 {
     public Overscroll()
     {
+        Group = "overscroll-behavior";
         Description = "Utilities for controlling scroll overflow behavior.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

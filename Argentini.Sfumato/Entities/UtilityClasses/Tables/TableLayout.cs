@@ -6,6 +6,7 @@ public sealed class TableLayout : ClassDictionaryBase
 {
     public TableLayout()
     {
+        Group = "table-layout";
         Description = "Utilities for setting table layout algorithms.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

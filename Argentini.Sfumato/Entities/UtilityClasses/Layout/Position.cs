@@ -6,6 +6,7 @@ public sealed class Position : ClassDictionaryBase
 {
     public Position()
     {
+        Group = "position";
         Description = "Utilities for controlling the positioning of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

@@ -6,6 +6,7 @@ public sealed class BackgroundClip : ClassDictionaryBase
 {
     public BackgroundClip()
     {
+        Group = "background-clip";
         Description = "Utilities for setting background clipping area.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

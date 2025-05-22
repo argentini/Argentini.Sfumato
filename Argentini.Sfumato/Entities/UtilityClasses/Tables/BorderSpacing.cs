@@ -6,6 +6,7 @@ public sealed class BorderSpacing : ClassDictionaryBase
 {
     public BorderSpacing()
     {
+        Group = "border-spacing";
         Description = "Utilities for setting spacing between table cell borders.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

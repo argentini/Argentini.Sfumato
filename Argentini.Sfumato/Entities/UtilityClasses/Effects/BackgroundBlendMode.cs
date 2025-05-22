@@ -7,6 +7,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
 {
     public BackgroundBlendMode()
     {
+        Group = "background-blend-mode";
         Description = "Utilities for blending multiple background layers.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

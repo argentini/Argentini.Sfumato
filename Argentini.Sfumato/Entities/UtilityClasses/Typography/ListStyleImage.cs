@@ -6,6 +6,7 @@ public sealed class ListStyleImage : ClassDictionaryBase
 {
     public ListStyleImage()
     {
+        Group = "list-style-image";
         Description = "Utilities for specifying list marker images.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

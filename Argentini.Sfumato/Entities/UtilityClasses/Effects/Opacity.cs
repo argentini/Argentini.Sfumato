@@ -7,6 +7,7 @@ public sealed class Opacity : ClassDictionaryBase
 {
     public Opacity()
     {
+        Group = "opacity";
         Description = "Utilities for adjusting the transparency of elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

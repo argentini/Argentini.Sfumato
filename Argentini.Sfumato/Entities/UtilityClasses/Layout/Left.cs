@@ -6,6 +6,7 @@ public sealed class Left : ClassDictionaryBase
 {
     public Left()
     {
+        Group = "left";
         Description = "Utilities for setting the left offset of positioned elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

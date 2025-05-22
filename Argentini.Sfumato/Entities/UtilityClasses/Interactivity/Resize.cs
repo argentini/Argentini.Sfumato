@@ -6,6 +6,7 @@ public sealed class Resize : ClassDictionaryBase
 {
     public Resize()
     {
+        Group = "resize";
         Description = "Utilities for enabling or disabling element resizing.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

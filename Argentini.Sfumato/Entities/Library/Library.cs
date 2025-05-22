@@ -167,6 +167,7 @@ public sealed class Library
     private sealed class ExportItem
     {
         public string Category { get; set; } = string.Empty;
+        public string Group { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public Dictionary<string,ClassDefinition> Usages { get; } = [];
@@ -210,8 +211,9 @@ public sealed class Library
             var exportItem = new ExportItem
             {
                 Category = segments[^2].PascalCaseToSpaced(),
-                Name = segments[^1].PascalCaseToSpaced(),
+                Group = instance.Group ?? string.Empty,
                 Description = instance.Description ?? string.Empty,
+                Name = segments[^1].PascalCaseToSpaced(),
             };
             
             foreach (var item in instance.Data)

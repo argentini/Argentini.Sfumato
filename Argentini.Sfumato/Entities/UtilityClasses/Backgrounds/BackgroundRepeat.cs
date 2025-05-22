@@ -6,6 +6,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
 {
     public BackgroundRepeat()
     {
+        Group = "background-repeat";
         Description = "Utilities for defining how background images repeat.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

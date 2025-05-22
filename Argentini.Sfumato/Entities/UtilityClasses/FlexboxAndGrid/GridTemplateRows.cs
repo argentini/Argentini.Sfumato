@@ -6,6 +6,7 @@ public sealed class GridTemplateRows : ClassDictionaryBase
 {
     public GridTemplateRows()
     {
+        Group = "grid-template-rows";
         Description = "Utilities for defining the number and height of grid rows.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
