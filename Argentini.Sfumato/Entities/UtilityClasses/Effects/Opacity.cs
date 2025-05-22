@@ -7,6 +7,7 @@ public sealed class Opacity : ClassDictionaryBase
 {
     public Opacity()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

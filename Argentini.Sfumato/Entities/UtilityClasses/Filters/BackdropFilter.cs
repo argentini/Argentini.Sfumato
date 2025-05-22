@@ -6,6 +6,7 @@ public sealed class BackdropFilter : ClassDictionaryBase
 {
     public BackdropFilter()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

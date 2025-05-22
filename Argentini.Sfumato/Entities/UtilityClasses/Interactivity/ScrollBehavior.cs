@@ -6,6 +6,7 @@ public sealed class ScrollBehavior : ClassDictionaryBase
 {
     public ScrollBehavior()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

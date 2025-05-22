@@ -6,6 +6,7 @@ public sealed class PerspectiveOrigin : ClassDictionaryBase
 {
     public PerspectiveOrigin()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

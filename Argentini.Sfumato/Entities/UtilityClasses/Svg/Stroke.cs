@@ -6,6 +6,7 @@ public sealed class Stroke : ClassDictionaryBase
 {
     public Stroke()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class TransformOrigin : ClassDictionaryBase
 {
     public TransformOrigin()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

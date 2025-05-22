@@ -6,6 +6,7 @@ public sealed class TransformStyle : ClassDictionaryBase
 {
     public TransformStyle()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

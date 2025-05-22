@@ -6,6 +6,7 @@ public sealed class MaxHeight : ClassDictionaryBase
 {
     public MaxHeight()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class Size : ClassDictionaryBase
 {
     public Size()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

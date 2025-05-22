@@ -6,6 +6,7 @@ public sealed class ObjectFit : ClassDictionaryBase
 {
     public ObjectFit()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

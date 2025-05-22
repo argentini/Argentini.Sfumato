@@ -6,6 +6,7 @@ public sealed class Translate : ClassDictionaryBase
 {
     public Translate()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class Display : ClassDictionaryBase
 {
     public Display()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

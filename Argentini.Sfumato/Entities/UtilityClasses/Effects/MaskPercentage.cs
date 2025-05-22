@@ -6,6 +6,7 @@ public sealed class MaskPercentage : ClassDictionaryBase
 {
     public MaskPercentage()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

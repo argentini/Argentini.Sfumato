@@ -6,6 +6,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
 {
     public ScrollMargin()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

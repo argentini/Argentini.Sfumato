@@ -7,6 +7,7 @@ public sealed class InsetShadow : ClassDictionaryBase
 {
     public InsetShadow()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

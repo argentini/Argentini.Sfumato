@@ -6,6 +6,7 @@ public sealed class DropShadowColor : ClassDictionaryBase
 {
     public DropShadowColor()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class TextOverflow : ClassDictionaryBase
 {
     public TextOverflow()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

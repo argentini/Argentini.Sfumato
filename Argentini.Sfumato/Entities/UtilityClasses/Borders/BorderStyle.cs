@@ -7,6 +7,7 @@ public sealed class BorderStyle : ClassDictionaryBase
 {
     public BorderStyle()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

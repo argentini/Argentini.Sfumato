@@ -6,6 +6,7 @@ public sealed class Content : ClassDictionaryBase
 {
     public Content()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

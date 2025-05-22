@@ -6,6 +6,7 @@ public sealed class PlaceSelf : ClassDictionaryBase
 {
     public PlaceSelf()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

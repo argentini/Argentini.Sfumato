@@ -6,6 +6,7 @@ public sealed class TextIndent : ClassDictionaryBase
 {
     public TextIndent()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

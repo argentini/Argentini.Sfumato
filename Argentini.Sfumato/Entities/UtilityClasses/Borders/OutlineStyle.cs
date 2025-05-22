@@ -7,6 +7,7 @@ public sealed class OutlineStyle : ClassDictionaryBase
 {
     public OutlineStyle()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

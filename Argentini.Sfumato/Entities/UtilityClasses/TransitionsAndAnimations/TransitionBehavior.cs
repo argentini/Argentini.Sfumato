@@ -6,6 +6,7 @@ public sealed class TransitionBehavior : ClassDictionaryBase
 {
     public TransitionBehavior()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

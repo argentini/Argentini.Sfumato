@@ -6,6 +6,7 @@ public sealed class FlexShrink : ClassDictionaryBase
 {
     public FlexShrink()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

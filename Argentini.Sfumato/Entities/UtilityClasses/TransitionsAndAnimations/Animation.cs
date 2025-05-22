@@ -6,6 +6,7 @@ public sealed class Animation : ClassDictionaryBase
 {
     public Animation()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

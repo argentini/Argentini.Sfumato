@@ -7,6 +7,7 @@ public sealed class DivideWidth : ClassDictionaryBase
 {
     public DivideWidth()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class FlexDirection : ClassDictionaryBase
 {
     public FlexDirection()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

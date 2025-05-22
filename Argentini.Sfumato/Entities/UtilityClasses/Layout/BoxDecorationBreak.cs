@@ -6,6 +6,7 @@ public sealed class BoxDecorationBreak : ClassDictionaryBase
 {
     public BoxDecorationBreak()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

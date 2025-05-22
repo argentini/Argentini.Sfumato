@@ -7,6 +7,7 @@ public sealed class BackgroundBlendMode : ClassDictionaryBase
 {
     public BackgroundBlendMode()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

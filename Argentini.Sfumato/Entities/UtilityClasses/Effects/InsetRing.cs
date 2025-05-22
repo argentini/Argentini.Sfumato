@@ -7,6 +7,7 @@ public sealed class InsetRing : ClassDictionaryBase
 {
     public InsetRing()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

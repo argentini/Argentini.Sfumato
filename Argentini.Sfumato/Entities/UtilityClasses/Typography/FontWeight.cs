@@ -6,6 +6,7 @@ public sealed class FontWeight : ClassDictionaryBase
 {
     public FontWeight()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

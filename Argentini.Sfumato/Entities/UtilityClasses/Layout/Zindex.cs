@@ -6,6 +6,7 @@ public sealed class Zindex : ClassDictionaryBase
 {
     public Zindex()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class TextAlign : ClassDictionaryBase
 {
     public TextAlign()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

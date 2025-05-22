@@ -6,6 +6,7 @@ public sealed class GridTemplateColumns : ClassDictionaryBase
 {
     public GridTemplateColumns()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

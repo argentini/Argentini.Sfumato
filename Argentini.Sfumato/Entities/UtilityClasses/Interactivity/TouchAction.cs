@@ -6,6 +6,7 @@ public sealed class TouchAction : ClassDictionaryBase
 {
     public TouchAction()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

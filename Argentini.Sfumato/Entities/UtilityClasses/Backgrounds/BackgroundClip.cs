@@ -6,6 +6,7 @@ public sealed class BackgroundClip : ClassDictionaryBase
 {
     public BackgroundClip()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

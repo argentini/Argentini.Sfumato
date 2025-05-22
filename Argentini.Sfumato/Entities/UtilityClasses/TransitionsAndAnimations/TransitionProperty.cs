@@ -6,6 +6,7 @@ public sealed class TransitionProperty : ClassDictionaryBase
 {
     public TransitionProperty()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

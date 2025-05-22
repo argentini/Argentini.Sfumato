@@ -6,6 +6,7 @@ public sealed class Inset : ClassDictionaryBase
 {
     public Inset()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics

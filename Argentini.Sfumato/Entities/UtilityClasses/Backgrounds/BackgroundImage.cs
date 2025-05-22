@@ -6,6 +6,7 @@ public sealed class BackgroundImage : ClassDictionaryBase
 {
     public BackgroundImage()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

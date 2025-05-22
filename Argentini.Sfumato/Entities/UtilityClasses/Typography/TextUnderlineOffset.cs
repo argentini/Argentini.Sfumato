@@ -6,6 +6,7 @@ public sealed class TextUnderlineOffset : ClassDictionaryBase
 {
     public TextUnderlineOffset()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

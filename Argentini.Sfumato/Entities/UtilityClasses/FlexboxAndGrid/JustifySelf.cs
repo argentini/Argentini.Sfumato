@@ -6,6 +6,7 @@ public sealed class JustifySelf : ClassDictionaryBase
 {
     public JustifySelf()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

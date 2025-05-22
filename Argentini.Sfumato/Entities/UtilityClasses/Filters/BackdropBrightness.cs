@@ -6,6 +6,7 @@ public sealed class BackdropBrightness : ClassDictionaryBase
 {
     public BackdropBrightness()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

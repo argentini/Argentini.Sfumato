@@ -6,6 +6,7 @@ public sealed class BackgroundOrigin : ClassDictionaryBase
 {
     public BackgroundOrigin()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

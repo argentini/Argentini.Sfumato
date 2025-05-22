@@ -6,6 +6,7 @@ public sealed class BorderSpacing : ClassDictionaryBase
 {
     public BorderSpacing()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

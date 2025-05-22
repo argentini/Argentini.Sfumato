@@ -6,6 +6,7 @@ public sealed class Space : ClassDictionaryBase
 {
     public Space()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region space-x

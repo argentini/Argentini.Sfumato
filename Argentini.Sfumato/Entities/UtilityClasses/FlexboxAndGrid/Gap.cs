@@ -6,6 +6,7 @@ public sealed class Gap : ClassDictionaryBase
 {
     public Gap()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

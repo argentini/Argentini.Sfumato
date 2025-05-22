@@ -6,6 +6,7 @@ public sealed class GridAutoFlow : ClassDictionaryBase
 {
     public GridAutoFlow()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

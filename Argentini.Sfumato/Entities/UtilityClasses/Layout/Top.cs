@@ -6,6 +6,7 @@ public sealed class Top : ClassDictionaryBase
 {
     public Top()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics

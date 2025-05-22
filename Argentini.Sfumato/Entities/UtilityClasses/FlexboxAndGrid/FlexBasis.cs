@@ -6,6 +6,7 @@ public sealed class FlexBasis : ClassDictionaryBase
 {
     public FlexBasis()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

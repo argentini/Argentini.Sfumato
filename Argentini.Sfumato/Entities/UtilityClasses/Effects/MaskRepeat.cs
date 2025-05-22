@@ -7,6 +7,7 @@ public sealed class MaskRepeat : ClassDictionaryBase
 {
     public MaskRepeat()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

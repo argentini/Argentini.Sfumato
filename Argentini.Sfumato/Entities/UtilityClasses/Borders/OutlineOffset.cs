@@ -7,6 +7,7 @@ public sealed class OutlineOffset : ClassDictionaryBase
 {
     public OutlineOffset()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

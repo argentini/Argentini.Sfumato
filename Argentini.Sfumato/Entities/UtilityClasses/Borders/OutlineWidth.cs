@@ -7,6 +7,7 @@ public sealed class OutlineWidth : ClassDictionaryBase
 {
     public OutlineWidth()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

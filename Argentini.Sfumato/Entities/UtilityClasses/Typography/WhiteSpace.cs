@@ -6,6 +6,7 @@ public sealed class WhiteSpace : ClassDictionaryBase
 {
     public WhiteSpace()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

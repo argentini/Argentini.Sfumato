@@ -6,6 +6,7 @@ public sealed class Grayscale : ClassDictionaryBase
 {
     public Grayscale()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class Contrast : ClassDictionaryBase
 {
     public Contrast()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

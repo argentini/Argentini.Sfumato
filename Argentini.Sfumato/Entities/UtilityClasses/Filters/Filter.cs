@@ -6,6 +6,7 @@ public sealed class Filter : ClassDictionaryBase
 {
     public Filter()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

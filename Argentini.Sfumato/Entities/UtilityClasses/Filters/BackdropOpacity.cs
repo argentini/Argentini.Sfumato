@@ -6,6 +6,7 @@ public sealed class BackdropOpacity : ClassDictionaryBase
 {
     public BackdropOpacity()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

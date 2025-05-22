@@ -6,6 +6,7 @@ public sealed class WordBreak : ClassDictionaryBase
 {
     public WordBreak()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

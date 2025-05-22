@@ -6,6 +6,7 @@ public sealed class ScrollSnapType : ClassDictionaryBase
 {
     public ScrollSnapType()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

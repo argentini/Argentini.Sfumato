@@ -6,6 +6,7 @@ public sealed class FlexGrow : ClassDictionaryBase
 {
     public FlexGrow()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

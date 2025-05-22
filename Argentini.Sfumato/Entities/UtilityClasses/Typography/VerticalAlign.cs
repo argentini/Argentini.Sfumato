@@ -6,6 +6,7 @@ public sealed class VerticalAlign : ClassDictionaryBase
 {
     public VerticalAlign()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

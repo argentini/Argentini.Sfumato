@@ -7,6 +7,7 @@ public sealed class Ring : ClassDictionaryBase
 {
     public Ring()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class Order : ClassDictionaryBase
 {
     public Order()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

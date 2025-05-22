@@ -6,6 +6,7 @@ public sealed class FieldSizing : ClassDictionaryBase
 {
     public FieldSizing()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

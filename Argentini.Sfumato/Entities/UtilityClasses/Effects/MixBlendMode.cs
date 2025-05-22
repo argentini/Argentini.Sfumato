@@ -7,6 +7,7 @@ public sealed class MixBlendMode : ClassDictionaryBase
 {
     public MixBlendMode()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

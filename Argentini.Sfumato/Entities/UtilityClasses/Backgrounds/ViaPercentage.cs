@@ -6,6 +6,7 @@ public sealed class ViaPercentage : ClassDictionaryBase
 {
     public ViaPercentage()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class Saturate : ClassDictionaryBase
 {
     public Saturate()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

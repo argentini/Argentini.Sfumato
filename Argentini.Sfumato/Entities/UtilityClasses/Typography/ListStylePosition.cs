@@ -6,6 +6,7 @@ public sealed class ListStylePosition : ClassDictionaryBase
 {
     public ListStylePosition()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

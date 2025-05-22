@@ -6,6 +6,7 @@ public sealed class Color : ClassDictionaryBase
 {
     public Color()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

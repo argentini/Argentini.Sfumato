@@ -6,6 +6,7 @@ public sealed class TextWrap : ClassDictionaryBase
 {
     public TextWrap()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

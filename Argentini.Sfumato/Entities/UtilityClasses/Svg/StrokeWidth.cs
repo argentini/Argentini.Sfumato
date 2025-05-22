@@ -6,6 +6,7 @@ public sealed class StrokeWidth : ClassDictionaryBase
 {
     public StrokeWidth()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

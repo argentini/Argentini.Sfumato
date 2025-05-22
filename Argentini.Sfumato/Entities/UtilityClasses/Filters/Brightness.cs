@@ -6,6 +6,7 @@ public sealed class Brightness : ClassDictionaryBase
 {
     public Brightness()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

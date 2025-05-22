@@ -6,6 +6,7 @@ public sealed class HueRotate : ClassDictionaryBase
 {
     public HueRotate()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

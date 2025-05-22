@@ -6,6 +6,7 @@ public sealed class LineClamp : ClassDictionaryBase
 {
     public LineClamp()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

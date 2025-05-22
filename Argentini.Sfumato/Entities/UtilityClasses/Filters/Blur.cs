@@ -6,6 +6,7 @@ public sealed class Blur : ClassDictionaryBase
 {
     public Blur()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

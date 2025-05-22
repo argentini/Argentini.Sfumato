@@ -6,6 +6,7 @@ public sealed class FontStretch : ClassDictionaryBase
 {
     public FontStretch()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

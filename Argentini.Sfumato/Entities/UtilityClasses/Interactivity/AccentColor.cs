@@ -6,6 +6,7 @@ public sealed class AccentColor : ClassDictionaryBase
 {
     public AccentColor()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

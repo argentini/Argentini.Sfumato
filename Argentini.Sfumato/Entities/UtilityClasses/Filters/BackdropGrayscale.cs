@@ -6,6 +6,7 @@ public sealed class BackdropGrayscale : ClassDictionaryBase
 {
     public BackdropGrayscale()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

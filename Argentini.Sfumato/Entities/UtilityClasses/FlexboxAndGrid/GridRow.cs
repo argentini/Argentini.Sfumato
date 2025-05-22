@@ -6,6 +6,7 @@ public sealed class GridRow : ClassDictionaryBase
 {
     public GridRow()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region row-span

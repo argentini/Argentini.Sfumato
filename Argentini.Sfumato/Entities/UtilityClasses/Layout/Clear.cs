@@ -6,6 +6,7 @@ public sealed class Clear : ClassDictionaryBase
 {
     public Clear()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

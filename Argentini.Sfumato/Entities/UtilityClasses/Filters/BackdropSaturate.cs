@@ -6,6 +6,7 @@ public sealed class BackdropSaturate : ClassDictionaryBase
 {
     public BackdropSaturate()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

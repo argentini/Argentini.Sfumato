@@ -6,6 +6,7 @@ public sealed class ObjectPosition : ClassDictionaryBase
 {
     public ObjectPosition()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

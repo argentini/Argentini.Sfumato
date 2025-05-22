@@ -6,6 +6,7 @@ public sealed class TextDecorationThickness : ClassDictionaryBase
 {
     public TextDecorationThickness()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

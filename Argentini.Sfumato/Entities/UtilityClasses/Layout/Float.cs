@@ -6,6 +6,7 @@ public sealed class Float : ClassDictionaryBase
 {
     public Float()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

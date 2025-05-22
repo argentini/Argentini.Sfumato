@@ -6,6 +6,7 @@ public sealed class BackgroundRepeat : ClassDictionaryBase
 {
     public BackgroundRepeat()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

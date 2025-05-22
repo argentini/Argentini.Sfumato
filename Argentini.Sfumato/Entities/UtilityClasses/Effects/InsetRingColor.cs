@@ -7,6 +7,7 @@ public sealed class InsetRingColor : ClassDictionaryBase
 {
     public InsetRingColor()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

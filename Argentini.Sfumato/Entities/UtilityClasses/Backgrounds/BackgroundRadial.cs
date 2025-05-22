@@ -6,6 +6,7 @@ public sealed class BackgroundRadial : ClassDictionaryBase
 {
     public BackgroundRadial()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class Right : ClassDictionaryBase
 {
     public Right()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics

@@ -7,6 +7,7 @@ public sealed class BoxShadow : ClassDictionaryBase
 {
     public BoxShadow()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class TextTransform : ClassDictionaryBase
 {
     public TextTransform()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

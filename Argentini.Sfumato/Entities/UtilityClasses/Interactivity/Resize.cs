@@ -6,6 +6,7 @@ public sealed class Resize : ClassDictionaryBase
 {
     public Resize()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

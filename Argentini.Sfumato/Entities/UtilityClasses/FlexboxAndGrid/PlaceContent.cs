@@ -6,6 +6,7 @@ public sealed class PlaceContent : ClassDictionaryBase
 {
     public PlaceContent()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

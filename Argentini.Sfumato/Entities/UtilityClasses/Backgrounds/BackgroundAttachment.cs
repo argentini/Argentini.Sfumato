@@ -6,6 +6,7 @@ public sealed class BackgroundAttachment : ClassDictionaryBase
 {
     public BackgroundAttachment()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

@@ -6,6 +6,7 @@ public sealed class FontVariantNumeric : ClassDictionaryBase
 {
     public FontVariantNumeric()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

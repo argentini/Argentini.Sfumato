@@ -6,6 +6,7 @@ public sealed class Sepia : ClassDictionaryBase
 {
     public Sepia()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

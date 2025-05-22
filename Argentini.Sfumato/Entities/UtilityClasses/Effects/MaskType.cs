@@ -7,6 +7,7 @@ public sealed class MaskType : ClassDictionaryBase
 {
     public MaskType()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

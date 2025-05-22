@@ -6,6 +6,7 @@ public sealed class CaretColor : ClassDictionaryBase
 {
     public CaretColor()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

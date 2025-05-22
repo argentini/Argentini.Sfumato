@@ -6,6 +6,7 @@ public sealed class GridAutoColumns : ClassDictionaryBase
 {
     public GridAutoColumns()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

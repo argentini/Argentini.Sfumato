@@ -6,6 +6,7 @@ public sealed class MaxWidth : ClassDictionaryBase
 {
     public MaxWidth()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

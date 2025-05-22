@@ -6,6 +6,7 @@ public sealed class MinHeight : ClassDictionaryBase
 {
     public MinHeight()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

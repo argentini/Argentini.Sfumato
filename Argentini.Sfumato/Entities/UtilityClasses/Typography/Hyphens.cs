@@ -6,6 +6,7 @@ public sealed class Hyphens : ClassDictionaryBase
 {
     public Hyphens()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

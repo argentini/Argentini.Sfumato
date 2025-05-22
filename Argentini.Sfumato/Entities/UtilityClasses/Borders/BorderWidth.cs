@@ -5,6 +5,11 @@ namespace Argentini.Sfumato.Entities.UtilityClasses.Borders;
 // ReSharper disable once ClassNeverInstantiated.Global
 public sealed class BorderWidth : ClassDictionaryBase
 {
+    public BorderWidth()
+    {
+        Description = "";
+    }
+
     public static readonly Dictionary<string, string> BorderWidths = new ()
     {
         {

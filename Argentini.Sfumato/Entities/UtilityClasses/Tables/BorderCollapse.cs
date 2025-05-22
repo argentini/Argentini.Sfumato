@@ -6,6 +6,7 @@ public sealed class BorderCollapse : ClassDictionaryBase
 {
     public BorderCollapse()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

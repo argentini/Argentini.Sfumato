@@ -6,6 +6,7 @@ public sealed class Skew : ClassDictionaryBase
 {
     public Skew()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

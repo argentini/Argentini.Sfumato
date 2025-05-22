@@ -6,6 +6,7 @@ public sealed class Width : ClassDictionaryBase
 {
     public Width()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

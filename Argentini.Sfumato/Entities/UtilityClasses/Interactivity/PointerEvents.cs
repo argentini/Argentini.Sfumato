@@ -6,6 +6,7 @@ public sealed class PointerEvents : ClassDictionaryBase
 {
     public PointerEvents()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

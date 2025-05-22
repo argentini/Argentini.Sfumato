@@ -6,6 +6,7 @@ public sealed class Invert : ClassDictionaryBase
 {
     public Invert()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

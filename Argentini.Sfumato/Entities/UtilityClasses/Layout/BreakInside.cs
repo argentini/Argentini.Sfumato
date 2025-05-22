@@ -6,6 +6,7 @@ public sealed class BreakInside : ClassDictionaryBase
 {
     public BreakInside()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

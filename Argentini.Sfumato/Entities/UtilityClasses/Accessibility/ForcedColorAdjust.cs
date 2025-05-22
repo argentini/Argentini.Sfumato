@@ -6,6 +6,7 @@ public sealed class ForcedColorAdjust : ClassDictionaryBase
 {
     public ForcedColorAdjust()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

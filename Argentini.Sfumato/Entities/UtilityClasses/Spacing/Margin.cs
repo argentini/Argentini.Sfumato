@@ -6,6 +6,7 @@ public sealed class Margin : ClassDictionaryBase
 {
     public Margin()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region m

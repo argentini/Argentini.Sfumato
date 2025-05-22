@@ -6,6 +6,7 @@ public sealed class ScrollSnapStop : ClassDictionaryBase
 {
     public ScrollSnapStop()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

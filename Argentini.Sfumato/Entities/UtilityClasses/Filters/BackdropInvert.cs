@@ -6,6 +6,7 @@ public sealed class BackdropInvert : ClassDictionaryBase
 {
     public BackdropInvert()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {

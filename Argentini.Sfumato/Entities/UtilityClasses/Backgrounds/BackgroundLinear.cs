@@ -6,6 +6,7 @@ public sealed class BackgroundLinear : ClassDictionaryBase
 {
     public BackgroundLinear()
     {
+        Description = "";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             {
