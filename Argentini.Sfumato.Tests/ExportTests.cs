@@ -11,14 +11,30 @@ public class ExportTests(ITestOutputHelper testOutputHelper)
 
         await appRunner.LoadCssFileAsync();
         
-        var json = appRunner.Library.ExportDefinitions(appRunner);
+        #region Utility Class Definitions
+        
+        var json = appRunner.Library.ExportUtilityClassDefinitions(appRunner);
         
         Assert.True(json.Length > 10);
 
-        var path = Path.GetFullPath(Path.Combine("../../../sfumato-export.json"));
+        var path = Path.GetFullPath(Path.Combine("../../../utility-classes.json"));
         
         await File.WriteAllTextAsync(path, json);
 
-        testOutputHelper.WriteLine($"JSON written to {path}");
+        testOutputHelper.WriteLine($"Utility class JSON written to {path}");
+
+        #endregion
+
+        #region Color Library
+        
+        json = appRunner.Library.ExportColorDefinitions(appRunner);
+        
+        path = Path.GetFullPath(Path.Combine("../../../colors.json"));
+        
+        await File.WriteAllTextAsync(path, json);
+
+        testOutputHelper.WriteLine($"Color definitions JSON written to {path}");
+        
+        #endregion
     }
 }

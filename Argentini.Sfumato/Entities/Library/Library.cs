@@ -172,7 +172,7 @@ public sealed class Library
         public Dictionary<string,ClassDefinition> Usages { get; } = [];
     }
     
-    public string ExportDefinitions(AppRunner appRunner)
+    public string ExportUtilityClassDefinitions(AppRunner appRunner)
     {
         var exportItems = new List<ExportItem>();
         var derivedTypes = Assembly.GetExecutingAssembly()
@@ -266,6 +266,20 @@ public sealed class Library
         }
 
         var json = JsonSerializer.Serialize(exportItems, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+            IncludeFields = true,
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
+
+        return json;
+    }
+
+    public string ExportColorDefinitions(AppRunner appRunner)
+    {
+        var json = JsonSerializer.Serialize(appRunner.Library.ColorsByName.ToList(), new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
