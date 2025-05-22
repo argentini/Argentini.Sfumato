@@ -52,3 +52,5 @@ msbuild.wrn
 /Argentini.Sfumato.Tests/SampleWebsite/wwwroot/index.html.css
 /Argentini.Sfumato.Tests/SampleCss/sfumato.css
 /Argentini.Sfumato.Tests/sfumato-export.json
+/Argentini.Sfumato.Tests/colors.json
+/Argentini.Sfumato.Tests/utility-classes.json
