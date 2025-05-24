@@ -569,9 +569,10 @@ public sealed class AppRunner
 				.AppendProcessedSourceCss(this)
 
 				.ProcessAtApplyStatementsAndTrackDependencies(this)
-				.ProcessAtVariantStatements(this)
 
 				.InjectUtilityClassesCss(this)
+				.ProcessAtVariantStatements(this)
+
 				.ProcessFunctionsAndTrackDependencies(this)
 				.InjectRootDependenciesCss(this);
 
