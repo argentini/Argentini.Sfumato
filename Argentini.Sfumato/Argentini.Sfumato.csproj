@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.0.8.0</AssemblyVersion>
-        <FileVersion>6.0.8.0</FileVersion>
-        <PackageVersion>6.0.8</PackageVersion>
+        <AssemblyVersion>6.0.9.0</AssemblyVersion>
+        <FileVersion>6.0.9.0</FileVersion>
+        <PackageVersion>6.0.9</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Using CSS custom properties for additional utility classes; shadow classes support color, alpha modifier; finds dependent root props; form props scoped to elements</PackageReleaseNotes>
+        <PackageReleaseNotes>All colors now have intermediate 50 and darker 1000 unit variations, fixed dupe font utilities, fixed utilities use of @variant in their templates, updated nuget packages</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
