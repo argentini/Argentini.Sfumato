@@ -7,7 +7,8 @@ public sealed class Inset : ClassDictionaryBase
     public Inset()
     {
         Group = "inset";
-        Description = "Utilities for setting all inset offsets (top, right, bottom, left).";
+        GroupDescription = "Utilities for setting inset offsets (top, right, bottom, left).";
+        Description = "Utilities for setting inset offsets (top, right, bottom, left).";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
             #region Statics

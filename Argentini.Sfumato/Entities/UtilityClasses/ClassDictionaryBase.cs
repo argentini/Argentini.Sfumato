@@ -8,6 +8,7 @@ public abstract class ClassDictionaryBase
     public Dictionary<string, ClassDefinition> Data { get; } = new (StringComparer.Ordinal);
     public string Description { get; set; } = string.Empty;
     public string Group { get; set; } = string.Empty;
+    public string GroupDescription { get; set; } = string.Empty;
     
     public ClassDefinition this[string key]
     {

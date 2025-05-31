@@ -7,6 +7,7 @@ public sealed class DropShadow : ClassDictionaryBase
     public DropShadow()
     {
         Group = "filter/drop-shadow";
+        GroupDescription = "Utilities for adding drop shadow effects to elements.";
         Description = "Utilities for adding drop shadow effects to elements.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {

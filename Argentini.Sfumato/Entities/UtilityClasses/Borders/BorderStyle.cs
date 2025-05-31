@@ -8,6 +8,7 @@ public sealed class BorderStyle : ClassDictionaryBase
     public BorderStyle()
     {
         Group = "border-style";
+        GroupDescription = "Utilities for setting border style.";
         Description = "Utilities for setting border style.";
         Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
         {
