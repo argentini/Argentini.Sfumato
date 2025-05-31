@@ -136,5 +136,5 @@ public sealed class ExportItem
     public string GroupDescription { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public Dictionary<string,ClassDefinition> Usages { get; } = new(StringComparer.Ordinal);
+    public Dictionary<string,ClassDefinition> Usages { get; set; } = new(StringComparer.Ordinal);
 }

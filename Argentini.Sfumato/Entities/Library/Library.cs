@@ -284,7 +284,7 @@ public sealed class Library
 
     public string ExportColorDefinitions(AppRunner appRunner)
     {
-        var json = JsonSerializer.Serialize(appRunner.Library.ColorsByName.ToList(), Jso);
+        var json = JsonSerializer.Serialize(appRunner.Library.ColorsByName, Jso);
 
         return json;
     }
