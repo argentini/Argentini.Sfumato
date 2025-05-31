@@ -128,3 +128,13 @@ public sealed class ClassDefinition
     /// </summary>
     public int SelectorSort { get; set; } = 0;
 }
+
+public sealed class ExportItem
+{
+    public string Category { get; set; } = string.Empty;
+    public string Group { get; set; } = string.Empty;
+    public string GroupDescription { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public Dictionary<string,ClassDefinition> Usages { get; } = new(StringComparer.Ordinal);
+}

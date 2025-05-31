@@ -162,18 +162,6 @@ public sealed class Library
         }        
     }
 
-    // ReSharper disable UnusedAutoPropertyAccessor.Local
-    // ReSharper disable CollectionNeverQueried.Local
-    private sealed class ExportItem
-    {
-        public string Category { get; set; } = string.Empty;
-        public string Group { get; set; } = string.Empty;
-        public string GroupDescription { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public Dictionary<string,ClassDefinition> Usages { get; } = [];
-    }
-    
     public string ExportUtilityClassDefinitions(AppRunner appRunner)
     {
         var exportItems = new List<ExportItem>();
