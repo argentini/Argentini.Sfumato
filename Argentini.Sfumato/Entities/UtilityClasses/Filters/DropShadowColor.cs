@@ -13,31 +13,31 @@ public sealed class DropShadowColor : ClassDictionaryBase
             {
                 "drop-shadow-", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     InColorCollection = true,
                     Template =
                         """
                         --sf-drop-shadow-color: {0};
-                        --sf-drop-shadow: var(--sf-drop-shadow-size)
                         """,
                 }
             },
             {
                 "drop-shadow-inherit", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     InSimpleUtilityCollection = true,
                     Template = """
                                --sf-drop-shadow-color: inherit;
-                               --sf-drop-shadow: var(--sf-drop-shadow-size)
                                """,
                 }
             },
             {
                 "drop-shadow-current", new ClassDefinition
                 {
+                    SelectorSort = 1,
                     InSimpleUtilityCollection = true,
                     Template = """
                                --sf-drop-shadow-color: currentColor;
-                               --sf-drop-shadow: var(--sf-drop-shadow-size)
                                """,
                 }
             },
