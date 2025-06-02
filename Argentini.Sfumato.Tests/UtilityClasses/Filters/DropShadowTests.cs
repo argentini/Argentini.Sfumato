@@ -29,7 +29,7 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                     """
                     --sf-drop-shadow-alpha: 5%;
                     --sf-drop-shadow-color: oklch(0 0 0 / var(--sf-drop-shadow-alpha));
-                    --sf-drop-shadow: 0 1px 1px var(--sf-drop-shadow-color);
+                    --sf-drop-shadow: drop-shadow(0 1px 1px var(--sf-drop-shadow-color));
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,
@@ -43,7 +43,7 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                     """
                     --sf-drop-shadow-alpha: 37%;
                     --sf-drop-shadow-color: oklch(0 0 0 / var(--sf-drop-shadow-alpha));
-                    --sf-drop-shadow: 0 1px 1px var(--sf-drop-shadow-color);
+                    --sf-drop-shadow: drop-shadow(0 1px 1px var(--sf-drop-shadow-color));
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,
@@ -57,7 +57,7 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                     """
                     --sf-drop-shadow-alpha: 15%;
                     --sf-drop-shadow-color: oklch(0 0 0 / var(--sf-drop-shadow-alpha));
-                    --sf-drop-shadow: 0 25px 25px var(--sf-drop-shadow-color);
+                    --sf-drop-shadow: drop-shadow(0 25px 25px var(--sf-drop-shadow-color));
                     filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                     """,
                 IsValid = true,
@@ -96,7 +96,6 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-drop-shadow-color: var(--color-lime-500);
-                    --sf-drop-shadow: var(--sf-drop-shadow-size)
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -108,7 +107,6 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-drop-shadow-color: color-mix(in oklab, var(--color-lime-500) 37%, transparent);
-                    --sf-drop-shadow: var(--sf-drop-shadow-size)
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -120,7 +118,6 @@ public class DropShadowTests(ITestOutputHelper testOutputHelper)
                 Styles =
                     """
                     --sf-drop-shadow-color: var(--my-color);
-                    --sf-drop-shadow: var(--sf-drop-shadow-size)
                     """,
                 IsValid = true,
                 IsImportant = false,
