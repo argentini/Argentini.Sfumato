@@ -200,14 +200,14 @@ public sealed class AppRunner
 		        {
 			        PrefixOrder = prefixOrder,
 			        PrefixType = "media",
-			        Statement = $"(max-aspect-ratio: {maxValue - 0.000000000001})"
+			        Statement = $"(max-aspect-ratio: {maxValue - 0.0001})"
 		        }) == false)
 		    {
 			    Library.MediaQueryPrefixes[$"max-{key}"] = new VariantMetadata
 			    {
 				    PrefixOrder = prefixOrder,
 				    PrefixType = "media",
-				    Statement = $"(max-aspect-ratio: {maxValue - 0.000000000001})"
+				    Statement = $"(max-aspect-ratio: {maxValue - 0.0001})"
 			    };
 		    }
 		    

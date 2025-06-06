@@ -514,13 +514,13 @@
         --breakpoint-xl: 80rem;
         --breakpoint-2xl: 96rem;
 
-        --adaptive-breakpoint-mobi: 0.624999999999;
+        --adaptive-breakpoint-mobi: 0.6249;
         --adaptive-breakpoint-phab: 0.575;
         --adaptive-breakpoint-tabp: 0.625;
         --adaptive-breakpoint-tabl: 1.0;
         --adaptive-breakpoint-desk: 1.5;
-        --adaptive-breakpoint-wide: 1.77777778;
-        --adaptive-breakpoint-vast: 2.33333333;
+        --adaptive-breakpoint-wide: 1.7777;
+        --adaptive-breakpoint-vast: 2.3333;
 
         --container-3xs: 16rem;
         --container-2xs: 18rem;
