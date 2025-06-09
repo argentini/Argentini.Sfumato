@@ -390,4 +390,26 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
             testOutputHelper.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
         }
     }
+
+    [Fact]
+    public void WildcardHandling()
+    {
+        var appRunner = new AppRunner(new AppState());
+        
+        var cssClass = new CssClass(appRunner, "*:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.True(cssClass.IsImportant);
+        Assert.Equal(@":is(.\*\:whitespace-pre\! > *)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre !important;", cssClass.Styles);
+        
+        cssClass = new CssClass(appRunner, "**:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.True(cssClass.IsImportant);
+        Assert.Equal(@":is(.\*\*\:whitespace-pre\! *)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre !important;", cssClass.Styles);
+    }
 }

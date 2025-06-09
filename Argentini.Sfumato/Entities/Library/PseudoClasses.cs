@@ -420,5 +420,21 @@ public static class LibraryPseudoClasses
 			    SelectorSuffix = "[aria-selected=\"true\"]"
 		    }
 	    },
+	    {
+		    "*",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ""
+		    }
+	    },
+	    {
+		    "**",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ""
+		    }
+	    },
     };
 }

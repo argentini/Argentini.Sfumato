@@ -142,7 +142,7 @@ public sealed class CssClass : IDisposable
 
                     VariantSegments.Add(segment, pseudoClass);
                     
-                    if (pseudoClass.SelectorSuffix.Contains(":where(", StringComparison.Ordinal))
+                    if (pseudoClass.SelectorSuffix.Contains(":where(", StringComparison.Ordinal) || pseudoClass.SelectorSuffix.Contains(":is(", StringComparison.Ordinal))
                         SelectorSort = 99;
                     else
                         SelectorSort++;
@@ -678,6 +678,11 @@ public sealed class CssClass : IDisposable
         
         try
         {
+            if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key is "*" or "**"))
+            {
+                Sb?.Append(":is(");
+            }
+            
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
                 Sb?.Append(variant.Value.SelectorPrefix);
 
@@ -686,6 +691,15 @@ public sealed class CssClass : IDisposable
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
                 Sb?.Append(variant.Value.SelectorSuffix);
+
+            if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "*"))
+            {
+                Sb?.Append(" > *)");
+            }
+            else if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "**"))
+            {
+                Sb?.Append(" *)");
+            }
             
             EscapedSelector = Sb?.ToString() ?? string.Empty;
         }
