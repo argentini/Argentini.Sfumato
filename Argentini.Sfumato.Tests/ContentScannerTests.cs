@@ -19,7 +19,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                             <p class="[fontweight:400] sm:[fontweight:300] xl:text[#112233] xl:text-slate[#112233] xl:text-slate-50[#112233] xxl:text-slate-50-[#112233]">Invalid Classes</p>
                                         </div>
                                         <div class="[color:#eee;font-weight:500;] content-['Hello!'] [--margin-val6:_1.25rem]! dark:sm:supports-backdrop-blur:motion-safe:block invisible lg:max-xl:top-8 break-after-auto container aspect-screen xxl:aspect-[8/4] xl:aspect-8/4"></div>
-                                        <div class="-top-px"></div>
+                                        <div class="-top-px *:whitespace-pre!"></div>
                                         <div class="top-1/2 antialiased"></div>
                                         <script>
                                             function test() {
@@ -81,7 +81,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         foreach (var cname in utilityClasses)
             testOutputHelper.WriteLine($"{cname.Key}");
         
-        Assert.Equal(49, utilityClasses.Count);
+        Assert.Equal(50, utilityClasses.Count);
     }
 
     [Fact]

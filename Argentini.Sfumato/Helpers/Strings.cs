@@ -747,7 +747,7 @@ public static partial class Strings
 		if (source.Length < 3)
 			return false;
 
-		if (source[0] is < 'a' or > 'z' && source[0] != '[' && source[0] != '-' && source[0] != '@' && source[0] != '!')
+		if (source[0] is < 'a' or > 'z' && source[0] != '[' && source[0] != '-' && source[0] != '@' && source[0] != '*')
 			return false;
 
 		if (char.IsAsciiLetterLower(source[^1]) == false && char.IsAsciiDigit(source[^1]) == false && source.EndsWith('%') == false && source.EndsWith('!') == false && source.EndsWith(']') == false && source.EndsWith(')') == false)
@@ -871,10 +871,10 @@ public static partial class Strings
 
 	/// <summary>
 	/// Get the right characters of a string up to but not including the last instance of "marker" (right to left).
-	/// If marker is not found the original value is returned.
+	/// If the marker is not found, the original value is returned.
 	/// </summary>
 	/// <param name="value">String value</param>
-	/// <param name="marker">Delimiter to denote the cut off point</param>
+	/// <param name="marker">Delimiter to denote the cut-off point</param>
 	/// <returns>Right portion of a string</returns>
 	public static string Right(this string? value, string? marker)
 	{
