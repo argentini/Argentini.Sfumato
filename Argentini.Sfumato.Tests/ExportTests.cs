@@ -36,5 +36,17 @@ public class ExportTests(ITestOutputHelper testOutputHelper)
         testOutputHelper.WriteLine($"Color definitions JSON written to {path}");
         
         #endregion
+        
+        #region CSS Custom Properties
+        
+        json = appRunner.Library.ExportCssCustomProperties(appRunner);
+        
+        path = Path.GetFullPath(Path.Combine("../../../css-custom-properties.json"));
+        
+        await File.WriteAllTextAsync(path, json);
+
+        testOutputHelper.WriteLine($"CSS Custom Properties JSON written to {path}");
+        
+        #endregion
     }
 }

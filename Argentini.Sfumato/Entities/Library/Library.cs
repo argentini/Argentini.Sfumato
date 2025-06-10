@@ -289,6 +289,13 @@ public sealed class Library
         return json;
     }
 
+    public string ExportCssCustomProperties(AppRunner appRunner)
+    {
+        var json = JsonSerializer.Serialize(appRunner.AppRunnerSettings.SfumatoBlockItems, Jso);
+
+        return json;
+    }
+
     private JsonSerializerOptions Jso { get; } = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
