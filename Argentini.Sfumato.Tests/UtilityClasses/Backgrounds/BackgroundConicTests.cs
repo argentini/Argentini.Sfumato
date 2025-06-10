@@ -35,6 +35,18 @@ public class BackgroundConicTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "bg-conic/srgb",
+                EscapedClassName = @".bg-conic\/srgb",
+                Styles =
+                    """
+                    --sf-gradient-position: in srgb;
+                    background-image: conic-gradient(var(--sf-gradient-stops));
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "bg-conic/decreasing",
                 EscapedClassName = @".bg-conic\/decreasing",
                 Styles =
