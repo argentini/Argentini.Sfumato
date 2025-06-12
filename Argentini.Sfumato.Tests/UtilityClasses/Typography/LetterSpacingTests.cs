@@ -38,7 +38,7 @@ public class LetterSpacingTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".-tracking-\[0\.25rem\]",
                 Styles =
                     """
-                    letter-spacing: calc(0.25rem * -1);
+                    letter-spacing: -0.25rem;
                     """,
                 IsValid = true,
                 IsImportant = false,

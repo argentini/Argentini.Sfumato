@@ -17,7 +17,7 @@ public sealed class BackgroundSize : ClassDictionaryBase
                     InAbstractValueCollection = true,
                     Template =
                         """
-                        background-size: {0};
+                        background-size: calc(var(--spacing) * {0});
                         """,
                     ArbitraryCssValueTemplate =
                         """

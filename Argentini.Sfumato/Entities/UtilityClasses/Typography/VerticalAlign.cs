@@ -16,6 +16,10 @@ public sealed class VerticalAlign : ClassDictionaryBase
                     InLengthCollection = true,
                     Template =
                         """
+                        vertical-align: calc(var(--spacing) * {0});
+                        """,
+                    ArbitraryCssValueTemplate = 
+                        """
                         vertical-align: {0};
                         """,
                 }

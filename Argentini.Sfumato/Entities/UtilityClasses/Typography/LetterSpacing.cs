@@ -16,6 +16,9 @@ public sealed class LetterSpacing : ClassDictionaryBase
                     SelectorSort = 1,
                     InLengthCollection = true,
                     Template = """
+                               letter-spacing: calc(var(--spacing) * {0});
+                               """,
+                    ArbitraryCssValueTemplate = """
                                letter-spacing: {0};
                                """
                 }
@@ -26,8 +29,11 @@ public sealed class LetterSpacing : ClassDictionaryBase
                     SelectorSort = 1,
                     InLengthCollection = true,
                     Template = """
-                               letter-spacing: calc({0} * -1);
-                               """
+                               letter-spacing: calc(var(--spacing) * -{0});
+                               """,
+                    ArbitraryCssValueTemplate = """
+                                                letter-spacing: -{0};
+                                                """
                 }
             },
         });
