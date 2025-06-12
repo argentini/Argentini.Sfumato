@@ -280,28 +280,137 @@ public sealed class Library
             {
                 if (usage.Key.EndsWith('-'))
                 {
+                    if (usage.Value.InAngleHueCollection)
+                    {
+                        if(usage.Value.DocDefinitions.TryAdd($"{usage.Key}<angle>", usage.Value.Template.Replace("{0}", "<angle>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}45", usage.Value.Template.Replace("{0}", "45"));
+
+                        if (usage.Value.UsesSlashModifier)
+                        {
+                            if(usage.Value.DocDefinitions.TryAdd($"{usage.Key}<angle>/<modifier>", usage.Value.ModifierTemplate.Replace("{0}", "<angle>").Replace("{1}", "<modifier>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}45/srgb", usage.Value.ModifierTemplate.Replace("{0}", "45").Replace("{1}", "srgb"));
+                        }
+                        
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}[45deg]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "45deg"));
+                        
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-angle)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-angle)"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(angle:<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(angle:--my-angle)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-angle)"));
+                    }
+
                     if (usage.Value.InColorCollection)
                     {
-                        usage.Value.DocDefinitions.Add($"{usage.Key}<color-name>", usage.Value.Template.Replace("{0}", "<value>"));
-                        usage.Value.DocDefinitions.Add($"{usage.Key}<color-name>/<opacity>", usage.Value.Template.Replace("{0}", "<value>"));
-                        usage.Value.DocExamples.Add($"{usage.Key}red-500", usage.Value.Template.Replace("{0}", "var(--color-red-500)"));
-                        usage.Value.DocExamples.Add($"{usage.Key}red-500/42", usage.Value.Template.Replace("{0}", "color-mix(in oklab, var(--color-red-500) 42%, transparent)"));
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<color-name>", usage.Value.Template.Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}red-500", usage.Value.Template.Replace("{0}", "var(--color-red-500)"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<color-name>/<opacity>", usage.Value.Template.Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}red-500/42", usage.Value.Template.Replace("{0}", "color-mix(in oklab, var(--color-red-500) 42%, transparent)"));
                         
-                        usage.Value.DocDefinitions.Add($"{usage.Key}[<value>]", usage.Value.Template.Replace("{0}", "<value>"));
-                        usage.Value.DocDefinitions.Add($"{usage.Key}[<value>]/<opacity>", usage.Value.Template.Replace("{0}", "<value>"));
-                        usage.Value.DocExamples.Add($"{usage.Key}[#ff0000]", usage.Value.Template.Replace("{0}", "#ff0000"));
-                        usage.Value.DocExamples.Add($"{usage.Key}[#ff0000]/42", usage.Value.Template.Replace("{0}", "rgba(255,0,0,0.42)"));
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.Template.Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}[#ff0000]", usage.Value.Template.Replace("{0}", "#ff0000"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]/<opacity>", usage.Value.Template.Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}[#ff0000]/42", usage.Value.Template.Replace("{0}", "rgba(255,0,0,0.42)"));
                         
-                        usage.Value.DocDefinitions.Add($"{usage.Key}(<custom-property>)", usage.Value.Template.Replace("{0}", "var(<custom-property>)"));
-                        usage.Value.DocDefinitions.Add($"{usage.Key}(color:<custom-property>)", usage.Value.Template.Replace("{0}", "var(<custom-property>)"));
-                        usage.Value.DocExamples.Add($"{usage.Key}(--my-color)", usage.Value.Template.Replace("{0}", "var(--my-color)"));
-                        usage.Value.DocExamples.Add($"{usage.Key}(color:--my-color)", usage.Value.Template.Replace("{0}", "var(--my-color)"));
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", usage.Value.Template.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-color)", usage.Value.Template.Replace("{0}", "var(--my-color)"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(color:<custom-property>)", usage.Value.Template.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(color:--my-color)", usage.Value.Template.Replace("{0}", "var(--my-color)"));
                     }
+
+                    if (usage.Value.InDurationCollection)
+                    {
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}250", usage.Value.Template.Replace("{0}", "250"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}[250ms]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "250ms"));
+                        
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-duration)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-duration)"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(duration:<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(duration:--my-duration)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-duration)"));
+                    }
+
+                    if (usage.Value.InFlexCollection)
+                    {
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}1", usage.Value.Template.Replace("{0}", "1"));
+
+                        if (usage.Value is { InFloatNumberCollection: false, InIntegerCollection: false, InAbstractValueCollection: true })
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "<value>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[3_1_auto]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "3 1 auto"));
+                        }
+                        else
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "<value>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[1]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "1"));
+                        }
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-flex)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-flex)"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(flex:<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(flex:--my-flex)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-flex)"));
+                    }
+
+                    if (usage.Value is { InFloatNumberCollection: true, InFlexCollection: false })
+                    {
+                        if (usage.Value.Template.Contains("{0}%"))
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}42", usage.Value.Template.Replace("{0}", "42"));
+
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "<value>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[42%]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "42%"));
+                        
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-percentage)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-percentage)"));
+
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(percentage:<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(percentage:--my-percentage)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-percentage)"));
+                        }
+                        else if (usage.Value.Template.Contains("* {0}") || usage.Value.Template.Contains("* -{0}") || usage.Value.Template.Contains("{0}px"))
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}4", usage.Value.Template.Replace("{0}", "4"));
+
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "<value>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "1rem"));
+                        
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-length)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-length)"));
+
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(length:<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(length:--my-length)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-length)"));
+                        }
+                    }
+
+
+
+
+
+
+                    /*
+                    if (usage.Value.InAbstractValueCollection)
+                    {
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}[initial]", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "initial"));
+                        
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-value)", usage.Value.ArbitraryCssValueTemplate.Replace("{0}", "var(--my-value)"));
+                    }
+                    */
                 }
                 else
                 {
-                    if (usage.Value.InSimpleUtilityCollection)
-                        usage.Value.DocDefinitions.Add(usage.Key, usage.Value.Template);
+                    usage.Value.DocDefinitions.Add(usage.Key, usage.Value.Template);
                 }
             }
             
