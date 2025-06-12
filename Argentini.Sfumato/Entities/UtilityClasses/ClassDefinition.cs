@@ -1,4 +1,5 @@
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Argentini.Sfumato.Entities.UtilityClasses;
 
@@ -134,9 +135,26 @@ public sealed class ClassDefinition
     /// <summary>
     /// Order output class declarations by this integer (default is 0).
     /// </summary>
-    public int SelectorSort { get; set; } = 0;
+    public int SelectorSort { get; set; }
+
+    /// <summary>
+    /// Collection of usage definitions with styles.
+    /// </summary>
+    public Dictionary<string,string> DocDefinitions { get; set; } = [];
+
+    /// <summary>
+    /// Collection of usage examples with styles.
+    /// </summary>
+    public Dictionary<string,string> DocExamples { get; set; } = [];
 }
 
+public sealed class DocItem
+{
+    public string Suffix { get; set; } = string.Empty;
+    public string Styles { get; set; } = string.Empty;
+}
+
+// ReSharper disable CollectionNeverQueried.Global
 public sealed class ExportItem
 {
     public string Category { get; set; } = string.Empty;

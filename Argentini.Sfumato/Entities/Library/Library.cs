@@ -274,6 +274,39 @@ public sealed class Library
             foreach (var item in UrlClasses)
                 exportItem.Usages.Add(item.Key, item.Value);
             
+            #region Iterate usages and add doc definitions and examples
+
+            foreach (var usage in exportItem.Usages)
+            {
+                if (usage.Key.EndsWith('-'))
+                {
+                    if (usage.Value.InColorCollection)
+                    {
+                        usage.Value.DocDefinitions.Add($"{usage.Key}<color-name>", usage.Value.Template.Replace("{0}", "<value>"));
+                        usage.Value.DocDefinitions.Add($"{usage.Key}<color-name>/<opacity>", usage.Value.Template.Replace("{0}", "<value>"));
+                        usage.Value.DocExamples.Add($"{usage.Key}red-500", usage.Value.Template.Replace("{0}", "var(--color-red-500)"));
+                        usage.Value.DocExamples.Add($"{usage.Key}red-500/42", usage.Value.Template.Replace("{0}", "color-mix(in oklab, var(--color-red-500) 42%, transparent)"));
+                        
+                        usage.Value.DocDefinitions.Add($"{usage.Key}[<value>]", usage.Value.Template.Replace("{0}", "<value>"));
+                        usage.Value.DocDefinitions.Add($"{usage.Key}[<value>]/<opacity>", usage.Value.Template.Replace("{0}", "<value>"));
+                        usage.Value.DocExamples.Add($"{usage.Key}[#ff0000]", usage.Value.Template.Replace("{0}", "#ff0000"));
+                        usage.Value.DocExamples.Add($"{usage.Key}[#ff0000]/42", usage.Value.Template.Replace("{0}", "rgba(255,0,0,0.42)"));
+                        
+                        usage.Value.DocDefinitions.Add($"{usage.Key}(<custom-property>)", usage.Value.Template.Replace("{0}", "var(<custom-property>)"));
+                        usage.Value.DocDefinitions.Add($"{usage.Key}(color:<custom-property>)", usage.Value.Template.Replace("{0}", "var(<custom-property>)"));
+                        usage.Value.DocExamples.Add($"{usage.Key}(--my-color)", usage.Value.Template.Replace("{0}", "var(--my-color)"));
+                        usage.Value.DocExamples.Add($"{usage.Key}(color:--my-color)", usage.Value.Template.Replace("{0}", "var(--my-color)"));
+                    }
+                }
+                else
+                {
+                    if (usage.Value.InSimpleUtilityCollection)
+                        usage.Value.DocDefinitions.Add(usage.Key, usage.Value.Template);
+                }
+            }
+            
+            #endregion
+            
             exportItems.Add(exportItem);
         }
 
