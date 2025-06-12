@@ -67,6 +67,13 @@ public sealed class DropShadow : ClassDictionaryBase
                       --sf-drop-shadow: drop-shadow({{newValue}});
                       filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
                       """,
+                ArbitraryModifierTemplate = 
+                    $$"""
+                      --sf-drop-shadow-alpha: {1};
+                      --sf-drop-shadow-color: {{color}};
+                      --sf-drop-shadow: drop-shadow({{newValue}});
+                      filter: var(--sf-blur, ) var(--sf-brightness, ) var(--sf-contrast, ) var(--sf-grayscale, ) var(--sf-hue-rotate, ) var(--sf-invert, ) var(--sf-saturate, ) var(--sf-sepia, ) var(--sf-drop-shadow, );
+                      """,
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

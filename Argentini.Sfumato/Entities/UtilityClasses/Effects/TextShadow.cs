@@ -69,6 +69,13 @@ public sealed class TextShadow : ClassDictionaryBase
                       --sf-text-shadow: {{newValue}};
                       text-shadow: var(--sf-text-shadow);
                       """,
+                ArbitraryModifierTemplate = 
+                    $$"""
+                      --sf-text-shadow-alpha: {1};
+                      --sf-text-shadow-color: {{color}};
+                      --sf-text-shadow: {{newValue}};
+                      text-shadow: var(--sf-text-shadow);
+                      """,
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

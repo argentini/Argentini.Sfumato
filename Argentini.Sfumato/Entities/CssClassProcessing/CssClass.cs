@@ -325,10 +325,21 @@ public sealed class CssClass : IDisposable
                 if (denominator != 0)
                 {
                     if (AppRunner.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition))
-                        Value = $"{numerator} / {denominator}";
+                    {
+                        if (ClassDefinition.UsesSlashModifier == false)
+                            Value = $"{numerator} / {denominator}";
+                    }
                     else if (AppRunner.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition) || AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition))
-                        Value = $"{(double)numerator / denominator * 100:0.############}%";
+                    {
+                        if (ClassDefinition.UsesSlashModifier == false)
+                            Value = $"{(double)numerator / denominator * 100:0.############}%";
+                    }
 
+                    if (ClassDefinition?.UsesSlashModifier ?? false)
+                    {
+                        ClassDefinition = null;
+                    }
+                    
                     if (ClassDefinition is not null)
                     {
                         IsValid = true;
@@ -795,26 +806,38 @@ public sealed class CssClass : IDisposable
 
     private void GenerateStyles(bool useArbitraryValue = false)
     {
-        if ((HasArbitraryValue || HasArbitraryValueWithCssCustomProperty || useArbitraryValue) && string.IsNullOrEmpty(ClassDefinition?.ArbitraryCssValueTemplate) == false)
+        if (ClassDefinition is null)
+            return;
+        
+        Styles = ClassDefinition.Template;
+        
+        if (HasArbitraryValue || HasArbitraryValueWithCssCustomProperty || useArbitraryValue)
         {
-            Styles = ClassDefinition.ArbitraryCssValueTemplate;
+            if (string.IsNullOrEmpty(ClassDefinition.ArbitraryCssValueTemplate) == false)
+                Styles = ClassDefinition.ArbitraryCssValueTemplate;
+
+            if (HasModifierValue)
+            {
+                if (string.IsNullOrEmpty(ClassDefinition.ArbitraryCssValueWithModifierTemplate) == false)
+                    Styles = ClassDefinition.ArbitraryCssValueWithModifierTemplate;
+                
+                if (HasArbitraryModifierValue)
+                {
+                    if (string.IsNullOrEmpty(ClassDefinition.ArbitraryCssValueWithArbitraryModifierTemplate) == false)
+                        Styles = ClassDefinition.ArbitraryCssValueWithArbitraryModifierTemplate;
+                }
+            }
         }
         else if (HasModifierValue)
         {
-            if (string.IsNullOrEmpty(ClassDefinition?.ModifierTemplate) == false)
+            if (string.IsNullOrEmpty(ClassDefinition.ModifierTemplate) == false)
                 Styles = ClassDefinition.ModifierTemplate;
-            else
-                Styles = ClassDefinition?.Template ?? string.Empty;
             
             if (HasArbitraryModifierValue)
             {
-                if (string.IsNullOrEmpty(ClassDefinition?.ArbitraryModifierTemplate) == false)
+                if (string.IsNullOrEmpty(ClassDefinition.ArbitraryModifierTemplate) == false)
                     Styles = ClassDefinition.ArbitraryModifierTemplate;
             }
-        }
-        else
-        {
-            Styles = ClassDefinition?.Template ?? string.Empty;
         }
 
         Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);

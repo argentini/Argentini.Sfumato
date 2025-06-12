@@ -126,6 +126,41 @@ public class FontSizeTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 IsImportant = false,
             },
+            new ()
+            {
+                ClassName = "text-4",
+                EscapedClassName = ".text-4",
+                Styles =
+                    """
+                    font-size: calc(var(--spacing) * 4);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "text-4/5",
+                EscapedClassName = @".text-4\/5",
+                Styles =
+                    """
+                    font-size: calc(var(--spacing) * 4);
+                    line-height: calc(var(--spacing) * 5);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "text-4/[1.3]",
+                EscapedClassName = @".text-4\/\[1\.3\]",
+                Styles =
+                    """
+                    font-size: calc(var(--spacing) * 4);
+                    line-height: 1.3;
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
         };
 
         foreach (var test in testClasses)

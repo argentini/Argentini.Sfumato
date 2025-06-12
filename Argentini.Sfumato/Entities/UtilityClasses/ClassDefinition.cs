@@ -86,14 +86,14 @@ public sealed class ClassDefinition
     public bool UsesSlashModifier { get; set; }
 
     /// <summary>
-    /// CSS class property template (e.g. "font-smoothing: antialiased;", "top: {0};").
+    /// CSS class property template (e.g. "top-0" => "top: {0};").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// </summary>
     public string Template { get; set; } = string.Empty;
 
     /// <summary>
-    /// CSS class property template using a modifier (e.g. "font-size: {0}; line-height: calc(var(--spacing) * {1});").
+    /// CSS class property template using a modifier (e.g. "text-base/5" => "font-size: {0}; line-height: calc(var(--spacing) * {1})").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// Use placeholder {1} for slash modifier value.
@@ -101,7 +101,7 @@ public sealed class ClassDefinition
     public string ModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
-    /// CSS class property template using an arbitrary modifier (e.g. "font-size: {0}; line-height: {1};").
+    /// CSS class property template using an arbitrary modifier (e.g. "text-base/[1]" => "font-size: {0}; line-height: {1};").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// Use placeholder {1} for slash modifier value.
@@ -109,19 +109,27 @@ public sealed class ClassDefinition
     public string ArbitraryModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
-    /// CSS class property template for arbitrary CSS values (e.g. "text-[1rem]").
+    /// CSS class property template for arbitrary CSS values (e.g. "text-[1rem]" => "font-size: {0};").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// </summary>
     public string ArbitraryCssValueTemplate { get; set; } = string.Empty;
 
     /// <summary>
-    /// CSS class property template for custom CSS values using a modifier (e.g. "text-[1rem]/5").
+    /// CSS class property template for arbitrary CSS values using a modifier (e.g. "text-[1rem]/5" => "font-size: {0}; line-height: calc(var(--spacing) * {1});").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
-    public string ArbitraryCssModifierTemplate { get; set; } = string.Empty;
+    public string ArbitraryCssValueWithModifierTemplate { get; set; } = string.Empty;
+
+    /// <summary>
+    /// CSS class property template for arbitrary CSS values using an arbitrary modifier (e.g. "text-[1rem]/[1.2]" => "font-size: {0}; line-height: {1};").
+    /// Can contain more than one property assignment.
+    /// Use placeholder {0} for custom value.
+    /// Use placeholder {1} for slash modifier value.
+    /// </summary>
+    public string ArbitraryCssValueWithArbitraryModifierTemplate { get; set; } = string.Empty;
 
     /// <summary>
     /// Order output class declarations by this integer (default is 0).

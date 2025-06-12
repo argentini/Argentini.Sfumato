@@ -15,17 +15,34 @@ public sealed class FontSize : ClassDictionaryBase
                 {
                     InLengthCollection = true,
                     UsesSlashModifier = true,
-                    Template = """
-                               font-size: {0};
-                               """,
-                    ModifierTemplate = """
-                                       font-size: {0};
-                                       line-height: calc(var(--spacing) * {1});
-                                       """,
-                    ArbitraryModifierTemplate = """
-                                       font-size: {0};
-                                       line-height: {1};
-                                       """,
+                    Template =
+                        """
+                        font-size: calc(var(--spacing) * {0});
+                        """,
+                    ModifierTemplate =
+                        """
+                        font-size: calc(var(--spacing) * {0});
+                        line-height: calc(var(--spacing) * {1});
+                        """,
+                    ArbitraryModifierTemplate =
+                        """
+                        font-size: calc(var(--spacing) * {0});
+                        line-height: {1};
+                        """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        font-size: {0};
+                        """,
+                    ArbitraryCssValueWithModifierTemplate =
+                        """
+                        font-size: {0};
+                        line-height: calc(var(--spacing) * {1});
+                        """,
+                    ArbitraryCssValueWithArbitraryModifierTemplate =
+                        """
+                        font-size: {0};
+                        line-height: {1};
+                        """,
                 }
             },
         });
@@ -52,9 +69,19 @@ public sealed class FontSize : ClassDictionaryBase
                     """,
                 ArbitraryModifierTemplate =
                     $$"""
+                      font-size: var({{text.Key}});
+                      line-height: {1};
+                      """,
+                ArbitraryCssValueWithModifierTemplate =
+                    $$"""
                     font-size: var({{text.Key}});
-                    line-height: {1};
+                    line-height: calc(var(--spacing) * {1});
                     """,
+                ArbitraryCssValueWithArbitraryModifierTemplate =
+                    $$"""
+                      font-size: var({{text.Key}});
+                      line-height: {1};
+                      """,
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

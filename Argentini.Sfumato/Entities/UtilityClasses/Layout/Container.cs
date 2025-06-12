@@ -23,7 +23,7 @@ public sealed class Container : ClassDictionaryBase
                         """
                         container-type: inline-size;
                         container-name: {1};
-                        """
+                        """,
                 }
             },
         });

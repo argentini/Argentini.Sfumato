@@ -73,6 +73,13 @@ public sealed class BoxShadow : ClassDictionaryBase
                     --sf-shadow: {{newValue}};
                     box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
                     """,
+                ArbitraryModifierTemplate =  
+                    $$"""
+                      --sf-shadow-alpha: {1};
+                      --sf-shadow-color: {{color}};
+                      --sf-shadow: {{newValue}};
+                      box-shadow: var(--sf-inset-shadow), var(--sf-inset-ring-shadow), var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
+                      """,
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))
