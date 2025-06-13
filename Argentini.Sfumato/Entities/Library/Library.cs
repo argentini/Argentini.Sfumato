@@ -554,6 +554,15 @@ public sealed class Library
                         if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(url:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
                             usage.Value.DocExamples.TryAdd($"{usage.Key}(url:--my-image)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-image)"));
                     }
+                    
+                    if (usage.Value is { InAbstractValueCollection: true, InAngleHueCollection: false, InColorCollection: false, InDurationCollection: false, InFlexCollection: false, InFloatNumberCollection: false, InFrequencyCollection: false, InIntegerCollection: false, InLengthCollection: false, InPercentageCollection: false, InRatioCollection: false, InResolutionCollection: false, InSimpleUtilityCollection: false, InStringCollection: false, InUrlCollection: false })
+                    {
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}[initial]", GetArbitraryTemplate(usage.Value).Replace("{0}", "initial"));
+
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-value)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-value)"));
+                    }
                 }
                 else
                 {
