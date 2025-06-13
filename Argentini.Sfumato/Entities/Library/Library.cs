@@ -456,8 +456,16 @@ public sealed class Library
                         if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
                             usage.Value.DocExamples.TryAdd($"{usage.Key}{numValue}", usage.Value.Template.Replace("{0}", numValue));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", usage.Value.Template.Replace("{0}", "<percentage>")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
+                        if (usage.Key == "text-")
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>/<modifier>", usage.Value.ModifierTemplate.Replace("{0}", "<number>").Replace("{1}", "<modifier>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}{numValue}/5", usage.Value.ModifierTemplate.Replace("{0}", numValue).Replace("{1}", "5"));
+                        }
+                        else
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", usage.Value.Template.Replace("{0}", "<percentage>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
+                        }
 
                         if (usage.Key.StartsWith('-') == false)
                         {
@@ -469,7 +477,16 @@ public sealed class Library
                             else
                             {
                                 if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[{numValue}]", GetArbitraryTemplate(usage.Value).Replace("{0}", numValue));
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1rem"));
+
+                                if (usage.Key == "text-")
+                                {
+                                    if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]/<modifier>", usage.Value.ArbitraryCssValueWithModifierTemplate.Replace("{0}", "<value>").Replace("{1}", "<modifier>")))
+                                        usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]/5", usage.Value.ArbitraryCssValueWithModifierTemplate.Replace("{0}", "1rem").Replace("{1}", "5"));
+                                    
+                                    if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]/[<modifier>]", usage.Value.ArbitraryCssValueWithArbitraryModifierTemplate.Replace("{0}", "<value>").Replace("{1}", "[<modifier>]")))
+                                        usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]/[1.3]", usage.Value.ArbitraryCssValueWithArbitraryModifierTemplate.Replace("{0}", "1rem").Replace("{1}", "1.3"));
+                                }
                             }
                             
                             if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
