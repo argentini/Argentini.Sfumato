@@ -291,14 +291,17 @@ public sealed class Library
                                 usage.Value.DocExamples.TryAdd($"{usage.Key}45/srgb", usage.Value.ModifierTemplate.Replace("{0}", "45").Replace("{1}", "srgb"));
                         }
                         
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}[45deg]", GetArbitraryTemplate(usage.Value).Replace("{0}", "45deg"));
-                        
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-angle)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-angle)"));
+                        if (usage.Key.StartsWith('-') == false)
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[45deg]", GetArbitraryTemplate(usage.Value).Replace("{0}", "45deg"));
+                            
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-angle)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-angle)"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(angle:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(angle:--my-angle)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-angle)"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(angle:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(angle:--my-angle)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-angle)"));
+                        }
                     }
 
                     if (usage.Value.InColorCollection)
@@ -327,14 +330,17 @@ public sealed class Library
                         if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
                             usage.Value.DocExamples.TryAdd($"{usage.Key}250", usage.Value.Template.Replace("{0}", "250"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}[250ms]", GetArbitraryTemplate(usage.Value).Replace("{0}", "250ms"));
-                        
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-duration)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-duration)"));
+                        if (usage.Key.StartsWith('-') == false)
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[250ms]", GetArbitraryTemplate(usage.Value).Replace("{0}", "250ms"));
+                            
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-duration)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-duration)"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(duration:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(duration:--my-duration)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-duration)"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(duration:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(duration:--my-duration)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-duration)"));
+                        }
                     }
 
                     if (usage.Value.InFlexCollection)
@@ -372,29 +378,35 @@ public sealed class Library
                                 if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", usage.Value.Template.Replace("{0}", "<percentage>")))
                                     usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
                             }
-                            
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}[42%]", GetArbitraryTemplate(usage.Value).Replace("{0}", "42%"));
-                        
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
 
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(percentage:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}(percentage:--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
+                            if (usage.Key.StartsWith('-') == false)
+                            {
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[42%]", GetArbitraryTemplate(usage.Value).Replace("{0}", "42%"));
+                            
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
+
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(percentage:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}(percentage:--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
+                            }
                         }
                         else if (usage.Value.Template.Contains("* {0}") || usage.Value.Template.Contains("* -{0}") || usage.Value.Template.Contains("{0}px"))
                         {
                             if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
                                 usage.Value.DocExamples.TryAdd($"{usage.Key}4", usage.Value.Template.Replace("{0}", "4"));
 
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1rem"));
-                        
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                            if (usage.Key.StartsWith('-') == false)
+                            {
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1rem"));
+                            
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
 
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(length:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}(length:--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(length:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}(length:--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                            }
                         }
                     }
 
@@ -416,22 +428,25 @@ public sealed class Library
                                 usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
                         }
 
-                        if (usage.Value.InAbstractValueCollection)
+                        if (usage.Key.StartsWith('-') == false)
                         {
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}[initial]", GetArbitraryTemplate(usage.Value).Replace("{0}", "initial"));
-                        }
-                        else
-                        {
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}[{numValue}]", GetArbitraryTemplate(usage.Value).Replace("{0}", numValue));
-                        }
-                        
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-number)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-number)"));
+                            if (usage.Value.InAbstractValueCollection)
+                            {
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[initial]", GetArbitraryTemplate(usage.Value).Replace("{0}", "initial"));
+                            }
+                            else
+                            {
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[{numValue}]", GetArbitraryTemplate(usage.Value).Replace("{0}", numValue));
+                            }
+                            
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-number)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-number)"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(number:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(number:--my-number)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-number)"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(number:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(number:--my-number)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-number)"));
+                        }
                     }
 
                     if (usage.Value is { InLengthCollection: true, InIntegerCollection: false, InFloatNumberCollection: false, InFlexCollection: false })
@@ -444,22 +459,25 @@ public sealed class Library
                         if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", usage.Value.Template.Replace("{0}", "<percentage>")))
                             usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
 
-                        if (usage.Value.InAbstractValueCollection)
+                        if (usage.Key.StartsWith('-') == false)
                         {
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}[initial]", GetArbitraryTemplate(usage.Value).Replace("{0}", "initial"));
-                        }
-                        else
-                        {
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}[{numValue}]", GetArbitraryTemplate(usage.Value).Replace("{0}", numValue));
-                        }
-                        
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                            if (usage.Value.InAbstractValueCollection)
+                            {
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[initial]", GetArbitraryTemplate(usage.Value).Replace("{0}", "initial"));
+                            }
+                            else
+                            {
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[{numValue}]", GetArbitraryTemplate(usage.Value).Replace("{0}", numValue));
+                            }
+                            
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(length:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(length:--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(length:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(length:--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                        }
                     }
                     
                     if (usage.Value.InPercentageCollection)
@@ -467,14 +485,17 @@ public sealed class Library
                         if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<percentage>", usage.Value.Template.Replace("{0}", "<percentage>")))
                             usage.Value.DocExamples.TryAdd($"{usage.Key}42%", usage.Value.Template.Replace("{0}", "42%"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}[42%]", GetArbitraryTemplate(usage.Value).Replace("{0}", "42%"));
-                        
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
+                        if (usage.Key.StartsWith('-') == false)
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[42%]", GetArbitraryTemplate(usage.Value).Replace("{0}", "42%"));
+                            
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(percentage:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(percentage:--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(percentage:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(percentage:--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
+                        }
                     }
                     
                     if (usage.Value.InRatioCollection)
@@ -497,14 +518,17 @@ public sealed class Library
                         if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<resolution>", usage.Value.Template.Replace("{0}", "<resolution>")))
                             usage.Value.DocExamples.TryAdd($"{usage.Key}1920", usage.Value.Template.Replace("{0}", "1920"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<resolution>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<resolution>")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}[1920px]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1920px"));
-                        
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-resolution)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-resolution)"));
+                        if (usage.Key.StartsWith('-') == false)
+                        {
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<resolution>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<resolution>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}[1920px]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1920px"));
+                            
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-resolution)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-resolution)"));
 
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(resolution:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}(resolution:--my-resolution)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-resolution)"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(resolution:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}(resolution:--my-resolution)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-resolution)"));
+                        }
                     }
                     
                     if (usage.Value.InStringCollection)
