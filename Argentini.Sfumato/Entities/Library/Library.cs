@@ -375,8 +375,8 @@ public sealed class Library
 
                             if (usage.Value.InLengthCollection)
                             {
-                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", usage.Value.Template.Replace("{0}", "<percentage>")))
-                                    usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
+                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", GetArbitraryTemplate(usage.Value).Replace("{0}", "<percentage>")))
+                                    usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", GetArbitraryTemplate(usage.Value).Replace("{0}", "50%"));
                             }
 
                             if (usage.Key.StartsWith('-') == false)
@@ -424,8 +424,8 @@ public sealed class Library
 
                         if (usage.Value.InLengthCollection)
                         {
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", usage.Value.Template.Replace("{0}", "<percentage>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", GetArbitraryTemplate(usage.Value).Replace("{0}", "<percentage>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", GetArbitraryTemplate(usage.Value).Replace("{0}", "50%"));
                         }
 
                         if (usage.Key.StartsWith('-') == false)
@@ -463,8 +463,8 @@ public sealed class Library
                         }
                         else
                         {
-                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", usage.Value.Template.Replace("{0}", "<percentage>")))
-                                usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", usage.Value.Template.Replace("{0}", "50%"));
+                            if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<fraction>", GetArbitraryTemplate(usage.Value).Replace("{0}", "<percentage>")))
+                                usage.Value.DocExamples.TryAdd($"{usage.Key}1/2", GetArbitraryTemplate(usage.Value).Replace("{0}", "50%"));
                         }
 
                         if (usage.Key.StartsWith('-') == false)
@@ -499,8 +499,8 @@ public sealed class Library
                     
                     if (usage.Value.InPercentageCollection)
                     {
-                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<percentage>", usage.Value.Template.Replace("{0}", "<percentage>")))
-                            usage.Value.DocExamples.TryAdd($"{usage.Key}42%", usage.Value.Template.Replace("{0}", "42%"));
+                        if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<percentage>", GetArbitraryTemplate(usage.Value).Replace("{0}", "<percentage>")))
+                            usage.Value.DocExamples.TryAdd($"{usage.Key}42%", GetArbitraryTemplate(usage.Value).Replace("{0}", "42%"));
 
                         if (usage.Key.StartsWith('-') == false)
                         {
