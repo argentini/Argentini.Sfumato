@@ -18,21 +18,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: {0}deg;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: {0}deg in oklab;
                         }
-
-                        --sf-gradient-position: {0}deg;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: {0}deg;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: {0}deg in {1};
                         }
-
-                        --sf-gradient-position: {0}deg;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ArbitraryCssValueTemplate =
                         """
@@ -47,21 +45,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: -{0}deg;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: -{0}deg in oklab;
                         }
-
-                        --sf-gradient-position: -{0}deg;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: -{0}deg;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: -{0}deg in {1};
                         }
-
-                        --sf-gradient-position: -{0}deg;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -72,21 +68,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to top;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to top in oklab;
                         }
-                        
-                        --sf-gradient-position: to top;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to top;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to top in {1};
                         }
-                        
-                        --sf-gradient-position: to top;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -97,21 +91,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to top right;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to top right in oklab;
                         }
-                        
-                        --sf-gradient-position: to top right;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to top right;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to top right in {1};
                         }
-
-                        --sf-gradient-position: to top right;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -122,21 +114,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to right;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to right in oklab;
                         }
-                        
-                        --sf-gradient-position: to right;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to right;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to right in {1};
                         }
-
-                        --sf-gradient-position: to right;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -147,21 +137,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to bottom right;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to bottom right in oklab;
                         }
-                        
-                        --sf-gradient-position: to bottom right;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to bottom right;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to bottom right in {1};
                         }
-
-                        --sf-gradient-position: to bottom right;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -172,21 +160,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to bottom;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to bottom in oklab;
                         }
-                        
-                        --sf-gradient-position: to bottom;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to bottom;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to bottom in {1};
                         }
-
-                        --sf-gradient-position: to bottom;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -197,21 +183,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to bottom left;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to bottom left in oklab;
                         }
-                        
-                        --sf-gradient-position: to bottom left;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to bottom left;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to bottom left in {1};
                         }
-
-                        --sf-gradient-position: to bottom left;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -222,21 +206,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to left;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to left in oklab;
                         }
-                        
-                        --sf-gradient-position: to left;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to left;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to left in {1};
                         }
-
-                        --sf-gradient-position: to left;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },
@@ -247,21 +229,19 @@ public sealed class BackgroundLinear : ClassDictionaryBase
                     UsesSlashModifier = true,
                     Template =
                         """
+                        --sf-gradient-position: to top left;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to top left in oklab;
                         }
-                        
-                        --sf-gradient-position: to top left;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                     ModifierTemplate = 
                         """
+                        --sf-gradient-position: to top left;
+                        background-image: linear-gradient(var(--sf-gradient-stops));
                         @supports (background-image:linear-gradient(in lab, red, red)) {
                             --sf-gradient-position: to top left in {1};
                         }
-
-                        --sf-gradient-position: to top left;
-                        background-image: linear-gradient(var(--sf-gradient-stops));
                         """,
                 }
             },

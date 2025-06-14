@@ -15,12 +15,11 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".bg-linear-65",
                 Styles =
                     """
+                    --sf-gradient-position: 65deg;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: 65deg in oklab;
                     }
-                    
-                    --sf-gradient-position: 65deg;
-                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -31,12 +30,11 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".bg-linear-65\/srgb",
                 Styles =
                     """
+                    --sf-gradient-position: 65deg;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: 65deg in srgb;
                     }
-
-                    --sf-gradient-position: 65deg;
-                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -47,12 +45,11 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".bg-linear-65\/shorter",
                 Styles =
                     """
+                    --sf-gradient-position: 65deg;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: 65deg in oklch shorter hue;
                     }
-
-                    --sf-gradient-position: 65deg;
-                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -63,12 +60,11 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".-bg-linear-65",
                 Styles =
                     """
+                    --sf-gradient-position: -65deg;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: -65deg in oklab;
                     }
-
-                    --sf-gradient-position: -65deg;
-                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -101,12 +97,11 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".bg-linear-to-t",
                 Styles =
                     """
+                    --sf-gradient-position: to top;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: to top in oklab;
                     }
-                    
-                    --sf-gradient-position: to top;
-                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -117,12 +112,11 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".bg-linear-to-t\/srgb",
                 Styles =
                     """
+                    --sf-gradient-position: to top;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: to top in srgb;
                     }
-                    
-                    --sf-gradient-position: to top;
-                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -133,12 +127,11 @@ public class BackgroundLinearTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".bg-linear-to-t\/longer",
                 Styles =
                     """
+                    --sf-gradient-position: to top;
+                    background-image: linear-gradient(var(--sf-gradient-stops));
                     @supports (background-image:linear-gradient(in lab, red, red)) {
                         --sf-gradient-position: to top in oklch longer hue;
                     }
-                    
-                    --sf-gradient-position: to top;
-                    background-image: linear-gradient(var(--sf-gradient-stops));
                     """,
                 IsValid = true,
                 IsImportant = false,
