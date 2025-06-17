@@ -412,4 +412,15 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal(@":is(.\*\*\:whitespace-pre\! *)", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
     }
+    
+    [Fact]
+    public void ArbitraryCss()
+    {
+        var appRunner = new AppRunner(new AppState());
+        var cssClass = new CssClass(appRunner, "[--my-value:1rem]");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal("--my-value: 1rem;", cssClass.Styles);
+    }
 }

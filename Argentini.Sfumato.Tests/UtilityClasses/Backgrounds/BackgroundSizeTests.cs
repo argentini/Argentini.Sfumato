@@ -75,6 +75,17 @@ public class BackgroundSizeTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 IsImportant = false,
             },
+            new ()
+            {
+                ClassName = "bg-size-(--my-size)",
+                EscapedClassName = @".bg-size-\(--my-size\)",
+                Styles =
+                    """
+                    background-size: var(--my-size);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
         };
 
         foreach (var test in testClasses)

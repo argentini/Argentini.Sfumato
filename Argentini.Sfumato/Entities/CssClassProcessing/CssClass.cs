@@ -408,6 +408,10 @@ public sealed class CssClass : IDisposable
                 {
                     AppRunner.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
                 }
+                else if (valueNoBrackets.StartsWith("size:", StringComparison.Ordinal))
+                {
+                    AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                }
                 else if (valueNoBrackets.StartsWith("string:", StringComparison.Ordinal))
                 {
                     AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
