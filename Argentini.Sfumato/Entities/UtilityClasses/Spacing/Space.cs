@@ -84,9 +84,9 @@ public sealed class Space : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               & > :not(:first-child) {
-                                   margin-block-start: calc(1px * calc(1 - var(--sf-space-y-reverse)));
-                                   margin-block-end: calc(1px * var(--sf-space-y-reverse));
+                               & > :not(:last-child) {
+                                   margin-block-start: calc(1px * var(--sf-space-y-reverse));
+                                   margin-block-end: calc(1px * calc(1 - var(--sf-space-y-reverse)));
                                }
                                """,
                 }
@@ -96,9 +96,9 @@ public sealed class Space : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               & > :not(:first-child) {
-                                   margin-block-start: calc(-1px * calc(1 - var(--sf-space-y-reverse)));
-                                   margin-block-end: calc(-1px * var(--sf-space-y-reverse));
+                               & > :not(:last-child) {
+                                   margin-block-start: calc(-1px * var(--sf-space-y-reverse));
+                                   margin-block-end: calc(-1px * calc(1 - var(--sf-space-y-reverse)));
                                }
                                """,
                 }
@@ -108,16 +108,16 @@ public sealed class Space : ClassDictionaryBase
                 {
                     InLengthCollection = true,
                     Template = """
-                               & > :not(:first-child) {
-                                   margin-block-start: calc(calc(var(--spacing) * {0}) * calc(1 - var(--sf-space-y-reverse)));
-                                   margin-block-end: calc(calc(var(--spacing) * {0}) * var(--sf-space-y-reverse));
+                               & > :not(:last-child) {
+                                   margin-block-start: calc(calc(var(--spacing) * {0}) * var(--sf-space-y-reverse));
+                                   margin-block-end: calc(calc(var(--spacing) * {0}) * calc(1 - var(--sf-space-y-reverse)));
                                }
                                """,
                     ArbitraryCssValueTemplate =
                         """
-                        & > :not(:first-child) {
-                            margin-block-start: calc({0} * calc(1 - var(--sf-space-y-reverse)));
-                            margin-block-end: calc({0} * var(--sf-space-y-reverse));
+                        & > :not(:last-child) {
+                            margin-block-start: calc({0} * var(--sf-space-y-reverse));
+                            margin-block-end: calc({0} * calc(1 - var(--sf-space-y-reverse)));
                         };
                         """,
                 }
@@ -127,16 +127,16 @@ public sealed class Space : ClassDictionaryBase
                 {
                     InLengthCollection = true,
                     Template = """
-                               & > :not(:first-child) {
-                                   margin-block-start: calc(calc(var(--spacing) * -{0}) * calc(1 - var(--sf-space-y-reverse)));
-                                   margin-block-end: calc(calc(var(--spacing) * -{0}) * var(--sf-space-y-reverse));
+                               & > :not(:last-child) {
+                                   margin-block-start: calc(calc(var(--spacing) * -{0}) * var(--sf-space-y-reverse));
+                                   margin-block-end: calc(calc(var(--spacing) * -{0}) * calc(1 - var(--sf-space-y-reverse)));
                                }
                                """,
                     ArbitraryCssValueTemplate =
                         """
-                        & > :not(:first-child) {
-                            margin-block-start: calc(-1 * {0} * calc(1 - var(--sf-space-y-reverse)));
-                            margin-block-end: calc(-1 * {0} * var(--sf-space-y-reverse));
+                        & > :not(:last-child) {
+                            margin-block-start: calc(-1 * {0} * var(--sf-space-y-reverse));
+                            margin-block-end: calc(-1 * {0} * calc(1 - var(--sf-space-y-reverse)));
                         }
                         """,
                 }
