@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.0.17.0</AssemblyVersion>
-        <FileVersion>6.0.17.0</FileVersion>
-        <PackageVersion>6.0.17</PackageVersion>
+        <AssemblyVersion>6.0.19.0</AssemblyVersion>
+        <FileVersion>6.0.19.0</FileVersion>
+        <PackageVersion>6.0.19</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Better bg size handling, refactored space utilities</PackageReleaseNotes>
+        <PackageReleaseNotes>Tweaks to scrollbar utilities</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
