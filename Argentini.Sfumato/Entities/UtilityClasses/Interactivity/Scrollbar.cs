@@ -19,16 +19,15 @@ public sealed class Scrollbar : ClassDictionaryBase
                         --sf-scrollbar-track-color: rgba(0, 0, 0, 0);
                         --sf-scrollbar-thumb-color: rgba(0, 0, 0, 0);
 
-                        --sf-scrollbar-track-hover-color: rgba(0, 0, 0, 0.07);
-                        --sf-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.15);
+                        --sf-scrollbar-track-hover-color: rgba(0, 0, 0, 0);
+                        --sf-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.25);
 
-                        --sf-scrollbar-track-hover-dark-color: rgba(255, 255, 255, 0.15);
-                        --sf-scrollbar-thumb-hover-dark-color: rgba(255, 255, 255, 0.20);
+                        --sf-scrollbar-track-hover-dark-color: rgba(0, 0, 0, 0);
+                        --sf-scrollbar-thumb-hover-dark-color: rgba(255, 255, 255, 0.35);
 
                         --sf-scrollbar-size: 0.5rem;
 
                         display: block;
-                        position: relative;
                         width: 100%;
                         overflow-x: scroll;
                         overflow-y: hidden;
@@ -123,16 +122,15 @@ public sealed class Scrollbar : ClassDictionaryBase
                         --sf-scrollbar-track-color: rgba(0, 0, 0, 0);
                         --sf-scrollbar-thumb-color: rgba(0, 0, 0, 0);
                         
-                        --sf-scrollbar-track-hover-color: rgba(0, 0, 0, 0.07);
-                        --sf-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.15);
+                        --sf-scrollbar-track-hover-color: rgba(0, 0, 0, 0);
+                        --sf-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.25);
                         
-                        --sf-scrollbar-track-hover-dark-color: rgba(255, 255, 255, 0.15);
-                        --sf-scrollbar-thumb-hover-dark-color: rgba(255, 255, 255, 0.20);
+                        --sf-scrollbar-track-hover-dark-color: rgba(0, 0, 0, 0);
+                        --sf-scrollbar-thumb-hover-dark-color: rgba(255, 255, 255, 0.35);
                         
                         --sf-scrollbar-size: 0.5rem;
                         
                         display: block;
-                        position: relative;
                         height: 100%;
                         overflow-x: hidden;
                         overflow-y: scroll;
