@@ -29,6 +29,42 @@ public sealed class ListStyleType : ClassDictionaryBase
                 }
             },
             {
+                "list-circle", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               list-style-type: circle;
+                               """
+                }
+            },
+            {
+                "list-square", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               list-style-type: square;
+                               """
+                }
+            },
+            {
+                "list-mdash", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               list-style-type: "—";
+                               """
+                }
+            },
+            {
+                "list-ndash", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               list-style-type: "–";
+                               """
+                }
+            },
+            {
                 "list-decimal", new ClassDefinition
                 {
                     InSimpleUtilityCollection = true,
