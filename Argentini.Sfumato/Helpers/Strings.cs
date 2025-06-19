@@ -724,7 +724,15 @@ public static partial class Strings
 				{
 					segment = segment[(delim + 1)..];
 					segment = segment[..(segment.LastIndexOf(']') + 1)];
+					segment = segment.Trim(delimiters)
+						.Trim('\\')
+						.TrimEnd('>');
 
+					var eq = segment.IndexOf('=');
+
+					if (eq > -1)
+						segment = segment[(eq + 1)..];
+					
 					if (segment.IsLikelyUtilityClass())
 						bag.Add(segment);
 				}
@@ -736,6 +744,15 @@ public static partial class Strings
 			}
 			else
 			{
+				segment = segment.Trim(delimiters)
+					.Trim('\\')
+					.TrimEnd('>');
+
+				var eq = segment.IndexOf('=');
+
+				if (eq > -1)
+					segment = segment[(eq + 1)..];
+				
 				if (segment.IsLikelyUtilityClass())
 					bag.Add(segment);
 			}

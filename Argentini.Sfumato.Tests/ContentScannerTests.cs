@@ -43,6 +43,10 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                             var array = [ "text-9xl",@"content-[\"test2\"]" ];
                                             
                                             var detailsMask = $"<span class=\"line-clamp-1 -mt-1! text-slate-500 dark:text-dark-foreground-dim line-clamp-2\"><span class=""line-clamp-3"">{description}</span></span>";
+                                            
+                                            return $@"
+                                            <div><div class=""text-[0.65rem] mb-1.5"">{category}</div><div>{GetHeading(content)}</div></div>
+                                            ";
                                         }
                                         <p>top-999</p>
                                     </body>
@@ -81,7 +85,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         foreach (var cname in utilityClasses)
             testOutputHelper.WriteLine($"{cname.Key}");
         
-        Assert.Equal(50, utilityClasses.Count);
+        Assert.Equal(52, utilityClasses.Count);
     }
 
     [Fact]
