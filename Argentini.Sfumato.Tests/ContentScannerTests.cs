@@ -6,7 +6,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
 
     private static string Markup => """
                                     <!DOCTYPE html>
-                                    <html lang="en" class="[content:'arbitrary_test'] font-sans">
+                                    <html lang="en" class="bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)] [content:'arbitrary_test'] font-sans">
                                     <head>
                                         <meta charset="UTF-8">
                                         <title>Sample Website</title>
@@ -85,7 +85,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         foreach (var cname in utilityClasses)
             testOutputHelper.WriteLine($"{cname.Key}");
         
-        Assert.Equal(52, utilityClasses.Count);
+        Assert.Equal(53, utilityClasses.Count);
     }
 
     [Fact]

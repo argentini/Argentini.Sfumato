@@ -33,6 +33,28 @@ public class BackgroundImageTests(ITestOutputHelper testOutputHelper)
             },
             new ()
             {
+                ClassName = "bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)]",
+                EscapedClassName = @".bg-\[url\(\/media\/ze0liffq\/alien-world\.jpg\?width\=1920\&quality\=90\)\]",
+                Styles =
+                    """
+                    background-image: url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
+                ClassName = "bg-[/media/ze0liffq/alien-world.jpg?width=1920&quality=90]",
+                EscapedClassName = @".bg-\[\/media\/ze0liffq\/alien-world\.jpg\?width\=1920\&quality\=90\]",
+                Styles =
+                    """
+                    background-image: url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
+            new ()
+            {
                 ClassName = "bg-(url:--my-image)",
                 EscapedClassName = @".bg-\(url\:--my-image\)",
                 Styles =

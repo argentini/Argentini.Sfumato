@@ -730,7 +730,7 @@ public static partial class Strings
 
 					var eq = segment.IndexOf('=');
 
-					if (eq > -1)
+					if (eq > -1 && eq < allowedIndex)
 						segment = segment[(eq + 1)..];
 					
 					if (segment.IsLikelyUtilityClass())
@@ -748,9 +748,10 @@ public static partial class Strings
 					.Trim('\\')
 					.TrimEnd('>');
 
+				var bracketIndex = segment.IndexOf('[');
 				var eq = segment.IndexOf('=');
 
-				if (eq > -1)
+				if (eq > -1 && (bracketIndex == -1 || eq < bracketIndex))
 					segment = segment[(eq + 1)..];
 				
 				if (segment.IsLikelyUtilityClass())
