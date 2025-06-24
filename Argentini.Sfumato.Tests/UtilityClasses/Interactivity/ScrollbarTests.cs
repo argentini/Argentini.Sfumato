@@ -30,7 +30,8 @@ public class ScrollbarTests(ITestOutputHelper testOutputHelper)
                         width: 100%;
                         overflow-x: scroll;
                         overflow-y: hidden;
-
+                        -webkit-overflow-scrolling: touch;
+                        
                         scrollbar-gutter: stable;
 
                         & > *:first-child {
@@ -134,6 +135,7 @@ public class ScrollbarTests(ITestOutputHelper testOutputHelper)
                         height: 100%;
                         overflow-x: hidden;
                         overflow-y: scroll;
+                        -webkit-overflow-scrolling: touch;
                         
                         scrollbar-gutter: stable;
                         

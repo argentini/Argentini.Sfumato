@@ -31,6 +31,7 @@ public sealed class Scrollbar : ClassDictionaryBase
                         width: 100%;
                         overflow-x: scroll;
                         overflow-y: hidden;
+                        -webkit-overflow-scrolling: touch;
 
                         scrollbar-gutter: stable;
 
@@ -134,6 +135,7 @@ public sealed class Scrollbar : ClassDictionaryBase
                         height: 100%;
                         overflow-x: hidden;
                         overflow-y: scroll;
+                        -webkit-overflow-scrolling: touch;
                         
                         scrollbar-gutter: stable;
                         
