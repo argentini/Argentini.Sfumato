@@ -715,7 +715,17 @@ public static partial class Strings
 			if (delim > -1)
 			{
 				var allowedIndex = segment.IndexOf('[');
-				var delimCount = segment.Count(c => delimiters.Contains(c));
+				var closingIndex = allowedIndex > -1 ? segment.IndexOf(']', allowedIndex) : -1;
+				var delimCount = 0;
+				
+				if (closingIndex > allowedIndex)
+				{
+					delimCount += segment.Where((t, i) => delimiters.Contains(t) && (i > allowedIndex && i < closingIndex)).Count();
+				}
+				else
+				{
+					delimCount = segment.Count(c => delimiters.Contains(c));
+				}
 
 				if (delimCount == 2 && delim > allowedIndex)
 					delim = -1;
