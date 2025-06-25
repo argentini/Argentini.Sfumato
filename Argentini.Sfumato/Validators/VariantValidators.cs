@@ -73,7 +73,7 @@ public static class VariantValidators
             group = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = $":is(:where(.group{pseudoClass.Statement}) *)"
+                SelectorSuffix = $":is(:where(.group{pseudoClass.SelectorSuffix}) *)"
             };
         }
         else if (variant.StartsWith("group-"))
@@ -122,7 +122,7 @@ public static class VariantValidators
                 group = new VariantMetadata
                 {
                     PrefixType = "prefix",
-                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{pseudoClass.Statement} ",
+                    SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ",
                 };
             }
             else
@@ -174,7 +174,7 @@ public static class VariantValidators
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = $":is(:where(.peer{pseudoClass.Statement}) ~ *)"
+                SelectorSuffix = $":is(:where(.peer{pseudoClass.SelectorSuffix}) ~ *)"
             };
         }
         else if (variant.StartsWith("peer-"))
@@ -223,7 +223,7 @@ public static class VariantValidators
                 peer = new VariantMetadata
                 {
                     PrefixType = "prefix",
-                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.Statement} ~ ",
+                    SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ~ ",
                 };
             }
             else

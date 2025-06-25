@@ -98,6 +98,36 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         {
             new ()
             {
+                ClassName = "group-hover:underline",
+                EscapedClassName = @".group:hover .group-hover\:underline",
+                Styles =
+                    """
+                    text-decoration-line: underline;
+                    """,
+                IsValid = true,
+            },
+            new ()
+            {
+                ClassName = "group-hover/my-group:underline",
+                EscapedClassName = @".group\/my-group:hover .group-hover\/my-group\:underline",
+                Styles =
+                    """
+                    text-decoration-line: underline;
+                    """,
+                IsValid = true,
+            },
+            new ()
+            {
+                ClassName = "group-has-[a]:underline",
+                EscapedClassName = @".group-has-\[a\]\:underline:is(:where(.group):has(:is(a)) *)",
+                Styles =
+                    """
+                    text-decoration-line: underline;
+                    """,
+                IsValid = true,
+            },
+            new ()
+            {
                 ClassName = "dark:group-[.is-published]:[&.active]:[@supports(display:flex)]:tabp:max-desk:hover:text-[1rem]/6!",
                 EscapedClassName = @".group.is-published .dark\:group-\[\.is-published\]\:\[\&\.active\]\:\[\@supports\(display\:flex\)\]\:tabp\:max-desk\:hover\:text-\[1rem\]\/6\!.active:hover",
                 Styles =
@@ -114,6 +144,30 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                     "@supports(display:flex) {",
                 ]
             },
+
+            new ()
+            {
+                ClassName = "peer-hover:underline",
+                EscapedClassName = @".peer:hover ~ .peer-hover\:underline",
+                Styles =
+                    """
+                    text-decoration-line: underline;
+                    """,
+                IsValid = true,
+            },
+            new ()
+            {
+                ClassName = "peer-hover/draft:underline",
+                EscapedClassName = @".peer\/draft:hover ~ .peer-hover\/draft\:underline",
+                Styles =
+                    """
+                    text-decoration-line: underline;
+                    """,
+                IsValid = true,
+            },
+
+            
+            
             new ()
             {
                 ClassName = "leading-none",
