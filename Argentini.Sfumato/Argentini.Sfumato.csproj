@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.0.25.0</AssemblyVersion>
-        <FileVersion>6.0.25.0</FileVersion>
-        <PackageVersion>6.0.25</PackageVersion>
+        <AssemblyVersion>6.0.26.0</AssemblyVersion>
+        <FileVersion>6.0.26.0</FileVersion>
+        <PackageVersion>6.0.26</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added support for skipping `var(` prefixes in arbitrary values</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed regression bug with peer and group selector generation</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
