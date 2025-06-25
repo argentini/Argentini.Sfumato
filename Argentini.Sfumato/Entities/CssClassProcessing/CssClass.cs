@@ -814,7 +814,7 @@ public sealed class CssClass : IDisposable
     {
         if (ClassDefinition is null)
             return;
-        
+
         Styles = ClassDefinition.Template;
         
         if (HasArbitraryValue || HasArbitraryValueWithCssCustomProperty || useArbitraryValue)
@@ -833,20 +833,25 @@ public sealed class CssClass : IDisposable
                         Styles = ClassDefinition.ArbitraryCssValueWithArbitraryModifierTemplate;
                 }
             }
-        }
-        else if (HasModifierValue)
-        {
-            if (string.IsNullOrEmpty(ClassDefinition.ModifierTemplate) == false)
-                Styles = ClassDefinition.ModifierTemplate;
-            
-            if (HasArbitraryModifierValue)
-            {
-                if (string.IsNullOrEmpty(ClassDefinition.ArbitraryModifierTemplate) == false)
-                    Styles = ClassDefinition.ArbitraryModifierTemplate;
-            }
-        }
 
-        Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);
+            Styles = Styles.Replace("{0}", Value.Contains("(--", StringComparison.OrdinalIgnoreCase) ? Value.Replace("var(--", "(--").Replace("(--", "var(--") : Value, StringComparison.Ordinal);
+        }
+        else
+        {
+            if (HasModifierValue)
+            {
+                if (string.IsNullOrEmpty(ClassDefinition.ModifierTemplate) == false)
+                    Styles = ClassDefinition.ModifierTemplate;
+            
+                if (HasArbitraryModifierValue)
+                {
+                    if (string.IsNullOrEmpty(ClassDefinition.ArbitraryModifierTemplate) == false)
+                        Styles = ClassDefinition.ArbitraryModifierTemplate;
+                }
+            }
+            
+            Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);
+        }
 
         if (HasModifierValue)
             Styles = Styles.Replace("{1}", ModifierValue, StringComparison.Ordinal);
