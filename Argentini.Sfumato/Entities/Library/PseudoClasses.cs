@@ -436,5 +436,13 @@ public static class LibraryPseudoClasses
 			    SelectorSuffix = ""
 		    }
 	    },
+	    {
+		    "data-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ""
+		    }
+	    },
     };
 }

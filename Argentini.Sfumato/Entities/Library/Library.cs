@@ -91,7 +91,7 @@ public sealed class Library
             PseudoclassPrefixes.Add($"not-{pseudoClass.Key}", new VariantMetadata
             {
                 PrefixType = pseudoClass.Value.PrefixType,
-                Statement =$":not({pseudoClass.Value.Statement})"
+                Statement = $":not({pseudoClass.Value.Statement})"
             });
         }
         

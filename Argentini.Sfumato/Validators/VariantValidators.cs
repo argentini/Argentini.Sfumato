@@ -34,7 +34,7 @@ public static class VariantValidators
     {
         pseudoClass = null;
 
-        return appRunner.Library.PseudoclassPrefixes.TryGetValue(variant, out pseudoClass);
+        return appRunner.Library.PseudoclassPrefixes.TryGetValue(variant.StartsWith('d') && variant.StartsWith("data-", StringComparison.OrdinalIgnoreCase) ? "data-" : variant, out pseudoClass);
     }
 
     public static bool TryVariantIsGroup(this string variant, AppRunner appRunner, out VariantMetadata? group)

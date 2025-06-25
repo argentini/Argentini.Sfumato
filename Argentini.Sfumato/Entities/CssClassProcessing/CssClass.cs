@@ -693,10 +693,11 @@ public sealed class CssClass : IDisposable
         
         try
         {
-            if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key is "*" or "**"))
-            {
+            var hasDescendantVariant = VariantSegments
+                .Any(s => s.Value.PrefixType == "pseudoclass" && s.Key is "*" or "**");
+            
+            if (hasDescendantVariant)
                 Sb?.Append(":is(");
-            }
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
                 Sb?.Append(variant.Value.SelectorPrefix);
@@ -705,17 +706,18 @@ public sealed class CssClass : IDisposable
             Sb?.Append(Selector.CssSelectorEscape());
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
-                Sb?.Append(variant.Value.SelectorSuffix);
+            {
+                Sb?.Append(variant.Key.StartsWith("data-", StringComparison.OrdinalIgnoreCase) ? $"[{variant.Key}]" : variant.Value.SelectorSuffix);
+            }
 
-            if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "*"))
+            if (hasDescendantVariant)
             {
-                Sb?.Append(" > *)");
+                if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "*"))
+                    Sb?.Append(" > *)");
+                else if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "**"))
+                    Sb?.Append(" *)");
             }
-            else if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "**"))
-            {
-                Sb?.Append(" *)");
-            }
-            
+
             EscapedSelector = Sb?.ToString() ?? string.Empty;
         }
         catch

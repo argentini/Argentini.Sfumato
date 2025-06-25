@@ -412,7 +412,28 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal(@":is(.\*\*\:whitespace-pre\! *)", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
     }
-    
+
+    [Fact]
+    public void DataAttributeHandling()
+    {
+        var appRunner = new AppRunner(new AppState());
+        
+        var cssClass = new CssClass(appRunner, "data-active:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.True(cssClass.IsImportant);
+        Assert.Equal(@".data-active\:whitespace-pre\![data-active]", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre !important;", cssClass.Styles);
+        
+        cssClass = new CssClass(appRunner, "dark:lg:data-active:hover:bg-indigo-600");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".dark\:lg\:data-active\:hover\:bg-indigo-600[data-active]:hover", cssClass.EscapedSelector);
+        Assert.Equal("background-color: var(--color-indigo-600);", cssClass.Styles);
+    }
+
     [Fact]
     public void ArbitraryCss()
     {
