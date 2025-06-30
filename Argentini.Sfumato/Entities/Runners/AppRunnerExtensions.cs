@@ -14,10 +14,22 @@ public static class AppRunnerExtensions
 		{
 			if (appRunner.AppRunnerSettings.UseReset)
 			{
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+					sourceCss
+						.Append("@layer reset {")
+						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(appRunner.AppRunnerSettings.LineBreak);	
+				
 				sourceCss
 					.Append(File.ReadAllText(Path.Combine(appRunner.AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(appRunner.AppRunnerSettings.LineBreak).Trim())
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(appRunner.AppRunnerSettings.LineBreak);
+				
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+					sourceCss
+						.Append('}')
+						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 		}		
 		catch (Exception e)
@@ -41,10 +53,22 @@ public static class AppRunnerExtensions
 		{
 			if (appRunner.AppRunnerSettings.UseForms)
 			{
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+					sourceCss
+						.Append("@layer forms {")
+						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(appRunner.AppRunnerSettings.LineBreak);	
+
 				sourceCss
 					.Append(File.ReadAllText(Path.Combine(appRunner.AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(appRunner.AppRunnerSettings.LineBreak).Trim())
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(appRunner.AppRunnerSettings.LineBreak);
+				
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+					sourceCss
+						.Append('}')
+						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 		}		
 		catch (Exception e)
@@ -92,7 +116,7 @@ public static class AppRunnerExtensions
 		{
 			sourceCss
 				.Append(appRunner.AppRunnerSettings.ProcessedCssContent.Trim());
-		}		
+		}
 		catch (Exception e)
 		{
 			Console.WriteLine($"{AppState.CliErrorPrefix}AppendProcessedSourceCss() - {e.Message}");
@@ -321,6 +345,7 @@ public static class AppRunnerExtensions
 	public static StringBuilder InjectRootDependenciesCss(this StringBuilder sourceCss, AppRunner appRunner)
 	{
 		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+		var workingSb2 = appRunner.AppState.StringBuilderPool.Get();
 
 		try
 		{
@@ -328,50 +353,43 @@ public static class AppRunnerExtensions
 
 			if (appRunner.UsedCssCustomProperties.IsEmpty == false)
 			{
-				var wrappers = new [] { ":root, :host {", "*, ::before, ::after, ::backdrop {" };
-
-				for (var i = 0; i < wrappers.Length; i++)
-				{
-					var items = appRunner.UsedCssCustomProperties.Where(c => (c.Key == "--spacing" || (c.Key.StartsWith("--sf-") == (i != 0)) || (c.Key.StartsWith("--form-") == (i != 0))) && string.IsNullOrEmpty(c.Value) == false).ToList();
-					
-					if (items.Count == 0)
-						continue;
-					
+				#region @layer properties
+				
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
 					workingSb
-						.Append(wrappers[i])
+						.Append("@layer properties {")
+						.Append(appRunner.AppRunnerSettings.LineBreak)
 						.Append(appRunner.AppRunnerSettings.LineBreak);
 
-					foreach (var ccp in items.OrderBy(c => c.Key))
-					{
-						workingSb
-							.Append(ccp.Key)
-							.Append(": ")
-							.Append(ccp.Value)
-							.Append(';');
+				workingSb
+					.Append("*, ::before, ::after, ::backdrop {")
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak);
 
-						if (ccp.Key.StartsWith("--animate-", StringComparison.Ordinal) == false)
-							continue;
-						
-						var key = $"@keyframes {ccp.Key.TrimStart("--animate-")}";
-
-						if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(key, out var value))
-							appRunner.UsedCss.TryAdd(key, value);
-					}
-
-					workingSb.Append('}');
-				}
-			}
-
-			if (appRunner.UsedCss.Count > 0)
-			{
-				foreach (var ccp in appRunner.UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
+				foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => (c.Key.StartsWith("--sf-") || c.Key.StartsWith("--form-")) && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
 				{
 					workingSb
 						.Append(ccp.Key)
-						.Append(' ')
-						.Append(ccp.Value);
+						.Append(": ")
+						.Append(ccp.Value)
+						.Append(';');
 				}
 
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+					workingSb
+						.Append('}')
+						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(appRunner.AppRunnerSettings.LineBreak);
+						
+				workingSb
+					.Append('}')
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak);	
+				
+				#endregion
+
+				#region @property rules
+				
 				foreach (var ccp in appRunner.UsedCssCustomProperties)
 				{
 					if (ccp.Key.StartsWith('-') == false)
@@ -384,8 +402,71 @@ public static class AppRunnerExtensions
 						.Append($"@property {ccp.Key} ")
 						.Append(prop);
 				}
-			}
+				
+				#endregion
+				
+				#region @layer theme
+				
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+					workingSb2
+						.Append("@layer theme {")
+						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(appRunner.AppRunnerSettings.LineBreak);
 
+				workingSb2
+					.Append(":root, :host {")
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak);
+			
+				foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => c.Key.StartsWith("--sf-") == false && c.Key.StartsWith("--form-") == false && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
+				{
+					workingSb2
+						.Append(ccp.Key)
+						.Append(": ")
+						.Append(ccp.Value)
+						.Append(';');
+					
+					if (ccp.Key.StartsWith("--animate-", StringComparison.Ordinal) == false)
+						continue;
+						
+					var key = $"@keyframes {ccp.Key.TrimStart("--animate-")}";
+
+					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(key, out var value))
+						appRunner.UsedCss.TryAdd(key, value);
+				}
+
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+					workingSb2
+						.Append('}')
+						.Append(appRunner.AppRunnerSettings.LineBreak)
+						.Append(appRunner.AppRunnerSettings.LineBreak);
+						
+				workingSb2
+					.Append('}')
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak);	
+				
+				#endregion
+				
+				#region @keyframes, etc.
+				
+				if (appRunner.UsedCss.Count > 0)
+				{
+					foreach (var ccp in appRunner.UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
+					{
+						workingSb
+							.Append(ccp.Key)
+							.Append(' ')
+							.Append(ccp.Value);
+					}
+				}
+				
+				#endregion
+
+				workingSb.Append(workingSb2);
+
+			}
+			
 			sourceCss.Insert(0, workingSb);
 		}
 		catch (Exception e)
@@ -396,6 +477,7 @@ public static class AppRunnerExtensions
 		finally
 		{
 			appRunner.AppState.StringBuilderPool.Return(workingSb);
+			appRunner.AppState.StringBuilderPool.Return(workingSb2);
 		}
 		
 		return sourceCss;
@@ -422,7 +504,19 @@ public static class AppRunnerExtensions
 
 		try
 		{
+			if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+				sb
+					.Append("@layer utilities {")
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak);	
+
 			_GenerateUtilityClassesCss(root, sb);
+
+			if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+				sb
+					.Append('}')
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak);	
 
 			sourceCss.Replace("::sfumato{}", sb.ToString());
 		}
