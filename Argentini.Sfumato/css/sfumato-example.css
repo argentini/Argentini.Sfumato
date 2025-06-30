@@ -1,9 +1,27 @@
 /*
     SFUMATO Example CSS File
     ========================
+    
+    @import statements must be first; Sfumato imports them at build time so
+    you can use Sfumato functions and directives in them (e.g. @apply).    
 */
 
-/* EXAMPLE: Sfumato injects imported CSS into this file in-place */
+/*
+    EXAMPLE: @import styles that override any utilities.
+
+    e.g. <div class="component-panel p-4">...</div>
+    
+    (p-4 will be ignored if component-panel sets padding)
+*/
+@import "sample/required.css" components;
+
+/*
+    EXAMPLE: @import styles into the components layer to allow utilities to override.
+    
+    e.g. <div class="component-panel p-4">...</div>
+    
+    (p-4 will override any padding set in component-panel)
+*/
 @import "sample/my-partial.css" components;
 
 @layer sfumato {

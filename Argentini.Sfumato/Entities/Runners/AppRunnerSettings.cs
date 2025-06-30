@@ -280,6 +280,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	    }
 	    
 	    var sb = AppRunner.AppState.StringBuilderPool.Get();
+	    var workingSb = AppRunner.AppState.StringBuilderPool.Get();
 	    var filePath = string.Empty;
 
 	    sb.Append(css);
@@ -291,7 +292,25 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 		    while (importIndex > -1)
 		    {
 			    var importStatement = css[importIndex..(css.IndexOf(';', importIndex) + 1)];
-			    var importPath = importStatement.Replace("@import", string.Empty).Trim().Trim(';').Trim('\"').SetNativePathSeparators();
+			    var parsePath = importStatement[(importIndex + 8)..].Trim().Trim(';').Trim();
+			    var importPath = string.Empty;
+			    var layerName = string.Empty;
+
+			    if (parsePath.EndsWith('\'') == false && parsePath.EndsWith('\"') == false)
+			    {
+				    var segments = parsePath.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+				    if (segments.Length > 1)
+				    {
+					    layerName = segments.Last();
+					    importPath = parsePath.Replace(layerName, string.Empty).Trim().Trim('\'').Trim('\"')
+						    .SetNativePathSeparators();
+				    }
+			    }
+			    else
+			    {
+				    importPath = parsePath.Trim('\'').Trim('\"').SetNativePathSeparators();
+			    }			    
 			    
 			    filePath = Path.GetFullPath(Path.Combine(parentPath, importPath));
 
@@ -306,9 +325,15 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 				    Imports.Add(new FileInfo(filePath));
 
 				    var childCss = File.ReadAllText(filePath);
-				    var injectedCss = ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty);
+				    workingSb.Append(ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty));
 
-				    sb.Replace(importStatement, injectedCss);
+				    if (string.IsNullOrEmpty(layerName) == false)
+				    {
+					    workingSb.Insert(0, $"@layer {layerName} {{{LineBreak}");
+					    workingSb.Append($"}}{LineBreak}");
+				    }
+
+				    sb.Replace(importStatement, workingSb.ToString());
 			    }
 
 			    if (importIndex >= css.Length - 1)
@@ -327,6 +352,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	    finally
 	    {
 		    AppRunner.AppState.StringBuilderPool.Return(sb);
+		    AppRunner.AppState.StringBuilderPool.Return(workingSb);
 	    }
 
 	    return css;
