@@ -465,6 +465,45 @@ public static partial class Strings
 	#region Parsing
 
 	/// <summary>
+	/// Extract a block of CSS by its starting declaration (e.g. "@layer components").
+	/// </summary>
+	/// <param name="sourceCss"></param>
+	/// <param name="cssBlockStart"></param>
+	/// <returns></returns>
+	public static string ExtractCssBlock(this string sourceCss, string cssBlockStart)
+	{
+		var blockStart = sourceCss.IndexOf(cssBlockStart, StringComparison.OrdinalIgnoreCase);
+
+		if (blockStart < 0)
+			return string.Empty;
+
+		var openBraceIndex = sourceCss.IndexOf('{', blockStart);
+        
+		if (openBraceIndex <= blockStart)
+			return string.Empty;
+
+		var braceCount = 0;
+		var closingBraceIndex = -1;
+
+		for (var i = openBraceIndex; i < sourceCss.Length; i++)
+		{
+			if (closingBraceIndex > -1)
+				break;
+			
+			// ReSharper disable once ConvertIfStatementToSwitchStatement
+			if (sourceCss[i] == '{')
+				braceCount++;
+			else if (sourceCss[i] == '}')
+				braceCount--;
+
+			if (braceCount == 0)
+				closingBraceIndex = i;
+		}
+
+		return closingBraceIndex < 0 ? string.Empty : sourceCss.Substring(blockStart, closingBraceIndex - blockStart + 1);
+	}
+
+	/// <summary>
 	/// Finds all blocks like “@media (prefers-color-scheme: dark) { … }” blocks in this StringBuilder,
 	/// matching braces even if there are nested blocks inside.
 	/// </summary>

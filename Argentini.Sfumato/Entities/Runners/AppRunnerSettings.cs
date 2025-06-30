@@ -99,47 +99,15 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 	        #region Extract Sfumato settings block
 
-		    var sfumatoBlockStart = CssContent.IndexOf("@theme sfumato", StringComparison.Ordinal);
-	        
-		    if (sfumatoBlockStart < 0)
+	        SfumatoCssBlock = CssContent.ExtractCssBlock("@theme sfumato");
+
+		    if (string.IsNullOrEmpty(SfumatoCssBlock))
 		    {
 			    Console.WriteLine($"{AppState.CliErrorPrefix}No @theme sfumato {{}} block in file: {CssFilePath}");
 			    Environment.Exit(1);
 		    }
 
-		    var openBraceIndex = CssContent.IndexOf('{', sfumatoBlockStart);
-	        
-		    if (openBraceIndex <= sfumatoBlockStart)
-		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}@theme sfumato block has no opening {{ in file: {CssFilePath}");
-			    Environment.Exit(1);
-		    }
-
-			var braceCount = 0;
-			var closingBraceIndex = -1;
-
-			for (var i = openBraceIndex; i < CssContent.Length; i++)
-			{
-				if (closingBraceIndex > -1)
-					break;
-				
-				if (CssContent[i] == '{')
-					braceCount++;
-				else if (CssContent[i] == '}')
-					braceCount--;
-
-				if (braceCount == 0)
-					closingBraceIndex = i;
-			}
-
-			if (closingBraceIndex < 0)
-			{
-				Console.WriteLine($"{AppState.CliErrorPrefix}@theme sfumato block has no closing }} in file: {CssFilePath}");
-				Environment.Exit(1);
-			}
-
-			SfumatoCssBlock = CssContent[sfumatoBlockStart..(closingBraceIndex + 1)];
-			ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);
+		    ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);
 
 	        #endregion
 	    }

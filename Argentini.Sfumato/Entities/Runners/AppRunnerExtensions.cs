@@ -539,43 +539,16 @@ public static class AppRunnerExtensions
 	{
 		if (appRunner.AppRunnerSettings.UseCompatibilityMode)
 			return sourceCss;
-		
-		var componentsBlockStart = sourceCss.IndexOf("@layer components");
 
-		if (componentsBlockStart < 0)
-			return sourceCss;
+		var componentsLayer = sourceCss.ExtractCssBlock("@layer components");
 
-		var openBraceIndex = sourceCss.IndexOf('{', componentsBlockStart);
-	        
-		if (openBraceIndex <= componentsBlockStart)
+		if (string.IsNullOrEmpty(componentsLayer))
 			return sourceCss;
 
 		var utilitiesBlockStart = sourceCss.IndexOf("@layer utilities");
 
 		if (utilitiesBlockStart < 0)
 			return sourceCss;
-
-		var braceCount = 0;
-		var closingBraceIndex = -1;
-
-		for (var i = openBraceIndex; i < sourceCss.Length; i++)
-		{
-			if (closingBraceIndex > -1)
-				break;
-				
-			if (sourceCss[i] == '{')
-				braceCount++;
-			else if (sourceCss[i] == '}')
-				braceCount--;
-
-			if (braceCount == 0)
-				closingBraceIndex = i;
-		}
-
-		if (closingBraceIndex < 0)
-			return sourceCss;
-
-		var componentsLayer = sourceCss.Substring(componentsBlockStart, closingBraceIndex - componentsBlockStart + 1);
 		
 		sourceCss.Replace(componentsLayer, string.Empty);
 		sourceCss.Insert(utilitiesBlockStart, componentsLayer + appRunner.AppRunnerSettings.LineBreak + appRunner.AppRunnerSettings.LineBreak);
