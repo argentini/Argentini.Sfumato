@@ -107,7 +107,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 			    if (string.IsNullOrEmpty(SfumatoCssBlock))
 			    {
-				    Console.WriteLine($"{AppState.CliErrorPrefix}No @theme sfumato {{}} block in file: {CssFilePath}");
+				    Console.WriteLine($"{AppState.CliErrorPrefix}No @layer sfumato {{ :root {{ }} }} block in file: {CssFilePath}");
 				    Environment.Exit(1);
 			    }
 		    }

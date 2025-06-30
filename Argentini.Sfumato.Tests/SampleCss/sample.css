@@ -1,15 +1,17 @@
 @import "partial.css";
 
-@theme sfumato {
+@layer sfumato {
 
-    --use-reset: true; /* Inject the CSS reset */
-    --use-forms: true; /* Inject form input styles */
-    --use-minify: false; /* Compress the output CSS by default */
+    :root {
+        --use-reset: true; /* Inject the CSS reset */
+        --use-forms: true; /* Inject form input styles */
+        --use-minify: false; /* Compress the output CSS by default */
 
-    --paths: ["./"]; /* Relative paths for project scanning; required */
-    --output-path: "sfumato.css"; /* Generated CSS file path; required */
-    --not-paths: []; /* Relative paths to exclude content scanning */
-
+        --paths: ["./"]; /* Relative paths for project scanning; required */
+        --output-path: "sfumato.css"; /* Generated CSS file path; required */
+        --not-paths: []; /* Relative paths to exclude content scanning */
+    }
+    
     @utility tab-4 {
         tab-size: 4;
     }

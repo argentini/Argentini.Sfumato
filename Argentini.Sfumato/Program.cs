@@ -138,7 +138,7 @@ internal class Program
 			
 			Additionally, Sfumato can build/watch multiple source CSS files at once!
 
-			Add Sfumato project settings to your source CSS files by adding a `@theme sfumato { }` block to the top, but below any @import statements._
+			Add Sfumato project settings to your source CSS files by adding a `@layer sfumato { :root { } }` block to the top, but below any @import statements._
 			Run the `init` command (below) to create an example CSS file in the current path.
 			
 			USAGE:
