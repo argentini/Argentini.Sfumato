@@ -173,6 +173,30 @@ public static partial class Strings
 	#region Trimming
 	
 	/// <summary>
+	/// Trim the first occurrence of a character from a string.
+	/// </summary>
+	/// <param name="str"></param>
+	/// <param name="value"></param>
+	public static string TrimFirst(this string str, char value)
+	{
+		var index = str.IndexOf(value);
+		
+		return index < 0 ? str : str.Remove(index, 1);
+	}
+
+	/// <summary>
+	/// Trim the last occurrence of a character from a string.
+	/// </summary>
+	/// <param name="str"></param>
+	/// <param name="value"></param>
+	public static string TrimLast(this string str, char value)
+	{
+		var index = str.LastIndexOf(value);
+		
+		return index < 0 ? str : str.Remove(index, 1);
+	}
+
+	/// <summary>
 	/// Trim the common prefix of from sourceString from targetString.
 	/// </summary>
 	/// <param name="targetString"></param>
