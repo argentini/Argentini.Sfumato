@@ -292,7 +292,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 		    while (importIndex > -1)
 		    {
 			    var importStatement = css[importIndex..(css.IndexOf(';', importIndex) + 1)];
-			    var parsePath = importStatement[(importIndex + 8)..].Trim().Trim(';').Trim();
+			    var parsePath = importStatement[8..].Trim().Trim(';').Trim();
 			    var importPath = string.Empty;
 			    var layerName = string.Empty;
 
