@@ -48,5 +48,17 @@ public class ExportTests(ITestOutputHelper testOutputHelper)
         testOutputHelper.WriteLine($"CSS Custom Properties JSON written to {path}");
         
         #endregion
+        
+        #region Variants
+        
+        json = appRunner.Library.ExportVariants(appRunner);
+        
+        path = Path.GetFullPath(Path.Combine("../../../variants.json"));
+        
+        await File.WriteAllTextAsync(path, json);
+
+        testOutputHelper.WriteLine($"Variants JSON written to {path}");
+        
+        #endregion
     }
 }

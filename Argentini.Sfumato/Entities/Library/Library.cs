@@ -91,7 +91,7 @@ public sealed class Library
             PseudoclassPrefixes.Add($"not-{pseudoClass.Key}", new VariantMetadata
             {
                 PrefixType = pseudoClass.Value.PrefixType,
-                Statement = $":not({pseudoClass.Value.Statement})"
+                SelectorSuffix = $":not({pseudoClass.Value.SelectorSuffix})"
             });
         }
         
@@ -607,6 +607,18 @@ public sealed class Library
     public string ExportCssCustomProperties(AppRunner appRunner)
     {
         var json = JsonSerializer.Serialize(appRunner.AppRunnerSettings.SfumatoBlockItems, Jso);
+
+        return json;
+    }
+
+    public string ExportVariants(AppRunner appRunner)
+    {
+        var variants = new Dictionary<string, VariantMetadata>();
+        
+        variants.AddRange(PseudoclassPrefixes);
+        variants.AddRange(MediaQueryPrefixes);
+        
+        var json = JsonSerializer.Serialize(variants, Jso);
 
         return json;
     }

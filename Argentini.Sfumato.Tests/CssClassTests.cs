@@ -489,6 +489,19 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     }
 
     [Fact]
+    public void NotVariantHandling()
+    {
+        var appRunner = new AppRunner(new AppState());
+        var cssClass = new CssClass(appRunner, "not-hover:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.True(cssClass.IsImportant);
+        Assert.Equal(@".not-hover\:whitespace-pre\!:not(:hover)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre !important;", cssClass.Styles);
+    }
+
+    [Fact]
     public void ArbitraryCss()
     {
         var appRunner = new AppRunner(new AppState());
