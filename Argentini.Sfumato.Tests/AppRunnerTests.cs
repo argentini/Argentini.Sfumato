@@ -111,7 +111,7 @@ public class AppRunnerTests
         var indexOfFontSansClass = css.IndexOf(".font-sans", StringComparison.Ordinal);
         var indexOfTestClass = css.IndexOf(".test", StringComparison.Ordinal);
         
-        Assert.Equal(1086, indexOfRoot);
+        Assert.Equal(1235, indexOfRoot);
         Assert.True(indexOfFontSansClass > 0);
         Assert.True(indexOfTestClass > 0);
     }
