@@ -99,12 +99,17 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 	        #region Extract Sfumato settings block
 
-	        SfumatoCssBlock = CssContent.ExtractCssBlock("@theme sfumato");
+	        SfumatoCssBlock = CssContent.ExtractCssBlock("@layer sfumato");
 
 		    if (string.IsNullOrEmpty(SfumatoCssBlock))
 		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}No @theme sfumato {{}} block in file: {CssFilePath}");
-			    Environment.Exit(1);
+			    SfumatoCssBlock = CssContent.ExtractCssBlock("@theme sfumato");
+
+			    if (string.IsNullOrEmpty(SfumatoCssBlock))
+			    {
+				    Console.WriteLine($"{AppState.CliErrorPrefix}No @theme sfumato {{}} block in file: {CssFilePath}");
+				    Environment.Exit(1);
+			    }
 		    }
 
 		    ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);

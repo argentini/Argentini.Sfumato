@@ -4,9 +4,9 @@
 */
 
 /* EXAMPLE: Sfumato injects imported CSS into this file in-place */
-@import "sample/my-partial.css";
+@import "sample/my-partial.css" components;
 
-@theme sfumato {
+@layer sfumato {
 
     :root {
 
@@ -67,9 +67,6 @@
 
 /* All styles within a components layer will be able to be overridden by utilities */
 @layer components {
-
-    /* EXAMPLE: Imports here can be overridden by utilities */
-    @import "sample/my-partial.css";
 
     /* EXAMPLE: sample class */
     .panel {
