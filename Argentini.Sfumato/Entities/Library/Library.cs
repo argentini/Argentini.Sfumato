@@ -88,6 +88,9 @@ public sealed class Library
     {
         foreach (var pseudoClass in PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal))
         {
+            if (pseudoClass.Key.StartsWith('*') || pseudoClass.Key.EndsWith('-'))
+                continue;
+            
             PseudoclassPrefixes.Add($"not-{pseudoClass.Key}", new VariantMetadata
             {
                 PrefixType = pseudoClass.Value.PrefixType,
