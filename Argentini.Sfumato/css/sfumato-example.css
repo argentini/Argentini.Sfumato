@@ -1,11 +1,9 @@
 /*
     SFUMATO Example CSS File
     ========================
-
-    @import statements must be first; Sfumato imports them at build time so
-    you can use Sfumato functions and directives in them (e.g. @apply).
 */
 
+/* EXAMPLE: Sfumato injects imported CSS into this file in-place */
 @import "sample/my-partial.css";
 
 @theme sfumato {
@@ -65,6 +63,18 @@
     /* EXAMPLE: Add custom @media or pseudo class variants */
     @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
     @custom-variant widescreen (@media (width >= 96rem));
+}
+
+/* All styles within a components layer will be able to be overridden by utilities */
+@layer components {
+
+    /* EXAMPLE: Imports here can be overridden by utilities */
+    @import "sample/my-partial.css";
+
+    /* EXAMPLE: sample class */
+    .panel {
+        @apply bg-canvas text-black;
+    }
 }
 
 /* EXAMPLE: Use a variant in your CSS file */
