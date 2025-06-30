@@ -540,16 +540,16 @@ public static class AppRunnerExtensions
 		if (appRunner.AppRunnerSettings.UseCompatibilityMode)
 			return sourceCss;
 
+		var utilitiesBlockStart = sourceCss.IndexOf("@layer utilities");
+
+		if (utilitiesBlockStart < 0)
+			return sourceCss;
+
 		var componentsLayer = sourceCss.ExtractCssBlock("@layer components");
 
 		if (string.IsNullOrEmpty(componentsLayer))
 			return sourceCss;
 
-		var utilitiesBlockStart = sourceCss.IndexOf("@layer utilities");
-
-		if (utilitiesBlockStart < 0)
-			return sourceCss;
-		
 		sourceCss.Replace(componentsLayer, string.Empty);
 		sourceCss.Insert(utilitiesBlockStart, componentsLayer + appRunner.AppRunnerSettings.LineBreak + appRunner.AppRunnerSettings.LineBreak);
 
