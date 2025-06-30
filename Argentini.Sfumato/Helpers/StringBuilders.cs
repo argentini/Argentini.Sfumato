@@ -8,6 +8,50 @@ namespace Argentini.Sfumato.Helpers;
 public static class StringBuilders
 {
 	/// <summary>
+	/// Find the index of a character in a StringBuilder starting at a given index.
+	/// </summary>
+	/// <param name="sb"></param>
+	/// <param name="value"></param>
+	/// <param name="startIndex"></param>
+	/// <returns></returns>
+	public static int IndexOf(this StringBuilder? sb, char value, int startIndex = 0)
+	{
+		if (sb == null || startIndex < 0 || startIndex >= sb.Length)
+			return -1;
+
+		for (var i = startIndex; i < sb.Length; i++)
+		{
+			if (sb[i] == value)
+				return i;
+		}
+
+		return -1;
+	}
+	
+	/// <summary>
+	/// Find the index a substring in a StringBuilder.
+	/// </summary>
+	/// <param name="sb"></param>
+	/// <param name="value"></param>
+	/// <param name="comparisonType"></param>
+	/// <returns></returns>
+	public static int IndexOf(this StringBuilder? sb, string? value, StringComparison comparisonType = StringComparison.Ordinal)
+	{
+		if (sb == null || string.IsNullOrEmpty(value) || sb.Length < value.Length)
+			return -1;
+
+		for (var i = 0; i <= sb.Length - value.Length; i++)
+		{
+			var found = value.Where((t, j) => sb[i + j].ToString().Equals(t.ToString(), comparisonType) == false).Any() == false;
+
+			if (found)
+				return i;
+		}
+
+		return -1;
+	}
+	
+	/// <summary>
 	/// Reformats the CSS in this StringBuilder so that each block is indented
 	/// by <paramref name="indentSize"/> spaces per nesting level.
 	/// Also, properly indents /* … */ comments (both standalone and inline).

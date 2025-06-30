@@ -574,7 +574,8 @@ public sealed class AppRunner
 				.ProcessAtVariantStatements(this)
 
 				.ProcessFunctionsAndTrackDependencies(this)
-				.InjectRootDependenciesCss(this);
+				.InjectRootDependenciesCss(this)
+				.MoveComponentsLayer(this);
 
 			if (AppRunnerSettings.UseDarkThemeClasses)
 				sourceCss.ProcessDarkThemeClasses(this);
