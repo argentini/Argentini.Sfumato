@@ -44,7 +44,7 @@
         /* Compress the output CSS by default */
         --use-minify: false;
 
-        /* Will use more compatible styles (e.g. avoid color-mix(), etc.) */
+        /* Will use more compatible styles (e.g. avoid color-mix(), @layer, etc.) */
         --use-compatibility-mode: false;
 
         /*
