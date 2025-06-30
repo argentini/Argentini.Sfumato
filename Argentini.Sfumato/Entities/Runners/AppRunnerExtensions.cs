@@ -390,19 +390,22 @@ public static class AppRunnerExtensions
 
 				#region @property rules
 				
-				foreach (var ccp in appRunner.UsedCssCustomProperties)
+				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
 				{
-					if (ccp.Key.StartsWith('-') == false)
-						continue;
-					
-					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue($"@property {ccp.Key}", out var prop) == false)
-						continue;
-					
-					workingSb
-						.Append($"@property {ccp.Key} ")
-						.Append(prop);
-				}
-				
+					foreach (var ccp in appRunner.UsedCssCustomProperties)
+					{
+						if (ccp.Key.StartsWith('-') == false)
+							continue;
+						
+						if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue($"@property {ccp.Key}", out var prop) == false)
+							continue;
+						
+						workingSb
+							.Append($"@property {ccp.Key} ")
+							.Append(prop);
+					}
+				}				
+
 				#endregion
 				
 				#region @layer theme
