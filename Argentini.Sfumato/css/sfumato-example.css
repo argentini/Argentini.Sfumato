@@ -45,7 +45,7 @@
         --use-minify: false;
 
         /* Will use more compatible styles (e.g. avoid color-mix(), etc.) */
-        --use-compatibility-mode: true;
+        --use-compatibility-mode: false;
 
         /*
             When true, dark mode is triggered by html.theme-auto
