@@ -546,12 +546,33 @@ public static class AppRunnerExtensions
 			return sourceCss;
 
 		var componentsLayer = sourceCss.ExtractCssBlock("@layer components");
+		var sb = appRunner.AppState.StringBuilderPool.Get();
 
-		if (string.IsNullOrEmpty(componentsLayer))
-			return sourceCss;
+		try
+		{
+			while (string.IsNullOrEmpty(componentsLayer) == false)
+			{
+				sourceCss.Replace(componentsLayer, string.Empty);
 
-		sourceCss.Replace(componentsLayer, string.Empty);
-		sourceCss.Insert(utilitiesBlockStart, componentsLayer + appRunner.AppRunnerSettings.LineBreak + appRunner.AppRunnerSettings.LineBreak);
+				sb.Append(componentsLayer.TrimStart("@layer components")?.Trim().TrimFirst('{').TrimLast('}').Trim());
+				sb.Append(appRunner.AppRunnerSettings.LineBreak);
+				sb.Append(appRunner.AppRunnerSettings.LineBreak);
+
+				componentsLayer = sourceCss.ExtractCssBlock("@layer components");
+			}
+
+			if (sb.Length == 0)
+				return sourceCss;
+
+			sb.Insert(0, "@layer components {" + appRunner.AppRunnerSettings.LineBreak);
+			sb.Append("}" + appRunner.AppRunnerSettings.LineBreak);
+			
+			sourceCss.Insert(utilitiesBlockStart, sb);
+		}
+		finally
+		{
+			appRunner.AppState.StringBuilderPool.Return(sb);
+		}
 
 		return sourceCss;
 	}
