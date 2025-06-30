@@ -16,7 +16,7 @@ public static class AppRunnerExtensions
 			{
 				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
 					sourceCss
-						.Append("@layer reset {")
+						.Append("@layer base {")
 						.Append(appRunner.AppRunnerSettings.LineBreak)
 						.Append(appRunner.AppRunnerSettings.LineBreak);	
 				
@@ -400,9 +400,10 @@ public static class AppRunnerExtensions
 						if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue($"@property {ccp.Key}", out var prop) == false)
 							continue;
 						
-						workingSb
+						workingSb2
 							.Append($"@property {ccp.Key} ")
-							.Append(prop);
+							.Append(prop)
+							.Append(appRunner.AppRunnerSettings.LineBreak);
 					}
 				}				
 
@@ -411,19 +412,19 @@ public static class AppRunnerExtensions
 				#region @layer theme
 				
 				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
-					workingSb2
+					workingSb
 						.Append("@layer theme {")
 						.Append(appRunner.AppRunnerSettings.LineBreak)
 						.Append(appRunner.AppRunnerSettings.LineBreak);
 
-				workingSb2
+				workingSb
 					.Append(":root, :host {")
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(appRunner.AppRunnerSettings.LineBreak);
 			
 				foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => c.Key.StartsWith("--sf-") == false && c.Key.StartsWith("--form-") == false && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
 				{
-					workingSb2
+					workingSb
 						.Append(ccp.Key)
 						.Append(": ")
 						.Append(ccp.Value)
@@ -439,12 +440,12 @@ public static class AppRunnerExtensions
 				}
 
 				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
-					workingSb2
+					workingSb
 						.Append('}')
 						.Append(appRunner.AppRunnerSettings.LineBreak)
 						.Append(appRunner.AppRunnerSettings.LineBreak);
 						
-				workingSb2
+				workingSb
 					.Append('}')
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(appRunner.AppRunnerSettings.LineBreak);	
@@ -457,7 +458,7 @@ public static class AppRunnerExtensions
 				{
 					foreach (var ccp in appRunner.UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
 					{
-						workingSb
+						workingSb2
 							.Append(ccp.Key)
 							.Append(' ')
 							.Append(ccp.Value);
@@ -465,12 +466,10 @@ public static class AppRunnerExtensions
 				}
 				
 				#endregion
-
-				workingSb.Append(workingSb2);
-
 			}
 			
 			sourceCss.Insert(0, workingSb);
+			sourceCss.Append(workingSb2);
 		}
 		catch (Exception e)
 		{
