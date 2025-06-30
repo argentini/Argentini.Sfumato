@@ -9,18 +9,18 @@
 /*
     EXAMPLE: @import styles that override any utilities.
 
-    e.g. <div class="component-panel p-4">...</div>
+    <div class="component-panel p-4">...</div>
     
-    (p-4 will be ignored if component-panel sets padding)
+    (e.g. p-4 will be ignored if component-panel sets padding)
 */
-@import "sample/required.css" components;
+@import "sample/required.css";
 
 /*
     EXAMPLE: @import styles into the components layer to allow utilities to override.
     
-    e.g. <div class="component-panel p-4">...</div>
+    <div class="component-panel p-4">...</div>
     
-    (p-4 will override any padding set in component-panel)
+    (e.g. p-4 will override any padding set in component-panel)
 */
 @import "sample/my-partial.css" components;
 
