@@ -88,9 +88,9 @@ public sealed class Library
     {
         foreach (var pseudoClass in PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal))
         {
-            if (pseudoClass.Key.StartsWith('*') || pseudoClass.Key.EndsWith('-'))
+            if (pseudoClass.Key.StartsWith('*'))
                 continue;
-            
+
             PseudoclassPrefixes.Add($"not-{pseudoClass.Key}", new VariantMetadata
             {
                 PrefixType = pseudoClass.Value.PrefixType,
@@ -619,7 +619,21 @@ public sealed class Library
         var variants = new Dictionary<string, VariantMetadata>();
         
         variants.AddRange(PseudoclassPrefixes);
+
+        variants.TryAdd("data-*, data-[]", new VariantMetadata
+        {
+            PrefixType = "pseudoclass",
+            SelectorSuffix = "[data-*] /* data attribute exists */"
+        });
+        
+        variants.TryAdd("not-data-*, not-data-[]", new VariantMetadata
+        {
+            PrefixType = "pseudoclass",
+            SelectorSuffix = ":not([data-*]) /* data attribute does not exist */"
+        });
+
         variants.AddRange(MediaQueryPrefixes);
+        variants.AddRange(ContainerQueryPrefixes);
         
         var json = JsonSerializer.Serialize(variants, Jso);
 

@@ -499,6 +499,14 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.True(cssClass.IsImportant);
         Assert.Equal(@".not-hover\:whitespace-pre\!:not(:hover)", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
+
+        cssClass = new CssClass(appRunner, "not-data-active:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.True(cssClass.IsImportant);
+        Assert.Equal(@".not-data-active\:whitespace-pre\!:not([data-active])", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre !important;", cssClass.Styles);
     }
 
     [Fact]

@@ -436,14 +436,15 @@ public static class VariantValidators
     {
         data = null;
 
-        if (variant.StartsWith("data-", StringComparison.Ordinal) == false)
+        if (variant.StartsWith("data-", StringComparison.Ordinal) == false && variant.StartsWith("not-data-", StringComparison.Ordinal) == false)
             return false;
 
-        if (variant.StartsWith("data-["))
+        if (variant.Contains("data-["))
         {
             // data-[size=large]:
+            // not-data-[size=large]:
 
-            var variantValue = variant.TrimStart("data-");
+            var variantValue = variant[variant.IndexOf('[')..];
 
             if (string.IsNullOrEmpty(variantValue) || variantValue.StartsWith('[') == false || variantValue.EndsWith(']') == false)
                 return false;
@@ -451,17 +452,18 @@ public static class VariantValidators
             data = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = variantValue.Replace('_', ' ')
+                SelectorSuffix = variant.StartsWith("not-data-", StringComparison.Ordinal) ? $":not({variantValue.Replace('_', ' ')})" : variantValue.Replace('_', ' ')
             };
         }
-        else if (variant.StartsWith("data-"))
+        else if (variant.Contains("data-"))
         {
             // data-active:
+            // not-data-active:
 
             data = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = $"[{variant}]"
+                SelectorSuffix = variant.StartsWith("not-data-", StringComparison.Ordinal) ? $":not([{variant.TrimStart("not-")}])" : $"[{variant}]"
             };
         }
         else

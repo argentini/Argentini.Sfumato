@@ -707,7 +707,7 @@ public sealed class CssClass : IDisposable
             
             foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
             {
-                Sb?.Append(variant.Key.StartsWith("data-", StringComparison.OrdinalIgnoreCase) ? $"[{variant.Key}]" : variant.Value.SelectorSuffix);
+                Sb?.Append(variant.Value.SelectorSuffix);
             }
 
             if (hasDescendantVariant)
