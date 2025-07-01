@@ -478,10 +478,14 @@ public static class VariantValidators
     {
         custom = null;
 
-        var variantValue = variant[(variant.IndexOf('[') + 1)..(variant.IndexOf(']'))];
-
+        var bracketIndex = variant.IndexOf('[');
+        var closingBracketIndex = variant.LastIndexOf(']');
+        var variantValue = bracketIndex > -1 && closingBracketIndex > -1 ? variant[(bracketIndex + 1)..closingBracketIndex] : variant;
+        
         if (variant.StartsWith("min-[", StringComparison.OrdinalIgnoreCase))
         {
+            // min-[600px]:
+            
             custom = new VariantMetadata
             {
                 PrefixType = "wrapper",
@@ -494,6 +498,8 @@ public static class VariantValidators
 
         if (variant.StartsWith("max-[", StringComparison.OrdinalIgnoreCase))
         {
+            // max-[600px]:
+
             custom = new VariantMetadata
             {
                 PrefixType = "wrapper",
