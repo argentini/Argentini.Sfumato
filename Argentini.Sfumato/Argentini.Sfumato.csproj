@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.0.31.0</AssemblyVersion>
-        <FileVersion>6.0.31.0</FileVersion>
-        <PackageVersion>6.0.31</PackageVersion>
+        <AssemblyVersion>6.0.32.0</AssemblyVersion>
+        <FileVersion>6.0.32.0</FileVersion>
+        <PackageVersion>6.0.32</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Refactor data-*, not-data-* utilities</PackageReleaseNotes>
+        <PackageReleaseNotes>Added support for min-[] and max-[] media breakpoints</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
