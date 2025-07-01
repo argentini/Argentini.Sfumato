@@ -478,7 +478,31 @@ public static class VariantValidators
     {
         custom = null;
 
-        var variantValue = variant.TrimStart('[').TrimEnd(']');
+        var variantValue = variant[(variant.IndexOf('[') + 1)..(variant.IndexOf(']'))];
+
+        if (variant.StartsWith("min-[", StringComparison.OrdinalIgnoreCase))
+        {
+            custom = new VariantMetadata
+            {
+                PrefixType = "wrapper",
+                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
+                Statement = $"@media (width >= {variantValue.Replace('_', ' ')})"
+            };
+
+            return true;
+        }
+
+        if (variant.StartsWith("max-[", StringComparison.OrdinalIgnoreCase))
+        {
+            custom = new VariantMetadata
+            {
+                PrefixType = "wrapper",
+                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
+                Statement = $"@media (width < {variantValue.Replace('_', ' ')})"
+            };
+
+            return true;
+        }
 
         if (string.IsNullOrEmpty(variantValue) || variantValue.Length == variant.Length)
             return false;

@@ -510,10 +510,61 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     }
 
     [Fact]
+    public void Containers()
+    {
+        var appRunner = new AppRunner(new AppState());
+
+        var cssClass = new CssClass(appRunner, "@max-md:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@container (width < 28rem) {", cssClass.Wrappers.First().Value);
+        
+        cssClass = new CssClass(appRunner, "@sm:@max-md:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@container (width >= 24rem) and (width < 28rem) {", cssClass.Wrappers.ElementAt(0).Value);
+    }
+
+
+    [Fact]
     public void ArbitraryCss()
     {
         var appRunner = new AppRunner(new AppState());
-        var cssClass = new CssClass(appRunner, "w-[calc(100vw-(--nav-width))]");
+
+        var cssClass = new CssClass(appRunner, "[@media_(width_>=_600px)]:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media (width >= 600px) {", cssClass.Wrappers.First().Value);
+
+        cssClass = new CssClass(appRunner, "min-[600px]:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media (width >= 600px) {", cssClass.Wrappers.First().Value);
+
+        cssClass = new CssClass(appRunner, "max-[600px]:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media (width < 600px) {", cssClass.Wrappers.First().Value);
+        
+        cssClass = new CssClass(appRunner, "min-[320px]:max-[600px]:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(2, cssClass.Wrappers.Count);
+        Assert.Equal("@media (width >= 320px) {", cssClass.Wrappers.ElementAt(0).Value);
+        Assert.Equal("@media (width < 600px) {", cssClass.Wrappers.ElementAt(1).Value);
+        
+        cssClass = new CssClass(appRunner, "w-[calc(100vw-(--nav-width))]");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
