@@ -368,6 +368,9 @@ public static class AppRunnerExtensions
 
 				foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => (c.Key.StartsWith("--sf-") || c.Key.StartsWith("--form-")) && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
 				{
+					if (appRunner.AppRunnerSettings.UseForms == false && ccp.Key.StartsWith("--form-"))
+						continue;
+					
 					workingSb
 						.Append(ccp.Key)
 						.Append(": ")
@@ -576,7 +579,7 @@ public static class AppRunnerExtensions
 
 		return sourceCss;
 	}
-	
+
 	/// <summary>
 	/// Find all dark theme media blocks and duplicate as wrapped classes theme-dark
 	/// </summary>
