@@ -25,27 +25,45 @@ public sealed class AspectRatio : ClassDictionaryBase
                         """
                 }
             },
+            {
+                "aspect-screen", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               aspect-ratio: 4 / 3;
+                               """
+                }
+            },
+            {
+                "aspect-square", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               aspect-ratio: 1 / 1;
+                               """
+                }
+            },
+            {
+                "aspect-video", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               aspect-ratio: 16 / 9;
+                               """
+                }
+            },
+            {
+                "aspect-auto", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               aspect-ratio: auto;
+                               """
+                }
+            },
         });
     }
     
     public override void ProcessThemeSettings(AppRunner appRunner)
-    {
-        foreach (var item in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--aspect-")))
-        {
-            var key = item.Key.Trim('-');
-            var value = new ClassDefinition
-            {
-                InSimpleUtilityCollection = true,
-                Template = 
-                    $"""
-                     aspect-ratio: var({item.Key});
-                     """,
-            };
-
-            if (appRunner.Library.SimpleClasses.TryAdd(key, value))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
-            else
-                appRunner.Library.SimpleClasses[key] = value;
-        }
-    }
+    {}
 }

@@ -647,11 +647,6 @@
         --perspective-midrange: 50rem;
         --perspective-distant: 75rem;
 
-        --aspect-screen: 4 / 3;
-        --aspect-square: 1 / 1;
-        --aspect-video: 16 / 9;
-        --aspect-auto: auto;
-
         /* Defaults */
         
         --default-transition-duration: 150ms;
