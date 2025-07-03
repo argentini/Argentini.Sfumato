@@ -614,110 +614,277 @@ public static class AppRunnerExtensions
 	/// <param name="sourceCss"></param>
 	/// <param name="appRunner"></param>
 	/// <returns></returns>
-	public static StringBuilder ProcessDarkThemeClasses(this StringBuilder sourceCss, AppRunner appRunner)
-	{
-		var workingSb = appRunner.AppState.StringBuilderPool.Get();
-		var darkSb = appRunner.AppState.StringBuilderPool.Get();
+    public static StringBuilder ProcessDarkThemeClasses(this StringBuilder sourceCss, AppRunner appRunner)
+    {
+        const string MEDIA_PREFIX = "@media (prefers-color-scheme: dark) {";
 
-		const string blockPrefix = "@media (prefers-color-scheme: dark) {";
+        var outCss = new StringBuilder(sourceCss.Length * 2);
+        var css = sourceCss.ToString();
+        var pos = 0;
 
-		char[] selectorPrefixes = ['.', '#', '[', ':', '*', '>', '+', '~'];
-		string[] prefixes = [" ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "}", "{"];
-		string[] suffixes = [" ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "{"];
+        while (true)
+        {
+            int mediaIdx = css.IndexOf(MEDIA_PREFIX, pos, StringComparison.Ordinal);
 
-		try
-		{
-			foreach (var block in sourceCss.ToString().FindMediaBlocks(blockPrefix))
+            if (mediaIdx < 0)
 			{
-				workingSb.Clear();
-				workingSb.Append(block.Trim());
+				// no more blocks – copy the tail and finish
+				outCss.Append(css, pos, css.Length - pos);
+				break;
+			}
 
+            // 1) copy everything before this @media as-is
+            outCss.Append(css, pos, mediaIdx - pos);
+
+            // 2) locate the matching '}' that closes the @media
+            var bodyStart = mediaIdx + MEDIA_PREFIX.Length;
+            var p = bodyStart;
+            var depth = 1; // we are just after the '{'
+
+            while (p < css.Length && depth > 0)
+            {
+                char c = css[p++];
+
+				if (c == '{')
+					depth++;
+				else if (c == '}')
+					depth--;
+            }
+
+            var bodyEnd = p - 1; // index of the '}' that closes the @media
+            var inner = css.AsSpan(bodyStart, bodyEnd - bodyStart);
+
+            // 3) rewrite the whole inner block in ONE pass
+            var autoSb = appRunner.AppState.StringBuilderPool.Get();
+            var darkSb = appRunner.AppState.StringBuilderPool.Get();
+
+            try
+			{
+				autoSb.Clear();
 				darkSb.Clear();
-				darkSb.Append(block.Trim());
-				darkSb.TrimStart(blockPrefix);
-				darkSb.Trim();
 
-				if (darkSb.Length > 0 && darkSb[^1] == '}')
-					darkSb.Remove(darkSb.Length - 1, 1);
+				RewriteContent(inner, autoSb, darkSb);
 
-				var distinctSelectors = block.GetCssSelectors().Distinct().ToList();
+				// @media with ".theme-auto…" selectors
+				outCss.Append(MEDIA_PREFIX).Append(autoSb).Append('}');
 
-				foreach (var selector in distinctSelectors)
+				// blank line between the two copies (match original behaviour)
+				outCss.Append(appRunner.AppRunnerSettings.LineBreak)
+					  .Append(appRunner.AppRunnerSettings.LineBreak);
+
+				// ".theme-dark…" selectors outside any media query
+				outCss.Append(darkSb);
+			}
+			finally
+			{
+				appRunner.AppState.StringBuilderPool.Return(autoSb);
+				appRunner.AppState.StringBuilderPool.Return(darkSb);
+			}
+
+            pos = bodyEnd + 1; // skip the original @media block
+        }
+
+        sourceCss.Clear().Append(outCss);
+
+        return sourceCss;
+
+		// recursively rewrites one block body
+		static void RewriteContent(ReadOnlySpan<char> src, StringBuilder autoSb, StringBuilder darkSb)
+		{
+			var i = 0;
+
+			while (i < src.Length)
+			{
+				// copy leading whitespace verbatim
+				var headerStart = i;
+
+				while (headerStart < src.Length && char.IsWhiteSpace(src[headerStart]))
 				{
-					if (selector.StartsWithAny(selectorPrefixes))
-					{
-						foreach (var suffix in suffixes)
-						{
-							var sel = $"{selector}{suffix}";
-
-							if (workingSb.StartsWith(sel))
-								workingSb.Remove(0, sel.Length).Insert(0, $".theme-auto ---{selector}---, .theme-auto---{selector}---{suffix}");
-
-							if (darkSb.StartsWith(sel))
-								darkSb.Remove(0, sel.Length).Insert(0, $".theme-dark ---{selector}---, .theme-dark---{selector}---{suffix}");
-						}
-
-						foreach (var prefix in prefixes)
-						{
-							foreach (var suffix in suffixes)
-							{
-								workingSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-auto ---{selector}---, .theme-auto---{selector}---{suffix}");
-								darkSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-dark ---{selector}---, .theme-dark---{selector}---{suffix}");
-							}
-						}
-					}
-					else
-					{
-						foreach (var suffix in suffixes)
-						{
-							var sel = $"{selector}{suffix}";
-
-							if (workingSb.StartsWith(sel))
-								workingSb.Remove(0, sel.Length).Insert(0, $".theme-auto ---{selector}---{suffix}");
-
-							if (darkSb.StartsWith(sel))
-								darkSb.Remove(0, sel.Length).Insert(0, $".theme-dark ---{selector}---{suffix}");
-						}
-
-						foreach (var prefix in prefixes)
-						{
-							foreach (var suffix in suffixes)
-							{
-								workingSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-auto ---{selector}---{suffix}");
-								darkSb.Replace($"{prefix}{selector}{suffix}", $"{prefix}.theme-dark ---{selector}---{suffix}");
-							}
-						}
-					}
+					autoSb.Append(src[headerStart]);
+					darkSb.Append(src[headerStart]);
+					headerStart++;
 				}
 
-				foreach (var selector in distinctSelectors)
+				if (headerStart >= src.Length)
+					return;
+
+				i = headerStart;
+
+				// find the next '{' that starts the rule
+				var braceRel = src[i..].IndexOf('{');
+
+				if (braceRel < 0) // malformed CSS – bail out
 				{
-					workingSb.Replace($"---{selector}---", selector);
-					darkSb.Replace($"---{selector}---", selector);
+					autoSb.Append(src[i..]);
+					darkSb.Append(src[i..]);
+
+					return;
 				}
 
-				workingSb
-					.Append(appRunner.AppRunnerSettings.LineBreak)
-					.Append(appRunner.AppRunnerSettings.LineBreak)
-					.Append(darkSb);
+				var bracePos = i + braceRel;
+				var headerSpan = src.Slice(i, braceRel);
 
-				sourceCss.Replace(block, workingSb.ToString());
+				// find the matching '}' for this rule
+				var contentStart = bracePos + 1;
+				var depth = 1;
+				var p = contentStart;
+
+				while (p < src.Length && depth > 0)
+				{
+					char c = src[p++];
+
+					if (c == '{')
+						depth++;
+					else if (c == '}')
+						depth--;
+				}
+
+				var contentEnd = p - 1; // position of '}'
+				var ruleContent = src[contentStart..contentEnd];
+				var isAtRule = headerSpan.TrimStart().Length > 0 && headerSpan.TrimStart()[0] == '@';
+
+				if (isAtRule)
+				{
+					// copy @-rules unchanged, but rewrite inside them
+					autoSb.Append(headerSpan).Append('{');
+					darkSb.Append(headerSpan).Append('{');
+
+					RewriteContent(ruleContent, autoSb, darkSb);
+
+					autoSb.Append('}');
+					darkSb.Append('}');
+				}
+				else
+				{
+					// selector list: add the two theme prefixes
+					var selectors = new List<string>();
+					AddSelectors(headerSpan, selectors);
+
+					var first = true;
+
+					foreach (var sel in selectors)
+					{
+						if (first == false)
+						{
+							autoSb.Append(", ");
+							darkSb.Append(", ");
+						}
+
+						first = false;
+
+						var needsTwo = NeedsDoubleForm(sel);
+
+						autoSb.Append(".theme-auto ").Append(sel);
+
+						if (needsTwo)
+							autoSb.Append(", .theme-auto").Append(sel);
+
+						darkSb.Append(".theme-dark ").Append(sel);
+
+						if (needsTwo)
+							darkSb.Append(", .theme-dark").Append(sel);
+					}
+
+					autoSb.Append(" {");
+					darkSb.Append(" {");
+
+					// copy rule body verbatim
+					autoSb.Append(ruleContent);
+					darkSb.Append(ruleContent);
+
+					autoSb.Append('}');
+					darkSb.Append('}');
+				}
+
+				i = contentEnd + 1; // continue after this rule
 			}
 		}
-		catch (Exception e)
-		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessDarkThemeClasses() - {e.Message}");
-			Environment.Exit(1);
-		}
-		finally
-		{
-			appRunner.AppState.StringBuilderPool.Return(workingSb);
-			appRunner.AppState.StringBuilderPool.Return(darkSb);
-		}
 
-		return sourceCss;
-	}
-	
+        // does the selector need the “no space” twin?
+        static bool NeedsDoubleForm(string sel)
+        {
+            if (string.IsNullOrEmpty(sel))
+				return false;
+
+            return sel[0] switch
+            {
+                '.' or '#' or '[' or ':' or '*' or '>' or '+' or '~' => true,
+                _ => false,
+            };
+        }
+
+        // split a selector list on top-level (unescaped) commas
+        static void AddSelectors(ReadOnlySpan<char> header, List<string> output)
+        {
+			var paren = 0;
+			var square = 0;
+            var start = 0;
+
+            var quoteChar = '\0';
+
+			var inQuote = false;
+			var escaped = false;
+
+			for (var i = 0; i < header.Length; i++)
+			{
+				char c = header[i];
+
+				if (escaped)
+				{
+					escaped = false;
+					continue;
+				}
+
+				if (c == '\\')
+				{
+					escaped = true;
+					continue;
+				}
+
+				if (inQuote)
+				{
+					if (c == quoteChar)
+						inQuote = false;
+
+					continue;
+				}
+
+				if (c == '"' || c == '\'')
+				{
+					inQuote = true;
+					quoteChar = c;
+
+					continue;
+				}
+
+				switch (c)
+				{
+					case '(': paren++; break;
+					case ')': if (paren > 0) paren--; break;
+					case '[': square++; break;
+					case ']': if (square > 0) square--; break;
+					case ',':
+						if (paren == 0 && square == 0)
+						{
+							var sel = header[start..i].Trim();
+
+							if (sel.IsEmpty == false)
+								output.Add(sel.ToString());
+
+							start = i + 1;
+						}
+
+						break;
+				}
+			}
+
+            var tail = header[start..].Trim();
+
+			if (tail.IsEmpty == false)
+				output.Add(tail.ToString());
+        }
+    }
+
 	/// <summary>
 	/// Recursive method for traversing the variant tree and generating utility class CSS.
 	/// </summary>
@@ -728,10 +895,10 @@ public static class AppRunnerExtensions
 		try
 		{
 			var isWrapped = string.IsNullOrEmpty(branch.WrapperCss) == false;
-			
+
 			if (isWrapped)
 				workingSb.Append(branch.WrapperCss);
-			
+
 			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.SelectorSort))
 				workingSb
 					.Append(cssClass.EscapedSelector)
@@ -747,7 +914,7 @@ public static class AppRunnerExtensions
 
 			if (string.IsNullOrEmpty(branch.WrapperCss))
 				return;
-			
+
 			workingSb
 				.Append('}');
 		}
