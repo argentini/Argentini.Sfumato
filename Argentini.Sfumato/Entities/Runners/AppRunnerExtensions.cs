@@ -10,32 +10,24 @@ public static class AppRunnerExtensions
 	/// <returns></returns>
 	public static StringBuilder AppendResetCss(this StringBuilder sourceCss, AppRunner appRunner)
 	{
-		try
+		if (appRunner.AppRunnerSettings.UseReset)
 		{
-			if (appRunner.AppRunnerSettings.UseReset)
-			{
-				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
-					sourceCss
-						.Append("@layer base {")
-						.Append(appRunner.AppRunnerSettings.LineBreak)
-						.Append(appRunner.AppRunnerSettings.LineBreak);	
-				
+			if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
 				sourceCss
-					.Append(File.ReadAllText(Path.Combine(appRunner.AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(appRunner.AppRunnerSettings.LineBreak).Trim())
+					.Append("@layer base {")
+					.Append(appRunner.AppRunnerSettings.LineBreak)
+					.Append(appRunner.AppRunnerSettings.LineBreak);	
+			
+			sourceCss
+				.Append(appRunner.BrowserResetCss)
+				.Append(appRunner.AppRunnerSettings.LineBreak)
+				.Append(appRunner.AppRunnerSettings.LineBreak);
+			
+			if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
+				sourceCss
+					.Append('}')
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(appRunner.AppRunnerSettings.LineBreak);
-				
-				if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
-					sourceCss
-						.Append('}')
-						.Append(appRunner.AppRunnerSettings.LineBreak)
-						.Append(appRunner.AppRunnerSettings.LineBreak);
-			}
-		}		
-		catch (Exception e)
-		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}AppendResetCss() - {e.Message}");
-			Environment.Exit(1);
 		}
 
 		return sourceCss;
@@ -60,7 +52,7 @@ public static class AppRunnerExtensions
 						.Append(appRunner.AppRunnerSettings.LineBreak);	
 
 				sourceCss
-					.Append(File.ReadAllText(Path.Combine(appRunner.AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(appRunner.AppRunnerSettings.LineBreak).Trim())
+					.Append(appRunner.FormsCss)
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(appRunner.AppRunnerSettings.LineBreak);
 				
@@ -538,47 +530,129 @@ public static class AppRunnerExtensions
 		return sourceCss;
 	}
 
-	public static StringBuilder MoveComponentsLayer(this StringBuilder sourceCss, AppRunner appRunner)
-	{
-		if (appRunner.AppRunnerSettings.UseCompatibilityMode)
-			return sourceCss;
+public static StringBuilder MoveComponentsLayer(this StringBuilder sourceCss, AppRunner appRunner)
+{
+    if (appRunner.AppRunnerSettings.UseCompatibilityMode)
+        return sourceCss;
 
-		var utilitiesBlockStart = sourceCss.IndexOf("@layer utilities");
+    // Pre-cache frequently accessed values
+    var lineBreak = appRunner.AppRunnerSettings.LineBreak;
+    var componentsLayerText = "@layer components";
+    var utilitiesLayerText = "@layer utilities";
+    
+    var sb = appRunner.AppState.StringBuilderPool.Get();
+    var blocksFound = false;
+    var searchIndex = 0;
 
-		if (utilitiesBlockStart < 0)
-			return sourceCss;
+    try
+    {
+        // Process all blocks in a single pass, collecting removal ranges
+        var removalRanges = new List<(int start, int length)>();
+        
+        while (true)
+        {
+            var (start, length) = sourceCss.ExtractCssBlock(componentsLayerText, searchIndex);
+            
+            if (start == -1 || length == 0)
+                break;
 
-		var componentsLayer = sourceCss.ExtractCssBlock("@layer components");
-		var sb = appRunner.AppState.StringBuilderPool.Get();
+            blocksFound = true;
+            
+            // Extract content between braces more efficiently
+            var openBraceIndex = start + componentsLayerText.Length;
+            
+            // Skip whitespace to find opening brace
+            while (openBraceIndex < start + length && char.IsWhiteSpace(sourceCss[openBraceIndex]))
+                openBraceIndex++;
+            
+            if (openBraceIndex < start + length && sourceCss[openBraceIndex] == '{')
+            {
+                var contentStart = openBraceIndex + 1;
+                var contentLength = length - (contentStart - start) - 1; // -1 for closing brace
+                
+                sb.Append(sourceCss, contentStart, contentLength);
+                sb.Append(lineBreak);
+            }
+            
+            // Store removal range for later (process in reverse order)
+            removalRanges.Add((start, length));
+            searchIndex = start + length;
+        }
 
-		try
-		{
-			while (string.IsNullOrEmpty(componentsLayer) == false)
-			{
-				sourceCss.Replace(componentsLayer, string.Empty);
+        if (!blocksFound)
+            return sourceCss;
 
-				sb.Append(componentsLayer.TrimStart("@layer components")?.Trim().TrimFirst('{').TrimLast('}').Trim());
-				sb.Append(appRunner.AppRunnerSettings.LineBreak);
-				sb.Append(appRunner.AppRunnerSettings.LineBreak);
+        // Remove blocks in reverse order to maintain indices
+        for (int i = removalRanges.Count - 1; i >= 0; i--)
+        {
+            var (start, length) = removalRanges[i];
+            sourceCss.Remove(start, length);
+        }
 
-				componentsLayer = sourceCss.ExtractCssBlock("@layer components");
-			}
+        // Build the consolidated block
+        sb.Insert(0, componentsLayerText + " {" + lineBreak);
+        sb.Append("}" + lineBreak);
 
-			if (sb.Length == 0)
-				return sourceCss;
+        // Find insertion point more efficiently
+        var insertionPoint = sourceCss.IndexOf(utilitiesLayerText, 0, StringComparison.Ordinal);
+        if (insertionPoint < 0)
+            insertionPoint = sourceCss.Length;
 
-			sb.Insert(0, "@layer components {" + appRunner.AppRunnerSettings.LineBreak);
-			sb.Append("}" + appRunner.AppRunnerSettings.LineBreak);
-			
-			sourceCss.Insert(utilitiesBlockStart, sb);
-		}
-		finally
-		{
-			appRunner.AppState.StringBuilderPool.Return(sb);
-		}
+        sourceCss.Insert(insertionPoint, sb);
+    }
+    finally
+    {
+        appRunner.AppState.StringBuilderPool.Return(sb);
+    }
 
-		return sourceCss;
-	}
+    return sourceCss;
+}
+
+
+	// public static StringBuilder MoveComponentsLayer(this StringBuilder sourceCss, AppRunner appRunner)
+	// {
+	// 	if (appRunner.AppRunnerSettings.UseCompatibilityMode)
+	// 		return sourceCss;
+
+	// 	var sb = appRunner.AppState.StringBuilderPool.Get();
+
+	// 	(var start, var length) = sourceCss.ExtractCssBlock("@layer components");
+
+	// 	try
+	// 	{
+	// 		while (start > -1 && length > 0)
+	// 		{
+	// 			var subStart = sourceCss.IndexOf('{', start) + 1;
+	// 			var subLength = length - (subStart - start) - 1;
+
+	// 			sb.Append(sourceCss, subStart, subLength);
+	// 			sb.Append(appRunner.AppRunnerSettings.LineBreak);
+
+	// 			sourceCss.Remove(start, length);
+
+	// 			(start, length) = sourceCss.ExtractCssBlock("@layer components");
+	// 		}
+
+	// 		if (sb.Length == 0)
+	// 			return sourceCss;
+
+	// 		sb.Insert(0, "@layer components {" + appRunner.AppRunnerSettings.LineBreak);
+	// 		sb.Append("}" + appRunner.AppRunnerSettings.LineBreak);
+
+	// 		var utilitiesBlockStart = sourceCss.IndexOf("@layer utilities");
+
+	// 		if (utilitiesBlockStart < 0)
+	// 			utilitiesBlockStart = sourceCss.Length - 1;
+
+	// 		sourceCss.Insert(utilitiesBlockStart, sb);
+	// 	}
+	// 	finally
+	// 	{
+	// 		appRunner.AppState.StringBuilderPool.Return(sb);
+	// 	}
+
+	// 	return sourceCss;
+	// }
 
 	/// <summary>
 	/// Find all dark theme media blocks and duplicate as wrapped classes theme-dark
@@ -590,12 +664,12 @@ public static class AppRunnerExtensions
 	{
 		var workingSb = appRunner.AppState.StringBuilderPool.Get();
 		var darkSb = appRunner.AppState.StringBuilderPool.Get();
-		
+
 		const string blockPrefix = "@media (prefers-color-scheme: dark) {";
 
-		char[] selectorPrefixes = [ '.', '#', '[', ':', '*', '>', '+', '~' ];
-		string[] prefixes = [ " ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "}", "{" ];
-		string[] suffixes = [ " ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "{" ];
+		char[] selectorPrefixes = ['.', '#', '[', ':', '*', '>', '+', '~'];
+		string[] prefixes = [" ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "}", "{"];
+		string[] suffixes = [" ", appRunner.AppRunnerSettings.LineBreak, "\t", ",", "{"];
 
 		try
 		{
@@ -608,12 +682,12 @@ public static class AppRunnerExtensions
 				darkSb.Append(block.Trim());
 				darkSb.TrimStart(blockPrefix);
 				darkSb.Trim();
-				
+
 				if (darkSb.Length > 0 && darkSb[^1] == '}')
 					darkSb.Remove(darkSb.Length - 1, 1);
 
 				var distinctSelectors = block.GetCssSelectors().Distinct().ToList();
-				
+
 				foreach (var selector in distinctSelectors)
 				{
 					if (selector.StartsWithAny(selectorPrefixes))
@@ -624,7 +698,7 @@ public static class AppRunnerExtensions
 
 							if (workingSb.StartsWith(sel))
 								workingSb.Remove(0, sel.Length).Insert(0, $".theme-auto ---{selector}---, .theme-auto---{selector}---{suffix}");
-	
+
 							if (darkSb.StartsWith(sel))
 								darkSb.Remove(0, sel.Length).Insert(0, $".theme-dark ---{selector}---, .theme-dark---{selector}---{suffix}");
 						}
@@ -646,7 +720,7 @@ public static class AppRunnerExtensions
 
 							if (workingSb.StartsWith(sel))
 								workingSb.Remove(0, sel.Length).Insert(0, $".theme-auto ---{selector}---{suffix}");
-	
+
 							if (darkSb.StartsWith(sel))
 								darkSb.Remove(0, sel.Length).Insert(0, $".theme-dark ---{selector}---{suffix}");
 						}
@@ -672,7 +746,7 @@ public static class AppRunnerExtensions
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(appRunner.AppRunnerSettings.LineBreak)
 					.Append(darkSb);
-				
+
 				sourceCss.Replace(block, workingSb.ToString());
 			}
 		}
@@ -686,7 +760,7 @@ public static class AppRunnerExtensions
 			appRunner.AppState.StringBuilderPool.Return(workingSb);
 			appRunner.AppState.StringBuilderPool.Return(darkSb);
 		}
-		
+
 		return sourceCss;
 	}
 	

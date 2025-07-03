@@ -85,45 +85,47 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
     public void LoadCssAndExtractSfumatoBlock()
     {
 	    var sb = AppRunner?.AppState.StringBuilderPool.Get();
+	    var workingSb = AppRunner?.AppState.StringBuilderPool.Get();
 
-	    if (sb is null)
-		    return;
-	    
-	    try
-	    {
-		    if (string.IsNullOrEmpty(CssFilePath) == false)
-			    CssContent = File.ReadAllText(Path.GetFullPath(CssFilePath.SetNativePathSeparators()));
+		if (sb is null || workingSb is null)
+			return;
 
-	        CssContent = CssContent.TrimWhitespaceBeforeLineBreaks(sb);
-	        CssContent = CssContent.RemoveBlockComments(sb);
+		try
+		{
+			if (string.IsNullOrEmpty(CssFilePath) == false)
+				sb.Append(File.ReadAllText(Path.GetFullPath(CssFilePath.SetNativePathSeparators())).TrimWhitespaceBeforeLineBreaks(workingSb).RemoveBlockComments(workingSb));
 
-	        #region Extract Sfumato settings block
+			#region Extract Sfumato settings block
 
-	        SfumatoCssBlock = CssContent.ExtractCssBlock("@layer sfumato");
+			(var start, var length) = sb.ExtractCssBlock("@layer sfumato");
 
-		    if (string.IsNullOrEmpty(SfumatoCssBlock))
-		    {
-			    SfumatoCssBlock = CssContent.ExtractCssBlock("@theme sfumato");
+			if (start == -1)
+			{
+				(start, length) = sb.ExtractCssBlock("@theme sfumato");
 
-			    if (string.IsNullOrEmpty(SfumatoCssBlock))
-			    {
-				    Console.WriteLine($"{AppState.CliErrorPrefix}No @layer sfumato {{ :root {{ }} }} block in file: {CssFilePath}");
-				    Environment.Exit(1);
-			    }
-		    }
+				if (start == -1)
+				{
+					Console.WriteLine($"{AppState.CliErrorPrefix}No @layer sfumato {{ :root {{ }} }} block in file: {CssFilePath}");
+					Environment.Exit(1);
+				}
+			}
 
-		    ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);
+			CssContent = sb.ToString();
+			SfumatoCssBlock = sb.Substring(start, length);
 
-	        #endregion
-	    }
-	    catch (Exception e)
-	    {
-		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
-		    Environment.Exit(1);
-	    }
-	    finally
-	    {
-		    AppRunner?.AppState.StringBuilderPool.Return(sb);
+			ProcessedCssContent = CssContent.Replace(SfumatoCssBlock, string.Empty);
+
+			#endregion
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
+			Environment.Exit(1);
+		}
+		finally
+		{
+			AppRunner?.AppState.StringBuilderPool.Return(sb);
+			AppRunner?.AppState.StringBuilderPool.Return(workingSb);
 		}
     }
     
@@ -296,21 +298,23 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 			    var importPath = string.Empty;
 			    var layerName = string.Empty;
 
-			    if (parsePath.EndsWith('\'') == false && parsePath.EndsWith('\"') == false)
-			    {
-				    var segments = parsePath.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				workingSb.Clear();
 
-				    if (segments.Length > 1)
-				    {
-					    layerName = segments.Last();
-					    importPath = parsePath.Replace(layerName, string.Empty).Trim().Trim('\'').Trim('\"')
-						    .SetNativePathSeparators();
-				    }
-			    }
-			    else
-			    {
-				    importPath = parsePath.Trim('\'').Trim('\"').SetNativePathSeparators();
-			    }			    
+			    if (parsePath.EndsWith('\'') == false && parsePath.EndsWith('\"') == false)
+				{
+					var segments = parsePath.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+					if (segments.Length > 1)
+					{
+						layerName = segments.Last();
+						importPath = parsePath.Replace(layerName, string.Empty).Trim().Trim('\'').Trim('\"')
+							.SetNativePathSeparators();
+					}
+				}
+				else
+				{
+					importPath = parsePath.Trim('\'').Trim('\"').SetNativePathSeparators();
+				}			    
 			    
 			    filePath = Path.GetFullPath(Path.Combine(parentPath, importPath));
 
@@ -325,7 +329,8 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 				    Imports.Add(new FileInfo(filePath));
 
 				    var childCss = File.ReadAllText(filePath);
-				    workingSb.Append(ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty));
+
+					workingSb.Append(ImportPartials(childCss, Path.GetDirectoryName(filePath) ?? string.Empty));
 
 				    if (string.IsNullOrEmpty(layerName) == false)
 				    {

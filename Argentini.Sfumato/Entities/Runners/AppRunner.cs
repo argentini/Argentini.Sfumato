@@ -28,20 +28,32 @@ public sealed class AppRunner
 	private List<FileSystemWatcher> FileWatchers { get; } = [];
 	private ConcurrentDictionary<long, FileSystemEventArgs> RestartAppQueue { get; } = [];
 	private ConcurrentDictionary<long, FileSystemEventArgs> RebuildProjectQueue { get; } = [];
-	
-    #endregion
 
-    #region Construction
-    
-    public AppRunner(AppState appState, string cssFilePath = "", bool useMinify = false)
-    {
-	    AppState = appState;
+	#endregion
 
-	    _cssFilePath = cssFilePath;
-	    _useMinify = useMinify;
+	#region Cached data
 
-	    Initialize();
-    }
+	public string BrowserResetCss { get; set; } = string.Empty;
+	public string FormsCss { get; set; } = string.Empty;
+	public string DefaultsCss { get; set; } = string.Empty;
+
+	#endregion
+
+	#region Construction
+
+	public AppRunner(AppState appState, string cssFilePath = "", bool useMinify = false)
+	{
+		AppState = appState;
+
+		_cssFilePath = cssFilePath;
+		_useMinify = useMinify;
+
+		BrowserResetCss = File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim();
+		FormsCss = File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim();
+		DefaultsCss = File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim();
+
+		Initialize();
+	}
 
     #endregion
     
@@ -62,7 +74,7 @@ public sealed class AppRunner
 			    UseMinify = _useMinify
 		    };
 
-		    AppRunnerSettings.ExtractSfumatoItems(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")));
+		    AppRunnerSettings.ExtractSfumatoItems(DefaultsCss);
 
 		    ProcessCssSettings();
 	    }

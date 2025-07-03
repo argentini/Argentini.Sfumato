@@ -12,38 +12,56 @@ public static class StringBuilders
 	/// </summary>
 	/// <param name="sourceCss"></param>
 	/// <param name="cssBlockStart"></param>
+	/// <param name="startIndex"></param>
 	/// <returns></returns>
-	public static string ExtractCssBlock(this StringBuilder sourceCss, string cssBlockStart)
+	public static (int Start, int Length) ExtractCssBlock(this StringBuilder sourceCss, string cssBlockStart, int startIndex = 0)
 	{
-		var blockStart = sourceCss.IndexOf(cssBlockStart);
+		if (sourceCss is null || sourceCss.Length == 0 || string.IsNullOrEmpty(cssBlockStart))
+			return (-1, 0);
+
+        var blockStart = sourceCss.IndexOf(cssBlockStart, startIndex, StringComparison.Ordinal);
 
 		if (blockStart < 0)
-			return string.Empty;
+			return (-1, 0);
 
-		var openBraceIndex = sourceCss.IndexOf('{', blockStart);
-        
-		if (openBraceIndex <= blockStart)
-			return string.Empty;
+		// Cache frequently-used values once to reduce property calls.
+		var length      = sourceCss.Length;
+		var selectorEnd = blockStart + cssBlockStart.Length;
 
-		var braceCount = 0;
-		var closingBraceIndex = -1;
+		var depth = 0;
+		var i     = selectorEnd;
 
-		for (var i = openBraceIndex; i < sourceCss.Length; i++)
+		// Skip whitespace between the selector and its first “{”.
+		for (; i < length; i++)
 		{
-			if (closingBraceIndex > -1)
-				break;
-			
-			// ReSharper disable once ConvertIfStatementToSwitchStatement
-			if (sourceCss[i] == '{')
-				braceCount++;
-			else if (sourceCss[i] == '}')
-				braceCount--;
+			var ch = sourceCss[i];
 
-			if (braceCount == 0)
-				closingBraceIndex = i;
+			if (ch == '{')
+			{
+				depth = 1;             // we just entered the block
+				i++;                   // start scanning inside it
+				break;
+			}
+
+			if (char.IsWhiteSpace(ch) == false)
+				return (-1, 0);   // malformed selector (no opening brace)
 		}
 
-		return closingBraceIndex < 0 ? string.Empty : sourceCss.Substring(blockStart, closingBraceIndex - blockStart + 1);
+		if (depth == 0)
+			return (-1, 0);   // never saw a “{”
+
+		for (; i < length; i++)
+		{
+			var ch = sourceCss[i];
+
+			if (ch == '{')
+				depth++;
+			else if (ch == '}' && --depth == 0)
+				return (blockStart, i - blockStart + 1);
+		}
+
+		// Unterminated block ⇒ give up.
+		return (-1, 0);
 	}
 
 	/// <summary>
@@ -72,14 +90,15 @@ public static class StringBuilders
 	/// </summary>
 	/// <param name="sb"></param>
 	/// <param name="value"></param>
+	/// <param name="startIndex"></param>
 	/// <param name="comparisonType"></param>
 	/// <returns></returns>
-	public static int IndexOf(this StringBuilder? sb, string? value, StringComparison comparisonType = StringComparison.Ordinal)
+	public static int IndexOf(this StringBuilder? sb, string? value, int startIndex = 0, StringComparison comparisonType = StringComparison.Ordinal)
 	{
-		if (sb == null || string.IsNullOrEmpty(value) || sb.Length < value.Length)
+		if (sb == null || string.IsNullOrEmpty(value) || (sb.Length - startIndex) < value.Length)
 			return -1;
 
-		for (var i = 0; i <= sb.Length - value.Length; i++)
+		for (var i = startIndex; i <= sb.Length - value.Length; i++)
 		{
 			var found = value.Where((t, j) => sb[i + j].ToString().Equals(t.ToString(), comparisonType) == false).Any() == false;
 
