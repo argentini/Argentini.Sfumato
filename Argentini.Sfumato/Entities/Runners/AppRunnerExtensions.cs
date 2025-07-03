@@ -530,129 +530,83 @@ public static class AppRunnerExtensions
 		return sourceCss;
 	}
 
-public static StringBuilder MoveComponentsLayer(this StringBuilder sourceCss, AppRunner appRunner)
-{
-    if (appRunner.AppRunnerSettings.UseCompatibilityMode)
-        return sourceCss;
+	public static StringBuilder MoveComponentsLayer(this StringBuilder sourceCss, AppRunner appRunner)
+	{
+		if (appRunner.AppRunnerSettings.UseCompatibilityMode)
+			return sourceCss;
 
-    // Pre-cache frequently accessed values
-    var lineBreak = appRunner.AppRunnerSettings.LineBreak;
-    var componentsLayerText = "@layer components";
-    var utilitiesLayerText = "@layer utilities";
-    
-    var sb = appRunner.AppState.StringBuilderPool.Get();
-    var blocksFound = false;
-    var searchIndex = 0;
+		// Pre-cache frequently accessed values
+		var lineBreak = appRunner.AppRunnerSettings.LineBreak;
+		var componentsLayerText = "@layer components";
+		var utilitiesLayerText = "@layer utilities";
+		
+		var sb = appRunner.AppState.StringBuilderPool.Get();
+		var blocksFound = false;
+		var searchIndex = 0;
 
-    try
-    {
-        // Process all blocks in a single pass, collecting removal ranges
-        var removalRanges = new List<(int start, int length)>();
-        
-        while (true)
-        {
-            var (start, length) = sourceCss.ExtractCssBlock(componentsLayerText, searchIndex);
-            
-            if (start == -1 || length == 0)
-                break;
+		try
+		{
+			// Process all blocks in a single pass, collecting removal ranges
+			var removalRanges = new List<(int start, int length)>();
+			
+			while (true)
+			{
+				var (start, length) = sourceCss.ExtractCssBlock(componentsLayerText, searchIndex);
+				
+				if (start == -1 || length == 0)
+					break;
 
-            blocksFound = true;
-            
-            // Extract content between braces more efficiently
-            var openBraceIndex = start + componentsLayerText.Length;
-            
-            // Skip whitespace to find opening brace
-            while (openBraceIndex < start + length && char.IsWhiteSpace(sourceCss[openBraceIndex]))
-                openBraceIndex++;
-            
-            if (openBraceIndex < start + length && sourceCss[openBraceIndex] == '{')
-            {
-                var contentStart = openBraceIndex + 1;
-                var contentLength = length - (contentStart - start) - 1; // -1 for closing brace
-                
-                sb.Append(sourceCss, contentStart, contentLength);
-                sb.Append(lineBreak);
-            }
-            
-            // Store removal range for later (process in reverse order)
-            removalRanges.Add((start, length));
-            searchIndex = start + length;
-        }
+				blocksFound = true;
+				
+				// Extract content between braces more efficiently
+				var openBraceIndex = start + componentsLayerText.Length;
+				
+				// Skip whitespace to find opening brace
+				while (openBraceIndex < start + length && char.IsWhiteSpace(sourceCss[openBraceIndex]))
+					openBraceIndex++;
+				
+				if (openBraceIndex < start + length && sourceCss[openBraceIndex] == '{')
+				{
+					var contentStart = openBraceIndex + 1;
+					var contentLength = length - (contentStart - start) - 1; // -1 for closing brace
+					
+					sb.Append(sourceCss, contentStart, contentLength);
+					sb.Append(lineBreak);
+				}
+				
+				// Store removal range for later (process in reverse order)
+				removalRanges.Add((start, length));
+				searchIndex = start + length;
+			}
 
-        if (!blocksFound)
-            return sourceCss;
+			if (!blocksFound)
+				return sourceCss;
 
-        // Remove blocks in reverse order to maintain indices
-        for (int i = removalRanges.Count - 1; i >= 0; i--)
-        {
-            var (start, length) = removalRanges[i];
-            sourceCss.Remove(start, length);
-        }
+			// Remove blocks in reverse order to maintain indices
+			for (int i = removalRanges.Count - 1; i >= 0; i--)
+			{
+				var (start, length) = removalRanges[i];
+				sourceCss.Remove(start, length);
+			}
 
-        // Build the consolidated block
-        sb.Insert(0, componentsLayerText + " {" + lineBreak);
-        sb.Append("}" + lineBreak);
+			// Build the consolidated block
+			sb.Insert(0, componentsLayerText + " {" + lineBreak);
+			sb.Append("}" + lineBreak);
 
-        // Find insertion point more efficiently
-        var insertionPoint = sourceCss.IndexOf(utilitiesLayerText, 0, StringComparison.Ordinal);
-        if (insertionPoint < 0)
-            insertionPoint = sourceCss.Length;
+			// Find insertion point
+			var insertionPoint = sourceCss.IndexOf(utilitiesLayerText, 0, StringComparison.Ordinal);
+			if (insertionPoint < 0)
+				insertionPoint = sourceCss.Length;
 
-        sourceCss.Insert(insertionPoint, sb);
-    }
-    finally
-    {
-        appRunner.AppState.StringBuilderPool.Return(sb);
-    }
+			sourceCss.Insert(insertionPoint, sb);
+		}
+		finally
+		{
+			appRunner.AppState.StringBuilderPool.Return(sb);
+		}
 
-    return sourceCss;
-}
-
-
-	// public static StringBuilder MoveComponentsLayer(this StringBuilder sourceCss, AppRunner appRunner)
-	// {
-	// 	if (appRunner.AppRunnerSettings.UseCompatibilityMode)
-	// 		return sourceCss;
-
-	// 	var sb = appRunner.AppState.StringBuilderPool.Get();
-
-	// 	(var start, var length) = sourceCss.ExtractCssBlock("@layer components");
-
-	// 	try
-	// 	{
-	// 		while (start > -1 && length > 0)
-	// 		{
-	// 			var subStart = sourceCss.IndexOf('{', start) + 1;
-	// 			var subLength = length - (subStart - start) - 1;
-
-	// 			sb.Append(sourceCss, subStart, subLength);
-	// 			sb.Append(appRunner.AppRunnerSettings.LineBreak);
-
-	// 			sourceCss.Remove(start, length);
-
-	// 			(start, length) = sourceCss.ExtractCssBlock("@layer components");
-	// 		}
-
-	// 		if (sb.Length == 0)
-	// 			return sourceCss;
-
-	// 		sb.Insert(0, "@layer components {" + appRunner.AppRunnerSettings.LineBreak);
-	// 		sb.Append("}" + appRunner.AppRunnerSettings.LineBreak);
-
-	// 		var utilitiesBlockStart = sourceCss.IndexOf("@layer utilities");
-
-	// 		if (utilitiesBlockStart < 0)
-	// 			utilitiesBlockStart = sourceCss.Length - 1;
-
-	// 		sourceCss.Insert(utilitiesBlockStart, sb);
-	// 	}
-	// 	finally
-	// 	{
-	// 		appRunner.AppState.StringBuilderPool.Return(sb);
-	// 	}
-
-	// 	return sourceCss;
-	// }
+		return sourceCss;
+	}
 
 	/// <summary>
 	/// Find all dark theme media blocks and duplicate as wrapped classes theme-dark
