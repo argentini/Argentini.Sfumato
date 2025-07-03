@@ -100,8 +100,8 @@ public sealed class CssClass : IDisposable
                 {
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
-                    EscapedSelector = $".{Selector}";
 
+                    GenerateSelector();
                     GenerateStyles();
 
                     return;
