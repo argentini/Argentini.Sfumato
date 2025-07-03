@@ -11,8 +11,8 @@ public static class CustomVariantScanner
 
     public readonly ref struct CustomVariantMatch
     {
-        public readonly ReadOnlySpan<char> Name;     // "tab-4"
-        public readonly ReadOnlySpan<char> Content;  // inside ( … )
+        public readonly ReadOnlySpan<char> Name; // "tab-4"
+        public readonly ReadOnlySpan<char> Content; // inside ( … )
 
         internal CustomVariantMatch(ReadOnlySpan<char> name, ReadOnlySpan<char> content)
         {
@@ -21,13 +21,10 @@ public static class CustomVariantScanner
         }
     }
 
-    /* ───── enumerable / enumerator ───── */
-
     public readonly ref struct CustomVariantEnumerable
     {
         private readonly ReadOnlySpan<char> _src;
-        internal CustomVariantEnumerable(string? css) =>
-            _src = css is null ? ReadOnlySpan<char>.Empty : css.AsSpan();
+        internal CustomVariantEnumerable(string? css) => _src = css is null ? [] : css.AsSpan();
 
         public Enumerator GetEnumerator() => new(_src);
 
@@ -41,86 +38,107 @@ public static class CustomVariantScanner
 
             public Enumerator(ReadOnlySpan<char> src)
             {
-                _s       = src;
-                _i       = 0;
+                _s = src;
+                _i = 0;
                 _current = default;
             }
 
-            public CustomVariantMatch Current => _current;
+            public readonly CustomVariantMatch Current => _current;
 
             public bool MoveNext()
             {
                 var s = _s;
-                int n = s.Length;
+                var n = s.Length;
 
                 while (_i < n)
                 {
-                    /* -------- find the next "@custom-variant" -------- */
-                    int hit = s.Slice(_i).IndexOf(Keyword, StringComparison.Ordinal);
-                    if (hit < 0) break;
+                    // find the next "@custom-variant"
+                    var hit = s[_i..].IndexOf(Keyword, StringComparison.Ordinal);
 
-                    int pos = _i + hit + Keyword.Length;
+                    if (hit < 0)
+                        break;
 
-                    /* -------- name -------- */
+                    var pos = _i + hit + Keyword.Length;
+
+                    // name
                     SkipWs(ref pos, s);
-                    int nameStart = pos;
-                    while (pos < n && IsIdentChar(s[pos])) pos++;
-                    if (pos == nameStart)          // no identifier: skip keyword
-                    { _i = _i + hit + 1; continue; }
 
-                    ReadOnlySpan<char> name = s.Slice(nameStart, pos - nameStart);
+                    var nameStart = pos;
 
-                    /* -------- opening '(' -------- */
+                    while (pos < n && IsIdentChar(s[pos]))
+                        pos++;
+
+                    if (pos == nameStart) // no identifier: skip keyword
+                    {
+                        _i = _i + hit + 1;
+                        continue;
+                    }
+
+                    ReadOnlySpan<char> name = s[nameStart..pos];
+
+                    // opening '('
                     SkipWs(ref pos, s);
+
                     if (pos >= n || s[pos] != '(')
-                    { _i = _i + hit + 1; continue; }
+                    {
+                        _i = _i + hit + 1;
+                        continue;
+                    }
 
-                    int openParPos = pos++;
-                    /* -------- content (nested parens allowed) -------- */
-                    int depth = 1;
-                    int contentStart = pos;
+                    var openParPos = pos++;
+
+                    // content (nested parens allowed)
+                    var depth = 1;
+                    var contentStart = pos;
+
                     while (pos < n && depth > 0)
                     {
-                        char c = s[pos++];
-                        if (c == '(') depth++;
-                        else if (c == ')') depth--;
+                        var c = s[pos++];
+
+                        if (c == '(')
+                            depth++;
+                        else if (c == ')')
+                            depth--;
                     }
+
                     if (depth != 0)
-                        return false;              // unbalanced – bail
+                        return false; // unbalanced – bail
 
-                    int closeParPos  = pos - 1;     // position of ')'
+                    var closeParPos = pos - 1; // position of ')'
 
-                    /* trim trailing whitespace inside (…) */
-                    int contentEnd = closeParPos;
-                    while (contentEnd > contentStart &&
-                           char.IsWhiteSpace(s[contentEnd - 1]))
+                    // trim trailing whitespace inside (…)
+                    var contentEnd = closeParPos;
+
+                    while (contentEnd > contentStart && char.IsWhiteSpace(s[contentEnd - 1]))
                         contentEnd--;
 
-                    ReadOnlySpan<char> content = s.Slice(contentStart,
-                                                          contentEnd - contentStart);
+                    var content = s.Slice(contentStart, contentEnd - contentStart);
 
-                    /* -------- expect ';' -------- */
+                    // expect ';'
                     SkipWs(ref pos, s);
-                    if (pos >= n || s[pos] != ';')
-                    { _i = _i + hit + 1; continue; }
 
-                    /* -------- produce match -------- */
+                    if (pos >= n || s[pos] != ';')
+                    {
+                        _i = _i + hit + 1;
+                        continue;
+                    }
+
+                    // produce match
                     _current = new CustomVariantMatch(name, content);
-                    _i = pos + 1;                  // continue after ';'
+                    _i = pos + 1; // continue after ';'
+
                     return true;
                 }
 
                 return false;
             }
 
-            /* ───── helpers ───── */
-
-            private static bool IsIdentChar(char c) =>
-                char.IsLetterOrDigit(c) || c is '_' or '-';
+            private static bool IsIdentChar(char c) => char.IsLetterOrDigit(c) || c is '_' or '-';
 
             private static void SkipWs(ref int i, ReadOnlySpan<char> s)
             {
-                while (i < s.Length && char.IsWhiteSpace(s[i])) i++;
+                while (i < s.Length && char.IsWhiteSpace(s[i]))
+                    i++;
             }
         }
     }

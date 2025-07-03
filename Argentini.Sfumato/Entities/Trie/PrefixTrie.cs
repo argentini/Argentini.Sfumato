@@ -74,7 +74,7 @@ public sealed class PrefixTrie
         if (node.IsWordEnd)
             output.Add(prefix);
 
-        foreach ((char ch, TrieNode child) in node.Children)
+        foreach ((var ch, TrieNode child) in node.Children)
             CollectWords(child, prefix + ch, output);
     }    
 }
