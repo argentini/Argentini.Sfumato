@@ -15,7 +15,7 @@ public class AspectRatioTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".aspect-square",
                 Styles =
                     """
-                    aspect-ratio: var(--aspect-square);
+                    aspect-ratio: 1 / 1;
                     """,
                 IsValid = true,
                 IsImportant = false,
