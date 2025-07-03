@@ -11,12 +11,25 @@ namespace Argentini.Sfumato.Tests.Benchmarks;
 public class BenchmarkTests(ITestOutputHelper testOutputHelper)
 {
     [Fact]
-    public void Benchmarks()
+    public void CssClassBenchmark()
     {
         testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
         testOutputHelper.WriteLine("");
 
-        var summary = BenchmarkRunner.Run<Benchmarks>();
+        var summary = BenchmarkRunner.Run<CssClassBenchmarks>();
+
+        Assert.NotNull(summary);
+        
+        testOutputHelper.WriteLine(GetBenchmarkSummaryText(summary));
+    }
+
+    [Fact]
+    public void CssGenerationBenchmark()
+    {
+        testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
+        testOutputHelper.WriteLine("");
+
+        var summary = BenchmarkRunner.Run<CssGenerationBenchmarks>();
 
         Assert.NotNull(summary);
         

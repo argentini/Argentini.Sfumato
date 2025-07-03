@@ -2,7 +2,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Argentini.Sfumato.Tests.Benchmarks;
 
-public class Benchmarks
+public class CssClassBenchmarks
 {
     private AppRunner AppRunner { get; } = new(new AppState());
     private CssClass? _cssClass;
