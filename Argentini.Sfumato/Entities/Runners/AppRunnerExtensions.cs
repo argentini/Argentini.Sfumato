@@ -535,77 +535,99 @@ public static class AppRunnerExtensions
 		if (appRunner.AppRunnerSettings.UseCompatibilityMode)
 			return sourceCss;
 
-		// Pre-cache frequently accessed values
-		var lineBreak = appRunner.AppRunnerSettings.LineBreak;
-		var componentsLayerText = "@layer components";
-		var utilitiesLayerText = "@layer utilities";
-		
-		var sb = appRunner.AppState.StringBuilderPool.Get();
-		var blocksFound = false;
-		var searchIndex = 0;
+		const string COMPONENTS = "@layer components";
+		const string UTILITIES = "@layer utilities";
+
+		var componentsSb = appRunner.AppState.StringBuilderPool.Get();
+		var rewrittenSb = new StringBuilder(sourceCss.Length);
 
 		try
 		{
-			// Process all blocks in a single pass, collecting removal ranges
-			var removalRanges = new List<(int start, int length)>();
-			
+			componentsSb.Clear();
+
+			var css = sourceCss.ToString();
+			var pos = 0;
+
+			// single pass over the original CSS
 			while (true)
 			{
-				var (start, length) = sourceCss.ExtractCssBlock(componentsLayerText, searchIndex);
-				
-				if (start == -1 || length == 0)
-					break;
+				var compIdx = css.IndexOf(COMPONENTS, pos, StringComparison.Ordinal);
 
-				blocksFound = true;
-				
-				// Extract content between braces more efficiently
-				var openBraceIndex = start + componentsLayerText.Length;
-				
-				// Skip whitespace to find opening brace
-				while (openBraceIndex < start + length && char.IsWhiteSpace(sourceCss[openBraceIndex]))
-					openBraceIndex++;
-				
-				if (openBraceIndex < start + length && sourceCss[openBraceIndex] == '{')
+				if (compIdx < 0)
 				{
-					var contentStart = openBraceIndex + 1;
-					var contentLength = length - (contentStart - start) - 1; // -1 for closing brace
-					
-					sb.Append(sourceCss, contentStart, contentLength);
-					sb.Append(lineBreak);
+					// copy the tail & finish
+					rewrittenSb.Append(css, pos, css.Length - pos);
+					break;
 				}
-				
-				// Store removal range for later (process in reverse order)
-				removalRanges.Add((start, length));
-				searchIndex = start + length;
+
+				// 1. copy everything *before* this @layer components verbatim
+				rewrittenSb.Append(css, pos, compIdx - pos);
+
+				// 2. parse the block to collect its body
+				var i = compIdx + COMPONENTS.Length;
+
+				// skip whitespace
+				while (i < css.Length && char.IsWhiteSpace(css[i]))
+					i++;
+
+				if (i >= css.Length || css[i] != '{')
+				{
+					// malformed – treat the keyword as plain text and continue
+					rewrittenSb.Append(COMPONENTS);
+					pos = i;
+
+					continue;
+				}
+
+				var contentStart = ++i; // skip '{'
+				var depth = 1;
+
+				while (i < css.Length && depth > 0)
+				{
+					var c = css[i++];
+
+					if (c == '{')
+						depth++;
+					else if (c == '}')
+						depth--;
+				}
+
+				var contentEnd = i - 1; // position of the matching '}'
+
+				if (contentEnd > contentStart)
+				{
+					componentsSb.Append(css, contentStart, contentEnd - contentStart);
+					componentsSb.Append(appRunner.AppRunnerSettings.LineBreak);
+				}
+
+				pos = contentEnd + 1; // continue after the block we removed
 			}
 
-			if (!blocksFound)
+			// no components blocks?  just return the source unchanged
+			if (componentsSb.Length == 0)
 				return sourceCss;
 
-			// Remove blocks in reverse order to maintain indices
-			for (int i = removalRanges.Count - 1; i >= 0; i--)
-			{
-				var (start, length) = removalRanges[i];
-				sourceCss.Remove(start, length);
-			}
+			// wrap the gathered body into a single @layer components { … }
+			componentsSb.Insert(0, COMPONENTS + " {" + appRunner.AppRunnerSettings.LineBreak);
+			componentsSb.Append('}').Append(appRunner.AppRunnerSettings.LineBreak);
 
-			// Build the consolidated block
-			sb.Insert(0, componentsLayerText + " {" + lineBreak);
-			sb.Append("}" + lineBreak);
+			// insert before the first @layer utilities, or at the end
+			var utilitiesPos = rewrittenSb.IndexOf(UTILITIES, 0, StringComparison.Ordinal);
 
-			// Find insertion point
-			var insertionPoint = sourceCss.IndexOf(utilitiesLayerText, 0, StringComparison.Ordinal);
-			if (insertionPoint < 0)
-				insertionPoint = sourceCss.Length;
+			if (utilitiesPos < 0)
+				rewrittenSb.Append(componentsSb);
+			else
+				rewrittenSb.Insert(utilitiesPos, componentsSb);
 
-			sourceCss.Insert(insertionPoint, sb);
+			// overwrite the incoming StringBuilder and hand it back
+			sourceCss.Clear().Append(rewrittenSb);
+
+			return sourceCss;
 		}
 		finally
 		{
-			appRunner.AppState.StringBuilderPool.Return(sb);
+			appRunner.AppState.StringBuilderPool.Return(componentsSb);
 		}
-
-		return sourceCss;
 	}
 
 	/// <summary>
@@ -614,51 +636,51 @@ public static class AppRunnerExtensions
 	/// <param name="sourceCss"></param>
 	/// <param name="appRunner"></param>
 	/// <returns></returns>
-    public static StringBuilder ProcessDarkThemeClasses(this StringBuilder sourceCss, AppRunner appRunner)
-    {
-        const string MEDIA_PREFIX = "@media (prefers-color-scheme: dark) {";
+	public static StringBuilder ProcessDarkThemeClasses(this StringBuilder sourceCss, AppRunner appRunner)
+	{
+		const string MEDIA_PREFIX = "@media (prefers-color-scheme: dark) {";
 
-        var outCss = new StringBuilder(sourceCss.Length * 2);
-        var css = sourceCss.ToString();
-        var pos = 0;
+		var outCss = new StringBuilder(sourceCss.Length * 2);
+		var css = sourceCss.ToString();
+		var pos = 0;
 
-        while (true)
-        {
-            int mediaIdx = css.IndexOf(MEDIA_PREFIX, pos, StringComparison.Ordinal);
+		while (true)
+		{
+			int mediaIdx = css.IndexOf(MEDIA_PREFIX, pos, StringComparison.Ordinal);
 
-            if (mediaIdx < 0)
+			if (mediaIdx < 0)
 			{
 				// no more blocks – copy the tail and finish
 				outCss.Append(css, pos, css.Length - pos);
 				break;
 			}
 
-            // 1) copy everything before this @media as-is
-            outCss.Append(css, pos, mediaIdx - pos);
+			// 1) copy everything before this @media as-is
+			outCss.Append(css, pos, mediaIdx - pos);
 
-            // 2) locate the matching '}' that closes the @media
-            var bodyStart = mediaIdx + MEDIA_PREFIX.Length;
-            var p = bodyStart;
-            var depth = 1; // we are just after the '{'
+			// 2) locate the matching '}' that closes the @media
+			var bodyStart = mediaIdx + MEDIA_PREFIX.Length;
+			var p = bodyStart;
+			var depth = 1; // we are just after the '{'
 
-            while (p < css.Length && depth > 0)
-            {
-                char c = css[p++];
+			while (p < css.Length && depth > 0)
+			{
+				var c = css[p++];
 
 				if (c == '{')
 					depth++;
 				else if (c == '}')
 					depth--;
-            }
+			}
 
-            var bodyEnd = p - 1; // index of the '}' that closes the @media
-            var inner = css.AsSpan(bodyStart, bodyEnd - bodyStart);
+			var bodyEnd = p - 1; // index of the '}' that closes the @media
+			var inner = css.AsSpan(bodyStart, bodyEnd - bodyStart);
 
-            // 3) rewrite the whole inner block in ONE pass
-            var autoSb = appRunner.AppState.StringBuilderPool.Get();
-            var darkSb = appRunner.AppState.StringBuilderPool.Get();
+			// 3) rewrite the whole inner block in ONE pass
+			var autoSb = appRunner.AppState.StringBuilderPool.Get();
+			var darkSb = appRunner.AppState.StringBuilderPool.Get();
 
-            try
+			try
 			{
 				autoSb.Clear();
 				darkSb.Clear();
@@ -681,12 +703,12 @@ public static class AppRunnerExtensions
 				appRunner.AppState.StringBuilderPool.Return(darkSb);
 			}
 
-            pos = bodyEnd + 1; // skip the original @media block
-        }
+			pos = bodyEnd + 1; // skip the original @media block
+		}
 
-        sourceCss.Clear().Append(outCss);
+		sourceCss.Clear().Append(outCss);
 
-        return sourceCss;
+		return sourceCss;
 
 		// recursively rewrites one block body
 		static void RewriteContent(ReadOnlySpan<char> src, StringBuilder autoSb, StringBuilder darkSb)
@@ -731,7 +753,7 @@ public static class AppRunnerExtensions
 
 				while (p < src.Length && depth > 0)
 				{
-					char c = src[p++];
+					var c = src[p++];
 
 					if (c == '{')
 						depth++;
@@ -800,34 +822,34 @@ public static class AppRunnerExtensions
 			}
 		}
 
-        // does the selector need the “no space” twin?
-        static bool NeedsDoubleForm(string sel)
-        {
-            if (string.IsNullOrEmpty(sel))
+		// does the selector need the “no space” twin?
+		static bool NeedsDoubleForm(string sel)
+		{
+			if (string.IsNullOrEmpty(sel))
 				return false;
 
-            return sel[0] switch
-            {
-                '.' or '#' or '[' or ':' or '*' or '>' or '+' or '~' => true,
-                _ => false,
-            };
-        }
+			return sel[0] switch
+			{
+				'.' or '#' or '[' or ':' or '*' or '>' or '+' or '~' => true,
+				_ => false,
+			};
+		}
 
-        // split a selector list on top-level (unescaped) commas
-        static void AddSelectors(ReadOnlySpan<char> header, List<string> output)
-        {
+		// split a selector list on top-level (unescaped) commas
+		static void AddSelectors(ReadOnlySpan<char> header, List<string> output)
+		{
 			var paren = 0;
 			var square = 0;
-            var start = 0;
+			var start = 0;
 
-            var quoteChar = '\0';
+			var quoteChar = '\0';
 
 			var inQuote = false;
 			var escaped = false;
 
 			for (var i = 0; i < header.Length; i++)
 			{
-				char c = header[i];
+				var c = header[i];
 
 				if (escaped)
 				{
@@ -878,12 +900,12 @@ public static class AppRunnerExtensions
 				}
 			}
 
-            var tail = header[start..].Trim();
+			var tail = header[start..].Trim();
 
 			if (tail.IsEmpty == false)
 				output.Add(tail.ToString());
-        }
-    }
+		}
+	}
 
 	/// <summary>
 	/// Recursive method for traversing the variant tree and generating utility class CSS.
