@@ -1,9 +1,11 @@
+using System.Runtime.CompilerServices;
+
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public static class DelimitedSplitExtensions
 {
     /// <summary>
-    /// Enumerates source as slices separated by delimiter
+    /// List the source as slices separated by delimiter
     /// when that delimiter is **not** inside square-brackets or parentheses.
     /// </summary>
     public static DelimitedSplitEnumerable SplitByTopLevel(this string? source, char delimiter) => new(source, delimiter);
@@ -19,7 +21,17 @@ public readonly ref struct DelimitedSplitEnumerable
 
     internal DelimitedSplitEnumerable(string? s, char delimiter)
     {
-        _buffer    = s is null ? ReadOnlySpan<char>.Empty : s.AsSpan();
+        if (s is null)
+        {
+            _buffer = ReadOnlySpan<char>.Empty;
+        }
+        else
+        {
+            var span = s.AsSpan();
+
+            _buffer = span.Length > 0 && span[^1] == '!' ? span[..^1] : span;
+        }
+        
         _delimiter = delimiter;
     }
 
@@ -49,6 +61,14 @@ public readonly ref struct DelimitedSplitEnumerable
             if (_rest.IsEmpty)
                 return false;
 
+            if (_rest.IndexOf(_delimiter) == -1)
+            {
+                _current = _rest;
+                _rest = ReadOnlySpan<char>.Empty;
+                
+                return true;
+            }
+            
             for (var i = 0; i < _rest.Length; i++)
             {
                 var ch = _rest[i];
