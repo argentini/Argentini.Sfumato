@@ -18,11 +18,13 @@ public sealed class LineHeight : ClassDictionaryBase
                     InFloatNumberCollection = true,
                     Template =
                         """
-                        line-height: calc(var(--spacing) * {0});
+                        --sf-leading: calc(var(--spacing) * {0});
+                        line-height: var(--sf-leading);
                         """,
                     ArbitraryCssValueTemplate =
                         """
-                        line-height: {0};
+                        --sf-leading: {0};
+                        line-height: var(--sf-leading);
                         """,
                 }
             },
@@ -34,11 +36,13 @@ public sealed class LineHeight : ClassDictionaryBase
                     InFloatNumberCollection = true,
                     Template =
                         """
-                        line-height: calc(var(--spacing) * {0} * -1);
+                        --sf-leading: calc(var(--spacing) * {0} * -1);
+                        line-height: var(--sf-leading);
                         """,
                     ArbitraryCssValueTemplate =
                         """
-                        line-height: -{0};
+                        --sf-leading: calc({0} * -1);
+                        line-height: var(--sf-leading);
                         """,
                 }
             },
@@ -47,9 +51,11 @@ public sealed class LineHeight : ClassDictionaryBase
                 {
                     SelectorSort = 1,
                     InSimpleUtilityCollection = true,
-                    Template = """
-                               line-height: 1;
-                               """
+                    Template =
+                        """
+                        --sf-leading: 1;
+                        line-height: var(--sf-leading);
+                        """
                 }
             },
         });
@@ -64,7 +70,10 @@ public sealed class LineHeight : ClassDictionaryBase
             {
                 InSimpleUtilityCollection = true,
                 Template = 
-                    $"line-height: var({font.Key});",
+                    $"""
+                    --sf-leading: var({font.Key});
+                    line-height: var(--sf-leading);
+                    """,
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))

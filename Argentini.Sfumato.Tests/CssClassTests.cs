@@ -173,35 +173,55 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 ClassName = "leading-none",
                 EscapedClassName = ".leading-none",
                 IsValid = true,
-                Styles = "line-height: 1;"
+                Styles =
+                    """
+                    --sf-leading: 1;
+                    line-height: var(--sf-leading);
+                    """
             },
             new ()
             {
                 ClassName = "leading-2",
                 EscapedClassName = ".leading-2",
                 IsValid = true,
-                Styles = "line-height: calc(var(--spacing) * 2);"
+                Styles =
+                    """
+                    --sf-leading: calc(var(--spacing) * 2);
+                    line-height: var(--sf-leading);
+                    """
             },
             new ()
             {
                 ClassName = "-leading-2",
                 EscapedClassName = ".-leading-2",
                 IsValid = true,
-                Styles = "line-height: calc(var(--spacing) * 2 * -1);"
+                Styles =
+                    """
+                    --sf-leading: calc(var(--spacing) * 2 * -1);
+                    line-height: var(--sf-leading);
+                    """
             },
             new ()
             {
                 ClassName = "leading-[1.35]",
                 EscapedClassName = @".leading-\[1\.35\]",
                 IsValid = true,
-                Styles = "line-height: 1.35;"
+                Styles =
+                    """
+                    --sf-leading: 1.35;
+                    line-height: var(--sf-leading);
+                    """
             },
             new ()
             {
                 ClassName = "leading-[1.5rem]",
                 EscapedClassName = @".leading-\[1\.5rem\]",
                 IsValid = true,
-                Styles = "line-height: 1.5rem;"
+                Styles =
+                    """
+                    --sf-leading: 1.5rem;
+                    line-height: var(--sf-leading);
+                    """
             },
             new ()
             {
@@ -401,7 +421,8 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".\@sm\:\@max-lg\:leading-none",
                 Styles =
                     """
-                    line-height: 1;
+                    --sf-leading: 1;
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 Wrappers =
@@ -415,7 +436,8 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".\@sm\/primary\:\@max-lg\/primary\:leading-none",
                 Styles =
                     """
-                    line-height: 1;
+                    --sf-leading: 1;
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 Wrappers =

@@ -15,7 +15,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".leading-tight",
                 Styles =
                     """
-                    line-height: var(--leading-tight);
+                    --sf-leading: var(--leading-tight);
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -26,7 +27,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".leading-none",
                 Styles =
                     """
-                    line-height: 1;
+                    --sf-leading: 1;
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -37,7 +39,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".leading-\[1\.35rem\]",
                 Styles =
                     """
-                    line-height: 1.35rem;
+                    --sf-leading: 1.35rem;
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -48,7 +51,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".-leading-\[1\.35rem\]",
                 Styles =
                     """
-                    line-height: -1.35rem;
+                    --sf-leading: calc(1.35rem * -1);
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -59,7 +63,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".leading-\[var\(--my-line-height\)\]",
                 Styles =
                     """
-                    line-height: var(--my-line-height);
+                    --sf-leading: var(--my-line-height);
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -70,7 +75,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".leading-\[number\:var\(--my-line-height\)\]",
                 Styles =
                     """
-                    line-height: var(--my-line-height);
+                    --sf-leading: var(--my-line-height);
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -81,7 +87,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".leading-\(--my-line-height\)",
                 Styles =
                     """
-                    line-height: var(--my-line-height);
+                    --sf-leading: var(--my-line-height);
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -92,7 +99,8 @@ public class LineHeightTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".leading-\(number\:--my-line-height\)",
                 Styles =
                     """
-                    line-height: var(--my-line-height);
+                    --sf-leading: var(--my-line-height);
+                    line-height: var(--sf-leading);
                     """,
                 IsValid = true,
                 IsImportant = false,

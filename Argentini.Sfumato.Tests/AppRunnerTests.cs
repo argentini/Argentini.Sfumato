@@ -30,7 +30,7 @@ public class AppRunnerTests
         
         Assert.True(sb.Contains("tab-size: 4;"));
         Assert.True(sb.Contains("font-size: var(--text-base);"));
-        Assert.True(sb.Contains("line-height: calc(var(--spacing) * 6) !important;"));
+        Assert.True(sb.Contains("--sf-leading: calc(var(--spacing) * 6) !important;\nline-height: var(--sf-leading) !important;"));
         
         Assert.False(sb.Contains("@variant"));
         Assert.True(sb.Contains("@media (width >= 475px) {"));
