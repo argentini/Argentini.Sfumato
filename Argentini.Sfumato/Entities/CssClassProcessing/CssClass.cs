@@ -56,7 +56,7 @@ public sealed class CssClass : IDisposable
     public bool HasArbitraryValueWithCssCustomProperty { get; set; }
     public bool UsesDarkTheme { get; set; }
 
-    private StringBuilder? Sb { get; set; }
+    public StringBuilder? Sb { get; set; }
 
     #endregion
     
@@ -80,12 +80,36 @@ public sealed class CssClass : IDisposable
 
     #region Initialization
 
-    private void Initialize()
+    public void Initialize()
     {
         IsImportant = Selector.EndsWith('!');
 
-        foreach (var segment in Selector.TrimEnd('!').SplitByTopLevel(':'))
-            AllSegments.Add(segment.ToString());
+        var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
+        var hasColons = Selector.Contains(':');
+
+        if (hasColons)
+        {
+            foreach (var segment in Selector.SplitByTopLevel(':'))
+                AllSegments.Add(segment.ToString());
+        }
+        else
+        {
+            if (hasBrackets == false)
+            {
+                if (AppRunner.Library.SimpleClasses.TryGetValue(Selector, out ClassDefinition))
+                {
+                    IsValid = true;
+                    SelectorSort = ClassDefinition.SelectorSort;
+                    EscapedSelector = $".{Selector}";
+
+                    GenerateStyles();
+
+                    return;
+                }
+            }
+
+            AllSegments.Add(IsImportant ? Selector.TrimEnd('!') : Selector);
+        }
 
         ProcessArbitraryCss();
         
@@ -95,24 +119,24 @@ public sealed class CssClass : IDisposable
         if (IsValid == false)
             return;
 
-        ProcessVariants();
+        if (AllSegments.Count > 1)
+            ProcessVariants();
 
         if (IsValid)
-        {
-            Sb = AppRunner.AppState.StringBuilderPool.Get();
             GenerateSelector();
-        }
 
         if (IsValid)
             GenerateWrappers();
     }
     
-    private void ProcessVariants()
+    public void ProcessVariants()
     {
         try
         {
             if (AllSegments.Count <= 1)
                 return;
+            
+            VariantSegments.Clear();
             
             // One or more invalid variants invalidate the entire utility class
 
@@ -216,10 +240,13 @@ public sealed class CssClass : IDisposable
         }
     }
     
-    private void ProcessArbitraryCss()
+    public void ProcessArbitraryCss()
     {
         try
         {
+            if (AllSegments.Count == 0)
+                return;
+
             if (AllSegments.Last().StartsWith('[') == false || AllSegments.Last().EndsWith(']') == false)
                 return;
             
@@ -229,6 +256,8 @@ public sealed class CssClass : IDisposable
             if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
                 return;
 
+            Styles = string.Empty;
+            
             foreach (var span in trimmedValue.EnumerateCssCustomProperties())
             {
                 // [--my-text-size:1rem]
@@ -254,7 +283,7 @@ public sealed class CssClass : IDisposable
         }
     }
     
-    private void ProcessUtilityClasses()
+    public void ProcessUtilityClasses()
     {
         try
         {
@@ -686,137 +715,247 @@ public sealed class CssClass : IDisposable
             IsValid = false;
         }
     }
-   
-    private void GenerateSelector()
+
+    public void GenerateSelector()
     {
-        Sb?.Clear();
-        
-        try
-        {
-            var hasDescendantVariant = VariantSegments
-                .Any(s => s.Value.PrefixType == "pseudoclass" && s.Key is "*" or "**");
-            
-            if (hasDescendantVariant)
-                Sb?.Append(":is(");
-            
-            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "prefix").OrderByDescending(s => s.Value.PrefixOrder))
-                Sb?.Append(variant.Value.SelectorPrefix);
-
-            Sb?.Append('.');
-            Sb?.Append(Selector.CssSelectorEscape());
-            
-            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "pseudoclass").OrderByDescending(s => s.Value.PrefixOrder))
-            {
-                Sb?.Append(variant.Value.SelectorSuffix);
-            }
-
-            if (hasDescendantVariant)
-            {
-                if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "*"))
-                    Sb?.Append(" > *)");
-                else if (VariantSegments.Any(s => s.Value.PrefixType == "pseudoclass" && s.Key == "**"))
-                    Sb?.Append(" *)");
-            }
-
-            EscapedSelector = Sb?.ToString() ?? string.Empty;
-        }
-        catch
-        {
-            IsValid = false;
-        }
-    }
-
-    private void GenerateWrappers()
-    {
-        if (Sb is null)
-            return;
-
+        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
         Sb.Clear();
 
         try
         {
-            if (VariantSegments.TryGetValue("dark", out var darkVariant) && darkVariant.PrefixType == "media")
+            // Cache count to avoid repeated property access
+            var variantCount = VariantSegments.Count;
+
+            if (variantCount == 0)
             {
-                var wrapper = $"@{darkVariant.PrefixType} {darkVariant.Statement} {{";
-                
+                // Fast path for no variants
+                Sb.Append('.');
+                Sb.Append(Selector.CssSelectorEscape());
+                EscapedSelector = Sb.ToString();
+                return;
+            }
+
+            // Single pass through variants to categorize and check for descendants
+            var prefixVariants = new List<KeyValuePair<string, VariantMetadata>>(variantCount);
+            var pseudoclassVariants = new List<KeyValuePair<string, VariantMetadata>>(variantCount);
+            var hasDescendantVariant = false;
+            var hasStarPseudoclass = false;
+            var hasDoubleStarPseudoclass = false;
+
+            foreach (var variant in VariantSegments)
+            {
+                var key = variant.Key;
+                var metadata = variant.Value;
+
+                // Check for descendant variants
+                if (key == "*" || key == "**")
+                    hasDescendantVariant = true;
+
+                // Categorize by prefix type
+                if (metadata.PrefixType == "prefix")
+                {
+                    prefixVariants.Add(variant);
+                }
+                else if (metadata.PrefixType == "pseudoclass")
+                {
+                    pseudoclassVariants.Add(variant);
+
+                    if (key == "*")
+                        hasStarPseudoclass = true;
+                    else if (key == "**")
+                        hasDoubleStarPseudoclass = true;
+                }
+            }
+
+            // Sort once instead of using OrderByDescending in loops
+            if (prefixVariants.Count > 1)
+                prefixVariants.Sort((a, b) => b.Value.PrefixOrder.CompareTo(a.Value.PrefixOrder));
+
+            if (pseudoclassVariants.Count > 1)
+                pseudoclassVariants.Sort((a, b) => b.Value.PrefixOrder.CompareTo(a.Value.PrefixOrder));
+
+            if (hasDescendantVariant)
+                Sb.Append(":is(");
+
+            // Append prefix variants
+            foreach (var variant in prefixVariants)
+                Sb.Append(variant.Value.SelectorPrefix);
+
+            Sb.Append('.');
+            Sb.Append(Selector.CssSelectorEscape());
+
+            // Append pseudoclass variants
+            foreach (var variant in pseudoclassVariants)
+                Sb.Append(variant.Value.SelectorSuffix);
+
+            if (hasDescendantVariant)
+            {
+                if (hasStarPseudoclass)
+                    Sb.Append(" > *)");
+                else if (hasDoubleStarPseudoclass)
+                    Sb.Append(" *)");
+            }
+
+            EscapedSelector = Sb.ToString();
+        }
+        catch
+        {
+            IsValid = false;
+            EscapedSelector = string.Empty;
+        }
+    }
+
+    public void GenerateWrappers()
+    {
+        var variantCount = VariantSegments.Count;
+        if (variantCount == 0)
+            return;
+
+        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+
+        try
+        {
+            Sb.Clear();
+            Wrappers.Clear();
+
+            var mediaVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
+            var supportsVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
+            var containerVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
+            var wrapperVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
+
+            int mediaCount = 0, supportsCount = 0, containerCount = 0, wrapperCount = 0;
+            VariantMetadata? darkVariant = null;
+
+            foreach (var variant in VariantSegments)
+            {
+                switch (variant.Value.PrefixType)
+                {
+                    case "media" when variant.Key == "dark":
+                        darkVariant = variant.Value;
+                        break;
+                    case "media":
+                        mediaVariants[mediaCount++] = variant;
+                        break;
+                    case "supports":
+                        supportsVariants[supportsCount++] = variant;
+                        break;
+                    case "container":
+                        containerVariants[containerCount++] = variant;
+                        break;
+                    case "wrapper":
+                        wrapperVariants[wrapperCount++] = variant;
+                        break;
+                }
+            }
+
+            if (darkVariant is not null)
+            {
+                var wrapper = $"@media {darkVariant.Statement} {{";
+
                 Wrappers.Add(wrapper.Fnv1AHash64(), wrapper);
-                
                 UsesDarkTheme = true;
                 WrapperSort += darkVariant.PrefixOrder;
             }
 
-            foreach (var queryType in new[] { "media", "supports" })
+            // Sort only the used portions of arrays
+            if (mediaCount > 1)
+                Array.Sort(mediaVariants, 0, mediaCount, _prefixOrderComparer);
+            if (supportsCount > 1)
+                Array.Sort(supportsVariants, 0, supportsCount, _prefixOrderComparer);
+            if (containerCount > 1)
+                Array.Sort(containerVariants, 0, containerCount, _prefixOrderComparer);
+            if (wrapperCount > 1)
+                Array.Sort(wrapperVariants, 0, wrapperCount, _prefixOrderComparer);
+
+            // Process variants using spans for zero-copy slicing
+            ProcessQueryVariants(mediaVariants.AsSpan(0, mediaCount), "media");
+            ProcessQueryVariants(supportsVariants.AsSpan(0, supportsCount), "supports");
+
+            if (containerCount > 0)
+                ProcessContainerVariants(containerVariants.AsSpan(0, containerCount));
+
+            // Process wrapper variants
+            for (int i = 0; i < wrapperCount; i++)
             {
-                foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == queryType && s.Key != "dark").OrderBy(s => s.Value.PrefixOrder))
-                {
-                    if (Sb.Length == 0)
-                    {
-                        Sb.Append($"@{queryType} ");
-                        
-                        if (queryType == "media" && WrapperSort <= int.MaxValue - variant.Value.PrefixOrder)
-                            WrapperSort += variant.Value.PrefixOrder;
-                    }
-                    else
-                    {
-                        Sb.Append(" and ");
-
-                        if (queryType == "media" && WrapperSort < int.MaxValue)
-                            WrapperSort += 1;
-                    }
-
-                    Sb.Append(variant.Value.Statement);
-                }
-
-                if (Sb.Length <= 0)
-                    continue;
-                
-                Sb.Append(" {");
-                Wrappers.Add(Sb.Fnv1AHash64(), Sb.ToString());
-                Sb.Clear();
-            }
-            
-            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType == "container").OrderBy(s => s.Value.PrefixOrder))
-            {
-                var indexOfSlash = variant.Key.LastIndexOf('/');
-                var modifierValue = string.Empty;
-
-                if (indexOfSlash > 0)
-                    modifierValue = variant.Key[(indexOfSlash + 1)..];
-
-                if (Sb.Length == 0)
-                    Sb.Append($"@container {(string.IsNullOrEmpty(modifierValue) ? string.Empty : $"{modifierValue} ")}");
-                else
-                    Sb.Append(" and ");
-            
-                Sb.Append(variant.Value.Statement);
-            }
-
-            if (Sb.Length > 0)
-            {
-                Sb.Append(" {");
-                Wrappers.Add(Sb.Fnv1AHash64(), Sb.ToString());
-            }
-            
-            foreach (var variant in VariantSegments.Where(s => s.Value.PrefixType is "wrapper").OrderBy(s => s.Value.PrefixOrder))
-            {
-                var wrapper = $"{variant.Value.Statement} {{";
-                
+                var wrapper = $"{wrapperVariants[i].Value.Statement} {{";
                 Wrappers.Add(wrapper.Fnv1AHash64(), wrapper);
             }
         }
         catch
         {
             IsValid = false;
+            Wrappers.Clear();
         }
     }
 
-    private void GenerateStyles(bool useArbitraryValue = false)
+    // Cache the comparer to avoid allocating it repeatedly
+    private static readonly IComparer<KeyValuePair<string, VariantMetadata>> _prefixOrderComparer = Comparer<KeyValuePair<string, VariantMetadata>>.Create((a, b) => a.Value.PrefixOrder.CompareTo(b.Value.PrefixOrder));
+
+    private void ProcessQueryVariants(ReadOnlySpan<KeyValuePair<string, VariantMetadata>> variants, string queryType)
+    {
+        if (variants.Length == 0)
+            return;
+
+        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+
+        Sb.Clear();
+        Sb.Append('@');
+        Sb.Append(queryType);
+        Sb.Append(' ');
+
+        Sb.Append(variants[0].Value.Statement);
+
+        if (queryType == "media" && WrapperSort <= int.MaxValue - variants[0].Value.PrefixOrder)
+            WrapperSort += variants[0].Value.PrefixOrder;
+
+        for (var i = 1; i < variants.Length; i++)
+        {
+            Sb.Append(" and ");
+            Sb.Append(variants[i].Value.Statement);
+
+            if (queryType == "media" && WrapperSort < int.MaxValue)
+                WrapperSort += 1;
+        }
+
+        Sb.Append(" {");
+        Wrappers.Add(Sb.Fnv1AHash64(), Sb.ToString());
+    }
+
+    private void ProcessContainerVariants(ReadOnlySpan<KeyValuePair<string, VariantMetadata>> containerVariants)
+    {
+        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+
+        Sb.Clear();
+        Sb.Append("@container ");
+
+        var firstVariant = containerVariants[0];
+        var indexOfSlash = firstVariant.Key.LastIndexOf('/');
+
+        if (indexOfSlash > 0)
+        {
+            Sb.Append(firstVariant.Key.AsSpan(indexOfSlash + 1));
+            Sb.Append(' ');
+        }
+
+        Sb.Append(firstVariant.Value.Statement);
+
+        for (var i = 1; i < containerVariants.Length; i++)
+        {
+            Sb.Append(" and ");
+            Sb.Append(containerVariants[i].Value.Statement);
+        }
+
+        Sb.Append(" {");
+        Wrappers.Add(Sb.Fnv1AHash64(), Sb.ToString());
+    }
+
+    public void GenerateStyles(bool useArbitraryValue = false)
     {
         if (ClassDefinition is null)
             return;
 
         Styles = ClassDefinition.Template;
-        
+
         if (HasArbitraryValue || HasArbitraryValueWithCssCustomProperty || useArbitraryValue)
         {
             if (string.IsNullOrEmpty(ClassDefinition.ArbitraryCssValueTemplate) == false)
@@ -826,7 +965,7 @@ public sealed class CssClass : IDisposable
             {
                 if (string.IsNullOrEmpty(ClassDefinition.ArbitraryCssValueWithModifierTemplate) == false)
                     Styles = ClassDefinition.ArbitraryCssValueWithModifierTemplate;
-                
+
                 if (HasArbitraryModifierValue)
                 {
                     if (string.IsNullOrEmpty(ClassDefinition.ArbitraryCssValueWithArbitraryModifierTemplate) == false)
@@ -842,20 +981,20 @@ public sealed class CssClass : IDisposable
             {
                 if (string.IsNullOrEmpty(ClassDefinition.ModifierTemplate) == false)
                     Styles = ClassDefinition.ModifierTemplate;
-            
+
                 if (HasArbitraryModifierValue)
                 {
                     if (string.IsNullOrEmpty(ClassDefinition.ArbitraryModifierTemplate) == false)
                         Styles = ClassDefinition.ArbitraryModifierTemplate;
                 }
             }
-            
+
             Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);
         }
 
         if (HasModifierValue)
             Styles = Styles.Replace("{1}", ModifierValue, StringComparison.Ordinal);
-            
+
         if (IsImportant)
             Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
 
