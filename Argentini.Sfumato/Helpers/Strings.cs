@@ -1002,7 +1002,7 @@ public static partial class Strings
     /// <param name="text">Input string (may be <c>null</c> or empty).</param>
     /// <param name="scratch">
     /// Optional <see cref="StringBuilder"/> taken from an <em>ObjectPool</em>.  
-    /// If supplied it is cleared up-front and used only when a rewrite
+    /// If supplied, it is cleared up-front and used only when a rewrite
     /// becomes necessary.</param>
     public static string TrimWhitespaceBeforeLineBreaks(this string? text, StringBuilder? scratch = null)
     {
@@ -1228,17 +1228,18 @@ public static partial class Strings
 		return workingSb.ToString();
 	}	
 	
+	/// <summary>
+	/// Escape a string for use in a CSS selector.
+	/// </summary>
+	/// <param name="value"></param>
+	/// <returns></returns>
 	public static string CssSelectorEscape(this string value)
 	{
 		if (string.IsNullOrEmpty(value))
 			return value;
 
 		var maxLength = value.Length * 2;
-
-		var buffer = maxLength <= 512 // an arbitrary cutoff
-			? stackalloc char[maxLength]
-			: new char[maxLength]; // fallback to heap if too large
-
+		var buffer = maxLength <= 1024 ? stackalloc char[maxLength] : new char[maxLength];
 		var position = 0;
 
 		for (var i = 0; i < value.Length; i++)
@@ -1251,7 +1252,7 @@ public static partial class Strings
 			buffer[position++] = c;
 		}
 
-		return new string(buffer[..position]);
+		return value.Length == position ? value : new string(buffer[..position]);
 	}
 	
     public static string ToSentenceCase(this string input)
