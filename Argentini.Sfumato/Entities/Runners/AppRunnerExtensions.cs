@@ -494,7 +494,7 @@ public static class AppRunnerExtensions
 			WrapperCss = string.Empty
 		};
 
-		foreach (var cssClass in appRunner.UtilityClasses.Values.OrderBy(c => c.WrapperSort))
+		foreach (var cssClass in appRunner.UtilityClasses.Values.OrderBy(c => c.EscapedSelector).OrderBy(c => c.WrapperSort))
 			_ProcessVariantBranchRecursive(root, cssClass);
 		
 		var sb = appRunner.AppState.StringBuilderPool.Get();
@@ -921,7 +921,7 @@ public static class AppRunnerExtensions
 			if (isWrapped)
 				workingSb.Append(branch.WrapperCss);
 
-			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.SelectorSort))
+			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.EscapedSelector).OrderBy(c => c.SelectorSort))
 				workingSb
 					.Append(cssClass.EscapedSelector)
 					.Append(" {")
