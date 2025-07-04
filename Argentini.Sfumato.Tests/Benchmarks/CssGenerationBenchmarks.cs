@@ -38,7 +38,7 @@ public class CssGenerationBenchmarks
         Step11Prep.Clear();
         Step12Prep.Clear();
 
-        var cssPath = Path.GetFullPath(Path.Combine(ApplicationEnvironment.ApplicationBasePath[..ApplicationEnvironment.ApplicationBasePath.IndexOf("Developer")], "Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"));
+        var cssPath = Path.GetFullPath(Path.Combine(ApplicationEnvironment.ApplicationBasePath[..ApplicationEnvironment.ApplicationBasePath.IndexOf("Developer", StringComparison.Ordinal)], "Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"));
 
         AppRunner = new AppRunner(new AppState(), cssPath);
 
