@@ -90,8 +90,25 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper)
     private static string Minified => """
                                       *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:transparent}*{min-width:0;min-height:0}div#main{margin-top:var(--top-margin)}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Aptos","Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"}
                                       """;
-    
+
     #endregion
+
+    [Fact]
+    public void NameSort()
+    {
+        var test1 = ".font-bold";
+        var test2 = ".p-15";
+        var test3 = ".text-";
+        var test4 = ".w-10";
+        var test5 = ".w-full";
+        var test6 = ".text-4xl";
+
+        Assert.True(test4.GetNameSort() > test3.GetNameSort());
+        Assert.True(test3.GetNameSort() > test2.GetNameSort());
+        Assert.True(test2.GetNameSort() > test1.GetNameSort());
+        Assert.True(test5.GetNameSort() > test4.GetNameSort());
+        Assert.True(test5.GetNameSort() > test6.GetNameSort());
+    }
 
     [Fact]
     public void StringCrc32()

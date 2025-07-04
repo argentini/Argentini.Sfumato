@@ -14,16 +14,16 @@ public static class Encoders
         return Enumerable.Range(0, 256).Select(i =>
         {
             var tableEntry = (uint)i;
-            
+
             for (var j = 0; j < 8; j++)
             {
                 tableEntry = (tableEntry & 1) != 0
                     ? SGenerator ^ (tableEntry >> 1)
                     : tableEntry >> 1;
             }
-            
+
             return tableEntry;
-            
+
         }).ToArray();
     }
 
@@ -85,14 +85,14 @@ public static class Encoders
             throw new Exception("Could not read the stream out as bytes.", e);
         }
     }
-    
+
     public static ulong Fnv1AHash64(this string s)
     {
         const ulong fnvOffsetBasis = 14695981039346656037UL;
         const ulong fnvPrime = 1099511628211UL;
 
         var hash = fnvOffsetBasis;
-    
+
         foreach (var c in s)
         {
             hash ^= c;
@@ -100,7 +100,7 @@ public static class Encoders
         }
 
         return hash;
-    }    
+    }
 
     public static ulong Fnv1AHash64(this StringBuilder sb)
     {
@@ -116,7 +116,40 @@ public static class Encoders
         }
 
         return hash;
-    }    
+    }
+
+    /// Build a 64-bit primary sort key from the first
+    /// four *alphanumeric* characters in the selector.
+    /// Earlier characters are packed into the *higher* bytes,
+    /// giving the same order as an ordinal string compare.
+    /// Punctuation ('.', '-', ':', etc.) is skipped.
+    /// If you know the data is always lower-case you can
+    /// drop the ToUpperInvariant call.
+    public static ulong GetNameSort(this string selector)
+    {
+        if (string.IsNullOrEmpty(selector))
+            return 0;
+
+        ulong key = 0;
+        var packed = 0;
+
+        foreach (char ch in selector)
+        {
+            if (char.IsLetterOrDigit(ch) == false)
+                continue;
+
+            key = (key << 16) | ch;
+            packed++;
+
+            if (packed == 4)
+                break;
+        }
+
+        // shift left so that shorter strings still compare correctly
+        key <<= (4 - packed) * 16;
+
+        return key;
+    }
 
     #endregion
 }
