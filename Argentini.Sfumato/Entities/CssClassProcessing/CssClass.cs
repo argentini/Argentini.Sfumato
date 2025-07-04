@@ -43,6 +43,7 @@ public sealed class CssClass : IDisposable
     public string Value { get; set; } = string.Empty;
     public string ModifierValue { get; set; } = string.Empty;
     public string Styles { get; set; } = string.Empty;
+
     public int SelectorSort { get; set; }
     public int WrapperSort { get; set; }
 
@@ -104,6 +105,9 @@ public sealed class CssClass : IDisposable
                     GenerateSelector();
                     GenerateStyles();
 
+                    if (ClassDefinition.NameSortOrder == 0)
+                        ClassDefinition.NameSortOrder = Selector.GetNameSort();
+
                     return;
                 }
             }
@@ -112,7 +116,7 @@ public sealed class CssClass : IDisposable
         }
 
         ProcessArbitraryCss();
-        
+
         if (IsValid == false)
             ProcessUtilityClasses();
 
@@ -127,6 +131,9 @@ public sealed class CssClass : IDisposable
 
         if (IsValid)
             GenerateWrappers();
+
+        if (ClassDefinition?.NameSortOrder == 0)
+            ClassDefinition.NameSortOrder = AllSegments.Last().GetNameSort();
     }
     
     public void ProcessVariants()

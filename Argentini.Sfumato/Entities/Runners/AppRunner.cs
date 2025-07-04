@@ -20,7 +20,7 @@ public sealed class AppRunner
 	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
 	public ConcurrentDictionary<string,string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
 	public ConcurrentDictionary<string,string> UsedCss { get; } = new(StringComparer.Ordinal);
-	public ConcurrentDictionary<string,CssClass> UtilityClasses { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string,CssClass> UtilityClasses { get; } = new(StringComparer.Ordinal);
 
 	private string _cssFilePath;
 	private readonly bool _useMinify;
@@ -370,25 +370,27 @@ public sealed class AppRunner
 	    
 	    #endregion
 	    
-	    #region Read @utility items
+		#region Read @utility items
 
-	    foreach (var match in AppRunnerSettings.SfumatoBlockItems)
-	    {
-		    if (match.Key.StartsWith("@utility") == false)
-			    continue;
+		foreach (var match in AppRunnerSettings.SfumatoBlockItems)
+		{
+			if (match.Key.StartsWith("@utility") == false)
+				continue;
 
-		    var segments = match.Key.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			var segments = match.Key.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-		    if (segments.Length != 2)
-			    continue;
-		    
-		    if (Library.SimpleClasses.TryAdd(segments[1], new ClassDefinition
-		        {
-			        InSimpleUtilityCollection = true,
-			        Template = match.Value.Trim().TrimStart('{').TrimEnd('}').Trim()
-		        }))
-			    Library.ScannerClassNamePrefixes.Insert(segments[1]);
-	    }
+			if (segments.Length != 2)
+				continue;
+
+			if (Library.SimpleClasses.TryAdd(segments[1], new ClassDefinition
+			{
+				InSimpleUtilityCollection = true,
+				Template = match.Value.Trim().TrimStart('{').TrimEnd('}').Trim()
+			}))
+			{
+				Library.ScannerClassNamePrefixes.Insert(segments[1]);
+			}
+		}
 
 	    #endregion
 	    
@@ -398,12 +400,12 @@ public sealed class AppRunner
 		    .GetTypes()
 		    .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
 
-	    foreach (var type in derivedTypes)
-	    {
-		    if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-			    continue;
-		    
-		    instance.ProcessThemeSettings(this);
+		foreach (var type in derivedTypes)
+		{
+			if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
+				continue;
+
+			instance.ProcessThemeSettings(this);
 	    }
 	    
 	    #endregion

@@ -5,6 +5,8 @@ namespace Argentini.Sfumato.Entities.UtilityClasses;
 
 public sealed class ClassDefinition
 {
+    public ulong NameSortOrder { get; set; }
+    
     /// <summary>
     /// Is a simple utility with static properties (e.g. "antialiased");
     /// is used as-is and doesn't have any custom properties.

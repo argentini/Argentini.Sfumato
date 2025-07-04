@@ -343,7 +343,7 @@ public static class AppRunnerExtensions
 		{
 			ProcessTrackedDependencyValues(appRunner);
 
-			if (appRunner.UsedCssCustomProperties.IsEmpty == false)
+			if (appRunner.UsedCssCustomProperties.Count > 0)
 			{
 				#region @layer properties
 				
@@ -494,7 +494,7 @@ public static class AppRunnerExtensions
 			WrapperCss = string.Empty
 		};
 
-		foreach (var cssClass in appRunner.UtilityClasses.Values.OrderBy(c => c.EscapedSelector).OrderBy(c => c.WrapperSort))
+		foreach (var cssClass in appRunner.UtilityClasses.Values.OrderBy(c => c.WrapperSort).ThenBy(c => c.SelectorSort))
 			_ProcessVariantBranchRecursive(root, cssClass);
 		
 		var sb = appRunner.AppState.StringBuilderPool.Get();
@@ -528,6 +528,50 @@ public static class AppRunnerExtensions
 		}
 		
 		return sourceCss;
+	}
+
+	/// <summary>
+	/// Traverse the variant branch tree recursively, adding CSS classes to the current branch.
+	/// Essentially performs a recursive traversal but does not use recursion.
+	/// </summary>
+	/// <param name="rootBranch"></param>
+	/// <param name="cssClass"></param>
+	private static void _ProcessVariantBranchRecursive(VariantBranch rootBranch, CssClass cssClass)
+	{
+		try
+		{
+			var wrappers = cssClass.Wrappers.ToArray();
+			var index = 0;
+			var depth = 1;
+			
+			while (true)
+			{
+				if (index >= wrappers.Length)
+				{
+					rootBranch.CssClasses.Add(cssClass);
+					return;
+				}
+
+				var (fingerprint, wrapperCss) = wrappers[index];
+
+				var candidate = new VariantBranch { Fingerprint = fingerprint, WrapperCss = wrapperCss, Depth = depth };
+
+				if (rootBranch.Branches.TryGetValue(candidate, out var existing) == false)
+				{
+					rootBranch.Branches.Add(candidate);
+					existing = candidate;
+				}
+
+				rootBranch = existing;
+				index += 1;
+				depth += 1;
+			}
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine($"{AppState.CliErrorPrefix}_ProcessVariantBranchRecursive() - {e.Message}");
+			Environment.Exit(1);
+		}
 	}
 
 	public static StringBuilder MoveComponentsLayer(this StringBuilder sourceCss, AppRunner appRunner)
@@ -921,7 +965,7 @@ public static class AppRunnerExtensions
 			if (isWrapped)
 				workingSb.Append(branch.WrapperCss);
 
-			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.EscapedSelector).OrderBy(c => c.SelectorSort))
+			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.SelectorSort).ThenBy(c => c.ClassDefinition?.NameSortOrder ?? 0))
 				workingSb
 					.Append(cssClass.EscapedSelector)
 					.Append(" {")
@@ -943,50 +987,6 @@ public static class AppRunnerExtensions
 		catch (Exception e)
 		{
 			Console.WriteLine($"{AppState.CliErrorPrefix}_GenerateUtilityClassesCss() - {e.Message}");
-			Environment.Exit(1);
-		}
-	}
-
-	/// <summary>
-	/// Traverse the variant branch tree recursively, adding CSS classes to the current branch.
-	/// Essentially performs a recursive traversal but does not use recursion.
-	/// </summary>
-	/// <param name="rootBranch"></param>
-	/// <param name="cssClass"></param>
-	private static void _ProcessVariantBranchRecursive(VariantBranch rootBranch, CssClass cssClass)
-	{
-		try
-		{
-			var wrappers = cssClass.Wrappers.ToArray();
-			var index = 0;
-			var depth = 1;
-			
-			while (true)
-			{
-				if (index >= wrappers.Length)
-				{
-					rootBranch.CssClasses.Add(cssClass);
-					return;
-				}
-
-				var (fingerprint, wrapperCss) = wrappers[index];
-
-				var candidate = new VariantBranch { Fingerprint = fingerprint, WrapperCss = wrapperCss, Depth = depth };
-
-				if (rootBranch.Branches.TryGetValue(candidate, out var existing) == false)
-				{
-					rootBranch.Branches.Add(candidate);
-					existing = candidate;
-				}
-
-				rootBranch = existing;
-				index += 1;
-				depth += 1;
-			}
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}_ProcessVariantBranchRecursive() - {e.Message}");
 			Environment.Exit(1);
 		}
 	}
