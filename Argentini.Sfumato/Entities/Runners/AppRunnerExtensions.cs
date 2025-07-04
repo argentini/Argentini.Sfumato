@@ -965,7 +965,7 @@ public static class AppRunnerExtensions
 			if (isWrapped)
 				workingSb.Append(branch.WrapperCss);
 
-			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.SelectorSort).ThenBy(c => c.ClassDefinition?.NameSortOrder ?? 0))
+			foreach (var cssClass in branch.CssClasses.OrderBy(c => c.SelectorSort).ThenBy(c => c.ClassDefinition?.NameSortOrder ?? 0).ThenBy(c => c.Selector))
 				workingSb
 					.Append(cssClass.EscapedSelector)
 					.Append(" {")
