@@ -1,5 +1,7 @@
 ﻿// ReSharper disable MemberCanBePrivate.Global
 
+using System.Runtime.CompilerServices;
+
 namespace Argentini.Sfumato.Helpers;
 
 /// <summary>
@@ -171,6 +173,79 @@ public static partial class Strings
 	#endregion
 	
 	#region Trimming
+	
+	/// <summary>
+	/// Trims any of the specified characters from the start and end of the span.
+	/// </summary>
+	public static ReadOnlySpan<char> Trim(this ReadOnlySpan<char> span, params char[]? trimChars)
+	{
+		if (span.IsEmpty || trimChars is null || trimChars.Length == 0)
+			return span;
+
+		var start = 0;
+		var end   = span.Length - 1;
+
+		// advance start past any trimChar
+		while (start <= end && IsTrimChar(span[start], trimChars))
+			start++;
+
+		// retreat end before any trimChar
+		while (end >= start && IsTrimChar(span[end], trimChars))
+			end--;
+
+		// if nothing left, return empty; else slice
+		return start == 0 && end == span.Length - 1
+			? span
+			: span.Slice(start, end - start + 1);
+	}
+
+	/// <summary>
+	/// Trims any of the specified characters from the start of the span.
+	/// </summary>
+	public static ReadOnlySpan<char> TrimStart(this ReadOnlySpan<char> span, params char[]? trimChars)
+	{
+		if (span.IsEmpty || trimChars is null || trimChars.Length == 0)
+			return span;
+
+		var start = 0;
+	
+		while (start < span.Length && IsTrimChar(span[start], trimChars))
+			start++;
+
+		// If nothing trimmed, return original; else slice from `start` to end.
+		return start == 0
+			? span
+			: span[start..];
+	}
+	
+	/// <summary>
+	/// Trims any of the specified characters from the end of the span.
+	/// </summary>
+	public static ReadOnlySpan<char> TrimEnd(this ReadOnlySpan<char> span, params char[]? trimChars)
+	{
+		if (span.IsEmpty || trimChars is null || trimChars.Length == 0)
+			return span;
+
+		var end = span.Length - 1;
+		
+		while (end >= 0 && IsTrimChar(span[end], trimChars))
+			end--;
+
+		// If nothing trimmed, return original; else slice from 0 up to end+1.
+		return end == span.Length - 1
+			? span
+			: span[..(end + 1)];
+	}
+	
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static bool IsTrimChar(char c, char[] trimChars)
+	{
+		// a tiny linear scan is usually fastest for small trim arrays
+		foreach (var t in trimChars)
+			if (c == t) return true;
+
+		return false;
+	}
 	
 	/// <summary>
 	/// Trim the first occurrence of a character from a string.
@@ -547,6 +622,7 @@ public static partial class Strings
 	}
 
     // splits a comma‑separated selector string at commas not inside [],(), or quotes
+    // ReSharper disable once UnusedMember.Local
     private static IEnumerable<string> SplitSelectors(string header)
     {
         if (string.IsNullOrWhiteSpace(header))
@@ -899,7 +975,7 @@ public static partial class Strings
     /// Removes SPACE and TAB characters that appear <em>immediately</em> before
     /// an LF (<c>"\n"</c>) or CRLF (<c>"\r\n"</c>) sequence.
     /// </summary>
-    /// <param name="text">Input string (may be <c>null</c> or empty).</param>
+    /// <param name="text">Input string (it may be <c>null</c> or empty).</param>
     /// <param name="scratch">
     /// Optional <see cref="StringBuilder"/> taken from an <em>ObjectPool</em>.  
     /// If supplied, it is cleared up-front and used only when a rewrite
@@ -1447,7 +1523,7 @@ public static partial class Strings
 	        return string.Empty;
 
 	    var len = value.Length;
-	    var countCRLF = 0;
+	    var countCrlf = 0;
 		var countSingle = 0;
 
 	    // First pass: count how many CRLF vs. lone CR or LF we have
@@ -1459,7 +1535,7 @@ public static partial class Strings
 	        {
 	            if (i + 1 < len && value[i + 1] == '\n')
 	            {
-	                countCRLF++;
+	                countCrlf++;
 	                i++;
 	            }
 	            else
@@ -1474,7 +1550,7 @@ public static partial class Strings
 	    }
 
 	    // Nothing to normalize?
-	    if (countCRLF == 0 && countSingle == 0)
+	    if (countCrlf == 0 && countSingle == 0)
 	        return value;
 
 	    var breakLen = linebreak.Length;
@@ -1483,8 +1559,8 @@ public static partial class Strings
 	    //   remove 2 chars per CRLF, 1 per lone CR or LF
 	    //   then add back breakLen chars per token
 	    var newLen = len
-	                 - (countCRLF * 2 + countSingle * 1)
-	                 + (countCRLF + countSingle) * breakLen;
+	                 - (countCrlf * 2 + countSingle * 1)
+	                 + (countCrlf + countSingle) * breakLen;
 
 	    // Second pass: fill directly into the new string’s buffer
 	    return string.Create(newLen, (value, linebreak), (span, state) =>
@@ -1837,7 +1913,6 @@ public static partial class Strings
                 continue;
 
             // enforce preceding char is whitespace or '/'
-            // (user guarantee: it always will be, but we guard anyway)
             if (i > 0 && !(char.IsWhiteSpace(s[i - 1]) || s[i - 1] == '/'))
                 continue;
 
@@ -1863,7 +1938,8 @@ public static partial class Strings
             // optional fractional part if we haven't yet seen a decimal
             if (seenDecimal == false && j < len && s[j] == '.')
             {
-                seenDecimal = true;
+	            // ReSharper disable once RedundantAssignment
+	            seenDecimal = true;
                 j++;
 
                 while (j < len && s[j] >= '0' && s[j] <= '9')
