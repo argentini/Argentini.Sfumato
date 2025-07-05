@@ -272,7 +272,7 @@ public sealed class AppRunner
 				.MoveComponentsLayer(this);
 
 			if (AppRunnerSettings.UseDarkThemeClasses)
-				sourceCss.ProcessDarkThemeClasses(this);
+				sourceCss.ProcessDarkTheme(this);
 			
 			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ReformatCss(workingSb).ToString().NormalizeLinebreaks(AppRunnerSettings.LineBreak);
 		}
