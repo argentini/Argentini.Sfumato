@@ -9,6 +9,8 @@ public static class AppRunnerExtensions
 {
 	#region V2: Extract CSS Imports / Components Layer
 
+	private static readonly string ImportToken = "@import ";
+
 	/// <summary>
 	/// Iterate @import statements and add content to AppRunner.ImportsCssSegment;
 	/// puts any @layer components content into AppRunner.ComponentsCssSegment;
@@ -20,138 +22,164 @@ public static class AppRunnerExtensions
 	/// <param name="parentLayerName"></param>
 	/// <param name="parentPath"></param>
 	/// <returns>index and length of the import statements</returns>
-	public static (int,int) ProcessCssImportStatements(this StringBuilder? css, AppRunner? appRunner, bool isRoot, string parentLayerName = "", string parentPath = "")
+    // reuse a single static token
+	public static (int start, int length) ProcessCssImportStatements(this StringBuilder? css, AppRunner? appRunner, bool isRoot, string parentLayerName = "", string parentPath = "")
 	{
-		if (css is null || appRunner is null)
-			return (-1, -1);
+	    if (css is null || appRunner is null)
+	        return (-1, -1);
 
-		if (isRoot) // Clear segment, untouch for orphan deletion
-		{
-			appRunner.ImportsCssSegment.Clear();
-			appRunner.ComponentsCssSegment.Clear();
-			
-			var e = appRunner.AppRunnerSettings.CssImports.GetEnumerator();
+	    //––– grab locals –––
+	    var settings   = appRunner.AppRunnerSettings;
+	    var importsSeg = appRunner.ImportsCssSegment;
+	    var compsSeg   = appRunner.ComponentsCssSegment;
+	    var pool       = appRunner.AppState.StringBuilderPool;
+	    var baseDir    = settings.NativeCssFilePathOnly;
 
-			while (e.MoveNext())
-			{
-				e.Current.Value.Touched = false;
-			}
-		}
-
-		var importPathSb = appRunner.AppState.StringBuilderPool.Get();
-		var layerName = string.Empty;
-		var filePath = string.Empty;
-
-	    try
+	    if (isRoot)
 	    {
-		    var index = css.IndexOf("@import ");
-		    var importsStartIndex = index;
-		    var cssStartIndex = 0;
-
-		    while (index > -1)
-		    {
-			    var eolIndex = css.IndexOf(';', index);
-
-			    cssStartIndex = eolIndex + 1;
-			    importPathSb.ReplaceContent(css, index + 8, eolIndex - index - 8);
-
-			    if (importPathSb.EndsWith('\'') == false && importPathSb.EndsWith('\"') == false)
-			    {
-				    var layerNameIndex = importPathSb.LastIndexOf(' ') + 1;
-				    
-				    layerName = importPathSb.Substring(layerNameIndex, importPathSb.Length - layerNameIndex);
-				    
-				    importPathSb.Remove(layerNameIndex - 1, importPathSb.Length - layerNameIndex + 1);
-				    importPathSb.Trim(' ', '\'', '\"');
-			    }
-			    else
-			    {
-				    layerName = string.Empty;
-				    importPathSb.Trim(' ', '\'', '\"');
-			    }
-		    
-			    filePath = Path.GetFullPath(Path.Combine(appRunner.AppRunnerSettings.NativeCssFilePathOnly, parentPath, importPathSb.ToString()));
-
-			    if (File.Exists(filePath) == false)
-			    {
-				    Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
-
-				    appRunner.ImportsCssSegment.Append($"/* Could not import: {filePath} */{appRunner.AppRunnerSettings.LineBreak}");
-			    }
-			    else
-			    {
-				    var fileInfo = new FileInfo(filePath);
-				    CssImportFile? cssImportFile;
-
-				    if (appRunner.AppRunnerSettings.CssImports.TryGetValue(filePath, out var current))
-				    {
-					    current.Touched = true;
-
-					    if (fileInfo.Length != current.FileInfo.Length || fileInfo.CreationTimeUtc != current.FileInfo.CreationTimeUtc || fileInfo.LastWriteTimeUtc != current.FileInfo.LastWriteTimeUtc)
-					    {
-						    current.Pool = appRunner.AppState.StringBuilderPool;
-						    current.FileInfo = fileInfo;
-						    current.CssContent = appRunner.AppState.StringBuilderPool.Get().Append(File.ReadAllText(filePath));
-						}
-
-					    cssImportFile = current;
-				    }
-				    else
-				    {
-					    cssImportFile = new CssImportFile
-					    {
-						    Touched = true,
-						    Pool = appRunner.AppState.StringBuilderPool,
-						    FileInfo = fileInfo,
-						    CssContent = appRunner.AppState.StringBuilderPool.Get().Append(File.ReadAllText(filePath))
-					    };
-
-					    appRunner.AppRunnerSettings.CssImports.Add(filePath, cssImportFile);
-				    }
-
-				    var layered = string.IsNullOrEmpty(layerName) == false && layerName != "components";
-				    
-				    if (layered)
-					    appRunner.ImportsCssSegment.Append($"@layer {layerName} {{{appRunner.AppRunnerSettings.LineBreak}");
-
-				    _ = ProcessCssImportStatements(cssImportFile.CssContent, appRunner, false, layerName, Path.GetDirectoryName(filePath) ?? string.Empty);
-				    
-				    if (layered)
-					    appRunner.ImportsCssSegment.Append($"}}{appRunner.AppRunnerSettings.LineBreak}");
-			    }
-
-			    index = css.IndexOf("@import ", index + 1);
-		    }
-
-		    if (isRoot)
-		    {
-			    appRunner.AppRunnerSettings.CssImports.RemoveWhere((_, v) => v.Touched == false);
-
-			    return importsStartIndex == -1 ? (-1, -1) : cssStartIndex < 0 || cssStartIndex < importsStartIndex ? (-1, -1) : (importsStartIndex, cssStartIndex - importsStartIndex);
-		    }
-
-		    if (cssStartIndex < 0 || cssStartIndex >= css.Length - 1)
-			    return (-1, -1);
-
-		    if (string.IsNullOrEmpty(parentLayerName) == false && parentLayerName == "components")
-		    {
-			    appRunner.ComponentsCssSegment.Append(css, cssStartIndex, css.Length - cssStartIndex).Trim();
-			    appRunner.ComponentsCssSegment.Append(appRunner.AppRunnerSettings.LineBreak);
-		    }
-		    else
-		    {
-			    appRunner.ImportsCssSegment.Append(css, cssStartIndex, css.Length - cssStartIndex).Trim();
-			    appRunner.ImportsCssSegment.Append(appRunner.AppRunnerSettings.LineBreak);
-		    }
-
-		    return (-1, -1);
+	        importsSeg.Clear();
+	        compsSeg.Clear();
+	        foreach (var kv in settings.CssImports)
+	            kv.Value.Touched = false;
 	    }
-	    finally
+
+	    //––– snapshot to string + prep –––
+	    string src         = css.ToString();
+	    int    totalLength = src.Length;
+	    const string ImportToken = "@import ";
+	    int tokenLen = ImportToken.Length;
+	    int scanPos  = 0;
+	    int firstIdx = -1;
+	    int lastEnd  = 0;            // ← initialize to 0, not –1
+
+	    // find the very first @import
+	    int idx = src.IndexOf(ImportToken, scanPos, StringComparison.Ordinal);
+	    if (idx >= 0) firstIdx = idx;
+
+	    //––– loop all imports –––
+	    while (idx >= 0)
 	    {
-		    appRunner.AppState.StringBuilderPool.Return(importPathSb);
+	        int semicolon = src.IndexOf(';', idx + tokenLen);
+	        if (semicolon < 0) break;
+
+	        lastEnd = semicolon + 1;
+	        scanPos = lastEnd;
+
+	        // extract the raw between “@import ” and “;”
+	        var rawSpan = src.AsSpan(idx + tokenLen, semicolon - (idx + tokenLen)).Trim();
+
+	        // split off optional layer name
+	        string layerName = "";
+	        if (rawSpan.Length > 0)
+	        {
+	            char lastChar = rawSpan[^1];
+	            if (lastChar != '\'' && lastChar != '"')
+	            {
+	                int sp = rawSpan.LastIndexOf(' ');
+	                if (sp >= 0)
+	                {
+	                    layerName = new string(rawSpan[(sp + 1)..]);
+	                    rawSpan   = rawSpan[..sp];
+	                }
+	            }
+	        }
+	        rawSpan = rawSpan.Trim(' ', '\'', '"');
+
+	        // resolve path + cache
+	        var relPath  = new string(rawSpan);
+	        var filePath = Path.GetFullPath(Path.Combine(baseDir, parentPath, relPath));
+	        if (!File.Exists(filePath))
+	        {
+	            Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
+	            importsSeg
+	              .Append("/* Could not import: ")
+	              .Append(filePath)
+	              .Append(" */")
+	              .Append(settings.LineBreak);
+	        }
+	        else
+	        {
+	            if (!settings.CssImports.TryGetValue(filePath, out var importFile))
+	            {
+	                importFile = new CssImportFile {
+	                    Touched    = true,
+	                    Pool       = pool,
+	                    FileInfo   = new FileInfo(filePath),
+	                    CssContent = pool.Get().Append(File.ReadAllText(filePath))
+	                };
+	                settings.CssImports[filePath] = importFile;
+	            }
+	            else
+	            {
+	                importFile.Touched = true;
+	                var fi = new FileInfo(filePath);
+	                if (fi.Length != importFile.FileInfo.Length
+	                 || fi.CreationTimeUtc  != importFile.FileInfo.CreationTimeUtc
+	                 || fi.LastWriteTimeUtc != importFile.FileInfo.LastWriteTimeUtc)
+	                {
+	                    importFile.FileInfo = fi;
+	                    importFile.CssContent
+	                              .Clear()
+	                              .Append(File.ReadAllText(filePath));
+	                }
+	            }
+
+	            bool hasLayer = !string.IsNullOrEmpty(layerName) && layerName != "components";
+	            if (hasLayer)
+	                importsSeg
+	                  .Append("@layer ")
+	                  .Append(layerName)
+	                  .Append(" {")
+	                  .Append(settings.LineBreak);
+
+	            // recurse into the imported file
+	            _ = ProcessCssImportStatements(
+	                importFile.CssContent,
+	                appRunner,
+	                false,
+	                layerName,
+	                Path.GetDirectoryName(filePath) ?? ""
+	            );
+
+	            if (hasLayer)
+	                importsSeg
+	                  .Append("}")
+	                  .Append(settings.LineBreak);
+	        }
+
+	        // next match
+	        idx = src.IndexOf(ImportToken, scanPos, StringComparison.Ordinal);
+	    }
+
+	    //––– finalize –––
+	    if (isRoot)
+	    {
+	        settings.CssImports.RemoveWhere((_, v) => !v.Touched);
+	        if (firstIdx < 0 || lastEnd < firstIdx)
+	            return (-1, -1);
+	        return (firstIdx, lastEnd - firstIdx);
+	    }
+	    else
+	    {
+	        // leaf: append everything after the last “;”
+	        if (lastEnd >= totalLength)
+	            return (-1, -1);
+
+	        var targetSeg = parentLayerName == "components"
+	                      ? compsSeg
+	                      : importsSeg;
+
+	        targetSeg
+		        .Append(src, lastEnd, totalLength - lastEnd)
+		        .Trim();
+
+	        targetSeg
+	          .Append(settings.LineBreak);
+
+	        return (-1, -1);
 	    }
 	}
-
+	
 	#endregion
 	
 	#region V2: Extract Sfumato Block
@@ -406,71 +434,169 @@ public static class AppRunnerExtensions
     /// </summary>
     /// <param name="css"></param>
     /// <param name="appRunner"></param>
-	public static void ProcessFunctions(this StringBuilder css, AppRunner appRunner)
-	{
-		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+    public static void ProcessFunctions(this StringBuilder css, AppRunner appRunner)
+    {
+        var settings = appRunner.AppRunnerSettings;
+        var used     = appRunner.UsedCssCustomProperties;
+        var colors   = appRunner.Library.ColorsByName;
+        var pool     = appRunner.AppState.StringBuilderPool;
 
-		try
-		{
-			workingSb.Append(css);
+        // snapshot input once
+        var src = css.ToString();
+        var len = src.Length;
 
-			foreach (var match in workingSb.EnumerateTokenWithOuterParenthetical("--alpha"))
-			{
-				if (match.Contains("var(--color-", StringComparison.Ordinal) == false || match.Contains('%') == false)
-					continue;
-				
-				var colorKey = match[..match.IndexOf(')')]
-					.TrimStart("--alpha(")?.Trim()
-					.TrimStart("var(")?.Trim()
-					.TrimStart("--color-");
+        // prepare output
+        var output = pool.Get();
 
-				if (string.IsNullOrEmpty(colorKey))
-					continue;
+        output.Clear();
+        output.EnsureCapacity(len);
 
-				if (appRunner.Library.ColorsByName.TryGetValue(colorKey, out var colorValue) == false)
-					continue;
+        const string alphaToken   = "--alpha(";
+        const string spacingToken = "--spacing(";
 
-				var alphaValue = match[(match.LastIndexOf('/') + 1)..].TrimEnd(')', '%', ' ').Trim();
+        var i = 0;
+        
+        while (i < len)
+        {
+            // --- 1) Handle --alpha(...) ---
+            if (i + alphaToken.Length <= len && src.AsSpan(i, alphaToken.Length).SequenceEqual(alphaToken))
+            {
+                var start = i;
+                var j = i + alphaToken.Length;
+                var depth = 1;
 
-				if (int.TryParse(alphaValue, out var pct))
-					css.Replace(match, colorValue.SetWebColorAlpha(pct));
-			}
-			
-			foreach (var match in workingSb.EnumerateTokenWithOuterParenthetical("--spacing"))
-			{
-				if (match.Length <= 11)
-					continue;
+                // find matching ')'
+                while (j < len && depth > 0)
+                {
+                    var c = src[j++];
+                    
+                    if (c == '(')
+	                    depth++;
+                    else if (c == ')')
+	                    depth--;
+                }
 
-				var valueString = match.TrimStart("--spacing(")?.Trim().TrimEnd(')', ' ');
+                if (depth == 0)
+                {
+                    var matchLen = j - start;
+                    var span = src.AsSpan(start + alphaToken.Length, matchLen - alphaToken.Length - 1);
 
-				if (string.IsNullOrEmpty(valueString))
-					continue;
+                    // quick checks
+                    var varPos = span.IndexOf("var(--color-", StringComparison.Ordinal);
+                    var slashPos = span.LastIndexOf('/');
+                    
+                    if (varPos >= 0 && slashPos >= 0)
+                    {
+                        // extract color key
+                        var varEnd = span[varPos..].IndexOf(')') + varPos;
+                        
+                        if (varEnd > varPos)
+                        {
+	                        const string colorPrefix = "--color-";
 
-				if (double.TryParse(valueString, out var value) == false)
-					continue;
+	                        // after 'var('
+                            var keySpan = span.Slice(varPos + 4, varEnd - (varPos + 4));
+                            var cp = keySpan.IndexOf(colorPrefix, StringComparison.Ordinal);
 
-				css.Replace(match, $"calc(var(--spacing) * {value})");
+                            if (cp >= 0)
+                            {
+                                var nameSpan = keySpan[(cp + colorPrefix.Length)..];
+                                
+                                if (nameSpan.Length > 0 && colors.TryGetValue(nameSpan.ToString(), out var colorVal))
+                                {
+                                    // parse percent
+                                    var pctSpan = span[(slashPos + 1)..].Trim(' ', '%');
 
-				appRunner.UsedCssCustomProperties.TryAdd("--spacing", string.Empty);
-			}
+                                    if (int.TryParse(pctSpan, out var pct))
+                                    {
+                                        // build & emit replacement
+                                        output.Append(colorVal.SetWebColorAlpha(pct));
+                                        i = start + matchLen;
 
-			foreach (var pos in workingSb.EnumerateCssCustomPropertyPositions(namesOnly: true))
-			{
-				if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(workingSb.Substring(pos.PropertyStart, pos.PropertyLength), out var value))
-					appRunner.UsedCssCustomProperties.TryAdd(workingSb.Substring(pos.PropertyStart, pos.PropertyLength), value);
-			}
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessFunctions() => {e.Message}");
-			Environment.Exit(1);
-		}
-		finally
-		{
-			appRunner.AppState.StringBuilderPool.Return(workingSb);
-		}
-	}
-	
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // fallback: copy original function call
+                    output.Append(src, start, matchLen);
+                    i = start + matchLen;
+
+                    continue;
+                }
+
+                // unbalanced → fall through to copy one char
+            }
+
+            // --- 2) Handle --spacing(...) ---
+            if (i + spacingToken.Length <= len && src.AsSpan(i, spacingToken.Length).SequenceEqual(spacingToken))
+            {
+                var start = i;
+                var j = i + spacingToken.Length;
+                var depth = 1;
+
+                while (j < len && depth > 0)
+                {
+                    var c = src[j++];
+                    
+                    if (c == '(')
+	                    depth++;
+                    else if (c == ')')
+	                    depth--;
+                }
+
+                if (depth == 0)
+                {
+                    var matchLen = j - start;
+                    var span = src.AsSpan(start + spacingToken.Length, matchLen - spacingToken.Length - 1).Trim();
+                    
+                    if (span.Length > 0 && double.TryParse(span, out var val))
+                    {
+                        // emit calc(...) and track
+                        output
+                          .Append("calc(var(--spacing) * ")
+                          .Append(val)
+                          .Append(')');
+                        
+                        used.TryAdd("--spacing", string.Empty);
+
+                        i = start + matchLen;
+
+                        continue;
+                    }
+
+                    // fallback
+                    output.Append(src, start, matchLen);
+                    i = start + matchLen;
+
+                    continue;
+                }
+
+                // unbalanced → fall through
+            }
+
+            // --- 3) Default: copy one char ---
+            output.Append(src[i]);
+            i++;
+        }
+
+        // 4) write back into the original builder
+        css.Clear();
+        css.Append(output);
+        pool.Return(output);
+
+        // 5) finally, custom-property tracking
+        foreach (var pos in css.EnumerateCssCustomPropertyPositions(namesOnly: true))
+        {
+            var prop = css.ToString(pos.PropertyStart, pos.PropertyLength);
+
+            if (settings.SfumatoBlockItems.TryGetValue(prop, out var val))
+                used.TryAdd(prop, val);
+        }
+    }
+    
 	#endregion
 	
 	#region V2: Process @variant Statements
@@ -1386,6 +1512,9 @@ public static class AppRunnerExtensions
 		var length = 0;
 		
 		appRunner.CustomCssSegment.ReplaceContent(css);
+		appRunner.PropertiesCssSegment.Clear();
+		appRunner.PropertyListCssSegment.Clear();
+		appRunner.ThemeCssSegment.Clear();
 		
 		(index, length) = appRunner.CustomCssSegment.ExtractSfumatoBlock(appRunner);
 
