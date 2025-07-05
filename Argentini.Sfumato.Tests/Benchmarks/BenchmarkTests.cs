@@ -14,7 +14,6 @@ public class BenchmarkTests(ITestOutputHelper testOutputHelper)
     public void CssClassBenchmark()
     {
         testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
-        testOutputHelper.WriteLine("");
 
         var summary = BenchmarkRunner.Run<CssClassBenchmarks>();
 
@@ -27,7 +26,6 @@ public class BenchmarkTests(ITestOutputHelper testOutputHelper)
     public void CssGenerationBenchmark()
     {
         testOutputHelper.WriteLine("YOU MUST RUN THIS IN RELEASE MODE");
-        testOutputHelper.WriteLine("");
 
         var summary = BenchmarkRunner.Run<CssGenerationBenchmarks>();
 
