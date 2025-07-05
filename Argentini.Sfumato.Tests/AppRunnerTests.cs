@@ -1,3 +1,5 @@
+using BenchmarkDotNet.Attributes;
+using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
@@ -119,6 +121,17 @@ public class AppRunnerTests
     [Fact]
     public async Task BuildCssFile()
     {
+        /*
+        var cssPath = Path.GetFullPath(Path.Combine(ApplicationEnvironment.ApplicationBasePath[..ApplicationEnvironment.ApplicationBasePath.IndexOf("Developer", StringComparison.Ordinal)], "Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"));
+
+        var appRunner = new AppRunner(new AppState(), cssPath);
+
+        await appRunner.LoadCssFileAsync();
+        await appRunner.PerformFileScanAsync();
+
+        var css = appRunner.AppRunnerSettings.CssContent.BuildCss(appRunner);
+        */
+        
         var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css");
 
         await appRunner.LoadCssFileAsync();

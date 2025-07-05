@@ -64,7 +64,7 @@ public sealed class AppRunner
 
     #endregion
     
-    #region Process Settings
+    #region Initialize
 
     /// <summary>
     /// Clears AppRunnerSettings and loads default settings from defaults.css.

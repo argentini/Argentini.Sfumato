@@ -149,13 +149,12 @@ public class CssGenerationBenchmarks
 
         AppRunner.LoadCssFileAsync().GetAwaiter().GetResult();
         AppRunner.PerformFileScanAsync().GetAwaiter().GetResult();
-        AppRunner.ProcessScannedFileUtilityClassDependencies(AppRunner);
     }
 
     [Benchmark(Baseline = true)]
-    public void NewProcess()
+    public void FullBuild()
     {
-        _ = AppRunner.AppRunnerSettings.CssContent.BuildCss(AppRunner);
+        var css = AppRunner.AppRunnerSettings.CssContent.BuildCss(AppRunner);
     }
     
     /*
