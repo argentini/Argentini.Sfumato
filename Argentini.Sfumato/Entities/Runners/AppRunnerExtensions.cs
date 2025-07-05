@@ -1,6 +1,7 @@
 // ReSharper disable RedundantAssignment
 // ReSharper disable MemberCanBePrivate.Global
 
+using System.Globalization;
 using System.Reflection;
 
 namespace Argentini.Sfumato.Entities.Runners;
@@ -434,41 +435,66 @@ public static class AppRunnerExtensions
     /// </summary>
     /// <param name="css"></param>
     /// <param name="appRunner"></param>
-    public static void ProcessFunctions(this StringBuilder css, AppRunner appRunner)
+    public static void ProcessFunctions(this StringBuilder css, AppRunner appRunner) // 410
     {
+        // locals
         var settings = appRunner.AppRunnerSettings;
         var used     = appRunner.UsedCssCustomProperties;
         var colors   = appRunner.Library.ColorsByName;
         var pool     = appRunner.AppState.StringBuilderPool;
 
-        // snapshot input once
+        // 1) snapshot to string once
         var src = css.ToString();
-        var len = src.Length;
+        var n = src.Length;
+        var data = src.AsSpan();
 
-        // prepare output
+        // 2) prepare output SB
         var output = pool.Get();
 
         output.Clear();
-        output.EnsureCapacity(len);
-
-        const string alphaToken   = "--alpha(";
-        const string spacingToken = "--spacing(";
+        output.EnsureCapacity(n);
 
         var i = 0;
         
-        while (i < len)
+        while (i < n)
         {
-            // --- 1) Handle --alpha(...) ---
-            if (i + alphaToken.Length <= len && src.AsSpan(i, alphaToken.Length).SequenceEqual(alphaToken))
+            // 2a) bulk-copy until next '-'
+            var nextDash = data[i..].IndexOf('-');
+            
+            if (nextDash < 0)
+            {
+                // no more dashes: copy the rest
+                output.Append(src, i, n - i);
+                break;
+            }
+
+            if (nextDash > 0)
+            {
+                // copy up to the dash
+                output.Append(src, i, nextDash);
+                i += nextDash;
+                // fall through to handle dash
+            }
+
+            // 2b) at data[i] == '-'
+            // Check for "--alpha("
+            if (i + 8 <= n
+                && data[i + 1] == '-'
+                && data[i + 2] == 'a'
+                && data[i + 3] == 'l'
+                && data[i + 4] == 'p'
+                && data[i + 5] == 'h'
+                && data[i + 6] == 'a'
+                && data[i + 7] == '(')
             {
                 var start = i;
-                var j = i + alphaToken.Length;
+                var j     = i + 8;
                 var depth = 1;
 
                 // find matching ')'
-                while (j < len && depth > 0)
+                while (j < n && depth > 0)
                 {
-                    var c = src[j++];
+                    var c = data[j++];
                     
                     if (c == '(')
 	                    depth++;
@@ -479,38 +505,39 @@ public static class AppRunnerExtensions
                 if (depth == 0)
                 {
                     var matchLen = j - start;
-                    var span = src.AsSpan(start + alphaToken.Length, matchLen - alphaToken.Length - 1);
-
-                    // quick checks
-                    var varPos = span.IndexOf("var(--color-", StringComparison.Ordinal);
-                    var slashPos = span.LastIndexOf('/');
                     
-                    if (varPos >= 0 && slashPos >= 0)
+                    // inner content without a final ')'
+                    var inner = data.Slice(start + 8, matchLen - 9).Trim();  
+                    
+                    // look for "var(--color-" and '/'
+                    var vp = inner.IndexOf("var(--color-", StringComparison.Ordinal);
+                    var sp = inner.LastIndexOf('/');
+                    
+                    if (vp >= 0 && sp >= 0)
                     {
-                        // extract color key
-                        var varEnd = span[varPos..].IndexOf(')') + varPos;
+                        // find end of var(...)
+                        var vend = inner[vp..].IndexOf(')') + vp;
                         
-                        if (varEnd > varPos)
+                        if (vend > vp)
                         {
-	                        const string colorPrefix = "--color-";
+                            // extract name after "--color-"
+                            const string prefix = "--color-";
+                            
+                            var keyStart = vp + "var(".Length + prefix.Length;
+                            var keyLen   = vend - keyStart;
 
-	                        // after 'var('
-                            var keySpan = span.Slice(varPos + 4, varEnd - (varPos + 4));
-                            var cp = keySpan.IndexOf(colorPrefix, StringComparison.Ordinal);
-
-                            if (cp >= 0)
+                            if (keyLen > 0)
                             {
-                                var nameSpan = keySpan[(cp + colorPrefix.Length)..];
+                                var keySpan = inner.Slice(keyStart, keyLen);
                                 
-                                if (nameSpan.Length > 0 && colors.TryGetValue(nameSpan.ToString(), out var colorVal))
+                                if (colors.TryGetValue(keySpan.ToString(), out var colVal))
                                 {
                                     // parse percent
-                                    var pctSpan = span[(slashPos + 1)..].Trim(' ', '%');
-
+                                    var pctSpan = inner[(sp + 1)..].Trim(' ', '%');
+                                    
                                     if (int.TryParse(pctSpan, out var pct))
                                     {
-                                        // build & emit replacement
-                                        output.Append(colorVal.SetWebColorAlpha(pct));
+                                        output.Append(colVal.SetWebColorAlpha(pct));
                                         i = start + matchLen;
 
                                         continue;
@@ -520,26 +547,34 @@ public static class AppRunnerExtensions
                         }
                     }
 
-                    // fallback: copy original function call
+                    // fallback: copy literally
                     output.Append(src, start, matchLen);
                     i = start + matchLen;
 
                     continue;
                 }
-
-                // unbalanced → fall through to copy one char
+                // else unbalanced → treat '-' as literal
             }
 
-            // --- 2) Handle --spacing(...) ---
-            if (i + spacingToken.Length <= len && src.AsSpan(i, spacingToken.Length).SequenceEqual(spacingToken))
+            // 2c) Check for "--spacing("
+            if (i + 10 <= n
+                && data[i + 1] == '-'
+                && data[i + 2] == 's'
+                && data[i + 3] == 'p'
+                && data[i + 4] == 'a'
+                && data[i + 5] == 'c'
+                && data[i + 6] == 'i'
+                && data[i + 7] == 'n'
+                && data[i + 8] == 'g'
+                && data[i + 9] == '(')
             {
                 var start = i;
-                var j = i + spacingToken.Length;
+                var j = i + 10;
                 var depth = 1;
-
-                while (j < len && depth > 0)
+                
+	            while (j < n && depth > 0)
                 {
-                    var c = src[j++];
+                    var c = data[j++];
                     
                     if (c == '(')
 	                    depth++;
@@ -550,20 +585,18 @@ public static class AppRunnerExtensions
                 if (depth == 0)
                 {
                     var matchLen = j - start;
-                    var span = src.AsSpan(start + spacingToken.Length, matchLen - spacingToken.Length - 1).Trim();
+                    var numSpan  = data.Slice(start + 10, matchLen - 11).Trim();
                     
-                    if (span.Length > 0 && double.TryParse(span, out var val))
+                    if (numSpan.Length > 0 && double.TryParse(numSpan, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
                     {
-                        // emit calc(...) and track
                         output
                           .Append("calc(var(--spacing) * ")
                           .Append(val)
                           .Append(')');
-                        
+
                         used.TryAdd("--spacing", string.Empty);
-
                         i = start + matchLen;
-
+                        
                         continue;
                     }
 
@@ -573,21 +606,20 @@ public static class AppRunnerExtensions
 
                     continue;
                 }
-
-                // unbalanced → fall through
+                // else treat dash as literal
             }
 
-            // --- 3) Default: copy one char ---
-            output.Append(src[i]);
+            // 2d) no token: copy the dash
+            output.Append('-');
             i++;
         }
 
-        // 4) write back into the original builder
+        // 3) write back
         css.Clear();
         css.Append(output);
         pool.Return(output);
 
-        // 5) finally, custom-property tracking
+        // 4) custom-property tracking
         foreach (var pos in css.EnumerateCssCustomPropertyPositions(namesOnly: true))
         {
             var prop = css.ToString(pos.PropertyStart, pos.PropertyLength);
