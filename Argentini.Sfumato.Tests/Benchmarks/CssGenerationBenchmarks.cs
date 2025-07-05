@@ -6,6 +6,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks;
 public class CssGenerationBenchmarks
 {
     private AppRunner AppRunner { get; set; } = new (new AppState());
+    /*
     private StringBuilder Sb { get; set; } = new ();
     private StringBuilder WorkingSb { get; set; } = new ();
     private StringBuilder Step2Prep {get;} = new ();
@@ -19,7 +20,9 @@ public class CssGenerationBenchmarks
     private StringBuilder Step10Prep {get;} = new ();
     private StringBuilder Step11Prep {get;} = new ();
     private StringBuilder Step12Prep {get;} = new ();
+    */
     
+    /*
     [IterationSetup]
     public void IterationSetup()
     {
@@ -87,7 +90,7 @@ public class CssGenerationBenchmarks
             .AppendProcessedSourceCss(AppRunner)
             .ProcessAtApplyStatementsAndTrackDependencies(AppRunner)
             .InjectUtilityClassesCss(AppRunner)
-            .ProcessAtVariantStatements(AppRunner);
+            .ProcessAtVariants(AppRunner);
         
         Step9Prep
             .AppendResetCss(AppRunner)
@@ -96,7 +99,7 @@ public class CssGenerationBenchmarks
             .AppendProcessedSourceCss(AppRunner)
             .ProcessAtApplyStatementsAndTrackDependencies(AppRunner)
             .InjectUtilityClassesCss(AppRunner)
-            .ProcessAtVariantStatements(AppRunner)
+            .ProcessAtVariants(AppRunner)
             .ProcessFunctionsAndTrackDependencies(AppRunner);
 
         Step10Prep
@@ -106,7 +109,7 @@ public class CssGenerationBenchmarks
             .AppendProcessedSourceCss(AppRunner)
             .ProcessAtApplyStatementsAndTrackDependencies(AppRunner)
             .InjectUtilityClassesCss(AppRunner)
-            .ProcessAtVariantStatements(AppRunner)
+            .ProcessAtVariants(AppRunner)
             .ProcessFunctionsAndTrackDependencies(AppRunner)
             .InjectRootDependenciesCss(AppRunner);
         
@@ -117,7 +120,7 @@ public class CssGenerationBenchmarks
             .AppendProcessedSourceCss(AppRunner)
             .ProcessAtApplyStatementsAndTrackDependencies(AppRunner)
             .InjectUtilityClassesCss(AppRunner)
-            .ProcessAtVariantStatements(AppRunner)
+            .ProcessAtVariants(AppRunner)
             .ProcessFunctionsAndTrackDependencies(AppRunner)
             .InjectRootDependenciesCss(AppRunner)
             .MoveComponentsLayer(AppRunner);
@@ -129,17 +132,38 @@ public class CssGenerationBenchmarks
             .AppendProcessedSourceCss(AppRunner)
             .ProcessAtApplyStatementsAndTrackDependencies(AppRunner)
             .InjectUtilityClassesCss(AppRunner)
-            .ProcessAtVariantStatements(AppRunner)
+            .ProcessAtVariants(AppRunner)
             .ProcessFunctionsAndTrackDependencies(AppRunner)
             .InjectRootDependenciesCss(AppRunner)
             .MoveComponentsLayer(AppRunner)
             .ProcessDarkThemeClasses(AppRunner);
     }
+    */
 
+    [IterationSetup]
+    public void IterationSetup()
+    {
+        var cssPath = Path.GetFullPath(Path.Combine(ApplicationEnvironment.ApplicationBasePath[..ApplicationEnvironment.ApplicationBasePath.IndexOf("Developer", StringComparison.Ordinal)], "Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"));
+
+        AppRunner = new AppRunner(new AppState(), cssPath);
+
+        AppRunner.LoadCssFileAsync().GetAwaiter().GetResult();
+        AppRunner.PerformFileScanAsync().GetAwaiter().GetResult();
+        AppRunner.ProcessScannedFileUtilityClassDependencies(AppRunner);
+    }
+
+    [Benchmark(Baseline = true)]
+    public void NewProcess()
+    {
+        _ = AppRunner.AppRunnerSettings.CssContent.BuildCss(AppRunner);
+    }
+    
+    /*
     [Benchmark(Baseline = true)]
     public void FullProcess()
     {
-        Sb = new StringBuilder()
+        var workingSb = new StringBuilder();
+        var sb = new StringBuilder()
             .AppendResetCss(AppRunner)
             .AppendFormsCss(AppRunner)
             .AppendUtilityClassMarker(AppRunner)
@@ -149,24 +173,24 @@ public class CssGenerationBenchmarks
             .ProcessAtApplyStatementsAndTrackDependencies(AppRunner)
 
             .InjectUtilityClassesCss(AppRunner)
-            .ProcessAtVariantStatements(AppRunner)
+            .ProcessAtVariants(AppRunner)
 
             .ProcessFunctionsAndTrackDependencies(AppRunner)
             .InjectRootDependenciesCss(AppRunner)
             .MoveComponentsLayer(AppRunner);
 
         if (AppRunner.AppRunnerSettings.UseDarkThemeClasses)
-            Sb.ProcessDarkThemeClasses(AppRunner);
+            sb.ProcessDarkThemeClasses(AppRunner);
 
-        _ = AppRunner.AppRunnerSettings.UseMinify ? Sb.ToString().CompactCss(WorkingSb) : Sb.ReformatCss(WorkingSb).ToString().NormalizeLinebreaks(AppRunner.AppRunnerSettings.LineBreak);
+        _ = AppRunner.AppRunnerSettings.UseMinify ? sb.ToString().CompactCss(workingSb) : sb.ReformatCss(workingSb).ToString().NormalizeLinebreaks(AppRunner.AppRunnerSettings.LineBreak);
     }
-    
+
     [Benchmark]
     public void Step1_AppendResetCss()
     {
         Sb.AppendResetCss(AppRunner);
     }
-    
+
     [Benchmark]
     public void Step2_AppendFormsCss()
     {
@@ -200,7 +224,7 @@ public class CssGenerationBenchmarks
     [Benchmark]
     public void Step7_ProcessAtVariantStatements()
     {
-        Step7Prep.ProcessAtVariantStatements(AppRunner);
+        Step7Prep.ProcessAtVariants(AppRunner);
     }
 
     [Benchmark]
@@ -232,4 +256,5 @@ public class CssGenerationBenchmarks
     {
         _ = Step12Prep.ReformatCss(WorkingSb).ToString().NormalizeLinebreaks(AppRunner.AppRunnerSettings.LineBreak);
     }
+*/
 }

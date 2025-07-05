@@ -1438,50 +1438,123 @@ public static partial class Strings
 	}
 	
 	/// <summary>
-	/// Normalize line breaks.
+	/// Normalize all “\r\n”, “\r”, and “\n” sequences into the specified linebreak,
+	/// doing at most one allocation and two scans.
 	/// </summary>
-	/// <param name="value"></param>
-	/// <param name="linebreak">Line break to use (default: "\n")</param>
 	public static string NormalizeLinebreaks(this string value, string linebreak = "\n")
 	{
-		if (value.IsEmpty())
-			return string.Empty;
+	    if (string.IsNullOrEmpty(value))
+	        return string.Empty;
 
-		if (value.Contains('\r'))
-		{
-			if (linebreak != "\r\n")
-				return value.Replace("\r\n", linebreak);
-		}
+	    var len = value.Length;
+	    var countCRLF = 0;
+		var countSingle = 0;
 
-		else
-		{
-			if (linebreak != "\n")
-				return value.Replace("\n", linebreak);
-		}
-		
-		return value;        
+	    // First pass: count how many CRLF vs. lone CR or LF we have
+	    for (var i = 0; i < len; i++)
+	    {
+	        var c = value[i];
+	        
+	        if (c == '\r')
+	        {
+	            if (i + 1 < len && value[i + 1] == '\n')
+	            {
+	                countCRLF++;
+	                i++;
+	            }
+	            else
+	            {
+	                countSingle++;
+	            }
+	        }
+	        else if (c == '\n')
+	        {
+	            countSingle++;
+	        }
+	    }
+
+	    // Nothing to normalize?
+	    if (countCRLF == 0 && countSingle == 0)
+	        return value;
+
+	    var breakLen = linebreak.Length;
+	    
+	    // Compute new length:
+	    //   remove 2 chars per CRLF, 1 per lone CR or LF
+	    //   then add back breakLen chars per token
+	    var newLen = len
+	                 - (countCRLF * 2 + countSingle * 1)
+	                 + (countCRLF + countSingle) * breakLen;
+
+	    // Second pass: fill directly into the new string’s buffer
+	    return string.Create(newLen, (value, linebreak), (span, state) =>
+	    {
+	        var (src, br) = state;
+	        var dst = 0;
+
+	        for (var i = 0; i < src.Length; i++)
+	        {
+	            var c = src[i];
+	            
+	            if (c == '\r')
+	            {
+	                if (i + 1 < src.Length && src[i + 1] == '\n')
+	                {
+	                    // CRLF
+	                    for (var j = 0; j < br.Length; j++)
+	                        span[dst + j] = br[j];
+	                    dst += br.Length;
+	                    i++;
+	                }
+	                else
+	                {
+	                    // lone CR
+	                    for (var j = 0; j < br.Length; j++)
+	                        span[dst + j] = br[j];
+	                    dst += br.Length;
+	                }
+	            }
+	            else if (c == '\n')
+	            {
+	                // lone LF
+	                for (var j = 0; j < br.Length; j++)
+	                    span[dst + j] = br[j];
+	                dst += br.Length;
+	            }
+	            else
+	            {
+	                span[dst++] = c;
+	            }
+	        }
+	    });
 	}
 
 	/// <summary>
-	/// Normalize path separators to those used by the current OS.
+	/// Normalize both ‘/’ and ‘\’ to the native directory separator in one pass.
 	/// </summary>
-	/// <param name="value"></param>
-	public static string SetNativePathSeparators(this string value)
+	public static string SetNativePathSeparators(this string path)
 	{
-		if (string.IsNullOrEmpty(value))
+		if (string.IsNullOrEmpty(path))
 			return string.Empty;
 
-		var path = value;
+		// If there are no separators, return the original string
+		if (path.IndexOfAny(['/', '\\']) < 0)
+			return path;
 
-		path = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-		
-		if (Path.DirectorySeparatorChar != '/')
-			path = path.Replace('/', Path.DirectorySeparatorChar);
+		var sep = Path.DirectorySeparatorChar;
 
-		if (Path.DirectorySeparatorChar != '\\')
-			path = path.Replace('\\', Path.DirectorySeparatorChar);
-		
-		return path;        
+		// Allocate exactly one new string of the right length and fill it:
+		return string.Create(path.Length, (path, sep), (span, state) =>
+		{
+			var (src, separator) = state;
+			
+			for (var i = 0; i < src.Length; i++)
+			{
+				var c = src[i];
+				
+				span[i] = c is '/' or '\\' ? separator : c;
+			}
+		});
 	}
 	
 	/// <summary>

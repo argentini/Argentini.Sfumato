@@ -3,7 +3,7 @@ namespace Argentini.Sfumato.Entities.Scanning;
 /// <summary>
 /// Extension entry-point: foreach (var p in css.EnumerateCustomProperties())
 /// </summary>
-public static class CssCustomPropertyExtensions
+public static partial class CssCustomPropertyExtensions
 {
     public static CssPropertyEnumerable EnumerateCssCustomProperties(this string? css, bool namesOnly = false) => new(css, namesOnly);
 }
@@ -24,6 +24,7 @@ public readonly ref struct CssPropertyEnumerable
 {
     private readonly ReadOnlySpan<char> _buffer;
     private readonly bool _namesOnly;
+    
     internal CssPropertyEnumerable(string? css, bool namesOnly)
     {
         _buffer = css is null ? ReadOnlySpan<char>.Empty : css.AsSpan();

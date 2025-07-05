@@ -45,7 +45,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	public string CssContent
 	{
 		get => _cssContent;
-		private set
+		set
 		{
 			_cssContent = value;
 			LineBreak = _cssContent.Contains("\r\n") ? "\r\n" : "\n";
@@ -64,8 +64,11 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	public string NativeCssOutputFilePath { get; private set; } = string.Empty;
 	public string LineBreak { get; private set; } = "\n";
 
-	public List<FileInfo> Imports { get; } = [];
-    public List<string> Paths { get; } = [];
+	public Dictionary<string, CssImportFile> CssImports { get; } = [];
+	
+	public List<FileInfo> Imports { get; } = []; // todo: remove
+    
+	public List<string> Paths { get; } = [];
     public List<string> AbsolutePaths { get; } = [];
     public List<string> NotPaths { get; } = [];
     public List<string> AbsoluteNotPaths { get; } = [];
@@ -169,9 +172,10 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 	    }
     }
 
+    /*
     /// <summary>
     /// Process project settings from the dictionary.
-    /// Only handles operation settings like minify, paths, etc.
+    /// Only handles operation settings like "minify", paths, etc.
     /// </summary>
     public void ProcessProjectSettings()
     {
@@ -261,6 +265,7 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 		    AppRunner?.AppState.StringBuilderPool.Return(workingSb);
 		}
     }
+    */
 
     /// <summary>
     /// Read all nested partial references (e.g. @import "...") from ProcessedCssContent

@@ -64,5 +64,37 @@ public static class Objects
             dict.TryAdd(kvp.Key, kvp.Value);
     }
     
+    /// <summary>
+    /// Removes all entries for which the predicate returns true.
+    /// </summary>
+    public static void RemoveWhere<TKey, TValue>(this IDictionary<TKey, TValue>? dict, Func<TKey, TValue, bool>? predicate)
+    {
+        if (dict is null || predicate is null)
+            return;
+
+        var count = dict.Count;
+
+        if (count == 0) 
+            return;
+
+        // Collect matching keys in one fast scan
+        var keysToRemove = new TKey[count];
+        var idx = 0;
+        
+        foreach (var kvp in dict)
+        {
+            if (predicate(kvp.Key, kvp.Value))
+                keysToRemove[idx++] = kvp.Key;
+        }
+
+        // If nothing matched, bail out immediately
+        if (idx == 0)
+            return;
+
+        // Remove exactly those entries
+        for (var i = 0; i < idx; i++)
+            dict.Remove(keysToRemove[i]);
+    }
+    
     #endregion
 }

@@ -8,18 +8,302 @@ namespace Argentini.Sfumato.Helpers;
 public static class StringBuilders
 {
 	/// <summary>
+	/// One-liner for replacing the content in a StringBuilder with all or part of a string.
+	/// </summary>
+	/// <param name="sb"></param>
+	/// <param name="content"></param>
+	/// <param name="index"></param>
+	/// <param name="length"></param>
+	/// <returns></returns>
+	public static StringBuilder? ReplaceContent(this StringBuilder? sb, string? content, int index = -1, int length = -1)
+	{
+		if (sb is null)
+			return null;
+
+		sb.Clear();
+
+		if (string.IsNullOrEmpty(content))
+			return sb;
+
+		var contentLen = content.Length;
+
+		// Determine start:
+		var start = index < 0 ? 0 : index;
+		
+		if (start >= contentLen) 
+			return sb; // nothing to append
+
+		var count = length < 0 ? contentLen - start : length;
+
+		if (count <= 0) 
+			return sb; // nothing to append
+
+		if (start + count > contentLen)
+			count = contentLen - start;
+
+		if (start == 0 && count == contentLen)
+			sb.Append(content);
+		else
+			sb.Append(content, start, count);
+
+		return sb;
+	}
+
+	/// <summary>
+	/// One-liner for replacing the content in a StringBuilder with all or part of another StringBuilder.
+	/// </summary>
+	/// <param name="sb"></param>
+	/// <param name="content"></param>
+	/// <param name="index"></param>
+	/// <param name="length"></param>
+	/// <returns></returns>
+	public static StringBuilder? ReplaceContent(this StringBuilder? sb, StringBuilder? content, int index = -1, int length = -1)
+	{
+		if (sb is null)
+			return null;
+
+		sb.Clear();
+
+		if (content is null)
+			return sb;
+
+		var contentLen = content.Length;
+
+		// Determine start:
+		var start = index < 0 ? 0 : index;
+		
+		if (start >= contentLen) 
+			return sb; // nothing to append
+
+		var count = length < 0 ? contentLen - start : length;
+
+		if (count <= 0) 
+			return sb; // nothing to append
+
+		if (start + count > contentLen)
+			count = contentLen - start;
+
+		if (start == 0 && count == contentLen)
+			sb.Append(content);
+		else
+			sb.Append(content, start, count);
+
+		return sb;
+	}
+
+	/// <summary>
+    /// Normalize all “\r\n”, “\r” and “\n” sequences into the specified linebreak,
+    /// modifying the passed-in StringBuilder in place.
+    /// </summary>
+    public static void NormalizeLinebreaks(this StringBuilder? sb, string linebreak = "\n")
+    {
+        if (sb is null || sb.Length == 0)
+            return;
+
+        // First pass: count how many CRLF vs. lone CR or LF we have
+        var len = sb.Length;
+        var countCrlf = 0;
+	    var countSingle = 0;
+
+	    for (var i = 0; i < len; i++)
+        {
+            var c = sb[i];
+            
+            if (c == '\r')
+            {
+                if (i + 1 < len && sb[i + 1] == '\n')
+                {
+                    countCrlf++;
+                    i++; // skip the \n
+                }
+                else
+                {
+                    countSingle++;
+                }
+            }
+            else if (c == '\n')
+            {
+                countSingle++;
+            }
+        }
+
+        // Nothing to normalize?
+        if (countCrlf == 0 && countSingle == 0)
+            return;
+
+        // Compute new total length
+        var brLen = linebreak.Length;
+        var totalTokens = countCrlf + countSingle;
+        var newLen = len
+                     - (countCrlf * 2 + countSingle * 1)
+                     + totalTokens * brLen;
+
+        // Second pass: build into a single char[] buffer
+        var buffer = new char[newLen];
+        var dst = 0;
+        
+        for (var i = 0; i < len; i++)
+        {
+            var c = sb[i];
+            
+            if (c == '\r')
+            {
+                if (i + 1 < len && sb[i + 1] == '\n')
+                {
+                    // CRLF → linebreak
+                    for (var j = 0; j < brLen; j++)
+                        buffer[dst + j] = linebreak[j];
+
+                    dst += brLen;
+                    i++;
+                }
+                else
+                {
+                    // lone CR → linebreak
+                    for (var j = 0; j < brLen; j++)
+                        buffer[dst + j] = linebreak[j];
+
+                    dst += brLen;
+                }
+            }
+            else if (c == '\n')
+            {
+                // lone LF → linebreak
+                for (var j = 0; j < brLen; j++)
+                    buffer[dst + j] = linebreak[j];
+                
+                dst += brLen;
+            }
+            else
+            {
+                buffer[dst++] = c;
+            }
+        }
+
+        // Replace the builder’s contents in one go
+        sb.Clear();
+        sb.Append(buffer, 0, newLen);
+    }
+
+    /// <summary>
+    /// Normalize all ‘/’ and ‘\’ characters in the StringBuilder to the native 
+    /// Path.DirectorySeparatorChar, modifying the builder in-place.
+    /// </summary>
+    /// <param name="sb">The StringBuilder whose contents will be normalized.</param>
+    public static void SetNativePathSeparators(this StringBuilder? sb)
+    {
+	    if (sb is null || sb.Length == 0) 
+		    return;
+
+	    var sep = Path.DirectorySeparatorChar;
+	    var len = sb.Length;
+
+	    for (var i = 0; i < len; i++)
+	    {
+		    var c = sb[i];
+		    
+		    // if it's a slash of either kind, and not already the native sep, replace it
+		    if (c is '/' or '\\' && c != sep)
+		    {
+			    sb[i] = sep;
+		    }
+	    }
+    }
+
+    /// <summary>
+    /// Returns true if the StringBuilder ends with the given character.
+    /// </summary>
+    /// <param name="sb">The StringBuilder to inspect.</param>
+    /// <param name="value">The character to compare to the last character.</param>
+    /// <returns>True if sb is non‐empty and its last character equals value; otherwise false.</returns>
+    public static bool EndsWith(this StringBuilder sb, char value)
+    {
+	    var len = sb.Length;
+	    
+	    if (len == 0)
+		    return false;
+
+	    return sb[len - 1] == value;
+    }
+    
+    /// <summary>
+    /// Returns the index of the last occurrence of a specified character in the StringBuilder,
+    /// or -1 if the character is not found.
+    /// </summary>
+    /// <param name="sb">The StringBuilder to search.</param>
+    /// <param name="value">The character to locate.</param>
+    /// <returns>
+    /// The zero-based index position of value if found; otherwise, –1. 
+    /// </returns>
+    public static int LastIndexOf(this StringBuilder sb, char value)
+    {
+	    for (var i = sb.Length - 1; i >= 0; i--)
+	    {
+		    if (sb[i] == value)
+			    return i;
+	    }
+
+	    return -1;
+    }
+    
+    /// <summary>
+    /// Removes all leading characters in <paramref name="trimChars"/> from the start of the builder.
+    /// </summary>
+    public static void TrimStart(this StringBuilder sb, params char[] trimChars)
+    {
+	    if (trimChars.Length == 0)
+		    return;
+
+	    var len = sb.Length;
+	    var start = 0;
+	    
+	    while (start < len && trimChars.Contains(sb[start]))
+		    start++;
+
+	    if (start > 0)
+		    sb.Remove(0, start);
+    }
+
+    /// <summary>
+    /// Removes all trailing characters in <paramref name="trimChars"/> from the end of the builder.
+    /// </summary>
+    public static void TrimEnd(this StringBuilder sb, params char[] trimChars)
+    {
+	    if (trimChars.Length == 0)
+		    return;
+
+	    var end = sb.Length - 1;
+	    
+	    while (end >= 0 && trimChars.Contains(sb[end]))
+		    end--;
+
+	    // end is now index of last keep-char, so remove everything after it
+	    if (end < sb.Length - 1)
+		    sb.Remove(end + 1, sb.Length - end - 1);
+    }
+
+    /// <summary>
+    /// Removes all leading and trailing characters in <paramref name="trimChars"/>.
+    /// </summary>
+    public static void Trim(this StringBuilder sb, params char[] trimChars)
+    {
+	    sb.TrimStart(trimChars);
+	    sb.TrimEnd(trimChars);
+    }
+    
+	/// <summary>
 	/// Extract a block of CSS by its starting declaration (e.g. "@layer components").
 	/// </summary>
 	/// <param name="sourceCss"></param>
 	/// <param name="cssBlockStart"></param>
 	/// <param name="startIndex"></param>
 	/// <returns></returns>
-	public static (int Start, int Length) ExtractCssBlock(this StringBuilder sourceCss, string cssBlockStart, int startIndex = 0)
+	public static (int Start, int Length) ExtractCssBlock(this StringBuilder? sourceCss, string cssBlockStart, int startIndex = 0)
 	{
 		if (sourceCss is null || sourceCss.Length == 0 || string.IsNullOrEmpty(cssBlockStart))
 			return (-1, 0);
 
-        var blockStart = sourceCss.IndexOf(cssBlockStart, startIndex, StringComparison.Ordinal);
+        var blockStart = sourceCss.IndexOf(cssBlockStart, startIndex);
 
 		if (blockStart < 0)
 			return (-1, 0);
@@ -71,7 +355,7 @@ public static class StringBuilders
 	/// <param name="value"></param>
 	/// <param name="startIndex"></param>
 	/// <returns></returns>
-	public static int IndexOf(this StringBuilder? sb, char value, int startIndex = 0)
+	public static int IndexOf(this StringBuilder? sb, char value, int startIndex)
 	{
 		if (sb == null || startIndex < 0 || startIndex >= sb.Length)
 			return -1;
@@ -585,27 +869,6 @@ public static class StringBuilders
 		}
 
 		return false;
-	}
-	
-	/// <summary>
-	/// Normalize line breaks in a StringBuilder
-	/// </summary>
-	/// <param name="source"></param>
-	/// <param name="linebreak">Line break to use (default: "\n")</param>
-	public static void NormalizeLinebreaks(this StringBuilder source, string? linebreak = "\n")
-	{
-		if (source.IsEmpty()) return;
-
-		if (linebreak == null || linebreak.IsEmpty()) return;
-        
-		if (source.Contains("\r\n") && linebreak != "\r\n")
-			source.Replace("\r\n", linebreak);
-
-		else if (source.Contains('\r') && linebreak != "\r")
-			source.Replace("\r", linebreak);
-
-		else if (source.Contains('\n') && linebreak != "\n")
-			source.Replace("\n", linebreak);
 	}
 	
     /// <summary>

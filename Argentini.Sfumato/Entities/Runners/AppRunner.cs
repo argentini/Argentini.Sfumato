@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Argentini.Sfumato.Entities.Runners;
 
 public sealed class AppRunner
@@ -29,13 +27,22 @@ public sealed class AppRunner
 	private ConcurrentDictionary<long, FileSystemEventArgs> RestartAppQueue { get; } = [];
 	private ConcurrentDictionary<long, FileSystemEventArgs> RebuildProjectQueue { get; } = [];
 
+	#region CSS Generation Data
+
+	public StringBuilder DefaultsCss { get; }
+	public StringBuilder BrowserResetCss { get; }
+	public StringBuilder FormsCss { get; }
+
+	public StringBuilder ImportsCssSegment { get; } = new();
+	public StringBuilder SfumatoSegment { get; } = new();
+	public StringBuilder ComponentsCssSegment { get; } = new();
+	public StringBuilder CustomCssSegment { get; } = new();
+	public StringBuilder UtilitiesCssSegment { get; } = new();
+	public StringBuilder ThemeCssSegment { get; } = new();
+	public StringBuilder PropertiesCssSegment { get; } = new();
+	public StringBuilder PropertyListCssSegment { get; } = new();
+	
 	#endregion
-
-	#region Cached data
-
-	public string BrowserResetCss { get; set; } = string.Empty;
-	public string FormsCss { get; set; } = string.Empty;
-	public string DefaultsCss { get; set; } = string.Empty;
 
 	#endregion
 
@@ -48,9 +55,9 @@ public sealed class AppRunner
 		_cssFilePath = cssFilePath;
 		_useMinify = useMinify;
 
-		BrowserResetCss = File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim();
-		FormsCss = File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim();
-		DefaultsCss = File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim();
+		BrowserResetCss = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		FormsCss = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		DefaultsCss = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
 
 		Initialize();
 	}
@@ -74,341 +81,14 @@ public sealed class AppRunner
 			    UseMinify = _useMinify
 		    };
 
-		    AppRunnerSettings.ExtractSfumatoItems(DefaultsCss);
-
-		    ProcessCssSettings();
+		    DefaultsCss.ExtractSfumatoBlock(this);
+		    AppRunnerExtensions.ImportSfumatoBlockSettingsItems(this);
+		    AppRunnerExtensions.ProcessSfumatoBlockSettings(this, true);
 	    }
 	    catch (Exception e)
 	    {
 		    Messages.Add($"{AppState.CliErrorPrefix}Initialize() - {e.Message}");
 	    }
-    }
-
-    /// <summary>
-    /// Loads the CSS file, imports partials, extracts the Sfumato settings block, and processes it.
-    /// </summary>
-    public async Task LoadCssFileAsync()
-    {
-	    try
-	    {
-		    AppRunnerSettings.LoadCssAndExtractSfumatoBlock(); // Extract Sfumato settings and CSS content
-		    AppRunnerSettings.ExtractSfumatoItems(); // Parse all the Sfumato settings into a Dictionary<string,string>()
-		    AppRunnerSettings.ProcessProjectSettings(); // Read project/operation settings
-		    AppRunnerSettings.ImportPartials(); // Read in all CSS partial files (@import "...")
-
-		    ProcessCssSettings();
-	    }
-	    catch (Exception e)
-	    {
-		    Messages.Add($"{AppState.CliErrorPrefix}LoadCssFileAsync() - {e.Message}");
-	    }
-	    
-	    await Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Processes CSS settings for colors, breakpoints, etc., and uses reflection to load all others per utility class file.  
-    /// </summary>
-    public void ProcessCssSettings()
-    {
-	    #region Read color definitions
-	    
-	    foreach (var match in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--color-")))
-	    {
-		    var key = match.Key.TrimStart("--color-") ?? string.Empty;
-
-		    if (string.IsNullOrEmpty(key))
-			    continue;
-
-		    if (Library.ColorsByName.TryAdd(key, match.Value) == false)
-			    Library.ColorsByName[key] = match.Value;
-	    }
-	    
-	    #endregion
-
-	    #region Read breakpoints
-
-	    var prefixOrder = 100;
-
-	    foreach (var match in AppRunnerSettings.SfumatoBlockItems)
-	    {
-		    if (match.Key.StartsWith("--breakpoint-") == false)
-			    continue;
-		    
-		    var key = match.Key.TrimStart("--breakpoint-") ?? string.Empty;
-
-		    if (string.IsNullOrEmpty(key))
-			    continue;
-
-		    if (Library.MediaQueryPrefixes.TryAdd(key, new VariantMetadata
-		        {
-			        PrefixOrder = prefixOrder,
-			        PrefixType = "media",
-			        Statement = $"(width >= {match.Value})"
-		        }) == false)
-		    {
-			    Library.MediaQueryPrefixes[key] = new VariantMetadata
-			    {
-				    PrefixOrder = prefixOrder,
-				    PrefixType = "media",
-				    Statement = $"(width >= {match.Value})"
-			    };
-		    }
-
-		    if (prefixOrder < int.MaxValue - 100)
-			    prefixOrder += 100;
-
-		    if (Library.MediaQueryPrefixes.TryAdd($"max-{key}", new VariantMetadata
-		        {
-			        PrefixOrder = prefixOrder,
-			        PrefixType = "media",
-			        Statement = $"(width < {match.Value})"
-		        }) == false)
-		    {
-			    Library.MediaQueryPrefixes[$"max-{key}"] = new VariantMetadata
-			    {
-				    PrefixOrder = prefixOrder,
-				    PrefixType = "media",
-				    Statement = $"(width < {match.Value})"
-			    };
-		    }
-		    
-		    if (prefixOrder < int.MaxValue - 100)
-			    prefixOrder += 100;
-	    }
-	    
-	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems)
-	    {
-		    if (breakpoint.Key.StartsWith("--adaptive-breakpoint-") == false)
-			    continue;
-
-		    var key = breakpoint.Key.TrimStart("--adaptive-breakpoint-") ?? string.Empty;
-
-		    if (string.IsNullOrEmpty(key))
-			    continue;
-
-		    if (double.TryParse(breakpoint.Value, out var maxValue) == false)
-			    continue;
-
-		    if (Library.MediaQueryPrefixes.TryAdd(key, new VariantMetadata
-		        {
-			        PrefixOrder = prefixOrder,
-			        PrefixType = "media",
-			        Statement = $"(min-aspect-ratio: {breakpoint.Value})"
-		        }) == false)
-		    {
-			    Library.MediaQueryPrefixes[key] = new VariantMetadata
-			    {
-				    PrefixOrder = prefixOrder,
-				    PrefixType = "media",
-				    Statement = $"(min-aspect-ratio: {breakpoint.Value})"
-			    };
-		    }
-		    
-		    if (prefixOrder < int.MaxValue - 100)
-			    prefixOrder += 100;
-
-		    if (Library.MediaQueryPrefixes.TryAdd($"max-{key}", new VariantMetadata
-		        {
-			        PrefixOrder = prefixOrder,
-			        PrefixType = "media",
-			        Statement = $"(max-aspect-ratio: {maxValue - 0.0001})"
-		        }) == false)
-		    {
-			    Library.MediaQueryPrefixes[$"max-{key}"] = new VariantMetadata
-			    {
-				    PrefixOrder = prefixOrder,
-				    PrefixType = "media",
-				    Statement = $"(max-aspect-ratio: {maxValue - 0.0001})"
-			    };
-		    }
-		    
-		    if (prefixOrder < int.MaxValue - 100)
-			    prefixOrder += 100;
-	    }
-
-	    foreach (var breakpoint in AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--container-")))
-	    {
-		    var key = breakpoint.Key.TrimStart("--container-") ?? string.Empty;
-
-		    if (string.IsNullOrEmpty(key))
-			    continue;
-
-		    if (Library.ContainerQueryPrefixes.TryAdd($"@{key}", new VariantMetadata
-		        {
-			        PrefixOrder = prefixOrder,
-			        PrefixType = "container",
-			        Statement = $"(width >= {breakpoint.Value})"
-		        }) == false)
-		    {
-			    Library.ContainerQueryPrefixes[$"@{key}"] = new VariantMetadata
-			    {
-				    PrefixOrder = prefixOrder,
-				    PrefixType = "container",
-				    Statement = $"(width >= {breakpoint.Value})"
-			    };
-		    }
-
-		    if (prefixOrder < int.MaxValue - 100)
-			    prefixOrder += 100;
-
-		    if (Library.ContainerQueryPrefixes.TryAdd($"@max-{key}", new VariantMetadata
-		        {
-			        PrefixOrder = prefixOrder,
-			        PrefixType = "container",
-			        Statement = $"(width < {breakpoint.Value})"
-		        }) == false)
-		    {
-			    Library.ContainerQueryPrefixes[$"@max-{key}"] = new VariantMetadata
-			    {
-				    PrefixOrder = prefixOrder,
-				    PrefixType = "container",
-				    Statement = $"(width < {breakpoint.Value})"
-			    };
-		    }
-		    
-		    if (prefixOrder < int.MaxValue - 100)
-			    prefixOrder += 100;
-	    }
-
-	    #endregion
-	    
-	    #region Read @custom-variant shorthand items
-
-	    foreach (var match in AppRunnerSettings.SfumatoBlockItems)
-	    {
-		    if (match.Key.StartsWith("@custom-variant") == false)
-			    continue;
-
-		    if (match.Value.StartsWith("&:", StringComparison.Ordinal) == false && match.Value.StartsWith('@') == false)
-			    continue;
-
-		    var keySegments = match.Key.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-			    
-		    if (keySegments.Length < 2)
-			    continue;
-
-		    var key = keySegments[1];
-
-		    if (match.Value.StartsWith("&:"))
-		    {
-			    if (Library.PseudoclassPrefixes.TryAdd(key, new VariantMetadata
-			        {
-				        PrefixType = "pseudoclass",
-				        SelectorSuffix = $"{match.Value.TrimStart('&')}"
-			        }) == false)
-			    {
-				    Library.PseudoclassPrefixes[key] = new VariantMetadata
-				    {
-					    PrefixType = "pseudoclass",
-					    SelectorSuffix = $"{match.Value.TrimStart('&')}"
-				    };
-			    }
-
-			    Library.MediaQueryPrefixes.Remove(key);
-		    }
-		    else
-		    {
-			    if (string.IsNullOrEmpty(key))
-				    continue;
-
-			    var wrapperSegments = match.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-			    
-			    if (wrapperSegments.Length < 2)
-				    continue;
-
-			    var prefixType = wrapperSegments[0].TrimStart('@').TrimStart('&');
-
-			    if (string.IsNullOrEmpty(prefixType))
-				    continue;
-
-			    var statement = $"{match.Value.TrimStart($"@{prefixType}")?.Trim()}";
-			    
-			    if (prefixType.Equals("media", StringComparison.OrdinalIgnoreCase))
-			    {
-				    if (Library.MediaQueryPrefixes.TryAdd(key, new VariantMetadata
-				        {
-					        PrefixOrder = prefixOrder,
-					        PrefixType = prefixType,
-					        Statement = statement
-				        }) == false)
-				    {
-					    Library.MediaQueryPrefixes[key] = new VariantMetadata
-					    {
-						    PrefixOrder = prefixOrder,
-						    PrefixType = prefixType,
-						    Statement = statement
-					    };
-				    }
-
-				    if (prefixOrder < int.MaxValue - 100)
-					    prefixOrder += 100;
-				    
-				    Library.PseudoclassPrefixes.Remove(key);
-			    }
-			    else if (prefixType.Equals("supports", StringComparison.OrdinalIgnoreCase))
-			    {
-				    if (Library.SupportsQueryPrefixes.TryAdd(key, new VariantMetadata
-				        {
-					        PrefixOrder = Library.SupportsQueryPrefixes.Count + 1,
-					        PrefixType = prefixType,
-					        Statement = statement
-				        }) == false)
-				    {
-					    Library.SupportsQueryPrefixes[key] = new VariantMetadata
-					    {
-						    PrefixOrder = Library.SupportsQueryPrefixes.Count + 1,
-						    PrefixType = prefixType,
-						    Statement = statement
-					    };
-				    }
-				    
-				    Library.PseudoclassPrefixes.Remove(key);
-			    }
-		    }
-	    }
-	    
-	    #endregion
-	    
-		#region Read @utility items
-
-		foreach (var match in AppRunnerSettings.SfumatoBlockItems)
-		{
-			if (match.Key.StartsWith("@utility") == false)
-				continue;
-
-			var segments = match.Key.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-			if (segments.Length != 2)
-				continue;
-
-			if (Library.SimpleClasses.TryAdd(segments[1], new ClassDefinition
-			{
-				InSimpleUtilityCollection = true,
-				Template = match.Value.Trim().TrimStart('{').TrimEnd('}').Trim()
-			}))
-			{
-				Library.ScannerClassNamePrefixes.Insert(segments[1]);
-			}
-		}
-
-	    #endregion
-	    
-		#region Read theme settings from ClassDictionary instances (e.g. --text-xs, etc.)
-	    
-	    var derivedTypes = Assembly.GetExecutingAssembly()
-		    .GetTypes()
-		    .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
-
-		foreach (var type in derivedTypes)
-		{
-			if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-				continue;
-
-			instance.ProcessThemeSettings(this);
-	    }
-	    
-	    #endregion
     }
 
 	#endregion
@@ -464,7 +144,7 @@ public sealed class AppRunner
 	public async Task ReInitializeAsync()
 	{
 		Initialize();
-		await LoadCssFileAsync();
+		await this.LoadCssFileAsync();
 	}
 
 	public async Task PerformFileScanAsync()
@@ -551,7 +231,7 @@ public sealed class AppRunner
 	{
 		CssBuildStopwatch.Restart();
 
-		LastCss = BuildCss();
+		LastCss = AppRunnerSettings.CssContent.BuildCss(this);
 
 		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
@@ -585,7 +265,7 @@ public sealed class AppRunner
 				.ProcessAtApplyStatementsAndTrackDependencies(this)
 
 				.InjectUtilityClassesCss(this)
-				.ProcessAtVariantStatements(this)
+				.ProcessAtVariants(this)
 
 				.ProcessFunctionsAndTrackDependencies(this)
 				.InjectRootDependenciesCss(this)

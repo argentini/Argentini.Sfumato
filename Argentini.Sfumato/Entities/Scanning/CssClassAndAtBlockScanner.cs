@@ -45,7 +45,6 @@ public static class CssClassAndAtBlockScanner
                 {
                     var ch = s[_i];
 
-                    // ReSharper disable once ConvertIfStatementToSwitchStatement
                     if (ch == '.')
                     {
                         var headerStart = _i++;

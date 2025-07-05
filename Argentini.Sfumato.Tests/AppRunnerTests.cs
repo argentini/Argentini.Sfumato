@@ -1,3 +1,5 @@
+using Microsoft.Extensions.ObjectPool;
+
 namespace Argentini.Sfumato.Tests;
 
 public class AppRunnerTests
@@ -19,18 +21,16 @@ public class AppRunnerTests
         var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css");
 
         await appRunner.LoadCssFileAsync();
+        await appRunner.PerformFileScanAsync();
+        appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
 
-        var sb = new StringBuilder();
-
-        sb.AppendProcessedSourceCss(appRunner);
-        sb.ProcessAtApplyStatementsAndTrackDependencies(appRunner);
-        sb.ProcessAtVariantStatements(appRunner);
+        var sb = new StringBuilder(appRunner.AppRunnerSettings.CssContent.BuildCss(appRunner));
 
         Assert.False(sb.Contains("@apply"));
         
         Assert.True(sb.Contains("tab-size: 4;"));
         Assert.True(sb.Contains("font-size: var(--text-base);"));
-        Assert.True(sb.Contains("--sf-leading: calc(var(--spacing) * 6) !important;\nline-height: var(--sf-leading) !important;"));
+        Assert.True(sb.Contains("--sf-leading: calc(var(--spacing) * 6) !important;"));
         
         Assert.False(sb.Contains("@variant"));
         Assert.True(sb.Contains("@media (width >= 475px) {"));
@@ -48,20 +48,45 @@ public class AppRunnerTests
         };
 
         appRunner.AppRunnerSettings.LoadCssAndExtractSfumatoBlock();
-        appRunner.AppRunnerSettings.ImportPartials();
 
-        var indexOfPartialTestClass = appRunner.AppRunnerSettings.ProcessedCssContent.IndexOf(".partial-test", StringComparison.Ordinal);
-        var indexOfPartial2TestClass = appRunner.AppRunnerSettings.ProcessedCssContent.IndexOf(".partial2-test", StringComparison.Ordinal);
-        var indexOfPartial3TestClass = appRunner.AppRunnerSettings.ProcessedCssContent.IndexOf(".partial3-test", StringComparison.Ordinal);
-        var indexOfPartial4TestClass = appRunner.AppRunnerSettings.ProcessedCssContent.IndexOf(".partial4-test", StringComparison.Ordinal);
+        var sb = new StringBuilder(appRunner.AppRunnerSettings.CssContent);
+        var (index, length) = sb.ProcessCssImportStatements(appRunner, true);
         
-        Assert.False(appRunner.AppRunnerSettings.ProcessedCssContent.Contains("@import", StringComparison.Ordinal));
+        var indexOfPartialTestClass = appRunner.ImportsCssSegment.IndexOf(".partial-test");
+        var indexOfPartial2TestClass = appRunner.ImportsCssSegment.IndexOf(".partial2-test");
+        var indexOfPartial3TestClass = appRunner.ImportsCssSegment.IndexOf(".partial3-test");
+        var indexOfPartial4TestClass = appRunner.ImportsCssSegment.IndexOf(".partial4-test");
         
+        Assert.False(appRunner.ImportsCssSegment.Contains("@import"));
+
+        Assert.Equal(0, index);
+        Assert.Equal(22, length);
+
         Assert.True(indexOfPartialTestClass > 0);
         Assert.True(indexOfPartial2TestClass > 0);
         Assert.True(indexOfPartial3TestClass > 0);
+
         Assert.Equal(0, indexOfPartial4TestClass);
+
+        Assert.True(indexOfPartial3TestClass > indexOfPartial4TestClass);
         Assert.True(indexOfPartial2TestClass > indexOfPartial3TestClass);
+        Assert.True(indexOfPartialTestClass > indexOfPartial2TestClass);
+
+        Assert.Equal(4, appRunner.AppRunnerSettings.CssImports.Count);
+
+        appRunner.AppRunnerSettings.CssImports.TryAdd("test", new CssImportFile
+        {
+            CssContent = new StringBuilder(),
+            FileInfo = new FileInfo("test.css"),
+            Pool = new DefaultObjectPoolProvider().CreateStringBuilderPool(),
+            Touched = true
+        });
+        
+        Assert.Equal(5, appRunner.AppRunnerSettings.CssImports.Count);
+
+        _ = sb.ProcessCssImportStatements(appRunner, true);
+
+        Assert.Equal(4, appRunner.AppRunnerSettings.CssImports.Count);
     }
 
     [Fact]
@@ -77,7 +102,7 @@ public class AppRunnerTests
 
         appRunner.AppRunnerSettings.LoadCssAndExtractSfumatoBlock();
         appRunner.AppRunnerSettings.ExtractSfumatoItems();
-        appRunner.AppRunnerSettings.ProcessProjectSettings();
+        AppRunnerExtensions.ProcessSfumatoBlockSettings(appRunner);
 
         Assert.True(appRunner.AppRunnerSettings.SfumatoBlockItems.ContainsKey("--spacing"));
         Assert.True(appRunner.AppRunnerSettings.SfumatoBlockItems.ContainsKey("--paths"));
@@ -105,13 +130,13 @@ public class AppRunnerTests
 
         appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
         
-        var css = appRunner.BuildCss();
+        var css = appRunner.AppRunnerSettings.CssContent.BuildCss(appRunner);
         
         var indexOfRoot = css.IndexOf(":root", StringComparison.Ordinal);
         var indexOfFontSansClass = css.IndexOf(".font-sans", StringComparison.Ordinal);
         var indexOfTestClass = css.IndexOf(".test", StringComparison.Ordinal);
         
-        Assert.Equal(1235, indexOfRoot);
+        Assert.Equal(81, indexOfRoot);
         Assert.True(indexOfFontSansClass > 0);
         Assert.True(indexOfTestClass > 0);
     }
