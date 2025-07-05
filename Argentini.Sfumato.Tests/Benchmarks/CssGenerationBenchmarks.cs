@@ -159,7 +159,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
             switch (Stage)
             {
                 case CssPipelineStage.FullBuild:
-                    _ = _runner.AppRunnerSettings.CssContent.BuildCss(_runner);
+                    _ = _runner.AppRunnerSettings.CssContent.BuildCssAsync(_runner).GetAwaiter().GetResult();
                     break;
 
                 case CssPipelineStage.SfumatoExtract:
@@ -222,27 +222,27 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 
         private void RunAtApplyStatements()
         {
-            AppRunnerExtensions.ProcessAtApplyStatements(_runner.ImportsCssSegment,    _runner);
-            AppRunnerExtensions.ProcessAtApplyStatements(_runner.ComponentsCssSegment, _runner);
-            AppRunnerExtensions.ProcessAtApplyStatements(_runner.CustomCssSegment,     _runner);
+            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ImportsCssSegment,    _runner);
+            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ComponentsCssSegment, _runner);
+            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.CustomCssSegment,     _runner);
         }
 
         private void RunFunctions()
         {
-	        AppRunnerExtensions.ProcessFunctions(_runner.BrowserResetCss,             _runner);
-            AppRunnerExtensions.ProcessFunctions(_runner.FormsCss,             _runner);
-            AppRunnerExtensions.ProcessFunctions(_runner.UtilitiesCssSegment,  _runner);
-            AppRunnerExtensions.ProcessFunctions(_runner.ImportsCssSegment,    _runner);
-            AppRunnerExtensions.ProcessFunctions(_runner.ComponentsCssSegment, _runner);
-            AppRunnerExtensions.ProcessFunctions(_runner.CustomCssSegment,     _runner);
+	        AppRunnerExtensions.ProcessFunctionsAsync(_runner.BrowserResetCss,             _runner);
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.FormsCss,             _runner);
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.UtilitiesCssSegment,  _runner);
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ImportsCssSegment,    _runner);
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ComponentsCssSegment, _runner);
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.CustomCssSegment,     _runner);
         }
 
         private void RunAtVariantStatements()
         {
-            AppRunnerExtensions.ProcessAtVariantStatements(_runner.UtilitiesCssSegment,  _runner);
-            AppRunnerExtensions.ProcessAtVariantStatements(_runner.ImportsCssSegment,    _runner);
-            AppRunnerExtensions.ProcessAtVariantStatements(_runner.ComponentsCssSegment, _runner);
-            AppRunnerExtensions.ProcessAtVariantStatements(_runner.CustomCssSegment,     _runner);
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.UtilitiesCssSegment,  _runner);
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ImportsCssSegment,    _runner);
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ComponentsCssSegment, _runner);
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.CustomCssSegment,     _runner);
         }
 
         private void RunProcessDarkTheme()
@@ -256,7 +256,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
                 _runner.ComponentsCssSegment,
                 _runner.CustomCssSegment })
             {
-                AppRunnerExtensions.ProcessDarkTheme(seg, _runner);
+                AppRunnerExtensions.ProcessDarkThemeAsync(seg, _runner);
             }
         }
 

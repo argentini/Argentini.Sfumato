@@ -391,7 +391,7 @@ public static class AppRunnerExtensions
 	/// </summary>
 	/// <param name="css"></param>
 	/// <param name="appRunner"></param>
-	public static void ProcessAtApplyStatements(this StringBuilder css, AppRunner appRunner)
+	public static async ValueTask ProcessAtApplyStatementsAsync(this StringBuilder css, AppRunner appRunner)
 	{
 		var workingSb = appRunner.AppState.StringBuilderPool.Get();
 
@@ -426,6 +426,8 @@ public static class AppRunnerExtensions
 		{
 			appRunner.AppState.StringBuilderPool.Return(workingSb);
 		}
+		
+		await Task.CompletedTask;
 	}
 	
 	#endregion
@@ -438,7 +440,7 @@ public static class AppRunnerExtensions
     /// </summary>
     /// <param name="css"></param>
     /// <param name="appRunner"></param>
-    public static void ProcessFunctions(this StringBuilder css, AppRunner appRunner) // 410
+    public static async ValueTask ProcessFunctionsAsync(this StringBuilder css, AppRunner appRunner) // 410
     {
         // locals
         var settings = appRunner.AppRunnerSettings;
@@ -630,6 +632,8 @@ public static class AppRunnerExtensions
             if (settings.SfumatoBlockItems.TryGetValue(prop, out var val))
                 used.TryAdd(prop, val);
         }
+        
+        await Task.CompletedTask;
     }
 
     #endregion
@@ -641,13 +645,15 @@ public static class AppRunnerExtensions
 	/// </summary>
 	/// <param name="css"></param>
 	/// <param name="appRunner"></param>
-	public static void ProcessAtVariantStatements(this StringBuilder css, AppRunner appRunner)
+	public static async ValueTask ProcessAtVariantStatementsAsync(this StringBuilder css, AppRunner appRunner)
 	{
 		foreach (var span in css.ToString().EnumerateAtVariantStatements())
 		{
 			if (span.Name.ToString().TryVariantIsMediaQuery(appRunner, out var variant))
 				css.Replace(span.Full, $"@{variant?.PrefixType} {variant?.Statement} {{");
 		}
+		
+		await Task.CompletedTask;
 	}
 	
 	#endregion
@@ -825,7 +831,7 @@ public static class AppRunnerExtensions
 	/// <param name="sourceCss"></param>
 	/// <param name="appRunner"></param>
 	/// <returns></returns>
-	public static void ProcessDarkTheme(this StringBuilder sourceCss, AppRunner appRunner)
+	public static async ValueTask ProcessDarkThemeAsync(this StringBuilder sourceCss, AppRunner appRunner)
 	{
 		const string mediaPrefix = "@media (prefers-color-scheme: dark) {";
 
@@ -897,6 +903,8 @@ public static class AppRunnerExtensions
 
 		sourceCss.ReplaceContent(outCss);
 
+		await Task.CompletedTask;
+		
 		return;
 
 		// recursively rewrites one block body
@@ -1541,7 +1549,7 @@ public static class AppRunnerExtensions
 	
 	#region V2: Build CSS
 	
-	public static string BuildCss(this string css, AppRunner appRunner)
+	public static async Task<string> BuildCssAsync(this string css, AppRunner appRunner)
 	{
 		var index = 0;
 		var length = 0;
@@ -1564,30 +1572,30 @@ public static class AppRunnerExtensions
 		ProcessComponentsLayerAndCss(appRunner);
 		ProcessUtilityClasses(appRunner);
 
-		ProcessAtApplyStatements(appRunner.ImportsCssSegment, appRunner);
-		ProcessAtApplyStatements(appRunner.ComponentsCssSegment, appRunner);
-		ProcessAtApplyStatements(appRunner.CustomCssSegment, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.CustomCssSegment, appRunner);
 
-		ProcessFunctions(appRunner.BrowserResetCss, appRunner);
-		ProcessFunctions(appRunner.FormsCss, appRunner);
-		ProcessFunctions(appRunner.UtilitiesCssSegment, appRunner);
-		ProcessFunctions(appRunner.ImportsCssSegment, appRunner);
-		ProcessFunctions(appRunner.ComponentsCssSegment, appRunner);
-		ProcessFunctions(appRunner.CustomCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.BrowserResetCss, appRunner);
+		await ProcessFunctionsAsync(appRunner.FormsCss, appRunner);
+		await ProcessFunctionsAsync(appRunner.UtilitiesCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.CustomCssSegment, appRunner);
 
-		ProcessAtVariantStatements(appRunner.UtilitiesCssSegment, appRunner);
-		ProcessAtVariantStatements(appRunner.ImportsCssSegment, appRunner);
-		ProcessAtVariantStatements(appRunner.ComponentsCssSegment, appRunner);
-		ProcessAtVariantStatements(appRunner.CustomCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.UtilitiesCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.CustomCssSegment, appRunner);
 
 		GeneratePropertiesAndThemeLayers(appRunner);
 
 		if (appRunner.AppRunnerSettings.UseDarkThemeClasses)
 		{
-			ProcessDarkTheme(appRunner.UtilitiesCssSegment, appRunner);
-			ProcessDarkTheme(appRunner.ImportsCssSegment, appRunner);
-			ProcessDarkTheme(appRunner.ComponentsCssSegment, appRunner);
-			ProcessDarkTheme(appRunner.CustomCssSegment, appRunner);
+			await ProcessDarkThemeAsync(appRunner.UtilitiesCssSegment, appRunner);
+			await ProcessDarkThemeAsync(appRunner.ImportsCssSegment, appRunner);
+			await ProcessDarkThemeAsync(appRunner.ComponentsCssSegment, appRunner);
+			await ProcessDarkThemeAsync(appRunner.CustomCssSegment, appRunner);
 		}
 
 		var workingSb = appRunner.AppState.StringBuilderPool.Get();
