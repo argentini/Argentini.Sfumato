@@ -2069,42 +2069,24 @@ public static partial class Strings
 	#region Time
 
 	/// <summary>
-	/// Format the elapsed time as a more friendly time span with a custom delimiter.
-	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
+	/// Formats the elapsed time in the most appropriate unit:
+	/// seconds (s), milliseconds (ms), or microseconds (μs).
 	/// </summary>
-	/// <param name="timer"></param>
-	/// <param name="delimiter">Text to separate time elements; defaults to " : ".</param>
-	/// <returns>Formatted timespan</returns>
-	public static string FormatTimer(this Stopwatch timer, string delimiter = ":")
+	public static string FormatTimer(this Stopwatch timer)
 	{
-		return FormatTimer(TimeSpan.FromMilliseconds(timer.ElapsedMilliseconds), delimiter);
-	}
-	
-	/// <summary>
-	/// Format the elapsed time as a more friendly time span with a custom delimiter.
-	/// Like: 3d : 5h : 12m : 15s or 3d+5h+12m+15s
-	/// </summary>
-	/// <param name="timespan"></param>
-	/// <param name="delimiter">Text to separate time elements; defaults to " : ".</param>
-	/// <returns>Formatted timespan</returns>
-	public static string FormatTimer(this TimeSpan timespan, string delimiter = ":")
-	{
-		var seconds = $"{timespan.TotalSeconds:0.00000000000000000}";
+		var elapsed = timer.Elapsed;
 
-		if (timespan.TotalSeconds < 60)
-			return $"{seconds[..(seconds.IndexOf('.') + 4)]}s";
+		if (elapsed.TotalSeconds >= 1)
+			return $"{elapsed.TotalSeconds:0}s";
 
-		seconds = $"{timespan.Seconds:00.00000000000000000}";
-		
-		if (timespan is { Days: 0, Hours: 0 })
-			return $"{timespan.Minutes:00}m{delimiter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
+		if (elapsed.TotalMilliseconds >= 1)
+			return $"{elapsed.TotalMilliseconds:0}ms";
 
-		if (timespan.Days == 0)
-		{
-			return $"{timespan.Hours:00}h{delimiter}{timespan.Minutes:00}m{delimiter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
-		}
+		// TimeSpan.Ticks are in 100-nanosecond units. 
+		// 1 microsecond = 1,000 nanoseconds = 10 ticks.
+		var microseconds = elapsed.Ticks / 10.0;
 
-		return $"{timespan.Days:00}d{delimiter}{timespan.Hours:00}h{delimiter}{timespan.Minutes:00}m{delimiter}{seconds[..(seconds.IndexOf('.') + 4)]}s";
+		return $"{microseconds:0}μs";
 	}
 	
 	#endregion
