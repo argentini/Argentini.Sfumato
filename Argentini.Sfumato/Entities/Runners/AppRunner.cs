@@ -1,3 +1,5 @@
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace Argentini.Sfumato.Entities.Runners;
 
 public sealed class AppRunner
@@ -149,76 +151,63 @@ public sealed class AppRunner
 
 	public async Task PerformFileScanAsync()
 	{
-		var tasks = new ConcurrentBag<Task>();
-
 		ScannedFiles.Clear();
 		FileScanStopwatch.Restart();
 
-		foreach (var path in AppRunnerSettings.AbsolutePaths)
-			tasks.Add(RecurseProjectPathAsync(path, tasks));
+		// 1. Grab EVERYTHING in one streaming pass
+		var allPaths = AppRunnerSettings.AbsolutePaths
+			.SelectMany(root => 
+				Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories)
+					.Where(PassesPathFilters)
+			);
 
-		await Task.WhenAll(tasks);
-		
+		// 2. Kick off the scans in parallel—but limit to CPU cores to avoid starvation
+		//    We wrap each scan in Task.Run so we can await the batch as a true async call.
+		var scanTasks = allPaths
+			.Select(path => Task.Run(async () => await ProcessSingleFileAsync(path)));
+
+		await Task.WhenAll(scanTasks);
+
+		// 3. Re-aggregate the utility-class map
 		ProcessScannedFileUtilityClassDependencies(this);
-		
+
 		FileScanStopwatch.Stop();
-		
-		await AddMessageAsync($"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count == 1 ? string.Empty : "s")}, {UtilityClasses.Count:N0} class{(UtilityClasses.Count == 1 ? string.Empty : "es")} in {FileScanStopwatch.FormatTimer()}");
+
+		await AddMessageAsync(
+			$"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count==1?"":"s")}, " +
+			$"{UtilityClasses.Count:N0} class{(UtilityClasses.Count==1?"":"es")} in {FileScanStopwatch.FormatTimer()}"
+		);
 	}
 
-	private async Task RecurseProjectPathAsync(string? sourcePath, ConcurrentBag<Task> tasks)
+	private bool PassesPathFilters(string fullName)
 	{
-		if (string.IsNullOrEmpty(sourcePath))
-			return;
+		// drop blacklisted extensions
+		var ext = Path.GetExtension(fullName);
 
-		string path;
-
-		try
-		{
-			path = Path.GetFullPath(sourcePath);
-		}
-		catch
-		{
-			Messages.Add($"{Strings.TriangleRight} WARNING: Source directory could not be found: {sourcePath}");
-			return;
-		}
+		if (Library.InvalidFileExtensions.Contains(ext))
+			return false;
 		
-		var dir = new DirectoryInfo(path);
-		var dirs = dir.GetDirectories();
-		var files = dir.GetFiles();
+		if (Library.ValidFileExtensions.Contains(ext) == false)
+			return false;
 
-		foreach (var fileInfo in files)
-			tasks.Add(AddProjectFile(fileInfo));
-		
-		// ReSharper disable once LoopCanBeConvertedToQuery
-		foreach (var subDir in dirs.OrderBy(d => d.Name))
-		{
-			if (AppRunnerSettings.AbsoluteNotPaths.Any(s => s.Equals(subDir.FullName + Path.DirectorySeparatorChar, StringComparison.Ordinal)))
-				continue;
+		// drop entire paths you don’t want to enter
+		if (AppRunnerSettings.AbsoluteNotPaths.Any(not => fullName.StartsWith(not, StringComparison.Ordinal)))
+			return false;
 
-			if (AppRunnerSettings.NotFolderNames.Any(s => s.Equals(subDir.Name, StringComparison.Ordinal)))
-				continue;
-			
-			await RecurseProjectPathAsync(subDir.FullName, tasks);
-		}
+		// drop any file sitting in a forbidden folder
+		var folderName = Path.GetFileName(Path.GetDirectoryName(fullName)) ?? string.Empty;
 		
-		await Task.CompletedTask;
+		return AppRunnerSettings.NotFolderNames.Contains(folderName) == false;
 	}
-	
-	private async Task AddProjectFile(FileInfo fileInfo)
+
+	private async Task ProcessSingleFileAsync(string fullName)
 	{
-		if (Library.InvalidFileExtensions.Any(e => fileInfo.Name.EndsWith(e, StringComparison.Ordinal)))
-			return;
+		var scanned = new ScannedFile(fullName);
 
-		if (Library.ValidFileExtensions.Any(e => fileInfo.Extension.Equals(e, StringComparison.Ordinal)) == false)
-			return;
+		await scanned.LoadAndScanFileAsync(this);
 		
-		var scannedFile = new ScannedFile(fileInfo.FullName);
-
-		await scannedFile.LoadAndScanFileAsync(this);
-
-		ScannedFiles.TryAdd(fileInfo.FullName, scannedFile);
-	}
+		ScannedFiles.TryAdd(fullName, scanned);
+	}	
 	
 	#endregion
 	
@@ -231,7 +220,7 @@ public sealed class AppRunner
 	{
 		CssBuildStopwatch.Restart();
 
-		LastCss = AppRunnerSettings.CssContent.BuildCss(this);
+		LastCss = await AppRunnerSettings.CssContent.BuildCssAsync(this);
 
 		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
@@ -242,45 +231,6 @@ public sealed class AppRunner
 		Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
 
 		await RenderMessagesAsync();
-	}
-
-	/// <summary>
-	/// Generate the final CSS output; used internally and for tests
-	/// </summary>
-	/// <returns></returns>
-    public string BuildCss()
-	{
-		var sourceCss = AppState.StringBuilderPool.Get();
-		var workingSb = AppState.StringBuilderPool.Get();
-
-		try
-		{
-			sourceCss
-				.AppendResetCss(this)
-				.AppendFormsCss(this)
-				.AppendUtilityClassMarker(this)
-
-				.AppendProcessedSourceCss(this)
-
-				.ProcessAtApplyStatementsAndTrackDependencies(this)
-
-				.InjectUtilityClassesCss(this)
-				.ProcessAtVariants(this)
-
-				.ProcessFunctionsAndTrackDependencies(this)
-				.InjectRootDependenciesCss(this)
-				.MoveComponentsLayer(this);
-
-			if (AppRunnerSettings.UseDarkThemeClasses)
-				sourceCss.ProcessDarkTheme(this);
-			
-			return AppRunnerSettings.UseMinify ? sourceCss.ToString().CompactCss(workingSb) : sourceCss.ReformatCss(workingSb).ToString().NormalizeLinebreaks(AppRunnerSettings.LineBreak);
-		}
-		finally
-		{
-			AppState.StringBuilderPool.Return(sourceCss);
-			AppState.StringBuilderPool.Return(workingSb);
-		}
 	}
 
     /// <summary>
