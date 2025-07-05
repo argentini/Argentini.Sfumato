@@ -105,9 +105,6 @@ public sealed class CssClass : IDisposable
                     GenerateSelector();
                     GenerateStyles();
 
-                    if (ClassDefinition.NameSortOrder == 0)
-                        ClassDefinition.NameSortOrder = Selector.GetNameSort();
-
                     return;
                 }
             }
@@ -131,9 +128,6 @@ public sealed class CssClass : IDisposable
 
         if (IsValid)
             GenerateWrappers();
-
-        if (ClassDefinition?.NameSortOrder == 0)
-            ClassDefinition.NameSortOrder = AllSegments.Last().GetNameSort();
     }
     
     public void ProcessVariants()
@@ -866,13 +860,13 @@ public sealed class CssClass : IDisposable
 
             // Sort only the used portions of arrays
             if (mediaCount > 1)
-                Array.Sort(mediaVariants, 0, mediaCount, _prefixOrderComparer);
+                Array.Sort(mediaVariants, 0, mediaCount, PrefixOrderComparer);
             if (supportsCount > 1)
-                Array.Sort(supportsVariants, 0, supportsCount, _prefixOrderComparer);
+                Array.Sort(supportsVariants, 0, supportsCount, PrefixOrderComparer);
             if (containerCount > 1)
-                Array.Sort(containerVariants, 0, containerCount, _prefixOrderComparer);
+                Array.Sort(containerVariants, 0, containerCount, PrefixOrderComparer);
             if (wrapperCount > 1)
-                Array.Sort(wrapperVariants, 0, wrapperCount, _prefixOrderComparer);
+                Array.Sort(wrapperVariants, 0, wrapperCount, PrefixOrderComparer);
 
             // Process variants using spans for zero-copy slicing
             ProcessQueryVariants(mediaVariants.AsSpan(0, mediaCount), "media");
@@ -896,7 +890,7 @@ public sealed class CssClass : IDisposable
     }
 
     // Cache the comparer to avoid allocating it repeatedly
-    private static readonly IComparer<KeyValuePair<string, VariantMetadata>> _prefixOrderComparer = Comparer<KeyValuePair<string, VariantMetadata>>.Create((a, b) => a.Value.PrefixOrder.CompareTo(b.Value.PrefixOrder));
+    private static readonly IComparer<KeyValuePair<string, VariantMetadata>> PrefixOrderComparer = Comparer<KeyValuePair<string, VariantMetadata>>.Create((a, b) => a.Value.PrefixOrder.CompareTo(b.Value.PrefixOrder));
 
     private void ProcessQueryVariants(ReadOnlySpan<KeyValuePair<string, VariantMetadata>> variants, string queryType)
     {
