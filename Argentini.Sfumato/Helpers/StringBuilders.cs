@@ -872,7 +872,7 @@ public static class StringBuilders
 	}
 	
     /// <summary>
-    /// Enumerates every occurrence of token that is
+    /// Enumerates every occurrence of a token that is
     /// immediately followed (optionally after whitespace) by a balanced
     /// parenthetical expression.
     /// Each yielded string consists of the token plus the complete outer
@@ -883,77 +883,60 @@ public static class StringBuilders
     /// <returns>IEnumerable&lt;string&gt; of matches, streamed as they are found.</returns>
     public static IEnumerable<string> EnumerateTokenWithOuterParenthetical(this StringBuilder sb, string token)
     {
-        if (string.IsNullOrEmpty(token))
-            throw new ArgumentException("Token must be non-empty.", nameof(token));
+	    if (sb is null)
+		    throw new ArgumentNullException(nameof(sb));
+	    
+	    if (string.IsNullOrEmpty(token))
+		    throw new ArgumentException("Token must be non-empty.", nameof(token));
 
-        var length = sb.Length;
-        var tokenLen = token.Length;
-        var t0 = token[0]; // first char for quick scan
+	    // 1) Snapshot to a single string for fast indexing + IndexOf
+	    var text = sb.ToString();
+	    var length = text.Length;
+	    var tokenLen = token.Length;
+	    var pos = 0;
 
-        for (var i = 0; i <= length - tokenLen; i++)
-        {
-            // 1. Quick-fail: first character must match
-            if (sb[i] != t0)
-	            continue;
+	    // 2) Find each occurrence of `token`
+	    while ((pos = text.IndexOf(token, pos, StringComparison.Ordinal)) != -1)
+	    {
+		    // 3) Skip any whitespace after the token
+		    var p = pos + tokenLen;
 
-            // 2. Check the rest of the token
-            var match = true;
-            
-            for (var k = 1; k < tokenLen; k++)
-            {
-                if (sb[i + k] != token[k])
-                {
-                    match = false;
-                    break;
-                }
-            }
-            
-            if (match == false)
-	            continue;
+		    while (p < length && char.IsWhiteSpace(text[p]))
+			    p++;
 
-            // 3. Skip whitespace after the token
-            var p = i + tokenLen;
-            
-            while (p < length && char.IsWhiteSpace(sb[p]))
-	            p++;
+		    // 4) Must be an opening '('
+		    if (p >= length || text[p] != '(')
+		    {
+			    pos += tokenLen; // jump past this token
+			    continue;
+		    }
 
-            // 4. Must see an opening parenthesis
-            if (p >= length || sb[p] != '(')
-	            continue;
+		    // 5) Balanced-parenthesis scan
+		    var depth = 1;
+		    var j = p + 1;
 
-            // 5. Walk forward, tracking depth to find the matching ')' for the *outer* '('
-            var depth = 0;
-            var j = p;
-            
-            while (j < length)
-            {
-                var c = sb[j];
-                
-                if (c == '(')
-                {
-                    depth++;
-                }
-                else if (c == ')')
-                {
-                    depth--;
-                
-                    if (depth == 0)
-                    {
-                        // Found the balancing ')' – emit the slice
-                        yield return sb.ToString(i, j - i + 1);
+		    while (j < length && depth > 0)
+		    {
+			    switch (text[j++])
+			    {
+				    case '(': depth++; break;
+				    case ')': depth--; break;
+			    }
+		    }
 
-                        // Advance i so we don’t rescan inside the just-matched span
-                        i = j;
-                    
-                        break;
-                    }
-                }
+		    if (depth == 0)
+		    {
+			    // 6) We found the matching ')'
+			    yield return text.Substring(pos, j - pos);
 
-                j++;
-            }
-
-            // If the loop exits without depth hitting zero, parentheses were unbalanced;
-            // we simply fall through and continue searching (no match yielded).
-        }
+			    // 7) Advance `pos` so we don't re‐scan inside this match
+			    pos = j;
+		    }
+		    else
+		    {
+			    // unbalanced → no more valid matches
+			    yield break;
+		    }
+	    }
     }
 }
