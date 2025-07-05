@@ -1,5 +1,3 @@
-using BenchmarkDotNet.Attributes;
-using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
@@ -26,7 +24,7 @@ public class AppRunnerTests
         await appRunner.PerformFileScanAsync();
         appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
 
-        var sb = new StringBuilder(appRunner.AppRunnerSettings.CssContent.BuildCss(appRunner));
+        var sb = new StringBuilder(await appRunner.AppRunnerSettings.CssContent.BuildCssAsync(appRunner));
 
         Assert.False(sb.Contains("@apply"));
         
@@ -132,7 +130,7 @@ public class AppRunnerTests
 
         appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
         
-        var css = appRunner.AppRunnerSettings.CssContent.BuildCss(appRunner);
+        var css = await appRunner.AppRunnerSettings.CssContent.BuildCssAsync(appRunner);
         
         var indexOfRoot = css.IndexOf(":root", StringComparison.Ordinal);
         var indexOfFontSansClass = css.IndexOf(".font-sans", StringComparison.Ordinal);
