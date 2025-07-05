@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿// ReSharper disable ConvertIfStatementToSwitchStatement
+// ReSharper disable MemberCanBePrivate.Global
+
+using System.Globalization;
 
 namespace Argentini.Sfumato.Helpers;
 
@@ -303,48 +306,65 @@ public static class StringBuilders
 		if (sourceCss is null || sourceCss.Length == 0 || string.IsNullOrEmpty(cssBlockStart))
 			return (-1, 0);
 
-        var blockStart = sourceCss.IndexOf(cssBlockStart, startIndex);
-
-		if (blockStart < 0)
+		// snapshot once
+		var text = sourceCss.ToString();
+		var n = text.Length;
+		
+		if (n == 0 || string.IsNullOrEmpty(cssBlockStart) || startIndex < 0 || startIndex >= n)
 			return (-1, 0);
 
-		// Cache frequently-used values once to reduce property calls.
-		var length      = sourceCss.Length;
-		var selectorEnd = blockStart + cssBlockStart.Length;
+		// find the selector
+		var blockStart = text.IndexOf(cssBlockStart, startIndex, StringComparison.Ordinal);
+		
+		if (blockStart < 0) 
+			return (-1, 0);
 
-		var depth = 0;
-		var i     = selectorEnd;
+		var span = text.AsSpan();
+		var pos = blockStart + cssBlockStart.Length;
 
-		// Skip whitespace between the selector and its first “{”.
-		for (; i < length; i++)
+		// skip ASCII whitespace until the brace
+		while (pos < n)
 		{
-			var ch = sourceCss[i];
-
-			if (ch == '{')
+			var c = span[pos];
+			
+			if (c == '{')
 			{
-				depth = 1;             // we just entered the block
-				i++;                   // start scanning inside it
+				pos++;    // enter block
 				break;
 			}
-
-			if (char.IsWhiteSpace(ch) == false)
-				return (-1, 0);   // malformed selector (no opening brace)
+			
+			// ASCII whitespace: space, tab, LF, CR, FF, VT
+			if (c > ' ' || (c != ' ' && c != '\t' && c != '\n' && c != '\r' && c != '\f' && c != '\v'))
+				return (-1, 0);  // malformed: non-space before brace
+			
+			pos++;
 		}
 
-		if (depth == 0)
-			return (-1, 0);   // never saw a “{”
+		if (pos >= n) 
+			return (-1, 0);
 
-		for (; i < length; i++)
+		// scan the block for matching braces
+		var depth = 1;
+		var i     = pos;
+		
+		for (; i < n; i++)
 		{
-			var ch = sourceCss[i];
+			var c = span[i];
 
-			if (ch == '{')
+			if (c == '{')
+			{
 				depth++;
-			else if (ch == '}' && --depth == 0)
-				return (blockStart, i - blockStart + 1);
+			}
+			else if (c == '}')
+			{
+				depth--;
+
+				if (depth == 0)
+					return (blockStart, i - blockStart + 1); // found matching '}' for our initial '{'
+			}
 		}
 
-		// Unterminated block ⇒ give up.
+		// unterminated
 		return (-1, 0);
 	}
 

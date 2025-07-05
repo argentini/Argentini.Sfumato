@@ -1,3 +1,5 @@
+// ReSharper disable InvokeAsExtensionMethod
+
 using BenchmarkDotNet.Attributes;
 using Microsoft.DotNet.PlatformAbstractions;
 
