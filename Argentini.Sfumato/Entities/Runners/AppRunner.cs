@@ -394,14 +394,14 @@ public sealed class AppRunner
 
 	private bool ImportChangesPending()
 	{
-		foreach (var fileInfo in AppRunnerSettings.Imports)
+		foreach (var importFile in AppRunnerSettings.CssImports.Values)
 		{
-			if (File.Exists(fileInfo.FullName) == false)
+			if (File.Exists(importFile.FileInfo.FullName) == false)
 				return true;
 
-			var currentFileInfo = new FileInfo(fileInfo.FullName);
+			var currentFileInfo = new FileInfo(importFile.FileInfo.FullName);
 
-			if (fileInfo.Length != currentFileInfo.Length || fileInfo.CreationTimeUtc != currentFileInfo.CreationTimeUtc || fileInfo.LastWriteTimeUtc != currentFileInfo.LastWriteTimeUtc)
+			if (importFile.FileInfo.Length != currentFileInfo.Length || importFile.FileInfo.CreationTimeUtc != currentFileInfo.CreationTimeUtc || importFile.FileInfo.LastWriteTimeUtc != currentFileInfo.LastWriteTimeUtc)
 				return true;
 		}
 
