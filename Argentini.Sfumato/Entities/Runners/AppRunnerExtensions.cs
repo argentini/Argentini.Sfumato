@@ -8,7 +8,7 @@ namespace Argentini.Sfumato.Entities.Runners;
 
 public static class AppRunnerExtensions
 {
-	#region V2: Extract CSS Imports / Components Layer
+	#region Extract CSS Imports / Components Layer
 
 	/// <summary>
 	/// Iterate @import statements and add content to AppRunner.ImportsCssSegment;
@@ -186,7 +186,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Extract Sfumato Block
+	#region Extract Sfumato Block
 	
 	/// <summary>
 	/// Extract the Sfumato layer block;
@@ -219,7 +219,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 
-	#region V2: Import Sfumato Block Items
+	#region Import Sfumato Block Items
 	
     /// <summary>
     /// Parse Sfumato settings block into dictionary items. 
@@ -261,7 +261,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Generate Components Layer / Remaining CSS
+	#region Generate Components Layer / Remaining CSS
 
 	public static void ProcessComponentsLayerAndCss(AppRunner appRunner)
 	{
@@ -282,7 +282,7 @@ public static class AppRunnerExtensions
 
 	#endregion
 
-	#region V2: Generate Utility Classes
+	#region Generate Utility Classes
 	
 	/// <summary>
 	/// Generate utility class CSS from the AppRunner.UtilityClasses dictionary. 
@@ -383,7 +383,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Process @apply Statements
+	#region Process @apply Statements
 	
 	/// <summary>
 	/// Convert @apply statements in source CSS to utility class property statements.
@@ -432,7 +432,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Process Functions
+	#region Process Functions
 	
     /// <summary>
     /// Convert functions in source CSS to CSS statements (e.g. --alpha()).
@@ -638,7 +638,7 @@ public static class AppRunnerExtensions
 
     #endregion
 	
-	#region V2: Process @variant Statements
+	#region Process @variant Statements
 	
 	/// <summary>
 	/// Convert @variant statements in source CSS to media query statements.
@@ -658,7 +658,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Generate @properties Layer / @property Rules
+	#region Generate @properties Layer / @property Rules
 	
 	/// <summary>
 	/// Iterate UsedCssCustomProperties[] and UsedCss[] and set their values from AppRunnerSettings.SfumatoBlockItems[].
@@ -823,7 +823,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Process Dark Theme Classes
+	#region Process Dark Theme Classes
 	
 	/// <summary>
 	/// Find all dark theme media blocks and duplicate as wrapped classes theme-dark
@@ -1106,7 +1106,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Load Source CSS File, Sfumato Settings
+	#region Load Source CSS File, Sfumato Settings
 	
 	public static async Task LoadCssFileAsync(this AppRunner appRunner)
 	{
@@ -1148,7 +1148,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 
-	#region V2: Process Default Sfumato Settings
+	#region Process Default Sfumato Settings
 	
     /// <summary>
     /// Processes CSS settings for colors, breakpoints, etc., and uses reflection to load all others per utility class file.  
@@ -1547,7 +1547,7 @@ public static class AppRunnerExtensions
 	
 	#endregion
 	
-	#region V2: Build CSS
+	#region Build CSS
 	
 	public static async Task<string> BuildCssAsync(this string css, AppRunner appRunner)
 	{

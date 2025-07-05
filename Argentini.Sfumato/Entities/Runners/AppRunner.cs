@@ -16,7 +16,7 @@ public sealed class AppRunner
 	
 	public AppState AppState { get; }
 	public Library.Library Library { get; set; } = new();
-	public AppRunnerSettings AppRunnerSettings { get; set; } = new(null);
+	public AppRunnerSettings AppRunnerSettings { get; set; } = new();
 	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
 	public ConcurrentDictionary<string,string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
 	public ConcurrentDictionary<string,string> UsedCss { get; } = new(StringComparer.Ordinal);
@@ -77,7 +77,7 @@ public sealed class AppRunner
 	    {
 		    Library = new Library.Library();
 		    
-		    AppRunnerSettings = new AppRunnerSettings(this)
+		    AppRunnerSettings = new AppRunnerSettings()
 		    {
 			    CssFilePath = _cssFilePath,
 			    UseMinify = _useMinify

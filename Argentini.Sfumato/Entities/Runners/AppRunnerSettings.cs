@@ -5,11 +5,9 @@
 
 namespace Argentini.Sfumato.Entities.Runners;
 
-public sealed class AppRunnerSettings(AppRunner? appRunner)
+public sealed class AppRunnerSettings
 {
 	#region Properties
-
-	private AppRunner? AppRunner { get; set; } = appRunner;
 
 	private string _cssFilePath = string.Empty;
 	public string CssFilePath
