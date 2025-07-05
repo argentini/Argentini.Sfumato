@@ -10,8 +10,6 @@ public static class AppRunnerExtensions
 {
 	#region V2: Extract CSS Imports / Components Layer
 
-	private static readonly string ImportToken = "@import ";
-
 	/// <summary>
 	/// Iterate @import statements and add content to AppRunner.ImportsCssSegment;
 	/// puts any @layer components content into AppRunner.ComponentsCssSegment;
@@ -29,38 +27,39 @@ public static class AppRunnerExtensions
 	    if (css is null || appRunner is null)
 	        return (-1, -1);
 
-	    //––– grab locals –––
-	    var settings   = appRunner.AppRunnerSettings;
+	    var settings = appRunner.AppRunnerSettings;
 	    var importsSeg = appRunner.ImportsCssSegment;
-	    var compsSeg   = appRunner.ComponentsCssSegment;
-	    var pool       = appRunner.AppState.StringBuilderPool;
-	    var baseDir    = settings.NativeCssFilePathOnly;
+	    var compsSeg = appRunner.ComponentsCssSegment;
+	    var pool = appRunner.AppState.StringBuilderPool;
+	    var baseDir = settings.NativeCssFilePathOnly;
 
 	    if (isRoot)
 	    {
 	        importsSeg.Clear();
 	        compsSeg.Clear();
+
 	        foreach (var kv in settings.CssImports)
 	            kv.Value.Touched = false;
 	    }
 
 	    //––– snapshot to string + prep –––
-	    string src         = css.ToString();
-	    int    totalLength = src.Length;
-	    const string ImportToken = "@import ";
-	    int tokenLen = ImportToken.Length;
-	    int scanPos  = 0;
-	    int firstIdx = -1;
-	    int lastEnd  = 0;            // ← initialize to 0, not –1
+	    const string importToken = "@import ";
+	    var src = css.ToString();
+	    var totalLength = src.Length;
+	    var tokenLen = importToken.Length;
+	    var scanPos = 0;
+	    var firstIdx = -1;
+	    var lastEnd = 0; // ← initialize to 0, not –1
 
 	    // find the very first @import
-	    int idx = src.IndexOf(ImportToken, scanPos, StringComparison.Ordinal);
+	    var idx = src.IndexOf(importToken, scanPos, StringComparison.Ordinal);
+	    
 	    if (idx >= 0) firstIdx = idx;
 
-	    //––– loop all imports –––
 	    while (idx >= 0)
 	    {
-	        int semicolon = src.IndexOf(';', idx + tokenLen);
+	        var semicolon = src.IndexOf(';', idx + tokenLen);
+	        
 	        if (semicolon < 0) break;
 
 	        lastEnd = semicolon + 1;
@@ -70,13 +69,16 @@ public static class AppRunnerExtensions
 	        var rawSpan = src.AsSpan(idx + tokenLen, semicolon - (idx + tokenLen)).Trim();
 
 	        // split off optional layer name
-	        string layerName = "";
+	        var layerName = "";
+	        
 	        if (rawSpan.Length > 0)
 	        {
-	            char lastChar = rawSpan[^1];
+	            var lastChar = rawSpan[^1];
+	            
 	            if (lastChar != '\'' && lastChar != '"')
 	            {
-	                int sp = rawSpan.LastIndexOf(' ');
+	                var sp = rawSpan.LastIndexOf(' ');
+	                
 	                if (sp >= 0)
 	                {
 	                    layerName = new string(rawSpan[(sp + 1)..]);
@@ -84,14 +86,17 @@ public static class AppRunnerExtensions
 	                }
 	            }
 	        }
+
 	        rawSpan = rawSpan.Trim(' ', '\'', '"');
 
 	        // resolve path + cache
 	        var relPath  = new string(rawSpan);
 	        var filePath = Path.GetFullPath(Path.Combine(baseDir, parentPath, relPath));
-	        if (!File.Exists(filePath))
+	        
+	        if (File.Exists(filePath) == false)
 	        {
 	            Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
+
 	            importsSeg
 	              .Append("/* Could not import: ")
 	              .Append(filePath)
@@ -100,7 +105,7 @@ public static class AppRunnerExtensions
 	        }
 	        else
 	        {
-	            if (!settings.CssImports.TryGetValue(filePath, out var importFile))
+	            if (settings.CssImports.TryGetValue(filePath, out var importFile) == false)
 	            {
 	                importFile = new CssImportFile {
 	                    Touched    = true,
@@ -108,24 +113,24 @@ public static class AppRunnerExtensions
 	                    FileInfo   = new FileInfo(filePath),
 	                    CssContent = pool.Get().Append(File.ReadAllText(filePath))
 	                };
+
 	                settings.CssImports[filePath] = importFile;
 	            }
 	            else
 	            {
 	                importFile.Touched = true;
+	                
 	                var fi = new FileInfo(filePath);
-	                if (fi.Length != importFile.FileInfo.Length
-	                 || fi.CreationTimeUtc  != importFile.FileInfo.CreationTimeUtc
-	                 || fi.LastWriteTimeUtc != importFile.FileInfo.LastWriteTimeUtc)
+	                
+	                if (fi.Length != importFile.FileInfo.Length || fi.CreationTimeUtc  != importFile.FileInfo.CreationTimeUtc || fi.LastWriteTimeUtc != importFile.FileInfo.LastWriteTimeUtc)
 	                {
 	                    importFile.FileInfo = fi;
-	                    importFile.CssContent
-	                              .Clear()
-	                              .Append(File.ReadAllText(filePath));
+	                    importFile.CssContent?.Clear().Append(File.ReadAllText(filePath));
 	                }
 	            }
 
-	            bool hasLayer = !string.IsNullOrEmpty(layerName) && layerName != "components";
+	            var hasLayer = string.IsNullOrEmpty(layerName) == false && layerName != "components";
+	            
 	            if (hasLayer)
 	                importsSeg
 	                  .Append("@layer ")
@@ -139,46 +144,44 @@ public static class AppRunnerExtensions
 	                appRunner,
 	                false,
 	                layerName,
-	                Path.GetDirectoryName(filePath) ?? ""
+	                Path.GetDirectoryName(filePath) ?? string.Empty
 	            );
 
 	            if (hasLayer)
 	                importsSeg
-	                  .Append("}")
+	                  .Append('}')
 	                  .Append(settings.LineBreak);
 	        }
 
 	        // next match
-	        idx = src.IndexOf(ImportToken, scanPos, StringComparison.Ordinal);
+	        idx = src.IndexOf(importToken, scanPos, StringComparison.Ordinal);
 	    }
 
 	    //––– finalize –––
 	    if (isRoot)
 	    {
-	        settings.CssImports.RemoveWhere((_, v) => !v.Touched);
+	        settings.CssImports.RemoveWhere((_, v) => v.Touched == false);
+
 	        if (firstIdx < 0 || lastEnd < firstIdx)
 	            return (-1, -1);
+	        
 	        return (firstIdx, lastEnd - firstIdx);
 	    }
-	    else
-	    {
-	        // leaf: append everything after the last “;”
-	        if (lastEnd >= totalLength)
-	            return (-1, -1);
+	    
+        // leaf: append everything after the last “;”
+        if (lastEnd >= totalLength)
+            return (-1, -1);
 
-	        var targetSeg = parentLayerName == "components"
-	                      ? compsSeg
-	                      : importsSeg;
+        var targetSeg = parentLayerName == "components" ? compsSeg : importsSeg;
 
-	        targetSeg
-		        .Append(src, lastEnd, totalLength - lastEnd)
-		        .Trim();
+        targetSeg
+	        .Append(src, lastEnd, totalLength - lastEnd)
+	        .Trim();
 
-	        targetSeg
-	          .Append(settings.LineBreak);
+        targetSeg
+          .Append(settings.LineBreak);
 
-	        return (-1, -1);
-	    }
+        return (-1, -1);
 	}
 	
 	#endregion
@@ -628,8 +631,8 @@ public static class AppRunnerExtensions
                 used.TryAdd(prop, val);
         }
     }
-    
-	#endregion
+
+    #endregion
 	
 	#region V2: Process @variant Statements
 	
