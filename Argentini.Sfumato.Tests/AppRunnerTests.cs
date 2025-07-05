@@ -1,3 +1,4 @@
+using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
@@ -7,8 +8,14 @@ public class AppRunnerTests
     [Fact]
     public async Task ProcessScannedFileUtilityClassDependencies()
     {
+        var basePath = ApplicationEnvironment.ApplicationBasePath;
+        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
+        var filePath = Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/wwwroot/index.html"));
+        
+        Assert.True(File.Exists(filePath));
+        
         var appRunner = new AppRunner(new AppState());
-        var scannedFile = new ScannedFile("../../../SampleWebsite/wwwroot/index.html");
+        var scannedFile = new ScannedFile(filePath);
 
         await scannedFile.LoadAndScanFileAsync(appRunner);
         
@@ -18,10 +25,17 @@ public class AppRunnerTests
     [Fact]
     public async Task ProcessAtApplyStatementsAndTrackDependencies()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css");
+        var basePath = ApplicationEnvironment.ApplicationBasePath;
+        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
+        var filePath = Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleCss/sample.css"));
+
+        Assert.True(File.Exists(filePath));
+        
+        var appRunner = new AppRunner(new AppState(), filePath);
 
         await appRunner.LoadCssFileAsync();
         await appRunner.PerformFileScanAsync();
+
         appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
 
         var sb = new StringBuilder(await appRunner.AppRunnerSettings.CssContent.BuildCssAsync(appRunner));
@@ -37,17 +51,19 @@ public class AppRunnerTests
     }
 
     [Fact]
-    public void CssImportStatements()
+    public async Task CssImportStatements()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css")
-        {
-            AppRunnerSettings =
-            {
-                CssFilePath = "../../../SampleCss/sample.css"
-            }
-        };
+        var basePath = ApplicationEnvironment.ApplicationBasePath;
+        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
+        var filePath = Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleCss/sample.css"));
 
-        appRunner.AppRunnerSettings.LoadCssAndExtractSfumatoBlock();
+        Assert.True(File.Exists(filePath));
+
+        var appRunner = new AppRunner(new AppState(), filePath);
+
+        await appRunner.LoadCssFileAsync();
+
+        appRunner.AppRunnerSettings.CssContent.LoadSfumatoSettings(appRunner);
 
         var sb = new StringBuilder(appRunner.AppRunnerSettings.CssContent);
         var (index, length) = sb.ProcessCssImportStatements(appRunner, true);
@@ -90,19 +106,19 @@ public class AppRunnerTests
     }
 
     [Fact]
-    public void ProcessSfumatoBlock()
+    public async Task ProcessSfumatoBlock()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css")
-        {
-            AppRunnerSettings =
-            {
-                CssFilePath = "../../../SampleCss/sample.css"
-            }
-        };
+        var basePath = ApplicationEnvironment.ApplicationBasePath;
+        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
+        var filePath = Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleCss/sample.css"));
 
-        appRunner.AppRunnerSettings.LoadCssAndExtractSfumatoBlock();
-        appRunner.AppRunnerSettings.ExtractSfumatoItems();
-        AppRunnerExtensions.ProcessSfumatoBlockSettings(appRunner);
+        Assert.True(File.Exists(filePath));
+
+        var appRunner = new AppRunner(new AppState(), filePath);
+
+        await appRunner.LoadCssFileAsync();
+
+        appRunner.AppRunnerSettings.CssContent.LoadSfumatoSettings(appRunner);
 
         Assert.True(appRunner.AppRunnerSettings.SfumatoBlockItems.ContainsKey("--spacing"));
         Assert.True(appRunner.AppRunnerSettings.SfumatoBlockItems.ContainsKey("--paths"));
@@ -119,9 +135,17 @@ public class AppRunnerTests
     [Fact]
     public async Task BuildCssFile()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/sample.css");
+        var basePath = ApplicationEnvironment.ApplicationBasePath;
+        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
+        var filePath = Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleCss/sample.css"));
+
+        Assert.True(File.Exists(filePath));
+
+        var appRunner = new AppRunner(new AppState(), filePath);
 
         await appRunner.LoadCssFileAsync();
+
+        appRunner.AppRunnerSettings.CssContent.LoadSfumatoSettings(appRunner);
 
         appRunner.ScannedFiles.TryAdd("test", new ScannedFile("")
         {
