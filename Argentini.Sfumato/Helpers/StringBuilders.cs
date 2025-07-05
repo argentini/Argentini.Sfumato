@@ -57,15 +57,15 @@ public static class StringBuilders
 	/// <param name="index"></param>
 	/// <param name="length"></param>
 	/// <returns></returns>
-	public static StringBuilder? ReplaceContent(this StringBuilder? sb, StringBuilder? content, int index = -1, int length = -1)
+	public static StringBuilder? ReplaceContent(this StringBuilder sb, StringBuilder content, int index = -1, int length = -1)
 	{
-		if (sb is null)
-			return null;
-
 		sb.Clear();
 
-		if (content is null)
+		if (index == -1 && length == -1)
+		{
+			sb.Append(content);
 			return sb;
+		}
 
 		var contentLen = content.Length;
 
