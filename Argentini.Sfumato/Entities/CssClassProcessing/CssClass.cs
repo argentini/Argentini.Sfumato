@@ -21,7 +21,7 @@ public sealed class CssClass : IDisposable
     /// Name broken into variant and core segments.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]", "text-base/6"])
     /// </summary>
-    public HashSet<string> AllSegments { get; } = [];
+    public HashSet<string> AllSegments { get; } = new (StringComparer.Ordinal);
 
     /// <summary>
     /// Variant segments used in the class name.
