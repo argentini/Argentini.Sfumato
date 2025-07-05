@@ -66,11 +66,11 @@ public sealed class AppRunnerSettings(AppRunner? appRunner)
 
 	public Dictionary<string, CssImportFile> CssImports { get; } = [];
 	
-	public List<string> Paths { get; } = [];
-    public List<string> AbsolutePaths { get; } = [];
-    public List<string> NotPaths { get; } = [];
-    public List<string> AbsoluteNotPaths { get; } = [];
-    public List<string> NotFolderNames { get; } = [];
+	public HashSet<string> Paths { get; } = new (StringComparer.Ordinal);
+	public HashSet<string> AbsolutePaths { get; } = new (StringComparer.Ordinal);
+	public HashSet<string> NotPaths { get; } = new (StringComparer.Ordinal);
+	public HashSet<string> AbsoluteNotPaths { get; } = new (StringComparer.Ordinal);
+	public HashSet<string> NotFolderNames { get; } = new (StringComparer.Ordinal);
 
     public string SfumatoCssBlock { get; private set; } = string.Empty;
     public string ProcessedCssContent { get; set; } = string.Empty;
