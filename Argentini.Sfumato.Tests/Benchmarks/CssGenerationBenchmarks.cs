@@ -39,8 +39,8 @@ namespace Argentini.Sfumato.Tests.Benchmarks
             CssPipelineStage.Formatting)]
         public CssPipelineStage Stage { get; set; }
 
-        private AppRunner _runner;
-        private string _cssPath;
+        private AppRunner _runner = null!;
+        private string _cssPath = null!;
 
         [IterationSetup]
         public void IterationSetup()
@@ -159,7 +159,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
             switch (Stage)
             {
                 case CssPipelineStage.FullBuild:
-                    _ = _runner.AppRunnerSettings.CssContent.BuildCssAsync(_runner).GetAwaiter().GetResult();
+                    _ = AppRunnerExtensions.BuildCssAsync(_runner).GetAwaiter().GetResult();
                     break;
 
                 case CssPipelineStage.SfumatoExtract:

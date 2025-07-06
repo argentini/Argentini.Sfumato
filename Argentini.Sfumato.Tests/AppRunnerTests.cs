@@ -38,7 +38,7 @@ public class AppRunnerTests
 
         appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
 
-        var sb = new StringBuilder(await appRunner.AppRunnerSettings.CssContent.BuildCssAsync(appRunner));
+        var sb = new StringBuilder(await AppRunnerExtensions.BuildCssAsync(appRunner));
 
         Assert.False(sb.Contains("@apply"));
         
@@ -154,7 +154,7 @@ public class AppRunnerTests
 
         appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);
         
-        var css = await appRunner.AppRunnerSettings.CssContent.BuildCssAsync(appRunner);
+        var css = await AppRunnerExtensions.BuildCssAsync(appRunner);
         
         var indexOfRoot = css.IndexOf(":root", StringComparison.Ordinal);
         var indexOfFontSansClass = css.IndexOf(".font-sans", StringComparison.Ordinal);
