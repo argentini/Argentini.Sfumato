@@ -1110,24 +1110,45 @@ public static class AppRunnerExtensions
 	
 	#region Load Source CSS File, Sfumato Settings
 	
-	public static async Task LoadCssFileAsync(this AppRunner appRunner)
+	public static async Task<bool> LoadCssFileAsync(this AppRunner appRunner)
 	{
 		var workingSb = appRunner.AppState.StringBuilderPool.Get();
 
 		try
 		{
 			if (string.IsNullOrEmpty(appRunner.AppRunnerSettings.CssFilePath) == false)
-				appRunner.AppRunnerSettings.CssContent = (await File.ReadAllTextAsync(Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath.SetNativePathSeparators())))
+			{
+				var filePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath.SetNativePathSeparators());
+
+				if (File.Exists(filePath) == false)
+				{
+					Console.WriteLine($"Could not find file => {filePath}");
+					Environment.Exit(1);
+					return false;
+				}
+				
+				appRunner.AppRunnerSettings.CssContent = (await File.ReadAllTextAsync(filePath))
 					.TrimWhitespaceBeforeLineBreaks(workingSb)
 					.RemoveBlockComments(workingSb)
 					.NormalizeLinebreaks(appRunner.AppRunnerSettings.LineBreak)
 					.Trim();
 
-			appRunner.AppRunnerSettings.CssContent.LoadSfumatoSettings(appRunner);
+				return appRunner.AppRunnerSettings.CssContent.LoadSfumatoSettings(appRunner);
+			}
+			
+			/*
+			Console.WriteLine("No CSS file specified");
+			Environment.Exit(1);
+			*/
+
+			return false;
 		}
 		catch (Exception e)
 		{
-			appRunner.Messages.Add($"{AppState.CliErrorPrefix}LoadCssFileAsync() => {e.Message}");
+			Console.WriteLine($"Error reading file => {e.Message}");
+			Environment.Exit(1);
+
+			return false;
 		}
 		finally
 		{
@@ -1135,7 +1156,14 @@ public static class AppRunnerExtensions
 		}
 	}
 	
-	public static void LoadSfumatoSettings(this string css, AppRunner appRunner)
+	/// <summary>
+	/// Load Sfumato settings from CSS file, remove block from source.
+	/// Returns true on success.
+	/// </summary>
+	/// <param name="css"></param>
+	/// <param name="appRunner"></param>
+	/// <returns></returns>
+	public static bool LoadSfumatoSettings(this string css, AppRunner appRunner)
 	{
 		appRunner.CustomCssSegment.ReplaceContent(css);
 
@@ -1144,10 +1172,14 @@ public static class AppRunnerExtensions
 		if (index > -1)
 		{
 			appRunner.CustomCssSegment.Remove(index, length);
-
+			appRunner.CssContentWithoutSettings.ReplaceContent(appRunner.CustomCssSegment);
+			
 			ImportSfumatoBlockSettingsItems(appRunner);
-			ProcessSfumatoBlockSettings(appRunner);
+
+			return ProcessSfumatoBlockSettings(appRunner);
 		}
+
+		return false;
 	}
 	
 	#endregion
@@ -1157,7 +1189,7 @@ public static class AppRunnerExtensions
     /// <summary>
     /// Processes CSS settings for colors, breakpoints, etc., and uses reflection to load all others per utility class file.  
     /// </summary>
-    public static void ProcessSfumatoBlockSettings(AppRunner appRunner, bool usingDefaults = false)
+    public static bool ProcessSfumatoBlockSettings(AppRunner appRunner, bool usingDefaults = false)
     {
 	    #region Read color definitions
 	    
@@ -1480,7 +1512,7 @@ public static class AppRunnerExtensions
 			    appRunner.AppRunnerSettings.UseCompatibilityMode = useCompatibilityMode.Equals("true", StringComparison.Ordinal);
 
 		    if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue("--output-path", out var outputPath))
-			    appRunner.AppRunnerSettings.CssOutputFilePath = (string.IsNullOrEmpty(outputPath) ? "sfumato.css" : outputPath).Trim('\"');
+			    appRunner.AppRunnerSettings.CssOutputFilePath = (string.IsNullOrEmpty(outputPath) ? string.Empty : outputPath).Trim('\"');
 
 		    if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue("--paths", out var pathsValue))
 		    {
@@ -1522,19 +1554,21 @@ public static class AppRunnerExtensions
 		    }
 
 		    if (usingDefaults)
-			    return;
+			    return true;
 		    
 		    if (string.IsNullOrEmpty(appRunner.AppRunnerSettings.CssOutputFilePath))
 		    {
 			    Console.WriteLine($"{AppState.CliErrorPrefix}Must specify --output-path in file: {appRunner.AppRunnerSettings.CssFilePath}");
-			    Environment.Exit(1);
+
+			    return false;
 		    }
 
 		    if (appRunner.AppRunnerSettings.Paths.Count > 0)
-			    return;
+			    return true;
 		    
 		    Console.WriteLine($"{AppState.CliErrorPrefix}Must specify --paths: [] in file: {appRunner.AppRunnerSettings.CssFilePath}");
-		    Environment.Exit(1);
+
+		    return false;
 	    }
 	    catch (Exception e)
 	    {
@@ -1547,29 +1581,23 @@ public static class AppRunnerExtensions
 		}
 	    
 	    #endregion
+
+	    return false;
     }
 	
 	#endregion
 	
 	#region Build CSS
 	
-	public static async Task<string> BuildCssAsync(this string css, AppRunner appRunner)
+	public static async Task<string> BuildCssAsync(AppRunner appRunner)
 	{
 		var index = 0;
 		var length = 0;
 		
-		appRunner.CustomCssSegment.ReplaceContent(css);
+		appRunner.CustomCssSegment.ReplaceContent(appRunner.CssContentWithoutSettings);
 		appRunner.PropertiesCssSegment.Clear();
 		appRunner.PropertyListCssSegment.Clear();
 		appRunner.ThemeCssSegment.Clear();
-
-		(index, length) = appRunner.CustomCssSegment.ExtractSfumatoBlock(appRunner);
-
-		if (index == -1)
-			return string.Empty;
-
-		if (index > -1)
-			appRunner.CustomCssSegment.Remove(index, length);
 
 		(index, length) = appRunner.CustomCssSegment.ProcessCssImportStatements(appRunner, true);
 

@@ -31,6 +31,7 @@ public sealed class AppRunner
 
 	#region CSS Generation Data
 
+	public StringBuilder CssContentWithoutSettings { get; } = new();
 	public StringBuilder DefaultsCss { get; }
 	public StringBuilder BrowserResetCss { get; }
 	public StringBuilder FormsCss { get; }
@@ -85,11 +86,13 @@ public sealed class AppRunner
 
 		    DefaultsCss.ExtractSfumatoBlock(this);
 		    AppRunnerExtensions.ImportSfumatoBlockSettingsItems(this);
-		    AppRunnerExtensions.ProcessSfumatoBlockSettings(this, true);
+
+		    if (AppRunnerExtensions.ProcessSfumatoBlockSettings(this, true) == false)
+			    throw new Exception("Could not process the Sfumato settings");
 	    }
 	    catch (Exception e)
 	    {
-		    Messages.Add($"{AppState.CliErrorPrefix}Initialize() - {e.Message}");
+		    Messages.Add(e.Message);
 	    }
     }
 
@@ -143,10 +146,11 @@ public sealed class AppRunner
 	
 	#region File Scanning
 	
-	public async Task ReInitializeAsync()
+	public async Task<bool> ReInitializeAsync()
 	{
 		Initialize();
-		await this.LoadCssFileAsync();
+		
+		return await this.LoadCssFileAsync();
 	}
 
 	public async Task PerformFileScanAsync()
@@ -220,12 +224,13 @@ public sealed class AppRunner
 	{
 		CssBuildStopwatch.Restart();
 
-		LastCss = await AppRunnerSettings.CssContent.BuildCssAsync(this);
+		LastCss = await AppRunnerExtensions.BuildCssAsync(this);
 
-		if (string.IsNullOrEmpty(LastCss))
+		if (string.IsNullOrEmpty(LastCss) || string.IsNullOrEmpty(AppRunnerSettings.NativeCssOutputFilePath) || AppRunnerSettings.NativeCssOutputFilePath.EndsWith(".css", StringComparison.Ordinal) == false)
+		{
 			Messages.Clear();
-
-		if (string.IsNullOrEmpty(LastCss) == false)
+		}
+		else
 		{
 			await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
@@ -426,11 +431,19 @@ public sealed class AppRunner
 				await AddCssPathMessageAsync();
 				await AddMessageAsync(message);
 
-				await ReInitializeAsync();
-				await PerformFileScanAsync();
-				await BuildAndSaveCss();
+				if (await ReInitializeAsync())
+				{
+					await PerformFileScanAsync();
+					await BuildAndSaveCss();
+				}
+				else
+				{
+					Messages.Clear();
+					await RenderMessagesAsync();
+				}
+
 				await StartWatchingAsync();
-				
+
 				if (performedWork == false)
 					performedWork = true;
 			}

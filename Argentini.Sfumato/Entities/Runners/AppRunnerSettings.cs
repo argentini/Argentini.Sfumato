@@ -27,13 +27,16 @@ public sealed class AppRunnerSettings
 		}
 	}
 
-	private string _cssOutputFilePath = "sfumato.css";
+	private string _cssOutputFilePath = string.Empty;
 	public string CssOutputFilePath
 	{
 		get => _cssOutputFilePath;
 		set
 		{
 			_cssOutputFilePath = value;
+
+			if (string.IsNullOrEmpty(value))
+				return;
 
 			NativeCssOutputFilePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, CssOutputFilePath.SetNativePathSeparators()));
 		}

@@ -111,7 +111,12 @@ public sealed class AppState
 		}
 
 		foreach (var appRunner in AppRunners)
-			await appRunner.LoadCssFileAsync();
+		{
+			if (await appRunner.LoadCssFileAsync() == false)
+			{
+				return $"Could not load settings from file: {appRunner.AppRunnerSettings.CssFilePath}";
+			}
+		}
 
 		return string.Empty;
 	}
