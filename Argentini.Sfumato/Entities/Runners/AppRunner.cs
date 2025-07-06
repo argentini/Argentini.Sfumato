@@ -18,8 +18,8 @@ public sealed class AppRunner
 	public Library.Library Library { get; set; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new();
 	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
-	public ConcurrentDictionary<string,string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
-	public ConcurrentDictionary<string,string> UsedCss { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string,string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string,string> UsedCss { get; } = new(StringComparer.Ordinal);
 	public Dictionary<string,CssClass> UtilityClasses { get; } = new(StringComparer.Ordinal);
 
 	private string _cssFilePath;
@@ -31,10 +31,11 @@ public sealed class AppRunner
 
 	#region CSS Generation Data
 
-	public GenerationSegment CssContentWithoutSettings { get; } = new();
-	public GenerationSegment DefaultsCss { get; } = new();
-	public GenerationSegment BrowserResetCss { get; } = new();
-	public GenerationSegment FormsCss { get; } = new();
+	public StringBuilder CssContentWithoutSettings { get; } = new();
+	
+	public GenerationSegment DefaultsCssSegment { get; } = new();
+	public GenerationSegment BrowserResetCssSegment { get; } = new();
+	public GenerationSegment FormsCssSegment { get; } = new();
 
 	public GenerationSegment ImportsCssSegment { get; } = new();
 	public GenerationSegment SfumatoSegment { get; } = new();
@@ -58,9 +59,9 @@ public sealed class AppRunner
 		_cssFilePath = cssFilePath;
 		_useMinify = useMinify;
 
-		BrowserResetCss.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
-		FormsCss.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
-		DefaultsCss.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		BrowserResetCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		FormsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		DefaultsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
 
 		Initialize();
 	}
@@ -84,7 +85,7 @@ public sealed class AppRunner
 			    UseMinify = _useMinify
 		    };
 
-		    DefaultsCss.Content.ExtractSfumatoBlock(this);
+		    DefaultsCssSegment.Content.ExtractSfumatoBlock(this);
 		    AppRunnerExtensions.ImportSfumatoBlockSettingsItems(this);
 
 		    if (AppRunnerExtensions.ProcessSfumatoBlockSettings(this, true) == false)
