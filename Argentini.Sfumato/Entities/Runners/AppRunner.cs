@@ -222,13 +222,19 @@ public sealed class AppRunner
 
 		LastCss = await AppRunnerSettings.CssContent.BuildCssAsync(this);
 
-		await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
+		if (string.IsNullOrEmpty(LastCss))
+			Messages.Clear();
 
-		CssBuildStopwatch.Stop();
+		if (string.IsNullOrEmpty(LastCss) == false)
+		{
+			await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
-		Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {CssBuildStopwatch.FormatTimer()}");
-		Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff}");
-		Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
+			CssBuildStopwatch.Stop();
+
+			Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {CssBuildStopwatch.FormatTimer()}");
+			Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff}");
+			Messages.Add(Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
+		}
 
 		await RenderMessagesAsync();
 	}

@@ -205,8 +205,8 @@ public static class AppRunnerExtensions
 
 			if (index == -1)
 			{
-				Console.WriteLine($"{AppState.CliErrorPrefix}No @layer sfumato {{ :root {{ }} }} block found.");
-				Environment.Exit(1);
+				Console.WriteLine("No @layer sfumato { :root { } } block found.");
+				return (-1, -1);
 			}
 		}
 
@@ -726,6 +726,8 @@ public static class AppRunnerExtensions
 	{
 		ProcessTrackedDependencyValues(appRunner);
 
+		var collection = appRunner.UsedCssCustomProperties.OrderBy(i => i.Key).ToList();
+		
 		if (appRunner.UsedCssCustomProperties.Count > 0)
 		{
 			#region @layer properties
@@ -734,7 +736,7 @@ public static class AppRunnerExtensions
 				.Append("*, ::before, ::after, ::backdrop {")
 				.Append(appRunner.AppRunnerSettings.LineBreak);
 
-			foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => (c.Key.StartsWith("--sf-") || c.Key.StartsWith("--form-")) && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
+			foreach (var ccp in collection.Where(c => (c.Key.StartsWith("--sf-") || c.Key.StartsWith("--form-")) && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
 			{
 				if (appRunner.AppRunnerSettings.UseForms == false && ccp.Key.StartsWith("--form-"))
 					continue;
@@ -756,7 +758,7 @@ public static class AppRunnerExtensions
 			
 			if (appRunner.AppRunnerSettings.UseCompatibilityMode == false)
 			{
-				foreach (var ccp in appRunner.UsedCssCustomProperties)
+				foreach (var ccp in collection)
 				{
 					if (ccp.Key.StartsWith('-') == false)
 						continue;
@@ -780,7 +782,7 @@ public static class AppRunnerExtensions
 				.Append(appRunner.AppRunnerSettings.LineBreak)
 				.Append(appRunner.AppRunnerSettings.LineBreak);
 		
-			foreach (var ccp in appRunner.UsedCssCustomProperties.Where(c => c.Key.StartsWith("--sf-") == false && c.Key.StartsWith("--form-") == false && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
+			foreach (var ccp in collection.Where(c => c.Key.StartsWith("--sf-") == false && c.Key.StartsWith("--form-") == false && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
 			{
 				appRunner.ThemeCssSegment
 					.Append(ccp.Key)
@@ -808,7 +810,7 @@ public static class AppRunnerExtensions
 			
 			if (appRunner.UsedCss.Count > 0)
 			{
-				foreach (var ccp in appRunner.UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false))
+				foreach (var ccp in appRunner.UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false).OrderBy(i => i.Key))
 				{
 					appRunner.PropertyListCssSegment
 						.Append(ccp.Key)
@@ -1140,10 +1142,12 @@ public static class AppRunnerExtensions
 		var (index, length) = appRunner.CustomCssSegment.ExtractSfumatoBlock(appRunner);
 
 		if (index > -1)
+		{
 			appRunner.CustomCssSegment.Remove(index, length);
 
-		ImportSfumatoBlockSettingsItems(appRunner);
-		ProcessSfumatoBlockSettings(appRunner);
+			ImportSfumatoBlockSettingsItems(appRunner);
+			ProcessSfumatoBlockSettings(appRunner);
+		}
 	}
 	
 	#endregion
@@ -1558,8 +1562,11 @@ public static class AppRunnerExtensions
 		appRunner.PropertiesCssSegment.Clear();
 		appRunner.PropertyListCssSegment.Clear();
 		appRunner.ThemeCssSegment.Clear();
-		
+
 		(index, length) = appRunner.CustomCssSegment.ExtractSfumatoBlock(appRunner);
+
+		if (index == -1)
+			return string.Empty;
 
 		if (index > -1)
 			appRunner.CustomCssSegment.Remove(index, length);
