@@ -35,8 +35,8 @@ public static class AppRunnerExtensions
 
 	    if (isRoot)
 	    {
-	        importsSeg.Clear();
-	        compsSeg.Clear();
+	        importsSeg.Content.Clear();
+	        compsSeg.Content.Clear();
 
 	        foreach (var kv in settings.CssImports)
 	            kv.Value.Touched = false;
@@ -97,7 +97,7 @@ public static class AppRunnerExtensions
 	        {
 	            Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
 
-	            importsSeg
+	            importsSeg.Content
 	              .Append("/* Could not import: ")
 	              .Append(filePath)
 	              .Append(" */")
@@ -132,7 +132,7 @@ public static class AppRunnerExtensions
 	            var hasLayer = string.IsNullOrEmpty(layerName) == false && layerName != "components";
 	            
 	            if (hasLayer)
-	                importsSeg
+	                importsSeg.Content
 	                  .Append("@layer ")
 	                  .Append(layerName)
 	                  .Append(" {")
@@ -148,7 +148,7 @@ public static class AppRunnerExtensions
 	            );
 
 	            if (hasLayer)
-	                importsSeg
+	                importsSeg.Content
 	                  .Append('}')
 	                  .Append(settings.LineBreak);
 	        }
@@ -174,11 +174,11 @@ public static class AppRunnerExtensions
 
         var targetSeg = parentLayerName == "components" ? compsSeg : importsSeg;
 
-        targetSeg
+        targetSeg.Content
 	        .Append(src, lastEnd, totalLength - lastEnd)
 	        .Trim();
 
-        targetSeg
+        targetSeg.Content
           .Append(settings.LineBreak);
 
         return (-1, -1);
@@ -212,7 +212,7 @@ public static class AppRunnerExtensions
 
 		var blockStartIndex = css.IndexOf('{', index) + 1;
 		
-		appRunner.SfumatoSegment.ReplaceContent(css, blockStartIndex, length - (blockStartIndex - index) - 1);
+		appRunner.SfumatoSegment.Content.ReplaceContent(css, blockStartIndex, length - (blockStartIndex - index) - 1);
 
 		return (index, length);
 	}
@@ -228,22 +228,22 @@ public static class AppRunnerExtensions
     {
 	    try
 	    {
-	        foreach (var pos in appRunner.SfumatoSegment.EnumerateCssCustomPropertyPositions())
-		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Substring(pos.PropertyStart, pos.PropertyLength), appRunner.SfumatoSegment.Substring(pos.ValueStart, pos.ValueLength)) == false)
+	        foreach (var pos in appRunner.SfumatoSegment.Content.EnumerateCssCustomPropertyPositions())
+		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Content.Substring(pos.PropertyStart, pos.PropertyLength), appRunner.SfumatoSegment.Content.Substring(pos.ValueStart, pos.ValueLength)) == false)
 		        {
-			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Substring(pos.PropertyStart, pos.PropertyLength)] = appRunner.SfumatoSegment.Substring(pos.ValueStart, pos.ValueLength);
+			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Content.Substring(pos.PropertyStart, pos.PropertyLength)] = appRunner.SfumatoSegment.Content.Substring(pos.ValueStart, pos.ValueLength);
 		        }
 
-	        foreach (var pos in appRunner.SfumatoSegment.EnumerateCssClassAndAtBlockPositions())
-		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Substring(pos.HeaderStart, pos.HeaderLength), appRunner.SfumatoSegment.Substring(pos.BodyStart, pos.BodyLength).TrimEnd(';').Trim()) == false)
+	        foreach (var pos in appRunner.SfumatoSegment.Content.EnumerateCssClassAndAtBlockPositions())
+		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Content.Substring(pos.HeaderStart, pos.HeaderLength), appRunner.SfumatoSegment.Content.Substring(pos.BodyStart, pos.BodyLength).TrimEnd(';').Trim()) == false)
 		        {
-			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Substring(pos.HeaderStart, pos.HeaderLength)] = appRunner.SfumatoSegment.Substring(pos.BodyStart, pos.BodyLength).TrimEnd(';').Trim();
+			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Content.Substring(pos.HeaderStart, pos.HeaderLength)] = appRunner.SfumatoSegment.Content.Substring(pos.BodyStart, pos.BodyLength).TrimEnd(';').Trim();
 		        }
 
-	        foreach (var pos in appRunner.SfumatoSegment.EnumerateCustomVariantPositions())
-		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Substring(pos.NameStart, pos.NameLength), appRunner.SfumatoSegment.Substring(pos.ContentStart, pos.ContentLength).TrimEnd(';')) == false)
+	        foreach (var pos in appRunner.SfumatoSegment.Content.EnumerateCustomVariantPositions())
+		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Content.Substring(pos.NameStart, pos.NameLength), appRunner.SfumatoSegment.Content.Substring(pos.ContentStart, pos.ContentLength).TrimEnd(';')) == false)
 		        {
-			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Substring(pos.NameStart, pos.NameLength)] = appRunner.SfumatoSegment.Substring(pos.ContentStart, pos.ContentLength).TrimEnd(';');
+			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Content.Substring(pos.NameStart, pos.NameLength)] = appRunner.SfumatoSegment.Content.Substring(pos.ContentStart, pos.ContentLength).TrimEnd(';');
 		        }
 
 	        if (appRunner.AppRunnerSettings.SfumatoBlockItems.Count > 0)
@@ -265,18 +265,18 @@ public static class AppRunnerExtensions
 
 	public static void ProcessComponentsLayerAndCss(AppRunner appRunner)
 	{
-		var (index, length) = appRunner.CustomCssSegment.ExtractCssBlock("@layer components");
+		var (index, length) = appRunner.CustomCssSegment.Content.ExtractCssBlock("@layer components");
 		
 		while (index > -1)
 		{
-			var openBraceIndex = appRunner.CustomCssSegment.IndexOf('{', index + 1);
+			var openBraceIndex = appRunner.CustomCssSegment.Content.IndexOf('{', index + 1);
 
 			if (openBraceIndex > -1)
-				appRunner.ComponentsCssSegment.Append(appRunner.CustomCssSegment, openBraceIndex + 1, length - (openBraceIndex - index) - 2);
+				appRunner.ComponentsCssSegment.Content.Append(appRunner.CustomCssSegment.Content, openBraceIndex + 1, length - (openBraceIndex - index) - 2);
 			
-			appRunner.CustomCssSegment.Remove(index, length);
+			appRunner.CustomCssSegment.Content.Remove(index, length);
 			
-			(index, length) = appRunner.CustomCssSegment.ExtractCssBlock("@layer components");
+			(index, length) = appRunner.CustomCssSegment.Content.ExtractCssBlock("@layer components");
 		}
 	}
 
@@ -290,7 +290,7 @@ public static class AppRunnerExtensions
 	/// <param name="appRunner"></param>
 	public static void ProcessUtilityClasses(AppRunner appRunner)
 	{
-		appRunner.UtilitiesCssSegment.Clear();
+		appRunner.UtilitiesCssSegment.Content.Clear();
 		
 		var root = new VariantBranch
 		{
@@ -302,7 +302,7 @@ public static class AppRunnerExtensions
 		foreach (var cssClass in appRunner.UtilityClasses.Values.OrderBy(c => c.WrapperSort).ThenBy(c => c.SelectorSort))
 			ProcessVariantBranchRecursive(root, cssClass);
 		
-		GenerateUtilityClassesCss(root, appRunner.UtilitiesCssSegment);
+		GenerateUtilityClassesCss(root, appRunner.UtilitiesCssSegment.Content);
 	}
 
 	/// <summary>
@@ -732,7 +732,7 @@ public static class AppRunnerExtensions
 		{
 			#region @layer properties
 			
-			appRunner.PropertiesCssSegment
+			appRunner.PropertiesCssSegment.Content
 				.Append("*, ::before, ::after, ::backdrop {")
 				.Append(appRunner.AppRunnerSettings.LineBreak);
 
@@ -741,14 +741,14 @@ public static class AppRunnerExtensions
 				if (appRunner.AppRunnerSettings.UseForms == false && ccp.Key.StartsWith("--form-"))
 					continue;
 				
-				appRunner.PropertiesCssSegment
+				appRunner.PropertiesCssSegment.Content
 					.Append(ccp.Key)
 					.Append(": ")
 					.Append(ccp.Value)
 					.Append(';');
 			}
 
-			appRunner.PropertiesCssSegment
+			appRunner.PropertiesCssSegment.Content
 				.Append('}')
 				.Append(appRunner.AppRunnerSettings.LineBreak);	
 			
@@ -766,7 +766,7 @@ public static class AppRunnerExtensions
 					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue($"@property {ccp.Key}", out var prop) == false)
 						continue;
 					
-					appRunner.PropertyListCssSegment
+					appRunner.PropertyListCssSegment.Content
 						.Append($"@property {ccp.Key} ")
 						.Append(prop)
 						.Append(appRunner.AppRunnerSettings.LineBreak);
@@ -777,14 +777,14 @@ public static class AppRunnerExtensions
 			
 			#region @layer theme
 			
-			appRunner.ThemeCssSegment
+			appRunner.ThemeCssSegment.Content
 				.Append(":root, :host {")
 				.Append(appRunner.AppRunnerSettings.LineBreak)
 				.Append(appRunner.AppRunnerSettings.LineBreak);
 		
 			foreach (var ccp in collection.Where(c => c.Key.StartsWith("--sf-") == false && c.Key.StartsWith("--form-") == false && string.IsNullOrEmpty(c.Value) == false).OrderBy(c => c.Key))
 			{
-				appRunner.ThemeCssSegment
+				appRunner.ThemeCssSegment.Content
 					.Append(ccp.Key)
 					.Append(": ")
 					.Append(ccp.Value)
@@ -799,7 +799,7 @@ public static class AppRunnerExtensions
 					appRunner.UsedCss.TryAdd(key, value);
 			}
 
-			appRunner.ThemeCssSegment
+			appRunner.ThemeCssSegment.Content
 				.Append('}')
 				.Append(appRunner.AppRunnerSettings.LineBreak)
 				.Append(appRunner.AppRunnerSettings.LineBreak);	
@@ -812,7 +812,7 @@ public static class AppRunnerExtensions
 			{
 				foreach (var ccp in appRunner.UsedCss.Where(c => string.IsNullOrEmpty(c.Value) == false).OrderBy(i => i.Key))
 				{
-					appRunner.PropertyListCssSegment
+					appRunner.PropertyListCssSegment.Content
 						.Append(ccp.Key)
 						.Append(' ')
 						.Append(ccp.Value);
@@ -1165,14 +1165,14 @@ public static class AppRunnerExtensions
 	/// <returns></returns>
 	public static bool LoadSfumatoSettings(this string css, AppRunner appRunner)
 	{
-		appRunner.CustomCssSegment.ReplaceContent(css);
+		appRunner.CustomCssSegment.Content.ReplaceContent(css);
 
-		var (index, length) = appRunner.CustomCssSegment.ExtractSfumatoBlock(appRunner);
+		var (index, length) = appRunner.CustomCssSegment.Content.ExtractSfumatoBlock(appRunner);
 
 		if (index > -1)
 		{
-			appRunner.CustomCssSegment.Remove(index, length);
-			appRunner.CssContentWithoutSettings.ReplaceContent(appRunner.CustomCssSegment);
+			appRunner.CustomCssSegment.Content.Remove(index, length);
+			appRunner.CssContentWithoutSettings.Content.ReplaceContent(appRunner.CustomCssSegment.Content);
 			
 			ImportSfumatoBlockSettingsItems(appRunner);
 
@@ -1591,89 +1591,54 @@ public static class AppRunnerExtensions
 	
 	public static async Task<string> FullBuildCssAsync(AppRunner appRunner)
 	{
-		appRunner.CustomCssSegment.ReplaceContent(appRunner.CssContentWithoutSettings);
-		appRunner.PropertiesCssSegment.Clear();
-		appRunner.PropertyListCssSegment.Clear();
-		appRunner.ThemeCssSegment.Clear();
+		appRunner.CustomCssSegment.Content.ReplaceContent(appRunner.CssContentWithoutSettings.Content);
+		appRunner.PropertiesCssSegment.Content.Clear();
+		appRunner.PropertyListCssSegment.Content.Clear();
+		appRunner.ThemeCssSegment.Content.Clear();
 
-		var (index, length) = appRunner.CustomCssSegment.ProcessCssImportStatements(appRunner, true);
+		var (index, length) = appRunner.CustomCssSegment.Content.ProcessCssImportStatements(appRunner, true);
 
 		if (index > -1)
-			appRunner.CustomCssSegment.Remove(index, length);
+			appRunner.CustomCssSegment.Content.Remove(index, length);
 		
 		ProcessComponentsLayerAndCss(appRunner);
 		ProcessUtilityClasses(appRunner);
 
-		await ProcessAtApplyStatementsAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessAtApplyStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessAtApplyStatementsAsync(appRunner.CustomCssSegment, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.ImportsCssSegment.Content, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.ComponentsCssSegment.Content, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.CustomCssSegment.Content, appRunner);
 
-		await ProcessFunctionsAsync(appRunner.BrowserResetCss, appRunner);
-		await ProcessFunctionsAsync(appRunner.FormsCss, appRunner);
-		await ProcessFunctionsAsync(appRunner.UtilitiesCssSegment, appRunner);
-		await ProcessFunctionsAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessFunctionsAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessFunctionsAsync(appRunner.CustomCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.BrowserResetCss.Content, appRunner);
+		await ProcessFunctionsAsync(appRunner.FormsCss.Content, appRunner);
+		await ProcessFunctionsAsync(appRunner.UtilitiesCssSegment.Content, appRunner);
+		await ProcessFunctionsAsync(appRunner.ImportsCssSegment.Content, appRunner);
+		await ProcessFunctionsAsync(appRunner.ComponentsCssSegment.Content, appRunner);
+		await ProcessFunctionsAsync(appRunner.CustomCssSegment.Content, appRunner);
 
-		await ProcessAtVariantStatementsAsync(appRunner.UtilitiesCssSegment, appRunner);
-		await ProcessAtVariantStatementsAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessAtVariantStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessAtVariantStatementsAsync(appRunner.CustomCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.UtilitiesCssSegment.Content, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.ImportsCssSegment.Content, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.ComponentsCssSegment.Content, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.CustomCssSegment.Content, appRunner);
 
 		GeneratePropertiesAndThemeLayers(appRunner);
 
 		if (appRunner.AppRunnerSettings.UseDarkThemeClasses == false)
 			return FinalCssAssembly(appRunner);
 
-		await ProcessDarkThemeAsync(appRunner.UtilitiesCssSegment, appRunner);
-		await ProcessDarkThemeAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessDarkThemeAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessDarkThemeAsync(appRunner.CustomCssSegment, appRunner);
+		await ProcessDarkThemeAsync(appRunner.UtilitiesCssSegment.Content, appRunner);
+		await ProcessDarkThemeAsync(appRunner.ImportsCssSegment.Content, appRunner);
+		await ProcessDarkThemeAsync(appRunner.ComponentsCssSegment.Content, appRunner);
+		await ProcessDarkThemeAsync(appRunner.CustomCssSegment.Content, appRunner);
 
 		return FinalCssAssembly(appRunner);
 	}
 
 	public static async Task<string> ProjectChangeBuildCssAsync(AppRunner appRunner)
 	{
-		appRunner.CustomCssSegment.ReplaceContent(appRunner.CssContentWithoutSettings);
-		appRunner.PropertiesCssSegment.Clear();
-		appRunner.PropertyListCssSegment.Clear();
-		appRunner.ThemeCssSegment.Clear();
+		// todo: write this method
 
-		var (index, length) = appRunner.CustomCssSegment.ProcessCssImportStatements(appRunner, true);
-
-		if (index > -1)
-			appRunner.CustomCssSegment.Remove(index, length);
 		
-		ProcessComponentsLayerAndCss(appRunner);
-		ProcessUtilityClasses(appRunner);
-
-		await ProcessAtApplyStatementsAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessAtApplyStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessAtApplyStatementsAsync(appRunner.CustomCssSegment, appRunner);
-
-		await ProcessFunctionsAsync(appRunner.BrowserResetCss, appRunner);
-		await ProcessFunctionsAsync(appRunner.FormsCss, appRunner);
-		await ProcessFunctionsAsync(appRunner.UtilitiesCssSegment, appRunner);
-		await ProcessFunctionsAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessFunctionsAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessFunctionsAsync(appRunner.CustomCssSegment, appRunner);
-
-		await ProcessAtVariantStatementsAsync(appRunner.UtilitiesCssSegment, appRunner);
-		await ProcessAtVariantStatementsAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessAtVariantStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessAtVariantStatementsAsync(appRunner.CustomCssSegment, appRunner);
-
-		GeneratePropertiesAndThemeLayers(appRunner);
-
-		if (appRunner.AppRunnerSettings.UseDarkThemeClasses == false)
-			return FinalCssAssembly(appRunner);
-
-		await ProcessDarkThemeAsync(appRunner.UtilitiesCssSegment, appRunner);
-		await ProcessDarkThemeAsync(appRunner.ImportsCssSegment, appRunner);
-		await ProcessDarkThemeAsync(appRunner.ComponentsCssSegment, appRunner);
-		await ProcessDarkThemeAsync(appRunner.CustomCssSegment, appRunner);
-
+		
 		return FinalCssAssembly(appRunner);
 	}
 
@@ -1694,15 +1659,14 @@ public static class AppRunnerExtensions
 				outputSb.Append("@layer theme {");
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 
-				outputSb.Append(appRunner.ThemeCssSegment);
+				outputSb.Append(appRunner.ThemeCssSegment.Content);
 				
 				outputSb.Append('}');
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				
 			}
 			else
 			{
-				outputSb.Append(appRunner.ThemeCssSegment);
+				outputSb.Append(appRunner.ThemeCssSegment.Content);
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 
@@ -1713,15 +1677,14 @@ public static class AppRunnerExtensions
 					outputSb.Append("@layer base {");
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				
-					outputSb.Append(appRunner.BrowserResetCss);
+					outputSb.Append(appRunner.BrowserResetCss.Content);
 					
 					outputSb.Append('}');
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-
 				}
 				else
 				{
-					outputSb.Append(appRunner.BrowserResetCss);
+					outputSb.Append(appRunner.BrowserResetCss.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 			}
@@ -1733,33 +1696,31 @@ public static class AppRunnerExtensions
 					outputSb.Append("@layer forms {");
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				
-					outputSb.Append(appRunner.FormsCss);
+					outputSb.Append(appRunner.FormsCss.Content);
 					
 					outputSb.Append('}');
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-
 				}
 				else
 				{
-					outputSb.Append(appRunner.FormsCss);
+					outputSb.Append(appRunner.FormsCss.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 			}
 
-			if (useLayers && appRunner.ComponentsCssSegment.Length > 0)
+			if (useLayers && appRunner.ComponentsCssSegment.Content.Length > 0)
 			{
 				outputSb.Append("@layer components {");
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				
-				outputSb.Append(appRunner.ComponentsCssSegment);
+				outputSb.Append(appRunner.ComponentsCssSegment.Content);
 					
 				outputSb.Append('}');
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-
 			}
 			else
 			{
-				outputSb.Append(appRunner.ComponentsCssSegment);
+				outputSb.Append(appRunner.ComponentsCssSegment.Content);
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 
@@ -1768,32 +1729,32 @@ public static class AppRunnerExtensions
 				outputSb.Append("@layer utilities {");
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				
-				outputSb.Append(appRunner.UtilitiesCssSegment);
+				outputSb.Append(appRunner.UtilitiesCssSegment.Content);
 					
 				outputSb.Append('}');
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 			else
 			{
-				outputSb.Append(appRunner.UtilitiesCssSegment);
+				outputSb.Append(appRunner.UtilitiesCssSegment.Content);
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 
-			if (appRunner.ImportsCssSegment.Length > 0)
+			if (appRunner.ImportsCssSegment.Content.Length > 0)
 			{
-				outputSb.Append(appRunner.ImportsCssSegment);
+				outputSb.Append(appRunner.ImportsCssSegment.Content);
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 
-			if (appRunner.CustomCssSegment.Length > 0)
+			if (appRunner.CustomCssSegment.Content.Length > 0)
 			{
-				outputSb.Append(appRunner.CustomCssSegment);
+				outputSb.Append(appRunner.CustomCssSegment.Content);
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 
-			if (appRunner.PropertyListCssSegment.Length > 0)
+			if (appRunner.PropertyListCssSegment.Content.Length > 0)
 			{
-				outputSb.Append(appRunner.PropertyListCssSegment);
+				outputSb.Append(appRunner.PropertyListCssSegment.Content);
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 
@@ -1802,14 +1763,14 @@ public static class AppRunnerExtensions
 				outputSb.Append("@layer properties {");
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				
-				outputSb.Append(appRunner.PropertiesCssSegment);
+				outputSb.Append(appRunner.PropertiesCssSegment.Content);
 					
 				outputSb.Append('}');
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 			else
 			{
-				outputSb.Append(appRunner.PropertiesCssSegment);
+				outputSb.Append(appRunner.PropertiesCssSegment.Content);
 				outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 

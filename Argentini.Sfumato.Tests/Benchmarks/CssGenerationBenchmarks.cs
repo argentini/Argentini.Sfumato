@@ -56,7 +56,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 	        _runner.PerformFileScanAsync().GetAwaiter().GetResult();
 	        
             // 1) reset content
-            _runner.CustomCssSegment.ReplaceContent(_runner.AppRunnerSettings.CssContent);
+            _runner.CustomCssSegment.Content.ReplaceContent(_runner.AppRunnerSettings.CssContent);
 
             // 2) run every stage *before* the one we want to measure
             switch (Stage)
@@ -210,39 +210,39 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 
         private void RunSfumatoExtract()
         {
-            var (i, len) = _runner.CustomCssSegment.ExtractSfumatoBlock(_runner);
-            if (i > -1) _runner.CustomCssSegment.Remove(i, len);
+            var (i, len) = _runner.CustomCssSegment.Content.ExtractSfumatoBlock(_runner);
+            if (i > -1) _runner.CustomCssSegment.Content.Remove(i, len);
         }
 
         private void RunCssImports()
         {
-	        var (i, len) = _runner.CustomCssSegment.ProcessCssImportStatements(_runner, true);
-	        if (i > -1) _runner.CustomCssSegment.Remove(i, len);
+	        var (i, len) = _runner.CustomCssSegment.Content.ProcessCssImportStatements(_runner, true);
+	        if (i > -1) _runner.CustomCssSegment.Content.Remove(i, len);
         }
 
         private void RunAtApplyStatements()
         {
-            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ImportsCssSegment,    _runner);
-            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ComponentsCssSegment, _runner);
-            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.CustomCssSegment,     _runner);
+            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ImportsCssSegment.Content,    _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ComponentsCssSegment.Content, _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.CustomCssSegment.Content,     _runner).GetAwaiter().GetResult();
         }
 
         private void RunFunctions()
         {
-	        AppRunnerExtensions.ProcessFunctionsAsync(_runner.BrowserResetCss,             _runner);
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.FormsCss,             _runner);
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.UtilitiesCssSegment,  _runner);
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ImportsCssSegment,    _runner);
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ComponentsCssSegment, _runner);
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.CustomCssSegment,     _runner);
+	        AppRunnerExtensions.ProcessFunctionsAsync(_runner.BrowserResetCss.Content,             _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.FormsCss.Content,             _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.UtilitiesCssSegment.Content,  _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ImportsCssSegment.Content,    _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ComponentsCssSegment.Content, _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessFunctionsAsync(_runner.CustomCssSegment.Content,     _runner).GetAwaiter().GetResult();
         }
 
         private void RunAtVariantStatements()
         {
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.UtilitiesCssSegment,  _runner);
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ImportsCssSegment,    _runner);
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ComponentsCssSegment, _runner);
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.CustomCssSegment,     _runner);
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.UtilitiesCssSegment.Content,  _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ImportsCssSegment.Content,    _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ComponentsCssSegment.Content, _runner).GetAwaiter().GetResult();
+            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.CustomCssSegment.Content,     _runner).GetAwaiter().GetResult();
         }
 
         private void RunProcessDarkTheme()
@@ -256,7 +256,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
                 _runner.ComponentsCssSegment,
                 _runner.CustomCssSegment })
             {
-                AppRunnerExtensions.ProcessDarkThemeAsync(seg, _runner);
+                AppRunnerExtensions.ProcessDarkThemeAsync(seg.Content, _runner).GetAwaiter().GetResult();
             }
         }
 
@@ -280,7 +280,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 					outputSb.Append("@layer theme {");
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 
-					outputSb.Append(appRunner.ThemeCssSegment);
+					outputSb.Append(appRunner.ThemeCssSegment.Content);
 					
 					outputSb.Append('}');
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
@@ -288,7 +288,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 				}
 				else
 				{
-					outputSb.Append(appRunner.ThemeCssSegment);
+					outputSb.Append(appRunner.ThemeCssSegment.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 
@@ -299,7 +299,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 						outputSb.Append("@layer base {");
 						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 					
-						outputSb.Append(appRunner.BrowserResetCss);
+						outputSb.Append(appRunner.BrowserResetCss.Content);
 						
 						outputSb.Append('}');
 						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
@@ -307,7 +307,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 					}
 					else
 					{
-						outputSb.Append(appRunner.BrowserResetCss);
+						outputSb.Append(appRunner.BrowserResetCss.Content);
 						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 					}
 				}
@@ -319,7 +319,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 						outputSb.Append("@layer forms {");
 						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 					
-						outputSb.Append(appRunner.FormsCss);
+						outputSb.Append(appRunner.FormsCss.Content);
 						
 						outputSb.Append('}');
 						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
@@ -327,17 +327,17 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 					}
 					else
 					{
-						outputSb.Append(appRunner.FormsCss);
+						outputSb.Append(appRunner.FormsCss.Content);
 						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 					}
 				}
 
-				if (useLayers && appRunner.ComponentsCssSegment.Length > 0)
+				if (useLayers && appRunner.ComponentsCssSegment.Content.Length > 0)
 				{
 					outputSb.Append("@layer components {");
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 					
-					outputSb.Append(appRunner.ComponentsCssSegment);
+					outputSb.Append(appRunner.ComponentsCssSegment.Content);
 						
 					outputSb.Append('}');
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
@@ -345,7 +345,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 				}
 				else
 				{
-					outputSb.Append(appRunner.ComponentsCssSegment);
+					outputSb.Append(appRunner.ComponentsCssSegment.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 
@@ -354,32 +354,32 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 					outputSb.Append("@layer utilities {");
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 					
-					outputSb.Append(appRunner.UtilitiesCssSegment);
+					outputSb.Append(appRunner.UtilitiesCssSegment.Content);
 						
 					outputSb.Append('}');
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 				else
 				{
-					outputSb.Append(appRunner.UtilitiesCssSegment);
+					outputSb.Append(appRunner.UtilitiesCssSegment.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 
-				if (appRunner.ImportsCssSegment.Length > 0)
+				if (appRunner.ImportsCssSegment.Content.Length > 0)
 				{
-					outputSb.Append(appRunner.ImportsCssSegment);
+					outputSb.Append(appRunner.ImportsCssSegment.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 
-				if (appRunner.CustomCssSegment.Length > 0)
+				if (appRunner.CustomCssSegment.Content.Length > 0)
 				{
-					outputSb.Append(appRunner.CustomCssSegment);
+					outputSb.Append(appRunner.CustomCssSegment.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 
-				if (appRunner.PropertyListCssSegment.Length > 0)
+				if (appRunner.PropertyListCssSegment.Content.Length > 0)
 				{
-					outputSb.Append(appRunner.PropertyListCssSegment);
+					outputSb.Append(appRunner.PropertyListCssSegment.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 
@@ -388,14 +388,14 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 					outputSb.Append("@layer properties {");
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 					
-					outputSb.Append(appRunner.PropertiesCssSegment);
+					outputSb.Append(appRunner.PropertiesCssSegment.Content);
 						
 					outputSb.Append('}');
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 				else
 				{
-					outputSb.Append(appRunner.PropertiesCssSegment);
+					outputSb.Append(appRunner.PropertiesCssSegment.Content);
 					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
 				}
 			}

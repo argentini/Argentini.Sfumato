@@ -68,12 +68,12 @@ public class AppRunnerTests
         var sb = new StringBuilder(appRunner.AppRunnerSettings.CssContent);
         var (index, length) = sb.ProcessCssImportStatements(appRunner, true);
         
-        var indexOfPartialTestClass = appRunner.ImportsCssSegment.IndexOf(".partial-test");
-        var indexOfPartial2TestClass = appRunner.ImportsCssSegment.IndexOf(".partial2-test");
-        var indexOfPartial3TestClass = appRunner.ImportsCssSegment.IndexOf(".partial3-test");
-        var indexOfPartial4TestClass = appRunner.ImportsCssSegment.IndexOf(".partial4-test");
+        var indexOfPartialTestClass = appRunner.ImportsCssSegment.Content.IndexOf(".partial-test");
+        var indexOfPartial2TestClass = appRunner.ImportsCssSegment.Content.IndexOf(".partial2-test");
+        var indexOfPartial3TestClass = appRunner.ImportsCssSegment.Content.IndexOf(".partial3-test");
+        var indexOfPartial4TestClass = appRunner.ImportsCssSegment.Content.IndexOf(".partial4-test");
         
-        Assert.False(appRunner.ImportsCssSegment.Contains("@import"));
+        Assert.False(appRunner.ImportsCssSegment.Content.Contains("@import"));
 
         Assert.Equal(0, index);
         Assert.Equal(22, length);
