@@ -1589,17 +1589,14 @@ public static class AppRunnerExtensions
 	
 	#region Build CSS
 	
-	public static async Task<string> BuildCssAsync(AppRunner appRunner)
+	public static async Task<string> FullBuildCssAsync(AppRunner appRunner)
 	{
-		var index = 0;
-		var length = 0;
-		
 		appRunner.CustomCssSegment.ReplaceContent(appRunner.CssContentWithoutSettings);
 		appRunner.PropertiesCssSegment.Clear();
 		appRunner.PropertyListCssSegment.Clear();
 		appRunner.ThemeCssSegment.Clear();
 
-		(index, length) = appRunner.CustomCssSegment.ProcessCssImportStatements(appRunner, true);
+		var (index, length) = appRunner.CustomCssSegment.ProcessCssImportStatements(appRunner, true);
 
 		if (index > -1)
 			appRunner.CustomCssSegment.Remove(index, length);
@@ -1625,14 +1622,63 @@ public static class AppRunnerExtensions
 
 		GeneratePropertiesAndThemeLayers(appRunner);
 
-		if (appRunner.AppRunnerSettings.UseDarkThemeClasses)
-		{
-			await ProcessDarkThemeAsync(appRunner.UtilitiesCssSegment, appRunner);
-			await ProcessDarkThemeAsync(appRunner.ImportsCssSegment, appRunner);
-			await ProcessDarkThemeAsync(appRunner.ComponentsCssSegment, appRunner);
-			await ProcessDarkThemeAsync(appRunner.CustomCssSegment, appRunner);
-		}
+		if (appRunner.AppRunnerSettings.UseDarkThemeClasses == false)
+			return FinalCssAssembly(appRunner);
 
+		await ProcessDarkThemeAsync(appRunner.UtilitiesCssSegment, appRunner);
+		await ProcessDarkThemeAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessDarkThemeAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessDarkThemeAsync(appRunner.CustomCssSegment, appRunner);
+
+		return FinalCssAssembly(appRunner);
+	}
+
+	public static async Task<string> ProjectChangeBuildCssAsync(AppRunner appRunner)
+	{
+		appRunner.CustomCssSegment.ReplaceContent(appRunner.CssContentWithoutSettings);
+		appRunner.PropertiesCssSegment.Clear();
+		appRunner.PropertyListCssSegment.Clear();
+		appRunner.ThemeCssSegment.Clear();
+
+		var (index, length) = appRunner.CustomCssSegment.ProcessCssImportStatements(appRunner, true);
+
+		if (index > -1)
+			appRunner.CustomCssSegment.Remove(index, length);
+		
+		ProcessComponentsLayerAndCss(appRunner);
+		ProcessUtilityClasses(appRunner);
+
+		await ProcessAtApplyStatementsAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessAtApplyStatementsAsync(appRunner.CustomCssSegment, appRunner);
+
+		await ProcessFunctionsAsync(appRunner.BrowserResetCss, appRunner);
+		await ProcessFunctionsAsync(appRunner.FormsCss, appRunner);
+		await ProcessFunctionsAsync(appRunner.UtilitiesCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessFunctionsAsync(appRunner.CustomCssSegment, appRunner);
+
+		await ProcessAtVariantStatementsAsync(appRunner.UtilitiesCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessAtVariantStatementsAsync(appRunner.CustomCssSegment, appRunner);
+
+		GeneratePropertiesAndThemeLayers(appRunner);
+
+		if (appRunner.AppRunnerSettings.UseDarkThemeClasses == false)
+			return FinalCssAssembly(appRunner);
+
+		await ProcessDarkThemeAsync(appRunner.UtilitiesCssSegment, appRunner);
+		await ProcessDarkThemeAsync(appRunner.ImportsCssSegment, appRunner);
+		await ProcessDarkThemeAsync(appRunner.ComponentsCssSegment, appRunner);
+		await ProcessDarkThemeAsync(appRunner.CustomCssSegment, appRunner);
+
+		return FinalCssAssembly(appRunner);
+	}
+
+	public static string FinalCssAssembly(AppRunner appRunner)
+	{
 		var workingSb = appRunner.AppState.StringBuilderPool.Get();
 		var outputSb = appRunner.AppState.StringBuilderPool.Get();
 
@@ -1775,6 +1821,6 @@ public static class AppRunnerExtensions
 			appRunner.AppState.StringBuilderPool.Return(outputSb);
 		}
 	}
-	
+
 	#endregion 
 }

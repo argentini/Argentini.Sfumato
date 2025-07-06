@@ -45,9 +45,9 @@ public sealed class Library
     #region Runtime Properties
 
     public static int FileAccessRetryMs => 5000;
-    public static int MaxConsoleWidth => GetMaxConsoleWidth();
+    public static int MaxConsoleWidth => InternalGetMaxConsoleWidth();
 
-    private static int GetMaxConsoleWidth()
+    private static int InternalGetMaxConsoleWidth()
     {
         try
         {
@@ -57,6 +57,11 @@ public sealed class Library
         {
             return 78;
         }
+    }
+
+    public int GetMaxConsoleWidth()
+    {
+        return InternalGetMaxConsoleWidth();
     }
 
     #endregion

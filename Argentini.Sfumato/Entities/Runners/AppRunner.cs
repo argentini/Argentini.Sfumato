@@ -100,17 +100,20 @@ public sealed class AppRunner
 
 	#region Messaging
 
+	public string CreatePathMessage(string prefix, string path)
+	{
+		var maxWidth = Library.GetMaxConsoleWidth() - prefix.Length - 3;
+		var relativePath = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+
+		return $"{prefix} : {relativePath}";
+	}
+	
 	public async Task AddCssPathMessageAsync()
 	{
 		while (MessagesBusy)
 			await Task.Delay(25);
 		
-		var relativePath = Path.GetFullPath(AppRunnerSettings.CssFilePath).TruncateCenter(
-			(int)Math.Floor(Entities.Library.Library.MaxConsoleWidth / 3d),
-			(int)Math.Floor((Entities.Library.Library.MaxConsoleWidth / 3d) * 2) - 3,
-			Entities.Library.Library.MaxConsoleWidth);
-
-		Messages.Add(relativePath);
+		Messages.Add(CreatePathMessage("Changed", Path.GetFullPath(AppRunnerSettings.CssFilePath)));
 	}
 
 	private async Task AddMessageAsync(string message)
@@ -218,13 +221,30 @@ public sealed class AppRunner
 	#region CSS Generation
 
 	/// <summary>
-	/// Build method used by the CLI
+	/// Full build method used by the CLI
 	/// </summary>
-	public async Task BuildAndSaveCss()
+	public async Task FullBuildAndSaveCss()
+	{
+		await BuildAndSaveCss();
+	}
+
+	/// <summary>
+	/// Project file change build method used by the CLI
+	/// </summary>
+	public async Task ProjectChangeBuildAndSaveCss()
+	{
+		await BuildAndSaveCss("project");
+	}
+
+	private async Task BuildAndSaveCss(string mode = "")
 	{
 		CssBuildStopwatch.Restart();
 
-		LastCss = await AppRunnerExtensions.BuildCssAsync(this);
+		LastCss = mode switch
+		{
+			"project" => await AppRunnerExtensions.ProjectChangeBuildCssAsync(this),
+			_ => await AppRunnerExtensions.FullBuildCssAsync(this)
+		};
 
 		if (string.IsNullOrEmpty(LastCss) || string.IsNullOrEmpty(AppRunnerSettings.NativeCssOutputFilePath) || AppRunnerSettings.NativeCssOutputFilePath.EndsWith(".css", StringComparison.Ordinal) == false)
 		{
@@ -353,88 +373,106 @@ public sealed class AppRunner
 		await Task.CompletedTask;
 	}
 
-	private bool ImportChangesPending()
+	private string CssImportChangesPending()
 	{
 		foreach (var importFile in AppRunnerSettings.CssImports.Values)
 		{
 			if (File.Exists(importFile.FileInfo.FullName) == false)
-				return true;
+				return string.Empty;
 
 			var currentFileInfo = new FileInfo(importFile.FileInfo.FullName);
 
 			if (importFile.FileInfo.Length != currentFileInfo.Length || importFile.FileInfo.CreationTimeUtc != currentFileInfo.CreationTimeUtc || importFile.FileInfo.LastWriteTimeUtc != currentFileInfo.LastWriteTimeUtc)
-				return true;
+				return CreatePathMessage("Changed", currentFileInfo.FullName);
 		}
 
-		return false;
+		return string.Empty;
 	}
-	
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns>true, when work was performed</returns>
 	public async Task<bool> ProcessWatchQueues()
 	{
 		while (ProcessingWatchQueue)
 			await Task.Delay(25);
 
 		ProcessingWatchQueue = true;
+
+		#region Process Full Rebuilds
 		
-		var performRebuild = ImportChangesPending();
-		var performedWork = performRebuild;
-		
-		if (performRebuild || RestartAppQueue.IsEmpty == false)
+		var message = string.Empty;
+		var sourceCssChanged = RestartAppQueue.Any(kvp => kvp.Value.FullPath == AppRunnerSettings.NativeCssFilePath);
+		var cssImportsChangedMessage = CssImportChangesPending();
+
+		if (sourceCssChanged || string.IsNullOrEmpty(cssImportsChangedMessage) == false)
 		{
-			var message = performRebuild ? "Import file(s) change, rebuilding..." : "Source CSS file changed, rebuilding...";
-
-			if (RestartAppQueue.Any(kvp => kvp.Value.FullPath == AppRunnerSettings.NativeCssFilePath))
-				performRebuild = true;
-
-			if (File.Exists(AppRunnerSettings.NativeCssFilePath) == false && RestartAppQueue.Any(kvp => ((RenamedEventArgs)kvp.Value).OldFullPath == AppRunnerSettings.NativeCssFilePath))
-			{
-				var fcr = (RenamedEventArgs?)RestartAppQueue.LastOrDefault(kvp => ((RenamedEventArgs)kvp.Value).OldFullPath == AppRunnerSettings.NativeCssFilePath).Value;
-
-				if (fcr is not null)
-				{
-					if (File.Exists(fcr.FullPath) == false)
-					{
-						await Console.Out.WriteLineAsync("Renamed source CSS file cannot be found, exiting");
-						await Console.Out.WriteLineAsync($"({fcr.FullPath})");
-						await Console.Out.WriteLineAsync("");
-
-						await ShutDownWatchersAsync();
-
-						Environment.Exit(1);
-					}
-
-					message = $"Renamed: {Path.GetFileName(fcr.OldFullPath)} => {Path.GetFileName(fcr.FullPath)}";
-						
-					_cssFilePath = _cssFilePath.TrimEnd(AppRunnerSettings.CssFileNameOnly) + Path.GetFileName(fcr.FullPath);
-					
-					Initialize();
-				}
-				
-				performRebuild = true;
-			}
-
-			if (performRebuild)
+			if (sourceCssChanged)
 			{
 				if (File.Exists(AppRunnerSettings.NativeCssFilePath) == false)
+				{
+					var fcr = (RenamedEventArgs?)RestartAppQueue.LastOrDefault(kvp =>
+						((RenamedEventArgs)kvp.Value).OldFullPath == AppRunnerSettings.NativeCssFilePath).Value;
+
+					sourceCssChanged = false;
+
+					if (fcr is not null)
+					{
+						if (File.Exists(fcr.FullPath) == false)
+						{
+							await Console.Out.WriteLineAsync("Renamed source CSS file cannot be found, exiting");
+							await Console.Out.WriteLineAsync($"({fcr.FullPath})");
+							await Console.Out.WriteLineAsync("");
+
+							await ShutDownWatchersAsync();
+
+							Environment.Exit(1);
+						}
+
+						message = $"Renamed: {Path.GetFileName(fcr.OldFullPath)} => {Path.GetFileName(fcr.FullPath)}";
+
+						_cssFilePath = _cssFilePath.TrimEnd(AppRunnerSettings.CssFileNameOnly) +
+						               Path.GetFileName(fcr.FullPath);
+
+						Initialize();
+
+						sourceCssChanged = true;
+					}
+				}
+			}
+
+			if (sourceCssChanged || string.IsNullOrEmpty(cssImportsChangedMessage) == false)
+			{
+				if (sourceCssChanged && File.Exists(AppRunnerSettings.NativeCssFilePath) == false)
 				{
 					await Console.Out.WriteLineAsync("Source CSS file cannot be found, exiting");
 					await Console.Out.WriteLineAsync($"({AppRunnerSettings.NativeCssFilePath})");
 					await Console.Out.WriteLineAsync("");
+
+					await ShutDownWatchersAsync();
 
 					Environment.Exit(1);
 				}
 
 				await ShutDownWatchersAsync();
 
-				RebuildProjectQueue.Clear();
-
-				await AddCssPathMessageAsync();
-				await AddMessageAsync(message);
+				if (string.IsNullOrEmpty(message) == false)
+				{
+					await AddMessageAsync(message);
+				}
+				else
+				{
+					if (sourceCssChanged)
+						await AddCssPathMessageAsync();
+					else if (string.IsNullOrEmpty(cssImportsChangedMessage) == false)
+						await AddMessageAsync(cssImportsChangedMessage);
+				}
 
 				if (await ReInitializeAsync())
 				{
 					await PerformFileScanAsync();
-					await BuildAndSaveCss();
+					await FullBuildAndSaveCss();
 				}
 				else
 				{
@@ -442,19 +480,24 @@ public sealed class AppRunner
 					await RenderMessagesAsync();
 				}
 
-				await StartWatchingAsync();
+				RestartAppQueue.Clear();
+				RebuildProjectQueue.Clear();
 
-				if (performedWork == false)
-					performedWork = true;
+				await StartWatchingAsync();
+				
+				ProcessingWatchQueue = false;
+
+				return sourceCssChanged || string.IsNullOrEmpty(cssImportsChangedMessage) == false;
 			}
-			
+
 			RestartAppQueue.Clear();
 		}
-
+		
+		#endregion
+		
 		if (RebuildProjectQueue.IsEmpty == false)
 		{
 			var messages = new List<string>();
-
 			var rebuildProjectQueue = RebuildProjectQueue.ToList();
 			
 			foreach (var kvp in rebuildProjectQueue.OrderBy(k => k.Key))
@@ -500,15 +543,13 @@ public sealed class AppRunner
 						ScannedFiles.TryAdd(fcr.FullPath, newScannedFile);
 					}
 
-					messages.Add(fcr.ChangeType is WatcherChangeTypes.Changed
-						? $"Changed : {Path.GetFileName(fcr.FullPath)}"
-						: $"Added : {Path.GetFileName(fcr.FullPath)}");
+					messages.Add(fcr.ChangeType is WatcherChangeTypes.Changed ? CreatePathMessage("Changed", fcr.FullPath) : CreatePathMessage("Added", fcr.FullPath));
 				}
 				else if (fcr.ChangeType is WatcherChangeTypes.Deleted)
 				{
 					ScannedFiles.Remove(fcr.FullPath, out _);
 					
-					messages.Add($"Deleted : {Path.GetFileName(fcr.FullPath)}");
+					messages.Add(CreatePathMessage("Deleted", fcr.FullPath));
 				}				
 				else if (fcr.ChangeType is WatcherChangeTypes.Renamed)
 				{
@@ -534,26 +575,25 @@ public sealed class AppRunner
 			{
 				ProcessingWatchQueue = false;
 
-				return performedWork;
+				return false;
 			}
 
-			await AddCssPathMessageAsync();
-
-			foreach (var message in messages)
-				await AddMessageAsync(message);				
+			foreach (var msg in messages)
+				await AddMessageAsync(msg);				
 				
 			ProcessScannedFileUtilityClassDependencies(this);
 
 			await AddMessageAsync($"Processed changes in {FileScanStopwatch.FormatTimer()}");
-			await BuildAndSaveCss();
+			await ProjectChangeBuildAndSaveCss();
 				
-			if (performedWork == false)
-				performedWork = true;
+			ProcessingWatchQueue = false;
+
+			return true;
 		}
 
 		ProcessingWatchQueue = false;
 
-		return performedWork;
+		return false;
 	}
 	
 	#endregion

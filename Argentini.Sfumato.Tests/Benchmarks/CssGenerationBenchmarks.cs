@@ -159,7 +159,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
             switch (Stage)
             {
                 case CssPipelineStage.FullBuild:
-                    _ = AppRunnerExtensions.BuildCssAsync(_runner).GetAwaiter().GetResult();
+                    _ = AppRunnerExtensions.FullBuildCssAsync(_runner).GetAwaiter().GetResult();
                     break;
 
                 case CssPipelineStage.SfumatoExtract:

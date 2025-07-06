@@ -239,8 +239,6 @@ internal class Program
 
 			foreach (var appRunner in appState.AppRunners)
 			{
-				await appRunner.AddCssPathMessageAsync();
-
 				tasks.Add(appRunner.PerformFileScanAsync());
 			}
 
@@ -248,7 +246,7 @@ internal class Program
 			tasks.Clear();
 
 			foreach (var appRunner in appState.AppRunners)
-				tasks.Add(appRunner.BuildAndSaveCss());
+				tasks.Add(appRunner.FullBuildAndSaveCss());
 
 			await Task.WhenAll(tasks);
 
