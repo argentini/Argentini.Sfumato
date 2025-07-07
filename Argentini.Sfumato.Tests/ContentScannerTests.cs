@@ -89,50 +89,43 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     }
 
     [Fact]
-    public void CssCustomPropertyScanner()
+    public async Task CssCustomPropertyScanner()
     {
+        var appRunner = new AppRunner(new AppState());
         var props = new List<string>();
-
-        foreach (var span in Css.EnumerateCssCustomProperties(namesOnly: true))
+        var segment = new GenerationSegment
         {
-            testOutputHelper.WriteLine(span.Property.ToString());
-            props.Add(span.Property.ToString());
+            Content = new StringBuilder(Css)
+        };
+
+        await appRunner.GatherSegmentCssCustomPropertyRefsAsync(segment);
+        
+        foreach (var kvp in segment.UsedCssCustomProperties)
+        {
+            testOutputHelper.WriteLine(kvp.Key);
+            props.Add(kvp.Key);
         }
         
-        Assert.Equal(12, props.Count);
+        Assert.Single(props);
 
         var dict = new Dictionary<string, string>();
         
-        foreach (var span in Css.EnumerateCssCustomProperties())
+        foreach (var kvp in segment.UsedCssCustomProperties)
         {
-            testOutputHelper.WriteLine(span.Property.ToString() + " : " + span.Value.ToString());
-            dict.Add(span.Property.ToString(), span.Value.ToString());
+            testOutputHelper.WriteLine(kvp.Key + " : " + kvp.Value);
+            dict.Add(kvp.Key, kvp.Value);
         }
         
-        Assert.Equal(6, dict.Count);
+        Assert.Single(dict);
 
         props.Clear();
 
-        var sb = new StringBuilder(Css);
-        
-        foreach (var match in sb.EnumerateTokenWithOuterParenthetical("--alpha"))
-        {
-            testOutputHelper.WriteLine(match);
-            props.Add(match);
-        }
-        
-        Assert.Single(props);
-        Assert.Equal("--alpha(var(--color-lime-500) / 15%)", props[0]);
-        
-        props.Clear();
+        Assert.True(segment.Content.Contains("--alpha(var(--color-lime-500) / 15%)"));
+        Assert.True(segment.Content.Contains("--spacing(4)"));
 
-        foreach (var match in sb.EnumerateTokenWithOuterParenthetical("--spacing"))
-        {
-            testOutputHelper.WriteLine(match);
-            props.Add(match);
-        }
-        
-        Assert.Single(props);
-        Assert.Equal("--spacing(4)", props[0]);
+        await appRunner.ProcessSegmentFunctionsAsync(segment);
+
+        Assert.True(segment.Content.Contains("oklch(0.768 0.233 130.85 / 0.15)"));
+        Assert.True(segment.Content.Contains("calc(var(--spacing) * 4)"));
     }
 }
