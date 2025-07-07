@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.0.35.0</AssemblyVersion>
-        <FileVersion>6.0.35.0</FileVersion>
-        <PackageVersion>6.0.35</PackageVersion>
+        <AssemblyVersion>6.0.36.0</AssemblyVersion>
+        <FileVersion>6.0.36.0</FileVersion>
+        <PackageVersion>6.0.36</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Performance optimizations, updated dependencies</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed some dark mode class edge cases, content utility issue with using attr()</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
