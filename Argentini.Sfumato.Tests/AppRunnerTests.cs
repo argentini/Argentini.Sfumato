@@ -66,7 +66,7 @@ public class AppRunnerTests
         appRunner.AppRunnerSettings.CssContent.LoadSfumatoSettings(appRunner);
 
         var sb = new StringBuilder(appRunner.AppRunnerSettings.CssContent);
-        var (index, length) = sb.ProcessCssImportStatements(appRunner, true);
+        var (index, length) = sb.ExtractCssImportStatements(appRunner, true);
         
         var indexOfPartialTestClass = appRunner.ImportsCssSegment.Content.IndexOf(".partial-test");
         var indexOfPartial2TestClass = appRunner.ImportsCssSegment.Content.IndexOf(".partial2-test");
@@ -100,7 +100,7 @@ public class AppRunnerTests
         
         Assert.Equal(5, appRunner.AppRunnerSettings.CssImports.Count);
 
-        _ = sb.ProcessCssImportStatements(appRunner, true);
+        _ = sb.ExtractCssImportStatements(appRunner, true);
 
         Assert.Equal(4, appRunner.AppRunnerSettings.CssImports.Count);
     }

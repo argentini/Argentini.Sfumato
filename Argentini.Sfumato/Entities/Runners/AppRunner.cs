@@ -32,6 +32,7 @@ public sealed class AppRunner
 	#region CSS Generation Data
 
 	public StringBuilder CssContentWithoutSettings { get; } = new();
+	public StringBuilder CombinedSegmentCss { get; } = new();
 	
 	public GenerationSegment DefaultsCssSegment { get; } = new();
 	public GenerationSegment BrowserResetCssSegment { get; } = new();

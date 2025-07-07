@@ -15,10 +15,13 @@ namespace Argentini.Sfumato.Tests.Benchmarks
         AtApplyStatements,
         Functions,
         AtVariantStatements,
-        GeneratePropertiesAndThemeLayers,
-        ProcessDarkTheme,
-        Appending,
-        Formatting
+        ProcessDarkThemeClasses,
+        GatherCssCustomPropRefs,
+        GatherUsedCssRefs,
+        MergeUsedDependencies,
+        GeneratePropsAndThemeLayers,
+        FinalCssAssembly,
+        GenerateCss
     }
 
     [MemoryDiagnoser]
@@ -33,13 +36,18 @@ namespace Argentini.Sfumato.Tests.Benchmarks
             CssPipelineStage.AtApplyStatements,
             CssPipelineStage.Functions,
             CssPipelineStage.AtVariantStatements,
-            CssPipelineStage.GeneratePropertiesAndThemeLayers,
-            CssPipelineStage.ProcessDarkTheme,
-            CssPipelineStage.Appending,
-            CssPipelineStage.Formatting)]
+            CssPipelineStage.ProcessDarkThemeClasses,
+            CssPipelineStage.GatherCssCustomPropRefs,
+            CssPipelineStage.GatherUsedCssRefs,
+            CssPipelineStage.MergeUsedDependencies,
+            CssPipelineStage.GeneratePropsAndThemeLayers,
+            CssPipelineStage.FinalCssAssembly,
+            CssPipelineStage.GenerateCss)]
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public CssPipelineStage Stage { get; set; }
 
-        private AppRunner _runner = null!;
+        // ReSharper disable once InconsistentNaming
+        private AppRunner appRunner = null!;
         private string _cssPath = null!;
 
         [IterationSetup]
@@ -50,13 +58,13 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 
 	        _cssPath = Path.GetFullPath(Path.Combine(root, "Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"));
 
-	        _runner = new AppRunner(new AppState(), _cssPath);
+	        appRunner = new AppRunner(new AppState(), _cssPath);
 
-	        _runner.LoadCssFileAsync().GetAwaiter().GetResult();
-	        _runner.PerformFileScanAsync().GetAwaiter().GetResult();
+	        appRunner.LoadCssFileAsync().GetAwaiter().GetResult();
+	        appRunner.PerformFileScanAsync().GetAwaiter().GetResult();
 	        
             // 1) reset content
-            _runner.CustomCssSegment.Content.ReplaceContent(_runner.AppRunnerSettings.CssContent);
+            appRunner.CustomCssSegment.Content.ReplaceContent(appRunner.AppRunnerSettings.CssContent);
 
             // 2) run every stage *before* the one we want to measure
             switch (Stage)
@@ -77,78 +85,123 @@ namespace Argentini.Sfumato.Tests.Benchmarks
                 case CssPipelineStage.UtilityClasses:
 	                RunSfumatoExtract();
 	                RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
+	                appRunner.ProcessAllComponentsLayersAndCss();
                     break;
 
                 case CssPipelineStage.AtApplyStatements:
 	                RunSfumatoExtract();
 	                RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
                     break;
 
                 case CssPipelineStage.Functions:
 	                RunSfumatoExtract();
 	                RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
                     RunAtApplyStatements();
                     break;
 
                 case CssPipelineStage.AtVariantStatements:
 	                RunSfumatoExtract();
 	                RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
                     RunAtApplyStatements();
                     RunFunctions();
                     break;
-
-                case CssPipelineStage.GeneratePropertiesAndThemeLayers:
+                
+                case CssPipelineStage.ProcessDarkThemeClasses:
 	                RunSfumatoExtract();
 	                RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
-                    RunAtApplyStatements();
-                    RunFunctions();
-                    RunAtVariantStatements();
-                    break;
-
-                case CssPipelineStage.ProcessDarkTheme:
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
+	                RunAtApplyStatements();
+	                RunFunctions();
+	                RunAtVariantStatements();
+	                break;
+              
+                case CssPipelineStage.GatherCssCustomPropRefs:
 	                RunSfumatoExtract();
 	                RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
-                    RunAtApplyStatements();
-                    RunFunctions();
-                    RunAtVariantStatements();
-                    AppRunnerExtensions.GeneratePropertiesAndThemeLayers(_runner);
-                    break;
-
-                case CssPipelineStage.Appending:
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
+	                RunAtApplyStatements();
+	                RunFunctions();
+	                RunAtVariantStatements();
+	                RunProcessDarkThemeClasses();
+	                break;
+                
+                case CssPipelineStage.GatherUsedCssRefs:
 	                RunSfumatoExtract();
 	                RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
+	                RunAtApplyStatements();
+	                RunFunctions();
+	                RunAtVariantStatements();
+	                RunProcessDarkThemeClasses();
+	                RunGatherCssCustomPropRefs();
+	                break;
+                
+                case CssPipelineStage.MergeUsedDependencies:
+	                RunSfumatoExtract();
+	                RunCssImports();
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
+	                RunAtApplyStatements();
+	                RunFunctions();
+	                RunAtVariantStatements();
+	                RunProcessDarkThemeClasses();
+	                RunGatherCssCustomPropRefs();
+	                RunGatherUsedCssRefs();
+	                break;
+
+                case CssPipelineStage.GeneratePropsAndThemeLayers:
+	                RunSfumatoExtract();
+	                RunCssImports();
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
                     RunAtApplyStatements();
                     RunFunctions();
                     RunAtVariantStatements();
-                    AppRunnerExtensions.GeneratePropertiesAndThemeLayers(_runner);
-                    RunProcessDarkTheme();
+	                RunProcessDarkThemeClasses();
+	                RunGatherCssCustomPropRefs();
+	                RunGatherUsedCssRefs();
+	                appRunner.MergeUsedDependencies();
                     break;
 
-                case CssPipelineStage.Formatting:
-                    // everything before the final "AllTasks" step:
-                    RunSfumatoExtract();
-                    RunCssImports();
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
+                case CssPipelineStage.FinalCssAssembly:
+	                RunSfumatoExtract();
+	                RunCssImports();
+                    appRunner.ProcessAllComponentsLayersAndCss();
+                    appRunner.GenerateUtilityClasses();
                     RunAtApplyStatements();
                     RunFunctions();
                     RunAtVariantStatements();
-                    AppRunnerExtensions.GeneratePropertiesAndThemeLayers(_runner);
-                    RunProcessDarkTheme();
+	                RunProcessDarkThemeClasses();
+	                RunGatherCssCustomPropRefs();
+	                RunGatherUsedCssRefs();
+	                appRunner.MergeUsedDependencies();
+                    appRunner.GeneratePropertiesAndThemeLayers();
                     break;
+                
+                case CssPipelineStage.GenerateCss:
+	                RunSfumatoExtract();
+	                RunCssImports();
+	                appRunner.ProcessAllComponentsLayersAndCss();
+	                appRunner.GenerateUtilityClasses();
+	                RunAtApplyStatements();
+	                RunFunctions();
+	                RunAtVariantStatements();
+	                RunProcessDarkThemeClasses();
+	                RunGatherCssCustomPropRefs();
+	                RunGatherUsedCssRefs();
+	                appRunner.MergeUsedDependencies();
+	                appRunner.GeneratePropertiesAndThemeLayers();
+	                appRunner.FinalCssAssembly();
+	                break;
             }
         }
 
@@ -159,7 +212,7 @@ namespace Argentini.Sfumato.Tests.Benchmarks
             switch (Stage)
             {
                 case CssPipelineStage.FullBuild:
-                    _ = AppRunnerExtensions.FullBuildCssAsync(_runner).GetAwaiter().GetResult();
+                    _ = AppRunnerExtensions.FullBuildCssAsync(appRunner).GetAwaiter().GetResult();
                     break;
 
                 case CssPipelineStage.SfumatoExtract:
@@ -171,11 +224,11 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 	                break;
 
                 case CssPipelineStage.ComponentsLayer:
-                    AppRunnerExtensions.ProcessComponentsLayerAndCss(_runner);
+                    AppRunnerExtensions.ProcessAllComponentsLayersAndCss(appRunner);
                     break;
 
                 case CssPipelineStage.UtilityClasses:
-                    AppRunnerExtensions.ProcessUtilityClasses(_runner);
+                    AppRunnerExtensions.GenerateUtilityClasses(appRunner);
                     break;
 
                 case CssPipelineStage.AtApplyStatements:
@@ -190,238 +243,120 @@ namespace Argentini.Sfumato.Tests.Benchmarks
                     RunAtVariantStatements();
                     break;
 
-                case CssPipelineStage.GeneratePropertiesAndThemeLayers:
-                    AppRunnerExtensions.GeneratePropertiesAndThemeLayers(_runner);
+                case CssPipelineStage.ProcessDarkThemeClasses:
+	                RunProcessDarkThemeClasses();
+	                break;
+
+	            case CssPipelineStage.GatherCssCustomPropRefs:
+		            RunGatherCssCustomPropRefs();
+		            break;
+
+                case CssPipelineStage.GatherUsedCssRefs:
+	                RunGatherUsedCssRefs();
+		            break;
+
+                case CssPipelineStage.MergeUsedDependencies:
+	                appRunner.MergeUsedDependencies();
+		            break;
+                
+                case CssPipelineStage.GeneratePropsAndThemeLayers:
+                    appRunner.GeneratePropertiesAndThemeLayers();
                     break;
 
-                case CssPipelineStage.ProcessDarkTheme:
-                    RunProcessDarkTheme();
+                case CssPipelineStage.FinalCssAssembly:
+                    RunFinalCssAssembly();
                     break;
-
-                case CssPipelineStage.Appending:
-                    RunAppending();
-                    break;
-
-                case CssPipelineStage.Formatting:
-	                RunFormattingTasks();  // e.g. minify + final ToString
-                    break;
+                
+                case CssPipelineStage.GenerateCss:
+	                RunGenerateCss();
+	                break;
             }
         }
 
         private void RunSfumatoExtract()
         {
-            var (i, len) = _runner.CustomCssSegment.Content.ExtractSfumatoBlock(_runner);
-            if (i > -1) _runner.CustomCssSegment.Content.Remove(i, len);
+            var (i, len) = appRunner.CustomCssSegment.Content.ExtractSfumatoBlock(appRunner);
+            if (i > -1) appRunner.CustomCssSegment.Content.Remove(i, len);
         }
 
         private void RunCssImports()
         {
-	        var (i, len) = _runner.CustomCssSegment.Content.ProcessCssImportStatements(_runner, true);
-	        if (i > -1) _runner.CustomCssSegment.Content.Remove(i, len);
+	        var (i, len) = appRunner.CustomCssSegment.Content.ExtractCssImportStatements(appRunner, true);
+	        if (i > -1) appRunner.CustomCssSegment.Content.Remove(i, len);
         }
 
         private void RunAtApplyStatements()
         {
-            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ImportsCssSegment.Content,    _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.ComponentsCssSegment.Content, _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessAtApplyStatementsAsync(_runner.CustomCssSegment.Content,     _runner).GetAwaiter().GetResult();
+	        appRunner.ProcessSegmentAtApplyStatementsAsync(appRunner.ImportsCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentAtApplyStatementsAsync(appRunner.ComponentsCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentAtApplyStatementsAsync(appRunner.CustomCssSegment).GetAwaiter();
         }
 
         private void RunFunctions()
         {
-	        AppRunnerExtensions.ProcessFunctionsAsync(_runner.BrowserResetCss.Content,             _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.FormsCss.Content,             _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.UtilitiesCssSegment.Content,  _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ImportsCssSegment.Content,    _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.ComponentsCssSegment.Content, _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessFunctionsAsync(_runner.CustomCssSegment.Content,     _runner).GetAwaiter().GetResult();
+	        appRunner.ProcessSegmentFunctionsAsync(appRunner.BrowserResetCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentFunctionsAsync(appRunner.FormsCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentFunctionsAsync(appRunner.UtilitiesCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentFunctionsAsync(appRunner.ImportsCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentFunctionsAsync(appRunner.ComponentsCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentFunctionsAsync(appRunner.CustomCssSegment).GetAwaiter();
         }
 
         private void RunAtVariantStatements()
         {
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.UtilitiesCssSegment.Content,  _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ImportsCssSegment.Content,    _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.ComponentsCssSegment.Content, _runner).GetAwaiter().GetResult();
-            AppRunnerExtensions.ProcessAtVariantStatementsAsync(_runner.CustomCssSegment.Content,     _runner).GetAwaiter().GetResult();
+	        appRunner.ProcessSegmentAtVariantStatementsAsync(appRunner.UtilitiesCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentAtVariantStatementsAsync(appRunner.ImportsCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentAtVariantStatementsAsync(appRunner.ComponentsCssSegment).GetAwaiter();
+	        appRunner.ProcessSegmentAtVariantStatementsAsync(appRunner.CustomCssSegment).GetAwaiter();
         }
 
-        private void RunProcessDarkTheme()
+        private void RunProcessDarkThemeClasses()
         {
-            if (!_runner.AppRunnerSettings.UseDarkThemeClasses)
+            if (appRunner.AppRunnerSettings.UseDarkThemeClasses == false)
                 return;
 
             foreach (var seg in new[]{ 
-                _runner.UtilitiesCssSegment,
-                _runner.ImportsCssSegment,
-                _runner.ComponentsCssSegment,
-                _runner.CustomCssSegment })
+                appRunner.UtilitiesCssSegment,
+                appRunner.ImportsCssSegment,
+                appRunner.ComponentsCssSegment,
+                appRunner.CustomCssSegment })
             {
-                AppRunnerExtensions.ProcessDarkThemeAsync(seg.Content, _runner).GetAwaiter().GetResult();
+                appRunner.ProcessDarkThemeClassesAsync(seg).GetAwaiter();
             }
         }
 
-        private void RunAppending()
+        private void RunGatherCssCustomPropRefs()
         {
-	        var appRunner = _runner;
-	        
-            // copy in the StringBuilder-based append/minify logic here
-            var workingSb = appRunner.AppState.StringBuilderPool.Get();
-			var outputSb = appRunner.AppState.StringBuilderPool.Get();
+	        appRunner.PropertiesCssSegment.Content.Clear();
+	        appRunner.PropertyListCssSegment.Content.Clear();
+	        appRunner.ThemeCssSegment.Content.Clear();
 
-			try
-			{
-				var useLayers = appRunner.AppRunnerSettings.UseCompatibilityMode == false;
-
-				if (useLayers)
-				{
-					outputSb.Append("@layer properties, theme, base, forms, components, utilities;");
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					
-					outputSb.Append("@layer theme {");
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-
-					outputSb.Append(appRunner.ThemeCssSegment.Content);
-					
-					outputSb.Append('}');
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					
-				}
-				else
-				{
-					outputSb.Append(appRunner.ThemeCssSegment.Content);
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				if (appRunner.AppRunnerSettings.UseReset)
-				{
-					if (useLayers)
-					{
-						outputSb.Append("@layer base {");
-						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					
-						outputSb.Append(appRunner.BrowserResetCss.Content);
-						
-						outputSb.Append('}');
-						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-
-					}
-					else
-					{
-						outputSb.Append(appRunner.BrowserResetCss.Content);
-						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					}
-				}
-
-				if (appRunner.AppRunnerSettings.UseForms)
-				{
-					if (useLayers)
-					{
-						outputSb.Append("@layer forms {");
-						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					
-						outputSb.Append(appRunner.FormsCss.Content);
-						
-						outputSb.Append('}');
-						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-
-					}
-					else
-					{
-						outputSb.Append(appRunner.FormsCss.Content);
-						outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					}
-				}
-
-				if (useLayers && appRunner.ComponentsCssSegment.Content.Length > 0)
-				{
-					outputSb.Append("@layer components {");
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					
-					outputSb.Append(appRunner.ComponentsCssSegment.Content);
-						
-					outputSb.Append('}');
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-
-				}
-				else
-				{
-					outputSb.Append(appRunner.ComponentsCssSegment.Content);
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				if (useLayers)
-				{
-					outputSb.Append("@layer utilities {");
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					
-					outputSb.Append(appRunner.UtilitiesCssSegment.Content);
-						
-					outputSb.Append('}');
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-				else
-				{
-					outputSb.Append(appRunner.UtilitiesCssSegment.Content);
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				if (appRunner.ImportsCssSegment.Content.Length > 0)
-				{
-					outputSb.Append(appRunner.ImportsCssSegment.Content);
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				if (appRunner.CustomCssSegment.Content.Length > 0)
-				{
-					outputSb.Append(appRunner.CustomCssSegment.Content);
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				if (appRunner.PropertyListCssSegment.Content.Length > 0)
-				{
-					outputSb.Append(appRunner.PropertyListCssSegment.Content);
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-
-				if (useLayers)
-				{
-					outputSb.Append("@layer properties {");
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-					
-					outputSb.Append(appRunner.PropertiesCssSegment.Content);
-						
-					outputSb.Append('}');
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-				else
-				{
-					outputSb.Append(appRunner.PropertiesCssSegment.Content);
-					outputSb.Append(appRunner.AppRunnerSettings.LineBreak);
-				}
-			}
-			finally
-			{
-				appRunner.AppState.StringBuilderPool.Return(workingSb);
-				appRunner.AppState.StringBuilderPool.Return(outputSb);
-			}
+	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.BrowserResetCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.FormsCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.UtilitiesCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.ImportsCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.ComponentsCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.CustomCssSegment).GetAwaiter();
         }
-
-        private void RunFormattingTasks()
+        
+        private void RunGatherUsedCssRefs()
         {
-            // same as WithAllTasks: after RunAppending() include minify/normalize
-
-            var workingSb = _runner.AppState.StringBuilderPool.Get();
-            var outputSb = _runner.AppState.StringBuilderPool.Get();
-
-            try
-            {
-	            _ = _runner.AppRunnerSettings.UseMinify ? outputSb.ToString().CompactCss(workingSb) : outputSb.ReformatCss(workingSb).ToString().NormalizeLinebreaks(_runner.AppRunnerSettings.LineBreak);
-            }
-            finally
-            {
-	            _runner.AppState.StringBuilderPool.Return(workingSb);
-	            _runner.AppState.StringBuilderPool.Return(outputSb);
-            }
+	        appRunner.GatherSegmentUsedCssRefsAsync(appRunner.BrowserResetCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentUsedCssRefsAsync(appRunner.FormsCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentUsedCssRefsAsync(appRunner.UtilitiesCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentUsedCssRefsAsync(appRunner.ImportsCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentUsedCssRefsAsync(appRunner.ComponentsCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentUsedCssRefsAsync(appRunner.CustomCssSegment).GetAwaiter();
+        }
+        
+        private void RunFinalCssAssembly()
+        {
+	        appRunner.FinalCssAssembly();
+        }
+        
+        private void RunGenerateCss()
+        {
+	        _ = appRunner.GenerateFinalCss();
         }
     }
 }
