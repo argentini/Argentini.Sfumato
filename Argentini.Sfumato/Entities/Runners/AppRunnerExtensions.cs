@@ -1175,279 +1175,319 @@ public static class AppRunnerExtensions
 	/// <param name="appRunner"></param>
 	/// <param name="segment"></param>
 	/// <returns></returns>
-	public static async ValueTask ProcessDarkThemeClassesAsync(this AppRunner appRunner, GenerationSegment segment)
-	{
-		const string mediaPrefix = "@media (prefers-color-scheme: dark) {";
+    public static async ValueTask ProcessDarkThemeClassesAsync(this AppRunner appRunner, GenerationSegment segment)
+    {
+        const string mediaPrefix = "@media (prefers-color-scheme: dark) {";
 
-		var outCss = new StringBuilder(segment.Content.Length * 2);
-		var css = segment.Content.ToString();
-		var pos = 0;
+        if (appRunner.AppRunnerSettings.UseDarkThemeClasses == false)
+            return;
 
-		while (true)
-		{
-			var mediaIdx = css.IndexOf(mediaPrefix, pos, StringComparison.Ordinal);
+        var css = segment.Content.ToString();
+        var outCss = new StringBuilder(css.Length * 2);
+        var pos = 0;
+        var lineBreak = appRunner.AppRunnerSettings.LineBreak;
 
-			if (mediaIdx < 0)
-			{
-				// no more blocks – copy the tail and finish
-				outCss.Append(css, pos, css.Length - pos);
-				break;
-			}
+        while (true)
+        {
+            // Find the next dark-mode media block
+            var mediaIdx = css.IndexOf(mediaPrefix, pos, StringComparison.Ordinal);
+            
+            if (mediaIdx < 0)
+            {
+                outCss.Append(css, pos, css.Length - pos);
+                break;
+            }
 
-			// copy everything before this @media as-is
-			outCss.Append(css, pos, mediaIdx - pos);
+            // copy everything before the media query
+            outCss.Append(css, pos, mediaIdx - pos);
 
-			// locate the matching '}' that closes the @media
-			var bodyStart = mediaIdx + mediaPrefix.Length;
-			var p = bodyStart;
-			var depth = 1; // we are just after the '{'
+            // brace-match the media body
+            var bodyStart = mediaIdx + mediaPrefix.Length;
+            var p = bodyStart;
+            var depth = 1;
+            
+            while (p < css.Length && depth > 0)
+            {
+                if (css[p++] == '{')
+	                depth++;
+                else if (css[p - 1] == '}')
+	                depth--;
+            }
+            
+            var bodyEnd = p - 1;
+            var inner = css.AsSpan(bodyStart, bodyEnd - bodyStart);
 
-			while (p < css.Length && depth > 0)
-			{
-				var c = css[p++];
+            // Rewrite inner into two buffers + extract keyframes
+            var autoSb = appRunner.AppState.StringBuilderPool.Get();
+            var darkSb = appRunner.AppState.StringBuilderPool.Get();
+            var keyframes = new List<string>();
+            
+            try
+            {
+                autoSb.Clear();
+                darkSb.Clear();
+            
+                RewriteContent(inner, autoSb, darkSb, keyframes);
 
-				if (c == '{')
-					depth++;
-				else if (c == '}')
-					depth--;
-			}
+                // Emit .theme-auto rules inside the media
+                outCss
+                    .Append(mediaPrefix).Append(lineBreak)
+                    .Append(autoSb)
+                    .Append('}').Append(lineBreak).Append(lineBreak);
 
-			var bodyEnd = p - 1; // index of the '}' that closes the @media
-			var inner = css.AsSpan(bodyStart, bodyEnd - bodyStart);
+                // Emit .theme-dark rules after the media
+                outCss
+                    .Append(darkSb)
+                    .Append(lineBreak).Append(lineBreak);
 
-			// rewrite the whole inner block in ONE pass
-			var autoSb = appRunner.AppState.StringBuilderPool.Get();
-			var darkSb = appRunner.AppState.StringBuilderPool.Get();
+                // Finally, emit any extracted @keyframes unchanged
+                foreach (var kf in keyframes)
+                    outCss.Append(kf).Append(lineBreak).Append(lineBreak);
+            }
+            finally
+            {
+                appRunner.AppState.StringBuilderPool.Return(autoSb);
+                appRunner.AppState.StringBuilderPool.Return(darkSb);
+            }
 
-			try
-			{
-				autoSb.Clear();
-				darkSb.Clear();
+            pos = bodyEnd + 1;
+        }
 
-				RewriteContent(inner, autoSb, darkSb);
+        // only replace it if changed
+        if (outCss.Length != segment.Content.Length)
+            segment.Content.ReplaceContent(outCss);
 
-				// @media with ".theme-auto…" selectors
-				outCss.Append(mediaPrefix).Append(autoSb).Append('}');
+        await Task.CompletedTask;
+    }
 
-				// blank line between the two copies (match original behaviour)
-				outCss.Append(appRunner.AppRunnerSettings.LineBreak)
-					  .Append(appRunner.AppRunnerSettings.LineBreak);
+	private static void RewriteContent(ReadOnlySpan<char> src, StringBuilder autoSb, StringBuilder darkSb, List<string> keyframes)
+    {
+        var i = 0;
 
-				// ".theme-dark…" selectors outside any media query
-				outCss.Append(darkSb);
-			}
-			finally
-			{
-				appRunner.AppState.StringBuilderPool.Return(autoSb);
-				appRunner.AppState.StringBuilderPool.Return(darkSb);
-			}
+        while (i < src.Length)
+        {
+            // copy leading whitespace
+            while (i < src.Length && char.IsWhiteSpace(src[i]))
+            {
+                autoSb.Append(src[i]);
+                darkSb.Append(src[i]);
+                i++;
+            }
+        
+            if (i >= src.Length)
+	            break;
 
-			pos = bodyEnd + 1; // skip the original @media block
-		}
+            // find the next '{'
+            var rel = src[i..].IndexOf('{');
 
-		if (outCss.Length != segment.Content.Length)
-			segment.Content.ReplaceContent(outCss);
+            if (rel < 0)
+            {
+                // trailing text
+                var tail = src[i..].ToString();
 
-		await Task.CompletedTask;
-		
-		return;
+                autoSb.Append(tail);
+                darkSb.Append(tail);
+                
+                break;
+            }
 
-		// recursively rewrites one block body
-		static void RewriteContent(ReadOnlySpan<char> src, StringBuilder autoSb, StringBuilder darkSb)
-		{
-			var i = 0;
+            var headerSpan   = src.Slice(i, rel);
+            var contentStart = i + rel + 1;
 
-			while (i < src.Length)
-			{
-				// copy leading whitespace verbatim
-				var headerStart = i;
+            // brace-match this block
+            var depth = 1;
+            var p = contentStart;
+            
+            while (p < src.Length && depth > 0)
+            {
+                if (src[p] == '{')
+	                depth++;
+                else if (src[p] == '}')
+	                depth--;
+                
+                p++;
+            }
+            
+            var contentEnd  = p - 1;
+            var ruleContent = src.Slice(contentStart, contentEnd - contentStart);
+            var trimmed = headerSpan.TrimStart();
 
-				while (headerStart < src.Length && char.IsWhiteSpace(src[headerStart]))
-				{
-					autoSb.Append(src[headerStart]);
-					darkSb.Append(src[headerStart]);
-					headerStart++;
-				}
+            if (trimmed.Length > 0 && trimmed[0] == '@')
+            {
+                // Extract @keyframes completely
+                if (trimmed.StartsWith("@keyframes", StringComparison.OrdinalIgnoreCase))
+                {
+                    keyframes.Add(
+                        headerSpan.ToString()
+                        + "{"
+                        + ruleContent.ToString()
+                        + "}"
+                    );
+                }
+                else
+                {
+                    // Recurse into other @-rules
+                    autoSb.Append(headerSpan).Append('{');
+                    darkSb.Append(headerSpan).Append('{');
 
-				if (headerStart >= src.Length)
-					return;
+                    RewriteContent(ruleContent, autoSb, darkSb, keyframes);
 
-				i = headerStart;
+                    autoSb.Append('}');
+                    darkSb.Append('}');
+                }
+            }
+            else
+            {
+                // Normal selector: split and apply dual-prefix with pseudo handling
+                var selectors = new List<string>();
 
-				// find the next '{' that starts the rule
-				var braceRel = src[i..].IndexOf('{');
+                AddSelectors(headerSpan, selectors);
 
-				if (braceRel < 0) // malformed CSS – bail out
-				{
-					autoSb.Append(src[i..]);
-					darkSb.Append(src[i..]);
+                var first = true;
 
-					return;
-				}
+                foreach (var sel in selectors)
+                {
+                    if (first == false)
+                    {
+                        autoSb.Append(", ");
+                        darkSb.Append(", ");
+                    }
 
-				var bracePos = i + braceRel;
-				var headerSpan = src.Slice(i, braceRel);
+                    first = false;
 
-				// find the matching '}' for this rule
-				var contentStart = bracePos + 1;
-				var depth = 1;
-				var p = contentStart;
+                    var needsTwo = NeedsDoubleForm(sel);
 
-				while (p < src.Length && depth > 0)
-				{
-					var c = src[p++];
+                    // space-prefixed
+                    autoSb.Append(".theme-auto ").Append(sel);
+                    darkSb.Append(".theme-dark ").Append(sel);
 
-					if (c == '{')
-						depth++;
-					else if (c == '}')
-						depth--;
-				}
+                    if (needsTwo)
+                    {
+                        // only apply class-before-pseudo logic when the selector does NOT start with ':'
+                        if (sel.StartsWith(':') == false)
+                        {
+                            autoSb.Append(", ").Append(PlaceClassBeforePseudo(sel, "theme-auto"));
+                            darkSb.Append(", ").Append(PlaceClassBeforePseudo(sel, "theme-dark"));
+                        }
+                        else
+                        {
+                            // for selectors like ":root", append
+                            autoSb.Append(", ").Append(sel).Append(".theme-auto");
+                            darkSb.Append(", ").Append(sel).Append(".theme-dark");
+                        }
+                    }
+                }
 
-				var contentEnd = p - 1; // position of '}'
-				var ruleContent = src[contentStart..contentEnd];
-				var isAtRule = headerSpan.TrimStart().Length > 0 && headerSpan.TrimStart()[0] == '@';
+                autoSb.Append(" {").Append(ruleContent).Append('}');
+                darkSb.Append(" {").Append(ruleContent).Append('}');
+            }
 
-				if (isAtRule)
-				{
-					// copy @-rules, but rewrite inside them
-					autoSb.Append(headerSpan).Append('{');
-					darkSb.Append(headerSpan).Append('{');
+            i = contentEnd + 1;
+        }
+    }
 
-					RewriteContent(ruleContent, autoSb, darkSb);
+    // Inserts ".classname" before the first unescaped ':' (pseudo-class/element),
+    // but will never be called for selectors starting with ':'.
+    private static string PlaceClassBeforePseudo(string selector, string className)
+    {
+        var escaped = false;
+        
+        for (var i = 0; i < selector.Length; i++)
+        {
+            var c = selector[i];
+            
+            if (escaped)
+            {
+                escaped = false;
+                continue;
+            }
+            
+            if (c == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+            
+            if (c == ':')
+            {
+                // split at this colon
+                var head = selector[..i];
+                var tail = selector[i..];
+            
+                return $"{head}.{className}{tail}";
+            }
+        }
 
-					autoSb.Append('}');
-					darkSb.Append('}');
-				}
-				else
-				{
-					// selector list: add the two theme prefixes
-					var selectors = new List<string>();
-					AddSelectors(headerSpan, selectors);
+        // no (unescaped) pseudo found
+        return $"{selector}.{className}";
+    }
 
-					var first = true;
+    private static bool NeedsDoubleForm(string sel) => string.IsNullOrEmpty(sel) == false && (".#[:*>+~".Contains(sel[0]));
 
-					foreach (var sel in selectors)
-					{
-						if (first == false)
-						{
-							autoSb.Append(", ");
-							darkSb.Append(", ");
-						}
+    private static void AddSelectors(ReadOnlySpan<char> header, List<string> output)
+    {
+        var paren    = 0;
+        var square   = 0;
+        var start    = 0;
+        var inQuote  = false;
+        var escaped  = false;
+        var quoteCh  = '\0';
 
-						first = false;
+        for (var idx = 0; idx < header.Length; idx++)
+        {
+            var c = header[idx];
 
-						var needsTwo = NeedsDoubleForm(sel);
+            if (escaped)
+            {
+	            escaped = false;
+	            continue;
+            }
 
-						autoSb.Append(".theme-auto ").Append(sel);
+            if (c == '\\')
+            {
+	            escaped = true;
+	            continue;
+            }
 
-						if (needsTwo)
-							autoSb.Append(", .theme-auto").Append(sel);
+            if (inQuote)
+            {
+                if (c == quoteCh)
+	                inQuote = false;
+                
+                continue;
+            }
+            
+            if (c is '"' or '\'')
+            {
+                inQuote = true;
+                quoteCh = c;
+                continue;
+            }
 
-						darkSb.Append(".theme-dark ").Append(sel);
+            switch (c)
+            {
+                case '(': paren++; break;
+                case ')': if (paren > 0) paren--; break;
+                case '[': square++; break;
+                case ']': if (square > 0) square--; break;
+                case ',' when paren == 0 && square == 0:
+                    
+	                var sel = header.Slice(start, idx - start).Trim();
 
-						if (needsTwo)
-							darkSb.Append(", .theme-dark").Append(sel);
-					}
+                    if (sel.IsEmpty == false)
+	                    output.Add(sel.ToString());
+                    
+                    start = idx + 1;
+                    
+                    break;
+            }
+        }
 
-					autoSb.Append(" {");
-					darkSb.Append(" {");
+        var tail = header[start..].Trim();
 
-					// copy rule body verbatim
-					autoSb.Append(ruleContent);
-					darkSb.Append(ruleContent);
-
-					autoSb.Append('}');
-					darkSb.Append('}');
-				}
-
-				i = contentEnd + 1; // continue after this rule
-			}
-		}
-
-		// does the selector need the “no space” twin?
-		static bool NeedsDoubleForm(string sel)
-		{
-			if (string.IsNullOrEmpty(sel))
-				return false;
-
-			return sel[0] switch
-			{
-				'.' or '#' or '[' or ':' or '*' or '>' or '+' or '~' => true,
-				_ => false,
-			};
-		}
-
-		// split a selector list on top-level (unescaped) commas
-		static void AddSelectors(ReadOnlySpan<char> header, List<string> output)
-		{
-			var paren = 0;
-			var square = 0;
-			var start = 0;
-
-			var quoteChar = '\0';
-
-			var inQuote = false;
-			var escaped = false;
-
-			for (var i = 0; i < header.Length; i++)
-			{
-				var c = header[i];
-
-				if (escaped)
-				{
-					escaped = false;
-					continue;
-				}
-
-				if (c == '\\')
-				{
-					escaped = true;
-					continue;
-				}
-
-				if (inQuote)
-				{
-					if (c == quoteChar)
-						inQuote = false;
-
-					continue;
-				}
-
-				if (c is '"' or '\'')
-				{
-					inQuote = true;
-					quoteChar = c;
-
-					continue;
-				}
-
-				switch (c)
-				{
-					case '(': paren++; break;
-					case ')': if (paren > 0) paren--; break;
-					case '[': square++; break;
-					case ']': if (square > 0) square--; break;
-					case ',':
-						if (paren == 0 && square == 0)
-						{
-							var sel = header[start..i].Trim();
-
-							if (sel.IsEmpty == false)
-								output.Add(sel.ToString());
-
-							start = i + 1;
-						}
-
-						break;
-				}
-			}
-
-			var tail = header[start..].Trim();
-
-			if (tail.IsEmpty == false)
-				output.Add(tail.ToString());
-		}
-	}
+        if (tail.IsEmpty == false)
+	        output.Add(tail.ToString());
+    }
 	
 	#endregion
 
