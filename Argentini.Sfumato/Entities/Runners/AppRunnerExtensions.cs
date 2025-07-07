@@ -1855,10 +1855,31 @@ public static class AppRunnerExtensions
 
 	public static async Task<string> ProjectChangeBuildCssAsync(AppRunner appRunner)
 	{
-		// todo: write this method
+		appRunner.GenerateUtilityClasses();
 
+		await appRunner.ProcessSegmentFunctionsAsync(appRunner.UtilitiesCssSegment);
+		await appRunner.ProcessSegmentAtVariantStatementsAsync(appRunner.UtilitiesCssSegment);
+
+		if (appRunner.AppRunnerSettings.UseDarkThemeClasses)
+		{
+			await appRunner.ProcessDarkThemeClassesAsync(appRunner.UtilitiesCssSegment);
+		}
+
+		#region Gather And Merge Dependencies
+
+		appRunner.PropertiesCssSegment.Content.Clear();
+		appRunner.PropertyListCssSegment.Content.Clear();
+		appRunner.ThemeCssSegment.Content.Clear();
+
+		appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.UtilitiesCssSegment);
+
+		await appRunner.GatherSegmentUsedCssRefsAsync(appRunner.UtilitiesCssSegment);
 		
+		appRunner.MergeUsedDependencies();
+		appRunner.GeneratePropertiesAndThemeLayers();
 		
+		#endregion
+
 		appRunner.FinalCssAssembly();
 
 		return appRunner.GenerateFinalCss();
