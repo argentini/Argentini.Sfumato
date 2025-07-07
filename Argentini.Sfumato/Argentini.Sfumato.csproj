@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.0.34.0</AssemblyVersion>
-        <FileVersion>6.0.34.0</FileVersion>
-        <PackageVersion>6.0.34</PackageVersion>
+        <AssemblyVersion>6.0.35.0</AssemblyVersion>
+        <FileVersion>6.0.35.0</FileVersion>
+        <PackageVersion>6.0.35</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,19 +29,18 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>More app-wide performance optimizations</PackageReleaseNotes>
+        <PackageReleaseNotes>Performance optimizations, updated dependencies</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.15.0" />
-        <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.5" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.6" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.6" />
     </ItemGroup>
     
     <ItemGroup>
