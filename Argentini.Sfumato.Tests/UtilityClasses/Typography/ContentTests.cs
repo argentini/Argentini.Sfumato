@@ -15,8 +15,7 @@ public class ContentTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = @".content-\[\'\'\]",
                 Styles =
                     """
-                    --sf-content: '';
-                    content: var(--sf-content);
+                    content: '';
                     """,
                 IsValid = true,
                 IsImportant = false,
@@ -27,8 +26,7 @@ public class ContentTests(ITestOutputHelper testOutputHelper)
                 EscapedClassName = ".content-none",
                 Styles =
                     """
-                    --sf-content: none;
-                    content: var(--sf-content);
+                    content: none;
                     """,
                 IsValid = true,
                 IsImportant = false,

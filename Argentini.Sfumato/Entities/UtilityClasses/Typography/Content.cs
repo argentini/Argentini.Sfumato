@@ -16,8 +16,7 @@ public sealed class Content : ClassDictionaryBase
                     InAbstractValueCollection = true,
                     InStringCollection = true,
                     Template = """
-                               --sf-content: {0};
-                               content: var(--sf-content);
+                               content: {0};
                                """
                 }
             },
@@ -26,8 +25,7 @@ public sealed class Content : ClassDictionaryBase
                 {
                     InSimpleUtilityCollection = true,
                     Template = """
-                               --sf-content: none;
-                               content: var(--sf-content);
+                               content: none;
                                """
                 }
             },
