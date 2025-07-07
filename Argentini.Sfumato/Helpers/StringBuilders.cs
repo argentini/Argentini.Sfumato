@@ -413,177 +413,215 @@ public static class StringBuilders
 		return -1;
 	}
 	
+	private const int MaxSpaces = 4096;
+	private static readonly char[] SpacesBuffer = CreateSpaceBuffer();
+	private static char[] CreateSpaceBuffer()
+	{
+		var buf = new char[MaxSpaces];
+
+		for (var i = 0; i < MaxSpaces; i++)
+			buf[i] = ' ';
+		
+		return buf;
+	}
+	
 	/// <summary>
 	/// Reformats the CSS in this StringBuilder so that each block is indented
 	/// by <paramref name="indentSize"/> spaces per nesting level.
 	/// Also, properly indents /* … */ comments (both standalone and inline).
 	/// </summary>
 	/// <param name="source">The StringBuilder containing the CSS to reformat.</param>
-	/// <param name="workingSb">Working StringBuilder instance (will be cleared).</param>
 	/// <param name="indentSize">Number of spaces per indentation level (default: 4).</param>
 	/// <returns>The same StringBuilder, now cleared and repopulated with formatted CSS.</returns>
-	public static StringBuilder ReformatCss(this StringBuilder source, StringBuilder workingSb, int indentSize = 4)
-	{
-	    var css = source.ToString();
-	    var depth = 0;
-	    var inString = false;
-	    var stringDelimiter = '\0';
-	    var inComment = false;
+    public static StringBuilder ReformatCss(this StringBuilder source, int indentSize = 4)
+    {
+        // 1) Pull text and size output buffer
+        var css = source.ToString();
+        var inLen = css.Length;
+        var bufLen = inLen + (inLen >> 2) + 256;  // headroom
+        var buf = new char[bufLen];
+        var outIdx = 0;
 
-	    for (var i = 0; i < css.Length; i++)
-	    {
-	        var c    = css[i];
-	        var next = i + 1 < css.Length ? css[i + 1] : '\0';
+        // 2) Formatter state
+        var depth = 0;
+        var inString = false;
+        var stringDelim = '\0';
 
-	        // Enter comment?
-	        if (inString == false && inComment == false && c == '/' && next == '*')
-	        {
-	            var atLineStart = workingSb.Length == 0 || workingSb[^1] == '\n';
+        // 3) Blank-line suppression
+        var lineStartIdx = 0;
+        var anyContentInLine = false;
 
-	            if (atLineStart)
+        // 4) One-pass
+        for (var i = 0; i < inLen; i++)
+        {
+            var c = css[i];
+            var next = (i + 1 < inLen) ? css[i + 1] : '\0';
+
+            // — skip /*…*/ comments
+            if (inString == false && c == '/' && next == '*')
+            {
+                i += 2;
+
+                while (i + 1 < inLen && !(css[i] == '*' && css[i + 1] == '/'))
+                    i++;
+                
+                if (i + 1 < inLen)
+	                i++;
+                
+                continue;
+            }
+
+            // — skip //… comments
+            if (inString == false && c == '/' && next == '/')
+            {
+                i += 2;
+
+                while (i < inLen && css[i] != '\n')
+                    i++;
+
+                // let '\n' fall through to newline logic
+            }
+
+            // — toggle string
+            if (inString == false && c is '"' or '\'')
+            {
+                inString = true;
+                stringDelim = c;
+                buf[outIdx++] = c;
+                anyContentInLine = true;
+
+                continue;
+            }
+            
+            if (inString && c == stringDelim)
+            {
+                inString = false;
+                buf[outIdx++] = c;
+                anyContentInLine = true;
+                
+                continue;
+            }
+
+            // — inside string literal
+            if (inString)
+            {
+                buf[outIdx++] = c;
+                anyContentInLine = true;
+                
+                continue;
+            }
+
+            // — outside string & comments
+            switch (c)
+            {
+                case '{':
+                    
+	                if (outIdx == 0 || buf[outIdx - 1] == '\n')
+		                AppendIndent();
+
+                    buf[outIdx++]    = '{';
+                    anyContentInLine = true;
+                    
+	                WriteNewline();
+                    
+	                depth++;
+                    
+	                break;
+
+                case '}':
+                    
+	                WriteNewline();
+                    
+	                depth = Math.Max(0, depth - 1);
+                    
 	                AppendIndent();
-	            else
-	                workingSb.Append(' ');
+                    
+	                buf[outIdx++] = '}';
+                    anyContentInLine = true;
+                    
+	                WriteNewline();
+                    
+	                break;
 
-	            workingSb.Append("/*");
-	            inComment = true;
-	            i++; // consume '*'
-	            
-	            continue;
-	        }
+                case ';':
 
-	        // Inside comment: copy until "*/", indent newlines
-	        if (inComment)
-	        {
-		        // ReSharper disable once ConvertIfStatementToSwitchStatement
-		        if (c == '*' && next == '/')
-	            {
-	                workingSb.Append("*/");
-	                inComment = false;
-	                i++; // consume '/'
-	                workingSb.AppendLine();
-	                AppendIndent();
-	            }
-	            else if (c == '\n')
-	            {
-	                workingSb.AppendLine();
-	                AppendIndent();
-	            }
-	            else if (c != '\r')
-	            {
-	                workingSb.Append(c);
-	            }
+	                if (outIdx == 0 || buf[outIdx - 1] == '\n')
+		                AppendIndent();
+                    
+	                buf[outIdx++] = ';';
+                    anyContentInLine = true;
+                    
+	                WriteNewline();
+                    
+	                break;
 
-		        continue;
-	        }
+                case '\n':
 
-	        // Toggle string state
-	        // ReSharper disable once ConvertIfStatementToSwitchStatement
-	        if (inString == false && c is '"' or '\'')
-	        {
-	            inString = true;
-	            stringDelimiter = c;
-	            workingSb.Append(c);
+	                WriteNewline();
+                    
+	                break;
 
-	            continue;
-	        }
+                default:
+                    
+	                if (IsAsciiWhite(c) == false)
+                    {
+                        if (outIdx == 0 || buf[outIdx - 1] == '\n')
+                            AppendIndent();
+                        
+                        buf[outIdx++] = c;
+                        anyContentInLine = true;
+                    }
+                    else
+                    {
+                        // collapse spaces/tabs/CR to single space
+                        if (outIdx > 0 && buf[outIdx - 1] != ' ' && buf[outIdx - 1] != '\n')
+                            buf[outIdx++] = ' ';
+                    }
+                    break;
+            }
+        }
+
+        // 5) Final newline if needed
+        if (anyContentInLine)
+            buf[outIdx++] = '\n';
+
+        // 6) Flush back into StringBuilders
+        source.Clear();
+
+        return source.Append(buf, 0, outIdx);
+
+        // Fast ASCII-only whitespace test
+        static bool IsAsciiWhite(char c) => c is ' ' or '\t' or '\r';
+
+        // Indent via block-copy
+        void AppendIndent()
+        {
+	        var totalSpaces = depth * indentSize;
 	        
-	        if (inString && c == stringDelimiter)
-	        {
-	            inString = false;
-	            workingSb.Append(c);
-	            
-	            continue;
-	        }
+	        if (totalSpaces > MaxSpaces)
+		        totalSpaces = MaxSpaces;
 	        
-	        if (inString == false)
+	        Array.Copy(SpacesBuffer, 0, buf, outIdx, totalSpaces);
+	        
+	        outIdx += totalSpaces;
+	        // indent alone isn’t “content”
+        }
+
+        void WriteNewline()
+        {
+	        if (anyContentInLine)
 	        {
-	            // Outside strings: handle braces and semicolons
-	            switch (c)
-	            {
-	                case '{':
-	                    workingSb.Append(c);
-	                    workingSb.AppendLine();
-	                    depth++;
-	                    AppendIndent();
-	                    break;
-
-	                case '}':
-	                    workingSb.AppendLine();
-	                    depth = Math.Max(0, depth - 1);
-	                    AppendIndent();
-	                    workingSb.Append(c);
-	                    workingSb.AppendLine();
-	                    AppendIndent();
-	                    break;
-
-	                case ';':
-	                    workingSb.Append(c);
-	                    var hasInlineComment = false;
-	                    for (var j = i + 1; j < css.Length; j++)
-	                    {
-	                        if (char.IsWhiteSpace(css[j]))
-	                        {
-	                            continue;
-	                        }
-	                        if (css[j] == '/' && j + 1 < css.Length && css[j + 1] == '*')
-	                        {
-	                            hasInlineComment = true;
-	                        }
-	                        break;
-	                    }
-	                    if (hasInlineComment)
-	                    {
-	                        workingSb.Append(' ');
-	                    }
-	                    else
-	                    {
-	                        workingSb.AppendLine();
-	                        AppendIndent();
-	                    }
-	                    break;
-
-	                default:
-	                    if (char.IsWhiteSpace(c))
-	                    {
-	                        if (workingSb.Length > 0 && !char.IsWhiteSpace(workingSb[^1]))
-	                        {
-	                            workingSb.Append(' ');
-	                        }
-	                    }
-	                    else
-	                    {
-	                        workingSb.Append(c);
-	                    }
-	                    break;
-	            }
-	            
-	            continue;
+		        buf[outIdx++] = '\n';
+		        lineStartIdx     = outIdx;
 	        }
-
-	        // Inside string: copy verbatim
-	        workingSb.Append(c);
-	    }
-
-	    // Remove blank or whitespace‑only lines
-	    var lines = workingSb
-		    .ToString()
-		    .Split(["\r\n", "\n"], StringSplitOptions.None);
-
-	    workingSb.Clear();
-
-	    foreach (var line in lines)
-	    {
-		    if (line.Trim().Length > 0)
-			    workingSb.AppendLine(line);
-	    }
-	    
-	    source.Clear();
-
-	    return source.Append(workingSb);
-
-	    void AppendIndent() => workingSb.Append(new string(' ', depth * indentSize));
-	}
+	        else
+	        {
+		        // drop the empty line
+		        outIdx = lineStartIdx;
+	        }
+	        anyContentInLine = false;
+        }
+    }
 	
 	public static byte[] ToByteArray(this StringBuilder sb, Encoding encoding)
 	{
