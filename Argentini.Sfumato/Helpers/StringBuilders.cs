@@ -1,6 +1,7 @@
 ﻿// ReSharper disable ConvertIfStatementToSwitchStatement
 // ReSharper disable MemberCanBePrivate.Global
 
+using System.Buffers;
 using System.Globalization;
 
 namespace Argentini.Sfumato.Helpers;
@@ -428,81 +429,90 @@ public static class StringBuilders
 	/// <summary>
 	/// Reformats the CSS in this StringBuilder so that each block is indented
 	/// by <paramref name="indentSize"/> spaces per nesting level.
-	/// Also, properly indents /* … */ comments (both standalone and inline).
+	/// Also removes comments.
 	/// </summary>
 	/// <param name="source">The StringBuilder containing the CSS to reformat.</param>
 	/// <param name="indentSize">Number of spaces per indentation level (default: 4).</param>
 	/// <returns>The same StringBuilder, now cleared and repopulated with formatted CSS.</returns>
     public static StringBuilder ReformatCss(this StringBuilder source, int indentSize = 4)
     {
-        // 1) Pull text and size output buffer
+        // 1) Read input and rent pooled buffer
         var css = source.ToString();
         var inLen = css.Length;
-        var bufLen = inLen + (inLen >> 2) + 256;  // headroom
-        var buf = new char[bufLen];
+        var bufLen = inLen + (inLen >> 2) + 128;
+        var buf = ArrayPool<char>.Shared.Rent(bufLen);
         var outIdx = 0;
 
-        // 2) Formatter state
+        // 2) State
         var depth = 0;
         var inString = false;
         var stringDelim = '\0';
 
-        // 3) Blank-line suppression
+        // 3) Blank-line suppression & line-start tracking
         var lineStartIdx = 0;
         var anyContentInLine = false;
 
-        // 4) One-pass
+        // 4) One-pass formatting
         for (var i = 0; i < inLen; i++)
         {
             var c = css[i];
             var next = (i + 1 < inLen) ? css[i + 1] : '\0';
 
-            // — skip /*…*/ comments
+            // — skip /*…*/ entirely
             if (inString == false && c == '/' && next == '*')
             {
                 i += 2;
 
-                while (i + 1 < inLen && !(css[i] == '*' && css[i + 1] == '/'))
+                while (i + 1 < inLen && (css[i] == '*' && css[i + 1] == '/') == false)
                     i++;
                 
                 if (i + 1 < inLen)
-	                i++;
+                    i++;
                 
                 continue;
             }
 
-            // — skip //… comments
+            // — skip //… to the end of line
             if (inString == false && c == '/' && next == '/')
             {
                 i += 2;
-
+                
                 while (i < inLen && css[i] != '\n')
                     i++;
-
-                // let '\n' fall through to newline logic
+                
+                if (i < inLen && css[i] == '\n')
+                    WriteNewline();
+                
+                continue;
             }
 
-            // — toggle string
+            // — toggle into string literal
             if (inString == false && c is '"' or '\'')
             {
+                if (outIdx == lineStartIdx)
+                {
+                    AppendIndent();
+                }
+
                 inString = true;
                 stringDelim = c;
                 buf[outIdx++] = c;
                 anyContentInLine = true;
-
-                continue;
-            }
-            
-            if (inString && c == stringDelim)
-            {
-                inString = false;
-                buf[outIdx++] = c;
-                anyContentInLine = true;
                 
                 continue;
             }
 
-            // — inside string literal
+            // — toggle out of string
+            if (inString && c == stringDelim)
+            {
+                buf[outIdx++] = c;
+                anyContentInLine = true;
+                inString = false;
+                
+                continue;
+            }
+
+            // — inside string, copy verbatim
             if (inString)
             {
                 buf[outIdx++] = c;
@@ -511,15 +521,17 @@ public static class StringBuilders
                 continue;
             }
 
-            // — outside string & comments
+            // — outside strings and comments: handle CSS syntax
             switch (c)
             {
                 case '{':
+                
+	                if (outIdx == lineStartIdx)
+                    {
+                        AppendIndent();
+                    }
                     
-	                if (outIdx == 0 || buf[outIdx - 1] == '\n')
-		                AppendIndent();
-
-                    buf[outIdx++]    = '{';
+	                buf[outIdx++] = '{';
                     anyContentInLine = true;
                     
 	                WriteNewline();
@@ -544,9 +556,11 @@ public static class StringBuilders
 	                break;
 
                 case ';':
-
-	                if (outIdx == 0 || buf[outIdx - 1] == '\n')
-		                AppendIndent();
+                    
+	                if (outIdx == lineStartIdx)
+                    {
+                        AppendIndent();
+                    }
                     
 	                buf[outIdx++] = ';';
                     anyContentInLine = true;
@@ -556,24 +570,25 @@ public static class StringBuilders
 	                break;
 
                 case '\n':
-
+                    
 	                WriteNewline();
                     
 	                break;
 
                 default:
-                    
-	                if (IsAsciiWhite(c) == false)
+                    if (IsAsciiWhite(c) == false)
                     {
-                        if (outIdx == 0 || buf[outIdx - 1] == '\n')
+                        if (outIdx == lineStartIdx)
+                        {
                             AppendIndent();
-                        
+                        }
+                    
                         buf[outIdx++] = c;
                         anyContentInLine = true;
                     }
                     else
                     {
-                        // collapse spaces/tabs/CR to single space
+                        // collapse runs of ASCII whitespace
                         if (outIdx > 0 && buf[outIdx - 1] != ' ' && buf[outIdx - 1] != '\n')
                             buf[outIdx++] = ' ';
                     }
@@ -585,41 +600,47 @@ public static class StringBuilders
         if (anyContentInLine)
             buf[outIdx++] = '\n';
 
-        // 6) Flush back into StringBuilders
+        // 6) Flush back into source
         source.Clear();
+        source.EnsureCapacity(outIdx);
+        source.Append(buf, 0, outIdx);
 
-        return source.Append(buf, 0, outIdx);
+        // 7) Return pooled buffer
+        ArrayPool<char>.Shared.Return(buf);
 
-        // Fast ASCII-only whitespace test
+        return source;
+
+        // Fast ASCII whitespace check
         static bool IsAsciiWhite(char c) => c is ' ' or '\t' or '\r';
 
         // Indent via block-copy
         void AppendIndent()
         {
-	        var totalSpaces = depth * indentSize;
-	        
-	        if (totalSpaces > MaxSpaces)
-		        totalSpaces = MaxSpaces;
-	        
-	        Array.Copy(SpacesBuffer, 0, buf, outIdx, totalSpaces);
-	        
-	        outIdx += totalSpaces;
-	        // indent alone isn’t “content”
+            var total = depth * indentSize;
+
+            if (total > MaxSpaces)
+                total = MaxSpaces;
+            
+            Array.Copy(SpacesBuffer, 0, buf, outIdx, total);
+            
+            outIdx += total;
+            // still atLineStart until we emit a non-space
         }
 
         void WriteNewline()
         {
-	        if (anyContentInLine)
-	        {
-		        buf[outIdx++] = '\n';
-		        lineStartIdx     = outIdx;
-	        }
-	        else
-	        {
-		        // drop the empty line
-		        outIdx = lineStartIdx;
-	        }
-	        anyContentInLine = false;
+            if (anyContentInLine)
+            {
+                buf[outIdx++] = '\n';
+                lineStartIdx = outIdx;
+            }
+            else
+            {
+                // drop whitespace-only line
+                outIdx = lineStartIdx;
+            }
+            
+            anyContentInLine = false;
         }
     }
 	
