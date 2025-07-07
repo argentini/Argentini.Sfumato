@@ -877,44 +877,78 @@ public static class AppRunnerExtensions
     /// </summary>
     /// <param name="appRunner"></param>
     /// <param name="segment"></param>
-    public static async ValueTask ProcessSegmentAtApplyStatementsAsync(this AppRunner appRunner, GenerationSegment segment)
-    {
-	    var workingSb = appRunner.AppState.StringBuilderPool.Get();
+	public static ValueTask ProcessSegmentAtApplyStatementsAsync(this AppRunner appRunner, GenerationSegment segment)
+	{
+	    var css = segment.Content.ToString();
+	    var len = css.Length;
+	    var sb = appRunner.AppState.StringBuilderPool.Get();
+	    
+	    // Track how far we've copied
+	    var prev = 0;
 
-	    try
+	    foreach (var span in css.EnumerateAtApplyStatements())
 	    {
-		    foreach (var span in segment.Content.ToString().EnumerateAtApplyStatements())
-		    {
-			    var utilityClassStrings = span.Arguments.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-			    var utilityClasses = utilityClassStrings
-				    .Select(utilityClass => new CssClass(appRunner, utilityClass.Replace("\\", string.Empty)))
-				    .Where(cssClass => cssClass.IsValid)
-				    .ToList();
+	        // copy text before this @apply
+	        sb.Append(css, prev, span.Index - prev);
 
-			    workingSb.Clear();
+	        // parse utility class names from span.Arguments
+	        var utils = new List<CssClass>();
+	        var args = span.Arguments;
 
-			    if (utilityClasses.Count > 0)
-			    {
-				    foreach (var utilityClass in utilityClasses.OrderBy(c => c.SelectorSort))
-					    workingSb.Append(utilityClass.Styles);
-			    }
+	        for (var i = 0; i < args.Length;)
+	        {
+	            // skip spaces
+	            while (i < args.Length && args[i] == ' ')
+		            i++;
+	        
+	            if (i >= args.Length)
+		            break;
 
-			    workingSb.Trim();
-			    segment.Content.Replace(span.Full, workingSb.ToString());
-		    }
+	            // find end of token
+	            var start = i;
+	            
+	            while (i < args.Length && args[i] != ' ')
+		            i++;
+	            
+	            var tok = args.Slice(start, i - start);
+
+	            // remove backslashes if any
+	            var name = tok.IndexOf('\\') >= 0
+	                ? tok.ToString().Replace("\\", string.Empty)
+	                : tok.ToString();
+
+	            // instantiate and filter
+	            var cssClass = new CssClass(appRunner, name);
+
+	            if (cssClass.IsValid)
+	                utils.Add(cssClass);
+	        }
+
+	        // append all valid utilities in sorted order
+	        if (utils.Count > 0)
+	        {
+	            utils.Sort((a, b) => a.SelectorSort.CompareTo(b.SelectorSort));
+	            
+	            foreach (var u in utils)
+	                sb.Append(u.Styles);
+	        }
+
+	        // advance past the @apply statement
+	        prev = span.Index + span.Full.Length;
 	    }
-	    catch (Exception e)
-	    {
-		    Console.WriteLine($"{AppState.CliErrorPrefix}ProcessAtApplyStatements() => {e.Message}");
-		    Environment.Exit(1);
-	    }
-	    finally
-	    {
-		    appRunner.AppState.StringBuilderPool.Return(workingSb);
-	    }
-		
-	    await Task.CompletedTask;
-    }
+
+	    // Append any remaining CSS
+	    if (prev < len)
+	        sb.Append(css, prev, len - prev);
+
+	    // Replace segment content in one go
+	    segment.Content.ReplaceContent(sb);
+
+	    // Return the pooled builder
+	    appRunner.AppState.StringBuilderPool.Return(sb);
+
+	    return ValueTask.CompletedTask;
+	}
 	
     #endregion
 
