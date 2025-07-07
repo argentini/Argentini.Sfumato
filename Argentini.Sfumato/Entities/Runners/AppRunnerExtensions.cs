@@ -1456,25 +1456,21 @@ public static class AppRunnerExtensions
 	#region Gather CSS Segment Custom Propery References
 
 	/// <summary>
-	/// Scan a CSS segment for custom property references (e.g. --sf-color-primary)
-	/// and add them to the segment's UsedCssCustomProperties.
+	/// Scan a CSS string for custom property references (e.g. --sf-color-primary)
 	/// </summary>
-	/// <param name="appRunner"></param>
-	/// <param name="segment"></param>
-	public static ValueTask GatherSegmentCssCustomPropertyRefsAsync(this AppRunner appRunner, GenerationSegment segment)
+	/// <param name="css"></param>
+	public static HashSet<string> GatherCssCustomProperties(this string css)
 	{
 		// 1) materialize the content
-		var text = segment.Content.ToString();
-		var settings = appRunner.AppRunnerSettings.SfumatoBlockItems;
-		var used = segment.UsedCssCustomProperties;
-		var length = text.Length;
+		var used = new HashSet<string>(StringComparer.Ordinal);
+		var length = css.Length;
 		var i = 0;
 
 		// 2) scan for “--name” + delimiter
 		while (true)
 		{
 			// find the next “--”
-			var idx = text.IndexOf("--", i, StringComparison.Ordinal);
+			var idx = css.IndexOf("--", i, StringComparison.Ordinal);
 			
 			if (idx < 0) 
 				break;
@@ -1484,7 +1480,7 @@ public static class AppRunnerExtensions
 			// consume [A-Za-z0-9_-]+
 			while (i < length)
 			{
-				var c = text[i];
+				var c = css[i];
 
 				if (c is >= '0' and <= '9' or >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '-' or '_')
 				{
@@ -1505,7 +1501,7 @@ public static class AppRunnerExtensions
 			// skip any whitespace
 			while (i < length)
 			{
-				var c = text[i];
+				var c = css[i];
 
 				if (c is ' ' or '\t' or '\r' or '\n')
 					i++;
@@ -1517,23 +1513,37 @@ public static class AppRunnerExtensions
 				break;
 
 			// only accept var-refs “)” or “,” or declarations “:”
-			var delim = text[i];
+			var delim = css[i];
 			
 			if (delim != ')' && delim != ',' && delim != ':') 
 				continue;
 
-			// 3) lookup and record
-			var prop = text.Substring(idx, nameLen);
-
-			if (settings.TryGetValue(prop, out var val))
-				used.TryAdd(prop, val);
+			// Save item
+			used.Add(css.Substring(idx, nameLen));
 
 			// continue scanning after the name
 			i = idx + nameLen;
 		}
 
-		// 4) sync‐complete
-		return ValueTask.CompletedTask;
+		return used;
+	}
+	
+	/// <summary>
+	/// Scan a CSS segment for custom property references (e.g. --sf-color-primary)
+	/// and add them to the segment's UsedCssCustomProperties.
+	/// </summary>
+	/// <param name="appRunner"></param>
+	/// <param name="segment"></param>
+	public static void GatherSegmentCssCustomPropertyRefs(this AppRunner appRunner, GenerationSegment segment)
+	{
+		var settings = appRunner.AppRunnerSettings.SfumatoBlockItems;
+		var used = segment.UsedCssCustomProperties;
+
+		foreach (var item in segment.Content.ToString().GatherCssCustomProperties())
+		{
+			if (settings.TryGetValue(item, out var val))
+				used.TryAdd(item, val);
+		}
 	}
 
 	#endregion
@@ -1626,16 +1636,16 @@ public static class AppRunnerExtensions
 				if (value.Contains("--") == false)
 					continue;
 					
-				foreach (var span in value.EnumerateCssCustomProperties(namesOnly: true))
+				foreach (var item in value.GatherCssCustomProperties())
 				{
-					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var valueValue))
+					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(item, out var valueValue))
 					{
-						appRunner.UsedCssCustomProperties.TryAdd(span.Property.ToString(), valueValue);
+						appRunner.UsedCssCustomProperties.TryAdd(item, valueValue);
 						
-						foreach (var span2 in valueValue.EnumerateCssCustomProperties(namesOnly: true))
+						foreach (var item2 in valueValue.GatherCssCustomProperties())
 						{
-							if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span2.Property.ToString(), out var valueValue2))
-								appRunner.UsedCssCustomProperties.TryAdd(span2.Property.ToString(), valueValue2);
+							if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(item2, out var valueValue2))
+								appRunner.UsedCssCustomProperties.TryAdd(item2, valueValue2);
 						}
 					}
 				}
@@ -1651,10 +1661,10 @@ public static class AppRunnerExtensions
 				if (value.Contains("--") == false)
 					continue;
 					
-				foreach (var span in value.EnumerateCssCustomProperties(namesOnly: true))
+				foreach (var item in value.GatherCssCustomProperties())
 				{
-					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(span.Property.ToString(), out var valueValue))
-						appRunner.UsedCssCustomProperties.TryAdd(span.Property.ToString(), valueValue);
+					if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(item, out var valueValue))
+						appRunner.UsedCssCustomProperties.TryAdd(item, valueValue);
 				}
 			}
 		}
@@ -1819,12 +1829,12 @@ public static class AppRunnerExtensions
 		appRunner.PropertyListCssSegment.Content.Clear();
 		appRunner.ThemeCssSegment.Content.Clear();
 
-		await appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.BrowserResetCssSegment);
-		await appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.FormsCssSegment);
-		await appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.UtilitiesCssSegment);
-		await appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.ImportsCssSegment);
-		await appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.ComponentsCssSegment);
-		await appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.CustomCssSegment);
+		appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.BrowserResetCssSegment);
+		appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.FormsCssSegment);
+		appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.UtilitiesCssSegment);
+		appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.ImportsCssSegment);
+		appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.ComponentsCssSegment);
+		appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.CustomCssSegment);
 
 		await appRunner.GatherSegmentUsedCssRefsAsync(appRunner.BrowserResetCssSegment);
 		await appRunner.GatherSegmentUsedCssRefsAsync(appRunner.FormsCssSegment);

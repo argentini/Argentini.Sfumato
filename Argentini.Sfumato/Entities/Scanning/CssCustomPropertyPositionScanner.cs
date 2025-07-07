@@ -5,8 +5,7 @@ namespace Argentini.Sfumato.Entities.Scanning;
 /// </summary>
 public static partial class CssCustomPropertyExtensions
 {
-    public static CssPropertyPositionEnumerable EnumerateCssCustomPropertyPositions(this StringBuilder? sb)
-        => new(sb ?? new StringBuilder());
+    public static CssPropertyPositionEnumerable EnumerateCssCustomPropertyPositions(this StringBuilder? sb) => new(sb ?? new StringBuilder());
 }
 
 /// <summary>

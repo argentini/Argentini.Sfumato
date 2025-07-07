@@ -98,7 +98,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
             Content = new StringBuilder(Css)
         };
 
-        await appRunner.GatherSegmentCssCustomPropertyRefsAsync(segment);
+        appRunner.GatherSegmentCssCustomPropertyRefs(segment);
         
         foreach (var kvp in segment.UsedCssCustomProperties)
         {

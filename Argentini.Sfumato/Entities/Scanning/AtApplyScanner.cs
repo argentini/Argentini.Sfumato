@@ -3,7 +3,7 @@ namespace Argentini.Sfumato.Entities.Scanning;
 public static class AtApplyScanner
 {
     /// <summary>
-    /// Enumerates every “@apply …;” statement.
+    /// Enumerates “@apply …;” statements.
     /// Full - the entire text including the trailing semicolon.  
     /// Arguments – the part after the mandatory whitespace and before the terminating semicolon (trimmed of leading / trailing whitespace)
     /// </summary>

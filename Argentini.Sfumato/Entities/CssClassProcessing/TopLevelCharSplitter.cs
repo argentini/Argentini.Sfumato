@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public static class DelimitedSplitExtensions

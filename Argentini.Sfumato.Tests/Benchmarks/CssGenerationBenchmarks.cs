@@ -331,12 +331,12 @@ namespace Argentini.Sfumato.Tests.Benchmarks
 	        appRunner.PropertyListCssSegment.Content.Clear();
 	        appRunner.ThemeCssSegment.Content.Clear();
 
-	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.BrowserResetCssSegment).GetAwaiter();
-	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.FormsCssSegment).GetAwaiter();
-	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.UtilitiesCssSegment).GetAwaiter();
-	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.ImportsCssSegment).GetAwaiter();
-	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.ComponentsCssSegment).GetAwaiter();
-	        appRunner.GatherSegmentCssCustomPropertyRefsAsync(appRunner.CustomCssSegment).GetAwaiter();
+	        appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.BrowserResetCssSegment);
+	        appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.FormsCssSegment);
+	        appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.UtilitiesCssSegment);
+	        appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.ImportsCssSegment);
+	        appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.ComponentsCssSegment);
+	        appRunner.GatherSegmentCssCustomPropertyRefs(appRunner.CustomCssSegment);
         }
         
         private void RunGatherUsedCssRefs()
