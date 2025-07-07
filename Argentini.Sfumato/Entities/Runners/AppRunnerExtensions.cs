@@ -1427,17 +1427,78 @@ public static class AppRunnerExtensions
 	/// </summary>
 	/// <param name="appRunner"></param>
 	/// <param name="segment"></param>
-	public static async ValueTask GatherSegmentCssCustomPropertyRefsAsync(this AppRunner appRunner, GenerationSegment segment)
+	public static ValueTask GatherSegmentCssCustomPropertyRefsAsync(this AppRunner appRunner, GenerationSegment segment)
 	{
-		foreach (var pos in segment.Content.EnumerateCssCustomPropertyPositions(namesOnly: true))
-		{
-			var prop = segment.Content.Substring(pos.PropertyStart, pos.PropertyLength);
+		// 1) materialize the content once
+		var text     = segment.Content.ToString();
+		var settings = appRunner.AppRunnerSettings.SfumatoBlockItems;
+		var used     = segment.UsedCssCustomProperties;
+		var length   = text.Length;
+		var i        = 0;
 
-			if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryGetValue(prop, out var val))
-				segment.UsedCssCustomProperties.TryAdd(prop, val);
+		// 2) scan for “--name” + delimiter
+		while (true)
+		{
+			// find the next “--”
+			var idx = text.IndexOf("--", i, StringComparison.Ordinal);
+			if (idx < 0) 
+				break;
+
+			// record where the name starts
+			var start = idx;
+			i = idx + 2;
+
+			// consume [A-Za-z0-9_-]+
+			while (i < length)
+			{
+				var c = text[i];
+				if ((c >= '0' && c <= '9') ||
+				    (c >= 'A' && c <= 'Z') ||
+				    (c >= 'a' && c <= 'z') ||
+				    c == '-' ||
+				    c == '_')
+				{
+					i++;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			// must be more than just “--”
+			var nameLen = i - start;
+			if (nameLen <= 2) 
+				continue;
+
+			// skip any whitespace
+			while (i < length)
+			{
+				var c = text[i];
+				if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
+					i++;
+				else
+					break;
+			}
+			if (i >= length) 
+				break;
+
+			// only accept var-refs “)” or “,” or declarations “:”
+			var delim = text[i];
+			if (delim != ')' && delim != ',' && delim != ':') 
+				continue;
+
+			// 3) lookup & record
+			var prop = text.Substring(start, nameLen);
+			if (settings.TryGetValue(prop, out var val))
+				used.TryAdd(prop, val);
+
+			// continue scanning after the name
+			i = start + nameLen;
 		}
 
-		await Task.CompletedTask;
+		// 4) sync‐complete
+		return ValueTask.CompletedTask;
 	}
 
 	#endregion

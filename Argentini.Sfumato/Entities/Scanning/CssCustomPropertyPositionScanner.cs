@@ -5,7 +5,8 @@ namespace Argentini.Sfumato.Entities.Scanning;
 /// </summary>
 public static partial class CssCustomPropertyExtensions
 {
-    public static CssPropertyPositionEnumerable EnumerateCssCustomPropertyPositions(this StringBuilder? sb, bool namesOnly = false) => new(sb ?? new StringBuilder(), namesOnly);
+    public static CssPropertyPositionEnumerable EnumerateCssCustomPropertyPositions(this StringBuilder? sb)
+        => new(sb ?? new StringBuilder());
 }
 
 /// <summary>
@@ -30,27 +31,23 @@ public readonly struct CssPropertyPosition
 public readonly struct CssPropertyPositionEnumerable
 {
     private readonly StringBuilder _s;
-    private readonly bool _namesOnly;
 
-    internal CssPropertyPositionEnumerable(StringBuilder s, bool namesOnly)
+    internal CssPropertyPositionEnumerable(StringBuilder s)
     {
-        _s         = s;
-        _namesOnly = namesOnly;
+        _s = s;
     }
 
-    public Enumerator GetEnumerator() => new(_s, _namesOnly);
+    public Enumerator GetEnumerator() => new(_s);
 
     public struct Enumerator
     {
         private readonly StringBuilder _s;
-        private readonly bool          _namesOnly;
-        private int  _i, _propStart, _propEnd, _valStart, _valEnd;
+        private int _i, _propStart, _propEnd, _valStart, _valEnd;
 
-        internal Enumerator(StringBuilder s, bool namesOnly)
+        internal Enumerator(StringBuilder s)
         {
-            _s         = s;
-            _namesOnly = namesOnly;
-            _i = _propStart = _propEnd = _valStart = _valEnd = 0;
+            _s            = s;
+            _i            = _propStart = _propEnd = _valStart = _valEnd = 0;
         }
 
         public CssPropertyPosition Current
@@ -69,7 +66,7 @@ public readonly struct CssPropertyPositionEnumerable
             for (; i < len - 1; i++)
             {
                 // scan for “--”
-                if (_s[i] != '-' || _s[i + 1] != '-') 
+                if (_s[i] != '-' || _s[i + 1] != '-')
                     continue;
 
                 var propStart = i;
@@ -77,42 +74,32 @@ public readonly struct CssPropertyPositionEnumerable
 
                 while (i < len && (char.IsLetterOrDigit(_s[i]) || _s[i] is '_' or '-'))
                     i++;
-                
-                if (i == propStart + 2) 
+
+                if (i == propStart + 2)
                     continue; // just “--”
 
                 var propEnd = i;
-                
+
                 while (i < len && char.IsWhiteSpace(_s[i]))
                     i++;
-                
-                if (i >= len) continue;
 
-                var isVarRef = _namesOnly && (_s[i] == ')' || _s[i] == ',');
-                var isDecl   = _s[i] == ':';
-                
-                if (isVarRef == false && isDecl == false) 
+                if (i >= len)
                     continue;
 
-                if (_namesOnly)
-                {
-                    _propStart = propStart;
-                    _propEnd   = propEnd;
-                    _valStart  = _valEnd = 0;
-                    _i = isVarRef ? i + 1 : propEnd;
-                    return true;
-                }
+                // only declarations
+                if (_s[i] != ':')
+                    continue;
 
                 // consume “:”
                 i++;
-                
+
                 while (i < len && char.IsWhiteSpace(_s[i]))
                     i++;
-                
+
                 var valStart = i;
-                var inS = false;
-                var inD = false;
-                var esc = false;
+                var inS      = false;
+                var inD      = false;
+                var esc      = false;
 
                 for (; i < len; i++)
                 {
@@ -129,14 +116,14 @@ public readonly struct CssPropertyPositionEnumerable
                         esc = true;
                         continue;
                     }
-                    
+
                     if (inS)
                     {
                         if (c == '\'') inS = false;
                     }
                     else if (inD)
                     {
-                        if (c == '"')  inD = false;
+                        if (c == '"') inD = false;
                     }
                     else if (c == '\'')
                     {
@@ -153,7 +140,7 @@ public readonly struct CssPropertyPositionEnumerable
                 }
 
                 var valEnd = i;
-                
+
                 while (valEnd > valStart && char.IsWhiteSpace(_s[valEnd - 1]))
                     valEnd--;
 
@@ -164,14 +151,12 @@ public readonly struct CssPropertyPositionEnumerable
 
                 if (i < len && _s[i] == ';')
                     i++;
-                
+
                 _i = i;
-                
                 return true;
             }
 
             _i = len;
-
             return false;
         }
     }
