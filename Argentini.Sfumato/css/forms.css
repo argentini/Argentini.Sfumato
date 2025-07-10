@@ -15,15 +15,9 @@
     --sf-shadow: 0 0 #0000;
 
     &:focus {
-        outline: var(--form-field-focus-border-width) solid transparent;
-        outline-offset: var(--form-field-focus-border-width);
-        --sf-ring-inset: var(--empty, /*!*/ /*!*/);
-        --sf-ring-offset-width: 0px;
-        --sf-ring-offset-color: #fff;
-        --sf-ring-color: var(--form-field-focus-color);
-        --sf-ring-offset-shadow: var(--sf-ring-inset) 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color);
-        --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--form-field-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
-        box-shadow: var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
+
+        outline: var(--form-field-focus-border-width) solid var(--form-field-focus-color);
+        outline-offset: var(--form-field-focus-border-offset-width, 0px);
         border-color: var(--form-field-border-color);
     }
 }
@@ -116,17 +110,11 @@
     --sf-shadow: 0 0 #0000;
 
     &:focus {
-        outline: var(--form-field-focus-border-width) solid transparent;
-        outline-offset: var(--form-field-focus-border-width);
-        --sf-ring-inset: var(--sf-empty,/*!*/ /*!*/);
-        --sf-ring-offset-width: 0rem;
-        --sf-ring-offset-color: #fff;
-        --sf-ring-color: var(--form-field-focus-color);
-        --sf-ring-offset-shadow: var(--sf-ring-inset) 0 0 0 var(--sf-ring-offset-width) var(--sf-ring-offset-color);
-        --sf-ring-shadow: var(--sf-ring-inset) 0 0 0 calc(var(--form-field-focus-border-width) + var(--sf-ring-offset-width)) var(--sf-ring-color);
-        box-shadow: var(--sf-ring-offset-shadow), var(--sf-ring-shadow), var(--sf-shadow);
-    }
 
+        outline: var(--form-field-focus-border-width) solid var(--form-field-focus-color);
+        outline-offset: var(--form-field-focus-border-offset-width, 0px);
+    }
+    
     &:checked {
         border-color: transparent;
         background-color: currentColor;
