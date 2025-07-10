@@ -36,6 +36,6 @@ public sealed class ScannedFile
         FileContent = await Storage.ReadAllTextWithRetriesAsync(AbsoluteFilePath, 5000);
 
         if (string.IsNullOrEmpty(FileContent) == false)
-            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(FileContent, appRunner);
+            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(FileContent, appRunner, FileName.EndsWith(".razor", StringComparison.Ordinal) || FileName.EndsWith(".cshtml", StringComparison.Ordinal));
     }
 }

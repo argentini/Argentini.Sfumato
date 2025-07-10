@@ -149,7 +149,7 @@ public class AppRunnerTests
 
         appRunner.ScannedFiles.TryAdd("test", new ScannedFile("")
         {
-            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, appRunner)
+            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, appRunner, true)
         });
 
         appRunner.ProcessScannedFileUtilityClassDependencies(appRunner);

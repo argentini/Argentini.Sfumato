@@ -6,7 +6,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
 
     private static string Markup => """
                                     <!DOCTYPE html>
-                                    <html lang="en" class="bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)] [content:'arbitrary_test'] font-sans">
+                                    <html lang="en" class="@@container bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)] [content:'arbitrary_test'] font-sans">
                                     <head>
                                         <meta charset="UTF-8">
                                         <title>Sample Website</title>
@@ -77,15 +77,15 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     public void FileContentParsing()
     {
         var appRunner = new AppRunner(new AppState());
-        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appRunner);
+        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appRunner, true);
 
         testOutputHelper.WriteLine("FileContentParsing() => Found:");
         testOutputHelper.WriteLine("");
 
-        foreach (var cname in utilityClasses)
-            testOutputHelper.WriteLine($"{cname.Key}");
+        foreach (var kvp in utilityClasses)
+            testOutputHelper.WriteLine($"{kvp.Value.Selector}");
         
-        Assert.Equal(53, utilityClasses.Count);
+        Assert.Equal(54, utilityClasses.Count);
     }
 
     [Fact]

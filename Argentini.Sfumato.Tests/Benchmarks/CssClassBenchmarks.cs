@@ -25,7 +25,7 @@ public class CssClassBenchmarks
     [Benchmark]
     public void Initialize()
     {
-        _cssClass!.Initialize();
+        _cssClass!.Initialize(false);
     }
 
     [Benchmark]
