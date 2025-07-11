@@ -1202,14 +1202,15 @@ public static partial class Strings
 		}
 
 		return workingSb.ToString();
-	}	
-	
+	}
+
 	/// <summary>
 	/// Escape a string for use in a CSS selector.
 	/// </summary>
 	/// <param name="value"></param>
+	/// <param name="includeDot"></param>
 	/// <returns></returns>
-	public static string CssSelectorEscape(this string value)
+	public static string CssSelectorEscape(this string value, bool includeDot = false)
 	{
 		if (string.IsNullOrEmpty(value))
 			return value;
@@ -1217,6 +1218,9 @@ public static partial class Strings
 		var maxLength = value.Length * 2;
 		var buffer = maxLength <= 1024 ? stackalloc char[maxLength] : new char[maxLength];
 		var position = 0;
+
+		if (includeDot)
+			buffer[position++] = '.';
 
 		for (var i = 0; i < value.Length; i++)
 		{
