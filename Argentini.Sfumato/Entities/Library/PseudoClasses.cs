@@ -273,7 +273,8 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    SelectorSuffix = "::marker"
+			    SelectorSuffix = "::marker",
+			    Inheritable = true
 		    }
 	    },
 	    {
@@ -281,7 +282,8 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    SelectorSuffix = "::selection"
+			    SelectorSuffix = "::selection",
+			    Inheritable = true
 		    }
 	    },
 	    {

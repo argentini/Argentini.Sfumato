@@ -58,6 +58,7 @@ public sealed class CssClass : IDisposable
     public bool UsesDarkTheme { get; set; }
 
     public StringBuilder? Sb { get; set; }
+    public StringBuilder? WorkingSb { get; set; }
 
     #endregion
     
@@ -75,6 +76,9 @@ public sealed class CssClass : IDisposable
     {
         if (Sb is not null)
             AppRunner.AppState.StringBuilderPool.Return(Sb);
+        
+        if (WorkingSb is not null)
+            AppRunner.AppState.StringBuilderPool.Return(WorkingSb);
     }
 
     #endregion
@@ -777,22 +781,18 @@ public sealed class CssClass : IDisposable
 
     public void GenerateSelector()
     {
-        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
-        Sb.Clear();
-
         try
         {
             // Cache count to avoid repeated property access
             var variantCount = VariantSegments.Count;
+            
+            EscapedSelector = Selector.CssSelectorEscape(true);
 
             if (variantCount == 0)
-            {
-                // Fast path for no variants
-                Sb.Append('.');
-                Sb.Append(Selector.CssSelectorEscape());
-                EscapedSelector = Sb.ToString();
                 return;
-            }
+
+            Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+            Sb.Clear();
 
             // Single pass through variants to categorize and check for descendants
             var prefixVariants = new List<KeyValuePair<string, VariantMetadata>>(variantCount);
@@ -800,6 +800,7 @@ public sealed class CssClass : IDisposable
             var hasDescendantVariant = false;
             var hasStarPseudoclass = false;
             var hasDoubleStarPseudoclass = false;
+            var hasInheritedPseudoclass = false;
 
             foreach (var variant in VariantSegments)
             {
@@ -807,7 +808,7 @@ public sealed class CssClass : IDisposable
                 var metadata = variant.Value;
 
                 // Check for descendant variants
-                if (key == "*" || key == "**")
+                if (key is "*" or "**")
                     hasDescendantVariant = true;
 
                 // Categorize by prefix type
@@ -840,12 +841,20 @@ public sealed class CssClass : IDisposable
             foreach (var variant in prefixVariants)
                 Sb.Append(variant.Value.SelectorPrefix);
 
-            Sb.Append('.');
-            Sb.Append(Selector.CssSelectorEscape());
+            Sb.Append(EscapedSelector);
 
             // Append pseudoclass variants
-            foreach (var variant in pseudoclassVariants)
-                Sb.Append(variant.Value.SelectorSuffix);
+            foreach (var kvp in pseudoclassVariants)
+            {
+                Sb.Append(kvp.Value.SelectorSuffix);
+
+                if (kvp.Value.Inheritable)
+                {
+                    hasInheritedPseudoclass = true;
+                    WorkingSb ??= AppRunner.AppState.StringBuilderPool.Get();
+                    WorkingSb.ReplaceContent($", {EscapedSelector} {kvp.Value.SelectorSuffix}");
+                }
+            }
 
             if (hasDescendantVariant)
             {
@@ -855,6 +864,9 @@ public sealed class CssClass : IDisposable
                     Sb.Append(" *)");
             }
 
+            if (hasInheritedPseudoclass)
+                Sb.Append(WorkingSb);
+            
             EscapedSelector = Sb.ToString();
         }
         catch

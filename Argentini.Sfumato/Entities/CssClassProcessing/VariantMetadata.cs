@@ -9,4 +9,5 @@ public sealed class VariantMetadata
     public string Statement { get; init; } = string.Empty;
     public string SelectorPrefix { get; init; } = string.Empty;
     public string SelectorSuffix { get; init; } = string.Empty;
+    public bool Inheritable { get; init; }
 }
