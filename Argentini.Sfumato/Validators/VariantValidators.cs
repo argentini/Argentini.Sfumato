@@ -11,7 +11,10 @@ public static class VariantValidators
         if (appRunner.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery))
             return true;
 
-        return appRunner.Library.SupportsQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
+        if (appRunner.Library.SupportsQueryPrefixes.TryGetValue(variant, out cssMediaQuery))
+            return true;
+
+        return appRunner.Library.StartingStyleQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
     }
 
     public static bool TryVariantIsContainerQuery(this string variant, AppRunner appRunner, out VariantMetadata? cssMediaQuery)
@@ -377,7 +380,7 @@ public static class VariantValidators
 
         return true;
     }
-    
+
     public static bool TryVariantIsNotSupports(this string variant, AppRunner appRunner, out VariantMetadata? notSupports)
     {
         notSupports = null;
@@ -395,7 +398,7 @@ public static class VariantValidators
                 return false;
 
             variantValue = variantValue.TrimStart('[').TrimEnd(']');
-            
+
             notSupports = new VariantMetadata
             {
                 PrefixType = "not-supports",

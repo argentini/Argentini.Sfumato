@@ -656,4 +656,17 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal("white-space: pre;", cssClass.Styles);
         Assert.Equal("@media (scripting: none) {", cssClass.Wrappers.First().Value);
     }
+
+    [Fact]
+    public void StartingStyle()
+    {
+        var appRunner = new AppRunner(new AppState());
+        var cssClass = new CssClass(appRunner, "starting:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".starting\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Equal("@starting-style {", cssClass.Wrappers.First().Value);
+    }
 }

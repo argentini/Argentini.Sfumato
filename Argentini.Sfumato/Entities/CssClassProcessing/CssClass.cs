@@ -891,10 +891,11 @@ public sealed class CssClass : IDisposable
 
             var mediaVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
             var supportsVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
+            var startingStyleVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
             var containerVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
             var wrapperVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
 
-            int mediaCount = 0, supportsCount = 0, containerCount = 0, wrapperCount = 0;
+            int mediaCount = 0, supportsCount = 0, startingStyleCount = 0, containerCount = 0, wrapperCount = 0;
             VariantMetadata? darkVariant = null;
 
             foreach (var variant in VariantSegments)
@@ -909,6 +910,9 @@ public sealed class CssClass : IDisposable
                         break;
                     case "supports":
                         supportsVariants[supportsCount++] = variant;
+                        break;
+                    case "starting-style":
+                        startingStyleVariants[startingStyleCount++] = variant;
                         break;
                     case "container":
                         containerVariants[containerCount++] = variant;
@@ -933,6 +937,8 @@ public sealed class CssClass : IDisposable
                 Array.Sort(mediaVariants, 0, mediaCount, PrefixOrderComparer);
             if (supportsCount > 1)
                 Array.Sort(supportsVariants, 0, supportsCount, PrefixOrderComparer);
+            if (startingStyleCount > 1)
+                Array.Sort(startingStyleVariants, 0, startingStyleCount, PrefixOrderComparer);
             if (containerCount > 1)
                 Array.Sort(containerVariants, 0, containerCount, PrefixOrderComparer);
             if (wrapperCount > 1)
@@ -941,6 +947,7 @@ public sealed class CssClass : IDisposable
             // Process variants using spans for zero-copy slicing
             ProcessQueryVariants(mediaVariants.AsSpan(0, mediaCount), "media");
             ProcessQueryVariants(supportsVariants.AsSpan(0, supportsCount), "supports");
+            ProcessQueryVariants(startingStyleVariants.AsSpan(0, startingStyleCount), "starting-style");
 
             if (containerCount > 0)
                 ProcessContainerVariants(containerVariants.AsSpan(0, containerCount));
@@ -972,7 +979,9 @@ public sealed class CssClass : IDisposable
         Sb.Clear();
         Sb.Append('@');
         Sb.Append(queryType);
-        Sb.Append(' ');
+
+        if (string.IsNullOrEmpty(variants[0].Value.Statement) == false)
+            Sb.Append(' ');
 
         Sb.Append(variants[0].Value.Statement);
 
