@@ -58,5 +58,68 @@ public static class LibraryMediaQueries
 				Statement = "(prefers-reduced-motion: reduce)"
 			}
 		},
+		{
+			"pointer-fine",
+			new VariantMetadata
+			{
+				PrefixOrder = 75000,
+				PrefixType = "media",
+				Statement = "(pointer: fine)"
+			}
+		},
+		{
+			"pointer-coarse",
+			new VariantMetadata
+			{
+				PrefixOrder = 75000,
+				PrefixType = "media",
+				Statement = "(pointer: coarse)"
+			}
+		},
+		{
+			"pointer-none",
+			new VariantMetadata
+			{
+				PrefixOrder = 75000,
+				PrefixType = "media",
+				Statement = "(pointer: none)"
+			}
+		},
+		{
+			"any-pointer-fine",
+			new VariantMetadata
+			{
+				PrefixOrder = 75000,
+				PrefixType = "media",
+				Statement = "(any-pointer: fine)"
+			}
+		},
+		{
+			"any-pointer-coarse",
+			new VariantMetadata
+			{
+				PrefixOrder = 75000,
+				PrefixType = "media",
+				Statement = "(any-pointer: coarse)"
+			}
+		},
+ 		{
+			"any-pointer-none",
+			new VariantMetadata
+			{
+				PrefixOrder = 75000,
+				PrefixType = "media",
+				Statement = "(any-pointer: none)"
+			}
+		},
+ 		{
+			"noscript",
+			new VariantMetadata
+			{
+				PrefixOrder = 75000,
+				PrefixType = "media",
+				Statement = "(scripting: none)"
+			}
+		},
     };
 }
