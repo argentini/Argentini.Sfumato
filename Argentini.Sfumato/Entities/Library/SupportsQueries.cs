@@ -5,6 +5,15 @@ public static class LibrarySupportsQueries
     public static Dictionary<string, VariantMetadata> SupportsQueryPrefixes { get; } = new()
 	{
 		{
+			"supports-",
+	        new VariantMetadata
+	        {
+	            PrefixOrder = 1,
+	            PrefixType = "supports",
+	            Statement = "({0})"
+	        }
+        },
+		{
 			"supports-backdrop-blur",
 	        new VariantMetadata
 	        {
