@@ -639,6 +639,8 @@ public sealed class Library
         });
 
         variants.AddRange(MediaQueryPrefixes);
+        variants.AddRange(SupportsQueryPrefixes);
+        variants.AddRange(StartingStyleQueryPrefixes);
         variants.AddRange(ContainerQueryPrefixes);
         
         var json = JsonSerializer.Serialize(variants, Jso);
