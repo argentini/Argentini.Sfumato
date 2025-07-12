@@ -47,7 +47,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                                     </body>
                                     </html>
                                     """;
-    
+
     #endregion
 
     [Fact]
@@ -166,8 +166,8 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
             },
 
-            
-            
+
+
             new ()
             {
                 ClassName = "leading-none",
@@ -462,7 +462,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
             {
                 Assert.Equal(test.Wrappers.ElementAt(i), cssClass.Wrappers.ElementAt(i).Value);
             }
-            
+
             testOutputHelper.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
         }
     }
@@ -471,7 +471,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     public void WildcardHandling()
     {
         var appRunner = new AppRunner(new AppState());
-        
+
         var cssClass = new CssClass(appRunner, "*:whitespace-pre!");
 
         Assert.NotNull(cssClass);
@@ -479,7 +479,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.True(cssClass.IsImportant);
         Assert.Equal(@":is(.\*\:whitespace-pre\! > *)", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
-        
+
         cssClass = new CssClass(appRunner, "**:whitespace-pre!");
 
         Assert.NotNull(cssClass);
@@ -493,7 +493,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     public void DataAttributeHandling()
     {
         var appRunner = new AppRunner(new AppState());
-        
+
         var cssClass = new CssClass(appRunner, "data-active:whitespace-pre!");
 
         Assert.NotNull(cssClass);
@@ -501,7 +501,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.True(cssClass.IsImportant);
         Assert.Equal(@".data-active\:whitespace-pre\![data-active]", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
-        
+
         cssClass = new CssClass(appRunner, "dark:lg:data-active:hover:bg-indigo-600");
 
         Assert.NotNull(cssClass);
@@ -542,7 +542,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.True(cssClass.IsValid);
         Assert.Single(cssClass.Wrappers);
         Assert.Equal("@container (width < 28rem) {", cssClass.Wrappers.First().Value);
-        
+
         cssClass = new CssClass(appRunner, "@sm:@max-md:whitespace-pre!");
 
         Assert.NotNull(cssClass);
@@ -577,7 +577,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.True(cssClass.IsValid);
         Assert.Single(cssClass.Wrappers);
         Assert.Equal("@media (width < 600px) {", cssClass.Wrappers.First().Value);
-        
+
         cssClass = new CssClass(appRunner, "min-[320px]:max-[600px]:whitespace-pre!");
 
         Assert.NotNull(cssClass);
@@ -585,7 +585,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal(2, cssClass.Wrappers.Count);
         Assert.Equal("@media (width >= 320px) {", cssClass.Wrappers.ElementAt(0).Value);
         Assert.Equal("@media (width < 600px) {", cssClass.Wrappers.ElementAt(1).Value);
-        
+
         cssClass = new CssClass(appRunner, "w-[calc(100vw-(--nav-width))]");
 
         Assert.NotNull(cssClass);
@@ -609,5 +609,51 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Equal("--my-value: 1rem;", cssClass.Styles);
+    }
+
+    [Fact]
+    public void Supports()
+    {
+        var appRunner = new AppRunner(new AppState());
+        var cssClass = new CssClass(appRunner, "supports-[color:red]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".supports-\[color\:red\]\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Equal("@supports (color:red) {", cssClass.Wrappers.First().Value);
+
+        cssClass = new CssClass(appRunner, "supports-backdrop-blur:whitespace-pre");
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".supports-backdrop-blur\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Equal("@supports ((-webkit-backdrop-filter:blur(0)) or (backdrop-filter:blur(0))) or (-webkit-backdrop-filter:blur(0)) {", cssClass.Wrappers.First().Value);
+    }
+
+    [Fact]
+    public void Pointer()
+    {
+        var appRunner = new AppRunner(new AppState());
+        var cssClass = new CssClass(appRunner, "pointer-fine:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".pointer-fine\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Equal("@media (pointer: fine) {", cssClass.Wrappers.First().Value);
+    }
+
+    [Fact]
+    public void NoScript()
+    {
+        var appRunner = new AppRunner(new AppState());
+        var cssClass = new CssClass(appRunner, "noscript:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".noscript\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Equal("@media (scripting: none) {", cssClass.Wrappers.First().Value);
     }
 }
