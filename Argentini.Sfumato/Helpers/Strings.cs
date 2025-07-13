@@ -809,26 +809,50 @@ public static partial class Strings
 		}
 	}
 
-	private static bool IsLikelyUtilityClass(this string source)
+	/// <summary>
+	/// Fast check for Tailwind-style “utility” class names.
+	/// Runs in a single pass over the string and does
+	/// no heap allocations.
+	/// </summary>
+	public static bool IsLikelyUtilityClass(this string source)
 	{
 		if (source.Length < 3)
 			return false;
 
-		if (source[0] is < 'a' or > 'z' && source[0] != '[' && source[0] != '-' && source[0] != '@' && source[0] != '*')
+		// ---- 1. First-character gate -----------------------------------------
+		var first = source[0];
+
+		if (first is >= 'a' and <= 'z' or '[' or '-' or '@' or '*' == false)
 			return false;
 
-		if (char.IsAsciiLetterLower(source[^1]) == false && char.IsAsciiDigit(source[^1]) == false && source.EndsWith('%') == false && source.EndsWith('!') == false && source.EndsWith(']') == false && source.EndsWith(')') == false)
+		// ---- 2. Last-character gate ------------------------------------------
+		var last = source[^1];
+
+		if (last is >= 'a' and <= 'z' or >= '0' and <= '9' or '%' or '!' or ']' or ')' == false)
 			return false;
 
-		if (source.Count(c => c == '[') != source.Count(c => c == ']'))
-			return false;
+		// ---- 3. Balanced-bracket scan (single pass) --------------------------
+		var square = 0;
+		var paren  = 0;
 
-		if (source.Count(c => c == '(') != source.Count(c => c == ')'))
-			return false;
-		
-		return true;
+		// `for` is ~20–25 % faster than `foreach` on strings
+		// ReSharper disable once ForCanBeConvertedToForeach
+		for (var i = 0; i < source.Length; i++)
+		{
+			var c = source[i];
+
+			// Count and allow early bail-out when balance goes negative
+			switch (c)
+			{
+				case '[': ++square; break;
+				case ']': if (--square < 0) return false; break;
+				case '(': ++paren;  break;
+				case ')': if (--paren  < 0) return false; break;
+			}
+		}
+
+		return square == 0 && paren == 0;
 	}
-	
 
 	/// <summary>
 	/// Enumerates all substrings of <paramref name="input"/> that consist of one or more non-whitespace characters.
