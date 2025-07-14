@@ -37,6 +37,15 @@ public static class VariantValidators
     {
         pseudoClass = null;
 
+        var bracketIndex = variant.IndexOf('[');
+
+        if (bracketIndex > 0)
+        {
+            var variantBase = variant[..bracketIndex];
+
+            return appRunner.Library.PseudoclassPrefixes.TryGetValue(variantBase, out pseudoClass);
+        }
+
         return appRunner.Library.PseudoclassPrefixes.TryGetValue(variant.StartsWith('d') && variant.StartsWith("data-", StringComparison.OrdinalIgnoreCase) ? "data-" : variant, out pseudoClass);
     }
 

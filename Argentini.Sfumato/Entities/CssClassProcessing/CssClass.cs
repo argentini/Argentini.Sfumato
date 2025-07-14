@@ -846,7 +846,21 @@ public sealed class CssClass : IDisposable
             // Append pseudoclass variants
             foreach (var kvp in pseudoclassVariants)
             {
-                Sb.Append(kvp.Value.SelectorSuffix);
+                var indexOfBracket = kvp.Key.IndexOf('[');
+                
+                if (indexOfBracket > 0)
+                {
+                    var indexOfClosingBracket = kvp.Key.IndexOf(']', indexOfBracket);
+
+                    if (indexOfClosingBracket > -1 && indexOfClosingBracket != indexOfBracket + 1)
+                    {
+                        Sb.Append(kvp.Value.SelectorSuffix.Replace("{0}", kvp.Key[(indexOfBracket + 1)..indexOfClosingBracket].Replace('_', ' ')));
+                    }
+                }
+                else
+                {
+                    Sb.Append(kvp.Value.SelectorSuffix);
+                }
 
                 if (kvp.Value.Inheritable)
                 {

@@ -124,7 +124,39 @@ public static class LibraryPseudoClasses
 			    SelectorSuffix = ":only-of-type"
 		    }
 	    },
+		{
+		    "nth-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ":nth-child({0})"
+		    }
+	    },
 	    {
+		    "nth-last-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ":nth-last-child({0})"
+		    }
+	    },
+	    {
+		    "nth-of-type-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ":nth-of-type({0})"
+		    }
+	    },
+	    {
+		    "nth-last-of-type-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ":nth-last-of-type({0})"
+		    }
+	    },
+		{
 		    "empty",
 		    new VariantMetadata
 		    {
