@@ -14,7 +14,7 @@ public static class ContentScanner
 
         try
         {
-            fileContent.ScanForUtilities(quotedSubstrings);
+            fileContent.ScanForUtilities(quotedSubstrings, sb);
 
             var results = new Dictionary<string, CssClass>(StringComparer.Ordinal);
 

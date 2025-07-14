@@ -737,58 +737,71 @@ public static partial class Strings
 	/// </summary>
 	/// <param name="source"></param>
 	/// <param name="bag"></param>
-	public static void ScanForUtilities(this string? source, HashSet<string>? bag)
+	/// <param name="sb"></param>
+	public static void ScanForUtilities(this string? source, HashSet<string>? bag, StringBuilder? sb = null)
 	{
-		if (bag is null || string.IsNullOrEmpty(source))
-			return;
+	    if (bag is null || string.IsNullOrEmpty(source))
+	        return;
 
-		var splits = source
-			.Replace("\\\"", "\"")
-			.Replace("@\"", "\"")
-			.Replace("$\"", "\"")
-			.Replace("\",\"", "\", \"")
-			.Replace("\",@\"", "\", @\"")
-			.Replace("\",$\"", "\", $\"")
-			.Replace("\"\"", "\"")
-			.Replace("','", "', '")
-			.Replace("`,`", "`, `")
-			.Replace("`,$`", "`, $`")
-			.SplitByNonWhitespace();
+	    // Use StringBuilder for multiple replacements - more efficient than chaining Replace
+	    sb ??= new StringBuilder(source);
+	    sb.Replace("\\\"", "\"");
+	    sb.Replace("@\"", "\"");
+	    sb.Replace("$\"", "\"");
+	    sb.Replace("\",\"", "\", \"");
+	    sb.Replace("\",@\"", "\", @\"");
+	    sb.Replace("\",$\"", "\", $\"");
+	    sb.Replace("\"\"", "\"");
+	    sb.Replace("','", "', '");
+	    sb.Replace("`,`", "`, `");
+	    sb.Replace("`,$`", "`, $`");
 
-		foreach (var segment in splits)
-			ProcessSubstrings(segment, bag);
+	    var splits = sb.ToString().SplitByNonWhitespace();
+
+	    foreach (var segment in splits)
+	        ProcessSubstrings(segment, bag);
 	}
+
+	private static readonly char[] Delimiters = ['\"', '\'', '`'];
 
 	public static void ProcessSubstrings(this string source, HashSet<string> bag)
 	{
-		char[] delimiters = [ '\"', '\'', '`' ];
+	    var trimmedSource = source;
 
-		for (var d = 0; d < delimiters.Length; d++)
-			if (source.Length > 0 && (source[0] == delimiters[d] || source[^1] == delimiters[d]))
-				source = source.Trim(delimiters[d]);
+	    for (var d = 0; d < Delimiters.Length; d++)
+	    {
+	        if (trimmedSource.Length > 0 && (trimmedSource[0] == Delimiters[d] || trimmedSource[^1] == Delimiters[d]))
+	            trimmedSource = trimmedSource.Trim(Delimiters[d]);
+	    }
 
-		var addSource = true;
-		var quoteIndex = source.IndexOf('\"');
+	    var addSource = true;
+	    var quoteIndex = trimmedSource.IndexOf('\"');
 
-		if (quoteIndex > -1)
-		{
-			if (quoteIndex == source.LastIndexOf('\"'))
-				addSource = false;
-		}
+	    if (quoteIndex > -1)
+	    {
+	        if (quoteIndex == trimmedSource.LastIndexOf('\"'))
+	            addSource = false;
+	    }
 
-		if (addSource && source.IsLikelyUtilityClass())
-			bag.Add(source);
+	    if (addSource && trimmedSource.IsLikelyUtilityClass())
+	        bag.Add(trimmedSource);
 
-		for (var d = 0; d < delimiters.Length; d++)
-		{
-			var index = source.IndexOf(delimiters[d]);
+	    for (var d = 0; d < Delimiters.Length; d++)
+	    {
+	        var index = trimmedSource.IndexOf(Delimiters[d]);
 
-			if (index <= 0 || index >= source.Length - 1)
-				continue;
+	        if (index <= 0 || index >= trimmedSource.Length - 1)
+	            continue;
 
-			foreach (var subsegment in source.Split(delimiters[d], StringSplitOptions.RemoveEmptyEntries))
-				ProcessSubstrings(subsegment, bag);
-		}
+	        var subsegments = trimmedSource.Split(Delimiters[d], StringSplitOptions.RemoveEmptyEntries);
+	        
+	        foreach (var subsegment in subsegments)
+	        {
+	            // Avoid processing the same string we just processed
+	            if (subsegment != trimmedSource)
+	                ProcessSubstrings(subsegment, bag);
+	        }
+	    }
 	}
 
 	/// <summary>
