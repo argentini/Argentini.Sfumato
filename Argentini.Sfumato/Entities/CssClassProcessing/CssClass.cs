@@ -215,13 +215,6 @@ public sealed class CssClass : IDisposable
 
                     VariantSegments.Add(segment, mediaQuery);
                 }
-                else if (segment.TryVariantIsContainerQuery(AppRunner, out var containerQuery))
-                {
-                    if (containerQuery is null)
-                        return;
-
-                    VariantSegments.Add(segment, containerQuery);
-                }
                 else if (segment.TryVariantIsPseudoClass(AppRunner, out var pseudoClass))
                 {
                     if (pseudoClass is null)
@@ -229,10 +222,17 @@ public sealed class CssClass : IDisposable
 
                     VariantSegments.Add(segment, pseudoClass);
                     
-                    if (pseudoClass.SelectorSuffix.Contains(":where(", StringComparison.Ordinal) || pseudoClass.SelectorSuffix.Contains(":is(", StringComparison.Ordinal))
+                    if (pseudoClass.SelectorSuffix.IndexOf(":where(", StringComparison.Ordinal) > -1 || pseudoClass.SelectorSuffix.IndexOf(":is(", StringComparison.Ordinal) > -1)
                         SelectorSort = 99;
                     else
                         SelectorSort++;
+                }
+                else if (segment.TryVariantIsContainerQuery(AppRunner, out var containerQuery))
+                {
+                    if (containerQuery is null)
+                        return;
+
+                    VariantSegments.Add(segment, containerQuery);
                 }
                 else if (segment.TryVariantIsGroup(AppRunner, out var group))
                 {
@@ -247,13 +247,6 @@ public sealed class CssClass : IDisposable
                         return;
 
                     VariantSegments.Add(segment, peer);
-                }
-                else if (segment.TryVariantIsNth(out var nth))
-                {
-                    if (nth is null)
-                        return;
-
-                    VariantSegments.Add(segment, nth);
                 }
                 else if (segment.TryVariantIsHas(AppRunner, out var has))
                 {
@@ -846,21 +839,7 @@ public sealed class CssClass : IDisposable
             // Append pseudoclass variants
             foreach (var kvp in pseudoclassVariants)
             {
-                var indexOfBracket = kvp.Key.IndexOf('[');
-                
-                if (indexOfBracket > 0)
-                {
-                    var indexOfClosingBracket = kvp.Key.IndexOf(']', indexOfBracket);
-
-                    if (indexOfClosingBracket > -1 && indexOfClosingBracket != indexOfBracket + 1)
-                    {
-                        Sb.Append(kvp.Value.SelectorSuffix.Replace("{0}", kvp.Key[(indexOfBracket + 1)..indexOfClosingBracket].Replace('_', ' ')));
-                    }
-                }
-                else
-                {
-                    Sb.Append(kvp.Value.SelectorSuffix);
-                }
+                Sb.Append(kvp.Value.SelectorSuffix);
 
                 if (kvp.Value.Inheritable)
                 {

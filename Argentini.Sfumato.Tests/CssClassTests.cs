@@ -98,6 +98,39 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         {
             new ()
             {
+                ClassName = "hover:text-base",
+                EscapedClassName = @".hover\:text-base:hover",
+                Styles =
+                    """
+                    font-size: var(--text-base);
+                    line-height: var(--sf-leading, var(--text-base--line-height));
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "nth-3:text-base",
+                EscapedClassName = @".nth-3\:text-base:nth-child(3)",
+                Styles =
+                    """
+                    font-size: var(--text-base);
+                    line-height: var(--sf-leading, var(--text-base--line-height));
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
+                ClassName = "nth-[3]:text-base",
+                EscapedClassName = @".nth-\[3\]\:text-base:nth-child(3)",
+                Styles =
+                    """
+                    font-size: var(--text-base);
+                    line-height: var(--sf-leading, var(--text-base--line-height));
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
                 ClassName = "group-hover:underline",
                 EscapedClassName = @".group:hover .group-hover\:underline",
                 Styles =
