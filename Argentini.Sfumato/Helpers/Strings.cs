@@ -629,190 +629,106 @@ public static partial class Strings
 		}
 	}
 
-	// splits a comma‑separated selector string at commas not inside [],(), or quotes
-	private static IEnumerable<string> SplitSelectors(string header)
+	/// <summary>
+	/// Identify substrings enclosed in quotes (single, double, or backtick) within a string,
+	/// Fills the bag with matches.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="bag"></param>
+	/// <param name="sb"></param>
+	public static void ScanForUtilities(this string? source, HashSet<string>? bag, StringBuilder? sb = null)
 	{
-		if (string.IsNullOrWhiteSpace(header))
-			yield break;
+	    if (bag is null || string.IsNullOrEmpty(source))
+	        return;
 
-		var sb = new StringBuilder();
+	    if (sb is null)
+	        sb = new StringBuilder(source);
+	    else
+	        sb.ReplaceContent(source);
 
-		var bracketDepth = 0;
-		var parenDepth = 0;
-		var inSingle = false;
-		var inDouble = false;
+	    sb.Replace("\\\"", "\"");
+	    sb.Replace("@\"", "\"");
+	    sb.Replace("$\"", "\"");
+	    sb.Replace("\",\"", "\", \"");
+	    sb.Replace("\",@\"", "\", @\"");
+	    sb.Replace("\",$\"", "\", $\"");
+	    sb.Replace("\"\"", "\"");
+	    sb.Replace("','", "', '");
+	    sb.Replace("`,`", "`, `");
+	    sb.Replace("`,$`", "`, $`");
 
-		foreach (var c in header)
-		{
-			if (inSingle)
-			{
-				sb.Append(c);
+	    var splits = sb.ToString().SplitByNonWhitespace();
 
-				if (c == '\'')
-					inSingle = false;
-			}
-			else if (inDouble)
-			{
-				sb.Append(c);
-
-				if (c == '"')
-					inDouble = false;
-			}
-			else
-			{
-				switch (c)
-				{
-					case '\'':
-
-						inSingle = true;
-						sb.Append(c);
-
-						break;
-
-					case '"':
-
-						inDouble = true;
-						sb.Append(c);
-
-						break;
-
-					case '[':
-
-						bracketDepth++;
-						sb.Append(c);
-
-						break;
-
-					case ']':
-
-						bracketDepth = Math.Max(0, bracketDepth - 1);
-						sb.Append(c);
-
-						break;
-
-					case '(':
-
-						parenDepth++;
-						sb.Append(c);
-
-						break;
-
-					case ')':
-
-						parenDepth = Math.Max(0, parenDepth - 1);
-						sb.Append(c);
-
-						break;
-
-					case ',' when bracketDepth == 0 && parenDepth == 0:
-
-						var sel = sb.ToString().Trim();
-
-						if (string.IsNullOrEmpty(sel) == false)
-							yield return sel;
-
-						sb.Clear();
-
-						break;
-
-					default:
-
-						sb.Append(c);
-
-						break;
-				}
-			}
-		}
-
-		// final selector
-		var last = sb.ToString().Trim();
-
-		if (string.IsNullOrEmpty(last) == false)
-			yield return last;
+	    foreach (var segment in splits)
+	        ProcessSubstrings(segment, bag);
 	}
 
-/// <summary>
-/// Identify substrings enclosed in quotes (single, double, or backtick) within a string,
-/// Fills the bag with matches.
-/// </summary>
-/// <param name="source"></param>
-/// <param name="bag"></param>
-/// <param name="sb"></param>
-public static void ScanForUtilities(this string? source, HashSet<string>? bag, StringBuilder? sb = null)
-{
-    if (bag is null || string.IsNullOrEmpty(source))
-        return;
+	private static readonly char[] Delimiters = ['\"', '\'', '`'];
+	private const char DoubleQuote = '\"';
 
-    if (sb is null)
-        sb = new StringBuilder(source);
-    else
-        sb.ReplaceContent(source);
+	public static void ProcessSubstrings(this string source, HashSet<string> bag)
+	{
+	    // Early exit for empty strings
+	    if (string.IsNullOrEmpty(source))
+	        return;
 
-    sb.Replace("\\\"", "\"");
-    sb.Replace("@\"", "\"");
-    sb.Replace("$\"", "\"");
-    sb.Replace("\",\"", "\", \"");
-    sb.Replace("\",@\"", "\", @\"");
-    sb.Replace("\",$\"", "\", $\"");
-    sb.Replace("\"\"", "\"");
-    sb.Replace("','", "', '");
-    sb.Replace("`,`", "`, `");
-    sb.Replace("`,$`", "`, $`");
+	    // Use Span to avoid allocations during trimming
+	    var span = source.AsSpan();
+	    
+	    // Trim delimiters from both ends
+	    var start = 0;
+	    var end = span.Length - 1;
+	    
+	    // Trim from the start
+	    while (start <= end && IsDelimiter(span[start]))
+	        start++;
+	    
+	    // Trim from the end  
+	    while (end >= start && IsDelimiter(span[end]))
+	        end--;
+	    
+	    if (start > end)
+	        return;
+	    
+	    // Only create substring if we actually trimmed
+	    var trimmedSource = (start == 0 && end == source.Length - 1) 
+	        ? source 
+	        : source.Substring(start, end - start + 1);
 
-    var splits = sb.ToString().SplitByNonWhitespace();
+	    // Use single IndexOf() call for quote checking
+	    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
+	    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
 
-    foreach (var segment in splits)
-        ProcessSubstrings(segment, bag);
-}
+	    if (addSource && trimmedSource.IsLikelyUtilityClass())
+	        bag.Add(trimmedSource);
 
-private static readonly char[] Delimiters = ['\"', '\'', '`'];
-private const char DoubleQuote = '\"';
+	    // Check each delimiter once
+	    for (var d = 0; d < Delimiters.Length; d++)
+	    {
+	        var index = trimmedSource.IndexOf(Delimiters[d]);
 
-public static void ProcessSubstrings(this string source, HashSet<string> bag)
-{
-    // Early exit for empty strings
-    if (string.IsNullOrEmpty(source))
-        return;
+	        if (index <= 0 || index >= trimmedSource.Length - 1)
+	            continue;
 
-    var trimmedSource = source;
+	        var subsegments = trimmedSource.Split(Delimiters[d], StringSplitOptions.RemoveEmptyEntries);
+	        
+	        // Skip if split didn't split anything
+	        if (subsegments.Length == 1)
+	            continue;
+	            
+	        foreach (var subsegment in subsegments)
+	            ProcessSubstrings(subsegment, bag);
+	        
+	        // Exit after first delimiter found and processed
+	        break;
+	    }
+	}
 
-    // Trim delimiters - same as the original but with early exit check
-    for (var d = 0; d < Delimiters.Length; d++)
-    {
-        if (trimmedSource.Length > 0 && (trimmedSource[0] == Delimiters[d] || trimmedSource[^1] == Delimiters[d]))
-            trimmedSource = trimmedSource.Trim(Delimiters[d]);
-    }
-
-    // Check again after trimming
-    if (string.IsNullOrEmpty(trimmedSource))
-        return;
-
-    // Use single IndexOf() call for quote checking
-    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
-    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
-
-    if (addSource && trimmedSource.IsLikelyUtilityClass())
-        bag.Add(trimmedSource);
-
-    for (var d = 0; d < Delimiters.Length; d++)
-    {
-        var index = trimmedSource.IndexOf(Delimiters[d]);
-
-        if (index <= 0 || index >= trimmedSource.Length - 1)
-            continue;
-
-        var subsegments = trimmedSource.Split(Delimiters[d], StringSplitOptions.RemoveEmptyEntries);
-        
-        // Skip if split didn't actually split anything (only one segment)
-        if (subsegments.Length == 1)
-            continue;
-            
-        foreach (var subsegment in subsegments)
-        {
-            ProcessSubstrings(subsegment, bag);
-        }
-    }
-}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static bool IsDelimiter(char c)
+	{
+	    return c is '\"' or '\'' or '`';
+	}
 
 	/// <summary>
 	/// Fast check for Tailwind-style “utility” class names.
