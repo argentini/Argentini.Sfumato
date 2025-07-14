@@ -2,11 +2,9 @@ namespace Argentini.Sfumato.Tests;
 
 public class ContentScannerTests(ITestOutputHelper testOutputHelper)
 {
-    #region Constants
-
     private static string Markup => """
                                     <!DOCTYPE html>
-                                    <html lang="en" class="@@container bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)] [content:'arbitrary_test'] font-sans">
+                                    <html lang="en" class="nth-[3n_+_1]:text-base bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)] [content:'arbitrary_test'] font-sans">
                                     <head>
                                         <meta charset="UTF-8">
                                         <title>Sample Website</title>
@@ -21,6 +19,9 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                         <div class="[color:#eee;font-weight:500;] content-['Hello!'] [--margin-val6:_1.25rem]! dark:sm:supports-backdrop-blur:motion-safe:block invisible lg:max-xl:top-8 break-after-auto container aspect-screen xxl:aspect-[8/4] xl:aspect-8/4"></div>
                                         <div class="-top-px *:whitespace-pre!"></div>
                                         <div class="top-1/2 antialiased"></div>
+                                        <div class="select-none">
+                                            <a href="@(childUrl)" class="@(activeCategory == category.Slug ? selectedClasses : string.Empty) pl-4 -ml-px border-l"><span>@Html.Raw(category.Name.TrimStart("Subtopics:"))</span></a>
+                                        </div>
                                         <script>
                                             function test() {
                                               let el = document.getElementById('test-element');
@@ -37,11 +38,12 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                             }
                                         </script>
                                         @{
+                                            var qchar = '\"';
                                             var test1 = $""
                                                 block bg-slate-400
                                             "";
                                             var array = [ "text-9xl",@"content-[\"test2\"]" ];
-                                            
+                                            var icon = docsNode.HasValue("iconClass") ? $"<i class=\"{docsNode.SafeValue("iconClass")} mr-2.5\"></i>" : string.Empty;
                                             var detailsMask = $"<span class=\"line-clamp-1 -mt-1! text-slate-500 dark:text-dark-foreground-dim line-clamp-2\"><span class=""line-clamp-3"">{description}</span></span>";
                                             
                                             return $@"
@@ -52,6 +54,157 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                     </body>
                                     </html>
                                     """;
+
+    private static List<string> ExpectedMatches = new ()
+    {
+        "nth-[3n_+_1]:text-base",
+        "bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)]",
+        "[content:'arbitrary_test']",
+        "font-sans",
+        "arbitrary_test",
+        "viewport",
+        "initial-scale=1",
+        "stylesheet",
+        "css/sfumato.css",
+        "@container",
+        "content-['test']",
+        "content-['']",
+        "phab:hover:text-xs",
+        "theme-midnight:text-lime-950",
+        "xl:text-base/[3rem]",
+        "dark:text-base/5",
+        "[-webkit-backdrop-filter:blur(1rem)]",
+        "test",
+        "test-home",
+        "@max-md:flex-col",
+        "text-[1rem]",
+        "lg:text-[1.25rem]",
+        "xl:text-(length:--my-text-size)",
+        "bg-fuchsia-500",
+        "dark:sm:bg-fuchsia-300",
+        "dark:text-[length:1rem]",
+        "xl:text-[#112233]",
+        "xl:text-[red]",
+        "xl:text-[--my-color-var]",
+        "xl:text-[var(--my-color-var)]",
+        "[font-weight:900]",
+        "sm:[font-weight:900]",
+        "[fontweight:400]",
+        "sm:[fontweight:300]",
+        "xl:text[#112233]",
+        "xl:text-slate[#112233]",
+        "xl:text-slate-50[#112233]",
+        "xxl:text-slate-50-[#112233]",
+        "[color:#eee;font-weight:500;]",
+        "content-['Hello!']",
+        "[--margin-val6:_1.25rem]!",
+        "dark:sm:supports-backdrop-blur:motion-safe:block",
+        "invisible",
+        "lg:max-xl:top-8",
+        "break-after-auto",
+        "container",
+        "aspect-screen",
+        "xxl:aspect-[8/4]",
+        "xl:aspect-8/4",
+        "-top-px",
+        "*:whitespace-pre!",
+        "top-1/2",
+        "antialiased",
+        "select-none",
+        "@(childUrl)",
+        "category.Slug",
+        "selectedClasses",
+        "pl-4",
+        "-ml-px",
+        "border-l",
+        "test-element",
+        "bg-emerald-900",
+        "[font-weight:700]",
+        "md:[font-weight:700]",
+        "bg-emerald-800",
+        "[font-weight:600]",
+        "lg:[font-weight:600]",
+        "block",
+        "bg-slate-400",
+        "text-9xl",
+        "content-[\"test2\"]",
+        "test2",
+        "iconClass",
+        "mr-2.5",
+        "line-clamp-1",
+        "-mt-1!",
+        "text-slate-500",
+        "dark:text-dark-foreground-dim",
+        "line-clamp-2",
+        "line-clamp-3",
+        "text-[0.65rem]",
+        "mb-1.5",
+    };
+
+    private static List<string> ExpectedValidMatches = new ()
+    {
+        "nth-[3n_+_1]:text-base",
+        "bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)]",
+        "[content:'arbitrary_test']",
+        "font-sans",
+        "@container",
+        "content-['test']",
+        "content-['']",
+        "phab:hover:text-xs",
+        "xl:text-base/[3rem]",
+        "dark:text-base/5",
+        "[-webkit-backdrop-filter:blur(1rem)]",
+        "@max-md:flex-col",
+        "text-[1rem]",
+        "lg:text-[1.25rem]",
+        "xl:text-(length:--my-text-size)",
+        "bg-fuchsia-500",
+        "dark:sm:bg-fuchsia-300",
+        "xl:text-[#112233]",
+        "xl:text-[red]",
+        "xl:text-[--my-color-var]",
+        "xl:text-[var(--my-color-var)]",
+        "[font-weight:900]",
+        "sm:[font-weight:900]",
+        "[color:#eee;font-weight:500;]",
+        "content-['Hello!']",
+        "[--margin-val6:_1.25rem]!",
+        "dark:sm:supports-backdrop-blur:motion-safe:block",
+        "invisible",
+        "lg:max-xl:top-8",
+        "break-after-auto",
+        "container",
+        "aspect-screen",
+        "xl:aspect-8/4",
+        "-top-px",
+        "*:whitespace-pre!",
+        "top-1/2",
+        "antialiased",
+        "select-none",
+        "pl-4",
+        "-ml-px",
+        "border-l",
+        "bg-emerald-900",
+        "[font-weight:700]",
+        "md:[font-weight:700]",
+        "bg-emerald-800",
+        "[font-weight:600]",
+        "lg:[font-weight:600]",
+        "block",
+        "bg-slate-400",
+        "text-9xl",
+        "content-[\"test2\"]",
+        "mr-2.5",
+        "line-clamp-1",
+        "-mt-1!",
+        "text-slate-500",
+        "line-clamp-2",
+        "line-clamp-3",
+        "text-[0.65rem]",
+        "mb-1.5",
+    };
+
+    #region Constants
 
     private static string Css => """
                                  :root {
@@ -74,6 +227,23 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     #endregion
 
     [Fact]
+    public void StringScanning()
+    {
+        var appRunner = new AppRunner(new AppState());
+        var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
+
+        Markup.ScanForUtilities(quotedSubstrings);
+
+        foreach (var substring in ExpectedMatches)
+            if (quotedSubstrings.Contains(substring) == false)
+                testOutputHelper.WriteLine($"NOT FOUND: `{substring}`");
+
+        foreach (var substring in ExpectedMatches)
+            if (quotedSubstrings.Contains(substring) == false)
+                Assert.Fail("Did not find one or more matches");
+    }
+    
+    [Fact]
     public void FileContentParsing()
     {
         var appRunner = new AppRunner(new AppState());
@@ -84,8 +254,12 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
 
         foreach (var kvp in utilityClasses)
             testOutputHelper.WriteLine($"{kvp.Value.Selector}");
-        
-        Assert.Equal(54, utilityClasses.Count);
+
+        Assert.Equal(ExpectedValidMatches.Count, utilityClasses.Count);
+
+        foreach (var item in ExpectedValidMatches)
+            if (utilityClasses.ContainsKey(item) == false)
+                Assert.Fail($"NOT FOUND: `{item}`");
     }
 
     [Fact]

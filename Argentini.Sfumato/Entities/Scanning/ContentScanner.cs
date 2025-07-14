@@ -9,19 +9,24 @@ public static class ContentScanner
         if (string.IsNullOrEmpty(fileContent))
             return [];
         
-        var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
         var sb = appRunner.AppState.StringBuilderPool.Get();
+        var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
 
-        fileContent.ScanQuotedStrings(quotedSubstrings, sb);
+        try
+        {
+            fileContent.ScanForUtilities(quotedSubstrings);
 
-        appRunner.AppState.StringBuilderPool.Return(sb);
-        
-        var results = new Dictionary<string,CssClass>(StringComparer.Ordinal);
-        
-        foreach (var quotedSubstring in quotedSubstrings)
-            ScanStringForClasses(quotedSubstring, results, appRunner, fromRazorFile);
-        
-        return results;
+            var results = new Dictionary<string, CssClass>(StringComparer.Ordinal);
+
+            foreach (var quotedSubstring in quotedSubstrings)
+                ScanStringForClasses(quotedSubstring, results, appRunner, fromRazorFile);
+
+            return results;
+        }
+        finally
+        {
+            appRunner.AppState.StringBuilderPool.Return(sb);
+        }
     }
 
     private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, AppRunner appRunner, bool fromRazorFile)

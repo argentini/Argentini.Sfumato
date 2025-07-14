@@ -1,4 +1,5 @@
 ﻿// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable ForCanBeConvertedToForeach
 
 using System.Runtime.CompilerServices;
 
@@ -16,164 +17,164 @@ public static partial class Strings
 	public static string ThinLine => "\u23bb";
 	public static string ThickLine => "\u2501";
 	public static string DotLine => "\u2504";
-	
+
 	public static Dictionary<string, string> CssNamedColors { get; } = new(StringComparer.Ordinal)
 	{
-	    ["aliceblue"] = "rgb(240, 248, 255)",
-	    ["antiquewhite"] = "rgb(250, 235, 215)",
-	    ["aqua"] = "rgb(0, 255, 255)",
-	    ["aquamarine"] = "rgb(127, 255, 212)",
-	    ["azure"] = "rgb(240, 255, 255)",
-	    ["beige"] = "rgb(245, 245, 220)",
-	    ["bisque"] = "rgb(255, 228, 196)",
-	    ["black"] = "rgb(0, 0, 0)",
-	    ["blanchedalmond"] = "rgb(255, 235, 205)",
-	    ["blue"] = "rgb(0, 0, 255)",
-	    ["blueviolet"] = "rgb(138, 43, 226)",
-	    ["brown"] = "rgb(165, 42, 42)",
-	    ["burlywood"] = "rgb(222, 184, 135)",
-	    ["cadetblue"] = "rgb(95, 158, 160)",
-	    ["chartreuse"] = "rgb(127, 255, 0)",
-	    ["chocolate"] = "rgb(210, 105, 30)",
-	    ["coral"] = "rgb(255, 127, 80)",
-	    ["cornflowerblue"] = "rgb(100, 149, 237)",
-	    ["cornsilk"] = "rgb(255, 248, 220)",
-	    ["crimson"] = "rgb(220, 20, 60)",
-	    ["cyan"] = "rgb(0, 255, 255)",
-	    ["darkblue"] = "rgb(0, 0, 139)",
-	    ["darkcyan"] = "rgb(0, 139, 139)",
-	    ["darkgoldenrod"] = "rgb(184, 134, 11)",
-	    ["darkgray"] = "rgb(169, 169, 169)",
-	    ["darkgreen"] = "rgb(0, 100, 0)",
-	    ["darkgrey"] = "rgb(169, 169, 169)",
-	    ["darkkhaki"] = "rgb(189, 183, 107)",
-	    ["darkmagenta"] = "rgb(139, 0, 139)",
-	    ["darkolivegreen"] = "rgb(85, 107, 47)",
-	    ["darkorange"] = "rgb(255, 140, 0)",
-	    ["darkorchid"] = "rgb(153, 50, 204)",
-	    ["darkred"] = "rgb(139, 0, 0)",
-	    ["darksalmon"] = "rgb(233, 150, 122)",
-	    ["darkseagreen"] = "rgb(143, 188, 143)",
-	    ["darkslateblue"] = "rgb(72, 61, 139)",
-	    ["darkslategray"] = "rgb(47, 79, 79)",
-	    ["darkslategrey"] = "rgb(47, 79, 79)",
-	    ["darkturquoise"] = "rgb(0, 206, 209)",
-	    ["darkviolet"] = "rgb(148, 0, 211)",
-	    ["deeppink"] = "rgb(255, 20, 147)",
-	    ["deepskyblue"] = "rgb(0, 191, 255)",
-	    ["dimgray"] = "rgb(105, 105, 105)",
-	    ["dimgrey"] = "rgb(105, 105, 105)",
-	    ["dodgerblue"] = "rgb(30, 144, 255)",
-	    ["firebrick"] = "rgb(178, 34, 34)",
-	    ["floralwhite"] = "rgb(255, 250, 240)",
-	    ["forestgreen"] = "rgb(34, 139, 34)",
-	    ["fuchsia"] = "rgb(255, 0, 255)",
-	    ["gainsboro"] = "rgb(220, 220, 220)",
-	    ["ghostwhite"] = "rgb(248, 248, 255)",
-	    ["gold"] = "rgb(255, 215, 0)",
-	    ["goldenrod"] = "rgb(218, 165, 32)",
-	    ["gray"] = "rgb(128, 128, 128)",
-	    ["green"] = "rgb(0, 128, 0)",
-	    ["greenyellow"] = "rgb(173, 255, 47)",
-	    ["grey"] = "rgb(128, 128, 128)",
-	    ["honeydew"] = "rgb(240, 255, 240)",
-	    ["hotpink"] = "rgb(255, 105, 180)",
-	    ["indianred"] = "rgb(205, 92, 92)",
-	    ["indigo"] = "rgb(75, 0, 130)",
-	    ["ivory"] = "rgb(255, 255, 240)",
-	    ["khaki"] = "rgb(240, 230, 140)",
-	    ["lavender"] = "rgb(230, 230, 250)",
-	    ["lavenderblush"] = "rgb(255, 240, 245)",
-	    ["lawngreen"] = "rgb(124, 252, 0)",
-	    ["lemonchiffon"] = "rgb(255, 250, 205)",
-	    ["lightblue"] = "rgb(173, 216, 230)",
-	    ["lightcoral"] = "rgb(240, 128, 128)",
-	    ["lightcyan"] = "rgb(224, 255, 255)",
-	    ["lightgoldenrodyellow"] = "rgb(250, 250, 210)",
-	    ["lightgray"] = "rgb(211, 211, 211)",
-	    ["lightgreen"] = "rgb(144, 238, 144)",
-	    ["lightgrey"] = "rgb(211, 211, 211)",
-	    ["lightpink"] = "rgb(255, 182, 193)",
-	    ["lightsalmon"] = "rgb(255, 160, 122)",
-	    ["lightseagreen"] = "rgb(32, 178, 170)",
-	    ["lightskyblue"] = "rgb(135, 206, 250)",
-	    ["lightslategray"] = "rgb(119, 136, 153)",
-	    ["lightslategrey"] = "rgb(119, 136, 153)",
-	    ["lightsteelblue"] = "rgb(176, 196, 222)",
-	    ["lightyellow"] = "rgb(255, 255, 224)",
-	    ["lime"] = "rgb(50, 205, 50)",
-	    ["limegreen"] = "rgb(50, 205, 50)",
-	    ["linen"] = "rgb(250, 240, 230)",
-	    ["magenta"] = "rgb(255, 0, 255)",
-	    ["maroon"] = "rgb(128, 0, 0)",
-	    ["mediumaquamarine"] = "rgb(102, 205, 170)",
-	    ["mediumblue"] = "rgb(0, 0, 205)",
-	    ["mediumorchid"] = "rgb(186, 85, 211)",
-	    ["mediumpurple"] = "rgb(147, 112, 219)",
-	    ["mediumseagreen"] = "rgb(60, 179, 113)",
-	    ["mediumslateblue"] = "rgb(123, 104, 238)",
-	    ["mediumspringgreen"] = "rgb(0, 250, 154)",
-	    ["mediumturquoise"] = "rgb(72, 209, 204)",
-	    ["mediumvioletred"] = "rgb(199, 21, 133)",
-	    ["midnightblue"] = "rgb(25, 25, 112)",
-	    ["mintcream"] = "rgb(245, 255, 250)",
-	    ["mistyrose"] = "rgb(255, 228, 225)",
-	    ["moccasin"] = "rgb(255, 228, 181)",
-	    ["navajowhite"] = "rgb(255, 222, 173)",
-	    ["navy"] = "rgb(0, 0, 128)",
-	    ["oldlace"] = "rgb(253, 245, 230)",
-	    ["olive"] = "rgb(128, 128, 0)",
-	    ["olivedrab"] = "rgb(107, 142, 35)",
-	    ["orange"] = "rgb(255, 165, 0)",
-	    ["orangered"] = "rgb(255, 69, 0)",
-	    ["orchid"] = "rgb(218, 112, 214)",
-	    ["palegoldenrod"] = "rgb(238, 232, 170)",
-	    ["palegreen"] = "rgb(152, 251, 152)",
-	    ["paleturquoise"] = "rgb(175, 238, 238)",
-	    ["palevioletred"] = "rgb(219, 112, 147)",
-	    ["papayawhip"] = "rgb(255, 239, 213)",
-	    ["peachpuff"] = "rgb(255, 218, 185)",
-	    ["peru"] = "rgb(205, 133, 63)",
-	    ["pink"] = "rgb(255, 192, 203)",
-	    ["plum"] = "rgb(221, 160, 221)",
-	    ["powderblue"] = "rgb(176, 224, 230)",
-	    ["purple"] = "rgb(128, 0, 128)",
-	    ["rebeccapurple"] = "rgb(102, 51, 153)",
-	    ["red"] = "rgb(255, 0, 0)",
-	    ["rosybrown"] = "rgb(188, 143, 143)",
-	    ["royalblue"] = "rgb(65, 105, 225)",
-	    ["saddlebrown"] = "rgb(139, 69, 19)",
-	    ["salmon"] = "rgb(250, 128, 114)",
-	    ["sandybrown"] = "rgb(244, 164, 96)",
-	    ["seagreen"] = "rgb(46, 139, 87)",
-	    ["seashell"] = "rgb(255, 245, 238)",
-	    ["sienna"] = "rgb(160, 82, 45)",
-	    ["silver"] = "rgb(192, 192, 192)",
-	    ["skyblue"] = "rgb(135, 206, 235)",
-	    ["slateblue"] = "rgb(106, 90, 205)",
-	    ["slategray"] = "rgb(112, 128, 144)",
-	    ["slategrey"] = "rgb(112, 128, 144)",
-	    ["snow"] = "rgb(255, 250, 250)",
-	    ["springgreen"] = "rgb(0, 255, 127)",
-	    ["steelblue"] = "rgb(70, 130, 180)",
-	    ["tan"] = "rgb(210, 180, 140)",
-	    ["teal"] = "rgb(0, 128, 128)",
-	    ["thistle"] = "rgb(216, 191, 216)",
-	    ["tomato"] = "rgb(255, 99, 71)",
-	    ["transparent"] = "rgb(0, 0, 0, 0)",
-	    ["turquoise"] = "rgb(64, 224, 208)",
-	    ["violet"] = "rgb(238, 130, 238)",
-	    ["wheat"] = "rgb(245, 222, 179)",
-	    ["white"] = "rgb(255, 255, 255)",
-	    ["whitesmoke"] = "rgb(245, 245, 245)",
-	    ["yellow"] = "rgb(255, 255, 0)",
-	    ["yellowgreen"] = "rgb(154, 205, 50)"	    
+		["aliceblue"] = "rgb(240, 248, 255)",
+		["antiquewhite"] = "rgb(250, 235, 215)",
+		["aqua"] = "rgb(0, 255, 255)",
+		["aquamarine"] = "rgb(127, 255, 212)",
+		["azure"] = "rgb(240, 255, 255)",
+		["beige"] = "rgb(245, 245, 220)",
+		["bisque"] = "rgb(255, 228, 196)",
+		["black"] = "rgb(0, 0, 0)",
+		["blanchedalmond"] = "rgb(255, 235, 205)",
+		["blue"] = "rgb(0, 0, 255)",
+		["blueviolet"] = "rgb(138, 43, 226)",
+		["brown"] = "rgb(165, 42, 42)",
+		["burlywood"] = "rgb(222, 184, 135)",
+		["cadetblue"] = "rgb(95, 158, 160)",
+		["chartreuse"] = "rgb(127, 255, 0)",
+		["chocolate"] = "rgb(210, 105, 30)",
+		["coral"] = "rgb(255, 127, 80)",
+		["cornflowerblue"] = "rgb(100, 149, 237)",
+		["cornsilk"] = "rgb(255, 248, 220)",
+		["crimson"] = "rgb(220, 20, 60)",
+		["cyan"] = "rgb(0, 255, 255)",
+		["darkblue"] = "rgb(0, 0, 139)",
+		["darkcyan"] = "rgb(0, 139, 139)",
+		["darkgoldenrod"] = "rgb(184, 134, 11)",
+		["darkgray"] = "rgb(169, 169, 169)",
+		["darkgreen"] = "rgb(0, 100, 0)",
+		["darkgrey"] = "rgb(169, 169, 169)",
+		["darkkhaki"] = "rgb(189, 183, 107)",
+		["darkmagenta"] = "rgb(139, 0, 139)",
+		["darkolivegreen"] = "rgb(85, 107, 47)",
+		["darkorange"] = "rgb(255, 140, 0)",
+		["darkorchid"] = "rgb(153, 50, 204)",
+		["darkred"] = "rgb(139, 0, 0)",
+		["darksalmon"] = "rgb(233, 150, 122)",
+		["darkseagreen"] = "rgb(143, 188, 143)",
+		["darkslateblue"] = "rgb(72, 61, 139)",
+		["darkslategray"] = "rgb(47, 79, 79)",
+		["darkslategrey"] = "rgb(47, 79, 79)",
+		["darkturquoise"] = "rgb(0, 206, 209)",
+		["darkviolet"] = "rgb(148, 0, 211)",
+		["deeppink"] = "rgb(255, 20, 147)",
+		["deepskyblue"] = "rgb(0, 191, 255)",
+		["dimgray"] = "rgb(105, 105, 105)",
+		["dimgrey"] = "rgb(105, 105, 105)",
+		["dodgerblue"] = "rgb(30, 144, 255)",
+		["firebrick"] = "rgb(178, 34, 34)",
+		["floralwhite"] = "rgb(255, 250, 240)",
+		["forestgreen"] = "rgb(34, 139, 34)",
+		["fuchsia"] = "rgb(255, 0, 255)",
+		["gainsboro"] = "rgb(220, 220, 220)",
+		["ghostwhite"] = "rgb(248, 248, 255)",
+		["gold"] = "rgb(255, 215, 0)",
+		["goldenrod"] = "rgb(218, 165, 32)",
+		["gray"] = "rgb(128, 128, 128)",
+		["green"] = "rgb(0, 128, 0)",
+		["greenyellow"] = "rgb(173, 255, 47)",
+		["grey"] = "rgb(128, 128, 128)",
+		["honeydew"] = "rgb(240, 255, 240)",
+		["hotpink"] = "rgb(255, 105, 180)",
+		["indianred"] = "rgb(205, 92, 92)",
+		["indigo"] = "rgb(75, 0, 130)",
+		["ivory"] = "rgb(255, 255, 240)",
+		["khaki"] = "rgb(240, 230, 140)",
+		["lavender"] = "rgb(230, 230, 250)",
+		["lavenderblush"] = "rgb(255, 240, 245)",
+		["lawngreen"] = "rgb(124, 252, 0)",
+		["lemonchiffon"] = "rgb(255, 250, 205)",
+		["lightblue"] = "rgb(173, 216, 230)",
+		["lightcoral"] = "rgb(240, 128, 128)",
+		["lightcyan"] = "rgb(224, 255, 255)",
+		["lightgoldenrodyellow"] = "rgb(250, 250, 210)",
+		["lightgray"] = "rgb(211, 211, 211)",
+		["lightgreen"] = "rgb(144, 238, 144)",
+		["lightgrey"] = "rgb(211, 211, 211)",
+		["lightpink"] = "rgb(255, 182, 193)",
+		["lightsalmon"] = "rgb(255, 160, 122)",
+		["lightseagreen"] = "rgb(32, 178, 170)",
+		["lightskyblue"] = "rgb(135, 206, 250)",
+		["lightslategray"] = "rgb(119, 136, 153)",
+		["lightslategrey"] = "rgb(119, 136, 153)",
+		["lightsteelblue"] = "rgb(176, 196, 222)",
+		["lightyellow"] = "rgb(255, 255, 224)",
+		["lime"] = "rgb(50, 205, 50)",
+		["limegreen"] = "rgb(50, 205, 50)",
+		["linen"] = "rgb(250, 240, 230)",
+		["magenta"] = "rgb(255, 0, 255)",
+		["maroon"] = "rgb(128, 0, 0)",
+		["mediumaquamarine"] = "rgb(102, 205, 170)",
+		["mediumblue"] = "rgb(0, 0, 205)",
+		["mediumorchid"] = "rgb(186, 85, 211)",
+		["mediumpurple"] = "rgb(147, 112, 219)",
+		["mediumseagreen"] = "rgb(60, 179, 113)",
+		["mediumslateblue"] = "rgb(123, 104, 238)",
+		["mediumspringgreen"] = "rgb(0, 250, 154)",
+		["mediumturquoise"] = "rgb(72, 209, 204)",
+		["mediumvioletred"] = "rgb(199, 21, 133)",
+		["midnightblue"] = "rgb(25, 25, 112)",
+		["mintcream"] = "rgb(245, 255, 250)",
+		["mistyrose"] = "rgb(255, 228, 225)",
+		["moccasin"] = "rgb(255, 228, 181)",
+		["navajowhite"] = "rgb(255, 222, 173)",
+		["navy"] = "rgb(0, 0, 128)",
+		["oldlace"] = "rgb(253, 245, 230)",
+		["olive"] = "rgb(128, 128, 0)",
+		["olivedrab"] = "rgb(107, 142, 35)",
+		["orange"] = "rgb(255, 165, 0)",
+		["orangered"] = "rgb(255, 69, 0)",
+		["orchid"] = "rgb(218, 112, 214)",
+		["palegoldenrod"] = "rgb(238, 232, 170)",
+		["palegreen"] = "rgb(152, 251, 152)",
+		["paleturquoise"] = "rgb(175, 238, 238)",
+		["palevioletred"] = "rgb(219, 112, 147)",
+		["papayawhip"] = "rgb(255, 239, 213)",
+		["peachpuff"] = "rgb(255, 218, 185)",
+		["peru"] = "rgb(205, 133, 63)",
+		["pink"] = "rgb(255, 192, 203)",
+		["plum"] = "rgb(221, 160, 221)",
+		["powderblue"] = "rgb(176, 224, 230)",
+		["purple"] = "rgb(128, 0, 128)",
+		["rebeccapurple"] = "rgb(102, 51, 153)",
+		["red"] = "rgb(255, 0, 0)",
+		["rosybrown"] = "rgb(188, 143, 143)",
+		["royalblue"] = "rgb(65, 105, 225)",
+		["saddlebrown"] = "rgb(139, 69, 19)",
+		["salmon"] = "rgb(250, 128, 114)",
+		["sandybrown"] = "rgb(244, 164, 96)",
+		["seagreen"] = "rgb(46, 139, 87)",
+		["seashell"] = "rgb(255, 245, 238)",
+		["sienna"] = "rgb(160, 82, 45)",
+		["silver"] = "rgb(192, 192, 192)",
+		["skyblue"] = "rgb(135, 206, 235)",
+		["slateblue"] = "rgb(106, 90, 205)",
+		["slategray"] = "rgb(112, 128, 144)",
+		["slategrey"] = "rgb(112, 128, 144)",
+		["snow"] = "rgb(255, 250, 250)",
+		["springgreen"] = "rgb(0, 255, 127)",
+		["steelblue"] = "rgb(70, 130, 180)",
+		["tan"] = "rgb(210, 180, 140)",
+		["teal"] = "rgb(0, 128, 128)",
+		["thistle"] = "rgb(216, 191, 216)",
+		["tomato"] = "rgb(255, 99, 71)",
+		["transparent"] = "rgb(0, 0, 0, 0)",
+		["turquoise"] = "rgb(64, 224, 208)",
+		["violet"] = "rgb(238, 130, 238)",
+		["wheat"] = "rgb(245, 222, 179)",
+		["white"] = "rgb(255, 255, 255)",
+		["whitesmoke"] = "rgb(245, 245, 245)",
+		["yellow"] = "rgb(255, 255, 0)",
+		["yellowgreen"] = "rgb(154, 205, 50)"
 	};
-	
+
 	#endregion
-	
+
 	#region Trimming
-	
+
 	/// <summary>
 	/// Trims any of the specified characters from the start and end of the span.
 	/// </summary>
@@ -183,7 +184,7 @@ public static partial class Strings
 			return span;
 
 		var start = 0;
-		var end   = span.Length - 1;
+		var end = span.Length - 1;
 
 		// advance start past any trimChar
 		while (start <= end && IsTrimChar(span[start], trimChars))
@@ -208,7 +209,7 @@ public static partial class Strings
 			return span;
 
 		var start = 0;
-	
+
 		while (start < span.Length && IsTrimChar(span[start], trimChars))
 			start++;
 
@@ -217,7 +218,7 @@ public static partial class Strings
 			? span
 			: span[start..];
 	}
-	
+
 	/// <summary>
 	/// Trims any of the specified characters from the end of the span.
 	/// </summary>
@@ -227,7 +228,7 @@ public static partial class Strings
 			return span;
 
 		var end = span.Length - 1;
-		
+
 		while (end >= 0 && IsTrimChar(span[end], trimChars))
 			end--;
 
@@ -236,17 +237,18 @@ public static partial class Strings
 			? span
 			: span[..(end + 1)];
 	}
-	
+
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static bool IsTrimChar(char c, char[] trimChars)
 	{
 		// a tiny linear scan is usually fastest for small trim arrays
 		foreach (var t in trimChars)
-			if (c == t) return true;
+			if (c == t)
+				return true;
 
 		return false;
 	}
-	
+
 	/// <summary>
 	/// Trim the first occurrence of a character from a string.
 	/// </summary>
@@ -255,7 +257,7 @@ public static partial class Strings
 	public static string TrimFirst(this string str, char value)
 	{
 		var index = str.IndexOf(value);
-		
+
 		return index < 0 ? str : str.Remove(index, 1);
 	}
 
@@ -267,7 +269,7 @@ public static partial class Strings
 	public static string TrimLast(this string str, char value)
 	{
 		var index = str.LastIndexOf(value);
-		
+
 		return index < 0 ? str : str.Remove(index, 1);
 	}
 
@@ -286,69 +288,69 @@ public static partial class Strings
 		{
 			if (targetString[i] != sourceString[i])
 				break;
-			
+
 			commonLength++;
 		}
 
 		return targetString[commonLength..];
 	}
 
-    /// <summary>
-    /// Truncates the middle of the string if it exceeds <paramref name="maxLength"/>, 
-    /// preserving at least <paramref name="minStartLength"/> chars at the start and 
-    /// <paramref name="minEndLength"/> chars at the end, with a Unicode ellipsis in between.
-    /// </summary>
-    /// <param name="path">The original string (e.g. a file or URL path).</param>
-    /// <param name="minStartLength">Minimum number of chars to keep at the start.</param>
-    /// <param name="minEndLength">Minimum number of chars to keep at the end.</param>
-    /// <param name="maxLength">Maximum total length of the returned string (including the ellipsis).</param>
-    /// <returns>
-    /// The original string if it’s short enough; otherwise a truncated version 
-    /// of length ≤ <paramref name="maxLength"/> with ‘ … ’ in the middle.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">If <paramref name="path"/> is null.</exception>
-    /// <exception cref="ArgumentException">
-    /// If <paramref name="maxLength"/> is less than <c>minStartLength + minEndLength + 1</c>.
-    /// </exception>
-    public static string TruncateCenter(this string path, int minStartLength, int minEndLength, int maxLength)
-    {
-        if (string.IsNullOrEmpty(path)) 
-            return string.Empty;
-        
-        if (maxLength < minStartLength + minEndLength + 3) 
-            throw new ArgumentException(
-                $"maxLength must be at least minStartLength + minEndLength + 1 (got {maxLength}).", 
-                nameof(maxLength));
+	/// <summary>
+	/// Truncates the middle of the string if it exceeds <paramref name="maxLength"/>, 
+	/// preserving at least <paramref name="minStartLength"/> chars at the start and 
+	/// <paramref name="minEndLength"/> chars at the end, with a Unicode ellipsis in between.
+	/// </summary>
+	/// <param name="path">The original string (e.g. a file or URL path).</param>
+	/// <param name="minStartLength">Minimum number of chars to keep at the start.</param>
+	/// <param name="minEndLength">Minimum number of chars to keep at the end.</param>
+	/// <param name="maxLength">Maximum total length of the returned string (including the ellipsis).</param>
+	/// <returns>
+	/// The original string if it’s short enough; otherwise a truncated version 
+	/// of length ≤ <paramref name="maxLength"/> with ‘ … ’ in the middle.
+	/// </returns>
+	/// <exception cref="ArgumentNullException">If <paramref name="path"/> is null.</exception>
+	/// <exception cref="ArgumentException">
+	/// If <paramref name="maxLength"/> is less than <c>minStartLength + minEndLength + 1</c>.
+	/// </exception>
+	public static string TruncateCenter(this string path, int minStartLength, int minEndLength, int maxLength)
+	{
+		if (string.IsNullOrEmpty(path))
+			return string.Empty;
 
-        if (path.Length <= maxLength)
-            return path;
+		if (maxLength < minStartLength + minEndLength + 3)
+			throw new ArgumentException(
+				$"maxLength must be at least minStartLength + minEndLength + 1 (got {maxLength}).",
+				nameof(maxLength));
 
-        // Total chars aside from the ellipsis
-        var charsToShow = maxLength - 3;
+		if (path.Length <= maxLength)
+			return path;
 
-        // Start by splitting them roughly in half
-        var startLen = charsToShow / 2;
-        var endLen = charsToShow - startLen;
+		// Total chars aside from the ellipsis
+		var charsToShow = maxLength - 3;
 
-        if (startLen < minStartLength)
-        {
-            startLen = minStartLength;
-            endLen = charsToShow - startLen;
-        }
+		// Start by splitting them roughly in half
+		var startLen = charsToShow / 2;
+		var endLen = charsToShow - startLen;
 
-        if (endLen < minEndLength)
-        {
-            endLen = minEndLength;
-            startLen = charsToShow - endLen;
-        }
+		if (startLen < minStartLength)
+		{
+			startLen = minStartLength;
+			endLen = charsToShow - startLen;
+		}
 
-        var prefix = path[..startLen];
-        var suffix = path.Substring(path.Length - endLen, endLen);
+		if (endLen < minEndLength)
+		{
+			endLen = minEndLength;
+			startLen = charsToShow - endLen;
+		}
 
-        return prefix + " \u2026 " + suffix;
-    }
+		var prefix = path[..startLen];
+		var suffix = path.Substring(path.Length - endLen, endLen);
 
-    /// <summary>
+		return prefix + " \u2026 " + suffix;
+	}
+
+	/// <summary>
 	/// Trim the common prefix from targetString that matches sourceString,
 	/// but only up to the last Path.DirectorySeparatorChar in the matched portion.
 	/// </summary>
@@ -371,13 +373,13 @@ public static partial class Strings
 
 		return targetString[lastSeparatorIndex..];
 	}
-	
+
 	/// <summary>
-    /// Remove a specified number of characters from the beginning of a string
-    /// </summary>
-    /// <param name="value">String to trim</param>
-    /// <param name="count">Number of characters to remove</param>
-    /// <returns>Trimmed string</returns>
+	/// Remove a specified number of characters from the beginning of a string
+	/// </summary>
+	/// <param name="value">String to trim</param>
+	/// <param name="count">Number of characters to remove</param>
+	/// <returns>Trimmed string</returns>
 	public static string TrimStart(this string? value, int count)
 	{
 		if (value is not null && value.Length >= count)
@@ -387,11 +389,11 @@ public static partial class Strings
 	}
 
 	/// <summary>
-    /// Remove a specified number of characters from the end of a string
-    /// </summary>
-    /// <param name="value">String to trim</param>
-    /// <param name="count">Number of characters to remove</param>
-    /// <returns>Trimmed string</returns>
+	/// Remove a specified number of characters from the end of a string
+	/// </summary>
+	/// <param name="value">String to trim</param>
+	/// <param name="count">Number of characters to remove</param>
+	/// <returns>Trimmed string</returns>
 	public static string TrimEnd(this string? value, int count)
 	{
 		if (value is not null && value.Length >= count)
@@ -407,13 +409,14 @@ public static partial class Strings
 	/// <param name="substring">The substring to remove</param>
 	/// <param name="stringComparison"></param>
 	/// <returns>Trimmed source</returns>
-	public static string? TrimStart(this string? source, string? substring = " ", StringComparison stringComparison = StringComparison.Ordinal)
+	public static string? TrimStart(this string? source, string? substring = " ",
+		StringComparison stringComparison = StringComparison.Ordinal)
 	{
 		if (source == null || source.IsEmpty() || substring is null or "")
 			return null;
 
-		return source.StartsWith(substring, stringComparison) 
-			? source[substring.Length..] 
+		return source.StartsWith(substring, stringComparison)
+			? source[substring.Length..]
 			: source;
 	}
 
@@ -424,7 +427,8 @@ public static partial class Strings
 	/// <param name="substring">The substring to remove</param>
 	/// <param name="stringComparison"></param>
 	/// <returns>Trimmed source</returns>
-	public static string? TrimEnd(this string? source, string? substring = " ", StringComparison stringComparison = StringComparison.Ordinal)
+	public static string? TrimEnd(this string? source, string? substring = " ",
+		StringComparison stringComparison = StringComparison.Ordinal)
 	{
 		if (source == null || source.IsEmpty() || substring is null or "")
 			return null;
@@ -441,12 +445,14 @@ public static partial class Strings
 	/// <returns></returns>
 	public static string TrimEndingPathSeparators(this string? value)
 	{
-		return string.IsNullOrEmpty(value) ? string.Empty : value.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar);
+		return string.IsNullOrEmpty(value)
+			? string.Empty
+			: value.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar);
 	}
-	
+
 	#endregion
-	
-	#region Comparison	
+
+	#region Comparison
 
 	public static bool StartsWithAny(this string? str, char[]? any)
 	{
@@ -455,7 +461,7 @@ public static partial class Strings
 
 		return str.AsSpan().IndexOfAny(any) == 0;
 	}
-	
+
 	/// <summary>
 	/// Determines if a string has a value (is not null and not empty).
 	/// </summary>
@@ -473,7 +479,7 @@ public static partial class Strings
 	{
 		return string.IsNullOrEmpty(value);
 	}
-	
+
 	/// <summary>
 	/// Determine if two strings are not equal.
 	/// </summary>
@@ -481,40 +487,41 @@ public static partial class Strings
 	/// <param name="value"></param>
 	/// <param name="comparisonType"></param>
 	/// <returns></returns>
-	public static bool NotEquals(this string? source, string? value, StringComparison comparisonType = StringComparison.Ordinal)
+	public static bool NotEquals(this string? source, string? value,
+		StringComparison comparisonType = StringComparison.Ordinal)
 	{
 		if (source == null && value == null) return false;
 		if (source is not null && value == null) return true;
 		if (source == null && value is not null) return true;
-		
+
 		return source?.Equals(value, comparisonType) == false;
 	}
 
-    /// <summary>
-    /// Determine if two strings are not equal, ignoring case.
-    /// </summary>
-    /// <param name="source"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static bool InvariantNotEquals(this string? source, string? value)
-    {
-        if (source == null && value == null) return false;
-        if (source is not null && value == null) return true;
-        if (source == null && value is not null) return true;
-		
-        return source?.Equals(value, StringComparison.InvariantCultureIgnoreCase) == false;
-    }
+	/// <summary>
+	/// Determine if two strings are not equal, ignoring case.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static bool InvariantNotEquals(this string? source, string? value)
+	{
+		if (source == null && value == null) return false;
+		if (source is not null && value == null) return true;
+		if (source == null && value is not null) return true;
 
-    /// <summary>
-    /// Determine if two strings are equal, ignoring case.
-    /// </summary>
-    /// <param name="source"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static bool InvariantEquals(this string? source, string? value)
-    {
-        return source.InvariantNotEquals(value) == false;
-    }
+		return source?.Equals(value, StringComparison.InvariantCultureIgnoreCase) == false;
+	}
+
+	/// <summary>
+	/// Determine if two strings are equal, ignoring case.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static bool InvariantEquals(this string? source, string? value)
+	{
+		return source.InvariantNotEquals(value) == false;
+	}
 
 	/// <summary>
 	/// Determine if a string starts with any value from a string array.
@@ -523,27 +530,28 @@ public static partial class Strings
 	/// <param name="substrings"></param>
 	/// <param name="stringComparison"></param>
 	/// <returns></returns>
-	public static bool StartsWith(this string value, string[]? substrings, StringComparison stringComparison = StringComparison.Ordinal)
+	public static bool StartsWith(this string value, string[]? substrings,
+		StringComparison stringComparison = StringComparison.Ordinal)
 	{
-		if (substrings is not {Length: > 0}) return false;
+		if (substrings is not { Length: > 0 }) return false;
 
 		var result = false;
-        
+
 		for (var x = 0; x < substrings.Length; x++)
 		{
 			if (value.StartsWith(substrings[x], stringComparison) == false) continue;
-            
+
 			result = true;
 			x = substrings.Length;
 		}
 
 		return result;
 	}
-	
+
 	#endregion
-	
+
 	#region Conversion
-	
+
 	/// <summary>
 	/// Convert a string to a byte array.
 	/// </summary>
@@ -553,14 +561,14 @@ public static partial class Strings
 	{
 		if (value is null || string.IsNullOrEmpty(value))
 			return [];
-		
+
 		var encoding = new UTF8Encoding();
 
 		return encoding.GetBytes(value);
 	}
-	
+
 	#endregion
-	
+
 	#region Parsing
 
 	/// <summary>
@@ -581,7 +589,7 @@ public static partial class Strings
 		{
 			// Find the next css block declaration start
 			var startIdx = content.IndexOf(cssBlockDeclaration, searchPos, StringComparison.Ordinal);
-			
+
 			if (startIdx == -1)
 				yield break;
 
@@ -594,22 +602,22 @@ public static partial class Strings
 			while (pos < content.Length && depth > 0)
 			{
 				var c = content[pos];
-				
+
 				if (c == '{')
 					depth++;
 				else if (c == '}')
 					depth--;
-				
+
 				pos++;
 			}
 
 			// If we closed everything, slice it out
 			if (depth == 0)
 			{
-				var length = pos - startIdx; 
-				
+				var length = pos - startIdx;
+
 				yield return content.Substring(startIdx, length);
-				
+
 				// Continue searching after this block
 				searchPos = pos;
 			}
@@ -621,191 +629,165 @@ public static partial class Strings
 		}
 	}
 
-    // splits a comma‑separated selector string at commas not inside [],(), or quotes
-    // ReSharper disable once UnusedMember.Local
-    private static IEnumerable<string> SplitSelectors(string header)
-    {
-        if (string.IsNullOrWhiteSpace(header))
-            yield break;
-
-        var sb = new StringBuilder();
-        
-        var bracketDepth = 0;
-	    var parenDepth = 0;
-        var inSingle = false;
-	    var inDouble = false;
-
-        foreach (var c in header)
-        {
-	        if (inSingle)
-	        {
-		        sb.Append(c);
-            
-		        if (c == '\'' )
-			        inSingle = false;
-	        }
-	        else if (inDouble)
-	        {
-		        sb.Append(c);
-                
-		        if (c == '"')
-			        inDouble = false;
-	        }
-	        else
-	        {
-		        switch (c)
-		        {
-			        case '\'':
-	                    
-				        inSingle = true;
-				        sb.Append(c);
-                        
-				        break;
-                    
-			        case '"':
-	                    
-				        inDouble = true;
-				        sb.Append(c);
-                        
-				        break;
-                    
-			        case '[':
-	                    
-				        bracketDepth++;
-				        sb.Append(c);
-                        
-				        break;
-                    
-			        case ']':
-                        
-				        bracketDepth = Math.Max(0, bracketDepth - 1);
-				        sb.Append(c);
-
-				        break;
-                    
-			        case '(':
-                        
-				        parenDepth++;
-				        sb.Append(c);
-
-				        break;
-                    
-			        case ')':
-                        
-				        parenDepth = Math.Max(0, parenDepth - 1);
-				        sb.Append(c);
-                    
-				        break;
-                    
-			        case ',' when bracketDepth == 0 && parenDepth == 0:
-                        
-				        var sel = sb.ToString().Trim();
-                        
-				        if (string.IsNullOrEmpty(sel) == false)
-					        yield return sel;
-
-				        sb.Clear();
-                    
-				        break;
-                    
-			        default:
-
-				        sb.Append(c);
-                        
-				        break;
-		        }
-	        }
-        }
-
-        // final selector
-        var last = sb.ToString().Trim();
-        
-        if (string.IsNullOrEmpty(last) == false)
-            yield return last;
-    }
-	
-	public static void ScanQuotedStrings(this string? source, HashSet<string>? bag, StringBuilder? sb = null)
+	// splits a comma‑separated selector string at commas not inside [],(), or quotes
+	private static IEnumerable<string> SplitSelectors(string header)
 	{
-		var delimiters = new [] { '\"', '\'', '`' };
-		
-		if (bag is null || string.IsNullOrEmpty(source))
-			return;
+		if (string.IsNullOrWhiteSpace(header))
+			yield break;
 
-		sb ??= new StringBuilder();
-		sb.Clear();
-		sb.Append(source);
-		
-		var splits = sb
-			.Replace("\\\"", "\"")
-			.Replace("\",\"", "\", \"")
-			.Replace("\",@\"", "\", @\"")
-			.Replace("\",$\"", "\", $\"")
-			.Replace("','", "', '")
-			.Replace("`,`", "`, `")
-			.Replace("`,$`", "`, $`")
-			.ToString()
-			.SplitByNonWhitespace();
+		var sb = new StringBuilder();
 
-		foreach (var split in splits)
+		var bracketDepth = 0;
+		var parenDepth = 0;
+		var inSingle = false;
+		var inDouble = false;
+
+		foreach (var c in header)
 		{
-			var segment = split.Trim(delimiters);
-			var delim = segment.IndexOfAny(delimiters);
-			
-			if (delim > -1)
+			if (inSingle)
 			{
-				var allowedIndex = segment.IndexOf('[');
-				var closingIndex = allowedIndex > -1 ? segment.IndexOf(']', allowedIndex) : -1;
-				var delimCount = 0;
-				
-				if (closingIndex > allowedIndex)
-				{
-					delimCount += segment.Where((t, i) => delimiters.Contains(t) && (i > allowedIndex && i < closingIndex)).Count();
-				}
-				else
-				{
-					delimCount = segment.Count(c => delimiters.Contains(c));
-				}
+				sb.Append(c);
 
-				if (delimCount == 2 && delim > allowedIndex)
-					delim = -1;
-				
-				if (allowedIndex > -1 && allowedIndex > delim)
-				{
-					segment = segment[(delim + 1)..];
-					segment = segment[..(segment.LastIndexOf(']') + 1)];
-					segment = segment.Trim(delimiters)
-						.Trim('\\')
-						.TrimEnd('>');
+				if (c == '\'')
+					inSingle = false;
+			}
+			else if (inDouble)
+			{
+				sb.Append(c);
 
-					var eq = segment.IndexOf('=');
-
-					if (eq > -1 && eq < allowedIndex)
-						segment = segment[(eq + 1)..];
-					
-					if (segment.IsLikelyUtilityClass())
-						bag.Add(segment);
-				}
-				else
-				{
-					segment = delimiters.Aggregate(segment, (current, dChar) => current.Replace(dChar, ' '));
-					segment.ScanQuotedStrings(bag, sb);
-				}
+				if (c == '"')
+					inDouble = false;
 			}
 			else
 			{
-				segment = segment.Trim(delimiters)
-					.Trim('\\')
-					.TrimEnd('>');
+				switch (c)
+				{
+					case '\'':
 
-				var bracketIndex = segment.IndexOf('[');
-				var eq = segment.IndexOf('=');
+						inSingle = true;
+						sb.Append(c);
 
-				if (eq > -1 && (bracketIndex == -1 || eq < bracketIndex))
-					segment = segment[(eq + 1)..];
-				
-				if (segment.IsLikelyUtilityClass())
-					bag.Add(segment);
+						break;
+
+					case '"':
+
+						inDouble = true;
+						sb.Append(c);
+
+						break;
+
+					case '[':
+
+						bracketDepth++;
+						sb.Append(c);
+
+						break;
+
+					case ']':
+
+						bracketDepth = Math.Max(0, bracketDepth - 1);
+						sb.Append(c);
+
+						break;
+
+					case '(':
+
+						parenDepth++;
+						sb.Append(c);
+
+						break;
+
+					case ')':
+
+						parenDepth = Math.Max(0, parenDepth - 1);
+						sb.Append(c);
+
+						break;
+
+					case ',' when bracketDepth == 0 && parenDepth == 0:
+
+						var sel = sb.ToString().Trim();
+
+						if (string.IsNullOrEmpty(sel) == false)
+							yield return sel;
+
+						sb.Clear();
+
+						break;
+
+					default:
+
+						sb.Append(c);
+
+						break;
+				}
 			}
+		}
+
+		// final selector
+		var last = sb.ToString().Trim();
+
+		if (string.IsNullOrEmpty(last) == false)
+			yield return last;
+	}
+
+	/// <summary>
+	/// Identify substrings enclosed in quotes (single, double, or backtick) within a string,
+	/// Fills the bag with matches.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="bag"></param>
+	public static void ScanForUtilities(this string? source, HashSet<string>? bag)
+	{
+		if (bag is null || string.IsNullOrEmpty(source))
+			return;
+
+		var splits = source
+			.Replace("\\\"", "\"")
+			.Replace("@\"", "\"")
+			.Replace("$\"", "\"")
+			.Replace("\",\"", "\", \"")
+			.Replace("\",@\"", "\", @\"")
+			.Replace("\",$\"", "\", $\"")
+			.Replace("\"\"", "\"")
+			.Replace("','", "', '")
+			.Replace("`,`", "`, `")
+			.Replace("`,$`", "`, $`")
+			.SplitByNonWhitespace();
+
+		foreach (var segment in splits)
+			ProcessSubstrings(segment, bag);
+	}
+
+	public static void ProcessSubstrings(this string source, HashSet<string> bag)
+	{
+		char[] delimiters = [ '\"', '\'', '`' ];
+
+		for (var d = 0; d < delimiters.Length; d++)
+			if (source.Length > 0 && (source[0] == delimiters[d] || source[^1] == delimiters[d]))
+				source = source.Trim(delimiters[d]);
+
+		var addSource = true;
+		var quoteIndex = source.IndexOf('\"');
+
+		if (quoteIndex > -1)
+		{
+			if (quoteIndex == source.LastIndexOf('\"'))
+				addSource = false;
+		}
+
+		if (addSource && source.IsLikelyUtilityClass())
+			bag.Add(source);
+
+		for (var d = 0; d < delimiters.Length; d++)
+		{
+			var index = source.IndexOf(delimiters[d]);
+
+			if (index <= 0 || index >= source.Length - 1)
+				continue;
+
+			foreach (var subsegment in source.Split(delimiters[d], StringSplitOptions.RemoveEmptyEntries))
+				ProcessSubstrings(subsegment, bag);
 		}
 	}
 
@@ -836,18 +818,17 @@ public static partial class Strings
 		var paren  = 0;
 
 		// `for` is ~20–25 % faster than `foreach` on strings
-		// ReSharper disable once ForCanBeConvertedToForeach
 		for (var i = 0; i < source.Length; i++)
 		{
 			var c = source[i];
 
-			// Count and allow early bail-out when balance goes negative
+			// Count and allow early bail-out when the balance goes negative
 			switch (c)
 			{
 				case '[': ++square; break;
 				case ']': if (--square < 0) return false; break;
-				case '(': ++paren;  break;
-				case ')': if (--paren  < 0) return false; break;
+				case '(': ++paren; break;
+				case ')': if (--paren < 0) return false; break;
 			}
 		}
 
