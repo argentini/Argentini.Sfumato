@@ -266,12 +266,19 @@ public sealed class CssClass : IDisposable
 
                     VariantSegments.Add(segment, has);
                 }
-                else if (segment.TryVariantIsSupports(AppRunner, out var supports))
+                else if (segment.TryVariantIsSupports(AppRunner, out var supportsQuery))
                 {
-                    if (supports is null)
+                    if (supportsQuery is null)
                         return;
 
-                    VariantSegments.Add(segment, supports);
+                    VariantSegments.Add(segment, supportsQuery);
+                }
+                else if (segment.TryVariantIsStartingStyleQuery(AppRunner, out var startingStyleQuery))
+                {
+                    if (startingStyleQuery is null)
+                        return;
+
+                    VariantSegments.Add(segment, startingStyleQuery);
                 }
                 else if (segment.TryVariantIsNotSupports(AppRunner, out var notSupports))
                 {

@@ -8,11 +8,12 @@ public static class VariantValidators
     {
         cssMediaQuery = null;
 
-        if (appRunner.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery))
-            return true;
+        return appRunner.Library.MediaQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
+    }
 
-        if (appRunner.Library.SupportsQueryPrefixes.TryGetValue(variant, out cssMediaQuery))
-            return true;
+    public static bool TryVariantIsStartingStyleQuery(this string variant, AppRunner appRunner, out VariantMetadata? cssMediaQuery)
+    {
+        cssMediaQuery = null;
 
         return appRunner.Library.StartingStyleQueryPrefixes.TryGetValue(variant, out cssMediaQuery);
     }
@@ -48,7 +49,7 @@ public static class VariantValidators
 
         if (bracketIndex > 0 && appRunner.Library.PseudoclassPrefixes.TryGetValue(variant[..bracketIndex], out pseudoClass))
         {
-            pseudoClass.SelectorSuffix = pseudoClass.SelectorSuffix.Replace("{0}", variant[(bracketIndex + 1)..^1].Replace('_', ' '));
+            pseudoClass = pseudoClass.CreateNewPseudoClass(pseudoClass.SelectorSuffix.Replace("{0}", variant[(bracketIndex + 1)..^1].Replace('_', ' ')));
             return true;
         }
         
@@ -62,7 +63,8 @@ public static class VariantValidators
         if (lastHyphenIndex < 0 || appRunner.Library.PseudoclassPrefixes.TryGetValue(variant[..(lastHyphenIndex + 1)], out pseudoClass) == false)
             return false;
         
-        pseudoClass.SelectorSuffix = pseudoClass.SelectorSuffix.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' '));
+        pseudoClass = pseudoClass.CreateNewPseudoClass(pseudoClass.SelectorSuffix.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' ')));
+
         return true;
     }
 
@@ -82,7 +84,8 @@ public static class VariantValidators
             group = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = $":is(:where(.group):has(:is({variantValue.Replace('_', ' ')})) *)"
+                SelectorSuffix = $":is(:where(.group):has(:is({variantValue.Replace('_', ' ')})) *)",
+                PrioritySort = 99
             };
         }
         else if (variant.Length > 11 && variant.StartsWith("group-aria-", StringComparison.Ordinal))
@@ -100,7 +103,8 @@ public static class VariantValidators
             group = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = $":is(:where(.group{pseudoClass.SelectorSuffix}) *)"
+                SelectorSuffix = $":is(:where(.group{pseudoClass.SelectorSuffix}) *)",
+                PrioritySort = 99
             };
         }
         else if (variant.Length > 6)
@@ -177,7 +181,8 @@ public static class VariantValidators
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')})) ~ *)"
+                SelectorSuffix = $":is(:where(.peer):has(:is({variantValue.Replace('_', ' ')})) ~ *)",
+                PrioritySort = 99
             };
         }
         else if (variant.Length > 10 && variant.StartsWith("peer-aria-", StringComparison.Ordinal))
@@ -195,7 +200,8 @@ public static class VariantValidators
             peer = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
-                SelectorSuffix = $":is(:where(.peer{pseudoClass.SelectorSuffix}) ~ *)"
+                SelectorSuffix = $":is(:where(.peer{pseudoClass.SelectorSuffix}) ~ *)",
+                PrioritySort = 99
             };
         }
         else if (variant.Length > 5)
@@ -293,6 +299,9 @@ public static class VariantValidators
 
         if (variant.StartsWith("supports-", StringComparison.Ordinal) == false)
             return false;
+
+        if (appRunner.Library.SupportsQueryPrefixes.TryGetValue(variant, out supports))
+            return true;
 
         if (variant.Length > 11 && variant.StartsWith("supports-[", StringComparison.Ordinal))
         {

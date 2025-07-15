@@ -55,8 +55,8 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                     </html>
                                     """;
 
-    private static List<string> ExpectedMatches = new ()
-    {
+    private static readonly List<string> ExpectedMatches =
+    [
         "nth-[3n_+_1]:text-base",
         "bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)]",
         "[content:'arbitrary_test']",
@@ -138,11 +138,11 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "line-clamp-2",
         "line-clamp-3",
         "text-[0.65rem]",
-        "mb-1.5",
-    };
+        "mb-1.5"
+    ];
 
-    private static List<string> ExpectedValidMatches = new ()
-    {
+    private static readonly List<string> ExpectedValidMatches =
+    [
         "nth-[3n_+_1]:text-base",
         "bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)]",
         "[content:'arbitrary_test']",
@@ -201,8 +201,8 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "line-clamp-2",
         "line-clamp-3",
         "text-[0.65rem]",
-        "mb-1.5",
-    };
+        "mb-1.5"
+    ];
 
     #region Constants
 
@@ -229,7 +229,6 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void StringScanning()
     {
-        var appRunner = new AppRunner(new AppState());
         var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
 
         Markup.ScanForUtilities(quotedSubstrings);

@@ -110,7 +110,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
             new ()
             {
                 ClassName = "nth-3:text-base",
-                EscapedClassName = @".nth-3\:text-base:nth-child(3)",
+                EscapedClassName = @".nth-3\:text-base:nth-child(3), .nth-3\:text-base :nth-child(3)",
                 Styles =
                     """
                     font-size: var(--text-base);
@@ -121,7 +121,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
             new ()
             {
                 ClassName = "nth-[3]:text-base",
-                EscapedClassName = @".nth-\[3\]\:text-base:nth-child(3)",
+                EscapedClassName = @".nth-\[3\]\:text-base:nth-child(3), .nth-\[3\]\:text-base :nth-child(3)",
                 Styles =
                     """
                     font-size: var(--text-base);
