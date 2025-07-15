@@ -297,90 +297,78 @@ public static class VariantValidators
     public static bool TryVariantIsSupports(this string variant, AppRunner appRunner, out VariantMetadata? supports)
     {
         supports = null;
+
+        var indexOfSupports = variant.IndexOf("supports-", StringComparison.Ordinal);
         
-        if (variant[0] == 's' && variant.StartsWith("supports-", StringComparison.Ordinal) == false)
+        if (indexOfSupports == -1)
             return false;
 
-        if (appRunner.Library.SupportsQueryPrefixes.TryGetValue(variant, out supports))
-            return true;
-
-        if (variant.Length > 11 && variant.StartsWith("supports-[", StringComparison.Ordinal))
+        var indexOfBracket = variant.IndexOf('[');
+        var variantValue = indexOfBracket > 0
+            ? variant[(indexOfBracket + 1)..^1] 
+            : variant[0] == 'n' ? (variant[13..]) : (variant[9..]);
+        
+        if (indexOfSupports == 0)
         {
-            // supports-[display:grid]:
-
-            var variantValue = variant[10..^1];
-
-            supports = new VariantMetadata
+            if (indexOfBracket > 0)
             {
-                PrefixType = "supports",
-                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
-                Statement = $"({variantValue.Replace('_', ' ')})"
-            };
-        }
-        else if (variant.Length > 9)
-        {
-            // supports-hover:
+                supports = new VariantMetadata
+                {
+                    PrefixType = "supports",
+                    PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
+                    Statement = $"({variantValue.Replace('_', ' ')})"
+                };
 
-            var variantValue = variant[9..];
+                return true;
+            }
 
             var match = appRunner.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
 
-            if (string.IsNullOrEmpty(match))
-                return false;
-
-            supports = new VariantMetadata
+            if (string.IsNullOrEmpty(match) == false)
             {
-                PrefixType = "supports",
-                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
-                Statement = $"({match}: initial)"
-            };
+                supports = new VariantMetadata
+                {
+                    PrefixType = "supports",
+                    PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
+                    Statement = $"({match}: initial)"
+                };
+
+                return true;
+            }
         }
 
-        return true;
-    }
-
-    public static bool TryVariantIsNotSupports(this string variant, AppRunner appRunner, out VariantMetadata? notSupports)
-    {
-        notSupports = null;
-
-        if (variant[0] != 'n' || variant.StartsWith("not-supports-", StringComparison.Ordinal) == false)
-            return false;
-
-        if (variant.Length > 15 && variant.StartsWith("not-supports-[", StringComparison.Ordinal))
+        if (variant[0] == 'n' && variant.StartsWith("not-", StringComparison.Ordinal))
         {
-            // not-supports-[display:grid]:
-
-            var variantValue = variant[14..^1];
-
-            notSupports = new VariantMetadata
+            if (indexOfBracket > 0)
             {
-                PrefixType = "not-supports",
-                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
-                Statement = $"not ({variantValue.Replace('_', ' ')})"
-            };
-        }
-        else
-        {
-            // not-supports-hover:
+                supports = new VariantMetadata
+                {
+                    PrefixType = "supports",
+                    PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
+                    Statement = $"not ({variantValue.Replace('_', ' ')})"
+                };
 
-            var variantValue = variant[13..];
+                return true;
+            }
 
             var match = appRunner.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
 
-            if (string.IsNullOrEmpty(match))
-                return false;
-
-            notSupports = new VariantMetadata
+            if (string.IsNullOrEmpty(match) == false)
             {
-                PrefixType = "not-supports",
-                PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
-                Statement = $"not ({match}: initial)"
-            };
+                supports = new VariantMetadata
+                {
+                    PrefixType = "supports",
+                    PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
+                    Statement = $"not ({match}: initial)"
+                };
+
+                return true;
+            }
         }
 
-        return true;
+        return appRunner.Library.SupportsQueryPrefixes.TryGetValue(variant, out supports);
     }
-    
+
     public static bool TryVariantIsData(this string variant, out VariantMetadata? data)
     {
         data = null;

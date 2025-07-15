@@ -280,13 +280,6 @@ public sealed class CssClass : IDisposable
 
                     VariantSegments.Add(segment, startingStyleQuery);
                 }
-                else if (segment.TryVariantIsNotSupports(AppRunner, out var notSupports))
-                {
-                    if (notSupports is null)
-                        return;
-
-                    VariantSegments.Add(segment, notSupports);
-                }
                 else if (segment.TryVariantIsData(out var data))
                 {
                     if (data is null)

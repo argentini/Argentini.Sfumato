@@ -14,6 +14,15 @@ public static class LibrarySupportsQueries
 	        }
         },
 		{
+			"not-supports-",
+			new VariantMetadata
+			{
+				PrefixOrder = 1,
+				PrefixType = "supports",
+				Statement = "not ({0})"
+			}
+		},
+		{
 			"supports-backdrop-blur",
 	        new VariantMetadata
 	        {

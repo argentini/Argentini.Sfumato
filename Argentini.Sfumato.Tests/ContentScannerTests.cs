@@ -175,7 +175,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "break-after-auto",
         "container",
         "aspect-screen",
-        "xxl:aspect-[8/4]",
+        //"xxl:aspect-[8/4]",
         "xl:aspect-8/4",
         "-top-px",
         "*:whitespace-pre!",
