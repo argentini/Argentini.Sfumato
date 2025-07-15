@@ -11,7 +11,7 @@ public sealed class Library
 {
     #region Theme Properties
 
-    public Dictionary<string, string> ColorsByName { get; set; } = [];
+    public PrefixTrie<string> ColorsByName { get; set; } = new();
 
     public HashSet<string> CssLengthUnits { get; } = LibraryUnits.CssLengthUnits.ToHashSet(StringComparer.Ordinal);
     
@@ -30,14 +30,14 @@ public sealed class Library
 
     public HashSet<string> ValidChromeCssPropertyNames { get; } = LibraryCssPropertyNames.ValidChromeCssPropertyNames.ToHashSet(StringComparer.Ordinal);
 
-    public Dictionary<string, VariantMetadata> MediaQueryPrefixes { get; } = LibraryMediaQueries.MediaQueryPrefixes.ToDictionary(StringComparer.Ordinal);
+    public PrefixTrie<VariantMetadata> MediaQueryPrefixes { get; } = new();
 
-    public Dictionary<string, VariantMetadata> SupportsQueryPrefixes { get; } = LibrarySupportsQueries.SupportsQueryPrefixes.ToDictionary(StringComparer.Ordinal);
-    public Dictionary<string, VariantMetadata> StartingStyleQueryPrefixes { get; } = LibraryStartingStyleQueries.StartingStyleQueryPrefixes.ToDictionary(StringComparer.Ordinal);
+    public PrefixTrie<VariantMetadata> SupportsQueryPrefixes { get; } = new();
+    public PrefixTrie<VariantMetadata> StartingStyleQueryPrefixes { get; } = new();
 
-    public Dictionary<string, VariantMetadata> ContainerQueryPrefixes { get; } = LibraryContainerQueries.ContainerQueryPrefixes.ToDictionary(StringComparer.Ordinal);
+    public PrefixTrie<VariantMetadata> ContainerQueryPrefixes { get; } = new();
 
-    public Dictionary<string, VariantMetadata> PseudoclassPrefixes { get; } = LibraryPseudoClasses.PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal);
+    public PrefixTrie<VariantMetadata> PseudoclassPrefixes { get; } = new();
 
     public readonly string[] ColorSpaces = ["srgb-linear", "display-p3", "a98-rgb", "prophoto-rgb", "rec2020", "oklab", "xyz-d50", "xyz-d65", "xyz", "hsl", "hwb", "lch", "lab"];
     
@@ -69,29 +69,44 @@ public sealed class Library
     
     #region Scanner Collections
     
-    public PrefixTrie CssPropertyNamesWithColons { get; set; } = new();
-    public PrefixTrie ScannerClassNamePrefixes { get; set; } = new();
+    public PrefixTrie<object?> CssPropertyNamesWithColons { get; set; } = new();
+    public PrefixTrie<object?> ScannerClassNamePrefixes { get; set; } = new();
 
-    public Dictionary<string, ClassDefinition> SimpleClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> AbstractClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> AngleHueClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> ColorClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> DurationClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> FlexClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> FloatNumberClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> FrequencyClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> IntegerClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> LengthClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> PercentageClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> RatioClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> ResolutionClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> StringClasses { get; set; } = new(StringComparer.Ordinal);
-    public Dictionary<string, ClassDefinition> UrlClasses { get; set; } = new(StringComparer.Ordinal);
+    public PrefixTrie<ClassDefinition> SimpleClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> AbstractClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> AngleHueClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> ColorClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> DurationClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> FlexClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> FloatNumberClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> FrequencyClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> IntegerClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> LengthClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> PercentageClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> RatioClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> ResolutionClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> StringClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> UrlClasses { get; set; } = new();
 
     #endregion
     
     public Library()
     {
+        foreach (var kvp in LibraryMediaQueries.MediaQueryPrefixes)
+            MediaQueryPrefixes.Add(kvp.Key, kvp.Value);
+        
+        foreach (var kvp in LibrarySupportsQueries.SupportsQueryPrefixes)
+            SupportsQueryPrefixes.Add(kvp.Key, kvp.Value);
+
+        foreach (var kvp in LibraryStartingStyleQueries.StartingStyleQueryPrefixes)
+            StartingStyleQueryPrefixes.Add(kvp.Key, kvp.Value);
+
+        foreach (var kvp in LibraryContainerQueries.ContainerQueryPrefixes)
+            ContainerQueryPrefixes.Add(kvp.Key, kvp.Value);
+
+        foreach (var kvp in LibraryPseudoClasses.PseudoclassPrefixes)
+            PseudoclassPrefixes.Add(kvp.Key, kvp.Value);
+        
         foreach (var pseudoClass in PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal))
         {
             if (pseudoClass.Key.StartsWith('*'))
@@ -105,10 +120,10 @@ public sealed class Library
         }
         
         foreach (var propertyName in ValidSafariCssPropertyNames)
-            CssPropertyNamesWithColons.Insert($"{propertyName}:");
+            CssPropertyNamesWithColons.Insert($"{propertyName}:", null);
         
         foreach (var propertyName in ValidChromeCssPropertyNames)
-            CssPropertyNamesWithColons.Insert($"{propertyName}:");
+            CssPropertyNamesWithColons.Insert($"{propertyName}:", null);
 
         var derivedTypes = Assembly.GetExecutingAssembly()
             .GetTypes()
@@ -166,7 +181,7 @@ public sealed class Library
                 if (item.Value.InStringCollection)
                     StringClasses.Add(item.Key, item.Value);
 
-                ScannerClassNamePrefixes.Insert(item.Key);
+                ScannerClassNamePrefixes.Insert(item.Key, null);
             }
         }        
     }
@@ -179,7 +194,7 @@ public sealed class Library
             .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false })
             .OrderBy(t => t.AssemblyQualifiedName)
             .ToList();
-        var groups = new Dictionary<string, string>(StringComparer.Ordinal);
+        var groups = new PrefixTrie<string>();
 
         foreach (var type in derivedTypes)
         {
@@ -622,7 +637,7 @@ public sealed class Library
 
     public string ExportVariants(AppRunner appRunner)
     {
-        var variants = new Dictionary<string, VariantMetadata>();
+        var variants = new PrefixTrie<VariantMetadata>();
         
         variants.AddRange(PseudoclassPrefixes);
 

@@ -52,7 +52,7 @@ public sealed class Columns : ClassDictionaryBase
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
+                appRunner.Library.ScannerClassNamePrefixes.Insert(key, null);
             else
                 appRunner.Library.SimpleClasses[key] = value;
         }

@@ -33,7 +33,7 @@ public static class Objects
     /// <param name="value"></param>
     /// <param name="propertyTemplate"></param>
     /// <returns></returns>
-    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, string key, string value, string propertyTemplate = "")
+    public static bool TryAddUpdate(this Dictionary<string, string> dictionary, string key, string value, string propertyTemplate = "")
     {
         if (dictionary.ContainsKey(key) == false)
             return dictionary.TryAdd(key, propertyTemplate == string.Empty ? value : propertyTemplate.Replace("{value}", value));
@@ -49,7 +49,7 @@ public static class Objects
     /// <param name="kvp"></param>
     /// <param name="propertyTemplate"></param>
     /// <returns></returns>
-    public static bool TryAddUpdate(this Dictionary<string,string> dictionary, KeyValuePair<string,string> kvp, string propertyTemplate = "")
+    public static bool TryAddUpdate(this Dictionary<string, string> dictionary, KeyValuePair<string,string> kvp, string propertyTemplate = "")
     {
         if (dictionary.ContainsKey(kvp.Key) == false)
             return dictionary.TryAdd(kvp.Key, propertyTemplate == string.Empty ? kvp.Value : propertyTemplate.Replace("{value}", kvp.Value));

@@ -292,7 +292,7 @@ public static class AppRunnerExtensions
 				Template = match.Value.Trim().TrimStart('{').TrimEnd('}').Trim()
 			}))
 			{
-				appRunner.Library.ScannerClassNamePrefixes.Insert(segments[1]);
+				appRunner.Library.ScannerClassNamePrefixes.Insert(segments[1], null);
 			}
 		}
 
@@ -720,7 +720,9 @@ public static class AppRunnerExtensions
 	    //––– finalize –––
 	    if (isRoot)
 	    {
-	        settings.CssImports.RemoveWhere((_, v) => v.Touched == false);
+		    foreach (var (k, v) in settings.CssImports)
+			    if (v.Touched == false)
+					settings.CssImports.Remove(k);
 
 	        if (firstIdx < 0 || lastEnd < firstIdx)
 	            return (-1, -1);
@@ -784,7 +786,7 @@ public static class AppRunnerExtensions
 			WrapperCss = string.Empty
 		};
 
-		foreach (var cssClass in appRunner.UtilityClasses.Values.OrderBy(c => c.WrapperSort).ThenBy(c => c.SelectorSort))
+		foreach (var (_, cssClass) in appRunner.UtilityClasses.ToList().OrderBy(c => c.Value.WrapperSort).ThenBy(c => c.Value.SelectorSort))
 			ProcessVariantBranchRecursive(root, cssClass);
 		
 		GenerateUtilityClassesCss(root, appRunner.UtilitiesCssSegment.Content);

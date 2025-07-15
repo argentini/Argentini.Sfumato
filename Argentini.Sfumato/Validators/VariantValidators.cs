@@ -322,7 +322,7 @@ public static class VariantValidators
                 return true;
             }
 
-            var match = appRunner.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
+            appRunner.Library.CssPropertyNamesWithColons.TryGetLongestMatchingPrefix($"{variantValue}:", out var match, out _);
 
             if (string.IsNullOrEmpty(match) == false)
             {
@@ -330,7 +330,7 @@ public static class VariantValidators
                 {
                     PrefixType = "supports",
                     PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
-                    Statement = $"({match}: initial)"
+                    Statement = $"({match.TrimEnd(':')}: initial)"
                 };
 
                 return true;
@@ -351,7 +351,7 @@ public static class VariantValidators
                 return true;
             }
 
-            var match = appRunner.Library.CssPropertyNamesWithColons.GetLongestMatchingPrefix($"{variantValue}:")?.TrimEnd(':');
+            appRunner.Library.CssPropertyNamesWithColons.TryGetLongestMatchingPrefix($"{variantValue}:", out var match, out _);
 
             if (string.IsNullOrEmpty(match) == false)
             {
@@ -359,7 +359,7 @@ public static class VariantValidators
                 {
                     PrefixType = "supports",
                     PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
-                    Statement = $"not ({match}: initial)"
+                    Statement = $"not ({match.TrimEnd(':')}: initial)"
                 };
 
                 return true;

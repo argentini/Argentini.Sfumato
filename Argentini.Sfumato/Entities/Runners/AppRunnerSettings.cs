@@ -65,7 +65,7 @@ public sealed class AppRunnerSettings
 	public string NativeCssOutputFilePath { get; private set; } = string.Empty;
 	public string LineBreak { get; private set; } = "\n";
 
-	public Dictionary<string, CssImportFile> CssImports { get; } = [];
+	public Dictionary<string, CssImportFile> CssImports { get; } = new(StringComparer.Ordinal);
 	
 	public HashSet<string> Paths { get; } = new (StringComparer.Ordinal);
 	public HashSet<string> AbsolutePaths { get; } = new (StringComparer.Ordinal);
@@ -73,7 +73,7 @@ public sealed class AppRunnerSettings
 	public HashSet<string> AbsoluteNotPaths { get; } = new (StringComparer.Ordinal);
 	public HashSet<string> NotFolderNames { get; } = new (StringComparer.Ordinal);
 
-    public Dictionary<string, string> SfumatoBlockItems { get; } = [];
+    public Dictionary<string, string> SfumatoBlockItems { get; } = new(StringComparer.Ordinal);
 
     #endregion
 }

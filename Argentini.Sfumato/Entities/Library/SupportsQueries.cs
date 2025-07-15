@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.Entities.Library;
 
 public static class LibrarySupportsQueries
 {
-    public static Dictionary<string, VariantMetadata> SupportsQueryPrefixes { get; } = new()
+    public static PrefixTrie<VariantMetadata> SupportsQueryPrefixes { get; } = new()
 	{
 		{
 			"supports-",

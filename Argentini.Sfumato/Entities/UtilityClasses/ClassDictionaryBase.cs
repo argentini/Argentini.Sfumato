@@ -20,7 +20,7 @@ public abstract class ClassDictionaryBase
     
     #region Constants
 
-    protected readonly Dictionary<string, string> WidthSizes = new ()
+    protected readonly Dictionary<string, string> WidthSizes = new (StringComparer.Ordinal)
     {
         {
             "auto", "auto"
@@ -63,7 +63,7 @@ public abstract class ClassDictionaryBase
         },
     };
 
-    protected readonly Dictionary<string, string> HeightSizes = new ()
+    protected readonly Dictionary<string, string> HeightSizes = new (StringComparer.Ordinal)
     {
         {
             "px", "1px"

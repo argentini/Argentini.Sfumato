@@ -125,7 +125,7 @@ public sealed class BorderRadius : ClassDictionaryBase
                 };
 
                 if (appRunner.Library.SimpleClasses.TryAdd(key, value))
-                    appRunner.Library.ScannerClassNamePrefixes.Insert(key);
+                    appRunner.Library.ScannerClassNamePrefixes.Insert(key, null);
                 else
                     appRunner.Library.SimpleClasses[key] = value;
             }
@@ -139,7 +139,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             };
 
             if (appRunner.Library.LengthClasses.TryAdd(aKey, aValue))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey);
+                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey, null);
             else
                 appRunner.Library.LengthClasses[aKey] = aValue;
             
@@ -151,7 +151,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(aKey, aValue))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey);
+                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey, null);
             else
                 appRunner.Library.SimpleClasses[aKey] = aValue;
             
@@ -163,7 +163,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(aKey, aValue))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey);
+                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey, null);
             else
                 appRunner.Library.SimpleClasses[aKey] = aValue;
 
@@ -176,7 +176,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(aKey, aValue))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey);
+                appRunner.Library.ScannerClassNamePrefixes.Insert(aKey, null);
             else
                 appRunner.Library.SimpleClasses[aKey] = aValue;
         }

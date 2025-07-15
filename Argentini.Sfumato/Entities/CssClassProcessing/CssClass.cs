@@ -27,7 +27,7 @@ public sealed class CssClass : IDisposable
     /// Variant segments used in the class name.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]"])
     /// </summary>
-    public Dictionary<string,VariantMetadata> VariantSegments { get; } = new(StringComparer.Ordinal);
+    public Dictionary<string, VariantMetadata> VariantSegments { get; } = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Master class definition for this utility class.
@@ -354,7 +354,7 @@ public sealed class CssClass : IDisposable
     {
         try
         {
-            var prefix = AppRunner.Library.ScannerClassNamePrefixes.GetLongestMatchingPrefix(AllSegments.Last().Contains('/') ? AllSegments.Last()[..AllSegments.Last().IndexOf('/')] : AllSegments.Last());
+            AppRunner.Library.ScannerClassNamePrefixes.TryGetLongestMatchingPrefix(AllSegments.Last().Contains('/') ? AllSegments.Last()[..AllSegments.Last().IndexOf('/')] : AllSegments.Last(), out var prefix, out _);
 
             if (string.IsNullOrEmpty(prefix))
                 return;
@@ -539,7 +539,7 @@ public sealed class CssClass : IDisposable
             {
                 // Iterate through all data type classes to find a prefix match
 
-                var classDictionaries = new List<Dictionary<string, ClassDefinition>>
+                var classDictionaries = new List<PrefixTrie<ClassDefinition>>
                 {
                     AppRunner.Library.LengthClasses,
                     AppRunner.Library.ColorClasses,

@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.Entities.Library;
 
 public static class LibraryPseudoClasses
 {
-    public static Dictionary<string, VariantMetadata> PseudoclassPrefixes { get; } = new ()
+    public static PrefixTrie<VariantMetadata> PseudoclassPrefixes { get; } = new ()
     {
         {
 	        "hover",

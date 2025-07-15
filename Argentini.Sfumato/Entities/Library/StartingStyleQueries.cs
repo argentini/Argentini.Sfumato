@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.Entities.Library;
 
 public static class LibraryStartingStyleQueries
 {
-    public static Dictionary<string, VariantMetadata> StartingStyleQueryPrefixes { get; } = new()
+    public static PrefixTrie<VariantMetadata> StartingStyleQueryPrefixes { get; } = new()
 	{
 		{
 			"starting",

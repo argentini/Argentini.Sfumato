@@ -17,15 +17,15 @@ public sealed class AppRunner
 	public AppState AppState { get; }
 	public Library.Library Library { get; set; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new();
-	public ConcurrentDictionary<string,ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
-	public Dictionary<string,string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
-	public Dictionary<string,string> UsedCss { get; } = new(StringComparer.Ordinal);
-	public Dictionary<string,CssClass> UtilityClasses { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string, string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string, string> UsedCss { get; } = new(StringComparer.Ordinal);
+	public Dictionary<string, CssClass> UtilityClasses { get; } = new(StringComparer.Ordinal);
 
 	private string _cssFilePath;
 	private readonly bool _useMinify;
 
 	private List<FileSystemWatcher> FileWatchers { get; } = [];
+	public ConcurrentDictionary<string, ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
 	private ConcurrentDictionary<long, FileSystemEventArgs> RestartAppQueue { get; } = [];
 	private ConcurrentDictionary<long, FileSystemEventArgs> RebuildProjectQueue { get; } = [];
 
@@ -377,7 +377,7 @@ public sealed class AppRunner
 
 	private string CssImportChangesPending()
 	{
-		foreach (var importFile in AppRunnerSettings.CssImports.Values)
+		foreach (var (_, importFile) in AppRunnerSettings.CssImports)
 		{
 			if (File.Exists(importFile.FileInfo.FullName) == false)
 				return string.Empty;

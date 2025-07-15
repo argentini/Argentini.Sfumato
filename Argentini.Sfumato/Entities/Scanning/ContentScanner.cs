@@ -4,7 +4,7 @@ public static class ContentScanner
 {
     #region File Parsing Methods
     
-    public static Dictionary<string,CssClass> ScanFileForUtilityClasses(string fileContent, AppRunner appRunner, bool fromRazorFile = false)
+    public static Dictionary<string, CssClass> ScanFileForUtilityClasses(string fileContent, AppRunner appRunner, bool fromRazorFile = false)
     {
         if (string.IsNullOrEmpty(fileContent))
             return [];
@@ -16,7 +16,7 @@ public static class ContentScanner
         {
             fileContent.ScanForUtilities(quotedSubstrings, sb);
 
-            var results = new Dictionary<string, CssClass>(StringComparer.Ordinal);
+            var results = new Dictionary<string, CssClass>();
 
             foreach (var quotedSubstring in quotedSubstrings)
                 ScanStringForClasses(quotedSubstring, results, appRunner, fromRazorFile);
@@ -29,7 +29,7 @@ public static class ContentScanner
         }
     }
 
-    private static void ScanStringForClasses(string quotedString, Dictionary<string,CssClass> results, AppRunner appRunner, bool fromRazorFile)
+    private static void ScanStringForClasses(string quotedString, Dictionary<string, CssClass> results, AppRunner appRunner, bool fromRazorFile)
     {
         foreach (var substring in quotedString.SplitByNonWhitespace())
         {

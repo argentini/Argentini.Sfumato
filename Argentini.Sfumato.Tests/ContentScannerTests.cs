@@ -1,3 +1,5 @@
+using Argentini.Sfumato.Entities.Trie;
+
 namespace Argentini.Sfumato.Tests;
 
 public class ContentScannerTests(ITestOutputHelper testOutputHelper)
@@ -282,7 +284,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         
         Assert.Single(props);
 
-        var dict = new Dictionary<string, string>();
+        var dict = new PrefixTrie<string>();
         
         foreach (var kvp in segment.UsedCssCustomProperties)
         {

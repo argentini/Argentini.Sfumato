@@ -91,7 +91,7 @@ public sealed class BorderWidth : ClassDictionaryBase
             };
 
             if (appRunner.Library.SimpleClasses.TryAdd(key, value))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
+                appRunner.Library.ScannerClassNamePrefixes.Insert(key, null);
             else
                 appRunner.Library.SimpleClasses[key] = value;
             
@@ -104,7 +104,7 @@ public sealed class BorderWidth : ClassDictionaryBase
             };
 
             if (appRunner.Library.LengthClasses.TryAdd(key, value))
-                appRunner.Library.ScannerClassNamePrefixes.Insert(key);
+                appRunner.Library.ScannerClassNamePrefixes.Insert(key, null);
             else
                 appRunner.Library.LengthClasses[key] = value;
         }

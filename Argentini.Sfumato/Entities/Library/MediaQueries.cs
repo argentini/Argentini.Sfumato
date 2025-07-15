@@ -2,7 +2,7 @@ namespace Argentini.Sfumato.Entities.Library;
 
 public static class LibraryMediaQueries
 {
-    public static Dictionary<string, VariantMetadata> MediaQueryPrefixes { get; } = new()
+    public static PrefixTrie<VariantMetadata> MediaQueryPrefixes { get; } = new()
 	{
 	    {
 		    "dark",

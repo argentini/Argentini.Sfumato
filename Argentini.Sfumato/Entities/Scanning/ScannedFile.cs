@@ -24,7 +24,7 @@ public sealed class ScannedFile
     public string FileName { get; private set; } = string.Empty;
     public string FilePath { get; private set; } = string.Empty;
 
-    public Dictionary<string,CssClass> UtilityClasses { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, CssClass> UtilityClasses { get; set; } = new();
 
     public ScannedFile(string filePath)
     {

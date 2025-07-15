@@ -127,7 +127,7 @@ public sealed class ClassDefinition
     /// <summary>
     /// CSS class property template for arbitrary CSS values using an arbitrary modifier (e.g. "text-[1rem]/[1.2]" => "font-size: {0}; line-height: {1};").
     /// Can contain more than one property assignment.
-    /// Use placeholder {0} for custom value.
+    /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
     public string ArbitraryCssValueWithArbitraryModifierTemplate { get; set; } = string.Empty;
@@ -140,12 +140,12 @@ public sealed class ClassDefinition
     /// <summary>
     /// Collection of usage definitions with styles.
     /// </summary>
-    public Dictionary<string,string> DocDefinitions { get; set; } = [];
+    public Dictionary<string, string> DocDefinitions { get; set; } = [];
 
     /// <summary>
     /// Collection of usage examples with styles.
     /// </summary>
-    public Dictionary<string,string> DocExamples { get; set; } = [];
+    public Dictionary<string, string> DocExamples { get; set; } = [];
 }
 
 public sealed class DocItem
@@ -162,5 +162,5 @@ public sealed class ExportItem
     public string GroupDescription { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public Dictionary<string,ClassDefinition> Usages { get; set; } = new(StringComparer.Ordinal);
+    public Dictionary<string, ClassDefinition> Usages { get; set; } = new();
 }
