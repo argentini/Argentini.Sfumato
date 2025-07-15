@@ -1,3 +1,6 @@
+using System;
+using System.Runtime.CompilerServices;
+
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public static class DelimitedSplitExtensions
@@ -17,19 +20,10 @@ public readonly ref struct DelimitedSplitEnumerable
     private readonly ReadOnlySpan<char> _buffer;
     private readonly char _delimiter;
 
-    internal DelimitedSplitEnumerable(string? s, char delimiter)
+    public DelimitedSplitEnumerable(string? s, char delimiter)
     {
-        if (s is null)
-        {
-            _buffer = ReadOnlySpan<char>.Empty;
-        }
-        else
-        {
-            var span = s.AsSpan();
+        _buffer = string.IsNullOrEmpty(s) ? [] : s[^1] == '!' ? s.AsSpan(0, s.Length - 1) : s.AsSpan();
 
-            _buffer = span.Length > 0 && span[^1] == '!' ? span[..^1] : span;
-        }
-        
         _delimiter = delimiter;
     }
 
@@ -40,70 +34,75 @@ public readonly ref struct DelimitedSplitEnumerable
         private ReadOnlySpan<char> _rest;
         private ReadOnlySpan<char> _current;
         private readonly char _delimiter;
-        private int _bracketDepth;
-        private int _parenDepth;
 
         internal Enumerator(ReadOnlySpan<char> buffer, char delimiter)
         {
-            _rest         = buffer;
-            _current      = default;
-            _delimiter    = delimiter;
-            _bracketDepth = 0;
-            _parenDepth   = 0;
+            _rest      = buffer;
+            _current   = default;
+            _delimiter = delimiter;
         }
 
-        public ReadOnlySpan<char> Current => _current;
+        public readonly ReadOnlySpan<char> Current => _current;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
             if (_rest.IsEmpty)
                 return false;
 
-            if (_rest.IndexOf(_delimiter) == -1)
+            var original = _rest;
+            var span = _rest;
+            var pos = 0;
+            var bracket = 0;
+            var paren = 0;
+
+            // Only allocate this once per MoveNext.
+            ReadOnlySpan<char> seps = stackalloc char[] {
+                _delimiter,
+                '[', ']', '(', ')'
+            };
+
+            while (true)
             {
-                _current = _rest;
-                _rest = ReadOnlySpan<char>.Empty;
-                
-                return true;
-            }
-            
-            for (var i = 0; i < _rest.Length; i++)
-            {
-                var ch = _rest[i];
+                var idx = span.IndexOfAny(seps);
+
+                if (idx < 0)
+                {
+                    // no more top‐level delimiter → emit the *whole* remainder
+                    _current = original;
+                    _rest = [];
+                    return true;
+                }
+
+                char ch = span[idx];
 
                 switch (ch)
                 {
                     case '[':
-                        _bracketDepth++;
+                        bracket++;
                         break;
                     case ']':
-                        if (_bracketDepth > 0)
-                            _bracketDepth--;
+                        if (bracket > 0) bracket--;
                         break;
-
                     case '(':
-                        _parenDepth++;
+                        paren++;
                         break;
                     case ')':
-                        if (_parenDepth   > 0)
-                            _parenDepth--;
+                        if (paren > 0) paren--;
                         break;
+                    case var d when d == _delimiter && bracket == 0 && paren == 0:
+                        // Found a top-level delimiter at absolute index (pos + idx)
+                        int splitAt = pos + idx;
+                        _current = original[..splitAt];
+                        _rest = original[(splitAt + 1)..];
+                        return true;
                 }
 
-                if (ch != _delimiter || _bracketDepth != 0 || _parenDepth != 0)
-                    continue;
-                
-                _current = _rest[..i]; // Slice before the delimiter
-                _rest    = _rest[(i + 1)..]; // Advance past it
-
-                return true;
+                // Not a top-level delimiter, skip past this char
+                // and continue scanning from there.
+                pos += idx + 1;
+                span = span[(idx + 1)..];
             }
-
-            // Last slice (no more delimiters)
-            _current = _rest;
-            _rest    = ReadOnlySpan<char>.Empty;
-            
-            return true;
         }
     }
 }

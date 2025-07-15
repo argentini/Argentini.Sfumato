@@ -21,7 +21,7 @@ public sealed class CssClass : IDisposable
     /// Name broken into variant and core segments.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]", "text-base/6"])
     /// </summary>
-    public HashSet<string> AllSegments { get; } = new (StringComparer.Ordinal);
+    public List<string> AllSegments { get; } = [];
 
     /// <summary>
     /// Variant segments used in the class name.
@@ -63,6 +63,12 @@ public sealed class CssClass : IDisposable
     #endregion
     
     #region Lifecycle
+
+    public CssClass(AppRunner appRunner)
+    {
+        AppRunner = appRunner;
+        Selector = string.Empty;
+    }
 
     public CssClass(AppRunner appRunner, string selector, bool fromRazorFile = false)
     {
@@ -139,18 +145,23 @@ public sealed class CssClass : IDisposable
             }
         });
     }
-    
+
+    public void SplitSelectorSegments()
+    {
+        foreach (var segment in Selector.SplitByTopLevel(':'))
+            AllSegments.Add(segment.ToString());
+    }
+
     public void Initialize(bool fromRazorFile)
     {
-        IsImportant = Selector.EndsWith('!');
+        IsImportant = Selector[^1] == '!';
 
         var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
-        var hasColons = Selector.Contains(':');
+        var hasColons = Selector.IndexOf(':') > 0;
 
         if (hasColons)
         {
-            foreach (var segment in Selector.SplitByTopLevel(':'))
-                AllSegments.Add(fromRazorFile ? NormalizeSegment(segment) : segment.ToString());
+            SplitSelectorSegments();
         }
         else
         {
@@ -158,7 +169,7 @@ public sealed class CssClass : IDisposable
             {
                 if (fromRazorFile)
                     Selector = NormalizeSegment(Selector);
-                
+
                 if (AppRunner.Library.SimpleClasses.TryGetValue(Selector, out ClassDefinition))
                 {
                     IsValid = true;
@@ -199,12 +210,12 @@ public sealed class CssClass : IDisposable
             if (AllSegments.Count <= 1)
                 return;
             
-            VariantSegments.Clear();
-            
             // One or more invalid variants invalidate the entire utility class
 
-            foreach (var segment in AllSegments.Take(AllSegments.Count - 1))
+            for (var i = 0; i < AllSegments.Count - 1; i++) // skip last item
             {
+                var segment = AllSegments[i];
+                
                 if (string.IsNullOrEmpty(segment))
                     return;
 
@@ -222,8 +233,8 @@ public sealed class CssClass : IDisposable
 
                     VariantSegments.Add(segment, pseudoClass);
                     
-                    if (pseudoClass.SelectorSuffix.IndexOf(":where(", StringComparison.Ordinal) > -1 || pseudoClass.SelectorSuffix.IndexOf(":is(", StringComparison.Ordinal) > -1)
-                        SelectorSort = 99;
+                    if (pseudoClass.PrioritySort > 0)
+                        SelectorSort = pseudoClass.PrioritySort;
                     else
                         SelectorSort++;
                 }
@@ -872,6 +883,7 @@ public sealed class CssClass : IDisposable
     public void GenerateWrappers()
     {
         var variantCount = VariantSegments.Count;
+
         if (variantCount == 0)
             return;
 
