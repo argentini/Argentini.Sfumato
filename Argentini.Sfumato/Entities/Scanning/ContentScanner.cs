@@ -16,7 +16,7 @@ public static class ContentScanner
         {
             fileContent.ScanForUtilities(quotedSubstrings, sb);
 
-            var results = new Dictionary<string, CssClass>();
+            var results = new Dictionary<string, CssClass>(StringComparer.Ordinal);
 
             foreach (var quotedSubstring in quotedSubstrings)
                 ScanStringForClasses(quotedSubstring, results, appRunner, fromRazorFile);
