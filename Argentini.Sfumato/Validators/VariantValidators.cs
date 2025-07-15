@@ -2,8 +2,6 @@ namespace Argentini.Sfumato.Validators;
 
 public static class VariantValidators
 {
-    #region Identify Variants
-
     public static bool TryVariantIsMediaQuery(this string variant, AppRunner appRunner, out VariantMetadata? cssMediaQuery)
     {
         cssMediaQuery = null;
@@ -486,6 +484,4 @@ public static class VariantValidators
         
         return true;
     }
-    
-    #endregion
 }
