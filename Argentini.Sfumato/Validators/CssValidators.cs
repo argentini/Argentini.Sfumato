@@ -27,7 +27,7 @@ public static class CssValidators
     {
         var index = 0;
 
-        while (index < value.Length && (char.IsDigit(value[index]) || value[index] == '.'))
+        while (index < value.Length && (char.IsDigit(value[index]) || value[index] == '.' || value[index] == '-'))
             index++;
 
         return index >= value.Length ? string.Empty : value[index..];         

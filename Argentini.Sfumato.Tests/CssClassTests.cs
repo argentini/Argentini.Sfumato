@@ -98,6 +98,16 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         {
             new ()
             {
+                ClassName = "top-[-0.65rem]",
+                EscapedClassName = @".top-\[-0\.65rem\]",
+                Styles =
+                    """
+                    top: -0.65rem;
+                    """,
+                IsValid = true
+            },
+            new ()
+            {
                 ClassName = "hover:text-base",
                 EscapedClassName = @".hover\:text-base:hover",
                 Styles =
