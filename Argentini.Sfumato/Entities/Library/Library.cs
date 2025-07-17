@@ -638,8 +638,6 @@ public sealed class Library
     public string ExportVariants()
     {
         var variants = new Dictionary<string, VariantMetadata>();
-        
-        variants.AddRange(PseudoclassPrefixes);
 
         PseudoclassPrefixes.Remove("data-");
         PseudoclassPrefixes.Remove("not-data-");
@@ -656,6 +654,7 @@ public sealed class Library
             SelectorSuffix = ":not([data-*]) /* data attribute does not exist */"
         });
 
+        variants.AddRange(PseudoclassPrefixes);
         variants.AddRange(MediaQueryPrefixes);
         variants.AddRange(SupportsQueryPrefixes);
         variants.AddRange(StartingStyleQueryPrefixes);

@@ -146,8 +146,8 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     /// </summary>
     public bool Remove(string key)
     {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
+        if (string.IsNullOrEmpty(key))
+            return false;
 
         // 1) Walk down, recording each node along the path
         var node = _root;
@@ -161,7 +161,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
             nodes.Add(node);
         }
 
-        // 2) If it wasn’t a terminal node, nothing to remove
+        // 2) If it wasn't a terminal node, nothing to remove
         if (node.IsWordEnd == false)
             return false;
 
