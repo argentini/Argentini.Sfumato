@@ -34,7 +34,7 @@ public static class VariantValidators
         variantMetadata = null;
         
         var indexOfSlash = variant.LastIndexOf('/');
-        var indexOfAt = variant.IndexOf('@'); // if zero a container query
+        var isContainerQuery = variant[0] == '@'; // true if a container query
 
         if (appRunner.Library.AllVariants.TryGetLongestMatchingPrefix(indexOfSlash > -1 ? variant[..indexOfSlash] : variant, out var prefix, out variantMetadata))
         {
@@ -43,10 +43,12 @@ public static class VariantValidators
         }
         else
         {
-            if (variant[0] != '[' && indexOfAt != 0)
+            if (variant[0] != '[' && isContainerQuery == false)
                 return false;
         }
 
+        #region Standard variants
+        
         if (variantMetadata?.SpecialCase == false)
         {
             var customValue = GetCustomValue(variant);
@@ -82,11 +84,15 @@ public static class VariantValidators
             }
         }
         
+        #endregion
+        
+        #region Special case variants
+        
         if (variantMetadata?.SpecialCase == true)
         {
             #region Container queries
 
-            if (indexOfAt == 0)
+            if (isContainerQuery)
             {
                 var variantValue = indexOfSlash > 0 ? variant[..indexOfSlash] : variant;
 
@@ -350,7 +356,9 @@ public static class VariantValidators
             #endregion
         }
         
-        #region Custom variants
+        #endregion
+        
+        #region Arbitrary CSS variants
 
         if (variant[0] != '[')
             return false;
