@@ -49,7 +49,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper)
         
         #region Variants
         
-        json = appRunner.Library.ExportVariants(appRunner);
+        json = appRunner.Library.ExportVariants();
         
         path = Path.GetFullPath(Path.Combine("../../../variants.json"));
         

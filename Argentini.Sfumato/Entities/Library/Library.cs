@@ -194,7 +194,7 @@ public sealed class Library
             .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false })
             .OrderBy(t => t.AssemblyQualifiedName)
             .ToList();
-        var groups = new PrefixTrie<string>();
+        var groups = new Dictionary<string,string>();
 
         foreach (var type in derivedTypes)
         {
@@ -623,7 +623,7 @@ public sealed class Library
 
     public string ExportColorDefinitions(AppRunner appRunner)
     {
-        var json = JsonSerializer.Serialize(appRunner.Library.ColorsByName, Jso);
+        var json = JsonSerializer.Serialize(appRunner.Library.ColorsByName.ToDictionary(), Jso);
 
         return json;
     }
@@ -635,9 +635,9 @@ public sealed class Library
         return json;
     }
 
-    public string ExportVariants(AppRunner appRunner)
+    public string ExportVariants()
     {
-        var variants = new PrefixTrie<VariantMetadata>();
+        var variants = new Dictionary<string, VariantMetadata>();
         
         variants.AddRange(PseudoclassPrefixes);
 
