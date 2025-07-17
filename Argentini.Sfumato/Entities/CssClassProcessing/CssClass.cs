@@ -112,7 +112,7 @@ public sealed class CssClass : IDisposable
         if (hasPair == false)
             return segment.ToString();
 
-        // count how many pairs we’ll collapse so we know final length
+        // count how many pairs we’ll collapse so we know the final length
         var collapseCount = 0;
         
         for (var i = 0; i < segment.Length - 1; i++)
@@ -219,80 +219,21 @@ public sealed class CssClass : IDisposable
                 if (string.IsNullOrEmpty(segment))
                     return;
 
-                if (segment.TryVariantIsMediaQuery(AppRunner, out var mediaQuery))
+                if (segment.TryGetVariant(AppRunner, out var variantMetadata))
                 {
-                    if (mediaQuery is null)
+                    if (variantMetadata is null)
                         return;
 
-                    VariantSegments.Add(segment, mediaQuery);
-                }
-                else if (segment.TryVariantIsPseudoClass(AppRunner, out var pseudoClass))
-                {
-                    if (pseudoClass is null)
-                        return;
+                    VariantSegments.Add(segment, variantMetadata);
 
-                    VariantSegments.Add(segment, pseudoClass);
-                    
-                    if (pseudoClass.PrioritySort > 0)
-                        SelectorSort = pseudoClass.PrioritySort;
-                    else
-                        SelectorSort++;
-                }
-                else if (segment.TryVariantIsContainerQuery(AppRunner, out var containerQuery))
-                {
-                    if (containerQuery is null)
-                        return;
-
-                    VariantSegments.Add(segment, containerQuery);
-                }
-                else if (segment.TryVariantIsGroup(AppRunner, out var group))
-                {
-                    if (group is null)
-                        return;
-
-                    VariantSegments.Add(segment, group);
-                }
-                else if (segment.TryVariantIsPeer(AppRunner, out var peer))
-                {
-                    if (peer is null)
-                        return;
-
-                    VariantSegments.Add(segment, peer);
-                }
-                else if (segment.TryVariantIsHas(AppRunner, out var has))
-                {
-                    if (has is null)
-                        return;
-
-                    VariantSegments.Add(segment, has);
-                }
-                else if (segment.TryVariantIsSupports(AppRunner, out var supportsQuery))
-                {
-                    if (supportsQuery is null)
-                        return;
-
-                    VariantSegments.Add(segment, supportsQuery);
-                }
-                else if (segment.TryVariantIsStartingStyleQuery(AppRunner, out var startingStyleQuery))
-                {
-                    if (startingStyleQuery is null)
-                        return;
-
-                    VariantSegments.Add(segment, startingStyleQuery);
-                }
-                else if (segment.TryVariantIsData(out var data))
-                {
-                    if (data is null)
-                        return;
-
-                    VariantSegments.Add(segment, data);
-                }
-                else if (segment.TryVariantIsCustom(AppRunner, out var custom))
-                {
-                    if (custom is null)
-                        return;
-
-                    VariantSegments.Add(segment, custom);
+                    if (variantMetadata.PrefixType[0] == 'p')
+                    {
+                        if (variantMetadata.PrioritySort > 0)
+                            SelectorSort = variantMetadata.PrioritySort;
+                        else
+                            SelectorSort++;
+                        
+                    }
                 }
                 else
                 {

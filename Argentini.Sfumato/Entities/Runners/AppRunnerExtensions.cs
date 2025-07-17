@@ -142,7 +142,8 @@ public static class AppRunnerExtensions
 		        {
 			        PrefixOrder = prefixOrder,
 			        PrefixType = "container",
-			        Statement = $"(width >= {breakpoint.Value})"
+			        Statement = $"(width >= {breakpoint.Value})",
+			        SpecialCase = true
 		        }) == false)
 		    {
 			    appRunner.Library.ContainerQueryPrefixes[$"@{key}"] = new VariantMetadata
@@ -160,7 +161,8 @@ public static class AppRunnerExtensions
 		        {
 			        PrefixOrder = prefixOrder,
 			        PrefixType = "container",
-			        Statement = $"(width < {breakpoint.Value})"
+			        Statement = $"(width < {breakpoint.Value})",
+			        SpecialCase = true
 		        }) == false)
 		    {
 			    appRunner.Library.ContainerQueryPrefixes[$"@max-{key}"] = new VariantMetadata
@@ -313,6 +315,12 @@ public static class AppRunnerExtensions
 	    }
 	    
 	    #endregion
+
+	    appRunner.Library.AllVariants.AddRange(appRunner.Library.MediaQueryPrefixes);
+	    appRunner.Library.AllVariants.AddRange(appRunner.Library.PseudoclassPrefixes);
+	    appRunner.Library.AllVariants.AddRange(appRunner.Library.ContainerQueryPrefixes);
+	    appRunner.Library.AllVariants.AddRange(appRunner.Library.SupportsQueryPrefixes);
+	    appRunner.Library.AllVariants.AddRange(appRunner.Library.StartingStyleQueryPrefixes);
 
 	    #region Read project settings
 
@@ -1160,8 +1168,14 @@ public static class AppRunnerExtensions
     {
 	    foreach (var span in segment.Content.ToString().EnumerateAtVariantStatements())
 	    {
-		    if (span.Name.ToString().TryVariantIsMediaQuery(appRunner, out var variant))
-			    segment.Content.Replace(span.Full, $"@{variant?.PrefixType} {variant?.Statement} {{");
+		    if (appRunner.Library.MediaQueryPrefixes.TryGetValue(span.Name.ToString(), out var variantMetadata))
+		    {
+			    segment.Content.Replace(span.Full, $"@{variantMetadata.PrefixType} {variantMetadata.Statement} {{");
+		    }
+		    else if (appRunner.Library.SupportsQueryPrefixes.TryGetValue(span.Name.ToString(), out variantMetadata))
+		    {
+			    segment.Content.Replace(span.Full, $"@{variantMetadata.PrefixType} {variantMetadata.Statement} {{");
+		    }
 	    }
 		
 	    await Task.CompletedTask;

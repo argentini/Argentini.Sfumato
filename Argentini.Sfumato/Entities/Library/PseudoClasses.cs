@@ -130,6 +130,7 @@ public static class LibraryPseudoClasses
 		    {
 			    PrefixType = "pseudoclass",
 			    SelectorSuffix = ":nth-child({0})",
+			    CanHaveNumericSuffix = true,
 			    Inheritable = true
 		    }
 	    },
@@ -139,6 +140,7 @@ public static class LibraryPseudoClasses
 		    {
 			    PrefixType = "pseudoclass",
 			    SelectorSuffix = ":nth-last-child({0})",
+			    CanHaveNumericSuffix = true,
 			    Inheritable = true
 		    }
 	    },
@@ -148,6 +150,7 @@ public static class LibraryPseudoClasses
 		    {
 			    PrefixType = "pseudoclass",
 			    SelectorSuffix = ":nth-of-type({0})",
+			    CanHaveNumericSuffix = true,
 			    Inheritable = true
 		    }
 	    },
@@ -157,6 +160,7 @@ public static class LibraryPseudoClasses
 		    {
 			    PrefixType = "pseudoclass",
 			    SelectorSuffix = ":nth-last-of-type({0})",
+			    CanHaveNumericSuffix = true,
 			    Inheritable = true
 		    }
 	    },
@@ -467,7 +471,7 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    SelectorSuffix = ""
+			    SpecialCase = true
 		    }
 	    },
 	    {
@@ -475,7 +479,72 @@ public static class LibraryPseudoClasses
 		    new VariantMetadata
 		    {
 			    PrefixType = "pseudoclass",
-			    SelectorSuffix = ""
+			    SpecialCase = true
+		    }
+	    },
+	    {
+		    "data-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true,
+			    SelectorSuffix = "{0}",
+		    }
+	    },
+	    {
+		    "group-has-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
+	    {
+		    "group-aria-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
+	    {
+		    "group-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
+	    {
+		    "peer-has-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
+	    {
+		    "peer-aria-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
+	    {
+		    "peer-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
+	    {
+		    "has-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
 		    }
 	    },
     };

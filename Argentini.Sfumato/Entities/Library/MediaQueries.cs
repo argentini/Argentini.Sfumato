@@ -121,5 +121,25 @@ public static class LibraryMediaQueries
 				Statement = "(scripting: none)"
 			}
 		},
+		{
+			"min-",
+			new VariantMetadata
+			{
+				PrefixOrder = 70000,
+				PrefixType = "media",
+				Statement = "(width >= {0})",
+				SpecialCase = true
+			}
+		},
+		{
+			"max-",
+			new VariantMetadata
+			{
+				PrefixOrder = 70000,
+				PrefixType = "media",
+				Statement = "(width < {0})",
+				SpecialCase = true
+			}
+		},
     };
 }

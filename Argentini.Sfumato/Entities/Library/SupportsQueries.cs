@@ -10,7 +10,8 @@ public static class LibrarySupportsQueries
 	        {
 	            PrefixOrder = 1,
 	            PrefixType = "supports",
-	            Statement = "({0})"
+	            Statement = "({0})",
+	            SpecialCase = true,
 	        }
         },
 		{
@@ -19,7 +20,8 @@ public static class LibrarySupportsQueries
 			{
 				PrefixOrder = 1,
 				PrefixType = "supports",
-				Statement = "not ({0})"
+				Statement = "not ({0})",
+				SpecialCase = true,
 			}
 		},
 		{

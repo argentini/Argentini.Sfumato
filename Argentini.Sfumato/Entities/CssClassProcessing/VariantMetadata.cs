@@ -10,16 +10,22 @@ public sealed class VariantMetadata
     public string SelectorPrefix { get; init; } = string.Empty;
     public string SelectorSuffix { get; init; } = string.Empty;
     public bool Inheritable { get; init; }
+    public bool SpecialCase { get; init; }
+    public bool CanHaveNumericSuffix { get; init; }
     public int PrioritySort { get; init; }
 
-    public VariantMetadata CreateNewPseudoClass(string suffix)
+    public VariantMetadata CreateNewVariant(string? prefixType = null, int? prefixOrder = null, string? statement = null, string? prefix = null, string? suffix = null, int? prioritySort = null)
     {
-        return new VariantMetadata()
+        return new VariantMetadata
         {
-            PrefixType = "pseudoclass",
-            SelectorSuffix = suffix,
+            PrefixOrder = prefixOrder ?? PrefixOrder,
+            PrefixType = prefixType ?? PrefixType,
+            Statement = statement ?? Statement,
+            SelectorPrefix = prefix ?? SelectorPrefix,
+            SelectorSuffix = suffix ?? SelectorSuffix,
             Inheritable = Inheritable,
-            PrioritySort = PrioritySort,
+            SpecialCase = SpecialCase,
+            PrioritySort = prioritySort ?? PrioritySort,
         };
     }
 }

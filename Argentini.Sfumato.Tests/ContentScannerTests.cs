@@ -254,14 +254,14 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         testOutputHelper.WriteLine("FileContentParsing() => Found:");
         testOutputHelper.WriteLine("");
 
+        foreach (var item in ExpectedValidMatches)
+            if (utilityClasses.ContainsKey(item) == false)
+                Assert.Fail($"NOT FOUND: `{item}`");
+
         foreach (var kvp in utilityClasses)
             testOutputHelper.WriteLine($"{kvp.Value.Selector}");
 
         Assert.Equal(ExpectedValidMatches.Count, utilityClasses.Count);
-
-        foreach (var item in ExpectedValidMatches)
-            if (utilityClasses.ContainsKey(item) == false)
-                Assert.Fail($"NOT FOUND: `{item}`");
     }
 
     [Fact]
