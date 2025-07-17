@@ -226,14 +226,13 @@ public sealed class CssClass : IDisposable
 
                     VariantSegments.Add(segment, variantMetadata);
 
-                    if (variantMetadata.PrefixType[0] == 'p')
-                    {
-                        if (variantMetadata.PrioritySort > 0)
-                            SelectorSort = variantMetadata.PrioritySort;
-                        else
-                            SelectorSort++;
-                        
-                    }
+                    if (variantMetadata.PrefixType[0] != 'p')
+                        continue;
+                    
+                    if (variantMetadata.PrioritySort > 0)
+                        SelectorSort += variantMetadata.PrioritySort;
+                    else
+                        SelectorSort++;
                 }
                 else
                 {
