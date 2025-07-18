@@ -108,6 +108,7 @@ public sealed class CssClass : IDisposable
             hasPair = true;
             break;
         }
+
         // if no pairs, we can bail out with a single allocation
         if (hasPair == false)
             return segment.ToString();
@@ -146,10 +147,10 @@ public sealed class CssClass : IDisposable
         });
     }
 
-    public void SplitSelectorSegments()
+    public void SplitSelectorSegments(bool fromRazorFile = false)
     {
         foreach (var segment in Selector.SplitByTopLevel(':'))
-            AllSegments.Add(segment.ToString());
+            AllSegments.Add(fromRazorFile ? NormalizeSegment(segment) : segment.ToString());
     }
 
     public void Initialize(bool fromRazorFile)
@@ -161,16 +162,18 @@ public sealed class CssClass : IDisposable
 
         if (hasColons)
         {
-            SplitSelectorSegments();
+            SplitSelectorSegments(fromRazorFile);
         }
         else
         {
+            if (fromRazorFile)
+                AllSegments.Add(IsImportant ? NormalizeSegment(Selector.AsSpan()[..^1]) : NormalizeSegment(Selector.AsSpan()));
+            else
+                AllSegments.Add(IsImportant ? Selector[..^1] : Selector);
+
             if (hasBrackets == false)
             {
-                if (fromRazorFile)
-                    Selector = NormalizeSegment(Selector);
-
-                if (AppRunner.Library.SimpleClasses.TryGetValue(Selector, out ClassDefinition))
+                if (AppRunner.Library.SimpleClasses.TryGetValue(AllSegments[0], out ClassDefinition))
                 {
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
@@ -181,8 +184,6 @@ public sealed class CssClass : IDisposable
                     return;
                 }
             }
-
-            AllSegments.Add(IsImportant ? Selector.TrimEnd('!') : Selector);
         }
 
         ProcessArbitraryCss();
@@ -294,12 +295,12 @@ public sealed class CssClass : IDisposable
     {
         try
         {
-            AppRunner.Library.ScannerClassNamePrefixes.TryGetLongestMatchingPrefix(AllSegments.Last().Contains('/') ? AllSegments.Last()[..AllSegments.Last().IndexOf('/')] : AllSegments.Last(), out var prefix, out _);
+            AppRunner.Library.ScannerClassNamePrefixes.TryGetLongestMatchingPrefix(AllSegments[^1].Contains('/') ? AllSegments[^1][..AllSegments[^1].IndexOf('/')] : AllSegments[^1], out var prefix, out _);
 
             if (string.IsNullOrEmpty(prefix))
                 return;
 
-            var value = AllSegments.Last().TrimStart(prefix) ?? string.Empty;
+            var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
 
             if (value.Contains('/'))
             {
@@ -310,7 +311,7 @@ public sealed class CssClass : IDisposable
 
                 if (slashSegments.Count == 2)
                 {
-                    ModifierValue = slashSegments.Last();
+                    ModifierValue = slashSegments[^1];
                     value = value.TrimEnd($"/{ModifierValue}") ?? string.Empty;
                     HasArbitraryModifierValue = ModifierValue.StartsWith('[');
                     ModifierValue = ModifierValue.TrimStart('[').TrimEnd(']');
