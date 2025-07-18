@@ -10,6 +10,30 @@ public static class DelimitedSplitExtensions
     /// when that delimiter is **not** inside square-brackets or parentheses.
     /// </summary>
     public static DelimitedSplitEnumerable SplitByTopLevel(this string? source, char delimiter) => new(source, delimiter);
+
+    
+    /// <summary>
+    /// Return only the last segment of <paramref name="source"/>, split by <paramref name="delimiter"/>
+    /// at top-level (i.e., ignoring delimiters inside [ ] or ( )).
+    /// Allocates exactly one string (the final segment), or returns null/empty if <paramref name="source"/> is null/empty.
+    /// </summary>
+    public static string? LastByTopLevel(this string? source, char delimiter)
+    {
+        if (source is null)
+            return null;
+
+        if (source.Length == 0)
+            return string.Empty;
+
+        ReadOnlySpan<char> last = default;
+
+        // use the existing fast, zero-alloc Span-enumerator
+        foreach (var segment in source.SplitByTopLevel(delimiter))
+            last = segment;
+
+        // allocate only one string for the very last segment
+        return last.ToString();
+    }
 }
 
 /// <summary>

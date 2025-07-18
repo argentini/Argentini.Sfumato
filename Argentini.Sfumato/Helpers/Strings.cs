@@ -576,7 +576,7 @@ public static partial class Strings
 	/// matching braces even if there are nested blocks inside.
 	/// </summary>
 	/// <param name="content">Source CSS</param>
-	/// <param name="cssBlockDeclaration">Set as block declaration value like "@media (prefers-color-scheme: dark) {"</param>
+	/// <param name="cssBlockDeclaration">Set as a block declaration value like "@media (prefers-color-scheme: dark) {"</param>
 	public static IEnumerable<string> FindMediaBlocks(this string? content, string cssBlockDeclaration)
 	{
 		if (string.IsNullOrEmpty(content))
@@ -635,8 +635,9 @@ public static partial class Strings
 	/// </summary>
 	/// <param name="source"></param>
 	/// <param name="bag"></param>
+	/// <param name="scannerClassNamePrefixes"></param>
 	/// <param name="sb"></param>
-	public static void ScanForUtilities(this string? source, HashSet<string>? bag, StringBuilder? sb = null)
+	public static void ScanForUtilities(this string? source, HashSet<string>? bag, PrefixTrie<object?> scannerClassNamePrefixes, StringBuilder? sb = null)
 	{
 	    if (bag is null || string.IsNullOrEmpty(source))
 	        return;
@@ -660,13 +661,13 @@ public static partial class Strings
 	    var splits = sb.ToString().SplitByNonWhitespace();
 
 	    foreach (var segment in splits)
-	        ProcessSubstrings(segment, bag);
+	        ProcessSubstrings(segment, bag, scannerClassNamePrefixes);
 	}
 
 	private static readonly char[] Delimiters = ['\"', '\'', '`'];
 	private const char DoubleQuote = '\"';
 
-	public static void ProcessSubstrings(this string source, HashSet<string> bag)
+	public static void ProcessSubstrings(this string source, HashSet<string> bag, PrefixTrie<object?> scannerClassNamePrefixes)
 	{
 	    // Early exit for empty strings
 	    if (string.IsNullOrEmpty(source))
@@ -699,7 +700,7 @@ public static partial class Strings
 	    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
 	    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
 
-	    if (addSource && trimmedSource.IsLikelyUtilityClass())
+	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes))
 	        bag.Add(trimmedSource);
 
 	    // Check each delimiter once
@@ -717,7 +718,7 @@ public static partial class Strings
 	            continue;
 	            
 	        foreach (var subsegment in subsegments)
-	            ProcessSubstrings(subsegment, bag);
+	            ProcessSubstrings(subsegment, bag, scannerClassNamePrefixes);
 	        
 	        // Exit after first delimiter found and processed
 	        break;
@@ -735,43 +736,48 @@ public static partial class Strings
 	/// Runs in a single pass over the string and does
 	/// no heap allocations.
 	/// </summary>
-	public static bool IsLikelyUtilityClass(this string source)
+	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes)
 	{
 		if (source.Length < 3)
 			return false;
 
-		// ---- 1. First-character gate -----------------------------------------
-		var first = source[0];
-
-		if (first is >= 'a' and <= 'z' or '[' or '-' or '@' or '*' == false)
-			return false;
-
-		// ---- 2. Last-character gate ------------------------------------------
-		var last = source[^1];
-
-		if (last is >= 'a' and <= 'z' or >= '0' and <= '9' or '%' or '!' or ']' or ')' == false)
-			return false;
-
-		// ---- 3. Balanced-bracket scan (single pass) --------------------------
-		var square = 0;
-		var paren  = 0;
-
-		// `for` is ~20–25 % faster than `foreach` on strings
-		for (var i = 0; i < source.Length; i++)
+		if (source.IndexOf('[') > 0 || source.IndexOf('(') > 0)
 		{
-			var c = source[i];
+			var square = 0;
+			var paren  = 0;
 
-			// Count and allow early bail-out when the balance goes negative
-			switch (c)
+			for (var i = 0; i < source.Length; i++)
 			{
-				case '[': ++square; break;
-				case ']': if (--square < 0) return false; break;
-				case '(': ++paren; break;
-				case ')': if (--paren < 0) return false; break;
+				var c = source[i];
+
+				switch (c)
+				{
+					case '[': ++square; break;
+					case ']': if (--square < 0) return false; break;
+					case '(': ++paren; break;
+					case ')': if (--paren < 0) return false; break;
+				}
 			}
+
+			if (square != 0 || paren != 0)
+				return false;
 		}
 
-		return square == 0 && paren == 0;
+		if (source[^1] == ':')
+			return false;
+
+		var prefix = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
+
+		if (prefix[0] == '[')
+			return true;
+
+		if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(prefix, out _, out _) == false)
+			return false;
+		
+		if (prefix[^1] is >= 'a' and <= 'z' || prefix[^1] is >= '0' and <= '9' || prefix[^1] == ']' || prefix[^1] == ')' || prefix[^1] == '%')
+			return true;
+
+		return false;
 	}
 
 	/// <summary>

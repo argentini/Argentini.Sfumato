@@ -63,11 +63,11 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)]",
         "[content:'arbitrary_test']",
         "font-sans",
-        "arbitrary_test",
-        "viewport",
-        "initial-scale=1",
-        "stylesheet",
-        "css/sfumato.css",
+        //"arbitrary_test",
+        //"viewport",
+        //"initial-scale=1",
+        //"stylesheet",
+        //"css/sfumato.css",
         "@container",
         "content-['test']",
         "content-['']",
@@ -76,8 +76,8 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "xl:text-base/[3rem]",
         "dark:text-base/5",
         "[-webkit-backdrop-filter:blur(1rem)]",
-        "test",
-        "test-home",
+        //"test",
+        //"test-home",
         "@max-md:flex-col",
         "text-[1rem]",
         "lg:text-[1.25rem]",
@@ -85,7 +85,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "bg-fuchsia-500",
         "dark:sm:bg-fuchsia-300",
         "dark:text-[length:1rem]",
-        "xl:text-[#112233]",
+        //"xl:text-[#112233]",
         "xl:text-[red]",
         "xl:text-[--my-color-var]",
         "xl:text-[var(--my-color-var)]",
@@ -93,7 +93,6 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "sm:[font-weight:900]",
         "[fontweight:400]",
         "sm:[fontweight:300]",
-        "xl:text[#112233]",
         "xl:text-slate[#112233]",
         "xl:text-slate-50[#112233]",
         "xxl:text-slate-50-[#112233]",
@@ -113,13 +112,13 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "top-1/2",
         "antialiased",
         "select-none",
-        "@(childUrl)",
-        "category.Slug",
-        "selectedClasses",
+        //"@(childUrl)",
+        //"category.Slug",
+        //"selectedClasses",
         "pl-4",
         "-ml-px",
         "border-l",
-        "test-element",
+        //"test-element",
         "bg-emerald-900",
         "[font-weight:700]",
         "md:[font-weight:700]",
@@ -130,8 +129,8 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "bg-slate-400",
         "text-9xl",
         "content-[\"test2\"]",
-        "test2",
-        "iconClass",
+        //"test2",
+        //"iconClass",
         "mr-2.5",
         "line-clamp-1",
         "-mt-1!",
@@ -152,6 +151,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "@container",
         "content-['test']",
         "content-['']",
+        //"content-[",
         "phab:hover:text-xs",
         "xl:text-base/[3rem]",
         "dark:text-base/5",
@@ -232,9 +232,10 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void StringScanning()
     {
+        var appRunner = new AppRunner(new AppState());
         var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
 
-        Markup.ScanForUtilities(quotedSubstrings);
+        Markup.ScanForUtilities(quotedSubstrings, appRunner.Library.ScannerClassNamePrefixes);
 
         foreach (var substring in ExpectedMatches)
             if (quotedSubstrings.Contains(substring) == false)
