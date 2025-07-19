@@ -741,39 +741,17 @@ public static partial class Strings
 		if (source.Length < 3)
 			return false;
 
-		if (source.IndexOf('[') > 0 || source.IndexOf('(') > 0)
-		{
-			var square = 0;
-			var paren  = 0;
-
-			for (var i = 0; i < source.Length; i++)
-			{
-				var c = source[i];
-
-				switch (c)
-				{
-					case '[': ++square; break;
-					case ']': if (--square < 0) return false; break;
-					case '(': ++paren; break;
-					case ')': if (--paren < 0) return false; break;
-				}
-			}
-
-			if (square != 0 || paren != 0)
-				return false;
-		}
-
-		if (source[^1] == ':')
-			return false;
-
 		var prefix = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
 
 		if (prefix[0] == '[')
 			return true;
-
+		
 		if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(prefix, out _, out _) == false)
 			return false;
-		
+
+		if (source[^1] == ':')
+			return false;
+
 		if (prefix[^1] is >= 'a' and <= 'z' || prefix[^1] is >= '0' and <= '9' || prefix[^1] == ']' || prefix[^1] == ')' || prefix[^1] == '%')
 			return true;
 
