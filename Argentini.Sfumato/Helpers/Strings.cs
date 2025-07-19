@@ -2004,23 +2004,32 @@ public static partial class Strings
 	/// Formats the elapsed time in the most appropriate unit:
 	/// seconds (s), milliseconds (ms), or microseconds (μs).
 	/// </summary>
-	public static string FormatTimer(this Stopwatch timer)
+	public static string FormatTimer(this TimeSpan timeSpan)
 	{
-		var elapsed = timer.Elapsed;
-
-		if (elapsed.TotalSeconds >= 1)
-			return $"{elapsed.TotalSeconds:0}s";
-
-		if (elapsed.TotalMilliseconds >= 1)
-			return $"{elapsed.TotalMilliseconds:0}ms";
-
-		// TimeSpan.Ticks are in 100-nanosecond units. 
-		// 1 microsecond = 1,000 nanoseconds = 10 ticks.
-		var microseconds = elapsed.Ticks / 10.0;
-
-		return $"{microseconds:0}μs";
+		if (timeSpan.TotalNanoseconds < 1000d)
+			return $"{timeSpan.TotalNanoseconds:0}ns";
+		
+		if (timeSpan.TotalNanoseconds < 1000000d)
+			return $"{timeSpan.TotalMicroseconds:0}μs";
+		
+		return timeSpan.TotalNanoseconds < 1000000000d ? $"{timeSpan.TotalMilliseconds:0}ms" : $"{timeSpan.TotalSeconds:0}s";
 	}
-	
+
+	/// <summary>
+	/// Formats the elapsed time in the most appropriate unit:
+	/// seconds (s), milliseconds (ms), microseconds (μs), or nanoseconds (ns).
+	/// </summary>
+	public static string FormatTimerFromNanoseconds(this double nanoseconds)
+	{
+		if (nanoseconds < 1_000d)
+			return $"{nanoseconds:0}ns";
+		
+		if (nanoseconds < 1_000_000d)
+			return $"{nanoseconds / 1_000:0}μs";
+		
+		return nanoseconds < 1_000_000_000d ? $"{nanoseconds / 1_000_000:0}ms" : $"{nanoseconds / 1_000_000_000:0}s";
+	}
+
 	#endregion
     
     #region Console
