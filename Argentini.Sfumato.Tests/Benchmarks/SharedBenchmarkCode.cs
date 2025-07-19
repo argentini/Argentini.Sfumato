@@ -40,7 +40,7 @@ public class SharedBenchmarkCode
 
         AppRunner = new AppRunner(new AppState());
 
-        TestOutputHelper?.WriteLine("B E N C H M A R K  -----------------------------------------------------------------------------");
+        TestOutputHelper?.WriteLine("B E N C H M A R K  -------------------------------------------------------------------");
         TestOutputHelper?.WriteLine(string.Empty);
         TestOutputHelper?.WriteLine($"Timestamp   :  {DateTime.Now:s}");
         TestOutputHelper?.WriteLine($"Platform    :  {GetOsPlatformName()}");
@@ -50,8 +50,8 @@ public class SharedBenchmarkCode
         TestOutputHelper?.WriteLine($"Iterations  :  {Iterations} x {InnerRepeat}");
         TestOutputHelper?.WriteLine($"Warmup      :  {WarmupTimeSeconds:F1} s");
         TestOutputHelper?.WriteLine(string.Empty);
-        TestOutputHelper?.WriteLine("Method                                                               Mean                Elapsed");
-        TestOutputHelper?.WriteLine("------------------------------------------------------------------------------------------------");
+        TestOutputHelper?.WriteLine("Method                                                          Mean           Elapsed");
+        TestOutputHelper?.WriteLine("--------------------------------------------------------------------------------------");
     }
 
     public async ValueTask IterationSetup()
@@ -68,8 +68,8 @@ public class SharedBenchmarkCode
     {
         var testTime = Stopwatch.GetElapsedTime(GlobalStartTime);
 
-        TestOutputHelper?.WriteLine("------------------------------------------------------------------------------------------------");
-        TestOutputHelper?.WriteLine($"{"Totals",-45}   {GlobalMeanTime,22:N0} ns   {testTime.FormatTimer(),20}");
+        TestOutputHelper?.WriteLine("--------------------------------------------------------------------------------------");
+        TestOutputHelper?.WriteLine($"{"Totals",-45}   {GlobalMeanTime,17:N0} ns   {testTime.FormatTimer(),15}");
     }
 
     public async ValueTask BenchmarkMethod(string methodName, Func<Task> action)
@@ -143,7 +143,7 @@ public class SharedBenchmarkCode
 
         GlobalMeanTime += averageNs;
         
-        TestOutputHelper?.WriteLine($"{methodName,-45}   {averageNs,22:N0} ns   {(endTestTime * NsPerTick).FormatTimerFromNanoseconds(),20}");
+        TestOutputHelper?.WriteLine($"{methodName,-45}   {averageNs,17:N0} ns   {(endTestTime * NsPerTick).FormatTimerFromNanoseconds(),15}");
     }
     
     /// <summary>
