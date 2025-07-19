@@ -39,9 +39,13 @@ public class SharedBenchmarkCode
 #endif
 
         AppRunner = new AppRunner(new AppState());
-        
+
         TestOutputHelper?.WriteLine("B E N C H M A R K  -----------------------------------------------------------------------------");
         TestOutputHelper?.WriteLine(string.Empty);
+        TestOutputHelper?.WriteLine($"Timestamp   :  {DateTime.Now:s}");
+        TestOutputHelper?.WriteLine($"Platform    :  {GetOsPlatformName()}");
+        TestOutputHelper?.WriteLine($"Version     :  {Environment.OSVersion.VersionString}");
+        TestOutputHelper?.WriteLine($"Cores       :  {Environment.ProcessorCount}");
         TestOutputHelper?.WriteLine($"Build       :  {(IsDebug ? "Debug" : "Release")}");
         TestOutputHelper?.WriteLine($"Iterations  :  {Iterations} x {InnerRepeat}");
         TestOutputHelper?.WriteLine($"Warmup      :  {WarmupTimeSeconds:F1} s");
@@ -65,7 +69,7 @@ public class SharedBenchmarkCode
         var testTime = Stopwatch.GetElapsedTime(GlobalStartTime);
 
         TestOutputHelper?.WriteLine("------------------------------------------------------------------------------------------------");
-        TestOutputHelper?.WriteLine($"{" ",45}   {GlobalMeanTime,22:N0} ns   {testTime.FormatTimer(),20}");
+        TestOutputHelper?.WriteLine($"{"Totals",-45}   {GlobalMeanTime,22:N0} ns   {testTime.FormatTimer(),20}");
     }
 
     public async ValueTask BenchmarkMethod(string methodName, Func<Task> action)
@@ -140,5 +144,54 @@ public class SharedBenchmarkCode
         GlobalMeanTime += averageNs;
         
         TestOutputHelper?.WriteLine($"{methodName,-45}   {averageNs,22:N0} ns   {(endTestTime * NsPerTick).FormatTimerFromNanoseconds(),20}");
+    }
+    
+    /// <summary>
+    /// Get OS platform.
+    /// </summary> 
+    /// <returns>OSPlatform object</returns> 
+    public static OSPlatform GetOsPlatform() 
+    { 
+        var osPlatform = OSPlatform.Create("Other platform");
+
+        // Check if it's windows 
+        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows); 
+        osPlatform = isWindows ? OSPlatform.Windows : osPlatform; 
+
+        // Check if it's osx 
+        var isOsx = RuntimeInformation.IsOSPlatform(OSPlatform.OSX); 
+        osPlatform = isOsx ? OSPlatform.OSX : osPlatform; 
+
+        // Check if it's Linux 
+        var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux); 
+        osPlatform = isLinux ? OSPlatform.Linux : osPlatform; 
+
+        return osPlatform; 
+    } 
+
+    /// <summary>
+    /// Get OS platform name for output to users.
+    /// </summary> 
+    /// <returns>OSPlatform name (friendly for output)</returns> 
+    public static string GetOsPlatformName()
+    {
+        var result = "Other";
+
+        if (GetOsPlatform() == OSPlatform.OSX)
+        {
+            result = "macOS";
+        }
+
+        else if (GetOsPlatform() == OSPlatform.Linux)
+        {
+            result = "Linux";
+        }
+
+        else if (GetOsPlatform() == OSPlatform.Windows)
+        {
+            result = "Windows";
+        }
+
+        return result;
     }
 }
