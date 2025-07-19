@@ -57,10 +57,6 @@ internal class Program
 
 		#endregion
 
-		var totalTimer = new Stopwatch();
-
-		totalTimer.Start();
-		
 		Console.OutputEncoding = Encoding.UTF8;
 		
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
@@ -249,11 +245,6 @@ internal class Program
 				tasks.Add(appRunner.FullBuildAndSaveCss());
 
 			await Task.WhenAll(tasks);
-
-			totalTimer.Stop();
-
-			// await Console.Out.WriteLineAsync($"Elapsed time {totalTimer.FormatTimer()}");
-			// await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 
 			if (appState.WatchMode)
 			{
