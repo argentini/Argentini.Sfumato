@@ -157,15 +157,14 @@ public sealed class CssClass : IDisposable
     {
         IsImportant = Selector[^1] == '!';
 
-        var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
-        var hasColons = Selector.IndexOf(':') > 0;
-
-        if (hasColons)
+        if (Selector.IndexOf(':') > 0)
         {
             SplitSelectorSegments(fromRazorFile);
         }
         else
         {
+            var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
+
             if (fromRazorFile)
                 AllSegments.Add(IsImportant ? NormalizeSegment(Selector.AsSpan()[..^1]) : NormalizeSegment(Selector.AsSpan()));
             else
@@ -203,6 +202,10 @@ public sealed class CssClass : IDisposable
         if (IsValid)
             GenerateWrappers();
     }
+    
+    #endregion
+    
+    #region Processing
     
     public void ProcessVariants()
     {
