@@ -4,6 +4,8 @@ namespace Argentini.Sfumato.Tests;
 
 public class ContentScannerTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     private static string Markup => """
                                     <!DOCTYPE html>
                                     <html lang="en" class="nth-[3n_+_1]:text-base bg-[url(/media/ze0liffq/alien-world.jpg?width=1920&quality=90)] [content:'arbitrary_test'] font-sans">
@@ -232,7 +234,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void StringScanning()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
 
         Markup.ScanForUtilities(quotedSubstrings, appRunner.Library.ScannerClassNamePrefixes);
@@ -249,7 +251,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void FileContentParsing()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appRunner, true);
 
         testOutputHelper.WriteLine("FileContentParsing() => Found:");
@@ -268,7 +270,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task CssCustomPropertyScanner()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         var props = new List<string>();
         var segment = new GenerationSegment
         {

@@ -4,10 +4,11 @@
 
 namespace Argentini.Sfumato;
 
-public sealed class AppState
+public sealed class AppState(ObjectPool<StringBuilder> stringBuilderPool)
 {
     #region Run Mode Properties
 
+    public ObjectPool<StringBuilder> StringBuilderPool { get; } = stringBuilderPool;
     public bool BuildMode { get; set; }
     public bool WatchMode { get; set; }
     public bool VersionMode { get; set; }
@@ -20,15 +21,6 @@ public sealed class AppState
 
     private List<string> CliArguments { get; } = [];
     public List<AppRunner> AppRunners { get; } = [];
-    
-    #endregion
-    
-    #region App State Properties
-
-    public static string CliErrorPrefix => "Sfumato => ";
-    public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-    public string EmbeddedCssPath => GetEmbeddedCssPath();
-    public string WorkingPath => Directory.GetCurrentDirectory();
     
     #endregion
 
@@ -83,7 +75,7 @@ public sealed class AppState
 		}
 
 		if (CliArguments.Count < 2)
-			return $"{CliErrorPrefix}Must include one or more CSS files";
+			return $"{Constants.CliErrorPrefix}Must include one or more CSS files";
 
 		for (var x = 1; x < CliArguments.Count; x++)
 		{
@@ -93,7 +85,7 @@ public sealed class AppState
 			var arg = CliArguments[x].SetNativePathSeparators();
 
 			if (arg.EndsWith(".css", StringComparison.OrdinalIgnoreCase) == false)
-				return $"{CliErrorPrefix}Invalid CSS file argument: {arg}";
+				return $"{Constants.CliErrorPrefix}Invalid CSS file argument: {arg}";
 
 			if (File.Exists(arg))
 			{
@@ -102,11 +94,11 @@ public sealed class AppState
 				if (useMinify)
 					x++;
 
-				AppRunners.Add(new AppRunner(this, arg, useMinify));
+				AppRunners.Add(new AppRunner(StringBuilderPool, arg, useMinify));
 			}
 			else
 			{
-				return $"{CliErrorPrefix}CSS file not found: {arg}";
+				return $"{Constants.CliErrorPrefix}CSS file not found: {arg}";
 			}
 		}
 
@@ -121,36 +113,5 @@ public sealed class AppState
 		return string.Empty;
 	}
 
-    private static string GetEmbeddedCssPath()
-    {
-	    var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-
-	    while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
-	    {
-		    workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
-
-		    if (Directory.Exists(Path.Combine(workingPath, "contentFiles")))
-		    {
-			    workingPath = Path.Combine(workingPath, "contentFiles", "any", "any", "css");
-			    break;
-		    }		    
-			
-		    if (Directory.Exists(Path.Combine(workingPath, "css")))
-		    {
-			    workingPath = Path.Combine(workingPath, "css");
-			    break;
-		    }		    
-		}
-
-        // ReSharper disable once InvertIf
-        if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
-        {
-            Console.WriteLine($"{CliErrorPrefix}Embedded CSS resources cannot be found.");
-            Environment.Exit(1);
-        }
-        
-		return workingPath;
-	}
-    
     #endregion
 }

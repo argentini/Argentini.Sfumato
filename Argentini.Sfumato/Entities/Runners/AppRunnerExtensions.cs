@@ -324,7 +324,7 @@ public static class AppRunnerExtensions
 
 	    #region Read project settings
 
-	    var workingSb = appRunner.AppState.StringBuilderPool.Get();
+	    var workingSb = appRunner.StringBuilderPool.Get();
 
 	    try
 	    {
@@ -390,7 +390,7 @@ public static class AppRunnerExtensions
 		    
 		    if (string.IsNullOrEmpty(appRunner.AppRunnerSettings.CssOutputFilePath))
 		    {
-			    Console.WriteLine($"{AppState.CliErrorPrefix}Must specify --output-path in file: {appRunner.AppRunnerSettings.CssFilePath}");
+			    Console.WriteLine($"{Constants.CliErrorPrefix}Must specify --output-path in file: {appRunner.AppRunnerSettings.CssFilePath}");
 
 			    return false;
 		    }
@@ -398,18 +398,18 @@ public static class AppRunnerExtensions
 		    if (appRunner.AppRunnerSettings.Paths.Count > 0)
 			    return true;
 		    
-		    Console.WriteLine($"{AppState.CliErrorPrefix}Must specify --paths: [] in file: {appRunner.AppRunnerSettings.CssFilePath}");
+		    Console.WriteLine($"{Constants.CliErrorPrefix}Must specify --paths: [] in file: {appRunner.AppRunnerSettings.CssFilePath}");
 
 		    return false;
 	    }
 	    catch (Exception e)
 	    {
-		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
+		    Console.WriteLine($"{Constants.CliErrorPrefix}{e.Message}");
 		    Environment.Exit(1);
 	    }
 	    finally
 	    {
-		    appRunner.AppState.StringBuilderPool.Return(workingSb);
+		    appRunner.StringBuilderPool.Return(workingSb);
 		}
 	    
 	    #endregion
@@ -423,7 +423,7 @@ public static class AppRunnerExtensions
 	
 	public static async Task<bool> LoadCssFileAsync(this AppRunner appRunner)
 	{
-		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+		var workingSb = appRunner.StringBuilderPool.Get();
 
 		try
 		{
@@ -463,7 +463,7 @@ public static class AppRunnerExtensions
 		}
 		finally
 		{
-			appRunner.AppState.StringBuilderPool.Return(workingSb);
+			appRunner.StringBuilderPool.Return(workingSb);
 		}
 	}
 	
@@ -562,12 +562,12 @@ public static class AppRunnerExtensions
 	        if (appRunner.AppRunnerSettings.SfumatoBlockItems.Count > 0)
 	            return;
 	        
-	        Console.WriteLine($"{AppState.CliErrorPrefix}No Sfumato options specified in CSS file.");
+	        Console.WriteLine($"{Constants.CliErrorPrefix}No Sfumato options specified in CSS file.");
 	        Environment.Exit(1);
 	    }
 	    catch (Exception e)
 	    {
-		    Console.WriteLine($"{AppState.CliErrorPrefix}{e.Message}");
+		    Console.WriteLine($"{Constants.CliErrorPrefix}{e.Message}");
 		    Environment.Exit(1);
 	    }
     }
@@ -598,7 +598,7 @@ public static class AppRunnerExtensions
 	    var settings = appRunner.AppRunnerSettings;
 	    var importsSeg = appRunner.ImportsCssSegment;
 	    var compsSeg = appRunner.ComponentsCssSegment;
-	    var pool = appRunner.AppState.StringBuilderPool;
+	    var pool = appRunner.StringBuilderPool;
 	    var baseDir = settings.NativeCssFilePathOnly;
 
 	    if (isRoot)
@@ -663,7 +663,7 @@ public static class AppRunnerExtensions
 	        
 	        if (File.Exists(filePath) == false)
 	        {
-	            Console.WriteLine($"{AppState.CliErrorPrefix}File does not exist: {filePath}");
+	            Console.WriteLine($"{Constants.CliErrorPrefix}File does not exist: {filePath}");
 
 	            importsSeg.Content
 	              .Append("/* Could not import: ")
@@ -839,7 +839,7 @@ public static class AppRunnerExtensions
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}_ProcessVariantBranchRecursive() - {e.Message}");
+			Console.WriteLine($"{Constants.CliErrorPrefix}_ProcessVariantBranchRecursive() - {e.Message}");
 			Environment.Exit(1);
 		}
 	}
@@ -891,7 +891,7 @@ public static class AppRunnerExtensions
 	{
 	    var css = segment.Content.ToString();
 	    var len = css.Length;
-	    var sb = appRunner.AppState.StringBuilderPool.Get();
+	    var sb = appRunner.StringBuilderPool.Get();
 	    
 	    // Track how far we've copied
 	    var prev = 0;
@@ -955,7 +955,7 @@ public static class AppRunnerExtensions
 	    segment.Content.ReplaceContent(sb);
 
 	    // Return the pooled builder
-	    appRunner.AppState.StringBuilderPool.Return(sb);
+	    appRunner.StringBuilderPool.Return(sb);
 
 	    return ValueTask.CompletedTask;
 	}
@@ -973,7 +973,7 @@ public static class AppRunnerExtensions
     {
         var used = segment.UsedCssCustomProperties;
         var colors = appRunner.Library.ColorsByName;
-        var pool = appRunner.AppState.StringBuilderPool;
+        var pool = appRunner.StringBuilderPool;
 
         // 1) snapshot to string once
         var src = segment.Content.ToString();
@@ -1234,8 +1234,8 @@ public static class AppRunnerExtensions
             var inner = css.AsSpan(bodyStart, bodyEnd - bodyStart);
 
             // Rewrite inner into two buffers + extract keyframes
-            var autoSb = appRunner.AppState.StringBuilderPool.Get();
-            var darkSb = appRunner.AppState.StringBuilderPool.Get();
+            var autoSb = appRunner.StringBuilderPool.Get();
+            var darkSb = appRunner.StringBuilderPool.Get();
             var keyframes = new List<string>();
             
             try
@@ -1262,8 +1262,8 @@ public static class AppRunnerExtensions
             }
             finally
             {
-                appRunner.AppState.StringBuilderPool.Return(autoSb);
-                appRunner.AppState.StringBuilderPool.Return(darkSb);
+                appRunner.StringBuilderPool.Return(autoSb);
+                appRunner.StringBuilderPool.Return(darkSb);
             }
 
             pos = bodyEnd + 1;
@@ -1726,7 +1726,7 @@ public static class AppRunnerExtensions
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"{AppState.CliErrorPrefix}ProcessTrackedDependencyValues() => {e.Message}");
+			Console.WriteLine($"{Constants.CliErrorPrefix}ProcessTrackedDependencyValues() => {e.Message}");
 			Environment.Exit(1);
 		}
 	}
@@ -2073,7 +2073,7 @@ public static class AppRunnerExtensions
 
 	public static string GenerateFinalCss(this AppRunner appRunner)
 	{
-		var workingSb = appRunner.AppState.StringBuilderPool.Get();
+		var workingSb = appRunner.StringBuilderPool.Get();
 
 		try
 		{
@@ -2081,7 +2081,7 @@ public static class AppRunnerExtensions
 		}
 		finally
 		{
-			appRunner.AppState.StringBuilderPool.Return(workingSb);
+			appRunner.StringBuilderPool.Return(workingSb);
 		}
 	}
 	

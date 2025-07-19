@@ -2,10 +2,12 @@ namespace Argentini.Sfumato.Tests.UtilityClasses.Borders;
 
 public class DivideColorTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public void DivideColor()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
 
         var testClasses = new List<TestClass>
         {

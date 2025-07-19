@@ -2,10 +2,12 @@ namespace Argentini.Sfumato.Tests;
 
 public class ExportTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public async Task ExportJsonAsync()
     {
-        var appRunner = new AppRunner(new AppState(), "../../../SampleCss/export.css");
+        var appRunner = new AppRunner(StringBuilderPool, "../../../SampleCss/export.css");
 
         await appRunner.LoadCssFileAsync();
         

@@ -2,10 +2,12 @@ namespace Argentini.Sfumato.Tests.UtilityClasses.Layout;
 
 public class InsetTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public void Inset()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         
         var testClasses = new List<TestClass>()
         {

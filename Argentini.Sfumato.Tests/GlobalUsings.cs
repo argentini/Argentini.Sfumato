@@ -7,3 +7,4 @@ global using Argentini.Sfumato.Entities.CssClassProcessing;
 global using Argentini.Sfumato.Entities.Runners;
 global using Argentini.Sfumato.Entities.Scanning;
 global using Argentini.Sfumato.Helpers;
+global using Microsoft.Extensions.ObjectPool;

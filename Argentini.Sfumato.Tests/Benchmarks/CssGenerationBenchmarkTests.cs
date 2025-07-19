@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Argentini.Sfumato.Tests.Benchmarks;
 
 public class CssGenerationBenchmarkTests

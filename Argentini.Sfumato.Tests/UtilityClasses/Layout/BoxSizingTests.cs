@@ -2,10 +2,12 @@ namespace Argentini.Sfumato.Tests.UtilityClasses.Layout;
 
 public class BoxSizingTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public void BoxSizing()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         
         var testClasses = new List<TestClass>()
         {

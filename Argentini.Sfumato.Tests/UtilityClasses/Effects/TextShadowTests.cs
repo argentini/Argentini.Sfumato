@@ -2,10 +2,12 @@ namespace Argentini.Sfumato.Tests.UtilityClasses.Effects;
 
 public class TextShadowTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public void TextShadow()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         
         var testClasses = new List<TestClass>()
         {

@@ -2,10 +2,12 @@ namespace Argentini.Sfumato.Tests.UtilityClasses.Svg;
 
 public class FillTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public void Fill()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         
         appRunner.Library.ColorsByName.Add("fynydd-hex", "#0088ff");
         appRunner.Library.ColorsByName.Add("fynydd-rgb", "rgba(0, 136, 255, 1.0)");

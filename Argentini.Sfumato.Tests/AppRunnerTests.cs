@@ -1,10 +1,11 @@
 using Microsoft.DotNet.PlatformAbstractions;
-using Microsoft.Extensions.ObjectPool;
 
 namespace Argentini.Sfumato.Tests;
 
 public class AppRunnerTests
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public async Task ProcessScannedFileUtilityClassDependencies()
     {
@@ -14,7 +15,7 @@ public class AppRunnerTests
         
         Assert.True(File.Exists(filePath));
         
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         var scannedFile = new ScannedFile(filePath);
 
         await scannedFile.LoadAndScanFileAsync(appRunner);
@@ -31,7 +32,7 @@ public class AppRunnerTests
 
         Assert.True(File.Exists(filePath));
         
-        var appRunner = new AppRunner(new AppState(), filePath);
+        var appRunner = new AppRunner(StringBuilderPool, filePath);
 
         await appRunner.LoadCssFileAsync();
         await appRunner.PerformFileScanAsync();
@@ -59,7 +60,7 @@ public class AppRunnerTests
 
         Assert.True(File.Exists(filePath));
 
-        var appRunner = new AppRunner(new AppState(), filePath);
+        var appRunner = new AppRunner(StringBuilderPool, filePath);
 
         await appRunner.LoadCssFileAsync();
 
@@ -114,7 +115,7 @@ public class AppRunnerTests
 
         Assert.True(File.Exists(filePath));
 
-        var appRunner = new AppRunner(new AppState(), filePath);
+        var appRunner = new AppRunner(StringBuilderPool, filePath);
 
         await appRunner.LoadCssFileAsync();
 
@@ -141,7 +142,7 @@ public class AppRunnerTests
 
         Assert.True(File.Exists(filePath));
 
-        var appRunner = new AppRunner(new AppState(), filePath);
+        var appRunner = new AppRunner(StringBuilderPool, filePath);
 
         await appRunner.LoadCssFileAsync();
 

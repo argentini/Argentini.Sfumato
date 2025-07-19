@@ -81,10 +81,10 @@ public sealed class CssClass : IDisposable
     public void Dispose()
     {
         if (Sb is not null)
-            AppRunner.AppState.StringBuilderPool.Return(Sb);
+            AppRunner.StringBuilderPool.Return(Sb);
         
         if (WorkingSb is not null)
-            AppRunner.AppState.StringBuilderPool.Return(WorkingSb);
+            AppRunner.StringBuilderPool.Return(WorkingSb);
     }
 
     #endregion
@@ -739,7 +739,7 @@ public sealed class CssClass : IDisposable
             if (variantCount == 0)
                 return;
 
-            Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+            Sb ??= AppRunner.StringBuilderPool.Get();
             Sb.Clear();
 
             // Single pass through variants to categorize and check for descendants
@@ -799,7 +799,7 @@ public sealed class CssClass : IDisposable
                 if (kvp.Value.Inheritable)
                 {
                     hasInheritedPseudoclass = true;
-                    WorkingSb ??= AppRunner.AppState.StringBuilderPool.Get();
+                    WorkingSb ??= AppRunner.StringBuilderPool.Get();
                     WorkingSb.ReplaceContent($", {EscapedSelector} {kvp.Value.SelectorSuffix}");
                 }
             }
@@ -831,7 +831,7 @@ public sealed class CssClass : IDisposable
         if (variantCount == 0)
             return;
 
-        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+        Sb ??= AppRunner.StringBuilderPool.Get();
 
         try
         {
@@ -923,7 +923,7 @@ public sealed class CssClass : IDisposable
         if (variants.Length == 0)
             return;
 
-        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+        Sb ??= AppRunner.StringBuilderPool.Get();
 
         Sb.Clear();
         Sb.Append('@');
@@ -952,7 +952,7 @@ public sealed class CssClass : IDisposable
 
     private void ProcessContainerVariants(ReadOnlySpan<KeyValuePair<string, VariantMetadata>> containerVariants)
     {
-        Sb ??= AppRunner.AppState.StringBuilderPool.Get();
+        Sb ??= AppRunner.StringBuilderPool.Get();
 
         Sb.Clear();
         Sb.Append("@container ");

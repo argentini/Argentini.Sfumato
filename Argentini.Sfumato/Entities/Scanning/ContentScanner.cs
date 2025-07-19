@@ -9,7 +9,7 @@ public static class ContentScanner
         if (string.IsNullOrEmpty(fileContent))
             return [];
         
-        var sb = appRunner.AppState.StringBuilderPool.Get();
+        var sb = appRunner.StringBuilderPool.Get();
         var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
 
         try
@@ -25,7 +25,7 @@ public static class ContentScanner
         }
         finally
         {
-            appRunner.AppState.StringBuilderPool.Return(sb);
+            appRunner.StringBuilderPool.Return(sb);
         }
     }
 

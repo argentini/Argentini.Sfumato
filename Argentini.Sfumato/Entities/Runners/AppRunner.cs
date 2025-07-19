@@ -6,15 +6,14 @@ public sealed class AppRunner
 {
 	#region Properties
 
-	static readonly double NsPerTick = 1_000_000_000.0 / Stopwatch.Frequency;
+	public ObjectPool<StringBuilder> StringBuilderPool { get; }
 
 	public string LastCss { get; set; } = string.Empty;
 	public List<string> Messages { get; } = [];
 	public bool MessagesBusy { get; set; }
 	public bool ProcessingWatchQueue { get; set; }
 	public bool IsFirstRun { get; set; } = true;
-	
-	public AppState AppState { get; }
+
 	public Library.Library Library { get; set; } = new();
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new();
 	public Dictionary<string, string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
@@ -23,7 +22,7 @@ public sealed class AppRunner
 
 	private string _cssFilePath;
 	private readonly bool _useMinify;
-
+	
 	private List<FileSystemWatcher> FileWatchers { get; } = [];
 	public ConcurrentDictionary<string, ScannedFile> ScannedFiles { get; } = new(StringComparer.Ordinal);
 	private ConcurrentDictionary<long, FileSystemEventArgs> RestartAppQueue { get; } = [];
@@ -53,16 +52,23 @@ public sealed class AppRunner
 
 	#region Construction
 
-	public AppRunner(AppState appState, string cssFilePath = "", bool useMinify = false)
+	public AppRunner(ObjectPool<StringBuilder> stringBuilderPool)
 	{
-		AppState = appState;
+		StringBuilderPool = stringBuilderPool;
+		_cssFilePath = string.Empty;
+		_useMinify = false;
+	}
+
+	public AppRunner(ObjectPool<StringBuilder> stringBuilderPool, string cssFilePath, bool useMinify = false)
+	{
+		StringBuilderPool = stringBuilderPool;
 
 		_cssFilePath = cssFilePath;
 		_useMinify = useMinify;
 
-		BrowserResetCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
-		FormsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
-		DefaultsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(AppState.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		BrowserResetCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(Constants.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		FormsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(Constants.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		DefaultsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(Constants.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
 
 		Initialize();
 	}
@@ -182,7 +188,7 @@ public sealed class AppRunner
 		ProcessScannedFileUtilityClassDependencies(this);
 
 		var elapsedTicks = Stopwatch.GetTimestamp() - timeStamp;
-		var nanoseconds  = elapsedTicks * NsPerTick;
+		var nanoseconds  = elapsedTicks * Constants.NsPerTick;
 
 		await AddMessageAsync(
 			$"Found {ScannedFiles.Count:N0} file{(ScannedFiles.Count==1?"":"s")}, " +
@@ -259,7 +265,7 @@ public sealed class AppRunner
 			await File.WriteAllTextAsync(AppRunnerSettings.NativeCssOutputFilePath, LastCss);
 
 			var elapsedTicks = Stopwatch.GetTimestamp() - timeStamp;
-			var nanoseconds  = elapsedTicks * NsPerTick;
+			var nanoseconds  = elapsedTicks * Constants.NsPerTick;
 
 			Messages.Add($"{LastCss.Length.FormatBytes()} written to {AppRunnerSettings.CssOutputFilePath} in {nanoseconds.FormatTimerFromNanoseconds()}");
 			Messages.Add($"Build complete at {DateTime.Now:HH:mm:ss.fff}");
@@ -286,7 +292,7 @@ public sealed class AppRunner
 		}
 		catch (Exception e)
 		{
-			Messages.Add($"{AppState.CliErrorPrefix}ProcessScannedFileUtilityClassDependencies() - {e.Message}");
+			Messages.Add($"{Constants.CliErrorPrefix}ProcessScannedFileUtilityClassDependencies() - {e.Message}");
 		}
 	}
     

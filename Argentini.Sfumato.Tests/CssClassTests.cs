@@ -4,6 +4,8 @@ namespace Argentini.Sfumato.Tests;
 
 public class CssClassTests
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     #region Constants
 
     public static string Markup => """
@@ -62,7 +64,7 @@ public class CssClassTests
         var basePath = ApplicationEnvironment.ApplicationBasePath;
         var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
 
-        AppRunner = new AppRunner(new AppState(), Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/wwwroot/stylesheets/source.css")));
+        AppRunner = new AppRunner(StringBuilderPool, Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/wwwroot/stylesheets/source.css")));
     }
 
     [Fact]

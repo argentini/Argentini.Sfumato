@@ -2,10 +2,12 @@ namespace Argentini.Sfumato.Tests.UtilityClasses.FlexboxAndGrid;
 
 public class JustifyItemsTests(ITestOutputHelper testOutputHelper)
 {
+    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+
     [Fact]
     public void JustifyItems()
     {
-        var appRunner = new AppRunner(new AppState());
+        var appRunner = new AppRunner(StringBuilderPool);
         
         var testClasses = new List<TestClass>()
         {
