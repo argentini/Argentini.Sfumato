@@ -2018,7 +2018,7 @@ public static partial class Strings
 		if (timeSpan.TotalSeconds < 60)
 			return $"{timeSpan.TotalSeconds:N3} s";
 
-		return $"{timeSpan.Hours} h : {timeSpan.Minutes:00} m : {timeSpan.Seconds:00}.{timeSpan.Milliseconds:000} s";
+		return $"{timeSpan.Hours:0}:{timeSpan.Minutes:00}:{timeSpan.Seconds:00}.{timeSpan.Milliseconds:000} s";
 	}
 
 	/// <summary>
