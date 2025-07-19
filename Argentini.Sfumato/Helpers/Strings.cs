@@ -2013,7 +2013,7 @@ public static partial class Strings
 			return $"{timeSpan.TotalMicroseconds:0} μs";
 		
 		if (timeSpan.TotalMilliseconds < 1000)
-			return $"{timeSpan.TotalMilliseconds:N3} ms";
+			return $"{timeSpan.TotalMilliseconds:0} ms";
 
 		if (timeSpan.TotalSeconds < 60)
 			return $"{timeSpan.TotalSeconds:N3} s";
@@ -2031,9 +2031,9 @@ public static partial class Strings
 			return $"{nanoseconds:0} ns";
 		
 		if (nanoseconds < 1_000_000d)
-			return $"{nanoseconds / 1_000:N3} μs";
+			return $"{nanoseconds / 1_000:0} μs";
 		
-		return nanoseconds < 1_000_000_000d ? $"{nanoseconds / 1_000_000:N3} ms" : $"{nanoseconds / 1_000_000_000:N3} s";
+		return nanoseconds < 1_000_000_000d ? $"{nanoseconds / 1_000_000:0} ms" : $"{nanoseconds / 1_000_000_000:N3} s";
 	}
 
 	#endregion
