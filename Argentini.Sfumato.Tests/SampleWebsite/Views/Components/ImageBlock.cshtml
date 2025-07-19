@@ -1,0 +1,47 @@
+﻿@{
+    var jsId = Strings.CreateUniqueId();
+    var themedImage = new ThemedImage(UmbracoContext, GlobalStateService, BlockContent, "image");
+    var lightImageUrl = string.Empty;
+    var darkImageUrl = string.Empty;
+    var description = BlockContent.SafeValue("caption").WithShortCodes(UmbracoContext, GlobalStateService);
+
+    if (themedImage.Initialized)
+    {
+        lightImageUrl = themedImage.GetImageUrl();
+        darkImageUrl = themedImage.GetDarkImageUrl();
+    }
+
+    var link = BlockContent.SafeValue<Link>("link");
+}
+<div class="max-md:-mx-5">
+    @if (link is not null && string.IsNullOrEmpty(link.Url) == false)
+    {
+        <a href="@(link.Url)" title="@Html.Raw(link.Name)" target="@(link.Target)"><img id="@(jsId)" src="@Html.Raw(lightImageUrl)" alt="@Html.Raw(description)" class="md:rounded"/></a>
+    }
+    else
+    {
+        <img id="@(jsId)" src="@Html.Raw(lightImageUrl)" alt="@Html.Raw(description)" class="md:rounded"/>
+    }
+    
+    @if (string.IsNullOrEmpty(description) == false)
+    {
+        <small class="block mt-3 max-md:mx-6 leading-5 text-pretty opacity-80">@Html.Raw(description)</small>
+    }
+    <style>
+
+        #@Html.Raw(jsId) {
+            content:url('@Html.Raw(lightImageUrl)');
+        }
+
+        [dark-theme] #@Html.Raw(jsId) {
+            content:url('@Html.Raw(darkImageUrl)');
+        }
+
+        @@media (prefers-color-scheme: dark) {
+            [auto-theme] #@Html.Raw(jsId) {
+                content:url('@Html.Raw(darkImageUrl)');
+            }
+        }
+
+    </style>
+</div>

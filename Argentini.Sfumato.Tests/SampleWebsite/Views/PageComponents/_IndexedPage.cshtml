@@ -1,0 +1,23 @@
+@(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_NavBar"))
+<div id="index-page-wrapper" class="lg:grid lg:grid-cols-[22rem_1fr] min-h-screen">
+    <div id="sidebar-wrapper" class="scrollbar-v-hover max-lg:fixed max-md:w-screen lg:sticky top-below-nav md:w-[22rem] max-h-[calc(100vh_-_var(--nav-bar-h))]! left-0 max-lg:left-999 z-20    max-lg:bg-canvas dark:max-lg:bg-dark-canvas md:border-r md:border-r-line dark:md:border-r-dark-line">
+        <div class="h-full px-5 md:px-8 py-10">
+            @if (Model.ContentType.Alias.InvariantEquals("blogListPage") || Model.ContentType.Alias.InvariantEquals("blogPost"))
+            {
+                @(await Html.PartialAsync("_BlogSidebar", Model))
+            }
+            else
+            {
+                @(await Html.PartialAsync("_IndexPageSidebar", Model))
+            }
+        </div>
+    </div>
+    <div id="content-wrapper" class="grid grid-rows-[1fr_auto]">
+        <div id="index-page-body" class="min-w-0">
+            @(await Html.PartialAsync("_IndexPageBody", Model))
+        </div>
+        <div>
+            @(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_Footer"))
+        </div>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+﻿<div class="rounded-xl text-sm px-6 py-5 bg-primary/15 dark:bg-secondary/15">
+    <div class="grid grid-cols-[auto_1fr] gap-x-5 md:items-center">
+        <div><i class="text-4xl fa-solid fa-circle-info text-primary dark:text-secondary"></i></div>        
+        <div class="rte-content text-pretty">@Html.Raw(BlockContent.SafeValue("richText").WithShortCodes(UmbracoContext, GlobalStateService))</div>        
+    </div>
+</div>

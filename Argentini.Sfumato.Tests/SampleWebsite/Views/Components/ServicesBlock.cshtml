@@ -1,0 +1,57 @@
+﻿<div class="grid @(BlockContent.IsTrue("twoColumns") ? "md:grid-cols-2" : string.Empty) gap-y-12 md:gap-x-16 md:gap-y-16 lg:gap-x-16 lg:gap-y-16 xl:gap-x-16">
+    @foreach (var block in BlockContent.SafeBlocklistValue("services").ToList())
+    {
+        var service = block.Content;
+
+        <div>
+            <div class="h-full grid grid-cols-[0.35rem_1fr] gap-x-6 md:gap-x-8 lg:gap-x-8 xl:gap-x-10">
+                <div class="rainbow rounded"></div>
+                <div>
+                    <div class="grid grid-cols-[auto_1fr] gap-x-3 md:gap-x-4">
+                        <h3 class="@(BlockContent.IsTrue("twoColumns") ? string.Empty : "text-3xl md:text-4xl")"><i class="@(service.SafeValue("iconClass"))"></i></h3>
+                        <h4 class="@(BlockContent.IsTrue("twoColumns") ? string.Empty : "text-3xl md:text-4xl")">@Html.Raw(service.SafeValue("title").WithShortCodes(UmbracoContext, GlobalStateService))</h4>
+                    </div>
+
+                    <div class="mt-6 rte-content text-pretty">@Html.Raw(service.SafeValue("description").WithShortCodes(UmbracoContext, GlobalStateService))</div>
+                    
+                    @if (service.SafeValue<string[]>("listItems")?.Any() ?? false)
+                    {
+                        var items = service.SafeValue<string[]>("listItems")?.ToList() ?? [];
+                        var column1Count = items.Count % 2 > 0 ? items.Count / 2 + 1 : items.Count / 2;
+                        var column1Items = items.Take(column1Count);
+                        var column2Items = items.Skip(column1Count);
+
+                        <div class="mt-6">
+                            <div class="grid md:grid-cols-[repeat(2,minmax(auto,max-content))] md:gap-x-6 lg:gap-x-8 gap-y-3">
+                                <div class="grid gap-y-3 content-start">
+                                    @foreach (var item in column1Items)
+                                    {
+                                    <div class="grid grid-cols-[auto_1fr] gap-x-3">
+                                        <p><i class="fa-solid fa-check text-primary"></i></p>
+                                        <p>@Html.Raw(item.WithShortCodes(UmbracoContext, GlobalStateService))</p>
+                                    </div>
+                                    }
+                                </div>
+                                <div class="grid gap-y-3 content-start">
+                                    @foreach (var item in column2Items)
+                                    {
+                                    <div class="grid grid-cols-[auto_1fr] gap-x-3">
+                                        <p><i class="fa-solid fa-check text-primary"></i></p>
+                                        <p>@Html.Raw(item.WithShortCodes(UmbracoContext, GlobalStateService))</p>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (service.HasValue("link"))
+                    {
+                        <div class="mt-8">
+                            <a href="@(service.SafeValue<Link>("link")?.Url)" target="@(service.SafeValue<Link>("link")?.Target ?? "_self")" class="button button--tertiary"><span>@Html.Raw(service.SafeValue("title").WithShortCodes(UmbracoContext, GlobalStateService))</span><i class="fa-regular fa-long-arrow-right ml-2"></i></a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

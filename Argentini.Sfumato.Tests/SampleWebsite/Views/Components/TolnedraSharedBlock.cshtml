@@ -1,0 +1,5 @@
+﻿@{
+    var sharedBlockNode = BlockContent.SafePickerValue("sharedBlock");
+
+    @(await Html.CachedBlockListAsync(ParentPage, sharedBlockNode?.SafeBlocklistValue("contentBlocks"), UmbracoContext, GlobalStateService, ViewData))
+}

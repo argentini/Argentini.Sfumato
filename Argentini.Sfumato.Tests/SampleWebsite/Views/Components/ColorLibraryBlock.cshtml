@@ -1,0 +1,91 @@
+﻿@{
+    var colorNames = new List<string>();
+    var grayNames = new List<string>();
+    
+    foreach (var (key, _) in SharedState.Colors)
+    {
+        if (key.IndexOf('-') < 1)
+            continue;
+        
+        var name = key[..key.IndexOf('-')];
+        
+        name = $"{char.ToUpper(name[0])}{name[1..]}";
+        
+        if (name is "Slate" or "Gray" or "Zinc" or "Neutral" or "Stone")
+        {
+            if (grayNames.Contains(name) == false)
+                grayNames.Add(name);
+        }
+        else
+        {
+            if (colorNames.Contains(name) == false)
+                colorNames.Add(name);
+        }
+    }
+}
+<div class="space-y-8">
+    @foreach (var colorName in colorNames)
+    {
+        <div class="max-md:-mx-5 max-md:rounded-none max-w-screen shadow-xs rounded-xl bg-black/2 dark:bg-white/2  border border-y-black/10 dark:border-y-white/10 md:border-black/10 dark:md:border-white/10">
+            <div class="scrollbar-h-hover">
+                <div class="w-fit p-5">
+                    <div class="grid grid-cols-[repeat(20,2.5rem)] md:grid-cols-[repeat(20,minmax(1.5rem,2.5rem))] gap-x-2 gap-y-2 items-center">
+                        <div class="col-span-full pb-2 uppercase font-bold leading-none text-black dark:text-white">@(colorName)</div>
+                        @for (var i = 50; i < 1001; i += 50)
+                        {
+                            <div class="w-full text-xs font-semibold leading-none">@(i)</div>
+                        }
+
+                        @foreach (var color in SharedState.Colors.Where(i => i.Key.StartsWith(colorName.ToLower() + "-")).OrderBy(i => i.Key.Length).ThenBy(i => i.Key))
+                        {
+                            <a class="inline-block rounded-md w-full h-full aspect-square outline -outline-offset-1 outline-black/10 dark:outline-white/10 cursor-pointer" title="Click to copy value to clipboard" onclick="halide.core.copyTextToClipboardAsync(`@(color.Value)`)" style="background-color: @(color.Value);"></a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @foreach (var colorName in grayNames)
+    {
+        <div class="max-md:-mx-5 max-md:rounded-none max-w-screen shadow-xs rounded-xl bg-black/2 dark:bg-white/2  border border-y-black/10 dark:border-y-white/10 md:border-black/10 dark:md:border-white/10">
+            <div class="scrollbar-h-hover">
+                <div class="w-fit p-5">
+                    <div class="grid grid-cols-[repeat(20,2.5rem)] md:grid-cols-[repeat(20,minmax(1.75rem,3.5rem))] gap-x-2 gap-y-2 items-center">
+                        <div class="col-span-full pb-2 uppercase font-bold leading-none text-black dark:text-white">@(colorName)</div>
+                        @for (var i = 50; i < 1001; i += 50)
+                        {
+                            <div class="w-full text-xs font-semibold leading-none">@(i)</div>
+                        }
+
+                        @foreach (var color in SharedState.Colors.Where(i => i.Key.StartsWith(colorName.ToLower() + "-")).OrderBy(i => i.Key.Length).ThenBy(i => i.Key))
+                        {
+                            <a class="inline-block rounded-md w-full h-full aspect-square outline -outline-offset-1 outline-black/10 dark:outline-white/10 cursor-pointer" title="Click to copy value to clipboard" onclick="halide.core.copyTextToClipboardAsync(`@(color.Value)`)" style="background-color: @(color.Value);"></a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="max-md:-mx-5 max-md:rounded-none max-w-screen shadow-xs rounded-xl bg-black/2 dark:bg-white/2  border border-y-black/10 dark:border-y-white/10 md:border-black/10 dark:md:border-white/10">
+        <div class="scrollbar-h-hover">
+            <div class="w-fit p-5">
+                <div class="grid grid-cols-[repeat(20,2.5rem)] md:grid-cols-[repeat(20,minmax(1.75rem,3.5rem))] gap-x-2 gap-y-2 items-center">
+                    <div class="col-span-full pb-2 uppercase font-bold leading-none text-black dark:text-white">Primitives</div>
+                    <div class="w-full text-xs font-semibold leading-none">
+                        Black
+                        <a class="mt-2 inline-block rounded-md w-full h-full aspect-square outline -outline-offset-1 outline-black/25 dark:outline-white/35 bg-black"></a>
+                    </div>
+                    <div class="w-full text-xs font-semibold leading-none">
+                        White
+                        <a class="mt-2 inline-block rounded-md w-full h-full aspect-square outline -outline-offset-1 outline-black/25 dark:outline-white/25 bg-white"></a>
+                    </div>
+                    <div class="w-full text-xs font-semibold leading-none">
+                        Transparent
+                        <a class="mt-2 inline-block rounded-md w-full h-full aspect-square outline -outline-offset-1 outline-black/25 dark:outline-white/35 bg-transparent"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

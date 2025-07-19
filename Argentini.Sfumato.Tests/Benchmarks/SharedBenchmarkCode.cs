@@ -53,9 +53,9 @@ public class SharedBenchmarkCode
     public async ValueTask IterationSetup()
     {
         var basePath = ApplicationEnvironment.ApplicationBasePath;
-        var root = basePath[..basePath.IndexOf("Developer", StringComparison.Ordinal)];
+        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
 
-        AppRunner = new AppRunner(new AppState(), Path.GetFullPath(Path.Combine(root, "Developer/Sfumato-Web/UmbracoCms/wwwroot/stylesheets/source.css")));
+        AppRunner = new AppRunner(new AppState(), Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/wwwroot/stylesheets/source.css")));
 
         await Task.CompletedTask;
     }

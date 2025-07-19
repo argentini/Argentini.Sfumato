@@ -1,0 +1,17 @@
+﻿@{
+    var fileName = BlockContent.SafeValue("fileName").EndsWith(".html") ? BlockContent.SafeValue("fileName") : BlockContent.SafeValue("fileName") + ".html";
+    var markup = await File.ReadAllTextAsync(System.IO.Path.Combine("wwwroot/examples/", fileName));
+    var bgImageUrl = BlockContent.HasValue("backgroundImage") ? BlockContent.SafeMediaPickerItemUrl("backgroundImage") : string.Empty;
+}
+<div class="isolate max-md:-mx-5 max-w-screen">
+    <figure class="flex flex-col gap-1 overflow-hidden md:rounded-xl">
+        <div class="overflow-auto @(BlockContent.IsTrue("noPadding") ? string.Empty : "p-5 md:p-8")    bg-code-panel/10 dark:bg-dark-code-panel" style="@(string.IsNullOrEmpty(bgImageUrl) ? string.Empty : $"background-image: url('{bgImageUrl}?width=1920&quality=90'); background-size: cover; background-position: center;")">
+            @Html.Raw(markup)
+        </div>
+        <div class="bg-code-panel/85 dark:bg-dark-code-panel">
+            <div class="scrollbar-h-hover scrollbar-dark">
+                <pre class="w-fit h-full"><code class="language-html">@Html.Raw(WebUtility.HtmlEncode(markup))</code></pre>
+            </div>
+        </div>
+    </figure>
+</div>

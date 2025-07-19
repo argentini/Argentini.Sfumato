@@ -1,0 +1,16 @@
+﻿@{
+    var form = BlockContent.SafePickerValue("form");
+
+    if (form is not null)
+    {
+        @(await Component.InvokeAsync<FormViewComponent>(new FormModel
+        {
+            GlobalStateService = GlobalStateService,
+            UmbracoContext = UmbracoContext,
+            Form = form,
+            ParentPage = ParentPage,
+            FontAwesomeClass = "fa-regular",
+            UseAdaptiveBreakpoint = true,
+        }))
+    }
+}

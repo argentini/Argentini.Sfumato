@@ -10,7 +10,7 @@ public class AppRunnerTests
     {
         var basePath = ApplicationEnvironment.ApplicationBasePath;
         var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
-        var filePath = Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/wwwroot/index.html"));
+        var filePath = Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/scan-sample.html"));
         
         Assert.True(File.Exists(filePath));
         

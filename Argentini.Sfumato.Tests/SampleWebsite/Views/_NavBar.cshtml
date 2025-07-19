@@ -1,0 +1,124 @@
+@{
+    var primaryMenuItems = UmbracoContext?.GetMenus().FirstOrDefault(m => m.Name.InvariantEquals("Primary"))?.MenuItems ?? [];
+    var organization = UmbracoContext?.GetOrganization(GlobalStateService);
+    var menuColDef = primaryMenuItems.Count switch
+    {
+        1 => "lg:grid-cols-[repeat(1,minmax(auto,max-content))]",
+        2 => "lg:grid-cols-[repeat(2,minmax(auto,max-content))]",
+        3 => "lg:grid-cols-[repeat(3,minmax(auto,max-content))]",
+        4 => "lg:grid-cols-[repeat(4,minmax(auto,max-content))]",
+        5 => "lg:grid-cols-[repeat(5,minmax(auto,max-content))]",
+        6 => "lg:grid-cols-[repeat(6,minmax(auto,max-content))]",
+        7 => "lg:grid-cols-[repeat(7,minmax(auto,max-content))]",
+        8 => "lg:grid-cols-[repeat(8,minmax(auto,max-content))]",
+        9 => "lg:grid-cols-[repeat(9,minmax(auto,max-content))]",
+        10 => "lg:grid-cols-[repeat(10,minmax(auto,max-content))]",
+        _ => "lg:grid-cols-1"
+        
+    }; // Explicit so Sfumato can pick up the styles
+    
+    var showSidebarButton = Model.ContentType.Alias.Equals("blogListPage", StringComparison.OrdinalIgnoreCase) || Model.ContentType.Alias.Equals("blogPost", StringComparison.OrdinalIgnoreCase) || Model.ContentType.Alias.Equals("docsPage", StringComparison.OrdinalIgnoreCase) || Model.ContentType.Alias.Equals("docPage", StringComparison.OrdinalIgnoreCase) || Model.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase);
+}
+<div id="mobileMenu" class="max-lg:left-999 lg:hidden fixed grid gap-y-4 top-0 left-0 w-screen h-screen backdrop-blur-sm bg-canvas/95 z-50    dark:bg-dark-canvas/95 select-none">
+    <div class="px-5 py-4.5 md:px-8 md:py-7 overflow-y-auto h-full w-full">
+        <i id="mobileMenuCloseButton" class="text-2xl leading-none fa-regular fa-xmark cursor-pointer inline-block fixed top-6 right-6 md:top-8 md:right-8 hover:text-primary-tint"></i>
+        <div class="select-none space-y-6">
+            <div class="mb-10!">
+                @Html.Raw(organization?.LogoWide?.GetThemedImageMarkup(new ThemedImageSettings
+                {
+                    ImageCssClass = "inline-block h-9",
+                    LinkCssClass = "cursor-pointer inline-block focus:outline-none! focus:shadow-none!",
+                    LinkUrl = "/",
+                    LinkTitle = "Home Page",
+                }))
+            </div>
+            @Html.Raw(GenerateNestedNavMarkup(primaryMenuItems))
+        </div>
+    </div>
+</div>
+<div id="nav-bar" class="fixed inset-x-0 top-0 left-0 w-screen pr-(--scrollbar-padding) border-b border-b-line dark:border-b-dark-line    -bg-linear-15 from-canvas/25 to-canvas-shade/5 dark:from-dark-canvas/35 dark:to-dark-canvas-shade/35     z-30    backdrop-blur-xl    text-base leading-none text-black dark:text-white    select-none">
+    <div class="h-(--nav-bar-h) w-full px-5 md:px-8 grid grid-cols-[max-content_1fr] gap-x-8 items-center">
+        <div>
+            @Html.Raw(organization?.LogoWide?.GetThemedImageMarkup(new ThemedImageSettings
+            {
+                ImageCssClass = "inline-block h-9",
+                LinkCssClass = "cursor-pointer inline-block focus:outline-none! focus:shadow-none!",
+                LinkUrl = "/",
+                LinkTitle = "Home Page",
+            }))
+        </div>
+        <div class="grid justify-end">
+            <div class="max-lg:hidden grid grid-cols-[1fr_minmax(auto,max-content)] gap-x-3 items-center">
+                <div>
+                    <div class="grid @(menuColDef) gap-y-4 lg:gap-x-2 items-center select-none">
+                        @foreach (var menuItem in primaryMenuItems)
+                        {
+                            <div><a href="@(menuItem.Link?.Url ?? "/")" title="@(menuItem.Link?.Name)" target="@(menuItem.Link?.Target ?? "_self")" class="inline-block py-2 px-4 rounded-full hover:bg-canvas-text/10 dark:hover:bg-dark-canvas-text/10">@Html.Raw(menuItem.Title.WithShortCodes(UmbracoContext, GlobalStateService))</a></div>
+                        }
+                    </div>
+                </div>
+                <div>
+                    <a href="https://github.com/fynydd/Fynydd.Sfumato/" target="_blank" title="Find Sfumato on Github" class="inline-block pl-4 hover:text-primary dark:hover:text-secondary    text-2xl leading-none"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+            <div class="lg:hidden grid @(showSidebarButton ? "grid-cols-[repeat(2,minmax(auto,max-content))]" : "grid-cols-[minmax(auto,max-content)]") w-full max-w-full gap-x-4 items-center">
+                @if (showSidebarButton)
+                {
+                    <div class="relative py-3 h-10 text-center aspect-square rounded-full -mr-3 cursor-pointer hover:bg-canvas-text/10 dark:hover:bg-dark-canvas-text/10 lg:hidden" onclick="window.toggleSidebar()">
+                        <i class="fa-solid fa-bars leading-none"></i>
+                    </div>
+                }
+                <div id="mobileMenuButton" class="relative py-3 h-10 text-center aspect-square rounded-full -mr-3 cursor-pointer hover:bg-canvas-text/10 dark:hover:bg-dark-canvas-text/10 lg:hidden">
+                    <i class="fa-solid fa-ellipsis-vertical leading-none"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@functions
+{
+    private string GenerateNestedNavMarkup(List<MenuItem> menusItems)
+    {
+        var sb = GlobalStateService.StringBuilderPool.Get();
+
+        try
+        {
+            foreach (var menuItem in menusItems)
+            {
+                Recurse(menuItem, sb);
+            }
+            
+            return sb.ToString();
+        }
+        finally
+        {
+            GlobalStateService.StringBuilderPool.Return(sb);
+        }
+    }
+
+    private void Recurse(MenuItem menu, StringBuilder sb, int level = 0)
+    {
+        var id = Guid.NewGuid().GuidToId();
+        
+        sb.Append("<div class=\"");
+        sb.Append("\">");
+        sb.Replace(" class\"\"", string.Empty);
+        
+        if (menu.Link is null)
+            sb.Append($"<span class=\"select-none text-xs/5 uppercase font-semibold text-black/50 dark:text-white/50\">{menu.Title.WithShortCodes(UmbracoContext, GlobalStateService)}</span>");
+        else
+            sb.Append($"<div><a onclick=\"document.getElementById(`{id}`).classList.remove(`hidden!`); document.location = `{menu.Link?.Url}`;\" title=\"{menu.Link?.Name}\" target=\"{menu.Link?.Target ?? "_self"}\" class=\"cursor-pointer {(level < 1 ? "text-black dark:text-white" : string.Empty)}\">{menu.Title.WithShortCodes(UmbracoContext, GlobalStateService)}</a><i id=\"{id}\" class=\"fa-light fa-arrows-rotate fa-spin origin-center leading-none ml-2 hidden!\"></i></div>");
+
+        if (menu.MenuItems.Any())
+        {
+            sb.Append("<div class=\"mt-5 pl-4 space-y-5 border border-l-line dark:border-l-white/25\">");
+
+            foreach (var submenu in menu.MenuItems.Where(submenu => submenu.Link?.Udi != menu.Link?.Udi))
+                Recurse(submenu, sb, level + 1);
+
+            sb.Append("</div>");
+        }
+        
+        sb.Append("</div>");
+    }    
+}

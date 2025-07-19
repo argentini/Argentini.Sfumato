@@ -1,0 +1,57 @@
+﻿@{
+    var themeCookie = "1";
+
+    if (GlobalStateService.HttpContextAccessor.HttpContext?.Request.Cookies.TryGetValue("theme", out var themeCookieValue) ?? false)
+        themeCookie = themeCookieValue;
+
+    var themeClass = themeCookie switch
+    {
+        "0" => "theme-light",
+        "1" => "theme-dark",
+        _ => "theme-auto"
+    };
+}
+<!DOCTYPE html>
+<html lang="en" class="@(themeClass)    h-full    bg-canvas text-canvas-text bg-no-repeat bg-size-[calc(100vw_*_4)] bg-position-[80%_-25rem] md:bg-position-[center_-30rem] md:bg-size-[100rem] bg-[/themedimage/home-hero-bg/light]    dark:bg-dark-canvas dark:text-dark-canvas-text">
+<head>
+</head>
+<body class="text-base/6 font-body font-light">
+@(await Html.RenderCodeInjectionAfterBodyAsync(PageState, UmbracoContext, GlobalStateService, Model))
+<div id="pageOverlay" class="fixed top-0 left-0 z-20 bg-canvas/85 dark:bg-dark-canvas/85 transition-overlay"></div>
+@if (PageState is { Redirecting: false, Forbidden: false })
+{
+    @if (Model.ContentType.Alias.InvariantEquals("homePage"))
+    {
+        @(await Html.PartialAsync("PageComponents/_HomePage", Model))
+    }
+    else if (Model.ContentType.Alias.InvariantEquals("blogListPage") || Model.ContentType.Alias.InvariantEquals("blogPost"))
+    {
+        @(await Html.PartialAsync("PageComponents/_IndexedPage", Model))
+    }
+    else if (Model.ContentType.Alias.InvariantEquals("docsPage") || Model.ContentType.Alias.InvariantEquals("docPage") || Model.ContentType.Alias.InvariantEquals("utilityPage"))
+    {
+        @(await Html.PartialAsync("PageComponents/_IndexedPage", Model))
+    }
+    else
+    {
+        @(await Html.PartialAsync("PageComponents/_TextPage", Model))
+    }
+
+    @(await Component.InvokeAsync<CookiePolicyBannerViewComponent>(new CookiePolicyBannerModel
+    {
+        GlobalStateService = GlobalStateService,
+        ElasticWrapperClasses = "elastic",
+        InnerWrapperClasses = "unit-margin-x",
+        GridClasses = "grid gap-y-4 md:grid-cols-[1fr_auto_auto] md:gap-x-6 items-center text-center md:text-left",
+        BannerColorClasses = "bg-overlay/90 text-overlay-text",
+        AcceptAllAnchorColorClasses = "small-button button--tertiary",
+        BannerTextHtml = "<p>By using this website you accept our <a href=\"/privacy-policy/\" class=\"cursor-pointer font-bold hover:underline\" title=\"Privacy Policy\">privacy policy</a>. Choose the browser data you consent to allow:</p>"
+    }))
+}
+else
+{
+    @(await Html.RenderForbiddenContentAsync(PageState, UmbracoContext, GlobalStateService, Model))
+}
+<div id="mobile-indicator" class="fixed! block! h-[1rem]! w-[0px]! lg:w-[10px]!" style="left:-10px !important;top:0 !important;"></div>
+</body>
+</html>

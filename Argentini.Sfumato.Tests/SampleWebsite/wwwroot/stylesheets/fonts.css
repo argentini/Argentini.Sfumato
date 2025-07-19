@@ -1,0 +1,126 @@
+@font-face {
+    font-family: BodyFont;
+    font-weight: 100 900;
+    font-display: block;
+    font-style: normal;
+    src: url(../webfonts/Body/InterVariable.woff2) format("woff2")
+}
+
+@font-face {
+    font-family: BodyFont;
+    font-weight: 100 900;
+    font-display: block;
+    font-style: italic;
+    src: url(../webfonts/Body/InterVariable-Italic.woff2) format("woff2")
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: normal;
+    font-weight: 100 200;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-Thin.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: italic;
+    font-weight: 100 200;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-ThinItalic.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: normal;
+    font-weight: 300;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-Light.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: italic;
+    font-weight: 300;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-LightItalic.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-Regular.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: italic;
+    font-weight: 400;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-Italic.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: normal;
+    font-weight: 500;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-Medium.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: italic;
+    font-weight: 500;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-MediumItalic.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: normal;
+    font-weight: 600;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-SemiBold.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: italic;
+    font-weight: 600;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-SemiBoldItalic.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-weight: 700;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-Bold.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: italic;
+    font-weight: 700;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-BoldItalic.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: normal;
+    font-weight: 800 900;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-ExtraBold.woff2) format("woff2");
+}
+
+@font-face {
+    font-family: JetBrainsMono;
+    font-style: italic;
+    font-weight: 800 900;
+    font-display: block;
+    src: url(../webfonts/JetBrains/JetBrainsMono-ExtraBoldItalic.woff2) format("woff2");
+}

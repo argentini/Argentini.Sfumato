@@ -1,0 +1,21 @@
+@{
+    var link = Model.AncestorSafeValue<Link>("subheadlineLink");
+}
+<div class="border border-b-line/65 dark:border-b-dark-line/35    bg-repeat-round bg-size-[10px] [--line-color:var(--color-line)] dark:[--line-color:--alpha(var(--color-dark-line)_/_50%)] [background-image:repeating-linear-gradient(to_right,transparent,transparent_calc(10px_-_1px),var(--line-color)_10px),repeating-linear-gradient(to_top,transparent,transparent_calc(10px_-_1px),var(--line-color)_10px)]">
+    <div class="bg-linear-to-b from-canvas dark:from-dark-canvas to-transparent">
+        <div id="hero-wrapper" class="elastic    pb-14    md:pb-16    lg:bg-no-repeat lg:bg-[/themedimage/paper-plane-top-right/light] lg:min-h-[17rem] lg:bg-position-[right_bottom] lg:bg-size-[55rem]">
+            <div class="nav-padding-t unit-margin-x grid h-full items-center    lg:grid-cols-[1fr_24rem]">
+                <div class="unit-padding-t">
+                    <h5 class="font-bold text-sm uppercase text-primary dark:text-secondary @(link is not null ? "cursor-pointer hover:underline" : string.Empty)" onclick="@(link is not null ? $"document.location=`{link.Url}`;" : string.Empty)">@Html.Raw(Model.AncestorSafeValue("heroSubheadline").WithShortCodes(UmbracoContext, GlobalStateService))</h5>
+                    <h1 class="mt-3 text-4xl font-black text-balance">@Html.Raw(Model.AncestorSafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService))</h1>
+                    @if (Model.HasValue("heroIntroductionText", fallback: Fallback.ToAncestors) && Model.IsFalse("hideHeroIntroText"))
+                    {
+                        <div class="mt-5 text-pretty rte-content">
+                            @Html.Raw(Model.AncestorSafeValue("heroIntroductionText").WithShortCodes(UmbracoContext, GlobalStateService))
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

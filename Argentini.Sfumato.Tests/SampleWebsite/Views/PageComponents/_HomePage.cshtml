@@ -1,0 +1,10 @@
+@(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_NavBar"))
+<div id="content-wrapper">
+    @(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_HomeHero"))
+</div>
+<div class="elastic">
+    <div class="unit-margin-x unit-padding-y space-y-6">
+        @(await Html.CachedBlockListAsync(Model, Model.SafeBlocklistValue("blockContent"), UmbracoContext, GlobalStateService, ViewData))
+    </div>
+</div>
+@(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_Footer"))

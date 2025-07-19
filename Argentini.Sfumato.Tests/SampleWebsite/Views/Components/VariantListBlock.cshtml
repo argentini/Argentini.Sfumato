@@ -1,0 +1,194 @@
+﻿<div class="relative isolate scrollbar-h-hover">
+    <div class="whitespace-nowrap">
+        @if (BlockContent.SafeValue("variantType") == "breakpoints" || BlockContent.SafeValue("variantType") == "adaptive" || BlockContent.SafeValue("variantType") == "container")
+        {
+            <table class="grid grid-cols-[auto_auto_auto] gap-x-8">
+                <thead class="col-span-full grid grid-cols-subgrid">
+                <tr class="col-span-full grid grid-cols-subgrid">
+                    <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Breakpoint</th>
+                    <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Target size</th>
+                    <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">CSS</th>
+                </tr>
+                </thead>
+                <tbody class="col-span-full grid grid-cols-subgrid border-t border-line dark:border-dark-line">
+                @if (BlockContent.SafeValue("variantType") == "breakpoints")
+                {
+                    foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "media" && v.Value.Statement.Contains("aspect-ratio", StringComparison.Ordinal) == false && v.Key.StartsWith("max-", StringComparison.Ordinal) == false).OrderBy(v => v.Value.PrefixOrder))
+                    {
+                        var remSize = variant.Statement.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault(i => i.Contains("rem"))?.TrimEnd(')') ?? string.Empty;
+                        var pixels = int.Parse(remSize.TrimEnd("rem", StringComparison.Ordinal) ?? "0") * 16;
+
+                        if (pixels < 1)
+                            continue;
+
+                        var target = $"{remSize} (~{pixels}px)";
+
+                        @Html.Raw(SharedState.GetBasicRowMarkup3Column(key, target, $"@media {variant.Statement} {{...}}"))
+                    }
+                }
+                else if (BlockContent.SafeValue("variantType") == "adaptive")
+                {
+                    foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "media" && v.Value.Statement.Contains("aspect-ratio", StringComparison.Ordinal) && v.Key.StartsWith("max-", StringComparison.Ordinal) == false).OrderBy(v => v.Value.PrefixOrder))
+                    {
+                        var target = key switch
+                        {
+                            "phab" => "phablets",
+                            "tabp" => "tablets (portrait)",
+                            "tabl" => "tablets (landscape)",
+                            "desk" => "desktops",
+                            "wide" => "wide screens",
+                            "vast" => "ultrawide screens",
+                            _ => "mobile phones"
+                        };
+
+                        @Html.Raw(SharedState.GetBasicRowMarkup3Column(key, target, $"@media {variant.Statement} {{...}}"))
+                    }
+                }
+                else if (BlockContent.SafeValue("variantType") == "container")
+                {
+                    foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "container" && v.Key.StartsWith("@max-", StringComparison.Ordinal) == false).OrderBy(v => v.Value.PrefixOrder))
+                    {
+                        var remSize = variant.Statement.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault(i => i.Contains("rem"))?.TrimEnd(')') ?? string.Empty;
+                        var pixels = int.Parse(remSize.TrimEnd("rem", StringComparison.Ordinal) ?? "0") * 16;
+
+                        @Html.Raw(SharedState.GetBasicRowMarkup3Column(key, $"{remSize} (~{pixels}px)", $"@container {variant.Statement} {{...}}"))
+                    }
+                }
+                </tbody>
+            </table>
+        }
+        @if (BlockContent.SafeValue("variantType") == "supports" || BlockContent.SafeValue("variantType") == "starting-style")
+        {
+            <table class="grid grid-cols-[auto_auto_auto] gap-x-8">
+                <thead class="col-span-full grid grid-cols-subgrid">
+                    <tr class="col-span-full grid grid-cols-subgrid">
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Breakpoint</th>
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white"></th>
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">CSS</th>
+                    </tr>
+                </thead>
+                <tbody class="col-span-full grid grid-cols-subgrid border-t border-line dark:border-dark-line">
+                    @if (BlockContent.SafeValue("variantType") == "supports")
+                    {
+                        foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "supports").OrderBy(v => v.Value.PrefixOrder))
+                        {
+                            @Html.Raw(SharedState.GetBasicRowMarkup3Column(key.EndsWith('-') ? $"{key}[...]" : key, string.Empty, $"@supports {variant.Statement.Replace("{0}", "...")} {{...}}"))
+                        }
+                    }
+                    else if (BlockContent.SafeValue("variantType") == "starting-style")
+                    {
+                        @Html.Raw(SharedState.GetBasicRowMarkup3Column("starting", string.Empty, "@starting-style {...}"))
+                    }
+                </tbody>
+            </table>
+        }
+        else if (BlockContent.SafeValue("variantType") == "all-breakpoints" || BlockContent.SafeValue("variantType") == "all-adaptive" || BlockContent.SafeValue("variantType") == "all-container" || BlockContent.SafeValue("variantType") == "all-supports" || BlockContent.SafeValue("variantType") == "all-starting-style")
+        {
+            <table class="grid grid-cols-[auto_auto_auto] gap-x-8">
+                <thead class="col-span-full grid grid-cols-subgrid">
+                    <tr class="col-span-full grid grid-cols-subgrid">
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Breakpoint</th>
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Target size</th>
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">CSS</th>
+                    </tr>
+                </thead>
+                <tbody class="col-span-full grid grid-cols-subgrid border-t border-line dark:border-dark-line">
+                    @if (BlockContent.SafeValue("variantType") == "all-breakpoints")
+                    {
+                        foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "media" && v.Value.Statement.Contains("aspect-ratio", StringComparison.Ordinal) == false).OrderBy(v => v.Value.PrefixOrder))
+                        {
+                            var remSize = variant.Statement.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault(i => i.Contains("rem"))?.TrimEnd(')') ?? string.Empty;
+                            var pixels = int.Parse(remSize.TrimEnd("rem", StringComparison.Ordinal) ?? "0") * 16;
+                            var target = string.Empty;
+
+                            if (pixels > 0)
+                                target = $"{remSize} (~{pixels}px)";
+                            
+                            @Html.Raw(SharedState.GetBasicRowMarkup3Column(key, target, $"@media {variant.Statement} {{...}}"))
+                        }
+                    }
+                    else if (BlockContent.SafeValue("variantType") == "all-adaptive")
+                    {
+                        foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "media" && v.Value.Statement.Contains("aspect-ratio", StringComparison.Ordinal)).OrderBy(v => v.Value.PrefixOrder))
+                        {
+                            var target = key switch
+                            {
+                                "phab" => "phablets",
+                                "tabp" => "tablets (portrait)",
+                                "tabl" => "tablets (landscape)",
+                                "desk" => "desktops",
+                                "wide" => "wide screens",
+                                "vast" => "ultrawide screens",
+                                _ => "mobile phones"
+                            };
+
+                            @Html.Raw(SharedState.GetBasicRowMarkup3Column(key, target, $"@media {variant.Statement} {{...}}"))
+                        }
+                    }
+                    else if (BlockContent.SafeValue("variantType") == "all-container")
+                    {
+                        foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "container").OrderBy(v => v.Value.PrefixOrder))
+                        {
+                            var remSize = variant.Statement.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault(i => i.Contains("rem"))?.TrimEnd(')') ?? string.Empty;
+                            var pixels = int.Parse(remSize.TrimEnd("rem", StringComparison.Ordinal) ?? "0") * 16;
+                            
+                            @Html.Raw(SharedState.GetBasicRowMarkup3Column(key, $"{remSize} (~{pixels}px)", $"@container {variant.Statement} {{...}}"))
+                        }
+                    }
+                    else if (BlockContent.SafeValue("variantType") == "all-supports")
+                    {
+                        foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "supports").OrderBy(v => v.Value.PrefixOrder))
+                        {
+                            @Html.Raw(SharedState.GetBasicRowMarkup3Column(key, string.Empty, $"@supports ({variant.Statement}) {{...}}"))
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else if (BlockContent.SafeValue("variantType") == "pseudoclass")
+        {
+            <table class="grid grid-cols-[auto_auto] gap-x-8">
+                <thead class="col-span-2 grid grid-cols-subgrid">
+                    <tr class="col-span-2 grid grid-cols-subgrid">
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Variant</th>
+                        <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">CSS</th>
+                    </tr>
+                </thead>
+                <tbody class="col-span-2 grid grid-cols-subgrid border-t border-line dark:border-dark-line">
+                    @foreach (var (key, variant) in SharedState.Variants.Where(v => v.Value.PrefixType == "pseudoclass" && (BlockContent.IsTrue("specialCases") ? v.Key.StartsWith("not-") : v.Key.StartsWith("not-") == false)).OrderBy(v => v.Key))
+                    {
+                        var rowId = Guid.NewGuid().GuidToId();
+                        var variantName = key;
+                        var styles = variant.SelectorSuffix;
+
+                        if (string.IsNullOrEmpty(styles))
+                            styles = variant.Statement;
+
+                        styles = variantName switch
+                        {
+                            "*" => " > *",
+                            "**" => " *",
+                            _ => styles
+                        };
+
+                        variantName = variantName switch
+                        {
+                            "*" => "*  (children)",
+                            "**" => "** (descendants)",
+                            _ => variantName
+                        };
+
+                        if (variantName.EndsWith('-'))
+                        {
+                            variantName = $"{variantName}*";
+                        }
+
+                        styles = $"&amp;{styles}";
+
+                        @Html.Raw(SharedState.GetRowMarkup(rowId, variantName, styles))
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

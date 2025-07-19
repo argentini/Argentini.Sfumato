@@ -1,0 +1,37 @@
+@(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_NavBar"))
+<div id="content-wrapper">
+    @(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_PageHeroLeft"))
+    <div class="elastic">
+        <div class="unit-margin-x unit-padding-y grid lg:grid-cols-[1fr_24rem] gap-y-16 md:gap-x-24">
+            <div>
+                @(await Html.CachedBlockListAsync(Model.Parent, Model.SafeBlocklistValue("blockContent"), UmbracoContext, GlobalStateService, ViewData))
+            </div>
+            <div class="space-y-12">
+                @(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_AddressSidebar"))
+            </div>
+        </div>
+    </div>
+</div>
+@(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_Footer"))
+<script>
+
+    db.open().then(() => {
+
+        db.referrals.toArray().then((rows) => {
+
+            if (rows.length > 0) {
+
+                const referralField = document.querySelector(`input[type="hidden"][name="Referral"]`);
+
+                if (referralField) {
+
+                    referralField.value = rows[0].referral;
+                }
+            }
+
+        }).catch(() => {
+    });
+    }).catch(() => {
+    });
+
+</script>

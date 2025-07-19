@@ -1,0 +1,7 @@
+﻿<div class="w-fit mx-auto">
+    @(await Component.InvokeAsync<ThemeSwitcherViewComponent>(new ThemeSwitcherModel
+    {
+        DefaultDarkTheme = true,
+        ShowAsWidget = true
+    }))
+</div>

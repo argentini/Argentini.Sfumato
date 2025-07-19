@@ -1,0 +1,339 @@
+@import "../website/stylesheets/website-forms.css" components;
+@import "framework.css" components;
+@import "rte.css" components;
+@import "code.css";
+
+@layer sfumato {
+    
+    :root {
+
+        --use-reset: true; /* Inject the CSS reset */
+        --use-forms: true; /* Inject form input styles */
+        --use-minify: false; /* Compress the output CSS by default */
+        --use-dark-theme-classes: true; /* Dark mode triggered by html.theme-auto (when prefers-color-scheme: dark), and html.theme-dark */
+        --use-compatibility-mode: false; /* Will use more compatible styles (e.g. avoid color-mix(), etc.) */
+
+        --paths: ["../../wwwroot", "../../Views", "../../Extensions", "../../Helpers", "../../Services"]; /* Relative paths for project scanning; required */
+        --output-path: "app.css"; /* Generated CSS file path; required */
+        --not-paths: ["../scripts/vendor/"]; /* Relative paths to exclude content scanning */
+
+        --font-body: BodyFont, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Font Awesome 6 Pro', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+        --font-body--font-feature-settings: normal;
+        --font-body--font-variation-settings: normal;
+
+        --font-heading: BodyFont, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Font Awesome 6 Pro', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+        --font-heading--font-feature-settings: normal;
+        --font-heading--font-variation-settings: normal;
+
+        --font-buttons: BodyFont, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Font Awesome 6 Pro', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+        --font-buttons--font-feature-settings: normal;
+        --font-buttons--font-variation-settings: normal;
+
+        --font-mono: JetBrainsMono, ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+        --font-mono--font-feature-settings: normal;
+        --font-mono--font-variation-settings: normal;
+
+        --text-eyebrow: 0.9rem;
+        --text-eyebrow--line-height: 1;
+
+        --text-icons: 2.25rem;
+        --text-icons--line-height: 1;
+
+        --color-primary: oklch(62.3% .214 259.815);
+        --color-primary-tint: oklch(70.7% .165 254.624);
+        --color-primary-shade: oklch(54.6% .245 262.881);
+        --color-primary-text: rgba(255, 255, 255, 0.85);
+        --color-secondary: oklch(74.6% .16 232.661);
+        --color-secondary-tint: oklch(90.1% .058 230.902);
+        --color-secondary-shade: oklch(58.8% .158 241.966);
+        --color-secondary-text: rgba(255, 255, 255, 0.85);
+        --color-tertiary: oklch(59.6% .145 163.225);
+        --color-tertiary-tint: oklch(69.6% .17 162.48);
+        --color-tertiary-shade: oklch(50.8% .118 165.612);
+        --color-tertiary-text: rgba(255, 255, 255, 0.85);
+        --color-footer-button: rgba(214, 214, 220, 1);
+
+        --color-canvas: white;
+        --color-canvas-text: rgba(0, 0, 0, 0.85);
+        --color-canvas-bold: black;
+        --color-code-panel: #181e27;
+        --color-canvas-shade: rgba(0, 0, 0, 0.06);
+        --color-canvas-shader: rgba(0, 0, 0, 0.15);
+        --color-line: #d8e3ef;
+        --color-overlay: #004a8b;
+        --color-overlay-text: white;
+
+        --color-dark-primary: oklch(54.6% .245 262.881);
+        --color-dark-primary-text: rgba(255, 255, 255, 0.85);
+
+        --color-dark-canvas: oklch(15% 0.025 250);
+        --color-dark-canvas-text: rgba(255, 255, 255, 0.85);
+        --color-dark-canvas-bold: white;
+        --color-dark-canvas-shade: #011323;
+        --color-dark-canvas-shader: #000912;
+        --color-dark-canvas-tint: rgba(255, 255, 255, 0.05);
+        --color-dark-canvas-tinter: rgba(255, 255, 255, 0.15);
+        --color-dark-code-panel: #181e27;
+        --color-dark-line: #273e53;
+        --color-dark-canvas-menu: #334455;
+        --color-dark-footer-button: rgba(60, 70, 79, 1);
+
+        --drop-shadow-search: 0 0 2rem oklch(0 0 0 / 100%);
+        --animate-small-ping: small-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    @utility translate-center {
+        translate: -50% -50%;
+    }
+
+    @utility translate-x-center {
+        translate: -50% var(--sf-translate-y);
+    }
+
+    @utility translate-y-center {
+        translate: var(--sf-translate-x) -50%;
+    }
+
+    @utility transition-navbar {
+        transition-property: top,padding,background-color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 250ms;
+    }
+
+    @utility transition-overlay {
+        transition-property: background-color,backdrop-filter;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 350ms;
+    }
+
+    @keyframes small-ping {
+        75%,
+        100% {
+            transform: scale(1.18, 1.25);
+            opacity: 0;
+        }
+    }
+}
+
+@layer components {
+
+    .website-form label {
+        text-wrap: pretty;
+        display: inline-block;
+    }
+
+    .form-input, .form-textarea, .form-select, .form-multiselect, .form-textarea {
+        --form-field-border-color: rgba(0,0,0,0.2);
+        --form-field-border-radius: 0.5rem;
+        --form-field-placeholder-color: rgba(0,0,0,0.35);
+        --form-button-bg-color: oklch(62.3% .214 259.815);
+        --form-field-check-color: oklch(62.3% .214 259.815);
+        --form-field-focus-color: oklch(62.3% .214 259.815);
+        --form-field-background-color: oklch(0.98 0 0);
+    }
+
+    .form-checkbox, .form-radio {
+        --form-field-border-color: rgba(0,0,0,0.2);
+    }
+
+    .light-panel {
+
+        background-image: linear-gradient(180deg, #f5faff 60%, transparent 90%);
+        box-shadow: 0 0 0 2px rgba(198, 203, 209, 0.5);
+
+        @apply overflow-hidden h-full;
+        @apply px-6 py-12;
+    }
+
+    .panel-color {
+
+        background-image: linear-gradient(180deg, #f5faff 60%, transparent 90%);
+        box-shadow: 0 0 0 2px rgba(198, 203, 209, 0.5);
+    }
+
+    a.button, button, .form-button {
+
+        --sf-leading: 1;
+        
+        @apply inline-block px-5 py-3 cursor-pointer;
+        @apply rounded-full;
+        @apply font-medium text-sm text-center;
+        @apply bg-primary text-primary-text border-primary;
+        @apply whitespace-nowrap select-none;
+        @apply transition-colors;
+
+        &:hover {
+            @apply outline-solid outline-offset-1 outline-primary-tint/50;
+            @apply bg-primary-tint text-white border-primary-tint;
+        }
+
+        &.button--tertiary {
+
+            @apply bg-tertiary-tint text-tertiary-text border-tertiary-tint;
+
+            &:hover {
+                @apply outline-tertiary-tint/50;
+                @apply bg-tertiary-tint/75 text-white border-tertiary-tint/75;
+            }
+        }
+    }
+
+    a.small-button, button.small-button {
+
+        @apply inline-block px-4 py-2 cursor-pointer;
+        @apply rounded-full;
+        @apply text-xs leading-none font-medium text-center;
+        @apply bg-primary text-primary-text;
+        @apply whitespace-nowrap select-none;
+        @apply transition-colors;
+
+        &:hover {
+            @apply outline-solid outline-offset-1 outline-primary-tint/50;
+            @apply bg-primary-tint text-white;
+        }
+
+        &.button--tertiary {
+
+            @apply bg-tertiary text-tertiary-text;
+
+            &:hover {
+                @apply outline-tertiary-tint/50;
+                @apply bg-tertiary-tint text-white;
+            }
+        }
+    }
+
+    @variant md {
+
+        .light-panel {
+
+            box-shadow: 0 0 0 2px rgba(198, 203, 209, 0.5);
+
+            @apply px-10 py-10;
+            @apply rounded rounded-lg;
+        }
+    }
+
+    @variant dark {
+
+        a.button, button, .form-button {
+
+            &.button--tertiary {
+
+                @apply bg-tertiary text-tertiary-text border-tertiary;
+
+                &:hover, &:focus {
+                    @apply outline-tertiary-tint/50;
+                    @apply bg-tertiary-tint text-white border-tertiary-tint;
+                }
+            }
+        }
+
+        .light-panel {
+
+            background-image: linear-gradient(180deg, rgb(12, 24, 36) 60%, transparent 90%);
+            box-shadow: 0 0 0 2px rgba(31, 51, 69, 1.0);
+        }
+
+        @variant md {
+
+            .light-panel {
+
+                box-shadow: 0 0 0 2px rgba(31, 51, 69, 1.0);
+            }
+            
+        }
+    }
+}
+
+.rainbow {
+    background-image: linear-gradient(200deg, var(--color-blue-600) 15%, var(--color-violet-600) 40%, var(--color-pink-600) 70%, var(--color-yellow-400) 100%);
+}
+
+.halide_embiggen_overlay {
+
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(0.5rem);
+    -webkit-backdrop-filter: blur(0.5rem);
+    cursor: zoom-out;
+    
+    .halide_embiggen_image_wrapper {
+
+        width: 90% !important;
+        height: 90% !important;
+        overflow: hidden;
+        max-width: 80rem;
+        max-height: 80rem;
+    }
+}
+
+.panel-color {
+
+    background-image: linear-gradient(180deg, #f5faff 60%, transparent 90%);
+    box-shadow: 0 0 0 2px rgba(198, 203, 209, 0.5);
+}
+
+@media (hover: hover) {
+    .back-to-top-hover:hover, .back-to-top-hover:active {
+        @apply border-primary text-primary;
+        span {
+            @apply opacity-100;
+        }
+    }
+}
+
+.back-to-top-hover:active {
+    @apply border-primary text-primary;
+    span {
+        @apply opacity-100;
+    }
+}
+
+@variant dark {
+
+    :root {
+
+        color-scheme: dark;
+
+        .form-input, .form-textarea, .form-select, .form-multiselect, .form-textarea {
+            --form-field-background-color: oklch(0.21 0.02 254.95);
+            --form-field-border-color: rgba(255, 255, 255, 0.2);
+            --form-field-border-radius: 0.5rem;
+            --form-field-placeholder-color: rgba(255, 255, 255, 0.35);
+            --form-field-color: white;
+            --form-field-focus-color: oklch(74.6% .16 232.661);
+        }
+
+        .form-checkbox, .form-radio {
+            --form-field-background-color: rgba(255, 255, 255, 0.05);
+            --form-field-border-color: rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    .panel-color {
+
+        background-image: linear-gradient(180deg, rgb(12, 24, 36) 60%, transparent 90%);
+        box-shadow: 0 0 0 2px rgba(31, 51, 69, 1.0);
+    }
+
+    .embiggen_overlay {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(0.5rem);
+    }    
+
+    @media (hover: hover) {
+        .back-to-top-hover:hover, .back-to-top-hover:active {
+            @apply border-secondary text-secondary;
+            span {
+                @apply opacity-100;
+            }
+        }
+    }
+
+    .back-to-top-hover:active {
+        @apply border-secondary text-secondary;
+        span {
+            @apply opacity-100;
+        }
+    }
+}

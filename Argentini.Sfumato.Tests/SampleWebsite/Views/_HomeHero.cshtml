@@ -1,0 +1,30 @@
+@{
+    var jsId = Strings.CreateUniqueId();
+    var tentpoleItems = Model.SafeValue<string[]>("heroTentpoleItems") ?? [];
+    var quoteItems = Model.SafeValue<string[]>("heroQuotes") ?? [];
+    var quoteColDef = quoteItems.Length switch
+    {
+        1 => "md:grid-cols-[repeat(1,minmax(auto,max-content))]",
+        2 => "md:grid-cols-[repeat(1,minmax(auto,max-content))_1px_minmax(auto,max-content)]",
+        3 => "md:grid-cols-[repeat(1,minmax(auto,max-content))_1px_minmax(auto,max-content)_1px_minmax(auto,max-content)]",
+        4 => "md:grid-cols-[repeat(1,minmax(auto,max-content))_1px_minmax(auto,max-content)_1px_minmax(auto,max-content)_1px_minmax(auto,max-content)]",
+        _ => string.Empty
+        
+    }; // Explicit so Sfumato can pick up the styles
+}
+<div id="@(jsId)" class="border border-b-line/65 dark:border-b-dark-line/35    bg-repeat-round bg-size-[10px] [--line-color:var(--color-line)] dark:[--line-color:--alpha(var(--color-dark-line)_/_50%)] [background-image:repeating-linear-gradient(to_right,transparent,transparent_calc(10px_-_1px),var(--line-color)_10px),repeating-linear-gradient(to_top,transparent,transparent_calc(10px_-_1px),var(--line-color)_10px)]">
+    <div class="relative max-w-screen overflow-x-hidden    bg-linear-to-b from-canvas dark:from-dark-canvas to-transparent">
+        <div class="elastic nav-padding-t">
+            <div class="unit-margin-x unit-padding-y text-center space-y-8">
+                <h1 class="text-balance text-4xl md:text-6xl font-black">@Html.Raw(Model.SafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService))</h1>
+                <div class="elastic-content rte-content text-lg text-pretty">@Html.Raw(Model.SafeValue("heroIntroductionText").WithShortCodes(UmbracoContext, GlobalStateService))</div>
+                <div class="grid grid-cols-[repeat(2,minmax(auto,max-content))] lg:grid-cols-[repeat(3,minmax(auto,max-content))] gap-x-8 sm:gap-x-12 gap-y-2 justify-center text-left">
+                    @foreach (var item in tentpoleItems)
+                    {
+                        <h2 class="font-semibold text-sm sm:text-base"><i class="fa-regular fa-check text-primary dark:text-secondary mr-2"></i><span>@Html.Raw(item.WithShortCodes(UmbracoContext, GlobalStateService))</span></h2>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

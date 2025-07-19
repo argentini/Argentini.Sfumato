@@ -1,0 +1,149 @@
+@{
+    const string selectedClasses = "text-primary! dark:text-secondary!";
+
+    var categories = UmbracoContext?.GetCategories().Groups.FirstOrDefault(c => c.Name.Equals("Blog", StringComparison.OrdinalIgnoreCase));
+
+    if (categories is null)
+        return;
+    
+    var homePage = UmbracoContext?.GetHomeNode();
+    var blogListPage = homePage?.Children.FirstOrDefault(c => c.ContentType.Alias.Equals("blogListPage", StringComparison.OrdinalIgnoreCase));
+
+    if (blogListPage is null)
+        return;
+    
+    var blogListPageUrl = '/' + blogListPage.Url(null, UrlMode.Relative).Split('?', StringSplitOptions.RemoveEmptyEntries).First().Trim('/') + '/';
+    var groups = categories.CategoryItems.Where(c => c is Category { Segments.Count: > 1 }).Cast<Category>().Select(c => c.Segments[0]).Distinct().Order().ToList();
+    
+    groups.Insert(0, string.Empty);
+
+    var listPageActive = true;
+    var activeCategory = "all";
+    var request = GlobalStateService.HttpContextAccessor.HttpContext?.Request;
+    var baseUrl = $"/{request?.Path.ToString().Trim('/')}/";
+    var queryDict = QueryHelpers.ParseQuery(request?.QueryString.ToString()).ToDictionary(k => k.Key, v => v.Value.ToString());
+
+    if (queryDict.ContainsKey("tags"))
+    {
+        activeCategory = queryDict["tags"];
+        
+        if (queryDict.ContainsKey("tags") && queryDict["tags"] != "all")
+            listPageActive = false;
+    }
+
+    if (blogListPageUrl != baseUrl)
+        listPageActive = false;
+}
+<div class="h-full">
+    <div class="relative website-form w-full">
+        <input type="search" name="blog-search" id="blog-search" placeholder="Search Posts" value="" minlength="2" maxlength="128" autocomplete="off" spellcheck="false" class="form-input pl-10!">
+        <span class="inline-block absolute top-1/2 left-4 [transform:translateY(-50%)]"><i id="blog-search-icon" class="fa-solid fa-search text-[rgba(0,0,0,0.25)] dark:text-[rgba(255,255,255,0.25)]"></i></span>
+    </div>
+    <nav id="blog-filter-nav" class="pt-8 pb-12 select-none">
+        <div class="space-y-4">
+            <div class="select-none">
+                <a href="@(blogListPage.Url(mode: UrlMode.Relative).TrimEnd('/'))/" class="@(listPageActive ? selectedClasses : string.Empty) cursor-pointer hover:text-canvas-bold dark:hover:text-dark-canvas-bold"><span>All Posts</span></a>
+            </div>
+            @foreach (var category in categories.CategoryItems.Where(c => c is Category).Cast<Category>().Where(c => c.Segments.Count == 1).OrderBy(c => c.Name))
+            {
+                var childUrl = $"{blogListPage.Url(mode: UrlMode.Relative).TrimEnd('/')}/?tags={category.Slug}";
+                
+                <div class="select-none">
+                    <a href="@(childUrl)" class="@(activeCategory == category.Slug ? selectedClasses : string.Empty) cursor-pointer hover:text-canvas-bold dark:hover:text-dark-canvas-bold"><span>@Html.Raw(category.Name)</span></a>
+                </div>
+            }
+            @foreach (var group in groups.Where(g => string.IsNullOrEmpty(g) == false))
+            {
+                <div>
+                    <strong class="block mt-8 mb-4 text-sm font-mono font-medium tracking-widest uppercase opacity-65">@Html.Raw(group)</strong>
+                    <div class="max-lg:mt-4 space-y-4 border-l border-l-canvas-text/25 dark:border-l-dark-canvas-text/25">
+                        @foreach (var category in categories.CategoryItems.Where(c => c is Category).Cast<Category>().Where(c => c.Segments.Count > 1 && c.Segments[0] == group).OrderBy(c => c.Name))
+                        {
+                            var childUrl = $"{blogListPage.Url(mode: UrlMode.Relative).TrimEnd('/')}/?tags={category.Slug}";
+
+                            <div class="select-none">
+                                <a href="@(childUrl)" class="@(activeCategory == category.Slug ? selectedClasses : string.Empty) pl-4 -ml-px border-l border-l-transparent cursor-pointer hover:border-l-canvas-text/50 dark:hover:border-l-dark-canvas-text/50 hover:text-canvas-bold dark:hover:text-dark-canvas-bold"><span>@Html.Raw(category.Name.TrimStart("Subtopics:"))</span></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </nav>
+</div>
+<script>
+
+    let searchEl;
+    
+    halide.core.documentReadyAsync(async function() {
+
+        searchEl = await halide.elements.getElementByIdAsync(`blog-search`, 2500);
+
+        if (!searchEl)
+            return;
+
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.has('search')) {
+            searchEl.value = params.get('search');
+        }
+
+        searchEl.addEventListener('input', async function(event) {
+
+            if (event.target.value === ``) {
+
+                let urlObj = new URL(window.location.href);
+
+                urlObj.searchParams.delete('search');
+                urlObj.searchParams.delete('page');
+
+                document.location = urlObj.pathname + (urlObj.search ? urlObj.search : '');
+            }
+        });
+
+        searchEl.addEventListener('keydown', async function(event) {
+
+            if (event.key === 'Enter' || event.key === 'Return') {
+
+                if (event.target.value === '') {
+
+                    let urlObj = new URL(window.location.href);
+
+                    urlObj.searchParams.delete('search');
+                    urlObj.searchParams.delete('page');
+
+                    document.location = urlObj.pathname + (urlObj.search ? urlObj.search : '');
+                }
+            }
+        });
+
+        searchEl.addEventListener('change', async function(event) {
+
+            if (event.target.value !== ``) {
+
+                let urlObj = new URL(window.location.href);
+
+                urlObj.searchParams.delete('search');
+                urlObj.searchParams.delete('page');
+                urlObj.searchParams.append('search', searchEl.value);
+                urlObj.searchParams.append('page', `1`);
+
+                document.location = urlObj.pathname + (urlObj.search ? urlObj.search : '');
+            }
+        });
+
+        window.addEventListener('pageshow', async function(_event) {
+
+            if (!searchEl) return;
+
+            const _params = new URLSearchParams(window.location.search);
+
+            if (_params.has('search')) {
+                searchEl.value = _params.get('search');
+            } else {
+                searchEl.value = ``;
+            }
+        });
+    });
+
+</script>

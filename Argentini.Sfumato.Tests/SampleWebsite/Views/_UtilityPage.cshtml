@@ -1,0 +1,91 @@
+@{
+    var exportItems = SharedState.ExportItems.Where(i => i.Group == Model.SafeValue("utilityGroup")).OrderBy(i => i.Name).ToList();
+}
+<div class="">
+    <h2 id="@(exportItems.Count > 1 ? string.Empty : exportItems.First().Name.MakeSlug())" class="text-3xl font-normal @(exportItems.Count > 1 ? "mb-10" : "mb-6")">Quick reference</h2>
+    <div class="space-y-18">
+        @foreach (var group in exportItems)
+        {
+            var perPage = 5;
+
+            var jsId = Guid.NewGuid().GuidToId();
+
+            if (exportItems.Count == 1)
+                perPage = 30;
+
+            if (exportItems.Count == 1 && group.Usages.Count < 35)
+                perPage = 35;
+
+            <div>
+                @if (exportItems.Count > 1)
+                {
+                    <h3 id="@(group.Name.MakeSlug())" class="mb-2 text-2xl">@(group.Name)</h3>
+                }
+                <div class="relative isolate scrollbar-h-hover">
+                    <div class="whitespace-nowrap">
+                        <table class="grid grid-cols-[auto_auto] gap-x-8">
+                            <thead class="col-span-2 grid grid-cols-subgrid">
+                            <tr class="col-span-2 grid grid-cols-subgrid">
+                                <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Class</th>
+                                <th class="py-2.5 text-left text-sm/7 font-semibold text-gray-950 dark:text-white">Styles</th>
+                            </tr>
+                            </thead>
+                            <tbody class="col-span-2 grid grid-cols-subgrid border-t border-line dark:border-dark-line">
+                            @foreach (var utility in group.Usages.OrderByDescending(u => u.Value.InSimpleUtilityCollection).Take(perPage))
+                            {
+                                for (var i = 0; i < utility.Value.DocDefinitions.Count; i++)
+                                {
+                                    var rowId = Guid.NewGuid().GuidToId();
+                                    var def = utility.Value.DocDefinitions.ElementAt(i);
+
+                                    @Html.Raw(SharedState.GetRowMarkup(rowId, def.Key, def.Value, false, utility.Value.DocExamples.Count > i))
+
+                                    if (utility.Value.DocExamples.Count > i)
+                                    {
+                                        var example = utility.Value.DocExamples.ElementAt(i);
+
+                                        @Html.Raw(SharedState.GetRowMarkup(rowId, example.Key, example.Value, true))
+                                    }
+                                }
+                            }
+                            </tbody>
+                            <tbody id="@(jsId)" class="hidden col-span-2 grid grid-cols-subgrid">
+                            @foreach (var utility in group.Usages.OrderByDescending(u => u.Value.InSimpleUtilityCollection).Skip(perPage))
+                            {
+                                for (var i = 0; i < utility.Value.DocDefinitions.Count; i++)
+                                {
+                                    var rowId = Guid.NewGuid().GuidToId();
+                                    var def = utility.Value.DocDefinitions.ElementAt(i);
+
+                                    @Html.Raw(SharedState.GetRowMarkup(rowId, def.Key, def.Value, false, utility.Value.DocExamples.Count > i))
+
+                                    if (utility.Value.DocExamples.Count > i)
+                                    {
+                                        var example = utility.Value.DocExamples.ElementAt(i);
+
+                                        @Html.Raw(SharedState.GetRowMarkup(rowId, example.Key, example.Value, true))
+                                    }
+                                }
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @if (group.Usages.Count > perPage)
+                {
+                    <div id="@(jsId)expand" class="relative w-full h-12 border-t border-line/75 dark:border-dark-line/75">
+                        <button onclick="document.body.focus(); document.getElementById(`@(jsId)`).classList.toggle(`hidden`); document.getElementById(`@(jsId)show-more`).classList.toggle(`hidden`); document.getElementById(`@(jsId)show-less`).classList.toggle(`hidden`);" class="small-button uppercase absolute left-1/2 bottom-0 -translate-x-1/2"><span id="@(jsId)show-more" class="">Show More</span><span id="@(jsId)show-less" class="hidden">Show Less</span></button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="space-y-6 @(Model.SafeBlocklistValue("blockContent").Any() ? "mt-18" : string.Empty)">
+        @(await Html.CachedBlockListAsync(Model, Model.SafeBlocklistValue("blockContent"), UmbracoContext, GlobalStateService, ViewData))
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="gradient-stop" viewBox="0 0 30 34">
+            <path d="M0,3.09090909 C0,0.814826485 0.790861,0 3,0 L27,0 C29.209139,0 30,0.814826485 30,3.09090909 L30,19.1636364 C30,20.685945 29.1857768,22.0843598 27.882,22.8006061 L15,34 L2.118,22.8006061 C0.81422316,22.0843598 0,20.685945 0,19.1636364 L0,3.09090909 Z" id="background"></path>
+        </symbol>
+    </svg>
+</div>

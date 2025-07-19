@@ -1,0 +1,34 @@
+﻿@{
+    var buttonText = BlockContent.SafeValue("buttonText").WithShortCodes(UmbracoContext, GlobalStateService);
+    var link = BlockContent.SafeValue<Link>("buttonLink");
+    var buttonCssOverride = BlockContent.SafeValue("buttonCSSOverride");
+    var buttonPosition = BlockContent.SafeValue("buttonPosition") switch
+    {
+        "Left" => "text-left",
+        "Center" => "text-center",
+        "Right" => "text-right",
+        _ => ""
+    };
+    
+    var iconClass = BlockContent.SafeValue("iconClass");
+    var iconPosition = BlockContent.SafeValue("iconPosition");
+}
+<div class="@(buttonPosition)">
+    @if (string.IsNullOrEmpty(iconClass))
+    {
+        <span>@Html.Raw(buttonText)</span>
+    }
+    else
+    {
+        <a href="@(link?.Url)" title="@(link?.Name)" target="@(link?.Target)" class="button @(buttonCssOverride)">
+            @if (iconPosition.Equals("Left", StringComparison.OrdinalIgnoreCase))
+            {
+                <i class="@(iconClass) mr-1.5"></i><span>@Html.Raw(buttonText)</span>
+            }
+            else
+            {
+                <span>@Html.Raw(buttonText)</span><i class="@(iconClass) ml-1.5"></i>
+            }
+        </a>
+    }
+</div>

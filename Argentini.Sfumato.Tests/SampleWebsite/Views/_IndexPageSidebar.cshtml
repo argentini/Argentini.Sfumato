@@ -1,0 +1,191 @@
+<div class="h-full">
+    <div class="relative website-form w-full">
+        <input type="search" name="docs-search" id="docs-search" placeholder="Search Docs" value="" minlength="2" maxlength="128" autocomplete="off" spellcheck="false" class="form-input pl-10!">
+        <span class="inline-block absolute top-1/2 left-4 [transform:translateY(-50%)]"><i id="blog-search-icon" class="fa-solid fa-search text-[rgba(0,0,0,0.25)] dark:text-[rgba(255,255,255,0.25)]"></i></span>
+    </div>
+    <nav class="pt-8 pb-12 space-y-8 select-none">
+        @Html.Raw(GetIndexMarkup())
+    </nav>
+</div>
+<script>
+
+    let searchEl;
+
+    halide.core.documentReadyAsync(async function() {
+
+        searchEl = await halide.elements.getElementByIdAsync(`docs-search`, 2500);
+
+        if (!searchEl)
+            return;
+
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.has('search')) {
+            searchEl.value = params.get('search');
+        }
+
+        searchEl.addEventListener('input', async function(event) {
+
+            if (event.target.value === ``) {
+
+                let urlObj = new URL(window.location.href);
+
+                urlObj.searchParams.delete('search');
+
+                document.location = urlObj.pathname + (urlObj.search ? urlObj.search : '');
+            }
+        });
+
+        searchEl.addEventListener('keydown', async function(event) {
+
+            if (event.key === 'Enter' || event.key === 'Return') {
+
+                if (event.target.value === '') {
+
+                    let urlObj = new URL(window.location.href);
+
+                    urlObj.searchParams.delete('search');
+
+                    document.location = urlObj.pathname + (urlObj.search ? urlObj.search : '');
+                }
+            }
+        });
+
+        searchEl.addEventListener('change', async function(event) {
+
+            if (event.target.value !== ``) {
+
+                let urlObj = new URL(window.location.href);
+
+                urlObj.searchParams.delete('search');
+                urlObj.searchParams.append('search', searchEl.value);
+
+                document.location = urlObj.pathname + (urlObj.search ? urlObj.search : '');
+            }
+        });
+
+        window.addEventListener('pageshow', async function(_event) {
+
+            if (!searchEl) return;
+            
+            const _params = new URLSearchParams(window.location.search);
+
+            if (_params.has('search')) {
+                searchEl.value = _params.get('search');
+            } else {
+                searchEl.value = ``;
+            }
+        });
+    });
+
+</script>
+@functions
+{
+    private string GetIndexMarkup()
+    {
+        var currentUrl = '/' + GlobalStateService.HttpContextAccessor.HttpContext?.Request.Path.ToString().Split('?', StringSplitOptions.RemoveEmptyEntries).First().Trim('/') + '/';
+        var markup = GlobalStateService.StringBuilderPool.Get();
+
+        if (GlobalStateService.HttpContextAccessor.HttpContext?.Request.Query.ContainsKey("search") ?? false)
+            currentUrl = string.Empty;
+        
+        try
+        {
+            const string selectedClasses = "text-primary! dark:text-secondary!";
+
+            var docsNode = UmbracoContext?.GetHomeNode()?.Children.FirstOrDefault(x => x.ContentType.Alias.InvariantEquals("docsPage"));
+
+            if (docsNode is null)
+                return string.Empty;
+
+            var docsPageUrl = '/' + docsNode.Url(null, UrlMode.Relative).Split('?', StringSplitOptions.RemoveEmptyEntries).First().Trim('/') + '/';
+            
+            #region Root Items
+            
+            var headline = docsNode.SafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService);
+            var icon = docsNode.HasValue("iconClass") ? $"<i class=\"{docsNode.SafeValue("iconClass")} mr-2.5\"></i>" : string.Empty;
+            
+            markup.AppendLine("<div class=\"space-y-4\">");
+            markup.AppendLine($"<div><a href=\"{docsPageUrl}\" class=\"cursor-pointer hover:underline hover:text-canvas-bold dark:hover:text-dark-canvas-bold {(docsPageUrl == currentUrl ? selectedClasses : string.Empty)}\">{icon}{headline}</a></div>");
+            
+            foreach (var child in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase) == false && c.SafeValue("heroCategory") == string.Empty).OrderBy(c => c.SafeValue("heroCategory")).ThenBy(c => c.SortOrder))
+            {
+                var childUrl = '/' + child.Url(null, UrlMode.Relative).Split('?', StringSplitOptions.RemoveEmptyEntries).First().Trim('/') + '/';
+
+                headline = child.SafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService);
+                icon = child.HasValue("iconClass") ? $"<i class=\"{child.SafeValue("iconClass")} mr-2.5\"></i>" : string.Empty;
+            
+                markup.AppendLine($"<div><a href=\"{childUrl}\" class=\"cursor-pointer hover:underline hover:text-canvas-bold dark:hover:text-dark-canvas-bold {(childUrl == currentUrl ? selectedClasses : string.Empty)}\">{icon}{headline}</a></div>");
+            }
+
+            markup.AppendLine("</div>");
+
+            #endregion
+
+            #region Categorized Items
+            
+            foreach (var category in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase) == false).Select(c => c.SafeValue("heroCategory")).Distinct(StringComparer.InvariantCultureIgnoreCase))
+            {
+                if (string.IsNullOrEmpty(category))
+                    continue;
+                
+                markup.AppendLine("<div>");
+                markup.AppendLine($"<div class=\"mb-4 text-sm font-mono font-medium tracking-widest opacity-65 uppercase\">{category}</div>");
+                markup.AppendLine("<div class=\"border-l border-l-canvas-text/25 dark:border-l-dark-canvas-text/25 pl-5 space-y-4\">");
+
+                foreach (var child in docsNode.Children.Where(c => c.SafeValue("heroCategory").Equals(category, StringComparison.InvariantCultureIgnoreCase)).OrderBy(c => c.SortOrder))
+                {
+                    var childUrl = '/' + child.Url(null, UrlMode.Relative).Split('?', StringSplitOptions.RemoveEmptyEntries).First().Trim('/') + '/';
+
+                    headline = child.SafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService);
+
+                    markup.AppendLine($"<div><a href=\"{childUrl}\" class=\"cursor-pointer hover:underline hover:text-canvas-bold dark:hover:text-dark-canvas-bold {(childUrl == currentUrl ? selectedClasses : string.Empty)}\">{headline}</a></div>");
+                }
+                
+                markup.AppendLine("</div>");
+                markup.AppendLine("</div>");
+            }
+
+            #endregion
+
+            #region Utility Items
+            
+            foreach (var category in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase)).Select(c => c.SafeValue("utilityCategory")).Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(c => c))
+            {
+                if (string.IsNullOrEmpty(category))
+                    continue;
+                
+                markup.AppendLine("<div>");
+                markup.AppendLine($"<div class=\"mb-4 text-sm font-mono font-medium tracking-widest opacity-65 uppercase\">{category}</div>");
+                markup.AppendLine("<div class=\"border-l border-l-canvas-text/25 dark:border-l-dark-canvas-text/25 pl-5 space-y-4\">");
+
+                foreach (var child in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase) && c.SafeValue("utilityCategory").Equals(category, StringComparison.InvariantCultureIgnoreCase)).OrderBy(c => c.SafeValue("utilityGroup")))
+                {
+                    var childUrl = '/' + child.Url(null, UrlMode.Relative).Split('?', StringSplitOptions.RemoveEmptyEntries).First().Trim('/') + '/';
+                    var indentation = string.Empty;
+
+                    headline = child.SafeValue("utilityGroup");
+
+                    if (headline.Contains('/'))
+                    {
+                        headline = headline.Split('/').Last().Trim();
+                        indentation = "pl-5";
+                    }
+                
+                    markup.AppendLine($"<div><a href=\"{childUrl}\" class=\"cursor-pointer hover:underline hover:text-canvas-bold dark:hover:text-dark-canvas-bold {indentation} {(childUrl == currentUrl ? selectedClasses : string.Empty)}\">{headline}</a></div>");
+                }
+                
+                markup.AppendLine("</div>");
+                markup.AppendLine("</div>");
+            }
+
+            #endregion
+
+            return markup.ToString();
+        }
+        finally
+        {
+            GlobalStateService.StringBuilderPool.Return(markup);
+        }
+    }
+}

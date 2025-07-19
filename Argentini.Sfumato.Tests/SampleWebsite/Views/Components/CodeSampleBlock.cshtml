@@ -1,0 +1,11 @@
+﻿@{
+    var code = WebUtility.HtmlEncode(BlockContent.SafeValue("code").WithShortCodes(UmbracoContext, GlobalStateService));
+
+    // Keep the <pre><code id=""... format (no breaks or spaces)
+    // so it can be parsed for highlighting when cached or in the blog list
+}
+<div class="max-md:-mx-5 max-w-screen bg-code-panel/85 dark:bg-dark-code-panel md:rounded-xl overflow-hidden">
+    <div class="scrollbar-h-hover">
+        <pre class="w-fit h-full"><code class="language-@(BlockContent.SafeValue("language", "plaintext").WithShortCodes(UmbracoContext, GlobalStateService))">@Html.Raw(code)</code></pre>
+    </div>
+</div>

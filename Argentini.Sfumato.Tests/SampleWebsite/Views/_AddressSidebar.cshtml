@@ -1,0 +1,133 @@
+<div id="map" class="w-full h-64 rounded-md"></div>
+<script>
+    (g => {
+        let h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {});
+        let d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => {
+            await (a = m.createElement("script"));
+            e.set("libraries", [...r] + "");
+            for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+            e.set("callback", c + ".maps." + q);
+            a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+            d[q] = f;
+            a.onerror = () => h = n(Error(p + " could not load."));
+            a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+            m.head.append(a)
+        }));
+        d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n))
+    })({
+        key: "AIzaSyC7cdytVI-GHRqF9XjefGteyEY_8h_s3f4",
+        v: "weekly"
+    });
+
+    halide.core.documentReadyAsync(function () {
+
+        // Initialize and add the map
+        let map;
+        const fynyddMarker = document.createElement("img");
+
+        fynyddMarker.src = "/images/Fynydd-Map-Pin.svg";
+
+        async function initMap() {
+
+            // The location of Uluru
+            const position = { lat: 40.092389, lng: -75.411849 };
+
+            // Request needed libraries.
+            const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+            // The map, centered at Uluru
+            map = new Map(document.getElementById("map"), {
+                zoom: 9,
+                center: position,
+                mapId: "DEMO_MAP_ID",
+                streetViewControl: false,
+                zoomControl: false,
+                fullscreenControl: false,
+                mapTypeControl: false,
+                keyboardShortcuts: false
+            });
+
+            // The marker, positioned at Uluru
+            const marker = new AdvancedMarkerElement({
+                map: map,
+                position: position,
+                content: fynyddMarker,
+                title: "Uluru",
+            });
+        }
+
+        initMap();
+    });
+</script>
+<style>
+    .gmnoprint, .gm-style-cc, .gmnoprint * {
+
+        display: none !important;
+        color: transparent !important;
+        background-color: transparent !important;
+    }
+</style>
+@if (organization is not null)
+{
+    var location = organization.Locations.FirstOrDefault(l => l.PrimaryMailingAddress);
+
+    <div class="space-y-6">
+
+        <h3 class="mt-12 text-2xl">@Html.Raw(organization.LegalTitle)</h3>
+    
+        @if (location is not null)
+        {
+            var streetAddressSegments = location.GetStreetAddress().Split(',');
+            var cityStateZipSegments = location.GetCityStateZipCountry().Split(';');
+            var telephone = location.TelephoneNumbers.FirstOrDefault(t => t.PrimaryTelephoneNumber);
+
+            <div class="space-y-1">
+                <h5 class="text-lg font-bold">@Html.Raw(location.Title.WithShortCodes(UmbracoContext, GlobalStateService))</h5>
+                <p class="">
+                    @if (streetAddressSegments.Length != 0)
+                    {
+                        foreach (var segment in streetAddressSegments)
+                        {
+                            if (segment != streetAddressSegments[0])
+                            {
+                                <br/>
+                            }
+
+                            @Html.Raw($"<span>{segment.Trim()}</span>")
+                        }
+                    }
+                    @if (cityStateZipSegments.Length != 0)
+                    {
+                        @if (streetAddressSegments.Length != 0)
+                        {
+                            <br/>
+                        }
+
+                        <span>@Html.Raw(cityStateZipSegments[0].Trim())</span>
+
+                        if (cityStateZipSegments.Length == 2)
+                        {
+                            <br/>
+                            <span>@Html.Raw(cityStateZipSegments[1].Trim())</span>
+                        }
+                    }
+
+                </p>
+            </div>
+            <div class="space-y-3">
+                <p>
+                    @if (telephone is not null)
+                    {
+                        <a href="tel:@Html.Raw(telephone.TelephoneNumber.WithShortCodes(UmbracoContext, GlobalStateService))">@Html.Raw(telephone.TelephoneNumber.WithShortCodes(UmbracoContext, GlobalStateService))</a>
+                    }
+                </p>
+                <p>
+                    <a href="https://fynydd.com" class="text-primary dark:text-secondary hover:underline cursor-pointer" target="_blank">https://fynydd.com</a>
+                </p>
+            </div>
+        }
+
+    </div>
+}
+

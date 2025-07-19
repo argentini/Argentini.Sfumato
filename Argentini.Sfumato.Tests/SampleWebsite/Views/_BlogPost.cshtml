@@ -1,0 +1,55 @@
+@{
+    var categories = UmbracoContext?.GetCategories().Groups.FirstOrDefault(c => c.Name.Equals("Blog", StringComparison.OrdinalIgnoreCase));
+
+    if (categories is null)
+        return;
+    
+    var homePage = UmbracoContext?.GetHomeNode();
+    var blogListPage = homePage?.Children.FirstOrDefault(c => c.ContentType.Alias.Equals("blogListPage", StringComparison.OrdinalIgnoreCase));
+
+    if (blogListPage is null)
+        return;
+    
+    var user = UserService.GetUserById(Model.CreatorId == -1 ? 2 : Model.CreatorId);
+    var userPhotoUrl = string.Empty;
+    
+    if (user is not null && string.IsNullOrEmpty(user.Avatar) == false)
+        userPhotoUrl = $"/media/{user.Avatar.Trim('/')}?width=320&quality=90";
+}
+<div>
+    <h2 id="@(Model.Key.GuidToId())" class="mb-4 text-3xl text-balance hover:cursor-pointer"><a href="@Html.Raw(Model.Url(mode: UrlMode.Relative))">@Html.Raw(Model.SafeValue("headline").WithShortCodes(UmbracoContext, GlobalStateService))</a></h2>
+    <div class="grid @(string.IsNullOrEmpty(userPhotoUrl) ? string.Empty : "grid-cols-[auto_1fr] gap-x-2.5 md:gap-x-3") items-center text-xs md:text-sm">
+        @if (string.IsNullOrEmpty(userPhotoUrl) == false)
+        {
+            <img src="@(userPhotoUrl)" class="overflow-hidden rounded-full aspect-square w-8 md:w-6" alt="@(Model.CreatorId == -1 ? "Michael Argentini" : Model.CreatorName()) Avatar" />
+        }
+        <div><span class="font-semibold text-black dark:text-white">@Html.Raw(Model.CreatorId == -1 ? "Michael Argentini" : Model.CreatorName())</span><span class="hidden md:inline-block mx-2 opacity-50 text-lg leading-none font-thin">/</span><span class="block mt-0.25 md:mt-0 md:inline-block">@Html.Raw($"{Model.SafeValue("publicationDate", Model.CreateDate):dddd, MMMM d, yyyy}")</span></div>
+    </div>
+    <div class="mt-10 space-y-6">
+        @(await Html.CachedBlockListAsync(Model.Parent, Model.SafeBlocklistValue("blockContent"), UmbracoContext, GlobalStateService, ViewData))
+        @if (Model.HasValue("categories"))
+        {
+            if (Model.SafeMultiplePickerValue("categories").Any())
+            {
+                var labels = string.Empty;
+
+                <div>
+                    @foreach (var tag in Model.SafeMultiplePickerValue("categories").OrderBy(o => o.Name.Contains(':')))
+                    {
+                        if (categories.CategoryItems.FirstOrDefault(c => c.Slug == new Category(tag).Slug) is not Category category)
+                            continue;
+
+                        var colorClasses = "bg-canvas-shade hover:bg-primary hover:text-primary-text    dark:bg-dark-canvas-tinter dark:hover:bg-primary dark:hover:text-primary-text";
+
+                        if (category.Segments.Count > 1)
+                            colorClasses = "bg-canvas-shade/15 hover:bg-primary-shade hover:text-primary-text    dark:bg-dark-canvas-tint dark:hover:bg-dark-primary/85 dark:hover:text-dark-primary-text";
+                        
+                        labels += $"""<a href="{blogListPage.Url()}?tags={category.Slug}" class="inline-block whitespace-nowrap rounded mr-2 mb-2 px-3 py-2 text-xs leading-none {colorClasses}">{category.Name.Replace(":", " : ")}</a>""";
+                    }
+
+                    <p>@Html.Raw(labels)</p>
+                </div>
+            }
+        }
+    </div>
+</div>

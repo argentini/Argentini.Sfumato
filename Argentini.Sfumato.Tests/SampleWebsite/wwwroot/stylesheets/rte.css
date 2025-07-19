@@ -1,0 +1,173 @@
+.rte-content {
+
+    p + *,
+    ul + *,
+    ol + *,
+    blockquote + *,
+    article + *,
+    section + *,
+    figure + *,
+    pre + *,
+    div + *,
+    h5 + *,
+    h6 + *
+    {
+        @apply mt-4;
+    }
+
+    h1 + *,
+    h2 + *,
+    h3 + *,
+    h4 + *
+    {
+        @apply mt-5;
+    }
+
+    h1 {
+        @apply text-4xl;
+    }
+
+    h2 {
+        @apply text-3xl;
+    }
+
+    h3 {
+        @apply text-2xl;
+    }
+
+    h4 {
+        @apply text-xl;
+    }
+
+    h5 {
+        @apply text-lg;
+    }
+
+    h6 {
+        @apply text-base;
+    }
+
+    h1, h2, h3, h4 {
+        @apply font-normal text-balance;
+    }
+
+    h5, h6 {
+        @apply font-bold text-pretty;
+    }
+
+    h1, h2, h3 {
+
+        @apply mt-10;
+    }
+
+    h4, h5 {
+
+        @apply mt-7;
+    }
+
+    h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+
+        @apply mt-0;
+    }
+
+    p {
+        code {
+            @apply inline-block px-2 rounded bg-code-panel text-white font-mono;
+            font-size: 70%;
+            line-height: 1.9;
+            margin-left: 0.125rem;
+            margin-right: 0.125rem;
+            vertical-align: text-top;
+        }
+    }
+
+    strong {
+        @apply font-bold text-canvas-bold;
+    }
+
+    a {
+        @apply text-primary;
+
+        &:hover {
+            @apply underline;
+        }
+    }
+
+    figure {
+        @apply my-10;
+        img {
+            @apply overflow-hidden rounded;
+        }
+        figcaption {
+            @apply text-sm mt-2;
+        }
+    }
+
+    hr {
+        @apply mt-4 mb-4 border border-line;
+    }
+
+    ul {
+        @apply list-[square] list-outside ml-8;
+
+        li {
+            @apply pl-2
+        }
+
+        li + li {
+            @apply mt-6;
+        }
+    }
+
+    ol {
+
+        @apply list-decimal list-outside ml-8;
+
+        li {
+            @apply pl-2
+        }
+
+        li + li {
+            @apply mt-6;
+        }
+    }
+
+    blockquote {
+        @apply my-8 border-l-8 border-primary pl-5 text-lg font-light text-balance;
+    }
+
+    @variant md {
+
+        blockquote {
+            @apply ml-5 px-5 text-lg;
+        }
+    }
+}
+
+@variant dark {
+
+    .rte-content {
+
+        strong {
+            @apply text-dark-canvas-bold;
+        }
+
+        hr {
+            @apply border-dark-line;
+        }
+
+        blockquote {
+            @apply border-secondary;
+        }
+
+        a {
+            @apply text-secondary;
+        }
+    }
+
+    p {
+        code {
+            @apply bg-dark-code-panel text-white font-light;
+        }
+    }
+}

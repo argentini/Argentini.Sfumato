@@ -1,0 +1,58 @@
+﻿@{
+    var jsId = Strings.CreateUniqueId();
+}
+<div id="@(jsId)" class="-mr-3">
+    <div class="h-full grid grid-cols-[0.35rem_1fr] gap-x-6 gap-y-6 md:gap-x-8 lg:gap-x-8 xl:gap-x-10">
+        @foreach (var thumbnailsBlock in BlockContent.SafeBlocklistValue("thumbnails"))
+        {
+            var content = thumbnailsBlock.Content;
+            
+            <div class="rainbow rounded"></div>
+            <div class="-mb-1.5">
+                @if (content.HasValue("title"))
+                {
+                    <h5 class="mb-4 text-lg font-bold">@Html.Raw(content.SafeValue("title").WithShortCodes(UmbracoContext, GlobalStateService))</h5>
+                }
+                @{
+                    var index = 0;
+
+                    foreach (var mediaWithCrops in content.SafeMultipleMediaWithCropsValue("thumbnails"))
+                    {
+                        var themedImage = new ThemedImage(UmbracoContext, GlobalStateService, mediaWithCrops.Content);
+
+                        if (themedImage.Initialized)
+                        {
+                            var lightImageUrl = themedImage.GetImageUrl();
+                            var darkImageUrl = themedImage.GetDarkImageUrl();
+
+                            if (string.IsNullOrEmpty(lightImageUrl) == false)
+                            {
+                                <div id="@Html.Raw(jsId)-index@(index)" style="background-image: url('@Html.Raw(lightImageUrl)'); background-repeat: no-repeat; background-size: cover; background-position: center;" class="relative inline-block cursor-pointer rounded mr-3 mb-1.5 w-20 h-20 overflow-hidden border-2 border-line hover:border-tertiary dark:border-dark-line dark:hover:border-tertiary" src="@Html.Raw(lightImageUrl)" embiggen="@(Html.Raw(lightImageUrl))" onclick="halide.images.embiggen(document.getElementById('@Html.Raw(jsId)'), this);"></div>
+
+                                <style>
+
+                    #@Html.Raw(jsId)-index@(index) {
+                        background-image:url('@Html.Raw(lightImageUrl)');
+                    }
+
+                    .theme-dark #@Html.Raw(jsId)-index@(index) {
+                        background-image:url('@Html.Raw(darkImageUrl)');
+                    }
+
+                    @@media (prefers-color-scheme: dark) {
+                        .theme-auto #@Html.Raw(jsId)-index@(index) {
+                            background-image:url('@Html.Raw(darkImageUrl)');
+                        }
+                    }
+
+                </style>
+
+                                index++;
+                            }
+                        }
+                    }
+                }
+            </div>
+        }
+    </div>
+</div>

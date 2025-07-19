@@ -1,0 +1,82 @@
+@{
+    var request = GlobalStateService.HttpContextAccessor.HttpContext?.Request;
+    var organization = UmbracoContext?.GetOrganization(GlobalStateService);
+    var location = organization?.Locations.FirstOrDefault(a => a.PrimaryMailingAddress);
+    var telephone = location?.TelephoneNumbers.FirstOrDefault(a => a.PrimaryTelephoneNumber);
+    var search = string.Empty;
+
+    if (request?.Query.ContainsKey("search") ?? false)
+        search = request.Query["search"];
+    
+    var primaryMenuItems = UmbracoContext?.GetMenus().FirstOrDefault(m => m.Name.InvariantEquals("Primary Footer"))?.MenuItems ?? [];
+    var menuColsDef = primaryMenuItems.Count switch
+    {
+        2 => "md:grid-cols-[repeat(2,minmax(auto,max-content))]",
+        3 => "md:grid-cols-[repeat(3,minmax(auto,max-content))]",
+        4 => "md:grid-cols-[repeat(4,minmax(auto,max-content))]",
+        5 => "md:grid-cols-[repeat(5,minmax(auto,max-content))]",
+        _ => string.Empty
+    };
+}
+<div class="bg-no-repeat bg-size-[calc(100vw_*_4)] bg-position-[80%_-40rem] md:bg-position-[center_-50rem] md:bg-size-[100rem] bg-[/themedimage/home-hero-bg/light] select-none    border border-t-line/65 dark:border-t-dark-line/35">
+    <div class="relative bg-repeat-round bg-size-[10px] [--line-color:var(--color-line)] dark:[--line-color:--alpha(var(--color-dark-line)_/_50%)] [background-image:repeating-linear-gradient(to_right,transparent,transparent_calc(10px_-_1px),var(--line-color)_10px),repeating-linear-gradient(to_bottom,transparent,transparent_calc(10px_-_1px),var(--line-color)_10px)]">
+        <div class="bg-linear-to-t from-canvas dark:from-dark-canvas to-transparent">
+            <div class="@(Model.ContentType.Alias.InvariantEquals("blogPost") && string.IsNullOrEmpty(search) ? "elastic-content" : "elastic") text-sm/5">
+                <div class="unit-margin-x unit-padding-y grid md:grid-cols-[minmax(auto,max-content)_1fr] gap-x-8 gap-y-8 max-md:gap-y-12">
+                    <div class="grid @(menuColsDef) gap-x-10 gap-y-8 md:gap-x-16">
+                        @foreach (var menu in primaryMenuItems.Where(m => m.Hide == false))
+                        {
+                            <div>
+                                <h6 class="mb-3 text-sm font-bold uppercase text-primary dark:text-secondary max-md:text-base max-md:text-center">@Html.Raw(menu.Title.WithShortCodes(UmbracoContext, GlobalStateService))</h6>
+                                <div class="max-md:flex max-md:flex-wrap max-md:gap-x-3 max-md:gap-y-3 max-md:justify-center md:grid md:gap-y-2">
+                                    @foreach (var menuItem in menu.MenuItems.Where(m => m.Hide == false))
+                                    {
+                                        <div class="max-md:inline-block">
+                                            <a href="@(menuItem.Link?.Url ?? "/")" title="@(menuItem.Link?.Name)" target="@(menuItem.Link?.Target ?? "_self")" class="inline-block max-md:px-4 max-md:py-2 max-md:leading-none max-md:rounded max-md:bg-footer-button/65 dark:max-md:bg-dark-footer-button/65 md:hover:underline">@Html.Raw(menuItem.Title.WithShortCodes(UmbracoContext, GlobalStateService))</a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="grid justify-center md:justify-end">
+                        @Html.Raw(organization?.LogoTall?.GetThemedImageMarkup(new ThemedImageSettings
+                        {
+                            MinWidthRems = 6,
+                            MaxWidthRems = 6,
+                        }))
+                    </div>
+                </div>
+                <div class="unit-margin-x pb-32 text-center space-y-12">
+                    <p>
+                        <a href="https://fynydd.com" target="_blank" class="hover:underline">@Html.Raw(organization?.Copyright.WithShortCodes(UmbracoContext, GlobalStateService))</a>
+                        @if (location is not null)
+                        {
+                            var cityStateZip = location.GetCityStateZipCountry(false);
+
+                            @if (string.IsNullOrEmpty(cityStateZip) == false)
+                            {
+                                <span class="inline-block mx-2 opacity-35">/</span>
+                                <a href="https://fynydd.com" target="_blank" class="hover:underline">@Html.Raw(cityStateZip)</a>
+                            }
+
+                            @if (telephone is not null)
+                            {
+                                <span class="inline-block mx-2 opacity-35">/</span>
+                                <a href="tel:@Html.Raw(telephone.TelephoneNumber.WithShortCodes(UmbracoContext, GlobalStateService).Trim('+').Replace(" ", string.Empty).Replace("-", string.Empty).Replace(".", string.Empty))" target="_blank" class="hover:underline">@Html.Raw(telephone.TelephoneNumber.WithShortCodes(UmbracoContext, GlobalStateService))</a>
+                            }
+                        }
+                    </p>
+                    <div>
+                        @(await Component.InvokeAsync<ThemeSwitcherViewComponent>(new ThemeSwitcherModel
+                        {
+                            DefaultDarkTheme = true,
+                            ShowAsWidget = true,
+                            WrapperClasses = "relative inline-grid grid-cols-3 gap-0.5 rounded-full bg-[#f4f4f4] p-0.75 text-gray-950 dark:bg-[#272f3c] dark:text-white text-none cursor-pointer"
+                        }))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

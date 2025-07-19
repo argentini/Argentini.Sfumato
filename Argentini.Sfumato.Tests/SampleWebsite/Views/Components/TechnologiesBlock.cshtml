@@ -1,0 +1,30 @@
+﻿<div class="-mr-3">
+    <div class="h-full grid grid-cols-[0.35rem_1fr] gap-x-6 md:gap-x-8 lg:gap-x-8 xl:gap-x-10">
+        <div class="rainbow rounded"></div>
+        <div class="space-y-6">
+            @foreach (var item in BlockContent.SafeBlocklistValue("technologies"))
+            {
+                var stack = item.Content;
+
+                <div>
+                    <h5 class="-mb-2 text-lg font-bold">@Html.Raw(stack.SafeValue("title").WithShortCodes(UmbracoContext, GlobalStateService))</h5>
+                    <div class="mt-2 flex flex-wrap">
+                        @foreach (var brand in stack.SafeMultipleMediaWithCropsValue("brands").OrderBy(b => b.Content.SafeValue("description")))
+                        {
+                            var brandLogo = new ThemedImage(UmbracoContext, GlobalStateService, brand);
+
+                            <div class="relative rounded py-2 px-3 panel-color border border-line mt-3 mr-3 text-center    dark:border-dark-line">
+                                <div class="relative top-1/2 left-1/2 -translate-1/2">
+                                    <div class="inline-block relative w-10 h-10 rounded-full bg-white border-[1.5px] border-line dark:border-dark-line">
+                                        @Html.Raw(brandLogo.GetLightThemeImageMarkup(new ThemedImageSettings { ImageCssClass = "relative top-1/2 left-1/2 -translate-1/2 w-5 max-w-5 max-h-5" }))
+                                    </div>
+                                    <p class="text-xs/4">@Html.Raw(brandLogo.Description.WithShortCodes(UmbracoContext, GlobalStateService))</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

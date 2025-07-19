@@ -1,0 +1,40 @@
+p {
+    code {
+        @apply bg-dark-code-panel text-white font-light;
+    }
+}
+
+:not(pre)>code[class*="language-"], pre[class*="language-"] {
+    background: transparent;
+}
+
+pre, pre[class*="language-"] {
+
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+
+    @apply table whitespace-pre min-w-full max-w-screen relative font-mono font-light    px-6 py-5;
+
+    code, code[class*="language-"] {
+
+        @apply font-mono font-light;
+
+        background-color: transparent !important;
+        font-size: 0.9rem;
+        padding: 0 !important;
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+    }
+}
+
+.scrollbar-h-hover > *:first-child {
+    margin-bottom: calc(var(--sf-scrollbar-size) * -1);
+}
+
+@variant md {
+
+    pre {
+        @apply px-8 py-8;
+    }
+}

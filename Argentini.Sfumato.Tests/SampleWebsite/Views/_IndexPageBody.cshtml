@@ -1,0 +1,624 @@
+@{
+    var categoryText = string.Empty;
+    var headline = string.Empty;
+    var headlineIntro = string.Empty;
+    var noMorePosts = true;
+
+    var perPage = 50;
+
+    var pageNum = ViewData["Page"] as int? ?? 1;
+    var search = ViewData["Search"] as string ?? string.Empty;
+    var tags = ViewData["Tags"] as string ?? string.Empty;
+
+    var request = GlobalStateService.HttpContextAccessor.HttpContext?.Request;
+
+    if (ViewData.Count == 0 && request is not null)
+    {
+        if (request.Query.ContainsKey("page"))
+            if (int.TryParse(request.Query["page"], out pageNum) == false)
+                pageNum = 1;
+
+        if (request.Query.ContainsKey("search"))
+            if (string.IsNullOrEmpty(request.Query["search"]) == false)
+                search = request.Query["search"];
+
+        if (request.Query.ContainsKey("tags"))
+            if (string.IsNullOrEmpty(request.Query["tags"]) == false)
+                tags = request.Query["tags"];
+    }
+    
+    if (pageNum < 1)
+        pageNum = 1;
+    
+    if (string.IsNullOrEmpty(search))
+    {
+        search = GlobalStateService.HttpContextAccessor.HttpContext?.Request.Query["search"].ToString().Replace("+", " ").Trim() ?? string.Empty;
+    }
+    
+    if (Model.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase))
+    {
+        categoryText = Model.SafeValue("utilityCategory");
+        headline = Model.SafeValue("utilityGroup").Replace("/", ": ");
+        headlineIntro = Model.SafeValue("utilityGroupDescription");
+    }
+    else if (Model.ContentType.Alias.Equals("blogListPage", StringComparison.OrdinalIgnoreCase))
+    {
+        headline = Model.SafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService);
+
+        if (string.IsNullOrEmpty(tags) == false)
+        {
+            if (tags.Equals("all", StringComparison.OrdinalIgnoreCase) == false)
+            {
+                var tag = UmbracoContext?.GetCategories().Groups[0].CategoryItems.FirstOrDefault(c => c.Selector == tags)?.Name ?? tags;
+
+                headline = tag.Replace("Subtopics:", "<span class=\"font-light!\">Subtopic: </span>");
+            }
+        }
+
+        if (string.IsNullOrEmpty(search) == false)
+        {
+            if (string.IsNullOrEmpty(tags) == false && tags != "all")
+            {
+                var tag = UmbracoContext?.GetCategories().Groups[0].CategoryItems.FirstOrDefault(c => c.Selector == tags)?.Name ?? tags;
+
+                categoryText = tag.Replace("Subtopic:", "Subtopic: ");
+            }
+
+            headline = $"<span class=\"font-light!\">Search <span class=\"font-thin!\">/</span> </span>{search}";
+        }
+        
+        headlineIntro = Model.IsFalse("hideHeroIntroText") ? Model.SafeValue("heroIntroductionText").WithShortCodes(UmbracoContext, GlobalStateService) : string.Empty;
+    }
+    else if (string.IsNullOrEmpty(search) == false)
+    {
+        headline = $"<span class=\"font-normal!\">Search <span class=\"font-thin\">/</span> </span>{search}";
+    }
+    else
+    {
+        categoryText = Model.SafeValue("heroCategory").WithShortCodes(UmbracoContext, GlobalStateService);
+        headline = Model.SafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService);
+        headlineIntro = Model.IsFalse("hideHeroIntroText") ? Model.SafeValue("heroIntroductionText").WithShortCodes(UmbracoContext, GlobalStateService) : string.Empty;
+    }
+
+    if (pageNum > 1)
+    {
+        headline += $"<span class=\"font-light!\"> <span class=\"font-thin!\">/</span> {pageNum:N0}</span>";
+    }
+
+    #region Search
+    
+    var searchResults = new List<PublishedSearchResult>();
+
+    if (UmbracoContext is null)
+        return;
+
+    if (GlobalStateService.ExamineManager.TryGetIndex(Constants.UmbracoIndexes.ExternalIndexName, out var index) == false)
+        return;
+
+    var searcher = index.Searcher;
+    IBooleanOperation? query = null;
+
+    var categories = UmbracoContext.GetCategories();
+
+    if (Model.ContentType.Alias.InvariantEquals("docsPage") || Model.ContentType.Alias.InvariantEquals("docPage") || Model.ContentType.Alias.InvariantEquals("utilityPage"))
+    {
+        if (string.IsNullOrEmpty(search))
+        {
+            query = searcher.CreateQuery(IndexTypes.Content)
+                .Field("__Key", Model.Key.ToString());
+        }
+        else
+        {
+            var fieldNames = new[]
+            {
+                "utilityCategory",
+                "utilityGroup",
+                "utilityGroupDescription",
+                
+                "heroCategory",
+                "heroHeadline",
+                "heroIntroductionText",
+                
+                "blockContent",
+                "metaKeywords",
+                "metaDescription",
+
+                "searchMetadata",
+            };
+
+            query = searcher.CreateQuery(IndexTypes.Content)
+                .GroupedOr(["__NodeTypeAlias"], ["utilityPage", "docPage", "docsPage"])
+                .And()
+                .Group(group =>
+                {
+                    group.ManagedQuery(search.ToLower());
+
+                    foreach (var fieldName in fieldNames)
+                    {
+                        group.Field(fieldName, search.ToLower());
+                        group.Field(fieldName, $"\"{search.ToLower()}\"".Boost(15.0f));
+                    }
+
+                    return null;
+                });
+        }
+    }
+    else if (Model.ContentType.Alias.InvariantEquals("blogListPage") || Model.ContentType.Alias.InvariantEquals("blogPost"))
+    {
+        perPage = 10;
+
+        var fieldNames = new[]
+        {
+            "headline",
+            "blockContent",
+            "categoriesText",
+            "technologiesText",
+            
+            "metaKeywords",
+            "metaDescription",
+        };
+
+        query = searcher.CreateQuery(IndexTypes.Content)
+            .NodeTypeAlias("blogPost");
+
+        if (string.IsNullOrEmpty(search) == false)
+            query = query
+                .And()
+                .Group(group =>
+                {
+                    group.ManagedQuery(search.ToLower());
+
+                    foreach (var fieldName in fieldNames)
+                    {
+                        group.Field(fieldName, search.ToLower());
+                        group.Field(fieldName, $"\"{search.ToLower()}\"".Boost(15.0f));
+                    }
+
+                    return null;
+                });
+
+        var blogCategories = categories.Groups.FirstOrDefault(g => g.Name.Equals("Blog", StringComparison.OrdinalIgnoreCase));
+
+        if (blogCategories is not null)
+        {
+            var tagsSegments = tags?.Split('|', StringSplitOptions.RemoveEmptyEntries).ToList() ?? [];
+            var topics = blogCategories.CategoryItems.Where(c => c is Category).Cast<Category>().Where(c => c.Segments.Count == 1).ToList();
+            var subTopics = blogCategories.CategoryItems.Where(c => c is Category).Cast<Category>().Where(c => c.Segments.Count > 1).ToList();
+
+            tagsSegments.RemoveAll(s => s.Equals("all", StringComparison.OrdinalIgnoreCase));
+            topics.RemoveAll(topic => tagsSegments.Contains(topic.Slug) == false);
+            subTopics.RemoveAll(topic => tagsSegments.Contains(topic.Slug) == false);
+
+            if (topics.Count > 0)
+            {
+                query = query
+                    .And()
+                    .Group(group =>
+                    {
+                        foreach (var category in topics)
+                        {
+                            group.ManagedQuery(category.Slug, ["tags"]);
+                        }
+
+                        return null;
+                    }, BooleanOperation.And);
+            }
+
+            if (subTopics.Count > 0)
+            {
+                query = query
+                    .And()
+                    .Group(group =>
+                    {
+                        foreach (var category in subTopics)
+                        {
+                            group.ManagedQuery(category.Slug, ["tags"]);
+                        }
+
+                        return null;
+                    });
+            }
+
+            var claimsIdentity = BackofficeUserAccessor.BackofficeUser;
+
+            if (claimsIdentity is null || claimsIdentity.IsAuthenticated == false)
+            {
+                query = query
+                    .And()
+                    .Field("private", "0");
+            }
+
+            if (string.IsNullOrEmpty(search))
+                query.OrderByDescending([new SortableField("publicationDateLong", SortType.Long)]);
+        }
+    }
+
+    var skip = (pageNum * perPage) - perPage;
+    
+    if (query is not null)
+        searchResults.AddRange(query.Execute(new QueryOptions(skip, perPage + 1)).ToPublishedSearchResults(UmbracoContext.Content));
+
+    if (searchResults.Count > perPage)
+    {
+        noMorePosts = false;
+        searchResults.RemoveAt(searchResults.Count - 1);
+    }
+
+    #endregion
+}
+<div>
+    @if (Model.ContentType.Alias.InvariantEquals("blogPost") && string.IsNullOrEmpty(search))
+    {
+        <div class="nav-padding-t elastic-content">
+            <div class="unit-margin-x unit-padding-y">
+                @(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_BlogPost"))
+            </div>
+        </div>
+    }
+    else if (Model.AncestorOrSelf().ContentType.Alias.InvariantEquals("blogListPage") || (Model.Parent?.AncestorOrSelf().ContentType.Alias.InvariantEquals("blogListPage") ?? false))
+    {
+        if (searchResults.Count > 0)
+        {
+            var baseUrl = $"{request?.Scheme}://{request?.Host}{request?.Path}";
+            var queryDict = QueryHelpers.ParseQuery(request?.QueryString.ToString()).ToDictionary(k => k.Key, v => v.Value.ToString());
+
+            queryDict["page"] = $"{(pageNum > 1 ? pageNum - 1 : pageNum)}";
+
+            var newerUrl = QueryHelpers.AddQueryString(baseUrl, queryDict!);
+
+            queryDict["page"] = $"{(noMorePosts ? pageNum : pageNum + 1)}";
+
+            var olderUrl = QueryHelpers.AddQueryString(baseUrl, queryDict!);
+            
+            <div class="elastic nav-padding-t">
+                <div class="unit-margin-x unit-padding-y xl:grid xl:grid-cols-[1fr_17rem] xl:gap-x-20">
+                    <div class="min-w-0">
+                        <div class="unit-padding-b">
+                            @if (string.IsNullOrEmpty(categoryText) == false)
+                            {
+                                <h6 class="mb-1 text-sm font-bold text-pretty rte-content uppercase text-primary dark:text-secondary">
+                                    @Html.Raw(categoryText)
+                                </h6>
+                            }
+                            <h1 class="text-4xl font-black text-balance line-clamp-2 text-black dark:text-white">@Html.Raw(headline)</h1>
+                            @if (string.IsNullOrEmpty(headlineIntro) == false)
+                            {
+                                <div class="mt-4 text-pretty text-lg rte-content">
+                                    @Html.Raw(headlineIntro)
+                                </div>
+                            }
+                        </div>
+                        <div class="space-y-20">
+                            @foreach (var result in searchResults)
+                            {
+                                @(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, result.Content, "_BlogPost"))
+                                <div class="max-md:-mx-5 relative h-1 border border-t-line select-none text-sm leading-none dark:border-t-dark-line"><a href="#top" class="relative top-1/2 left-1/2 -translate-1/2 cursor-pointer inline-block bg-canvas rounded border border-line dark:border-dark-line dark:bg-dark-canvas back-to-top-hover"><span class="inline-block px-4 py-2 opacity-25"><i class="fa-solid fa-arrow-up inline-block mr-2"></i>Back to Top</span></a></div>
+                            }
+                            <div class="w-fit mx-auto grid grid-cols-[auto_auto] gap-x-6">
+                                <a href="@(pageNum == 1 ? string.Empty : newerUrl)" class="button @(pageNum == 1 ? "pointer-events-none opacity-25! cursor-not-allowed! hover:outline-none!" : string.Empty)"><i class="fa-solid fa-arrow-left-long mr-2" id="newer-button-icon"></i>Newer Posts</a>
+                                <a href="@(noMorePosts ? string.Empty : olderUrl)" class="button @(noMorePosts ? "pointer-events-none opacity-25! cursor-not-allowed! hover:outline-none!" : string.Empty)">Older Posts<i class="fa-solid fa-arrow-right-long ml-2" id="older-button-icon"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="anchor-bar-wrapper" class="sticky top-below-nav-with-padding self-start z-20 scrollbar-v-hover h-auto! max-h-[calc(100vh_-_var(--nav-bar-h)_-_var(--xl-unit-py))] max-xl:hidden">
+                        <div class="select-none space-y-8 pb-8 pr-(--sf-scrollbar-size)">
+                            @if (searchResults.Any())
+                            {
+                                <div class="mb-4 font-mono font-medium tracking-wide opacity-65 uppercase"><i class="fa-duotone fa-link mr-2"></i>On This Page</div>
+                                <div>
+                                    <div class="mb-4 text-sm font-mono font-medium tracking-widest opacity-65 uppercase">Posts Page @(pageNum)</div>
+                                    <div class="border-l border-l-canvas-text/25 dark:border-l-dark-canvas-text/25 pl-5 space-y-4">
+                                        @foreach (var result in searchResults)
+                                        {
+                                            <div class="text-balance"><a href="#@(result.Content.Key.GuidToId())" class="cursor-pointer hover:underline hover:text-canvas-bold dark:hover:text-dark-canvas-bold">@Html.Raw(result.Content.SafeValue("headline"))</a></div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="elastic nav-padding-t">
+                <div class="unit-margin-x unit-padding-y">
+                    <div class="unit-padding-b">
+                        @if (string.IsNullOrEmpty(categoryText) == false)
+                        {
+                            <h6 class="mb-1 text-sm font-bold text-pretty rte-content uppercase text-primary dark:text-secondary">
+                                @Html.Raw(categoryText)
+                            </h6>
+                        }
+                        <h1 class="text-4xl font-black text-balance line-clamp-2 text-black dark:text-white">@Html.Raw(headline)</h1>
+                        @if (string.IsNullOrEmpty(headlineIntro) == false)
+                        {
+                            <div class="mt-4 text-pretty text-lg rte-content">
+                                @Html.Raw(headlineIntro)
+                            </div>
+                        }
+                    </div>
+                    <div class="space-y-4">
+                        <p>In a tranquil temple, a student asked the master for answers.</p>
+                        <p>The master poured tea into the cup until it overflowed.</p>
+                        <p>“Sometimes,” the master smiled, “the cup must be emptied to be filled anew.”</p>
+                        <h4 class="mb-8 text-xl font-bold">No results were found.</h4>
+                        <p>But now the space is yours to fill with new questions and curiosities.</p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else if (Model.AncestorOrSelf().ContentType.Alias.InvariantEquals("docsPage") || (Model.Parent?.AncestorOrSelf().ContentType.Alias.InvariantEquals("docsPage") ?? false))
+    {
+        if (string.IsNullOrEmpty(search))
+        {
+            if (Model.ContentType.Alias.InvariantEquals("docsPage") || Model.ContentType.Alias.InvariantEquals("docPage"))
+            {
+                <div class="elastic nav-padding-t">
+                    <div class="unit-margin-x unit-padding-t xl:grid xl:grid-cols-[1fr_17rem] xl:gap-x-20">
+                        <div class="min-w-0">
+                            <div class="unit-padding-b">
+                                @if (string.IsNullOrEmpty(categoryText) == false)
+                                {
+                                    <h6 class="mb-1 text-sm font-bold text-pretty rte-content uppercase text-primary dark:text-secondary">
+                                        @Html.Raw(categoryText)
+                                    </h6>
+                                }
+                                <h1 class="text-4xl font-black text-balance line-clamp-2 text-black dark:text-white">@Html.Raw(headline)</h1>
+                                @if (string.IsNullOrEmpty(headlineIntro) == false)
+                                {
+                                    <div class="mt-4 text-pretty text-lg rte-content">
+                                        @Html.Raw(headlineIntro)
+                                    </div>
+                                }
+                            </div>
+                            <div class="space-y-6">
+                                @(await Html.CachedBlockListAsync(Model, Model.SafeBlocklistValue("blockContent"), UmbracoContext, GlobalStateService, ViewData))
+                            </div>
+                        </div>
+                        <div id="anchor-bar-wrapper" class="sticky top-below-nav-with-padding self-start z-20 scrollbar-v-hover h-auto! max-h-[calc(100vh_-_var(--nav-bar-h)_-_var(--xl-unit-py))] max-xl:hidden">
+                            <div class="select-none space-y-8 pb-8 pr-(--sf-scrollbar-size)">
+                                @if (Model.SafeBlocklistValue("blockContent").Any(i => i.Settings.HasValue("websiteAnchorText") && i.Settings.IsFalse("websiteHidden")))
+                                {
+                                    <div class="mb-4 font-mono font-medium tracking-wide opacity-65 uppercase"><i class="fa-duotone fa-link mr-2"></i>On This Page</div>
+                                    @Html.Raw(UmbracoContext.GetAnchorNavMarkup(GlobalStateService, SharedState, Model))
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="elastic nav-padding-t">
+                    <div class="unit-margin-x unit-padding-t xl:grid xl:grid-cols-[1fr_17rem] xl:gap-x-20">
+                        <div class="min-w-0">
+                            <div class="unit-padding-b">
+                                @if (string.IsNullOrEmpty(categoryText) == false)
+                                {
+                                    <h6 class="mb-1 text-sm font-bold text-pretty rte-content uppercase text-primary dark:text-secondary">
+                                        @Html.Raw(categoryText)
+                                    </h6>
+                                }
+                                <h1 class="text-4xl font-black text-balance line-clamp-2 text-black dark:text-white">@Html.Raw(headline)</h1>
+                                @if (string.IsNullOrEmpty(headlineIntro) == false)
+                                {
+                                    <div class="mt-4 text-pretty text-lg rte-content">
+                                        @Html.Raw(headlineIntro)
+                                    </div>
+                                }
+                            </div>
+                            @(await Html.CachedPartialAsync(UmbracoContext, GlobalStateService, Model, "_UtilityPage"))
+                        </div>
+                        <div id="anchor-bar-wrapper" class="sticky top-below-nav-with-padding self-start z-20 scrollbar-v-hover h-auto! max-h-[calc(100vh_-_var(--nav-bar-h)_-_var(--xl-unit-py))] max-xl:hidden">
+                            <div class="select-none space-y-8 pb-8 pr-(--sf-scrollbar-size)">
+                                <div class="mb-4 font-mono font-medium tracking-wide opacity-65 uppercase"><i class="fa-duotone fa-link mr-2"></i>On This Page</div>
+                                @Html.Raw(UmbracoContext?.GetAnchorNavMarkup(GlobalStateService, SharedState, Model))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            var contentIndex = GetIndex();
+            var modelIndex = contentIndex.FindIndex(i => i.Key == Model.Key);
+            
+            <div class="elastic">
+                <div class="unit-margin-x unit-padding-y xl:grid xl:grid-cols-[1fr_17rem] xl:gap-x-20">
+                    <div class="grid grid-cols-[auto_auto] gap-x-6">
+                        @if (modelIndex < 1)
+                        {
+                            <div></div>
+                        }
+                        else
+                        {
+                            var previousContent = contentIndex.ElementAt(modelIndex - 1);
+                            
+                            <div><a class="cursor-pointer inline-block line-clamp-1 hover:underline hover:text-primary dark:hover:text-secondary" href="@(GetContentUrl(previousContent))"><i class="mr-2 text-sm fa-solid fa-angle-left"></i>@Html.Raw(GetHeading(previousContent))</a></div>
+                        }
+                        @if (modelIndex >= contentIndex.Count)
+                        {
+                            <div></div>
+                        }
+                        else
+                        {
+                            var nextContent = contentIndex.ElementAt(modelIndex + 1);
+                            
+                            <div class="text-right"><a class="cursor-pointer inline-block line-clamp-1 hover:underline hover:text-primary dark:hover:text-secondary" href="@(GetContentUrl(nextContent))">@Html.Raw(GetHeading(nextContent))<i class="ml-2 text-sm fa-solid fa-angle-right"></i></a></div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            if (searchResults.Count > 0)
+            {
+                <div class="elastic nav-padding-t">
+                    <div class="unit-margin-x unit-padding-y">
+                        <div class="unit-padding-b">
+                            @if (string.IsNullOrEmpty(categoryText) == false)
+                            {
+                                <h6 class="mb-1 text-sm font-bold text-pretty rte-content uppercase text-primary dark:text-secondary">
+                                    @Html.Raw(categoryText)
+                                </h6>
+                            }
+                            <h1 class="text-4xl font-black text-balance line-clamp-2 text-black dark:text-white">@Html.Raw(headline)</h1>
+                            @if (string.IsNullOrEmpty(headlineIntro) == false)
+                            {
+                                <div class="mt-4 text-pretty text-lg rte-content">
+                                    @Html.Raw(headlineIntro)
+                                </div>
+                            }
+                        </div>
+                        <div class="space-y-8">
+                            @foreach (var result in searchResults)
+                            {
+                                var title = result.Content.ContentType.Alias.InvariantEquals("utilityPage") ? result.Content.SafeValue("utilityGroup") : string.Empty;
+                                var excerpt = result.Content.ContentType.Alias.InvariantEquals("utilityPage") ? result.Content.SafeValue("utilityGroupDescription") : string.Empty;
+
+                                if (string.IsNullOrEmpty(title))
+                                    title = result.Content.SafeValue("heroHeadline", result.Content.Name);
+
+                                if (string.IsNullOrEmpty(excerpt))
+                                    excerpt = result.Content.SafeValue("heroIntroductionText", result.Content.SafeValue("metaDescription", result.Content.SafeValue("ogDescription")));
+
+                                <div class="space-y-1">
+                                    <span><a href="/@(result.Content.Url(null, UrlMode.Relative).Trim('/'))/" class="cursor-pointer font-semibold text-primary dark:text-secondary hover:underline">@(title)</a></span>
+                                    @if (string.IsNullOrEmpty(excerpt) == false)
+                                    {
+                                        <div class="text-sm">@Html.Raw(excerpt.WithShortCodes(UmbracoContext, GlobalStateService))</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="elastic nav-padding-t">
+                    <div class="unit-margin-x unit-padding-y">
+
+                        <div class="unit-padding-b">
+                            @if (string.IsNullOrEmpty(categoryText) == false)
+                            {
+                                <h6 class="mb-1 text-sm font-bold text-pretty rte-content uppercase text-primary dark:text-secondary">
+                                    @Html.Raw(categoryText)
+                                </h6>
+                            }
+                            <h1 class="text-4xl font-black text-balance line-clamp-2 text-black dark:text-white">@Html.Raw(headline)</h1>
+                            @if (string.IsNullOrEmpty(headlineIntro) == false)
+                            {
+                                <div class="mt-4 text-pretty text-lg rte-content">
+                                    @Html.Raw(headlineIntro)
+                                </div>
+                            }
+                        </div>
+
+                        <div class="space-y-4">
+                            <p>In a tranquil temple, a student asked the master for answers.</p>
+                            <p>The master poured tea into the cup until it overflowed.</p>
+                            <p>“Sometimes,” the master smiled, “the cup must be emptied to be filled anew.”</p>
+                            <h4 class="mb-8 text-xl font-bold">No results were found.</h4>
+                            <p>But now the space is yours to fill with new questions and curiosities.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <div class="elastic nav-padding-t">
+            <div class="unit-margin-x unit-padding-y">
+                <div class="unit-padding-b">
+                    @if (string.IsNullOrEmpty(categoryText) == false)
+                    {
+                        <h6 class="mb-1 text-sm font-bold text-pretty rte-content uppercase text-primary dark:text-secondary">
+                            @Html.Raw(categoryText)
+                        </h6>
+                    }
+                    <h1 class="text-4xl font-black text-balance line-clamp-2 text-black dark:text-white">@Html.Raw(headline)</h1>
+                    @if (string.IsNullOrEmpty(headlineIntro) == false)
+                    {
+                        <div class="mt-4 text-pretty text-lg rte-content">
+                            @Html.Raw(headlineIntro)
+                        </div>
+                    }
+                </div>
+                <div class="space-y-4">
+                    <p>In a tranquil temple, a student asked the master for answers.</p>
+                    <p>The master poured tea into the cup until it overflowed.</p>
+                    <p>“Sometimes,” the master smiled, “the cup must be emptied to be filled anew.”</p>
+                    <h4 class="mb-8 text-xl font-bold">No results were found.</h4>
+                    <p>But now the space is yours to fill with new questions and curiosities.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@functions
+{
+    private string GetHeading(IWebsiteContent? content)
+    {
+        if (content is null)
+            return string.Empty;
+
+        return content.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase) ? content.SafeValue("utilityGroup").Split('/').Last() : content.SafeValue("heroHeadline").WithShortCodes(UmbracoContext, GlobalStateService);
+    }
+
+    private string GetContentUrl(IWebsiteContent content)
+    {
+        return '/' + content.Url(null, UrlMode.Relative).Split('?', StringSplitOptions.RemoveEmptyEntries).First().Trim('/') + '/';
+    }
+    
+    private List<IWebsiteContent> GetIndex()
+    {
+        var dict = new List<IWebsiteContent>();
+        
+        var docsNode = UmbracoContext?.GetHomeNode()?.Children.FirstOrDefault(x => x.ContentType.Alias.InvariantEquals("docsPage"));
+
+        if (docsNode is null)
+            return [];
+
+        dict.Add(docsNode);
+        
+        #region Root Items
+        
+        foreach (var child in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase) == false && c.SafeValue("heroCategory") == string.Empty).OrderBy(c => c.SafeValue("heroCategory")).ThenBy(c => c.SortOrder))
+            dict.Add(child);
+
+        #endregion
+
+        #region Categorized Items
+        
+        foreach (var category in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase) == false).Select(c => c.SafeValue("heroCategory")).Distinct())
+        {
+            if (string.IsNullOrEmpty(category))
+                continue;
+            
+            foreach (var child in docsNode.Children.Where(c => c.SafeValue("heroCategory") == category).OrderBy(c => c.SortOrder))
+                dict.Add(child);
+        }
+
+        #endregion
+
+        #region Utility Items
+        
+        foreach (var category in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase)).Select(c => c.SafeValue("utilityCategory")).Distinct().OrderBy(c => c))
+        {
+            if (string.IsNullOrEmpty(category))
+                continue;
+            
+            foreach (var child in docsNode.Children.Where(c => c.ContentType.Alias.Equals("utilityPage", StringComparison.OrdinalIgnoreCase) && c.SafeValue("utilityCategory") == category).OrderBy(c => c.SafeValue("utilityGroup")))
+                dict.Add(child);
+       }
+
+        #endregion
+
+        return dict;
+    }
+}

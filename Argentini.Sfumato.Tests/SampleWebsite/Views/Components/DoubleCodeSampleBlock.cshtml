@@ -1,0 +1,18 @@
+﻿@{
+    // Keep the <pre><code id=""... format (no breaks or spaces)
+    // so it can be parsed for highlighting when cached or in the blog list
+}
+<div class="isolate max-md:-mx-5 max-w-screen">
+    <figure class="flex flex-col gap-1 overflow-hidden md:rounded-xl">
+        <div class="bg-code-panel/85 dark:bg-dark-code-panel">
+            <div class="scrollbar-h-hover scrollbar-dark">
+                <pre class="w-fit h-full"><code class="language-@(BlockContent.SafeValue("language", "plaintext").WithShortCodes(UmbracoContext, GlobalStateService))">@Html.Raw(WebUtility.HtmlEncode(BlockContent.SafeValue("code").WithShortCodes(UmbracoContext, GlobalStateService)))</code></pre>
+            </div>
+        </div>
+        <div class="bg-code-panel/85 dark:bg-dark-code-panel">
+            <div class="scrollbar-h-hover scrollbar-dark">
+                <pre class="w-fit h-full"><code class="language-@(BlockContent.SafeValue("language2", "plaintext").WithShortCodes(UmbracoContext, GlobalStateService))">@Html.Raw(WebUtility.HtmlEncode(BlockContent.SafeValue("code2").WithShortCodes(UmbracoContext, GlobalStateService)))</code></pre>
+            </div>
+        </div>
+    </figure>
+</div>
