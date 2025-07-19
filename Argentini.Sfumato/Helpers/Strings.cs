@@ -2006,13 +2006,19 @@ public static partial class Strings
 	/// </summary>
 	public static string FormatTimer(this TimeSpan timeSpan)
 	{
-		if (timeSpan.TotalNanoseconds < 1000d)
-			return $"{timeSpan.TotalNanoseconds:0}ns";
+		if (timeSpan.TotalNanoseconds < 1000)
+			return $"{timeSpan.TotalNanoseconds:0} ns";
 		
-		if (timeSpan.TotalNanoseconds < 1000000d)
-			return $"{timeSpan.TotalMicroseconds:0}μs";
+		if (timeSpan.TotalMicroseconds < 1000)
+			return $"{timeSpan.TotalMicroseconds:0} μs";
 		
-		return timeSpan.TotalNanoseconds < 1000000000d ? $"{timeSpan.TotalMilliseconds:0}ms" : $"{timeSpan.TotalSeconds:0}s";
+		if (timeSpan.TotalMilliseconds < 1000)
+			return $"{timeSpan.TotalMilliseconds:N3} ms";
+
+		if (timeSpan.TotalSeconds < 60)
+			return $"{timeSpan.TotalSeconds:N3} s";
+
+		return $"{timeSpan.Hours} h : {timeSpan.Minutes:00} m : {timeSpan.Seconds:00}.{timeSpan.Milliseconds:000} s";
 	}
 
 	/// <summary>
@@ -2022,12 +2028,12 @@ public static partial class Strings
 	public static string FormatTimerFromNanoseconds(this double nanoseconds)
 	{
 		if (nanoseconds < 1_000d)
-			return $"{nanoseconds:0}ns";
+			return $"{nanoseconds:0} ns";
 		
 		if (nanoseconds < 1_000_000d)
-			return $"{nanoseconds / 1_000:0}μs";
+			return $"{nanoseconds / 1_000:N3} μs";
 		
-		return nanoseconds < 1_000_000_000d ? $"{nanoseconds / 1_000_000:0}ms" : $"{nanoseconds / 1_000_000_000:0}s";
+		return nanoseconds < 1_000_000_000d ? $"{nanoseconds / 1_000_000:N3} ms" : $"{nanoseconds / 1_000_000_000:N3} s";
 	}
 
 	#endregion
