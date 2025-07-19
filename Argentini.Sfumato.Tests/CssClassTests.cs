@@ -1,6 +1,8 @@
+using Microsoft.DotNet.PlatformAbstractions;
+
 namespace Argentini.Sfumato.Tests;
 
-public class CssClassTests(ITestOutputHelper testOutputHelper)
+public class CssClassTests
 {
     #region Constants
 
@@ -50,6 +52,19 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
 
     #endregion
 
+    private AppRunner AppRunner { get; }
+    private ITestOutputHelper? TestOutputHelper { get; }
+
+    public CssClassTests(ITestOutputHelper testOutputHelper)
+    {
+        TestOutputHelper = testOutputHelper;
+
+        var basePath = ApplicationEnvironment.ApplicationBasePath;
+        var root = basePath[..basePath.IndexOf("Developer", StringComparison.Ordinal)];
+
+        AppRunner = new AppRunner(new AppState(), Path.GetFullPath(Path.Combine(root, "Developer/Sfumato-Web/UmbracoCms/wwwroot/stylesheets/source.css")));
+    }
+
     [Fact]
     public void BasicUtilityClassParsing()
     {
@@ -73,15 +88,13 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
             "dark:group-[.is-published]:[&.active]:tabp:hover:text-[length:var(--my-text-size-var)]/5",
         ];
 
-        var appRunner = new AppRunner(new AppState());
-
         foreach (var nightmareClass in nightmareClasses)
         {
-            var result = new CssClass(appRunner, nightmareClass);
+            var result = new CssClass(AppRunner, nightmareClass);
 
             Assert.NotNull(result);
 
-            testOutputHelper.WriteLine($"{nightmareClass} => {result.IsValid}");
+            TestOutputHelper?.WriteLine($"{nightmareClass} => {result.IsValid}");
 
             Assert.True(result.IsValid);
 
@@ -93,7 +106,6 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void UtilityClassProcessing()
     {
-        var appRunner = new AppRunner(new AppState());
         var testClasses = new List<TestClass>()
         {
             new ()
@@ -182,8 +194,8 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsImportant = true,
                 Wrappers =
                 [
-                    $"@media {appRunner.Library.MediaQueryPrefixes["dark"].Statement} {{",
-                    $"@media {appRunner.Library.MediaQueryPrefixes["tabp"].Statement} and {appRunner.Library.MediaQueryPrefixes["max-desk"].Statement} {{",
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["dark"].Statement} {{",
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} and {AppRunner.Library.MediaQueryPrefixes["max-desk"].Statement} {{",
                     "@supports(display:flex) {",
                 ]
             },
@@ -275,7 +287,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {appRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -294,7 +306,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {appRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -306,7 +318,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {appRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -318,7 +330,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {appRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -330,7 +342,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@media {appRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
+                    $"@media {AppRunner.Library.MediaQueryPrefixes["tabp"].Statement} {{"
                 ]
             },
             new ()
@@ -470,7 +482,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@container {appRunner.Library.ContainerQueryPrefixes["@sm"].Statement} and {appRunner.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
+                    $"@container {AppRunner.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppRunner.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
                 ]
             },
             new ()
@@ -485,14 +497,14 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 IsValid = true,
                 Wrappers =
                 [
-                    $"@container primary {appRunner.Library.ContainerQueryPrefixes["@sm"].Statement} and {appRunner.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
+                    $"@container primary {AppRunner.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppRunner.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
                 ]
             },
         };
 
         foreach (var test in testClasses)
         {
-            var cssClass = new CssClass(appRunner, test.ClassName);
+            var cssClass = new CssClass(AppRunner, test.ClassName);
 
             Assert.NotNull(cssClass);
             Assert.Equal(test.IsValid, cssClass.IsValid);
@@ -506,16 +518,14 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
                 Assert.Equal(test.Wrappers.ElementAt(i), cssClass.Wrappers.ElementAt(i).Value);
             }
 
-            testOutputHelper.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
+            TestOutputHelper?.WriteLine($"UtilityClassProcessing() => {test.ClassName}");
         }
     }
 
     [Fact]
     public void WildcardHandling()
     {
-        var appRunner = new AppRunner(new AppState());
-
-        var cssClass = new CssClass(appRunner, "*:whitespace-pre!");
+        var cssClass = new CssClass(AppRunner, "*:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -523,7 +533,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal(@":is(.\*\:whitespace-pre\! > *)", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
 
-        cssClass = new CssClass(appRunner, "**:whitespace-pre!");
+        cssClass = new CssClass(AppRunner, "**:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -535,9 +545,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void DataAttributeHandling()
     {
-        var appRunner = new AppRunner(new AppState());
-
-        var cssClass = new CssClass(appRunner, "data-active:whitespace-pre!");
+        var cssClass = new CssClass(AppRunner, "data-active:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -545,7 +553,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal(@".data-active\:whitespace-pre\![data-active]", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
 
-        cssClass = new CssClass(appRunner, "dark:lg:data-active:hover:bg-indigo-600");
+        cssClass = new CssClass(AppRunner, "dark:lg:data-active:hover:bg-indigo-600");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -556,8 +564,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void NotVariantHandling()
     {
-        var appRunner = new AppRunner(new AppState());
-        var cssClass = new CssClass(appRunner, "not-hover:whitespace-pre!");
+        var cssClass = new CssClass(AppRunner, "not-hover:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -565,7 +572,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal(@".not-hover\:whitespace-pre\!:not(:hover)", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre !important;", cssClass.Styles);
 
-        cssClass = new CssClass(appRunner, "not-data-active:whitespace-pre!");
+        cssClass = new CssClass(AppRunner, "not-data-active:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -577,16 +584,21 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void Containers()
     {
-        var appRunner = new AppRunner(new AppState());
-
-        var cssClass = new CssClass(appRunner, "@max-md:whitespace-pre!");
+        var cssClass = new CssClass(AppRunner, "@max-md:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Single(cssClass.Wrappers);
         Assert.Equal("@container (width < 28rem) {", cssClass.Wrappers.First().Value);
 
-        cssClass = new CssClass(appRunner, "@sm:@max-md:whitespace-pre!");
+        cssClass = new CssClass(AppRunner, "@sm:@max-md:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@container (width >= 24rem) and (width < 28rem) {", cssClass.Wrappers.ElementAt(0).Value);
+        
+        cssClass = new CssClass(AppRunner, "@@sm:@@max-md:whitespace-pre!", fromRazorFile: true);
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -594,34 +606,31 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal("@container (width >= 24rem) and (width < 28rem) {", cssClass.Wrappers.ElementAt(0).Value);
     }
 
-
     [Fact]
     public void ArbitraryCss()
     {
-        var appRunner = new AppRunner(new AppState());
-
-        var cssClass = new CssClass(appRunner, "[@media_(width_>=_600px)]:whitespace-pre!");
+        var cssClass = new CssClass(AppRunner, "[@media_(width_>=_600px)]:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Single(cssClass.Wrappers);
         Assert.Equal("@media (width >= 600px) {", cssClass.Wrappers.First().Value);
 
-        cssClass = new CssClass(appRunner, "min-[600px]:whitespace-pre!");
+        cssClass = new CssClass(AppRunner, "min-[600px]:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Single(cssClass.Wrappers);
         Assert.Equal("@media (width >= 600px) {", cssClass.Wrappers.First().Value);
 
-        cssClass = new CssClass(appRunner, "max-[600px]:whitespace-pre!");
+        cssClass = new CssClass(AppRunner, "max-[600px]:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Single(cssClass.Wrappers);
         Assert.Equal("@media (width < 600px) {", cssClass.Wrappers.First().Value);
 
-        cssClass = new CssClass(appRunner, "min-[320px]:max-[600px]:whitespace-pre!");
+        cssClass = new CssClass(AppRunner, "min-[320px]:max-[600px]:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -629,25 +638,25 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal("@media (width >= 320px) {", cssClass.Wrappers.ElementAt(0).Value);
         Assert.Equal("@media (width < 600px) {", cssClass.Wrappers.ElementAt(1).Value);
 
-        cssClass = new CssClass(appRunner, "w-[calc(100vw-(--nav-width))]");
+        cssClass = new CssClass(AppRunner, "w-[calc(100vw-(--nav-width))]");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Equal("width: calc(100vw-var(--nav-width));", cssClass.Styles);
 
-        cssClass = new CssClass(appRunner, "w-[calc(100vw-var(--nav-width))]");
+        cssClass = new CssClass(AppRunner, "w-[calc(100vw-var(--nav-width))]");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Equal("width: calc(100vw-var(--nav-width));", cssClass.Styles);
 
-        cssClass = new CssClass(appRunner, "w-[calc(100vw_-_var(--nav-width))]");
+        cssClass = new CssClass(AppRunner, "w-[calc(100vw_-_var(--nav-width))]");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Equal("width: calc(100vw - var(--nav-width));", cssClass.Styles);
 
-        cssClass = new CssClass(appRunner, "[--my-value:1rem]");
+        cssClass = new CssClass(AppRunner, "[--my-value:1rem]");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -657,8 +666,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void Supports()
     {
-        var appRunner = new AppRunner(new AppState());
-        var cssClass = new CssClass(appRunner, "supports-[color:red]:whitespace-pre");
+        var cssClass = new CssClass(AppRunner, "supports-[color:red]:whitespace-pre");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -666,7 +674,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
         Assert.Equal("white-space: pre;", cssClass.Styles);
         Assert.Equal("@supports (color:red) {", cssClass.Wrappers.First().Value);
 
-        cssClass = new CssClass(appRunner, "supports-backdrop-blur:whitespace-pre");
+        cssClass = new CssClass(AppRunner, "supports-backdrop-blur:whitespace-pre");
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Equal(@".supports-backdrop-blur\:whitespace-pre", cssClass.EscapedSelector);
@@ -677,8 +685,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void Pointer()
     {
-        var appRunner = new AppRunner(new AppState());
-        var cssClass = new CssClass(appRunner, "pointer-fine:whitespace-pre");
+        var cssClass = new CssClass(AppRunner, "pointer-fine:whitespace-pre");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -690,8 +697,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void NoScript()
     {
-        var appRunner = new AppRunner(new AppState());
-        var cssClass = new CssClass(appRunner, "noscript:whitespace-pre");
+        var cssClass = new CssClass(AppRunner, "noscript:whitespace-pre");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
@@ -703,8 +709,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void StartingStyle()
     {
-        var appRunner = new AppRunner(new AppState());
-        var cssClass = new CssClass(appRunner, "starting:whitespace-pre");
+        var cssClass = new CssClass(AppRunner, "starting:whitespace-pre");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
