@@ -18,8 +18,8 @@ public static class ContentScanner
 
             var results = new Dictionary<string, CssClass>(StringComparer.Ordinal);
 
-            foreach (var quotedSubstring in quotedSubstrings)
-                ScanStringForClasses(quotedSubstring, results, appRunner, fromRazorFile);
+            foreach (var utilityClass in quotedSubstrings)
+                ScanStringForClasses(utilityClass, results, appRunner, fromRazorFile);
 
             return results;
         }
@@ -29,15 +29,12 @@ public static class ContentScanner
         }
     }
 
-    private static void ScanStringForClasses(string quotedString, Dictionary<string, CssClass> results, AppRunner appRunner, bool fromRazorFile)
+    private static void ScanStringForClasses(string utilityClass, Dictionary<string, CssClass> results, AppRunner appRunner, bool fromRazorFile)
     {
-        foreach (var substring in quotedString.SplitByNonWhitespace())
-        {
-            var cssClass = new CssClass(appRunner, substring, fromRazorFile);
-            
-            if (cssClass.IsValid)
-                results.TryAdd(substring, cssClass);
-        }
+        var cssClass = new CssClass(appRunner, utilityClass, fromRazorFile);
+        
+        if (cssClass.IsValid)
+            results.TryAdd(utilityClass, cssClass);
     }
     
     #endregion
