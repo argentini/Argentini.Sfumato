@@ -928,7 +928,7 @@ public static class AppRunnerExtensions
 	                : tok.ToString();
 
 	            // instantiate and filter
-	            var cssClass = new CssClass(appRunner, name);
+	            var cssClass = new CssClass(appRunner, selector: name);
 
 	            if (cssClass.IsValid)
 	                utils.Add(cssClass);

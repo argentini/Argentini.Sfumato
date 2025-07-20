@@ -587,7 +587,7 @@ public static partial class Strings
 
 		while (true)
 		{
-			// Find the next css block declaration start
+			// Find the next CSS block declaration start
 			var startIdx = content.IndexOf(cssBlockDeclaration, searchPos, StringComparison.Ordinal);
 
 			if (startIdx == -1)
@@ -637,7 +637,7 @@ public static partial class Strings
 	/// <param name="bag"></param>
 	/// <param name="scannerClassNamePrefixes"></param>
 	/// <param name="sb"></param>
-	public static void ScanForUtilities(this string? source, HashSet<string>? bag, PrefixTrie<object?> scannerClassNamePrefixes, StringBuilder? sb = null)
+	public static void ScanForUtilities(this string? source, Dictionary<string,string?>? bag, PrefixTrie<object?> scannerClassNamePrefixes, StringBuilder? sb = null)
 	{
 	    if (bag is null || string.IsNullOrEmpty(source))
 	        return;
@@ -667,7 +667,7 @@ public static partial class Strings
 	private static readonly char[] Delimiters = ['\"', '\'', '`'];
 	private const char DoubleQuote = '\"';
 
-	public static void ProcessSubstrings(this string source, HashSet<string> bag, PrefixTrie<object?> scannerClassNamePrefixes)
+	public static void ProcessSubstrings(this string source, Dictionary<string,string?> bag, PrefixTrie<object?> scannerClassNamePrefixes)
 	{
 	    // Early exit for empty strings
 	    if (string.IsNullOrEmpty(source))
@@ -700,8 +700,8 @@ public static partial class Strings
 	    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
 	    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
 
-	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes))
-	        bag.Add(trimmedSource);
+	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var prefix))
+	        bag.TryAdd(trimmedSource, prefix);
 
 	    // Check each delimiter once
 	    for (var d = 0; d < Delimiters.Length; d++)
@@ -736,23 +736,30 @@ public static partial class Strings
 	/// Runs in a single pass over the string and does
 	/// no heap allocations.
 	/// </summary>
-	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes)
+	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes, out string? prefix)
 	{
+		prefix = null;
+		
 		if (source.Length < 3)
 			return false;
 
-		var prefix = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
+		if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
+			return false;
 
-		if (prefix[0] == '[')
+		var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
+
+		if (lastSegment[0] == '[')
 			return true;
 		
-		if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(prefix, out _, out _) == false)
+		var slashIndex = lastSegment.IndexOf('/');
+			
+		if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex > -1 ? lastSegment[..slashIndex] : lastSegment, out prefix, out _) == false)
 			return false;
 
 		if (source[^1] == ':')
 			return false;
 
-		if (prefix[^1] is >= 'a' and <= 'z' || prefix[^1] is >= '0' and <= '9' || prefix[^1] == ']' || prefix[^1] == ')' || prefix[^1] == '%')
+		if (lastSegment[^1] is >= 'a' and <= 'z' || lastSegment[^1] is >= '0' and <= '9' || lastSegment[^1] == ']' || lastSegment[^1] == ')' || lastSegment[^1] == '%')
 			return true;
 
 		return false;

@@ -39,6 +39,7 @@ public sealed class CssClass : IDisposable
     /// </summary>
     public Dictionary<ulong, string> Wrappers { get; } = [];
 
+    private string? _prefix;
     public string EscapedSelector { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string ModifierValue { get; set; } = string.Empty;
@@ -64,16 +65,18 @@ public sealed class CssClass : IDisposable
     
     #region Lifecycle
 
-    public CssClass(AppRunner appRunner)
+    public CssClass(AppRunner appRunner, string? prefix = null)
     {
         AppRunner = appRunner;
         Selector = string.Empty;
+        _prefix = prefix;
     }
 
-    public CssClass(AppRunner appRunner, string selector, bool fromRazorFile = false)
+    public CssClass(AppRunner appRunner, string selector, bool fromRazorFile = false, string? prefix = null)
     {
         AppRunner = appRunner;
         Selector = selector;
+        _prefix = prefix;
 
         Initialize(fromRazorFile);
     }
@@ -187,7 +190,7 @@ public sealed class CssClass : IDisposable
         
         ProcessArbitraryCss();
 
-        if (IsValid == false)
+        if (IsValid == false && AllSegments[^1][0] != '[')
             ProcessUtilityClasses();
 
         if (IsValid == false)
@@ -298,14 +301,17 @@ public sealed class CssClass : IDisposable
     {
         try
         {
-            var slashIndex = AllSegments[^1].IndexOf('/');
-            
-            AppRunner.Library.ScannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex  > -1 ? AllSegments[^1][..slashIndex] : AllSegments[^1], out var prefix, out _);
+            if (_prefix is null)
+            {
+                var slashIndex = AllSegments[^1].IndexOf('/');
+                
+                AppRunner.Library.ScannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex  > -1 ? AllSegments[^1][..slashIndex] : AllSegments[^1], out _prefix, out _);
+            }
 
-            if (string.IsNullOrEmpty(prefix))
+            if (string.IsNullOrEmpty(_prefix))
                 return;
             
-            var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
+            var value = AllSegments[^1].TrimStart(_prefix) ?? string.Empty;
 
             if (value.Contains('/'))
             {
@@ -344,7 +350,7 @@ public sealed class CssClass : IDisposable
             
             if (string.IsNullOrEmpty(value))
             {
-                if (AppRunner.Library.SimpleClasses.TryGetValue(prefix, out ClassDefinition))
+                if (AppRunner.Library.SimpleClasses.TryGetValue(_prefix, out ClassDefinition))
                 {
                     IsValid = true;
                     SelectorSort = ClassDefinition.SelectorSort;
@@ -366,12 +372,12 @@ public sealed class CssClass : IDisposable
             {
                 if (denominator != 0)
                 {
-                    if (AppRunner.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition))
+                    if (AppRunner.Library.RatioClasses.TryGetValue(_prefix, out ClassDefinition))
                     {
                         if (ClassDefinition.UsesSlashModifier == false)
                             Value = $"{numerator} / {denominator}";
                     }
-                    else if (AppRunner.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition) || AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition))
+                    else if (AppRunner.Library.LengthClasses.TryGetValue(_prefix, out ClassDefinition) || AppRunner.Library.PercentageClasses.TryGetValue(_prefix, out ClassDefinition))
                     {
                         if (ClassDefinition.UsesSlashModifier == false)
                             Value = $"{(double)numerator / denominator * 100:0.############}%";
@@ -404,63 +410,63 @@ public sealed class CssClass : IDisposable
 
                 if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.LengthClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("color:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.ColorClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("integer:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.IntegerClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("percentage:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.PercentageClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("alpha:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("number:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.FloatNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.FloatNumberClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("image:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("url:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.UrlClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.UrlClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("angle:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("hue:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.AngleHueClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("duration:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("time:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.DurationClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.DurationClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("flex:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.FlexClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("frequency:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.FrequencyClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("ratio:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.RatioClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("resolution:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.ResolutionClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("size:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.AbstractClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else if (valueNoBrackets.StartsWith("string:", StringComparison.Ordinal))
                 {
-                    AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.StringClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 else
                 {
-                    AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.AbstractClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is not null)
@@ -505,7 +511,7 @@ public sealed class CssClass : IDisposable
 
                 foreach (var dict in classDictionaries)
                 {
-                    if (dict.TryGetValue(prefix, out ClassDefinition))
+                    if (dict.TryGetValue(_prefix, out ClassDefinition))
                         break;
                 }                
 
@@ -533,66 +539,66 @@ public sealed class CssClass : IDisposable
 
                 if (valueNoBrackets.ValueIsPercentage())
                 {
-                    AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.PercentageClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is null && (valueNoBrackets.ValueIsDimensionLength(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
-                    AppRunner.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.LengthClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 
                 if (ClassDefinition is null && valueNoBrackets.ValueIsFloatNumber())
                 {
-                    if (AppRunner.Library.FloatNumberClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                        AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                    if (AppRunner.Library.FloatNumberClasses.TryGetValue(_prefix, out ClassDefinition) == false)
+                        AppRunner.Library.IntegerClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 
                 if (ClassDefinition is null && valueNoBrackets.IsValidWebColor())
                 {
-                    AppRunner.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.ColorClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is null && (valueNoBrackets.ValueIsAngleHue(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
-                    AppRunner.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.AngleHueClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is null && (valueNoBrackets.ValueIsDurationTime(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
-                    AppRunner.Library.DurationClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.DurationClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is null && (valueNoBrackets.ValueIsFrequency(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
-                    AppRunner.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.FrequencyClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is null && valueNoBrackets.ValueIsUrl())
                 {
-                    AppRunner.Library.UrlClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.UrlClasses.TryGetValue(_prefix, out ClassDefinition);
 
                     if (ClassDefinition is null)
-                        AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition);
+                        AppRunner.Library.AbstractClasses.TryGetValue(_prefix, out ClassDefinition);
                     else if (valueNoBrackets.StartsWith("url(", StringComparison.Ordinal) == false)
                         valueNoBrackets = $"url({valueNoBrackets})";
                 }
 
                 if (ClassDefinition is null && valueNoBrackets.ValueIsRatio())
                 {
-                    AppRunner.Library.RatioClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.RatioClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
                 
                 if (ClassDefinition is null && (valueNoBrackets.ValueIsResolution(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
                 {
-                    AppRunner.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.ResolutionClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
                 if (ClassDefinition is null)
                 {
-                    if (AppRunner.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition) == false)
+                    if (AppRunner.Library.FlexClasses.TryGetValue(_prefix, out ClassDefinition) == false)
                     {
-                        if (AppRunner.Library.AbstractClasses.TryGetValue(prefix, out ClassDefinition) == false)
-                            AppRunner.Library.StringClasses.TryGetValue(prefix, out ClassDefinition);
+                        if (AppRunner.Library.AbstractClasses.TryGetValue(_prefix, out ClassDefinition) == false)
+                            AppRunner.Library.StringClasses.TryGetValue(_prefix, out ClassDefinition);
                     }
                 }
                 
@@ -630,42 +636,42 @@ public sealed class CssClass : IDisposable
 
             if (value.ValueIsFloatNumber())
             {
-                AppRunner.Library.LengthClasses.TryGetValue(prefix, out ClassDefinition);
+                AppRunner.Library.LengthClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.IntegerClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.IntegerClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.PercentageClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.FloatNumberClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.FloatNumberClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.FlexClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.FlexClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.AngleHueClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.AngleHueClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.DurationClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.DurationClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.FrequencyClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.FrequencyClasses.TryGetValue(_prefix, out ClassDefinition);
 
                 if (ClassDefinition is null)
-                    AppRunner.Library.ResolutionClasses.TryGetValue(prefix, out ClassDefinition);
+                    AppRunner.Library.ResolutionClasses.TryGetValue(_prefix, out ClassDefinition);
             }
 
             if (ClassDefinition is null && value.ValueIsPercentage())
-                AppRunner.Library.PercentageClasses.TryGetValue(prefix, out ClassDefinition);
+                AppRunner.Library.PercentageClasses.TryGetValue(_prefix, out ClassDefinition);
 
             if (ClassDefinition is not null)
                 Value = value;
 
             if (ClassDefinition is null && value.ValueIsColorName(AppRunner))
             {
-                if (AppRunner.Library.ColorClasses.TryGetValue(prefix, out ClassDefinition))
+                if (AppRunner.Library.ColorClasses.TryGetValue(_prefix, out ClassDefinition))
                 {
                     if (AppRunner.Library.ColorsByName.TryGetValue(value, out var colorValue))
                     {

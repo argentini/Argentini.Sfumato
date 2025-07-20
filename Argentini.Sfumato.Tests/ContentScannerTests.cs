@@ -235,16 +235,16 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     public void StringScanning()
     {
         var appRunner = new AppRunner(StringBuilderPool);
-        var quotedSubstrings = new HashSet<string>(StringComparer.Ordinal);
+        var quotedSubstrings = new Dictionary<string,string?>(StringComparer.Ordinal);
 
         Markup.ScanForUtilities(quotedSubstrings, appRunner.Library.ScannerClassNamePrefixes);
 
         foreach (var substring in ExpectedMatches)
-            if (quotedSubstrings.Contains(substring) == false)
+            if (quotedSubstrings.ContainsKey(substring) == false)
                 testOutputHelper.WriteLine($"NOT FOUND: `{substring}`");
 
         foreach (var substring in ExpectedMatches)
-            if (quotedSubstrings.Contains(substring) == false)
+            if (quotedSubstrings.ContainsKey(substring) == false)
                 Assert.Fail("Did not find one or more matches");
     }
     

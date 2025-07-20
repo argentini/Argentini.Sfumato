@@ -18,19 +18,19 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("BasicUtilityClass",
             async () => {
-                _ = new CssClass(Shared.AppRunner, Shared.BasicUtilityClass);
+                _ = new CssClass(Shared.AppRunner, selector: Shared.BasicUtilityClass);
                 await Task.CompletedTask;
             });
 
         await Shared.BenchmarkMethod("AverageUtilityClass",
             async () => {
-                _ = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+                _ = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
                 await Task.CompletedTask;
             });
 
         await Shared.BenchmarkMethod("LargeUtilityClass",
             async () => {
-                _ = new CssClass(Shared.AppRunner, Shared.LargeUtilityClass);
+                _ = new CssClass(Shared.AppRunner, selector: Shared.LargeUtilityClass);
                 await Task.CompletedTask;
             });
 
@@ -43,17 +43,17 @@ public class CssClassBenchmarkTests
         await Shared.IterationSetup();
 
         await Shared.BenchmarkMethod("IsLikelyUtilityClass_Basic", async () => {
-                _ = Shared.BasicUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes);
+                _ = Shared.BasicUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _);
                 await Task.CompletedTask;
             });
 
         await Shared.BenchmarkMethod("IsLikelyUtilityClass_Average", async () => {
-                _ = Shared.AverageUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes);
+                _ = Shared.AverageUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _);
                 await Task.CompletedTask;
             });
 
         await Shared.BenchmarkMethod("IsLikelyUtilityClass_Large", async () => {
-                _ = Shared.LargeUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes);
+                _ = Shared.LargeUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _);
                 await Task.CompletedTask;
             });
         
@@ -68,13 +68,13 @@ public class CssClassBenchmarkTests
         await Shared.IterationSetup();
 
         await Shared.BenchmarkMethod("Full_Flow", async () => {
-            _ = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            _ = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             await Task.CompletedTask;
         });
 
         await Shared.BenchmarkMethod("Step1_SplitSegments", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             await Task.CompletedTask;
             
@@ -86,7 +86,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("Step2_ProcessArbitraryCss", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             await Task.CompletedTask;
 
@@ -97,7 +97,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("Step3_ProcessUtilityClasses", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             await Task.CompletedTask;
@@ -109,7 +109,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("Step4_ProcessVariants", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
@@ -122,7 +122,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("Step5_GenerateSelector", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
@@ -136,7 +136,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("Step6_GenerateWrappers", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
@@ -151,7 +151,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("GenerateStyles", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
@@ -167,7 +167,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("CssSelectorEscape", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
@@ -194,7 +194,7 @@ public class CssClassBenchmarkTests
 
         await Shared.BenchmarkMethod("ProcessVariants", async () =>
         {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass = new CssClass(Shared.AppRunner, selector: Shared.AverageUtilityClass);
             cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
