@@ -66,8 +66,7 @@ public class SharedBenchmarkCode
         TestOutputHelper?.WriteLine($"{"Totals",-45}   {GlobalMeanTime,17:N0} ns   {testTime.FormatTimer(),15}");
         TestOutputHelper?.WriteLine(string.Empty);
         TestOutputHelper?.WriteLine($"Timestamp   :  {DateTime.Now:s}");
-        TestOutputHelper?.WriteLine($"Platform    :  {GetOsPlatformName()}");
-        TestOutputHelper?.WriteLine($"Version     :  {Environment.OSVersion.VersionString}");
+        TestOutputHelper?.WriteLine($"OS          :  {GetOsPlatformName()} {Environment.OSVersion.Version}");
         TestOutputHelper?.WriteLine($"Cores       :  {Environment.ProcessorCount}");
         TestOutputHelper?.WriteLine($"Build       :  {(IsDebug ? "Debug" : "Release")}");
         TestOutputHelper?.WriteLine($"Iterations  :  {Iterations} x {InnerRepeat}");
