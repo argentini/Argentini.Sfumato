@@ -10,15 +10,9 @@ using Microsoft.DotNet.PlatformAbstractions;
 namespace Argentini.Sfumato.Tests.Benchmarks;
 
 [SuppressMessage("Performance", "CA1822:Mark members as static")]
-public class SharedBenchmarkCode
+public class SharedBenchmarkCode : SharedTestBase
 {
-    public ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
-    public AppRunner AppRunner { get; private set; }
-    private ITestOutputHelper? TestOutputHelper { get; }
-    public bool IsDebug { get; }
     private int Iterations { get; }
-
     public long GlobalStartTime { get; } = Stopwatch.GetTimestamp();
     public double GlobalMeanTime { get; set; }
     public string BasicUtilityClass => "text-sm";
@@ -29,19 +23,10 @@ public class SharedBenchmarkCode
     private const int InnerRepeat = 10;
     private const int WarmupTimeSeconds = 2;
 
-    public SharedBenchmarkCode(ITestOutputHelper testOutputHelper, int? iterations = null)
+    public SharedBenchmarkCode(ITestOutputHelper testOutputHelper, int? iterations = null) : base(testOutputHelper)
     {
-        TestOutputHelper = testOutputHelper;
         Iterations = iterations ?? 100;
         
-#if DEBUG
-        IsDebug = true;
-#else
-        IsDebug = false;
-#endif
-
-        AppRunner = new AppRunner(StringBuilderPool);
-
         TestOutputHelper?.WriteLine("B E N C H M A R K  -------------------------------------------------------------------");
         TestOutputHelper?.WriteLine(string.Empty);
         TestOutputHelper?.WriteLine("Method                                                          Mean           Elapsed");
@@ -50,10 +35,7 @@ public class SharedBenchmarkCode
 
     public async ValueTask IterationSetup()
     {
-        var basePath = ApplicationEnvironment.ApplicationBasePath;
-        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
-
-        AppRunner = new AppRunner(StringBuilderPool, Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/wwwroot/stylesheets/source.css")));
+        AppRunner = new AppRunner(StringBuilderPool, SampleWebsiteSourceFilePath);
 
         await Task.CompletedTask;
     }
@@ -68,7 +50,7 @@ public class SharedBenchmarkCode
         TestOutputHelper?.WriteLine($"Timestamp   :  {DateTime.Now:s}");
         TestOutputHelper?.WriteLine($"OS          :  {GetOsPlatformName()} {Environment.OSVersion.Version}");
         TestOutputHelper?.WriteLine($"Cores       :  {Environment.ProcessorCount}");
-        TestOutputHelper?.WriteLine($"Build       :  {(IsDebug ? "Debug" : "Release")}");
+        TestOutputHelper?.WriteLine($"Build       :  {(IsRelease ? "Release" : "Debug")}");
         TestOutputHelper?.WriteLine($"Iterations  :  {Iterations} x {InnerRepeat}");
         TestOutputHelper?.WriteLine($"Warmup      :  {WarmupTimeSeconds:F1} s");
     }

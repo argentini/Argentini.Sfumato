@@ -1,11 +1,7 @@
-using Microsoft.DotNet.PlatformAbstractions;
-
 namespace Argentini.Sfumato.Tests;
 
-public class CssClassTests
+public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
     #region Constants
 
     public static string Markup => """
@@ -53,19 +49,6 @@ public class CssClassTests
                                     """;
 
     #endregion
-
-    private AppRunner AppRunner { get; }
-    private ITestOutputHelper? TestOutputHelper { get; }
-
-    public CssClassTests(ITestOutputHelper testOutputHelper)
-    {
-        TestOutputHelper = testOutputHelper;
-
-        var basePath = ApplicationEnvironment.ApplicationBasePath;
-        var root = basePath[..basePath.IndexOf("Argentini.Sfumato.Tests", StringComparison.Ordinal)];
-
-        AppRunner = new AppRunner(StringBuilderPool, Path.GetFullPath(Path.Combine(root, "Argentini.Sfumato.Tests/SampleWebsite/wwwroot/stylesheets/source.css")));
-    }
 
     [Fact]
     public void BasicUtilityClassParsing()

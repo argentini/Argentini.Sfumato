@@ -3,10 +3,8 @@ using System.Runtime.Intrinsics.X86;
 
 namespace Argentini.Sfumato.Tests;
 
-public class ExtensionsTests(ITestOutputHelper testOutputHelper)
+public class ExtensionsTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private readonly ITestOutputHelper _testOutputHelper = testOutputHelper;
-
     #region Constants
 
     public static string Markup => """

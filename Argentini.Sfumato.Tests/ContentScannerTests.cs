@@ -2,9 +2,9 @@ using Argentini.Sfumato.Entities.Trie;
 
 namespace Argentini.Sfumato.Tests;
 
-public class ContentScannerTests(ITestOutputHelper testOutputHelper)
+public class ContentScannerTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+    #region Constants
 
     private static string Markup => """
                                     <!DOCTYPE html>
@@ -209,8 +209,6 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         "mb-1.5"
     ];
 
-    #region Constants
-
     private static string Css => """
                                  :root {
                                      --my-prop-var: 1.25rem;
@@ -229,19 +227,19 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
                                      top: --spacing(4);
                                  }
                                  """;
+    
     #endregion
 
     [Fact]
     public void StringScanning()
     {
-        var appRunner = new AppRunner(StringBuilderPool);
         var quotedSubstrings = new Dictionary<string,string?>(StringComparer.Ordinal);
 
-        Markup.ScanForUtilities(quotedSubstrings, appRunner.Library.ScannerClassNamePrefixes);
+        Markup.ScanForUtilities(quotedSubstrings, AppRunner.Library.ScannerClassNamePrefixes);
 
         foreach (var substring in ExpectedMatches)
             if (quotedSubstrings.ContainsKey(substring) == false)
-                testOutputHelper.WriteLine($"NOT FOUND: `{substring}`");
+                TestOutputHelper?.WriteLine($"NOT FOUND: `{substring}`");
 
         foreach (var substring in ExpectedMatches)
             if (quotedSubstrings.ContainsKey(substring) == false)
@@ -251,18 +249,17 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void FileContentParsing()
     {
-        var appRunner = new AppRunner(StringBuilderPool);
-        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, appRunner, true);
+        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, AppRunner, true);
 
-        testOutputHelper.WriteLine("FileContentParsing() => Found:");
-        testOutputHelper.WriteLine("");
+        TestOutputHelper?.WriteLine("FileContentParsing() => Found:");
+        TestOutputHelper?.WriteLine("");
 
         foreach (var item in ExpectedValidMatches)
             if (utilityClasses.ContainsKey(item) == false)
                 Assert.Fail($"NOT FOUND: `{item}`");
 
         foreach (var kvp in utilityClasses)
-            testOutputHelper.WriteLine($"{kvp.Value.Selector}");
+            TestOutputHelper?.WriteLine($"{kvp.Value.Selector}");
 
         Assert.Equal(ExpectedValidMatches.Count, utilityClasses.Count);
     }
@@ -270,18 +267,17 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public async Task CssCustomPropertyScanner()
     {
-        var appRunner = new AppRunner(StringBuilderPool);
         var props = new List<string>();
         var segment = new GenerationSegment
         {
             Content = new StringBuilder(Css)
         };
 
-        appRunner.GatherSegmentCssCustomPropertyRefs(segment);
+        AppRunner.GatherSegmentCssCustomPropertyRefs(segment);
         
         foreach (var kvp in segment.UsedCssCustomProperties)
         {
-            testOutputHelper.WriteLine(kvp.Key);
+            TestOutputHelper?.WriteLine(kvp.Key);
             props.Add(kvp.Key);
         }
         
@@ -291,7 +287,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         
         foreach (var kvp in segment.UsedCssCustomProperties)
         {
-            testOutputHelper.WriteLine(kvp.Key + " : " + kvp.Value);
+            TestOutputHelper?.WriteLine(kvp.Key + " : " + kvp.Value);
             dict.Add(kvp.Key, kvp.Value);
         }
         
@@ -302,7 +298,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper)
         Assert.True(segment.Content.Contains("--alpha(var(--color-lime-500) / 15%)"));
         Assert.True(segment.Content.Contains("--spacing(4)"));
 
-        await appRunner.ProcessSegmentFunctionsAsync(segment);
+        await AppRunner.ProcessSegmentFunctionsAsync(segment);
 
         Assert.True(segment.Content.Contains("oklch(0.768 0.233 130.85 / 0.15)"));
         Assert.True(segment.Content.Contains("calc(var(--spacing) * 4)"));

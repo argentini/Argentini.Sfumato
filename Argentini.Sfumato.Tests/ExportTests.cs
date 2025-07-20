@@ -1,19 +1,17 @@
 namespace Argentini.Sfumato.Tests;
 
-public class ExportTests(ITestOutputHelper testOutputHelper)
+public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
     [Fact]
     public async Task ExportJsonAsync()
     {
-        var appRunner = new AppRunner(StringBuilderPool, "../../../SampleCss/export.css");
+        AppRunner = new AppRunner(StringBuilderPool, "../../../SampleCss/export.css");
 
-        await appRunner.LoadCssFileAsync();
+        await AppRunner.LoadCssFileAsync();
         
         #region Utility Class Definitions
         
-        var json = appRunner.Library.ExportUtilityClassDefinitions(appRunner);
+        var json = AppRunner.Library.ExportUtilityClassDefinitions(AppRunner);
         
         Assert.True(json.Length > 10);
 
@@ -21,43 +19,43 @@ public class ExportTests(ITestOutputHelper testOutputHelper)
         
         await File.WriteAllTextAsync(path, json);
 
-        testOutputHelper.WriteLine($"Utility class JSON written to {path}");
+        TestOutputHelper?.WriteLine($"Utility class JSON written to {path}");
 
         #endregion
 
         #region Color Library
         
-        json = appRunner.Library.ExportColorDefinitions(appRunner);
+        json = AppRunner.Library.ExportColorDefinitions(AppRunner);
         
         path = Path.GetFullPath(Path.Combine("../../../colors.json"));
         
         await File.WriteAllTextAsync(path, json);
 
-        testOutputHelper.WriteLine($"Color definitions JSON written to {path}");
+        TestOutputHelper?.WriteLine($"Color definitions JSON written to {path}");
         
         #endregion
         
         #region CSS Custom Properties
         
-        json = appRunner.Library.ExportCssCustomProperties(appRunner);
+        json = AppRunner.Library.ExportCssCustomProperties(AppRunner);
         
         path = Path.GetFullPath(Path.Combine("../../../css-custom-properties.json"));
         
         await File.WriteAllTextAsync(path, json);
 
-        testOutputHelper.WriteLine($"CSS Custom Properties JSON written to {path}");
+        TestOutputHelper?.WriteLine($"CSS Custom Properties JSON written to {path}");
         
         #endregion
         
         #region Variants
         
-        json = appRunner.Library.ExportVariants();
+        json = AppRunner.Library.ExportVariants();
         
         path = Path.GetFullPath(Path.Combine("../../../variants.json"));
         
         await File.WriteAllTextAsync(path, json);
 
-        testOutputHelper.WriteLine($"Variants JSON written to {path}");
+        TestOutputHelper?.WriteLine($"Variants JSON written to {path}");
         
         #endregion
     }

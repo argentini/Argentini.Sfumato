@@ -1,14 +1,10 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Sizing;
 
-public class MaxHeightTests(ITestOutputHelper testOutputHelper)
+public class MaxHeightTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
     [Fact]
     public void MaxHeight()
     {
-        var appRunner = new AppRunner(StringBuilderPool);
-        
         var testClasses = new List<TestClass>()
         {
             new ()
@@ -125,7 +121,7 @@ public class MaxHeightTests(ITestOutputHelper testOutputHelper)
 
         foreach (var test in testClasses)
         {
-            var cssClass = new CssClass(appRunner, selector: test.ClassName);
+            var cssClass = new CssClass(AppRunner, selector: test.ClassName);
 
             Assert.NotNull(cssClass);
             Assert.Equal(test.IsValid, cssClass.IsValid);
@@ -133,7 +129,7 @@ public class MaxHeightTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
+            TestOutputHelper?.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }

@@ -1,15 +1,8 @@
 namespace Argentini.Sfumato.Tests.Benchmarks;
 
-public class CssClassBenchmarkTests
+public class CssClassBenchmarkTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private SharedBenchmarkCode Shared { get; }
-    private ITestOutputHelper? TestOutputHelper { get; }
-    
-    public CssClassBenchmarkTests(ITestOutputHelper testOutputHelper)
-    {
-        TestOutputHelper = testOutputHelper;
-        Shared = new SharedBenchmarkCode(TestOutputHelper);
-    }
+    private SharedBenchmarkCode Shared { get; } = new(testOutputHelper);
 
     [Fact]
     public async Task UtilityClassCreationBenchmark()

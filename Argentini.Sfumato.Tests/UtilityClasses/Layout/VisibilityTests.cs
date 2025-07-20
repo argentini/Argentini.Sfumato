@@ -1,14 +1,10 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Layout;
 
-public class VisibilityTests(ITestOutputHelper testOutputHelper)
+public class VisibilityTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
     [Fact]
     public void Visibility()
     {
-        var appRunner = new AppRunner(StringBuilderPool);
-        
         var testClasses = new List<TestClass>()
         {
             new ()
@@ -48,7 +44,7 @@ public class VisibilityTests(ITestOutputHelper testOutputHelper)
 
         foreach (var test in testClasses)
         {
-            var cssClass = new CssClass(appRunner, selector: test.ClassName);
+            var cssClass = new CssClass(AppRunner, selector: test.ClassName);
 
             Assert.NotNull(cssClass);
             Assert.Equal(test.IsValid, cssClass.IsValid);
@@ -56,7 +52,7 @@ public class VisibilityTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
+            TestOutputHelper?.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }

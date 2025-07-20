@@ -1,16 +1,12 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Typography;
 
-public class ColorTests(ITestOutputHelper testOutputHelper)
+public class ColorTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
     [Fact]
     public void Color()
     {
-        var appRunner = new AppRunner(StringBuilderPool);
-        
-        appRunner.Library.ColorsByName.Add("fynydd-hex", "#0088ff");
-        appRunner.Library.ColorsByName.Add("fynydd-rgb", "rgba(0, 136, 255, 1.0)");
+        AppRunner.Library.ColorsByName.Add("fynydd-hex", "#0088ff");
+        AppRunner.Library.ColorsByName.Add("fynydd-rgb", "rgba(0, 136, 255, 1.0)");
         
         var testClasses = new List<TestClass>()
         {
@@ -73,7 +69,7 @@ public class ColorTests(ITestOutputHelper testOutputHelper)
 
         foreach (var test in testClasses)
         {
-            var cssClass = new CssClass(appRunner, selector: test.ClassName);
+            var cssClass = new CssClass(AppRunner, selector: test.ClassName);
 
             Assert.NotNull(cssClass);
             Assert.Equal(test.IsValid, cssClass.IsValid);
@@ -81,7 +77,7 @@ public class ColorTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
+            TestOutputHelper?.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }

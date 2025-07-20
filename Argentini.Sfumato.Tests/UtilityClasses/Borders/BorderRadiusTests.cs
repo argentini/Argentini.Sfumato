@@ -1,14 +1,10 @@
 namespace Argentini.Sfumato.Tests.UtilityClasses.Borders;
 
-public class BorderRadiusTests(ITestOutputHelper testOutputHelper)
+public class BorderRadiusTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-
     [Fact]
     public void BorderRadius()
     {
-        var appRunner = new AppRunner(StringBuilderPool);
-
         var testClasses = new List<TestClass>();
 
         foreach (var border in Entities.UtilityClasses.Borders.BorderRadius.Borders)
@@ -83,7 +79,7 @@ public class BorderRadiusTests(ITestOutputHelper testOutputHelper)
 
         foreach (var test in testClasses)
         {
-            var cssClass = new CssClass(appRunner, selector: test.ClassName);
+            var cssClass = new CssClass(AppRunner, selector: test.ClassName);
 
             Assert.NotNull(cssClass);
             Assert.Equal(test.IsValid, cssClass.IsValid);
@@ -91,7 +87,7 @@ public class BorderRadiusTests(ITestOutputHelper testOutputHelper)
             Assert.Equal(test.EscapedClassName, cssClass.EscapedSelector);
             Assert.Equal(test.Styles, cssClass.Styles);
 
-            testOutputHelper.WriteLine($"{GetType().Name} => {test.ClassName}");
+            TestOutputHelper?.WriteLine($"{GetType().Name} => {test.ClassName}");
         }
     }
 }
