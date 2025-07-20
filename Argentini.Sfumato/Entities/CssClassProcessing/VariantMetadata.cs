@@ -6,9 +6,9 @@ public sealed class VariantMetadata
 {
     public int PrefixOrder { get; init; }
     public string PrefixType { get; init; } = string.Empty;
-    public string Statement { get; init; } = string.Empty;
-    public string SelectorPrefix { get; init; } = string.Empty;
-    public string SelectorSuffix { get; init; } = string.Empty;
+    public string Statement { get; set; } = string.Empty;
+    public string SelectorPrefix { get; set; } = string.Empty;
+    public string SelectorSuffix { get; set; } = string.Empty;
     public bool Inheritable { get; init; }
     public bool SpecialCase { get; init; }
     public bool CanHaveNumericSuffix { get; init; }

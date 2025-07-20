@@ -639,26 +639,35 @@ public sealed class Library
     {
         var variants = new Dictionary<string, VariantMetadata>();
 
-        PseudoclassPrefixes.Remove("data-");
-        PseudoclassPrefixes.Remove("not-data-");
-        
-        variants.TryAdd("data-*, data-[]", new VariantMetadata
-        {
-            PrefixType = "pseudoclass",
-            SelectorSuffix = "[data-*] /* data attribute exists */"
-        });
-        
-        variants.TryAdd("not-data-*, not-data-[]", new VariantMetadata
-        {
-            PrefixType = "pseudoclass",
-            SelectorSuffix = ":not([data-*]) /* data attribute does not exist */"
-        });
-
         variants.AddRange(PseudoclassPrefixes);
         variants.AddRange(MediaQueryPrefixes);
         variants.AddRange(SupportsQueryPrefixes);
         variants.AddRange(StartingStyleQueryPrefixes);
         variants.AddRange(ContainerQueryPrefixes);
+
+        foreach (var variant in variants)
+        {
+            if (variant.Key.EndsWith('-') == false)
+                continue;
+            
+            if (variant.Value.PrefixType == "pseudoclass")
+            {
+                if (variant.Key == "data-")
+                    variant.Value.SelectorSuffix = $"[{variant.Key}*] /* data attribute exists */";
+                else if (variant.Key == "not-data-")
+                    variant.Value.SelectorSuffix = $"[{variant.Key}*] /* data attribute does not exist */";
+                else if (variant.Key is "peer-aria-" or "not-peer-aria-" or "group-aria-" or "not-group-aria-")
+                    variant.Value.SelectorSuffix = $"[{variant.Key}*] /* (e.g. [sort=ascending] for aria-sort=\"ascending\") */";
+                else if (variant.Key is "peer-has-" or "not-peer-has-" or "group-has-" or "not-group-has-")
+                    variant.Value.SelectorSuffix = $"[{variant.Key}*] /* (e.g. checked) */";
+                else if (variant.Key is "peer-" or "not-peer-" or "group-" or "not-group-")
+                    variant.Value.SelectorSuffix = $"[{variant.Key}*] /* (e.g. invalid) */";
+            }
+            else if (variant.Value.PrefixType == "media")
+            {
+                variant.Value.Statement = variant.Value.Statement.Replace("{0}", "1024px");
+            }
+        }
         
         var json = JsonSerializer.Serialize(variants, Jso);
 
