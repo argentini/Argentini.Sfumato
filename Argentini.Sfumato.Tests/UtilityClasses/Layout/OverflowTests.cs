@@ -2,8 +2,6 @@ namespace Argentini.Sfumato.Tests.UtilityClasses.Layout;
 
 public class OverflowTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
-    private ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
-    
     [Fact]
     public void Overflow()
     {
