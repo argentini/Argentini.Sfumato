@@ -27,7 +27,7 @@ public sealed class CssClass : IDisposable
     /// Variant segments used in the class name.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]"])
     /// </summary>
-    public Dictionary<string, VariantMetadata> VariantSegments { get; } = new(StringComparer.Ordinal);
+    public Dictionary<string, VariantMetadata> VariantSegments { get; } = new (StringComparer.Ordinal);
 
     /// <summary>
     /// Master class definition for this utility class.
@@ -147,19 +147,14 @@ public sealed class CssClass : IDisposable
         });
     }
 
-    public void SplitSelectorSegments(bool fromRazorFile = false)
-    {
-        foreach (var segment in Selector.SplitByTopLevel(':'))
-            AllSegments.Add(fromRazorFile ? NormalizeSegment(segment) : segment.ToString());
-    }
-
-    public void Initialize(bool fromRazorFile)
+    public void ProcessSelectorSegments(bool fromRazorFile)
     {
         IsImportant = Selector[^1] == '!';
 
         if (Selector.IndexOf(':') > 0)
         {
-            SplitSelectorSegments(fromRazorFile);
+            foreach (var segment in Selector.SplitByTopLevel(':'))
+                AllSegments.Add(fromRazorFile ? NormalizeSegment(segment) : segment.ToString());
         }
         else
         {
@@ -170,21 +165,20 @@ public sealed class CssClass : IDisposable
             else
                 AllSegments.Add(IsImportant ? Selector[..^1] : Selector);
 
-            if (hasBrackets == false)
+            if (hasBrackets == false && AppRunner.Library.SimpleClasses.TryGetValue(AllSegments[0], out ClassDefinition))
             {
-                if (AppRunner.Library.SimpleClasses.TryGetValue(AllSegments[0], out ClassDefinition))
-                {
-                    IsValid = true;
-                    SelectorSort = ClassDefinition.SelectorSort;
+                IsValid = true;
+                SelectorSort = ClassDefinition.SelectorSort;
 
-                    GenerateSelector();
-                    GenerateStyles();
-
-                    return;
-                }
+                GenerateSelector();
+                GenerateStyles();
             }
         }
-
+    }
+    
+    public void Initialize(bool fromRazorFile)
+    {
+        ProcessSelectorSegments(fromRazorFile);
         ProcessArbitraryCss();
 
         if (IsValid == false)
@@ -228,7 +222,7 @@ public sealed class CssClass : IDisposable
                     if (variantMetadata is null)
                         return;
 
-                    VariantSegments.Add(segment, variantMetadata);
+                    VariantSegments.TryAdd(segment, variantMetadata);
 
                     if (variantMetadata.PrefixType[0] != 'p')
                         continue;
@@ -302,7 +296,7 @@ public sealed class CssClass : IDisposable
 
             if (string.IsNullOrEmpty(prefix))
                 return;
-
+            
             var value = AllSegments[^1].TrimStart(prefix) ?? string.Empty;
 
             if (value.Contains('/'))

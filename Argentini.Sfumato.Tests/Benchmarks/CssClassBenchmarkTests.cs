@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace Argentini.Sfumato.Tests.Benchmarks;
 
 public class CssClassBenchmarkTests
@@ -74,16 +72,10 @@ public class CssClassBenchmarkTests
             await Task.CompletedTask;
         });
 
-        await Shared.BenchmarkMethod("Initialize", async () => {
-            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
-            await Task.CompletedTask;
-        });
-
         await Shared.BenchmarkMethod("Step1_SplitSegments", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             await Task.CompletedTask;
             
         }, async () => {
@@ -95,7 +87,7 @@ public class CssClassBenchmarkTests
         await Shared.BenchmarkMethod("Step2_ProcessArbitraryCss", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             await Task.CompletedTask;
 
         }, async () => {
@@ -106,7 +98,7 @@ public class CssClassBenchmarkTests
         await Shared.BenchmarkMethod("Step3_ProcessUtilityClasses", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             await Task.CompletedTask;
             
@@ -118,7 +110,7 @@ public class CssClassBenchmarkTests
         await Shared.BenchmarkMethod("Step4_ProcessVariants", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
             await Task.CompletedTask;
@@ -131,7 +123,7 @@ public class CssClassBenchmarkTests
         await Shared.BenchmarkMethod("Step5_GenerateSelector", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
             cssClass.ProcessVariants();
@@ -145,7 +137,7 @@ public class CssClassBenchmarkTests
         await Shared.BenchmarkMethod("Step6_GenerateWrappers", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
             cssClass.ProcessVariants();
@@ -160,7 +152,7 @@ public class CssClassBenchmarkTests
         await Shared.BenchmarkMethod("GenerateStyles", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
             cssClass.ProcessVariants();
@@ -176,7 +168,7 @@ public class CssClassBenchmarkTests
         await Shared.BenchmarkMethod("CssSelectorEscape", async () =>
         {
             cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
-            cssClass.Initialize(false);
+            cssClass.ProcessSelectorSegments(false);
             cssClass.ProcessArbitraryCss();
             cssClass.ProcessUtilityClasses();
             cssClass.ProcessVariants();
@@ -187,6 +179,29 @@ public class CssClassBenchmarkTests
 
         }, async () => {
             _ = Shared.AverageUtilityClass.CssSelectorEscape();
+            await Task.CompletedTask;
+        });
+        
+        Shared.OutputTotalTime();
+    }
+    
+    [Fact]
+    public async Task ProcessVariantsBenchmark()
+    {
+        var cssClass = new CssClass(Shared.AppRunner);
+
+        await Shared.IterationSetup();
+
+        await Shared.BenchmarkMethod("ProcessVariants", async () =>
+        {
+            cssClass = new CssClass(Shared.AppRunner, Shared.AverageUtilityClass);
+            cssClass.ProcessSelectorSegments(false);
+            cssClass.ProcessArbitraryCss();
+            cssClass.ProcessUtilityClasses();
+            await Task.CompletedTask;
+            
+        }, async () => {
+            cssClass.ProcessVariants();
             await Task.CompletedTask;
         });
         
