@@ -147,7 +147,7 @@ public sealed class CssClass : IDisposable
         });
     }
 
-    public void ProcessSelectorSegments(bool fromRazorFile)
+    public bool ProcessSelectorSegments(bool fromRazorFile)
     {
         IsImportant = Selector[^1] == '!';
 
@@ -155,30 +155,36 @@ public sealed class CssClass : IDisposable
         {
             foreach (var segment in Selector.SplitByTopLevel(':'))
                 AllSegments.Add(fromRazorFile ? NormalizeSegment(segment) : segment.ToString());
+
+            return false;
         }
+
+        var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
+
+        if (fromRazorFile)
+            AllSegments.Add(IsImportant ? NormalizeSegment(Selector.AsSpan()[..^1]) : NormalizeSegment(Selector.AsSpan()));
         else
+            AllSegments.Add(IsImportant ? Selector[..^1] : Selector);
+
+        if (hasBrackets == false && AppRunner.Library.SimpleClasses.TryGetValue(AllSegments[0], out ClassDefinition))
         {
-            var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
+            IsValid = true;
+            SelectorSort = ClassDefinition.SelectorSort;
 
-            if (fromRazorFile)
-                AllSegments.Add(IsImportant ? NormalizeSegment(Selector.AsSpan()[..^1]) : NormalizeSegment(Selector.AsSpan()));
-            else
-                AllSegments.Add(IsImportant ? Selector[..^1] : Selector);
+            GenerateSelector();
+            GenerateStyles();
 
-            if (hasBrackets == false && AppRunner.Library.SimpleClasses.TryGetValue(AllSegments[0], out ClassDefinition))
-            {
-                IsValid = true;
-                SelectorSort = ClassDefinition.SelectorSort;
-
-                GenerateSelector();
-                GenerateStyles();
-            }
+            return true;
         }
+
+        return false;
     }
     
     public void Initialize(bool fromRazorFile)
     {
-        ProcessSelectorSegments(fromRazorFile);
+        if (ProcessSelectorSegments(fromRazorFile))
+            return; // Exit early if a simple class with no variants is found
+        
         ProcessArbitraryCss();
 
         if (IsValid == false)
@@ -292,7 +298,9 @@ public sealed class CssClass : IDisposable
     {
         try
         {
-            AppRunner.Library.ScannerClassNamePrefixes.TryGetLongestMatchingPrefix(AllSegments[^1].Contains('/') ? AllSegments[^1][..AllSegments[^1].IndexOf('/')] : AllSegments[^1], out var prefix, out _);
+            var slashIndex = AllSegments[^1].IndexOf('/');
+            
+            AppRunner.Library.ScannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex  > -1 ? AllSegments[^1][..slashIndex] : AllSegments[^1], out var prefix, out _);
 
             if (string.IsNullOrEmpty(prefix))
                 return;
