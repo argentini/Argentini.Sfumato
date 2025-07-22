@@ -9,11 +9,6 @@ public static class CssValidators
         return value.TrimStart('-').All(c => char.IsDigit(c) || c == '.');
     }
 
-    public static bool ValueIsInteger(this string value)
-    {
-        return value.TrimStart('-').All(char.IsDigit);
-    }
-
     public static bool ValueIsPercentage(this string value)
     {
         return value.TrimStart('-').EndsWith('%') && value.TrimEnd('%').All(c => char.IsDigit(c) || c == '.');

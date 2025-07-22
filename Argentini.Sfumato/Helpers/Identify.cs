@@ -1,5 +1,6 @@
-﻿using System.Reflection;
-using System.Runtime.Versioning;
+﻿// ReSharper disable MemberCanBePrivate.Global
+
+using System.Reflection;
 
 namespace Argentini.Sfumato.Helpers;
 
@@ -47,45 +48,6 @@ public static class Identify
             return "Windows";
 
         return "Other";
-    }
-
-    /// <summary>
-    /// Get the .NET Core runtime version (e.g. "2.2").
-    /// </summary> 
-    /// <returns>String with the .NET Core version number</returns> 
-    public static string GetFrameworkVersion()
-    {
-        var result = Assembly
-            .GetEntryAssembly()?
-            .GetCustomAttribute<TargetFrameworkAttribute>()?
-            .FrameworkName;
-
-        if (result == null || result.IsEmpty()) return string.Empty;
-
-        if (result.Contains("Version="))
-            return result.Right("Version=").TrimStart(['v']);
-
-        return result;
-    }
-
-    /// <summary>
-    /// Get the .NET CLR runtime version (e.g. "4.6.27110.04").
-    /// Only works in 2.2 or later.
-    /// </summary> 
-    /// <returns>String with the .NET CLR runtime version number</returns> 
-    public static string GetRuntimeVersion()
-    {
-        return RuntimeInformation.FrameworkDescription.Right(" ");
-    }
-
-    /// <summary>
-    /// Get the .NET CLR runtime version string.
-    /// Only works in 2.2 or later.
-    /// </summary> 
-    /// <returns>String with the .NET CLR runtime version number</returns> 
-    public static string GetRuntimeVersionFull()
-    {
-        return RuntimeInformation.FrameworkDescription;
     }
 
     /// <summary>
@@ -147,23 +109,6 @@ public static class Identify
         catch (Exception e)
         {
             await Console.Out.WriteLineAsync($"AppBuildVersion Exception: {e.Message}");
-        }
-
-        return result ?? string.Empty;
-    }
-
-    public static async Task<string> AppRevisionVersionAsync(Assembly assembly)
-    {
-        var result = string.Empty;
-
-        try
-        {
-            result = assembly.GetName().Version?.Revision.ToString();
-        }
-
-        catch (Exception e)
-        {
-            await Console.Out.WriteLineAsync($"AppRevisionVersion Exception: {e.Message}");
         }
 
         return result ?? string.Empty;
@@ -271,7 +216,7 @@ public static class Identify
             if (double.TryParse(segments[1], out _) == false)
                 return false;
             
-            return double.TryParse(segments[2], out _) != false;
+            return double.TryParse(segments[2], out _);
         }
         
         #endregion

@@ -100,7 +100,7 @@ internal class Program
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 		await Console.Out.WriteLineAsync("Sfumato: The Ultra-Fast CSS Generation Tool");
-		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} (.NET {Identify.GetRuntimeVersion()}/{Identify.GetProcessorArchitecture()})");
+		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} ({Identify.GetProcessorArchitecture()})");
 		
 		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
 

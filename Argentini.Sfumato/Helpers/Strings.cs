@@ -12,8 +12,6 @@ public static partial class Strings
 {
 	#region Constants
 
-	public static string ArrowRight => "\u2b95";
-	public static string TriangleRight => "\u23f5";
 	public static string ThinLine => "\u23bb";
 	public static string ThickLine => "\u2501";
 	public static string DotLine => "\u2504";
@@ -200,44 +198,6 @@ public static partial class Strings
 			: span.Slice(start, end - start + 1);
 	}
 
-	/// <summary>
-	/// Trims any of the specified characters from the start of the span.
-	/// </summary>
-	public static ReadOnlySpan<char> TrimStart(this ReadOnlySpan<char> span, params char[]? trimChars)
-	{
-		if (span.IsEmpty || trimChars is null || trimChars.Length == 0)
-			return span;
-
-		var start = 0;
-
-		while (start < span.Length && IsTrimChar(span[start], trimChars))
-			start++;
-
-		// If nothing trimmed, return original; else slice from `start` to end.
-		return start == 0
-			? span
-			: span[start..];
-	}
-
-	/// <summary>
-	/// Trims any of the specified characters from the end of the span.
-	/// </summary>
-	public static ReadOnlySpan<char> TrimEnd(this ReadOnlySpan<char> span, params char[]? trimChars)
-	{
-		if (span.IsEmpty || trimChars is null || trimChars.Length == 0)
-			return span;
-
-		var end = span.Length - 1;
-
-		while (end >= 0 && IsTrimChar(span[end], trimChars))
-			end--;
-
-		// If nothing trimmed, return original; else slice from 0 up to end+1.
-		return end == span.Length - 1
-			? span
-			: span[..(end + 1)];
-	}
-
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static bool IsTrimChar(char c, char[] trimChars)
 	{
@@ -247,52 +207,6 @@ public static partial class Strings
 				return true;
 
 		return false;
-	}
-
-	/// <summary>
-	/// Trim the first occurrence of a character from a string.
-	/// </summary>
-	/// <param name="str"></param>
-	/// <param name="value"></param>
-	public static string TrimFirst(this string str, char value)
-	{
-		var index = str.IndexOf(value);
-
-		return index < 0 ? str : str.Remove(index, 1);
-	}
-
-	/// <summary>
-	/// Trim the last occurrence of a character from a string.
-	/// </summary>
-	/// <param name="str"></param>
-	/// <param name="value"></param>
-	public static string TrimLast(this string str, char value)
-	{
-		var index = str.LastIndexOf(value);
-
-		return index < 0 ? str : str.Remove(index, 1);
-	}
-
-	/// <summary>
-	/// Trim the common prefix of from sourceString from targetString.
-	/// </summary>
-	/// <param name="targetString"></param>
-	/// <param name="sourceString"></param>
-	/// <returns></returns>
-	public static string TrimCommonPrefix(this string targetString, string sourceString)
-	{
-		var minLength = Math.Min(targetString.Length, sourceString.Length);
-		var commonLength = 0;
-
-		for (var i = 0; i < minLength; i++)
-		{
-			if (targetString[i] != sourceString[i])
-				break;
-
-			commonLength++;
-		}
-
-		return targetString[commonLength..];
 	}
 
 	/// <summary>
@@ -351,58 +265,6 @@ public static partial class Strings
 	}
 
 	/// <summary>
-	/// Trim the common prefix from targetString that matches sourceString,
-	/// but only up to the last Path.DirectorySeparatorChar in the matched portion.
-	/// </summary>
-	/// <param name="targetString">The string to trim.</param>
-	/// <param name="sourceString">The source string to match against.</param>
-	/// <returns>The trimmed string.</returns>
-	public static string TrimCommonPathPrefix(this string targetString, string sourceString)
-	{
-		var minLength = Math.Min(targetString.Length, sourceString.Length);
-		var lastSeparatorIndex = 0;
-
-		for (var i = 0; i < minLength; i++)
-		{
-			if (targetString[i] != sourceString[i])
-				break;
-
-			if (targetString[i] == Path.DirectorySeparatorChar)
-				lastSeparatorIndex = i + 1; // include separator in the prefix
-		}
-
-		return targetString[lastSeparatorIndex..];
-	}
-
-	/// <summary>
-	/// Remove a specified number of characters from the beginning of a string
-	/// </summary>
-	/// <param name="value">String to trim</param>
-	/// <param name="count">Number of characters to remove</param>
-	/// <returns>Trimmed string</returns>
-	public static string TrimStart(this string? value, int count)
-	{
-		if (value is not null && value.Length >= count)
-			return value.Right(value.Length - count);
-
-		return value ?? string.Empty;
-	}
-
-	/// <summary>
-	/// Remove a specified number of characters from the end of a string
-	/// </summary>
-	/// <param name="value">String to trim</param>
-	/// <param name="count">Number of characters to remove</param>
-	/// <returns>Trimmed string</returns>
-	public static string TrimEnd(this string? value, int count)
-	{
-		if (value is not null && value.Length >= count)
-			return value.Left(value.Length - count);
-
-		return value ?? string.Empty;
-	}
-
-	/// <summary>
 	/// Remove a string from the beginning of a string
 	/// </summary>
 	/// <param name="source">The string to search</param>
@@ -438,38 +300,9 @@ public static partial class Strings
 			: source;
 	}
 
-	/// <summary>
-	/// Trim directory separator characters from the end of a string base on the current operating system.
-	/// </summary>
-	/// <param name="value"></param>
-	/// <returns></returns>
-	public static string TrimEndingPathSeparators(this string? value)
-	{
-		return string.IsNullOrEmpty(value)
-			? string.Empty
-			: value.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar);
-	}
-
 	#endregion
 
 	#region Comparison
-
-	public static bool StartsWithAny(this string? str, char[]? any)
-	{
-		if (string.IsNullOrEmpty(str) || any is null || any.Length == 0)
-			return false;
-
-		return str.AsSpan().IndexOfAny(any) == 0;
-	}
-
-	/// <summary>
-	/// Determines if a string has a value (is not null and not empty).
-	/// </summary>
-	/// <param name="value">String to evaluate</param>
-	public static bool HasValue(this string? value)
-	{
-		return string.IsNullOrEmpty(value?.Trim()) == false;
-	}
 
 	/// <summary>
 	/// Determines if a string is empty or null.
@@ -480,154 +313,9 @@ public static partial class Strings
 		return string.IsNullOrEmpty(value);
 	}
 
-	/// <summary>
-	/// Determine if two strings are not equal.
-	/// </summary>
-	/// <param name="source"></param>
-	/// <param name="value"></param>
-	/// <param name="comparisonType"></param>
-	/// <returns></returns>
-	public static bool NotEquals(this string? source, string? value,
-		StringComparison comparisonType = StringComparison.Ordinal)
-	{
-		if (source == null && value == null) return false;
-		if (source is not null && value == null) return true;
-		if (source == null && value is not null) return true;
-
-		return source?.Equals(value, comparisonType) == false;
-	}
-
-	/// <summary>
-	/// Determine if two strings are not equal, ignoring case.
-	/// </summary>
-	/// <param name="source"></param>
-	/// <param name="value"></param>
-	/// <returns></returns>
-	public static bool InvariantNotEquals(this string? source, string? value)
-	{
-		if (source == null && value == null) return false;
-		if (source is not null && value == null) return true;
-		if (source == null && value is not null) return true;
-
-		return source?.Equals(value, StringComparison.InvariantCultureIgnoreCase) == false;
-	}
-
-	/// <summary>
-	/// Determine if two strings are equal, ignoring case.
-	/// </summary>
-	/// <param name="source"></param>
-	/// <param name="value"></param>
-	/// <returns></returns>
-	public static bool InvariantEquals(this string? source, string? value)
-	{
-		return source.InvariantNotEquals(value) == false;
-	}
-
-	/// <summary>
-	/// Determine if a string starts with any value from a string array.
-	/// </summary>
-	/// <param name="value"></param>
-	/// <param name="substrings"></param>
-	/// <param name="stringComparison"></param>
-	/// <returns></returns>
-	public static bool StartsWith(this string value, string[]? substrings,
-		StringComparison stringComparison = StringComparison.Ordinal)
-	{
-		if (substrings is not { Length: > 0 }) return false;
-
-		var result = false;
-
-		for (var x = 0; x < substrings.Length; x++)
-		{
-			if (value.StartsWith(substrings[x], stringComparison) == false) continue;
-
-			result = true;
-			x = substrings.Length;
-		}
-
-		return result;
-	}
-
-	#endregion
-
-	#region Conversion
-
-	/// <summary>
-	/// Convert a string to a byte array.
-	/// </summary>
-	/// <param name="value">String to evaluate</param>
-	/// <returns>Byte array</returns>
-	public static byte[] ToByteArray(this string? value)
-	{
-		if (value is null || string.IsNullOrEmpty(value))
-			return [];
-
-		var encoding = new UTF8Encoding();
-
-		return encoding.GetBytes(value);
-	}
-
 	#endregion
 
 	#region Parsing
-
-	/// <summary>
-	/// Finds all blocks like “@media (prefers-color-scheme: dark) { … }” blocks in this StringBuilder,
-	/// matching braces even if there are nested blocks inside.
-	/// </summary>
-	/// <param name="content">Source CSS</param>
-	/// <param name="cssBlockDeclaration">Set as a block declaration value like "@media (prefers-color-scheme: dark) {"</param>
-	public static IEnumerable<string> FindMediaBlocks(this string? content, string cssBlockDeclaration)
-	{
-		if (string.IsNullOrEmpty(content))
-			yield break;
-
-		// Grab the full content once
-		var searchPos = 0;
-
-		while (true)
-		{
-			// Find the next CSS block declaration start
-			var startIdx = content.IndexOf(cssBlockDeclaration, searchPos, StringComparison.Ordinal);
-
-			if (startIdx == -1)
-				yield break;
-
-			// The “{” is the last character of cssBlockDeclaration
-			var braceIdx = startIdx + cssBlockDeclaration.Length - 1;
-			var pos = braceIdx + 1;
-			var depth = 1;
-
-			// Advance, adjusting depth for every { or }
-			while (pos < content.Length && depth > 0)
-			{
-				var c = content[pos];
-
-				if (c == '{')
-					depth++;
-				else if (c == '}')
-					depth--;
-
-				pos++;
-			}
-
-			// If we closed everything, slice it out
-			if (depth == 0)
-			{
-				var length = pos - startIdx;
-
-				yield return content.Substring(startIdx, length);
-
-				// Continue searching after this block
-				searchPos = pos;
-			}
-			else
-			{
-				// Unbalanced braces—stop scanning
-				yield break;
-			}
-		}
-	}
 
 	/// <summary>
 	/// Identify substrings enclosed in quotes (single, double, or backtick) within a string,
@@ -798,99 +486,6 @@ public static partial class Strings
 		}
 	}
 	
-	/// <summary>
-	/// Get the index of the first non-space character in a string.
-	/// </summary>
-	/// <param name="value"></param>
-	/// <returns></returns>
-	public static int FirstNonSpaceCharacter(this string? value)
-	{
-		if (string.IsNullOrEmpty(value))
-			return 0;
-
-		var index = -1;
-		
-		foreach (var c in value)
-		{
-			index++;
-
-			if (char.IsWhiteSpace(c))
-				continue;
-			
-			break;
-		}
-
-		return index;
-	}
-	
-	/// <summary>
-	/// Get the left "length" characters of a string.
-	/// </summary>
-	/// <param name="value">String value</param>
-	/// <param name="length">Number of characters</param>
-	/// <returns>Left portion of a string</returns>
-	public static string Left(this string? value, int length)
-	{
-		if (value == null || value.IsEmpty() || length < 1) return string.Empty;
-		if (length > value.Length) return value;
-		
-		return value[..length];
-	}
-
-	/// <summary>
-	/// Get the left characters of a string up to but not including the first instance of "marker".
-	/// If marker is not found the original value is returned.
-	/// </summary>
-	/// <param name="value">String value</param>
-	/// <param name="marker">Delimiter to denote the cut off point</param>
-	/// <returns>Left portion of a string</returns>
-	public static string Left(this string? value, string? marker)
-	{
-		if (value == null || value.IsEmpty()) return string.Empty;
-		if (marker == null || marker.IsEmpty()) return value;
-
-		if (value.Length <= marker.Length) return string.Empty;
-
-		if (value.Contains(marker))
-			return value[..value.IndexOf(marker, StringComparison.Ordinal)];
-
-		return value;
-	}
-	
-	/// <summary>
-	/// Get the right "length" characters of a string.
-	/// </summary>
-	/// <param name="value">String value</param>
-	/// <param name="length">Number of characters</param>
-	/// <returns>Right portion of a string</returns>
-	public static string Right(this string? value, int length)
-	{
-		if (value == null || value.IsEmpty() || length < 1) return string.Empty;
-		if (length > value.Length) return value;
-
-		return value[^length..];
-	}
-
-	/// <summary>
-	/// Get the right characters of a string up to but not including the last instance of "marker" (right to left).
-	/// If the marker is not found, the original value is returned.
-	/// </summary>
-	/// <param name="value">String value</param>
-	/// <param name="marker">Delimiter to denote the cut-off point</param>
-	/// <returns>Right portion of a string</returns>
-	public static string Right(this string? value, string? marker)
-	{
-		if (value == null || value.IsEmpty()) return string.Empty;
-		if (marker == null || marker.IsEmpty()) return value;
-
-		if (value.Length <= marker.Length) return string.Empty;
-		
-		if (value.Contains(marker))
-			return value[(value.LastIndexOf(marker, StringComparison.Ordinal) + marker.Length)..];
-
-		return value;
-	}
-	
 	#endregion
 	
 	#region Transformations
@@ -995,96 +590,6 @@ public static partial class Strings
         static int NextNl(ReadOnlySpan<char> span) => span.IndexOfAny('\n', '\r');
     }	
 	
-    /// <summary>
-    /// Collapses every run of <paramref name="minTokens"/> or more newline
-    /// tokens (LF or CRLF) down to exactly two newline tokens.
-    /// </summary>
-    /// <param name="text">Input. May be <c>null</c> or empty.</param>
-    /// <param name="useCrlf">
-    /// When <c>true</c>, the replacement is “<c>\r\n\r\n</c>”; otherwise
-    /// “<c>\n\n</c>”.</param>
-    /// <param name="scratch">
-    /// Optional <see cref="StringBuilder"/> (typically from an <em>ObjectPool</em>).
-    /// It is always <b>cleared</b> before use.</param>
-    /// <param name="minTokens">Defaults to <c>3</c>.</param>
-    /// <remarks>Returns the original string unchanged when no consolidation is
-    /// required; thus zero allocations on the fast path.</remarks>
-    public static string ConsolidateLineBreaks(this string? text, bool useCrlf = false, StringBuilder? scratch = null, int minTokens = 3)
-    {
-        if (string.IsNullOrEmpty(text))
-            return text ?? string.Empty;
-
-        var src = text.AsSpan();
-
-        /*--------------- FAST VETO -----------------
-         * If we cannot find “minTokens” consecutive LF characters or
-         * “minTokens” consecutive CRLF pairs, we know no rewrite is needed.
-         * The simple IndexOf/Contains calls are heavily vectorised in
-         * CoreCLR and save us from a char-by-char scan in the common case.
-         */
-        if (src.IndexOf("\n\n\n".AsSpan()[..minTokens]) < 0 && src.IndexOf("\r\n\r\n\r\n".AsSpan()[..(minTokens * 2)]) < 0)
-	        return text;
-
-        scratch?.Clear();
-        StringBuilder? sb = null;
-
-        var tail = 0; // start of segment not yet copied
-        var i = 0;
-        var len = src.Length;
-
-        ReadOnlySpan<char> token = useCrlf ? "\r\n\r\n" : "\n\n";
-
-        while (i < len)
-        {
-            // Jump straight to the next \n or \r (if any)
-            var rel = NextNewline(src[i..]);
-
-            if (rel < 0)
-                break; // Remainder has no newlines
-
-            var pos = i + rel; // Absolute index of 1st NL
-            var runTokens = 0; // Length in NL tokens
-
-            while (pos < len)
-            {
-                if (src[pos] == '\n')
-                {
-                    runTokens++; pos++; // LF
-                }
-                else if (src[pos] == '\r' && pos + 1 < len && src[pos + 1] == '\n')
-                {
-                    runTokens++; pos += 2; // CRLF
-                }
-                else
-                {
-                    break; // Not part of NL run
-                }
-            }
-
-            if (runTokens < minTokens)
-            {
-                // Keep it verbatim – move on
-                i = pos;
-                continue;
-            }
-
-            sb ??= (scratch ?? new StringBuilder(text.Length));
-            sb.Append(src.Slice(tail, (i + rel) - tail)); // Copy head
-            sb.Append(token); // Always 2 tokens
-            tail = pos; // Skip the run
-            i = pos; // Resume scanning
-        }
-
-        if (sb is null)
-            return text; // No changes, return original string
-
-        sb.Append(src[tail..]); // Copy tail
-
-        return sb.ToString();
-
-        static int NextNewline(ReadOnlySpan<char> span) => span.IndexOfAny('\n', '\r'); // SIMD-accelerated
-    }
-    
 	/// <summary>
 	/// Removes all C-style block comments ( /* … */ ) from <paramref name="source"/>.
 	/// If a closing <c>*/</c> is missing the rest of the text is treated as a comment.
@@ -1169,14 +674,6 @@ public static partial class Strings
 
 		return value.Length == position ? value : new string(buffer[..position]);
 	}
-	
-    public static string ToSentenceCase(this string input)
-    {
-        if (string.IsNullOrEmpty(input))
-            return string.Empty;
-
-        return char.ToUpper(input[0]) + input[1..];
-    }
     
 	/// <summary>
 	/// Removes spaces and newlines from a string.
@@ -1427,32 +924,6 @@ public static partial class Strings
 	}
 	
 	/// <summary>
-	/// Indent text with whitespace based on line breaks
-	/// </summary>
-	/// <param name="block"></param>
-	/// <param name="count"></param>
-	/// <returns></returns>
-	public static string Indent(this string block, int count)
-	{
-		if (string.IsNullOrEmpty(block))
-			return block;
-
-        if (count < 0)
-            count = 0;
-
-        if (count == 0)
-            return block;
-        
-		var whitespace = " ".Repeat(count);
-		var result = block.Replace("\n", $"\n{whitespace}");
-
-		if (result.EndsWith($"\n{whitespace}"))
-			result = result[..^count];
-		
-		return (result.StartsWith('\r') || result.StartsWith('\n') ? string.Empty : whitespace) + result;
-	}
-	
-	/// <summary>
 	/// Normalize all “\r\n”, “\r”, and “\n” sequences into the specified linebreak,
 	/// doing at most one allocation and two scans.
 	/// </summary>
@@ -1638,49 +1109,6 @@ public static partial class Strings
 		}
 
 		return result;
-	}
-
-	/// <summary>
-	/// Convert a numeric pixel value to a rem value string, including the "rem" unit.
-	/// </summary>
-	/// <param name="pixels"></param>
-	/// <returns></returns>
-	public static string PxToRem(this decimal pixels)
-	{
-		return $"{(pixels / 16m):#0.######}rem";
-	}
-
-	/// <summary>
-	/// Convert a numeric pixel value to a rem value string, including the "rem" unit.
-	/// </summary>
-	/// <param name="pixels"></param>
-	/// <returns></returns>
-	public static string PxToRem(this int pixels)
-	{
-		return $"{(pixels / 16m):#0.######}rem";
-	}
-
-    /// <summary>
-    /// Convert a numeric pixel value to a rem value string, including the "rem" unit.
-    /// </summary>
-    /// <param name="pixels"></param>
-    /// <returns></returns>
-    public static string PxToRem(this double pixels)
-    {
-        return $"{(pixels / 16):#0.######}rem";
-    }
-
-    /// <summary>
-    /// Convert a pixel string value to a rem value string, including the "rem" unit.
-    /// </summary>
-    /// <param name="pixelVal"></param>
-    /// <returns></returns>
-    public static string PxToRem(this string pixelVal)
-	{
-		if (decimal.TryParse(pixelVal.Trim().TrimEnd("px")?.Trim(), out var pixels) == false)
-			return "0rem";
-		
-		return $"{(pixels / 16):#0.######}rem";
 	}
 
 	/// <summary>
@@ -1972,8 +1400,8 @@ public static partial class Strings
         }
     }
 
-    // Helper: pull out a "(...)" block starting at s[i], where 'offset' is length of "name(".
-    // Advances i to the last character of the function, and returns the full substring.
+    // Helper: pull out a "(...)" block starting at 's[i]', where 'offset' is the length of 'name('.
+    // Advances 'i' to the last character of the function and returns the full substring.
     private static string ExtractFunction(string s, ref int i, int offset)
     {
         var start = i;

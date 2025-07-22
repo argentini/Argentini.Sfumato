@@ -1,4 +1,6 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 

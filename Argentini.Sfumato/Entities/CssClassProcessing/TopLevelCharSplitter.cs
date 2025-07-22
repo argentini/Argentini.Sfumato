@@ -1,4 +1,5 @@
-using System;
+// ReSharper disable UseCollectionExpression
+
 using System.Runtime.CompilerServices;
 
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
@@ -44,6 +45,7 @@ public readonly ref struct DelimitedSplitEnumerable
     private readonly ReadOnlySpan<char> _buffer;
     private readonly char _delimiter;
 
+    // ReSharper disable once ConvertToPrimaryConstructor
     public DelimitedSplitEnumerable(string? s, char delimiter)
     {
         _buffer = string.IsNullOrEmpty(s) ? [] : s[^1] == '!' ? s.AsSpan(0, s.Length - 1) : s.AsSpan();
@@ -98,7 +100,7 @@ public readonly ref struct DelimitedSplitEnumerable
                     return true;
                 }
 
-                char ch = span[idx];
+                var ch = span[idx];
 
                 switch (ch)
                 {
@@ -115,10 +117,13 @@ public readonly ref struct DelimitedSplitEnumerable
                         if (paren > 0) paren--;
                         break;
                     case var d when d == _delimiter && bracket == 0 && paren == 0:
+                        
                         // Found a top-level delimiter at absolute index (pos + idx)
-                        int splitAt = pos + idx;
+                        var splitAt = pos + idx;
+                        
                         _current = original[..splitAt];
                         _rest = original[(splitAt + 1)..];
+                        
                         return true;
                 }
 

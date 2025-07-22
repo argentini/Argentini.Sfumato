@@ -1,6 +1,3 @@
-using System.Runtime.Intrinsics.Arm;
-using System.Runtime.Intrinsics.X86;
-
 namespace Argentini.Sfumato.Tests;
 
 public class ExtensionsTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
@@ -90,69 +87,6 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper) : SharedTestBas
                                       """;
 
     #endregion
-
-    [Fact]
-    public void NameSort()
-    {
-        var test1 = ".font-bold";
-        var test2 = ".p-15";
-        var test3 = ".text-";
-        var test4 = ".w-10";
-        var test5 = ".w-full";
-        var test6 = ".text-4xl";
-
-        Assert.True(test4.GetNameSort() > test3.GetNameSort());
-        Assert.True(test3.GetNameSort() > test2.GetNameSort());
-        Assert.True(test2.GetNameSort() > test1.GetNameSort());
-        Assert.True(test5.GetNameSort() > test4.GetNameSort());
-        Assert.True(test5.GetNameSort() > test6.GetNameSort());
-    }
-
-    [Fact]
-    public void StringCrc32()
-    {
-        if (Sse42.IsSupported)
-        {
-            Assert.Equal((uint)2735986016, "@media screen (min-width: 40rem) and (max-width: 80rem) {".GenerateCrc32());
-            Assert.Equal((uint)3406887336, "@media screen (min-width: 40rem) and (max-width: 81rem) {".GenerateCrc32());
-            Assert.Equal((uint)3100109469, "@media screen (min-width: 40rem) {".GenerateCrc32());
-        }
-        else if (Crc32.IsSupported)
-        {
-            Assert.Equal((uint)4044826889, "@media screen (min-width: 40rem) and (max-width: 80rem) {".GenerateCrc32());
-            Assert.Equal((uint)1465918141, "@media screen (min-width: 40rem) and (max-width: 81rem) {".GenerateCrc32());
-            Assert.Equal((uint)3657485972, "@media screen (min-width: 40rem) {".GenerateCrc32());
-        }
-        else
-        {
-            Assert.Equal((uint)751236885, "@media screen (min-width: 40rem) and (max-width: 80rem) {".GenerateCrc32());
-            Assert.Equal((uint)2326920353, "@media screen (min-width: 40rem) and (max-width: 81rem) {".GenerateCrc32());
-            Assert.Equal((uint)2607915710, "@media screen (min-width: 40rem) {".GenerateCrc32());
-        }
-    }
-
-    [Fact]
-    public void StringBuilderCrc32()
-    {
-        if (Sse42.IsSupported)
-        {
-            Assert.Equal((uint)2735986016, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 80rem) {").GenerateCrc32());
-            Assert.Equal((uint)3406887336, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").GenerateCrc32());
-            Assert.Equal((uint)3100109469, new StringBuilder("@media screen (min-width: 40rem) {").GenerateCrc32());
-        }
-        else if (Crc32.IsSupported)
-        {
-            Assert.Equal((uint)4044826889, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 80rem) {").GenerateCrc32());
-            Assert.Equal((uint)1465918141, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").GenerateCrc32());
-            Assert.Equal((uint)3657485972, new StringBuilder("@media screen (min-width: 40rem) {").GenerateCrc32());
-        }
-        else
-        {
-            Assert.Equal((uint)751236885, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 80rem) {").GenerateCrc32());
-            Assert.Equal((uint)2326920353, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").GenerateCrc32());
-            Assert.Equal((uint)2607915710, new StringBuilder("@media screen (min-width: 40rem) {").GenerateCrc32());
-        }
-    }
 
     [Fact]
     public void StringFnv1A()

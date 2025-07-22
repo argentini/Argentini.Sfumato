@@ -1,6 +1,3 @@
-using Argentini.Sfumato.Tests.UtilityClasses;
-using Microsoft.DotNet.PlatformAbstractions;
-
 namespace Argentini.Sfumato.Tests;
 
 public class AppRunnerTests : SharedTestBase
