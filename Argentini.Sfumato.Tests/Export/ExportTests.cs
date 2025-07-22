@@ -1,17 +1,19 @@
-namespace Argentini.Sfumato.Tests;
+namespace Argentini.Sfumato.Tests.Export;
 
 public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
     [Fact]
     public async Task ExportJsonAsync()
     {
-        AppRunner = new AppRunner(StringBuilderPool, "../../../SampleCss/export.css");
+        AppRunner = new AppRunner(StringBuilderPool, ExportCssFilePath);
 
+        Assert.True(File.Exists(ExportCssFilePath));
+        
         await AppRunner.LoadCssFileAsync();
         
         #region Utility Class Definitions
         
-        var json = AppRunner.Library.ExportUtilityClassDefinitions(AppRunner);
+        var json = AppRunner.ExportUtilityClassDefinitions();
         
         Assert.True(json.Length > 10);
 
@@ -25,7 +27,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(te
 
         #region Color Library
         
-        json = AppRunner.Library.ExportColorDefinitions(AppRunner);
+        json = AppRunner.ExportColorDefinitions();
         
         path = Path.GetFullPath(Path.Combine("../../../colors.json"));
         
@@ -37,7 +39,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(te
         
         #region CSS Custom Properties
         
-        json = AppRunner.Library.ExportCssCustomProperties(AppRunner);
+        json = AppRunner.ExportCssCustomProperties();
         
         path = Path.GetFullPath(Path.Combine("../../../css-custom-properties.json"));
         
@@ -49,7 +51,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(te
         
         #region Variants
         
-        json = AppRunner.Library.ExportVariants();
+        json = AppRunner.ExportVariants();
         
         path = Path.GetFullPath(Path.Combine("../../../variants.json"));
         

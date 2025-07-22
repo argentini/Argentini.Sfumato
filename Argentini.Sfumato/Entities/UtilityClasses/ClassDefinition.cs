@@ -89,14 +89,14 @@ public sealed class ClassDefinition
     /// <summary>
     /// CSS class property template (e.g. "top-0" => "top: {0};").
     /// Can contain more than one property assignment.
-    /// Use placeholder {0} for custom value.
+    /// Use placeholder {0} for a custom value.
     /// </summary>
     public string Template { get; set; } = string.Empty;
 
     /// <summary>
     /// CSS class property template using a modifier (e.g. "text-base/5" => "font-size: {0}; line-height: calc(var(--spacing) * {1})").
     /// Can contain more than one property assignment.
-    /// Use placeholder {0} for custom value.
+    /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
     public string ModifierTemplate { get; set; } = string.Empty;
@@ -104,7 +104,7 @@ public sealed class ClassDefinition
     /// <summary>
     /// CSS class property template using an arbitrary modifier (e.g. "text-base/[1]" => "font-size: {0}; line-height: {1};").
     /// Can contain more than one property assignment.
-    /// Use placeholder {0} for custom value.
+    /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
     public string ArbitraryModifierTemplate { get; set; } = string.Empty;
@@ -119,7 +119,7 @@ public sealed class ClassDefinition
     /// <summary>
     /// CSS class property template for arbitrary CSS values using a modifier (e.g. "text-[1rem]/5" => "font-size: {0}; line-height: calc(var(--spacing) * {1});").
     /// Can contain more than one property assignment.
-    /// Use placeholder {0} for custom value.
+    /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
     public string ArbitraryCssValueWithModifierTemplate { get; set; } = string.Empty;
@@ -146,21 +146,4 @@ public sealed class ClassDefinition
     /// Collection of usage examples with styles.
     /// </summary>
     public Dictionary<string, string> DocExamples { get; set; } = [];
-}
-
-public sealed class DocItem
-{
-    public string Suffix { get; set; } = string.Empty;
-    public string Styles { get; set; } = string.Empty;
-}
-
-// ReSharper disable CollectionNeverQueried.Global
-public sealed class ExportItem
-{
-    public string Category { get; set; } = string.Empty;
-    public string Group { get; set; } = string.Empty;
-    public string GroupDescription { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public Dictionary<string, ClassDefinition> Usages { get; set; } = new();
 }
