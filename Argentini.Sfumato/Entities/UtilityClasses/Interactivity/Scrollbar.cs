@@ -35,7 +35,7 @@ public sealed class Scrollbar : ClassDictionaryBase
 
                         scrollbar-gutter: stable;
 
-                        & > *:first-child {
+                        & > * {
                             margin-bottom: calc(var(--sf-scrollbar-size) * -1);
                         }
 
@@ -138,8 +138,9 @@ public sealed class Scrollbar : ClassDictionaryBase
                         -webkit-overflow-scrolling: touch;
                         
                         scrollbar-gutter: stable;
-                        
-                        & > *:first-child {
+
+                        & > * {
+                            padding-right: var(--sf-scrollbar-size);
                             margin-right: calc(var(--sf-scrollbar-size) * -1);
                         }
                         
