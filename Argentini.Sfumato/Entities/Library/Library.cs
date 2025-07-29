@@ -93,19 +93,19 @@ public sealed class Library
     public Library()
     {
         foreach (var kvp in LibraryMediaQueries.MediaQueryPrefixes)
-            MediaQueryPrefixes.Add(kvp.Key, kvp.Value);
+            MediaQueryPrefixes.Add(kvp.Key, kvp.Value.CreateNewVariant());
 
         foreach (var kvp in LibrarySupportsQueries.SupportsQueryPrefixes)
-            SupportsQueryPrefixes.Add(kvp.Key, kvp.Value);
+            SupportsQueryPrefixes.Add(kvp.Key, kvp.Value.CreateNewVariant());
 
         foreach (var kvp in LibraryStartingStyleQueries.StartingStyleQueryPrefixes)
-            StartingStyleQueryPrefixes.Add(kvp.Key, kvp.Value);
+            StartingStyleQueryPrefixes.Add(kvp.Key, kvp.Value.CreateNewVariant());
 
         foreach (var kvp in LibraryContainerQueries.ContainerQueryPrefixes)
-            ContainerQueryPrefixes.Add(kvp.Key, kvp.Value);
+            ContainerQueryPrefixes.Add(kvp.Key, kvp.Value.CreateNewVariant());
 
         foreach (var kvp in LibraryPseudoClasses.PseudoclassPrefixes)
-            PseudoclassPrefixes.Add(kvp.Key, kvp.Value);
+            PseudoclassPrefixes.Add(kvp.Key, kvp.Value.CreateNewVariant());
 
         foreach (var pseudoClass in PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal))
         {
