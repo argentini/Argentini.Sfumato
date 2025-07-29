@@ -29,17 +29,20 @@ public static class VariantValidators
         return null;
     }
     
-    public static bool TryGetVariant(this string variant, AppRunner appRunner, out VariantMetadata? variantMetadata)
+    public static bool TryGetVariant(this string variant, AppRunner appRunner, out VariantMetadata? metadata)
     {
-        variantMetadata = null;
+        metadata = null;
         
         var indexOfSlash = variant.LastIndexOf('/');
         var isContainerQuery = variant[0] == '@'; // true if a container query
 
-        if (appRunner.Library.AllVariants.TryGetLongestMatchingPrefix(indexOfSlash > -1 ? variant[..indexOfSlash] : variant, out var prefix, out variantMetadata))
+        if (appRunner.Library.AllVariants.TryGetLongestMatchingPrefix(indexOfSlash > -1 ? variant[..indexOfSlash] : variant, out var prefix, out var variantMetadata))
         {
             if (variant.Length == prefix!.Length)
+            {
+                metadata = variantMetadata;
                 return true;
+            }
         }
         else
         {
@@ -47,6 +50,8 @@ public static class VariantValidators
                 return false;
         }
 
+        metadata = variantMetadata?.CreateNewVariant();
+        
         #region Standard variants
         
         if (variantMetadata?.SpecialCase == false)
@@ -56,9 +61,9 @@ public static class VariantValidators
             if (customValue is not null) // Custom value variants
             {
                 if (variantMetadata.SelectorSuffix.Length > 0)
-                    variantMetadata = variantMetadata.CreateNewVariant(suffix: variantMetadata.SelectorSuffix.Replace("{0}", customValue));
+                    metadata!.SelectorSuffix = variantMetadata.SelectorSuffix.Replace("{0}", customValue);
                 else
-                    variantMetadata = variantMetadata.CreateNewVariant(statement: variantMetadata.Statement.Replace("{0}", customValue));
+                    metadata!.Statement = variantMetadata.Statement.Replace("{0}", customValue);
                 
                 return true;
             }
@@ -76,9 +81,9 @@ public static class VariantValidators
                     return false;
                 
                 if (variantMetadata.SelectorSuffix.Length > 0)
-                    variantMetadata = variantMetadata.CreateNewVariant(suffix: variantMetadata.SelectorSuffix.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' ')));
+                    metadata!.SelectorSuffix = variantMetadata.SelectorSuffix.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' '));
                 else
-                    variantMetadata = variantMetadata.CreateNewVariant(suffix: variantMetadata.Statement.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' ')));
+                    metadata!.SelectorSuffix = variantMetadata.Statement.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' '));
 
                 return true;
             }
@@ -96,7 +101,7 @@ public static class VariantValidators
             {
                 var variantValue = indexOfSlash > 0 ? variant[..indexOfSlash] : variant;
 
-                return appRunner.Library.ContainerQueryPrefixes.TryGetValue(variantValue, out variantMetadata);
+                return appRunner.Library.ContainerQueryPrefixes.TryGetValue(variantValue, out metadata);
             }
 
             #endregion
@@ -109,8 +114,8 @@ public static class VariantValidators
                 
                 if (customValue is not null) // Custom value variants
                 {
-                    variantMetadata = variantMetadata.CreateNewVariant("wrapper", statement: $"@media {variantMetadata.Statement.Replace("{0}", customValue)}");
-                    
+                    metadata!.PrefixType = "wrapper";
+                    metadata.Statement = $"@media {variantMetadata.Statement.Replace("{0}", customValue)}";
                     return true;
                 }
             }            
@@ -127,13 +132,13 @@ public static class VariantValidators
                 {
                     // data-[size=large]:
 
-                    variantMetadata = variantMetadata.CreateNewVariant(suffix: $"[{customValue}]");
+                    metadata!.SelectorSuffix = $"[{customValue}]";
                 }
                 else
                 {
                     // data-active:
 
-                    variantMetadata = variantMetadata.CreateNewVariant(suffix: $"[{variant}]");
+                    metadata!.SelectorSuffix = $"[{variant}]";
                 }
 
                 return true;
@@ -147,13 +152,13 @@ public static class VariantValidators
                 {
                     // not-data-[size=large]:
 
-                    variantMetadata = variantMetadata.CreateNewVariant(suffix: $":not({customValue.Replace('_', ' ')})");
+                    metadata!.SelectorSuffix = $":not({customValue.Replace('_', ' ')})";
                 }
                 else
                 {
                     // not-data-active:
 
-                    variantMetadata = variantMetadata.CreateNewVariant(suffix: $":not([{variant.TrimStart("not-")}])");
+                    metadata!.SelectorSuffix = $":not([{variant.TrimStart("not-")}])";
                 }
             
                 return true;
@@ -167,7 +172,8 @@ public static class VariantValidators
             {
                 // group-has-[a]: or group-has-[p.my-class]: etc.
 
-                variantMetadata = variantMetadata.CreateNewVariant(suffix: $":is(:where(.group):has(:is({variant[11..^1].Replace('_', ' ')})) *)", prioritySort: 99);
+                metadata!.SelectorSuffix = $":is(:where(.group):has(:is({variant[11..^1].Replace('_', ' ')})) *)";
+                metadata.PrioritySort = 99;
 
                 return true;
             }
@@ -181,7 +187,8 @@ public static class VariantValidators
                 if (appRunner.Library.PseudoclassPrefixes.TryGetValue(variantValue, out var pseudoClass) == false)
                     return false;
 
-                variantMetadata = variantMetadata.CreateNewVariant(suffix: $":is(:where(.group{pseudoClass.SelectorSuffix}) *)", prioritySort: 99);
+                metadata!.SelectorSuffix = $":is(:where(.group{pseudoClass.SelectorSuffix}) *)";
+                metadata.PrioritySort = 99;
                 
                 return true;
             }
@@ -201,8 +208,9 @@ public static class VariantValidators
 
                     if (string.IsNullOrEmpty(variantValue))
                         return false;
-                            
-                    variantMetadata = variantMetadata.CreateNewVariant("prefix", prefix: $".group{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ");
+
+                    metadata!.PrefixType = "prefix";
+                    metadata.SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ";
 
                     return true;
                 }
@@ -211,7 +219,8 @@ public static class VariantValidators
                 {
                     // group-hover:
 
-                    variantMetadata = variantMetadata.CreateNewVariant("prefix", prefix: $".group{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ");
+                    metadata!.PrefixType = "prefix";
+                    metadata.SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ";
                 
                     return true;
                 }
@@ -227,7 +236,8 @@ public static class VariantValidators
             {
                 // peer-has-[a]: or peer-has-[p.my-class]: etc.
 
-                variantMetadata = variantMetadata.CreateNewVariant(suffix: $":is(:where(.peer):has(:is({variant[10..^1].Replace('_', ' ')})) ~ *)", prioritySort: 99);
+                metadata!.SelectorSuffix = $":is(:where(.peer):has(:is({variant[10..^1].Replace('_', ' ')})) ~ *)";
+                metadata.PrioritySort = 99;
 
                 return true;
             }
@@ -241,7 +251,8 @@ public static class VariantValidators
                 if (appRunner.Library.PseudoclassPrefixes.TryGetValue(variantValue, out var pseudoClass) == false)
                     return false;
 
-                variantMetadata = variantMetadata.CreateNewVariant(suffix: $":is(:where(.peer{pseudoClass.SelectorSuffix}) ~ *)", prioritySort: 99);
+                metadata!.SelectorSuffix = $":is(:where(.peer{pseudoClass.SelectorSuffix}) ~ *)";
+                metadata.PrioritySort = 99;
 
                 return true;
             }
@@ -257,7 +268,8 @@ public static class VariantValidators
                 {
                     // peer-[.is-published]:
 
-                    variantMetadata = variantMetadata.CreateNewVariant("prefix", prefix: $".peer{slashValue.Replace("/", "\\/")}{variantValue[1..^1].Replace('_', ' ')} ~ ");
+                    metadata!.PrefixType = "prefix";
+                    metadata.SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{variantValue[1..^1].Replace('_', ' ')} ~ ";
 
                     return true;
                 }
@@ -266,7 +278,8 @@ public static class VariantValidators
                 {
                     // peer-hover:
 
-                    variantMetadata = variantMetadata.CreateNewVariant("prefix", prefix: $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ~ ");
+                    metadata!.PrefixType = "prefix";
+                    metadata.SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ~ ";
 
                     return true;
                 }
@@ -282,7 +295,7 @@ public static class VariantValidators
             {
                 // has-[a]: or has-[a.link]: etc.
 
-                variantMetadata = variantMetadata.CreateNewVariant(suffix: $":has({variant[5..^1].Replace('_', ' ')})");
+                metadata!.SelectorSuffix = $":has({variant[5..^1].Replace('_', ' ')})";
 
                 return true;
             }
@@ -296,7 +309,7 @@ public static class VariantValidators
                 if (appRunner.Library.PseudoclassPrefixes.TryGetValue(variantValue, out var pseudoClass) == false)
                     return false;
 
-                variantMetadata = variantMetadata.CreateNewVariant(suffix: $":has({pseudoClass.SelectorSuffix})");
+                metadata!.SelectorSuffix = $":has({pseudoClass.SelectorSuffix})";
 
                 return true;
             }
@@ -312,7 +325,8 @@ public static class VariantValidators
         
                 if (indexOfBracket > 0)
                 {
-                    variantMetadata = variantMetadata.CreateNewVariant(prefixOrder: appRunner.Library.SupportsQueryPrefixes.Count + 1, statement: $"({variantValue.Replace('_', ' ')})");                    
+                    metadata!.PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1;
+                    metadata.Statement = $"({variantValue.Replace('_', ' ')})";                    
 
                     return true;
                 }
@@ -321,7 +335,8 @@ public static class VariantValidators
 
                 if (string.IsNullOrEmpty(match) == false)
                 {
-                    variantMetadata = variantMetadata.CreateNewVariant(prefixOrder: appRunner.Library.SupportsQueryPrefixes.Count + 1, statement: $"({match.TrimEnd(':')}: initial)");                    
+                    metadata!.PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1;
+                    metadata.Statement = $"({match.TrimEnd(':')}: initial)";                    
 
                     return true;
                 }
@@ -336,7 +351,8 @@ public static class VariantValidators
 
                 if (indexOfBracket > 0)
                 {
-                    variantMetadata = variantMetadata.CreateNewVariant(prefixOrder: appRunner.Library.SupportsQueryPrefixes.Count + 1, statement: $"not ({variantValue.Replace('_', ' ')})");                    
+                    metadata!.PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1;
+                    metadata.Statement = $"not ({variantValue.Replace('_', ' ')})";                    
 
                     return true;
                 }
@@ -345,7 +361,8 @@ public static class VariantValidators
 
                 if (string.IsNullOrEmpty(match) == false)
                 {
-                    variantMetadata = variantMetadata.CreateNewVariant(prefixOrder: appRunner.Library.SupportsQueryPrefixes.Count + 1, statement: $"not ({match.TrimEnd(':')}: initial)");                    
+                    metadata!.PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1;
+                    metadata.Statement = $"not ({match.TrimEnd(':')}: initial)";                    
 
                     return true;
                 }
@@ -372,7 +389,7 @@ public static class VariantValidators
         {
             // [@supports_(display:grid)]
 
-            variantMetadata = new VariantMetadata
+            metadata = new VariantMetadata
             {
                 PrefixType = "wrapper",
                 PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
@@ -386,7 +403,7 @@ public static class VariantValidators
         {
             // [&.active]:
 
-            variantMetadata = new VariantMetadata
+            metadata = new VariantMetadata
             {
                 PrefixType = "pseudoclass",
                 PrefixOrder = 1,
