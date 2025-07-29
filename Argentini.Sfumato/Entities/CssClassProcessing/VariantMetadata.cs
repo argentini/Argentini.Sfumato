@@ -6,15 +6,15 @@ namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public sealed class VariantMetadata
 {
-    public int PrefixOrder { get; init; }
-    public string PrefixType { get; init; } = string.Empty;
+    public int PrefixOrder { get; set; }
+    public string PrefixType { get; set; } = string.Empty;
     public string Statement { get; set; } = string.Empty;
     public string SelectorPrefix { get; set; } = string.Empty;
     public string SelectorSuffix { get; set; } = string.Empty;
     public bool Inheritable { get; init; }
     public bool SpecialCase { get; init; }
     public bool CanHaveNumericSuffix { get; init; }
-    public int PrioritySort { get; init; }
+    public int PrioritySort { get; set; }
 
     public VariantMetadata CreateNewVariant(string? prefixType = null, int? prefixOrder = null, string? statement = null, string? prefix = null, string? suffix = null, int? prioritySort = null)
     {
@@ -27,6 +27,7 @@ public sealed class VariantMetadata
             SelectorSuffix = suffix ?? SelectorSuffix,
             Inheritable = Inheritable,
             SpecialCase = SpecialCase,
+            CanHaveNumericSuffix = CanHaveNumericSuffix,
             PrioritySort = prioritySort ?? PrioritySort,
         };
     }
