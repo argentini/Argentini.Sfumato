@@ -88,6 +88,30 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper) : SharedTestBas
 
     #endregion
 
+    // ConsolidateAtSymbols(source, out var result)
+    
+    [Fact]
+    public void ConsolidateAtSymbolsTest()
+    {
+        Assert.False("container".AsSpan().ConsolidateAtSymbols(out _));
+        Assert.False("@container".AsSpan().ConsolidateAtSymbols(out _));
+        Assert.False("@sm:text-base".AsSpan().ConsolidateAtSymbols(out _));
+        Assert.False("@sm:@max-lg:text-base".AsSpan().ConsolidateAtSymbols(out _));
+        
+        Assert.True("@@container".AsSpan().ConsolidateAtSymbols(out _));
+        Assert.True("@@sm:text-base".AsSpan().ConsolidateAtSymbols(out _));
+        Assert.True("@@sm:@@max-lg:text-base".AsSpan().ConsolidateAtSymbols(out _));
+
+        "@@container".AsSpan().ConsolidateAtSymbols(out var result);
+        Assert.Equal("@container", result);
+
+        "@@sm:text-base".AsSpan().ConsolidateAtSymbols(out result);
+        Assert.Equal("@sm:text-base", result);
+
+        "@@sm:@@max-lg:text-base".AsSpan().ConsolidateAtSymbols(out result);
+        Assert.Equal("@sm:@max-lg:text-base", result);
+    }
+    
     [Fact]
     public void StringFnv1A()
     {

@@ -388,8 +388,8 @@ public static partial class Strings
 	    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
 	    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
 
-	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var prefix))
-	        bag.TryAdd(trimmedSource, prefix);
+	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var filteredSource, out var prefix))
+	        bag.TryAdd(filteredSource ?? trimmedSource, prefix);
 
 	    // Check each delimiter once
 	    for (var d = 0; d < Delimiters.Length; d++)
@@ -424,9 +424,10 @@ public static partial class Strings
 	/// Runs in a single pass over the string and does
 	/// no heap allocations.
 	/// </summary>
-	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes, out string? prefix)
+	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes, out string? filteredSource, out string? prefix)
 	{
 		prefix = null;
+		filteredSource = null;
 		
 		if (source.Length < 3)
 			return false;
@@ -434,13 +435,16 @@ public static partial class Strings
 		if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
 			return false;
 
+		if (ConsolidateAtSymbols(source, out filteredSource))
+			source = filteredSource!;
+		
 		var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
 
 		if (lastSegment[0] == '[')
 			return true;
 		
 		var slashIndex = lastSegment.IndexOf('/');
-			
+
 		if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex > -1 ? lastSegment[..slashIndex] : lastSegment, out prefix, out _) == false)
 			return false;
 
@@ -484,6 +488,62 @@ public static partial class Strings
 			// Return the chunk
 			yield return input.Substring(start, pos - start);
 		}
+	}
+	
+	public static bool ConsolidateAtSymbols(this ReadOnlySpan<char> segment, out string? result)
+	{
+		result = null;
+		
+		// scan once to see if there's any "@@" pair at all
+		var hasPair = false;
+        
+		for (var i = 0; i < segment.Length - 1; i++)
+		{
+			if (segment[i] != '@' || segment[i + 1] != '@')
+				continue;
+            
+			hasPair = true;
+			break;
+		}
+
+		// if no pairs, we can bail out with a single allocation
+		if (hasPair == false)
+			return false;
+
+		// count how many pairs we’ll collapse so we know the final length
+		var collapseCount = 0;
+        
+		for (var i = 0; i < segment.Length - 1; i++)
+		{
+			if (segment[i] != '@' || segment[i + 1] != '@')
+				continue;
+            
+			collapseCount++;
+			i++; // skip the second '@'
+		}
+
+		var newLength = segment.Length - collapseCount;
+        
+		// allocate exactly once and fill in the collapsed data
+		result = string.Create(newLength, segment, (dest, src) =>
+		{
+			var di = 0;
+            
+			for (var si = 0; si < src.Length; si++)
+			{
+				if (src[si] == '@' && si + 1 < src.Length && src[si + 1] == '@')
+				{
+					dest[di++] = '@';
+					si++; // skip the second '@'
+				}
+				else
+				{
+					dest[di++] = src[si];
+				}
+			}
+		});
+
+		return true;
 	}
 	
 	#endregion

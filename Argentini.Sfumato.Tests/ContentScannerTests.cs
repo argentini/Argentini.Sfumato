@@ -249,7 +249,7 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper) : SharedTes
     [Fact]
     public void FileContentParsing()
     {
-        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, AppRunner, true);
+        var utilityClasses = ContentScanner.ScanFileForUtilityClasses(Markup, AppRunner);
 
         TestOutputHelper?.WriteLine("FileContentParsing() => Found:");
         TestOutputHelper?.WriteLine("");

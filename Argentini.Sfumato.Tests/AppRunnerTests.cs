@@ -124,7 +124,7 @@ public class AppRunnerTests : SharedTestBase
 
         AppRunner.ScannedFiles.TryAdd("test", new ScannedFile("")
         {
-            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, AppRunner, true)
+            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(CssClassTests.Markup, AppRunner)
         });
 
         AppRunner.ProcessScannedFileUtilityClassDependencies(AppRunner);

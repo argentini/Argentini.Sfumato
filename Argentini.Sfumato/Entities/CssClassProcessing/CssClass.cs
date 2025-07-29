@@ -72,13 +72,13 @@ public sealed class CssClass : IDisposable
         _prefix = prefix;
     }
 
-    public CssClass(AppRunner appRunner, string selector, bool fromRazorFile = false, string? prefix = null)
+    public CssClass(AppRunner appRunner, string selector, string? prefix = null)
     {
         AppRunner = appRunner;
         Selector = selector;
         _prefix = prefix;
 
-        Initialize(fromRazorFile);
+        Initialize();
     }
 
     public void Dispose()
@@ -94,80 +94,21 @@ public sealed class CssClass : IDisposable
 
     #region Initialization
 
-    private static string NormalizeSegment(ReadOnlySpan<char> segment)
-    {
-        // empty or doesn't start with '@' → just copy once
-        if (segment.IsEmpty || segment[0] != '@')
-            return segment.ToString();
-
-        // scan once to see if there's any "@@" pair at all
-        var hasPair = false;
-        
-        for (var i = 0; i < segment.Length - 1; i++)
-        {
-            if (segment[i] != '@' || segment[i + 1] != '@')
-                continue;
-            
-            hasPair = true;
-            break;
-        }
-
-        // if no pairs, we can bail out with a single allocation
-        if (hasPair == false)
-            return segment.ToString();
-
-        // count how many pairs we’ll collapse so we know the final length
-        var collapseCount = 0;
-        
-        for (var i = 0; i < segment.Length - 1; i++)
-        {
-            if (segment[i] != '@' || segment[i + 1] != '@')
-                continue;
-            
-            collapseCount++;
-            i++; // skip the second '@'
-        }
-
-        var newLength = segment.Length - collapseCount;
-        
-        // allocate exactly once and fill in the collapsed data
-        return string.Create(newLength, segment, (dest, src) =>
-        {
-            var di = 0;
-            
-            for (var si = 0; si < src.Length; si++)
-            {
-                if (src[si] == '@' && si + 1 < src.Length && src[si + 1] == '@')
-                {
-                    dest[di++] = '@';
-                    si++; // skip the second '@'
-                }
-                else
-                {
-                    dest[di++] = src[si];
-                }
-            }
-        });
-    }
-
-    public bool ProcessSelectorSegments(bool fromRazorFile)
+    public bool ProcessSelectorSegments()
     {
         IsImportant = Selector[^1] == '!';
 
         if (Selector.IndexOf(':') > 0)
         {
             foreach (var segment in Selector.SplitByTopLevel(':'))
-                AllSegments.Add(fromRazorFile ? NormalizeSegment(segment) : segment.ToString());
+                AllSegments.Add(segment.ToString());
 
             return false;
         }
 
         var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
 
-        if (fromRazorFile)
-            AllSegments.Add(IsImportant ? NormalizeSegment(Selector.AsSpan()[..^1]) : NormalizeSegment(Selector.AsSpan()));
-        else
-            AllSegments.Add(IsImportant ? Selector[..^1] : Selector);
+        AllSegments.Add(IsImportant ? Selector[..^1] : Selector);
 
         if (hasBrackets == false && AppRunner.Library.SimpleClasses.TryGetValue(AllSegments[0], out ClassDefinition))
         {
@@ -183,9 +124,9 @@ public sealed class CssClass : IDisposable
         return false;
     }
     
-    public void Initialize(bool fromRazorFile)
+    public void Initialize()
     {
-        if (ProcessSelectorSegments(fromRazorFile))
+        if (ProcessSelectorSegments())
             return; // Exit early if a simple class with no variants is found
         
         ProcessArbitraryCss();
@@ -230,7 +171,7 @@ public sealed class CssClass : IDisposable
                 {
                     if (variantMetadata is null)
                         return;
-
+                    
                     VariantSegments.TryAdd(segment, variantMetadata);
 
                     if (variantMetadata.PrefixType[0] != 'p')

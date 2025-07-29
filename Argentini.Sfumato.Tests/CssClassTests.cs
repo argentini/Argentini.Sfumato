@@ -583,7 +583,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
         Assert.Single(cssClass.Wrappers);
         Assert.Equal("@container (width >= 24rem) and (width < 28rem) {", cssClass.Wrappers.ElementAt(0).Value);
         
-        cssClass = new CssClass(AppRunner, selector: "@@sm:@@max-md:whitespace-pre!", fromRazorFile: true);
+        cssClass = new CssClass(AppRunner, selector: "@sm:@max-md:whitespace-pre!");
 
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
