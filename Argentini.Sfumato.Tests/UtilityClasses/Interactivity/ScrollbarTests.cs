@@ -32,7 +32,7 @@ public class ScrollbarTests(ITestOutputHelper testOutputHelper) : SharedTestBase
                         
                         scrollbar-gutter: stable;
 
-                        & > *:first-child {
+                        & > * {
                             margin-bottom: calc(var(--sf-scrollbar-size) * -1);
                         }
 
@@ -137,7 +137,8 @@ public class ScrollbarTests(ITestOutputHelper testOutputHelper) : SharedTestBase
                         
                         scrollbar-gutter: stable;
                         
-                        & > *:first-child {
+                        & > * {
+                            padding-right: var(--sf-scrollbar-size);
                             margin-right: calc(var(--sf-scrollbar-size) * -1);
                         }
                         
