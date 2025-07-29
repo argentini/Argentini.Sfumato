@@ -1,3 +1,31 @@
+:root {
+
+    --form-field-background-color: var(--color-white);
+    --form-field-color: var(--color-black);
+    --form-field-placeholder-color: var(--color-slate-400);
+    --form-field-border-width: 1px;
+    --form-field-border-color: var(--color-slate-500);
+    --form-field-focus-color: var(--color-sky-300);
+    --form-field-check-color: var(--color-sky-500);
+    --form-field-focus-border-width: 0.15rem;
+    --form-field-padding: 0.75rem 0.75rem;
+    --form-field-border-radius: 0.175rem;
+    --form-field-checkbox-border-radius: 0.175rem;
+    --form-field-max-height: 2.8rem;
+    --form-field-font-size: 1rem;
+    --form-field-line-height: 1.2;
+
+    --form-button-bg-color: var(--color-sky-600);
+    --form-button-color: var(--color-white);
+    --form-button-hover-bg-color: var(--color-sky-500);
+    --form-button-hover-color: var(--color-white);
+    --form-button-border-width: 1px;
+    --form-button-padding: 0.75rem 1rem;
+    --form-button-border-radius: 0.175rem;
+    --form-button-font-size: 1rem;
+    --form-button-line-height: 1.2;
+}
+
 .form-input, .form-textarea, .form-select, .form-multiselect {
 
     display: block;
@@ -9,8 +37,8 @@
     border-radius: var(--form-field-border-radius);
     padding: var(--form-field-padding);
     color: var(--form-field-color);
-    font-size: 1rem;
-    line-height: 1.2;
+    font-size: var(--form-field-font-size);
+    line-height: var(--form-field-line-height);
 
     --sf-shadow: 0 0 #0000;
 
@@ -131,7 +159,7 @@
 
 .form-checkbox {
     
-    border-radius: var(--form-field-border-radius);
+    border-radius: var(--form-field-checkbox-border-radius);
 
     &:checked {
         background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
@@ -161,35 +189,38 @@
         background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
     }
 }
-    
-[type="file"] {
 
+.form-file {
+
+    display: block;
+    width: 100%;
+    appearance: none;
     background: unset;
     border-color: inherit;
     border-width: 0;
     border-radius: 0;
     padding: 0;
-    font-size: unset;
-    line-height: inherit;
+    font-size: var(--form-field-font-size);
+    line-height: var(--form-field-line-height);
+    cursor: pointer;
 
     &:focus {
-        outline: 1px auto -webkit-focus-ring-color;
+        outline: none;
     }
 }
 
-.form-button {
+.form-button, .form-file::file-selector-button {
 
     display: inline-block;
     background-color: var(--form-button-bg-color);
+    border-width: var(--form-button-border-width);
     border-color: var(--form-button-bg-color);
     color: var(--form-button-color);
-    border-radius: var(--form-field-border-radius);
+    border-radius: var(--form-button-border-radius);
     padding: var(--form-button-padding);
-    max-height: var(--form-field-max-height);
 
-    font-size: 1rem;
-    line-height: 1.2;
-    border-width: 1px;
+    font-size: var(--form-button-font-size);
+    line-height: var(--form-button-line-height);
     cursor: pointer;
     text-align: center;
 
@@ -197,5 +228,22 @@
         background-color: var(--form-button-hover-bg-color);
         border-color: var(--form-button-hover-bg-color);
         color: var(--form-button-hover-color);
+    }
+}
+
+.form-file::file-selector-button {
+    margin-right: 0.75rem;
+}
+
+.form-label {
+
+    width: fit-content;
+    
+    .form-checkbox, .form-radio {
+        vertical-align: baseline;
+    }
+
+    & > span, & > span {
+        vertical-align: text-bottom;
     }
 }
