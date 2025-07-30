@@ -705,7 +705,7 @@ public sealed class CssClass : IDisposable
                 var metadata = variant.Value;
 
                 // Check for descendant variants
-                if (key is "*" or "**")
+                if (key[0] == '*')
                     hasDescendantVariant = true;
 
                 // Categorize by prefix type
@@ -717,10 +717,13 @@ public sealed class CssClass : IDisposable
                 {
                     pseudoclassVariants.Add(variant);
 
-                    if (key == "*")
-                        hasStarPseudoclass = true;
-                    else if (key == "**")
+                    if (hasDescendantVariant == false)
+                        continue;
+                    
+                    if (key.Length > 1 && key[1] == '*')
                         hasDoubleStarPseudoclass = true;
+                    else
+                        hasStarPseudoclass = true;
                 }
             }
 
