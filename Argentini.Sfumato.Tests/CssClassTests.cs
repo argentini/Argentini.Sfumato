@@ -649,6 +649,17 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
     }
 
     [Fact]
+    public void ArbitraryRazorCss()
+    {
+        var cssClass = new CssClass(AppRunner, selector: "[@@media_(width_>=_600px)]:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media (width >= 600px) {", cssClass.Wrappers.First().Value);
+    }
+
+    [Fact]
     public void Supports()
     {
         var cssClass = new CssClass(AppRunner, selector: "supports-[color:red]:whitespace-pre");

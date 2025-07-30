@@ -382,24 +382,27 @@ public static class VariantValidators
         
         var customVariantValue = GetBracketValue(variant);
 
-        if (customVariantValue is null || customVariantValue.Length != variant.Length - 2)
+        if (customVariantValue is null || customVariantValue.Length != variant.Length - 2 || customVariantValue.Length < 2)
             return false;
         
-        if (customVariantValue.StartsWith('@'))
+        if (customVariantValue[0] == '@')
         {
             // [@supports_(display:grid)]
 
+            var usesRazorSyntax = customVariantValue[1] == '@';
+            
             metadata = new VariantMetadata
             {
                 PrefixType = "wrapper",
                 PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
-                Statement = customVariantValue
+                Statement = usesRazorSyntax ? customVariantValue[1..] : customVariantValue,
+                IsRazorSyntax = usesRazorSyntax
             };
 
             return true;
         }
 
-        if (customVariantValue.StartsWith('&'))
+        if (customVariantValue[0] == '&')
         {
             // [&.active]:
 
