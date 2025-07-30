@@ -87,6 +87,11 @@ public sealed class ClassDefinition
     public bool UsesSlashModifier { get; set; }
 
     /// <summary>
+    /// Used for items beginning with "@@" that need to be converted to "@" 
+    /// </summary>
+    public bool IsRazorSyntax { get; set; }
+
+    /// <summary>
     /// CSS class property template (e.g. "top-0" => "top: {0};").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for a custom value.

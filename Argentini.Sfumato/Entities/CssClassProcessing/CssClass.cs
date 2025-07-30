@@ -57,6 +57,7 @@ public sealed class CssClass : IDisposable
     public bool HasArbitraryValue { get; set; }
     public bool HasArbitraryValueWithCssCustomProperty { get; set; }
     public bool UsesDarkTheme { get; set; }
+    public bool HasRazorSyntax { get; set; }
 
     public StringBuilder? Sb { get; set; }
     public StringBuilder? WorkingSb { get; set; }
@@ -115,6 +116,9 @@ public sealed class CssClass : IDisposable
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
 
+            if (ClassDefinition.IsRazorSyntax)
+                HasRazorSyntax = true;
+            
             GenerateSelector();
             GenerateStyles();
 
@@ -136,6 +140,9 @@ public sealed class CssClass : IDisposable
 
         if (IsValid == false)
             return;
+
+        if (ClassDefinition?.IsRazorSyntax ?? false)
+            HasRazorSyntax = true;
 
         if (AllSegments.Count > 1)
             ProcessVariants();
@@ -171,6 +178,9 @@ public sealed class CssClass : IDisposable
                 {
                     if (variantMetadata is null)
                         return;
+
+                    if (HasRazorSyntax == false && variantMetadata.IsRazorSyntax)
+                        HasRazorSyntax = true;
                     
                     VariantSegments.TryAdd(segment, variantMetadata);
 
@@ -251,7 +261,7 @@ public sealed class CssClass : IDisposable
 
             if (string.IsNullOrEmpty(_prefix))
                 return;
-            
+
             var value = AllSegments[^1].TrimStart(_prefix) ?? string.Empty;
 
             if (value.Contains('/'))
@@ -682,9 +692,15 @@ public sealed class CssClass : IDisposable
         {
             // Cache count to avoid repeated property access
             var variantCount = VariantSegments.Count;
-            
-            EscapedSelector = Selector.CssSelectorEscape(true);
 
+            if (HasRazorSyntax)
+            {
+                Selector = Selector.ConsolidateAtSymbols();
+                HasRazorSyntax = false;
+            }
+
+            EscapedSelector = Selector.CssSelectorEscape(true);
+            
             if (variantCount == 0)
                 return;
 
@@ -854,7 +870,7 @@ public sealed class CssClass : IDisposable
                 ProcessContainerVariants(containerVariants.AsSpan(0, containerCount));
 
             // Process wrapper variants
-            for (int i = 0; i < wrapperCount; i++)
+            for (var i = 0; i < wrapperCount; i++)
             {
                 var wrapper = $"{wrapperVariants[i].Value.Statement} {{";
                 Wrappers.Add(wrapper.Fnv1AHash64(), wrapper);

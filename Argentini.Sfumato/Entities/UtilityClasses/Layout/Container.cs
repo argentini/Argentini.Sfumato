@@ -26,6 +26,23 @@ public sealed class Container : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "@@container", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    UsesSlashModifier = true,
+                    Template =
+                        """
+                        container-type: inline-size;
+                        """,
+                    ModifierTemplate = 
+                        """
+                        container-type: inline-size;
+                        container-name: {1};
+                        """,
+                    IsRazorSyntax = true,
+                }
+            },
         });
     }
     

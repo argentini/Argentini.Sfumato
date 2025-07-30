@@ -36,17 +36,17 @@ public class CssClassBenchmarkTests(ITestOutputHelper testOutputHelper) : Shared
         await Shared.IterationSetup();
 
         await Shared.BenchmarkMethod("IsLikelyUtilityClass_Basic", async () => {
-                _ = Shared.BasicUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _, out _);
+                _ = Shared.BasicUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _);
                 await Task.CompletedTask;
             });
 
         await Shared.BenchmarkMethod("IsLikelyUtilityClass_Average", async () => {
-                _ = Shared.AverageUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _, out _);
+                _ = Shared.AverageUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _);
                 await Task.CompletedTask;
             });
 
         await Shared.BenchmarkMethod("IsLikelyUtilityClass_Large", async () => {
-                _ = Shared.LargeUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _, out _);
+                _ = Shared.LargeUtilityClass.IsLikelyUtilityClass(Shared.AppRunner.Library.ScannerClassNamePrefixes, out _);
                 await Task.CompletedTask;
             });
         

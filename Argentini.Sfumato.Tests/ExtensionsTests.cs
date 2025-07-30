@@ -93,23 +93,14 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper) : SharedTestBas
     [Fact]
     public void ConsolidateAtSymbolsTest()
     {
-        Assert.False("container".AsSpan().ConsolidateAtSymbols(out _));
-        Assert.False("@container".AsSpan().ConsolidateAtSymbols(out _));
-        Assert.False("@sm:text-base".AsSpan().ConsolidateAtSymbols(out _));
-        Assert.False("@sm:@max-lg:text-base".AsSpan().ConsolidateAtSymbols(out _));
+        Assert.Equal("container", "container".ConsolidateAtSymbols());
+        Assert.Equal("@container", "@container".ConsolidateAtSymbols());
+        Assert.Equal("@sm:text-base", "@sm:text-base".ConsolidateAtSymbols());
+        Assert.Equal("@sm:@max-lg:text-base", "@sm:@max-lg:text-base".ConsolidateAtSymbols());
         
-        Assert.True("@@container".AsSpan().ConsolidateAtSymbols(out _));
-        Assert.True("@@sm:text-base".AsSpan().ConsolidateAtSymbols(out _));
-        Assert.True("@@sm:@@max-lg:text-base".AsSpan().ConsolidateAtSymbols(out _));
-
-        "@@container".AsSpan().ConsolidateAtSymbols(out var result);
-        Assert.Equal("@container", result);
-
-        "@@sm:text-base".AsSpan().ConsolidateAtSymbols(out result);
-        Assert.Equal("@sm:text-base", result);
-
-        "@@sm:@@max-lg:text-base".AsSpan().ConsolidateAtSymbols(out result);
-        Assert.Equal("@sm:@max-lg:text-base", result);
+        Assert.Equal("@container", "@@container".ConsolidateAtSymbols());
+        Assert.Equal("@sm:text-base", "@@sm:text-base".ConsolidateAtSymbols());
+        Assert.Equal("@sm:@max-lg:text-base", "@@sm:@@max-lg:text-base".ConsolidateAtSymbols());
     }
     
     [Fact]

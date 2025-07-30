@@ -14,6 +14,7 @@ public sealed class VariantMetadata
     public bool Inheritable { get; init; }
     public bool SpecialCase { get; init; }
     public bool CanHaveNumericSuffix { get; init; }
+    public bool IsRazorSyntax { get; init; }
     public int PrioritySort { get; set; }
 
     public VariantMetadata CreateNewVariant(string? prefixType = null, int? prefixOrder = null, string? statement = null, string? prefix = null, string? suffix = null, int? prioritySort = null)
@@ -27,6 +28,7 @@ public sealed class VariantMetadata
             SelectorSuffix = suffix ?? SelectorSuffix,
             Inheritable = Inheritable,
             SpecialCase = SpecialCase,
+            IsRazorSyntax = IsRazorSyntax,
             CanHaveNumericSuffix = CanHaveNumericSuffix,
             PrioritySort = prioritySort ?? PrioritySort,
         };

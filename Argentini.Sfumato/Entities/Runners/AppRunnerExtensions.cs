@@ -154,6 +154,24 @@ public static class AppRunnerExtensions
 			    };
 		    }
 
+		    if (appRunner.Library.ContainerQueryPrefixes.TryAdd($"@@{key}", new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "container",
+			        Statement = $"(width >= {breakpoint.Value})",
+			        SpecialCase = true,
+			        IsRazorSyntax = true
+		        }) == false)
+		    {
+			    appRunner.Library.ContainerQueryPrefixes[$"@@{key}"] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "container",
+				    Statement = $"(width >= {breakpoint.Value})",
+				    IsRazorSyntax = true
+			    };
+		    }
+
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
 
@@ -172,7 +190,25 @@ public static class AppRunnerExtensions
 				    Statement = $"(width < {breakpoint.Value})"
 			    };
 		    }
-		    
+
+		    if (appRunner.Library.ContainerQueryPrefixes.TryAdd($"@@max-{key}", new VariantMetadata
+		        {
+			        PrefixOrder = prefixOrder,
+			        PrefixType = "container",
+			        Statement = $"(width < {breakpoint.Value})",
+			        SpecialCase = true,
+			        IsRazorSyntax = true
+		        }) == false)
+		    {
+			    appRunner.Library.ContainerQueryPrefixes[$"@@max-{key}"] = new VariantMetadata
+			    {
+				    PrefixOrder = prefixOrder,
+				    PrefixType = "container",
+				    Statement = $"(width < {breakpoint.Value})",
+				    IsRazorSyntax = true
+			    };
+		    }
+
 		    if (prefixOrder < int.MaxValue - 100)
 			    prefixOrder += 100;
 	    }

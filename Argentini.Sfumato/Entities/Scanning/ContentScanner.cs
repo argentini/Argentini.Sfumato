@@ -32,6 +32,6 @@ public static class ContentScanner
         var cssClass = new CssClass(appRunner, selector: kvp.Key, prefix: kvp.Value);
         
         if (cssClass.IsValid)
-            results.TryAdd(kvp.Key, cssClass);
+            results.TryAdd(cssClass.Selector, cssClass);
     }
 }

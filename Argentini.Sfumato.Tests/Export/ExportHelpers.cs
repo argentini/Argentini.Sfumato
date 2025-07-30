@@ -72,52 +72,68 @@ public static class ExportHelpers
             };
             
             foreach (var item in instance.Data)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.SimpleClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
             
             foreach (var item in appRunner.Library.AbstractClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.AngleHueClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.ColorClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.DurationClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.FlexClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.FloatNumberClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.FrequencyClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.IntegerClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.LengthClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.PercentageClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.RatioClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.ResolutionClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.StringClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
 
             foreach (var item in appRunner.Library.UrlClasses)
-                exportItem.Usages.Add(item.Key, item.Value);
+                if (item.Value.IsRazorSyntax == false)
+                    exportItem.Usages.Add(item.Key, item.Value);
             
             #region Iterate usages and add doc definitions and examples
 
@@ -468,7 +484,7 @@ public static class ExportHelpers
 
         foreach (var variant in variants)
         {
-            if (variant.Key.EndsWith('-') == false)
+            if (variant.Key.EndsWith('-') == false || variant.Value.IsRazorSyntax)
                 continue;
             
             if (variant.Value.PrefixType == "pseudoclass")

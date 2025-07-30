@@ -288,7 +288,9 @@ public sealed class AppRunner
 			appRunner.UsedCss.Clear();
 
 			foreach (var utilityClass in appRunner.ScannedFiles.SelectMany(scannedFile => scannedFile.Value.UtilityClasses))
+			{
 				appRunner.UtilityClasses.TryAdd(utilityClass.Key, utilityClass.Value);
+			}
 		}
 		catch (Exception e)
 		{

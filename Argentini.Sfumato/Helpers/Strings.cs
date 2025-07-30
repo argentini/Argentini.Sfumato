@@ -388,8 +388,8 @@ public static partial class Strings
 	    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
 	    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
 
-	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var filteredSource, out var prefix))
-	        bag.TryAdd(filteredSource ?? trimmedSource, prefix);
+	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var prefix))
+	        bag.TryAdd(trimmedSource, prefix);
 
 	    // Check each delimiter once
 	    for (var d = 0; d < Delimiters.Length; d++)
@@ -424,10 +424,9 @@ public static partial class Strings
 	/// Runs in a single pass over the string and does
 	/// no heap allocations.
 	/// </summary>
-	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes, out string? filteredSource, out string? prefix)
+	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes, out string? prefix)
 	{
 		prefix = null;
-		filteredSource = null;
 		
 		if (source.Length < 3)
 			return false;
@@ -435,9 +434,6 @@ public static partial class Strings
 		if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
 			return false;
 
-		if (ConsolidateAtSymbols(source, out filteredSource))
-			source = filteredSource!;
-		
 		var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
 
 		if (lastSegment[0] == '[')
@@ -489,27 +485,9 @@ public static partial class Strings
 			yield return input.Substring(start, pos - start);
 		}
 	}
-	
-	public static bool ConsolidateAtSymbols(this ReadOnlySpan<char> segment, out string? result)
+
+	public static string ConsolidateAtSymbols(this string segment)
 	{
-		result = null;
-		
-		// scan once to see if there's any "@@" pair at all
-		var hasPair = false;
-        
-		for (var i = 0; i < segment.Length - 1; i++)
-		{
-			if (segment[i] != '@' || segment[i + 1] != '@')
-				continue;
-            
-			hasPair = true;
-			break;
-		}
-
-		// if no pairs, we can bail out with a single allocation
-		if (hasPair == false)
-			return false;
-
 		// count how many pairs we’ll collapse so we know the final length
 		var collapseCount = 0;
         
@@ -525,7 +503,7 @@ public static partial class Strings
 		var newLength = segment.Length - collapseCount;
         
 		// allocate exactly once and fill in the collapsed data
-		result = string.Create(newLength, segment, (dest, src) =>
+		return string.Create(newLength, segment, (dest, src) =>
 		{
 			var di = 0;
             
@@ -542,8 +520,6 @@ public static partial class Strings
 				}
 			}
 		});
-
-		return true;
 	}
 	
 	#endregion
