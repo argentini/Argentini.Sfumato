@@ -390,8 +390,17 @@ public static class AppRunnerExtensions
 			    {
 				    foreach (var p in paths)
 				    {
-					    appRunner.AppRunnerSettings.Paths.Add(p.Trim('\"'));
-					    appRunner.AppRunnerSettings.AbsolutePaths.Add(Path.GetFullPath(Path.Combine(appRunner.AppRunnerSettings.NativeCssFilePathOnly, p.Trim('\"'))));
+					    var path = Path.GetFullPath(Path.Combine(appRunner.AppRunnerSettings.NativeCssFilePathOnly, p.Trim('\"')));
+
+					    if (Directory.Exists(path) == false)
+					    {
+						    Console.WriteLine($"{Constants.CliErrorPrefix}Skipping invalid project path: {path}");
+					    }
+					    else
+					    {
+						    appRunner.AppRunnerSettings.Paths.Add(p.Trim('\"'));
+						    appRunner.AppRunnerSettings.AbsolutePaths.Add(path);
+					    }
 				    }
 			    }
 		    }
@@ -483,11 +492,6 @@ public static class AppRunnerExtensions
 				return appRunner.AppRunnerSettings.CssContent.LoadSfumatoSettings(appRunner);
 			}
 			
-			/*
-			Console.WriteLine("No CSS file specified");
-			Environment.Exit(1);
-			*/
-
 			return false;
 		}
 		catch (Exception e)
