@@ -5,9 +5,9 @@
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>13</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.0.52.0</AssemblyVersion>
-        <FileVersion>6.0.52.0</FileVersion>
-        <PackageVersion>6.0.52</PackageVersion>
+        <AssemblyVersion>6.0.53.0</AssemblyVersion>
+        <FileVersion>6.0.53.0</FileVersion>
+        <PackageVersion>6.0.53</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Invalid project paths are now ignored</PackageReleaseNotes>
+        <PackageReleaseNotes>Fixed an issue with using only env() in arbitrary values</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
@@ -37,10 +37,10 @@
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.7" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.7" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.8" />
     </ItemGroup>
     
     <ItemGroup>
