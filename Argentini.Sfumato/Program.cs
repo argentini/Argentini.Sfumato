@@ -205,10 +205,13 @@ internal class Program
 				).Trim(',', ' ');
 
 				var maxWidth = Library.MaxConsoleWidth - 15;
-				var relativePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath)
+				var relativeSourcePath = Path.GetFullPath(appRunner.AppRunnerSettings.CssFilePath)
+					.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+				var relativeOutputPath = Path.GetFullPath(appRunner.AppRunnerSettings.NativeCssOutputFilePath)
 					.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 
-				await Console.Out.WriteLineAsync($"CSS Source  :  {relativePath}");
+				await Console.Out.WriteLineAsync($"CSS Source  :  {relativeSourcePath}");
+				await Console.Out.WriteLineAsync($"CSS Output  :  {relativeOutputPath}");
 				await Console.Out.WriteLineAsync(
 					$"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
 
