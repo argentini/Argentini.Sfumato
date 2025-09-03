@@ -660,6 +660,17 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
     }
 
     [Fact]
+    public void Env()
+    {
+        var cssClass = new CssClass(AppRunner, selector: "tabp:pt-[env(safe-area-inset-top)]");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media (min-aspect-ratio: 0.625) {", cssClass.Wrappers.First().Value);
+    }
+
+    [Fact]
     public void Supports()
     {
         var cssClass = new CssClass(AppRunner, selector: "supports-[color:red]:whitespace-pre");

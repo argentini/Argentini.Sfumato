@@ -493,7 +493,7 @@ public sealed class CssClass : IDisposable
                     AppRunner.Library.PercentageClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
 
-                if (ClassDefinition is null && (valueNoBrackets.ValueIsDimensionLength(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal)))
+                if (ClassDefinition is null && (valueNoBrackets.ValueIsDimensionLength(AppRunner) || valueNoBrackets.StartsWith("calc(", StringComparison.Ordinal) || valueNoBrackets.StartsWith("env(", StringComparison.Ordinal)))
                 {
                     AppRunner.Library.LengthClasses.TryGetValue(_prefix, out ClassDefinition);
                 }
