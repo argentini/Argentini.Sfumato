@@ -8,6 +8,7 @@
     --form-field-focus-color: var(--color-sky-300);
     --form-field-check-color: var(--color-sky-500);
     --form-field-focus-border-width: 0.15rem;
+    --form-field-focus-border-offset-width: 0;
     --form-field-padding: 0.75rem 0.75rem;
     --form-field-border-radius: 0.175rem;
     --form-field-checkbox-border-radius: 0.25rem;
