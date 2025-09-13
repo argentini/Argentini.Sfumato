@@ -3,6 +3,9 @@
 
 using System.Globalization;
 using System.Reflection;
+// ReSharper disable RedundantBoolCompare
+// ReSharper disable ConvertIfStatementToSwitchStatement
+// ReSharper disable InvertIf
 
 namespace Argentini.Sfumato.Entities.Runners;
 
@@ -673,7 +676,7 @@ public static class AppRunnerExtensions
 	        lastEnd = semicolon + 1;
 	        scanPos = lastEnd;
 
-	        // extract the raw between “@import ” and “;”
+	        // extract the raw between "@import " and ";"
 	        var rawSpan = src.AsSpan(idx + tokenLen, semicolon - (idx + tokenLen)).Trim();
 
 	        // split off optional layer name
@@ -1223,6 +1226,8 @@ public static class AppRunnerExtensions
 	
     #endregion
 
+    
+    
 	#region Process CSS Segment Dark Theme Classes
 	
 	/// <summary>
@@ -1245,65 +1250,73 @@ public static class AppRunnerExtensions
 
         while (true)
         {
-            // Find the next dark-mode media block
+            // Find next dark-mode media block
             var mediaIdx = css.IndexOf(mediaPrefix, pos, StringComparison.Ordinal);
-            
+
             if (mediaIdx < 0)
             {
                 outCss.Append(css, pos, css.Length - pos);
                 break;
             }
 
-            // copy everything before the media query
+            // Copy everything before the media query
             outCss.Append(css, pos, mediaIdx - pos);
 
-            // brace-match the media body
+            // Brace-match the media body to capture its inner content
             var bodyStart = mediaIdx + mediaPrefix.Length;
             var p = bodyStart;
             var depth = 1;
-            
+
             while (p < css.Length && depth > 0)
             {
-                if (css[p++] == '{')
+                var ch = css[p++];
+            
+                if (ch == '{')
 	                depth++;
-                else if (css[p - 1] == '}')
+                else if (ch == '}')
 	                depth--;
             }
             
             var bodyEnd = p - 1;
             var inner = css.AsSpan(bodyStart, bodyEnd - bodyStart);
 
-            // Rewrite inner into two buffers + extract keyframes
-            var autoSb = appRunner.StringBuilderPool.Get();
-            var darkSb = appRunner.StringBuilderPool.Get();
-            var keyframes = new List<string>();
-            
-            try
+            var insideSelector = IsInsideSelector(css, mediaIdx);
+
+            if (insideSelector)
             {
-                autoSb.Clear();
-                darkSb.Clear();
-            
-                RewriteContent(inner, autoSb, darkSb, keyframes);
+                // Nested in a selector: use &:where(...) wrappers
+                outCss.Append(mediaPrefix).Append(lineBreak)
+                      .Append("&:where(.theme-auto, .theme-auto *) {")
+                      .Append(inner)
+                      .Append('}')
+                      .Append('}')
+                      .Append(lineBreak).Append(lineBreak);
 
-                // Emit .theme-auto rules inside the media
-                outCss
-                    .Append(mediaPrefix).Append(lineBreak)
-                    .Append(autoSb)
-                    .Append('}').Append(lineBreak).Append(lineBreak);
-
-                // Emit .theme-dark rules after the media
-                outCss
-                    .Append(darkSb)
-                    .Append(lineBreak).Append(lineBreak);
-
-                // Finally, emit any extracted @keyframes unchanged
-                foreach (var kf in keyframes)
-                    outCss.Append(kf).Append(lineBreak).Append(lineBreak);
+                outCss.Append("&:where(.theme-dark, .theme-dark *) {")
+                      .Append(inner)
+                      .Append('}')
+                      .Append(lineBreak).Append(lineBreak);
             }
-            finally
+            else
             {
-                appRunner.StringBuilderPool.Return(autoSb);
-                appRunner.StringBuilderPool.Return(darkSb);
+                // Not in a selector (root or only at-rules): append :where(...) to each selector
+                outCss.Append(mediaPrefix).Append(lineBreak);
+
+                var tmp = appRunner.StringBuilderPool.Get();
+                
+                RewriteRootInner(inner, tmp, sel => AppendWhere(sel, ".theme-auto"));
+                
+                outCss.Append(tmp);
+                outCss.Append('}').Append(lineBreak).Append(lineBreak);
+                appRunner.StringBuilderPool.Return(tmp);
+	                
+                var tmp2 = appRunner.StringBuilderPool.Get();
+
+                RewriteRootInner(inner, tmp2, sel => AppendWhere(sel, ".theme-dark"));
+                
+                outCss.Append(tmp2);
+                outCss.Append(lineBreak).Append(lineBreak);
+                appRunner.StringBuilderPool.Return(tmp);
             }
 
             pos = bodyEnd + 1;
@@ -1314,171 +1327,157 @@ public static class AppRunnerExtensions
             segment.Content.ReplaceContent(outCss);
 
         await Task.CompletedTask;
-    }
 
-	private static void RewriteContent(ReadOnlySpan<char> src, StringBuilder autoSb, StringBuilder darkSb, List<string> keyframes)
-    {
-        var i = 0;
+        return;
 
-        while (i < src.Length)
+        // Rewrites each selector in `inner` by appending :where(themeClass, themeClass *)
+        // Used when the dark media is not inside a selector rule.
+        static void RewriteRootInner(ReadOnlySpan<char> inner, StringBuilder dst, Func<string, string> selectorRewriter)
         {
-            // copy leading whitespace
-            while (i < src.Length && char.IsWhiteSpace(src[i]))
-            {
-                autoSb.Append(src[i]);
-                darkSb.Append(src[i]);
-                i++;
-            }
-        
-            if (i >= src.Length)
-	            break;
+	        var i = 0;
 
-            // find the next '{'
-            var rel = src[i..].IndexOf('{');
+	        while (i < inner.Length)
+	        {
+		        while (i < inner.Length && char.IsWhiteSpace(inner[i]))
+		        {
+			        dst.Append(inner[i]);
+			        i++;
+		        }
+		    
+		        if (i >= inner.Length) 
+			        break;
 
-            if (rel < 0)
-            {
-                // trailing text
-                var tail = src[i..].ToString();
+		        var rel = inner[i..].IndexOf('{');
+		        
+		        if (rel < 0)
+		        {
+			        dst.Append(inner[i..]);
+			        break;
+		        }
 
-                autoSb.Append(tail);
-                darkSb.Append(tail);
-                
-                break;
-            }
+		        var headerSpan = inner.Slice(i, rel);
+		        var contentStart = i + rel + 1;
 
-            var headerSpan   = src.Slice(i, rel);
-            var contentStart = i + rel + 1;
+		        // brace-match this block
+		        var depth = 1;
+		        var p = contentStart;
+		        
+		        while (p < inner.Length && depth > 0)
+		        {
+			        if (inner[p] == '{')
+				        depth++;
+			        else if (inner[p] == '}')
+				        depth--;
+			        
+			        p++;
+		        }
+		        
+		        var contentEnd = p - 1;
+		        var ruleContent = inner.Slice(contentStart, contentEnd - contentStart);
+		        var trimmed = headerSpan.TrimStart();
 
-            // brace-match this block
-            var depth = 1;
-            var p = contentStart;
-            
-            while (p < src.Length && depth > 0)
-            {
-                if (src[p] == '{')
-	                depth++;
-                else if (src[p] == '}')
-	                depth--;
-                
-                p++;
-            }
-            
-            var contentEnd  = p - 1;
-            var ruleContent = src.Slice(contentStart, contentEnd - contentStart);
-            var trimmed = headerSpan.TrimStart();
+		        if (trimmed.Length > 0 && trimmed[0] == '@')
+		        {
+			        // keep nested @-rules verbatim and recurse
+			        dst.Append(headerSpan).Append('{');
+			        RewriteRootInner(ruleContent, dst, selectorRewriter);
+			        dst.Append('}');
+		        }
+		        else
+		        {
+			        var selectors = new List<string>();
+			        
+			        AddSelectors(headerSpan, selectors);
 
-            if (trimmed.Length > 0 && trimmed[0] == '@')
-            {
-                // Extract @keyframes completely
-                if (trimmed.StartsWith("@keyframes", StringComparison.OrdinalIgnoreCase))
-                {
-                    keyframes.Add(
-                        headerSpan.ToString()
-                        + "{"
-                        + ruleContent.ToString()
-                        + "}"
-                    );
-                }
-                else
-                {
-                    // Recurse into other @-rules
-                    autoSb.Append(headerSpan).Append('{');
-                    darkSb.Append(headerSpan).Append('{');
+			        var first = true;
+			        
+			        foreach (var sel in selectors)
+			        {
+				        if (first == false)
+					        dst.Append(", ");
+				        
+				        first = false;
+				        dst.Append(selectorRewriter(sel));
+			        }
 
-                    RewriteContent(ruleContent, autoSb, darkSb, keyframes);
+			        dst.Append(" {").Append(ruleContent).Append('}');
+		        }
 
-                    autoSb.Append('}');
-                    darkSb.Append('}');
-                }
-            }
-            else
-            {
-                // Normal selector: split and apply dual-prefix with pseudo handling
-                var selectors = new List<string>();
-
-                AddSelectors(headerSpan, selectors);
-
-                var first = true;
-
-                foreach (var sel in selectors)
-                {
-                    if (first == false)
-                    {
-                        autoSb.Append(", ");
-                        darkSb.Append(", ");
-                    }
-
-                    first = false;
-
-                    var needsTwo = NeedsDoubleForm(sel);
-
-                    // space-prefixed
-                    autoSb.Append(".theme-auto ").Append(sel);
-                    darkSb.Append(".theme-dark ").Append(sel);
-
-                    if (needsTwo)
-                    {
-                        // only apply class-before-pseudo logic when the selector does NOT start with ':'
-                        if (sel.StartsWith(':') == false)
-                        {
-                            autoSb.Append(", ").Append(PlaceClassBeforePseudo(sel, "theme-auto"));
-                            darkSb.Append(", ").Append(PlaceClassBeforePseudo(sel, "theme-dark"));
-                        }
-                        else
-                        {
-                            // for selectors like ":root", append
-                            autoSb.Append(", ").Append(sel).Append(".theme-auto");
-                            darkSb.Append(", ").Append(sel).Append(".theme-dark");
-                        }
-                    }
-                }
-
-                autoSb.Append(" {").Append(ruleContent).Append('}');
-                darkSb.Append(" {").Append(ruleContent).Append('}');
-            }
-
-            i = contentEnd + 1;
-        }
-    }
-
-    // Inserts ".classname" before the first unescaped ':' (pseudo-class/element),
-    // but will never be called for selectors starting with ':'.
-    private static string PlaceClassBeforePseudo(string selector, string className)
-    {
-        var escaped = false;
-        
-        for (var i = 0; i < selector.Length; i++)
-        {
-            var c = selector[i];
-            
-            if (escaped)
-            {
-                escaped = false;
-                continue;
-            }
-            
-            if (c == '\\')
-            {
-                escaped = true;
-                continue;
-            }
-            
-            if (c == ':')
-            {
-                // split at this colon
-                var head = selector[..i];
-                var tail = selector[i..];
-            
-                return $"{head}.{className}{tail}";
-            }
+		        i = contentEnd + 1;
+	        }
         }
 
-        // no (unescaped) pseudo found
-        return $"{selector}.{className}";
-    }
+        static string AppendWhere(string sel, string themeClass) => $"{sel}:where({themeClass}, {themeClass} *)";
 
-    private static bool NeedsDoubleForm(string sel) => string.IsNullOrEmpty(sel) == false && (".#[:*>+~".Contains(sel[0]));
+        // True if the media block is nested inside ANY selector rule (class/id/tag),
+        // false if it's only inside at-rules (@layer/@supports/...) or at the root.
+        static bool IsInsideSelector(string s, int mediaIdx)
+        {
+	        var scan = mediaIdx - 1;
+
+	        while (true)
+	        {
+		        var open = FindEnclosingOpenBrace(s, scan);
+		        
+		        if (open < 0) 
+			        return false; // no container => root-like
+
+		        var headerStart = FindHeaderStart(s, open - 1);
+		        var header = s.AsSpan(headerStart, open - headerStart).Trim();
+
+		        if (header.Length == 0) 
+			        return false;
+
+		        // At-rule containers begin with '@'; keep climbing outwards.
+		        if (header[0] == '@')
+		        {
+			        scan = headerStart - 1;
+			        continue;
+		        }
+
+		        // Otherwise we have a selector (e.g., .foo, #bar, button, etc.)
+		        return true;
+	        }
+        }
+
+        // Given the index of an opening brace '{', find the start index of its header text
+        // by scanning back to the previous '}' or start of string.
+        static int FindHeaderStart(string s, int before)
+        {
+	        for (var i = before; i >= 0; i--)
+	        {
+		        if (s[i] == '}') 
+			        return i + 1;
+	        }
+	     
+	        return 0;
+        }
+
+        // Walk backward from `from` to find the opening brace '{' that encloses that position.
+        static int FindEnclosingOpenBrace(string s, int from)
+        {
+	        var depth = 0;
+
+	        for (var i = from; i >= 0; i--)
+	        {
+		        var c = s[i];
+
+		        if (c == '}')
+		        {
+			        depth++;
+		        }
+		        else if (c == '{')
+		        {
+			        if (depth == 0) 
+				        return i;
+
+			        depth--;
+		        }
+	        }
+
+	        return -1;
+        }
+    }
 
     private static void AddSelectors(ReadOnlySpan<char> header, List<string> output)
     {
@@ -1547,8 +1546,6 @@ public static class AppRunnerExtensions
 	
 	#endregion
 
-
-
 	#region Gather CSS Segment Custom Propery References
 
 	/// <summary>
@@ -1608,7 +1605,7 @@ public static class AppRunnerExtensions
 			if (i >= length) 
 				break;
 
-			// only accept var-refs “)” or “,” or declarations “:”
+			// only accept var-refs ")" or "," or declarations ":"
 			var delim = css[i];
 			
 			if (delim != ')' && delim != ',' && delim != ':') 
