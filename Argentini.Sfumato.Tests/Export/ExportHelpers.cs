@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Argentini.Sfumato.Entities.UtilityClasses;
+// ReSharper disable RedundantBoolCompare
 
 namespace Argentini.Sfumato.Tests.Export;
 
@@ -252,21 +253,32 @@ public static class ExportHelpers
                                     usage.Value.DocExamples.TryAdd($"{usage.Key}(percentage:--my-percentage)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-percentage)"));
                             }
                         }
-                        else if (usage.Value.Template.Contains("* {0}") || usage.Value.Template.Contains("* -{0}") || usage.Value.Template.Contains("{0}px"))
+                        else if (usage.Value.Template.Contains("{0} *") || usage.Value.Template.Contains("* {0}") || usage.Value.Template.Contains("* -{0}") || usage.Value.Template.Contains("{0}px"))
                         {
                             if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}<number>", usage.Value.Template.Replace("{0}", "<number>")))
                                 usage.Value.DocExamples.TryAdd($"{usage.Key}4", usage.Value.Template.Replace("{0}", "4"));
 
                             if (usage.Key.StartsWith('-') == false)
                             {
-                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
-                                    usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1rem"));
-                            
-                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                                    usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                                if (usage.Value.InLengthCollection)
+                                {
+                                    if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                        usage.Value.DocExamples.TryAdd($"{usage.Key}[1rem]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1rem"));
+                                
+                                    if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                        usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
 
-                                if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(length:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
-                                    usage.Value.DocExamples.TryAdd($"{usage.Key}(length:--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                                    if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(length:<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                        usage.Value.DocExamples.TryAdd($"{usage.Key}(length:--my-length)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-length)"));
+                                }
+                                else
+                                {
+                                    if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}[<value>]", GetArbitraryTemplate(usage.Value).Replace("{0}", "<value>")))
+                                        usage.Value.DocExamples.TryAdd($"{usage.Key}[1.0]", GetArbitraryTemplate(usage.Value).Replace("{0}", "1.0"));
+                                
+                                    if (usage.Value.DocDefinitions.TryAdd($"{usage.Key}(<custom-property>)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(<custom-property>)")))
+                                        usage.Value.DocExamples.TryAdd($"{usage.Key}(--my-value)", GetArbitraryTemplate(usage.Value).Replace("{0}", "var(--my-value)"));
+                                }
                             }
                         }
                     }
