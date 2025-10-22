@@ -457,7 +457,7 @@ public sealed class CssClass : IDisposable
                     AppRunner.Library.RatioClasses,
                     AppRunner.Library.ResolutionClasses,
                     AppRunner.Library.StringClasses,
-                    AppRunner.Library.AbstractClasses,
+                    AppRunner.Library.AbstractClasses
                 };
 
                 foreach (var dict in classDictionaries)

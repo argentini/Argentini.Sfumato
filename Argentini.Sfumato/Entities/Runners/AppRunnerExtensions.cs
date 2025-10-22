@@ -924,7 +924,7 @@ public static class AppRunnerExtensions
 	
 	
     #region Process CSS Segment @apply Statements
-	
+
     /// <summary>
     /// Convert @apply statements in segment CSS to utility class property statements.
     /// </summary>
@@ -933,77 +933,337 @@ public static class AppRunnerExtensions
 	public static ValueTask ProcessSegmentAtApplyStatementsAsync(this AppRunner appRunner, GenerationSegment segment)
 	{
 	    var css = segment.Content.ToString();
-	    var len = css.Length;
-	    var sb = appRunner.StringBuilderPool.Get();
-	    
-	    // Track how far we've copied
+
+	    if (css.IndexOf("@apply", StringComparison.Ordinal) < 0)
+	        return ValueTask.CompletedTask;
+
+	    var anyChange = false;
+	    var sbOut = appRunner.StringBuilderPool.Get();
 	    var prev = 0;
 
-	    foreach (var span in css.EnumerateAtApplyStatements())
+	    try
 	    {
-	        // copy text before this @apply
-	        sb.Append(css, prev, span.Index - prev);
+		    sbOut.EnsureCapacity(css.Length + (css.Length >> 3)); // small headroom
 
-	        // parse utility class names from span.Arguments
-	        var utils = new List<CssClass>();
-	        var args = span.Arguments;
+		    // Enumerate spans on the ORIGINAL css string (single pass only)
+		    foreach (var span in css.EnumerateAtApplyStatements())
+		    {
+			    var spanStart = span.Index;
+			    var spanEnd = span.Index + span.Full.Length; // exclusive
 
-	        for (var i = 0; i < args.Length;)
+			    // 1) Copy text before this span (verbatim)
+			    if (spanStart > prev)
+				    sbOut.Append(css, prev, spanStart - prev);
+
+			    // 2) Transform ALL @apply tokens inside span.Full (verbatim-preserving rewriter)
+			    var transformed = TransformAllApplyTokensInsideSpan(appRunner, css.AsSpan(spanStart, spanEnd - spanStart), ref anyChange);
+
+			    // 3) Append transformed span
+			    sbOut.Append(transformed);
+
+			    // 4) Advance prev to end of this span in the ORIGINAL css
+			    prev = spanEnd;
+		    }
+
+		    // 5) Copy any trailing text after the last span
+		    if (prev < css.Length)
+			    sbOut.Append(css, prev, css.Length - prev);
+
+		    // Replace once
+		    if (anyChange)
+			    segment.Content.ReplaceContent(sbOut);
+
+		    return ValueTask.CompletedTask;
+	    }
+	    finally
+	    {
+		    appRunner.StringBuilderPool.Return(sbOut); // no change; just return builder
+	    }
+	    
+	    static string TransformAllApplyTokensInsideSpan(AppRunner appRunner, ReadOnlySpan<char> spanText, ref bool anyChange)
+	    {
+	        // Stream through spanText, replacing *every* "@apply ..." token.
+	        var sb = appRunner.StringBuilderPool.Get();
+
+	        try
 	        {
-	            // skip spaces
-	            while (i < args.Length && args[i] == ' ')
-		            i++;
-	        
-	            if (i >= args.Length)
-		            break;
+		        sb.EnsureCapacity(Math.Max(64, spanText.Length + 64)); // capacity hint
 
-	            // find end of token
-	            var start = i;
-	            
-	            while (i < args.Length && args[i] != ' ')
-		            i++;
-	            
-	            var tok = args.Slice(start, i - start);
+		        var i = 0;
+			    var n = spanText.Length;
+		        var inStr = false;
+		        var q = '\0';
+		        var inLine = false;
+			    var inBlock = false;
 
-	            // remove backslashes if any
-	            var name = tok.IndexOf('\\') >= 0
-	                ? tok.ToString().Replace("\\", string.Empty)
-	                : tok.ToString();
+			    while (i < n)
+		        {
+			        var c = spanText[i];
 
-	            // instantiate and filter
-	            var cssClass = new CssClass(appRunner, selector: name);
+			        // line comment
+			        if (inLine)
+			        {
+				        sb.Append(c);
+				    
+				        if (c == '\n') 
+					        inLine = false;
+				        
+				        i++;
+				        
+				        continue;
+			        }
 
-	            if (cssClass.IsValid)
-	                utils.Add(cssClass);
+			        // block comment
+			        if (inBlock)
+			        {
+				        sb.Append(c);
+				        
+				        if (c == '*' && i + 1 < n && spanText[i + 1] == '/')
+				        {
+					        sb.Append('/');
+					        i += 2;
+				        }
+				        else i++;
+
+				        continue;
+			        }
+
+			        // string
+			        if (inStr)
+			        {
+				        sb.Append(c);
+
+				        if (c == '\\' && i + 1 < n)
+				        {
+					        sb.Append(spanText[i + 1]);
+					        i += 2;
+					        continue;
+				        }
+
+				        if (c == q)
+				        {
+					        inStr = false;
+					        q = '\0';
+				        }
+
+				        i++;
+
+				        continue;
+			        }
+
+			        // enter string/comment
+			        if (c is '"' or '\'')
+			        {
+				        inStr = true;
+				        q = c;
+				        sb.Append(c);
+				        i++;
+				        
+				        continue;
+			        }
+
+			        if (c == '/' && i + 1 < n)
+			        {
+				        if (spanText[i + 1] == '/')
+				        {
+					        inLine = true;
+					        sb.Append("//");
+					        i += 2;
+
+					        continue;
+				        }
+
+				        if (spanText[i + 1] == '*')
+				        {
+					        inBlock = true;
+					        sb.Append("/*");
+					        i += 2;
+					        
+					        continue;
+				        }
+			        }
+
+			        // look for "@apply"
+			        if (c == '@')
+			        {
+				        const string kw = "@apply";
+				        
+				        if (i + kw.Length <= n && spanText.Slice(i, kw.Length).SequenceEqual(kw))
+				        {
+					        var k = i + kw.Length;
+
+					        // Next must be CSS whitespace (avoid matching "@appliance")
+					        if (k < n && IsCssWs(spanText[k]) == false)
+					        {
+						        sb.Append(c);
+						        i++;
+
+						        continue;
+					        }
+
+					        // skip whitespace after "@apply"
+					        while (k < n && IsCssWs(spanText[k])) 
+						        k++;
+
+					        // collect args until ';' OR before a '}' that would close the current rule
+					        var argsStart = k;
+					        var scan = k;
+					        var foundSemicolon = false;
+
+					        while (scan < n)
+					        {
+						        var ch = spanText[scan];
+
+						        if (ch is '"' or '\'')
+						        {
+							        // skip quoted bits inside args
+							        var qq = ch;
+							        
+							        scan++;
+							        
+							        while (scan < n)
+							        {
+								        if (spanText[scan] == '\\' && scan + 1 < n)
+								        {
+									        scan += 2;
+									        continue;
+								        }
+
+								        if (spanText[scan] == qq)
+								        {
+									        scan++;
+									        break;
+								        }
+
+								        scan++;
+							        }
+
+							        continue;
+						        }
+
+						        if (ch == ';')
+						        {
+							        foundSemicolon = true;
+							        break;
+						        }
+
+						        if (ch is '}' or '{')
+							        break; // stop before closing/opening brace
+
+						        scan++;
+					        }
+
+					        var argsEnd = scan;
+					        var args = spanText.Slice(argsStart, Math.Max(0, argsEnd - argsStart));
+					        var utils = ParseUtils(appRunner, args); // Build replacement declarations (keeps existing ordering rules)
+
+					        if (utils.Count > 0)
+					        {
+						        foreach (var u in utils)
+							        sb.Append(u.Styles); // declarations only ("prop: value;")
+
+						        anyChange = true;
+					        }
+					        else
+					        {
+						        // Nothing recognized — keep original token text
+						        var tokenLen = (foundSemicolon ? (argsEnd + 1) : argsEnd) - i;
+						        
+						        if (tokenLen > 0) 
+							        sb.Append(spanText.Slice(i, tokenLen));
+					        }
+
+					        // Advance i past the token (consume ';' if present)
+					        i = foundSemicolon ? argsEnd + 1 : argsEnd;
+
+					        continue;
+				        }
+			        }
+
+			        // default copy-through
+			        sb.Append(c);
+			        i++;
+		        }
+
+		        var result = sb.ToString();
+
+		        return result;
+
+		        static bool IsCssWs(char c) => c is ' ' or '\t' or '\r' or '\n' or '\f';
 	        }
-
-	        // append all valid utilities in sorted order
-	        if (utils.Count > 0)
+	        finally
 	        {
-	            utils.Sort((a, b) => a.SelectorSort.CompareTo(b.SelectorSort));
-	            
-	            foreach (var u in utils)
-	                sb.Append(u.Styles);
+		        appRunner.StringBuilderPool.Return(sb);
 	        }
-
-	        // advance past the @apply statement
-	        prev = span.Index + span.Full.Length;
 	    }
 
-	    // Append any remaining CSS
-	    if (prev < len)
-	        sb.Append(css, prev, len - prev);
+	    static bool IsCssWs(char c) => c is ' ' or '\t' or '\r' or '\n' or '\f';
 
-	    // Replace segment content in one go
-	    segment.Content.ReplaceContent(sb);
+	    static List<CssClass> ParseUtils(AppRunner appRunner, ReadOnlySpan<char> args)
+	    {
+	        var utils = new List<CssClass>();
+	        var j = 0;
 
-	    // Return the pooled builder
-	    appRunner.StringBuilderPool.Return(sb);
+	        while (j < args.Length)
+	        {
+	            while (j < args.Length && IsCssWs(args[j])) 
+		            j++;
+	        
+	            if (j >= args.Length) 
+		            break;
 
-	    return ValueTask.CompletedTask;
+	            var s = j;
+	            
+	            while (j < args.Length && !IsCssWs(args[j])) 
+		            j++;
+
+	            var tok = args.Slice(s, j - s);
+
+	            // Zero-alloc unless a backslash exists
+	            var name = UnescapeBackslashes(tok);
+	            var cssClass = new CssClass(appRunner, selector: name);
+
+	            if (cssClass.IsValid) 
+		            utils.Add(cssClass);
+	        }
+
+	        if (utils.Count > 1)
+	            utils.Sort((a, b) => a.SelectorSort.CompareTo(b.SelectorSort));
+
+	        return utils;
+	    }
+
+	    // Allocates only if a backslash exists; otherwise returns tok.ToString() directly.
+	    static string UnescapeBackslashes(ReadOnlySpan<char> tok)
+	    {
+	        var idx = tok.IndexOf('\\');
+	        
+	        if (idx < 0)
+	            return tok.ToString();
+
+	        var slashCount = 0;
+	        
+	        for (var t = idx; t < tok.Length; t++)
+	            if (tok[t] == '\\') 
+		            slashCount++;
+
+	        var arr = new char[tok.Length - slashCount];
+	        var w = 0;
+	        
+	        // ReSharper disable once ForCanBeConvertedToForeach
+	        for (var t = 0; t < tok.Length; t++)
+	        {
+	            var ch = tok[t];
+	            
+	            if (ch != '\\') 
+		            arr[w++] = ch;
+	        }
+
+	        return new string(arr, 0, w);
+	    }
 	}
-	
-    #endregion
+
+	#endregion
 
 	#region Process CSS Segment Functions
 
