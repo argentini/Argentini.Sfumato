@@ -724,4 +724,15 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
         Assert.Equal("white-space: pre;", cssClass.Styles);
         Assert.Equal("@starting-style {", cssClass.Wrappers.First().Value);
     }
+    
+    [Fact]
+    public void LeadingNumericEscape()
+    {
+        var cssClass = new CssClass(AppRunner, selector: "2xl:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".\32 xl\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+    }
 }

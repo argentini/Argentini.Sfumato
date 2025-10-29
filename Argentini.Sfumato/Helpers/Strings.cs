@@ -2,6 +2,7 @@
 // ReSharper disable ForCanBeConvertedToForeach
 
 using System.Runtime.CompilerServices;
+// ReSharper disable RedundantBoolCompare
 
 namespace Argentini.Sfumato.Helpers;
 
@@ -684,9 +685,8 @@ public static partial class Strings
 	/// Escape a string for use in a CSS selector.
 	/// </summary>
 	/// <param name="value"></param>
-	/// <param name="includeDot"></param>
 	/// <returns></returns>
-	public static string CssSelectorEscape(this string value, bool includeDot = false)
+	public static string CssSelectorEscape(this string value)
 	{
 		if (string.IsNullOrEmpty(value))
 			return value;
@@ -695,12 +695,21 @@ public static partial class Strings
 		var buffer = maxLength <= 1024 ? stackalloc char[maxLength] : new char[maxLength];
 		var position = 0;
 
-		if (includeDot)
-			buffer[position++] = '.';
+		buffer[position++] = '.';
 
 		for (var i = 0; i < value.Length; i++)
 		{
 			var c = value[i];
+
+			if (i == 0 && char.IsDigit(c))
+			{
+				buffer[position++] = '\\';
+				buffer[position++] = '3';
+				buffer[position++] = c;
+				buffer[position++] = ' ';
+
+				continue;
+			}
 			
 			if ((i == 0 && char.IsDigit(c)) || (!char.IsLetterOrDigit(c) && c != '-' && c != '_'))
 				buffer[position++] = '\\';

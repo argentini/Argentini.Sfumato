@@ -3,6 +3,7 @@
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
+// ReSharper disable RedundantBoolCompare
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public sealed class CssClass : IDisposable
@@ -699,7 +700,7 @@ public sealed class CssClass : IDisposable
                 HasRazorSyntax = false;
             }
 
-            EscapedSelector = Selector.CssSelectorEscape(true);
+            EscapedSelector = Selector.CssSelectorEscape();
             
             if (variantCount == 0)
                 return;
