@@ -1023,7 +1023,7 @@ public sealed class CssClass : IDisposable
 
             WorkingSb.Insert(0, $"width: 100%;{Environment.NewLine}");
 
-            Styles = WorkingSb.ToString();
+            Styles = WorkingSb.ToString().Trim();
         }
         
         #endregion
