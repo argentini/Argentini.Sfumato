@@ -735,4 +735,16 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
         Assert.Equal(@".\32 xl\:whitespace-pre", cssClass.EscapedSelector);
         Assert.Equal("white-space: pre;", cssClass.Styles);
     }
+    
+    [Fact]
+    public void BreakpointRange()
+    {
+        var cssClass = new CssClass(AppRunner, selector: "lg:max-xl:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".lg\:max-xl\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Equal("@media (width >= 64rem) and (width < 80rem) {", cssClass.Wrappers.First().Value);
+    }
 }

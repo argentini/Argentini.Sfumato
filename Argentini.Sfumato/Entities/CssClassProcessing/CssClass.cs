@@ -2,8 +2,8 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 // ReSharper disable RedundantBoolCompare
+// ReSharper disable ForCanBeConvertedToForeach
 namespace Argentini.Sfumato.Entities.CssClassProcessing;
 
 public sealed class CssClass : IDisposable
@@ -990,6 +990,44 @@ public sealed class CssClass : IDisposable
             Styles = Styles.Replace("{0}", Value, StringComparison.Ordinal);
         }
 
+        #region Handle Container Class Breakpoints
+        
+        if (AllSegments[^1] == "container")
+        {
+            var hasMinBreakpoint = false;
+            var hasMaxBreakpoint = false;
+
+            WorkingSb ??= AppRunner.StringBuilderPool.Get();
+            WorkingSb.Clear();
+
+            for (var i = 0; i < AllSegments.Count; i++)
+            {
+                if (hasMinBreakpoint == false && AppRunner.AppRunnerSettings.BreakpointSizes.ContainsKey(AllSegments[i]))
+                {
+                    hasMinBreakpoint = true;
+                    continue;
+                }
+
+                if (hasMaxBreakpoint == false && AllSegments[i].StartsWith("max-") && AppRunner.AppRunnerSettings.BreakpointSizes.ContainsKey(AllSegments[i].TrimStart("max-") ?? string.Empty))
+                    hasMaxBreakpoint = true;
+            }
+            
+            foreach (var bp in AppRunner.AppRunnerSettings.BreakpointSizes.OrderBy(b => b.Value))
+            {
+                if (hasMaxBreakpoint && AllSegments.Contains($"max-{bp.Key}"))
+                    break;
+                
+                if (hasMinBreakpoint == false || (hasMinBreakpoint && (WorkingSb.Length > 0 || AllSegments.Contains(bp.Key))))
+                    WorkingSb.Append($"@variant {bp.Key} {{ max-width: var(--breakpoint-{bp.Key}); }}{Environment.NewLine}");
+            }
+
+            WorkingSb.Insert(0, $"width: 100%;{Environment.NewLine}");
+
+            Styles = WorkingSb.ToString();
+        }
+        
+        #endregion
+        
         if (HasModifierValue)
             Styles = Styles.Replace("{1}", ModifierValue, StringComparison.Ordinal);
 

@@ -75,5 +75,7 @@ public sealed class AppRunnerSettings
 
     public Dictionary<string, string> SfumatoBlockItems { get; } = new(StringComparer.Ordinal);
 
+    public Dictionary<string, double> BreakpointSizes { get; } = new(StringComparer.Ordinal);
+
     #endregion
 }
