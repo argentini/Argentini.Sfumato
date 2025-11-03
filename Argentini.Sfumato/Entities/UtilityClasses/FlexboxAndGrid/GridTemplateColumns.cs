@@ -27,6 +27,16 @@ public sealed class GridTemplateColumns : ClassDictionaryBase
                 }
             },
             {
+                "grid-cols-0", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        grid-template-columns: 0fr;
+                        """,
+                }
+            },
+            {
                 "grid-cols-none", new ClassDefinition
                 {
                     InSimpleUtilityCollection = true,
