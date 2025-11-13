@@ -23,7 +23,7 @@ Some of the benefits of using Sfumato over Tailwind include:
 
 ### 1. Install Microsoft .NET
 
-Sfumato requires that you already have the .NET 9.0 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
+Sfumato requires that you already have the .NET 10 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
 
 ### 2. Install Sfumato
 
