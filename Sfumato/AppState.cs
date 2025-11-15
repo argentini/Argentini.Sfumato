@@ -52,8 +52,8 @@ public sealed class AppState(ObjectPool<StringBuilder> stringBuilderPool)
 
 		if (CliArguments[0] != "help" && CliArguments[0] != "version" && CliArguments[0] != "build" && CliArguments[0] != "watch" && CliArguments[0] != "init")
 		{
-			await Console.Out.WriteLineAsync("Invalid command specified; must be: help, init, version, build, or watch");
-			await Console.Out.WriteLineAsync("Use command `sfumato help` for assistance");
+			"Invalid command specified; must be: help, init, version, build, or watch".WriteToOutput();
+			"Use command `sfumato help` for assistance".WriteToOutput();
 
 			return string.Empty;
 		}			

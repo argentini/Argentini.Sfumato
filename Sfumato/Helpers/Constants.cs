@@ -1,3 +1,5 @@
+// ReSharper disable RedundantBoolCompare
+
 namespace Sfumato.Helpers;
 
 public static class Constants
@@ -32,7 +34,7 @@ public static class Constants
         // ReSharper disable once InvertIf
         if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
         {
-            Console.WriteLine($"{Constants.CliErrorPrefix}Embedded CSS resources cannot be found.");
+            $"{CliErrorPrefix}Embedded CSS resources cannot be found.".WriteToOutput();
             Environment.Exit(1);
         }
         

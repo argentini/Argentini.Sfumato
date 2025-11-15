@@ -414,7 +414,7 @@ public static class AppRunnerExtensions
 
 					    if (Directory.Exists(path) == false)
 					    {
-						    Console.WriteLine($"{Constants.CliErrorPrefix}Skipping invalid project path: {path}");
+						    $"{Constants.CliErrorPrefix}Skipping invalid project path: {path}".WriteToOutput();
 					    }
 					    else
 					    {
@@ -455,7 +455,7 @@ public static class AppRunnerExtensions
 		    
 		    if (string.IsNullOrEmpty(appRunner.AppRunnerSettings.CssOutputFilePath))
 		    {
-			    Console.WriteLine($"{Constants.CliErrorPrefix}Must specify --output-path in file: {appRunner.AppRunnerSettings.CssFilePath}");
+			    $"{Constants.CliErrorPrefix}Must specify --output-path in file: {appRunner.AppRunnerSettings.CssFilePath}".WriteToOutput();
 
 			    return false;
 		    }
@@ -463,13 +463,13 @@ public static class AppRunnerExtensions
 		    if (appRunner.AppRunnerSettings.Paths.Count > 0)
 			    return true;
 		    
-		    Console.WriteLine($"{Constants.CliErrorPrefix}Must specify --paths: [] in file: {appRunner.AppRunnerSettings.CssFilePath}");
+		    $"{Constants.CliErrorPrefix}Must specify --paths: [] in file: {appRunner.AppRunnerSettings.CssFilePath}".WriteToOutput();
 
 		    return false;
 	    }
 	    catch (Exception e)
 	    {
-		    Console.WriteLine($"{Constants.CliErrorPrefix}{e.Message}");
+		    $"{Constants.CliErrorPrefix}{e.Message}".WriteToOutput();
 		    Environment.Exit(1);
 	    }
 	    finally
@@ -498,7 +498,7 @@ public static class AppRunnerExtensions
 
 				if (File.Exists(filePath) == false)
 				{
-					Console.WriteLine($"Could not find file => {filePath}");
+					$"Could not find file => {filePath}".WriteToOutput();
 					Environment.Exit(1);
 					return false;
 				}
@@ -516,7 +516,7 @@ public static class AppRunnerExtensions
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"Error reading file => {e.Message}");
+			$"Error reading file => {e.Message}".WriteToOutput();
 			Environment.Exit(1);
 
 			return false;
@@ -578,7 +578,7 @@ public static class AppRunnerExtensions
 
 			if (index == -1)
 			{
-				Console.WriteLine("No @layer sfumato { :root { } } block found.");
+				"No @layer sfumato { :root { } } block found.".WriteToOutput();
 				return (-1, -1);
 			}
 		}
@@ -622,12 +622,12 @@ public static class AppRunnerExtensions
 	        if (appRunner.AppRunnerSettings.SfumatoBlockItems.Count > 0)
 	            return;
 	        
-	        Console.WriteLine($"{Constants.CliErrorPrefix}No Sfumato options specified in CSS file.");
+	        $"{Constants.CliErrorPrefix}No Sfumato options specified in CSS file.".WriteToOutput();
 	        Environment.Exit(1);
 	    }
 	    catch (Exception e)
 	    {
-		    Console.WriteLine($"{Constants.CliErrorPrefix}{e.Message}");
+		    $"{Constants.CliErrorPrefix}{e.Message}".WriteToOutput();
 		    Environment.Exit(1);
 	    }
     }
@@ -723,7 +723,7 @@ public static class AppRunnerExtensions
 	        
 	        if (File.Exists(filePath) == false)
 	        {
-	            Console.WriteLine($"{Constants.CliErrorPrefix}File does not exist: {filePath}");
+	            $"{Constants.CliErrorPrefix}File does not exist: {filePath}".WriteToOutput();
 
 	            importsSeg.Content
 	              .Append("/* Could not import: ")
@@ -899,7 +899,7 @@ public static class AppRunnerExtensions
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"{Constants.CliErrorPrefix}_ProcessVariantBranchRecursive() - {e.Message}");
+			$"{Constants.CliErrorPrefix}_ProcessVariantBranchRecursive() - {e.Message}".WriteToOutput();
 			Environment.Exit(1);
 		}
 	}
@@ -2040,7 +2040,7 @@ public static class AppRunnerExtensions
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine($"{Constants.CliErrorPrefix}ProcessTrackedDependencyValues() => {e.Message}");
+			$"{Constants.CliErrorPrefix}ProcessTrackedDependencyValues() => {e.Message}".WriteToOutput();
 			Environment.Exit(1);
 		}
 	}

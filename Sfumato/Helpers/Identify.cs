@@ -74,7 +74,7 @@ public static class Identify
 
         catch (Exception e)
         {
-            await Console.Out.WriteLineAsync($"AppMajorVersion Exception: {e.Message}");
+            $"AppMajorVersion Exception: {e.Message}".WriteToOutput();
         }
 
         return result ?? string.Empty;
@@ -91,7 +91,7 @@ public static class Identify
 
         catch (Exception e)
         {
-            await Console.Out.WriteLineAsync($"AppMinorVersion Exception: {e.Message}");
+            $"AppMinorVersion Exception: {e.Message}".WriteToOutput();
         }
 
         return result ?? string.Empty;
@@ -108,7 +108,7 @@ public static class Identify
 
         catch (Exception e)
         {
-            await Console.Out.WriteLineAsync($"AppBuildVersion Exception: {e.Message}");
+            $"AppBuildVersion Exception: {e.Message}".WriteToOutput();
         }
 
         return result ?? string.Empty;
@@ -125,7 +125,7 @@ public static class Identify
 
         catch (Exception e)
         {
-            await Console.Out.WriteLineAsync($"Version Exception: {e.Message}");
+            $"Version Exception: {e.Message}".WriteToOutput();
         }
 
         return result;

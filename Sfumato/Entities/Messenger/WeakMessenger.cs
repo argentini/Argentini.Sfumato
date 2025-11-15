@@ -12,7 +12,7 @@ namespace Sfumato.Entities.Messenger;
 ///     static void Main()
 ///     {
 ///         Messenger.Register&lt;string&gt;(msg => {
-///             Console.WriteLine(msg);
+///             msg.WriteToOutput();
 ///         });
 ///     }
 ///

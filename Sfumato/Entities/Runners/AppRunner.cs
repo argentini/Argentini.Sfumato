@@ -346,7 +346,7 @@ public sealed class AppRunner
 	{
 		if (string.IsNullOrEmpty(projectPath))
 		{
-			await Console.Out.WriteLineAsync("Fatal Error: No watch path specified");
+			"Fatal Error: No watch path specified".WriteToOutput();
 			Environment.Exit(1);
 		}
         
@@ -439,9 +439,9 @@ public sealed class AppRunner
 					{
 						if (File.Exists(fcr.FullPath) == false)
 						{
-							await Console.Out.WriteLineAsync("Renamed source CSS file cannot be found, exiting");
-							await Console.Out.WriteLineAsync($"({fcr.FullPath})");
-							await Console.Out.WriteLineAsync("");
+							"Renamed source CSS file cannot be found, exiting".WriteToOutput();
+							$"({fcr.FullPath})".WriteToOutput();
+							"".WriteToOutput();
 
 							await ShutDownWatchersAsync();
 
@@ -464,9 +464,9 @@ public sealed class AppRunner
 			{
 				if (sourceCssChanged && File.Exists(AppRunnerSettings.NativeCssFilePath) == false)
 				{
-					await Console.Out.WriteLineAsync("Source CSS file cannot be found, exiting");
-					await Console.Out.WriteLineAsync($"({AppRunnerSettings.NativeCssFilePath})");
-					await Console.Out.WriteLineAsync("");
+					"Source CSS file cannot be found, exiting".WriteToOutput();
+					$"({AppRunnerSettings.NativeCssFilePath})".WriteToOutput();
+					"".WriteToOutput();
 
 					await ShutDownWatchersAsync();
 

@@ -6,6 +6,7 @@ using Sfumato.Entities.Runners;
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable RedundantBoolCompare
+// ReSharper disable ConvertIfStatementToSwitchStatement
 
 namespace Sfumato;
 
@@ -15,19 +16,29 @@ public sealed class SfumatoService
 	private static ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
 	private static AppState AppState { get; } = new (StringBuilderPool);
 
+	public static SfumatoConfiguration? Configuration { get; } = new();
+
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
-	public async Task InitializeAsync(string[] args)
+	public static async Task InitializeAsync()
 	{
+		if (Configuration?.Arguments?.Length is null)
+		{
+			"SfumatoService.Arguments is null or empty.".WriteToOutput();
+
+			Environment.Exit(1);
+			return;
+		}
+		
 		#region Launch SCSS (prior) version when args indicate
 
 		// args = ["watch", "--path", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/"];
 
-		if (args.Length > 1 && args.Any(a => a.EndsWith(".css")) == false)
+		if (Configuration.Arguments.Length > 1 && Configuration.Arguments.Any(a => a.EndsWith(".css")) == false)
 		{
 			try
 			{
-				var psi = new ProcessStartInfo("sfumato-scss", string.Join(' ', args))
+				var psi = new ProcessStartInfo("sfumato-scss", string.Join(' ', Configuration.Arguments))
 				{
 					RedirectStandardInput  = false, // inherit console → interactive
 					RedirectStandardOutput = false, // inherit console → live output
@@ -49,9 +60,9 @@ public sealed class SfumatoService
 			}
 			catch
 			{
-				await Console.Out.WriteLineAsync("CLI arguments used are for legacy sfumato-scss; failed to start.");
-				await Console.Out.WriteLineAsync("Install the compatibility tool using:");
-				await Console.Out.WriteLineAsync("dotnet tool install --global argentini.sfumato-scss");
+				"CLI arguments used are for legacy sfumato-scss; failed to start.".WriteToOutput();
+				"Install the compatibility tool using:".WriteToOutput();
+				"dotnet tool install --global argentini.sfumato-scss".WriteToOutput();
 				
 				Environment.Exit(1);
 				return;
@@ -64,12 +75,12 @@ public sealed class SfumatoService
 		
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
 
-		Messenger.Register<AppRunner>(async void (appRunner) =>
+		Messenger.Register<AppRunner>(void (appRunner) =>
 		{
 			try
 			{
 				foreach (var message in appRunner.Messages)
-					await Console.Out.WriteLineAsync(message);
+					message.WriteToOutput();
 
 				appRunner.Messages.Clear();
 			}
@@ -96,20 +107,20 @@ public sealed class SfumatoService
 
 		if (AppState.VersionMode)
 		{
-			await Console.Out.WriteLineAsync($"Sfumato Version {version}");
+			$"Sfumato Version {version}".WriteToOutput();
 			Environment.Exit(0);
 			return;
 		}
 		
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
-		await Console.Out.WriteLineAsync("Sfumato: The Ultra-Fast CSS Generation Tool");
-		await Console.Out.WriteLineAsync($"Version {version} for {Identify.GetOsPlatformName()} ({Identify.GetProcessorArchitecture()})");
+		Strings.ThickLine.Repeat(Library.MaxConsoleWidth).WriteToOutput();
+		"Sfumato: The Ultra-Fast CSS Generation Tool".WriteToOutput();
+		$"Version {version} for {Identify.GetOsPlatformName()} ({Identify.GetProcessorArchitecture()})".WriteToOutput();
 		
-		await Console.Out.WriteLineAsync(Strings.ThickLine.Repeat(Library.MaxConsoleWidth));
+		Strings.ThickLine.Repeat(Library.MaxConsoleWidth).WriteToOutput();
 
 		if (string.IsNullOrEmpty(argumentErrorMessage) == false)
 		{
-			await Console.Out.WriteLineAsync(argumentErrorMessage);
+			argumentErrorMessage.WriteToOutput();
 			Environment.Exit(0);
 			return;
 		}
@@ -120,9 +131,9 @@ public sealed class SfumatoService
 
 			await File.WriteAllTextAsync(Path.Combine(Constants.WorkingPath, "sfumato-example.css"), cssReferenceFile);
 
-			await Console.Out.WriteLineAsync();
-			await Console.Out.WriteLineAsync($"Created sfumato-example.css file at {Constants.WorkingPath}");
-			await Console.Out.WriteLineAsync();
+			"".WriteToOutput();
+			$"Created sfumato-example.css file at {Constants.WorkingPath}".WriteToOutput();
+			"".WriteToOutput();
 			
 			Environment.Exit(0);
 			return;
@@ -141,15 +152,15 @@ public sealed class SfumatoService
 			Run the `init` command (below) to create an example CSS file in the current path.
 			
 			USAGE:
-			""".WriteToConsole(Library.MaxConsoleWidth);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("USAGE:".Length));
+			""".WriteToOutput();
+			Strings.ThinLine.Repeat("USAGE:".Length).WriteToOutput();
 
 			"""
 			sfumato [command] [options]
 
 			COMMANDS:
-			""".WriteToConsole(Library.MaxConsoleWidth);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("COMMANDS:".Length));
+			""".WriteToOutput();
+			Strings.ThinLine.Repeat("COMMANDS:".Length).WriteToOutput();
 
 			"""
 			help     : Show this help message
@@ -159,8 +170,8 @@ public sealed class SfumatoService
 			watch    : Perform a build of the specified file(s) and watch for changes
 
 			OPTIONS:
-			""".WriteToConsole(Library.MaxConsoleWidth);
-            await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("OPTIONS:".Length));
+			""".WriteToOutput();
+            Strings.ThinLine.Repeat("OPTIONS:".Length).WriteToOutput();
 
 			"""
 			[file]   : Path to a CSS file that has Sfumato project settings
@@ -169,15 +180,15 @@ public sealed class SfumatoService
 			Options must be specified as [file] [--minify] and repeat in pairs.
 			
 			EXAMPLE:
-			""".WriteToConsole(Library.MaxConsoleWidth);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("EXAMPLE:".Length));
+			""".WriteToOutput();
+			Strings.ThinLine.Repeat("EXAMPLE:".Length).WriteToOutput();
 			
 			"""
 			sfumato watch client/css/source.css --minify server/css/source.css --minify
 
 			COMPATIBILITY:
-			""".WriteToConsole(Library.MaxConsoleWidth);
-			await Console.Out.WriteLineAsync(Strings.ThinLine.Repeat("COMPATIBILITY:".Length));
+			""".WriteToOutput();
+			Strings.ThinLine.Repeat("COMPATIBILITY:".Length).WriteToOutput();
 			
 			"""
 			If you need to continue to use the prior version of Sfumato, install the sfumato-scss compatibility tool._
@@ -187,9 +198,9 @@ public sealed class SfumatoService
 			dotnet tool install --global argentini.sfumato-scss
 			
 			This older version can also be run by itself with the command `sfumato-scss`.
-			""".WriteToConsole(Library.MaxConsoleWidth);
+			""".WriteToOutput();
 			
-            await Console.Out.WriteLineAsync();
+            "".WriteToOutput();
 
 			Environment.Exit(0);
 
@@ -213,28 +224,25 @@ public sealed class SfumatoService
 				var relativeOutputPath = Path.GetFullPath(appRunner.AppRunnerSettings.NativeCssOutputFilePath)
 					.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
 
-				await Console.Out.WriteLineAsync($"CSS Source  :  {relativeSourcePath}");
-				await Console.Out.WriteLineAsync($"CSS Output  :  {relativeOutputPath}");
-				await Console.Out.WriteLineAsync(
-					$"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}");
+				$"CSS Source  :  {relativeSourcePath}".WriteToOutput();
+				$"CSS Output  :  {relativeOutputPath}".WriteToOutput();
+				$"Options     :  {(string.IsNullOrEmpty(options) ? "None" : options)}".WriteToOutput();
 
 				foreach (var path in appRunner.AppRunnerSettings.AbsolutePaths)
 				{
-					var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d),
-						(int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
-					await Console.Out.WriteLineAsync($"Path        :  {relativePath2}");
+					var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+					
+					$"Path        :  {relativePath2}".WriteToOutput();
 				}
 
 				foreach (var path in appRunner.AppRunnerSettings.AbsoluteNotPaths)
 				{
-					var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d),
-						(int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
-					await Console.Out.WriteLineAsync($"Ignore      :  {relativePath2}");
+					var relativePath2 = path.TruncateCenter((int)Math.Floor(maxWidth / 3d), (int)Math.Floor((maxWidth / 3d) * 2) - 3, maxWidth);
+
+					$"Ignore      :  {relativePath2}".WriteToOutput();
 				}
 
-				await Console.Out.WriteLineAsync(appRunner == AppState.AppRunners.Last()
-					? Strings.ThickLine.Repeat(Library.MaxConsoleWidth)
-					: Strings.DotLine.Repeat(Library.MaxConsoleWidth));
+				(appRunner == AppState.AppRunners.Last() ? Strings.ThickLine.Repeat(Library.MaxConsoleWidth) : Strings.DotLine.Repeat(Library.MaxConsoleWidth)).WriteToOutput();
 			}
 
 			var tasks = new List<Task>();
@@ -260,7 +268,7 @@ public sealed class SfumatoService
 
 				} while (AppState.AppRunners.Any(r => r.Messages.Count != 0));
 
-				await Console.Out.WriteLineAsync("Watching; press ESC to exit");
+				"Watching; press ESC to exit".WriteToOutput();
 
 				var cancellationTokenSource = new CancellationTokenSource();
 
@@ -333,7 +341,7 @@ public sealed class SfumatoService
 
 						} while (AppState.AppRunners.Any(r => r.Messages.Count != 0));
 
-						await Console.Out.WriteLineAsync("Watching; press ESC to exit");
+						"Watching; press ESC to exit".WriteToOutput();
 					}
 
 					if (Console.IsInputRedirected)
@@ -353,19 +361,19 @@ public sealed class SfumatoService
 				}
 			}
 
-			await Console.Out.WriteLineAsync();
+			"".WriteToOutput();
 
 			if (AppState.WatchMode)
 			{
-				await Console.Out.WriteLineAsync("Shutting down...");
+				"Shutting down...".WriteToOutput();
 
 				foreach (var appRunner in AppState.AppRunners)
 					await appRunner.ShutDownWatchersAsync();
 			}
 		}
 
-		await Console.Out.WriteLineAsync($"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}");
-		await Console.Out.WriteLineAsync();
+		$"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}".WriteToOutput();
+		"".WriteToOutput();
 		
 		Environment.Exit(0);
 	}

@@ -1,10 +1,10 @@
-﻿// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable ForCanBeConvertedToForeach
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 using Sfumato.Entities.CssClassProcessing;
+using Sfumato.Entities.Library;
 using Sfumato.Entities.Trie;
-
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable ForCanBeConvertedToForeach
 // ReSharper disable RedundantBoolCompare
 
 namespace Sfumato.Helpers;
@@ -268,40 +268,41 @@ public static partial class Strings
 		return prefix + " \u2026 " + suffix;
 	}
 
-	/// <summary>
-	/// Remove a string from the beginning of a string
-	/// </summary>
 	/// <param name="source">The string to search</param>
-	/// <param name="substring">The substring to remove</param>
-	/// <param name="stringComparison"></param>
-	/// <returns>Trimmed source</returns>
-	public static string? TrimStart(this string? source, string? substring = " ",
-		StringComparison stringComparison = StringComparison.Ordinal)
+	extension(string? source)
 	{
-		if (source == null || source.IsEmpty() || substring is null or "")
-			return null;
+		/// <summary>
+		/// Remove a string from the beginning of a string
+		/// </summary>
+		/// <param name="substring">The substring to remove</param>
+		/// <param name="stringComparison"></param>
+		/// <returns>Trimmed source</returns>
+		public string? TrimStart(string? substring = " ", StringComparison stringComparison = StringComparison.Ordinal)
+		{
+			if (source == null || source.IsEmpty() || substring is null or "")
+				return null;
 
-		return source.StartsWith(substring, stringComparison)
-			? source[substring.Length..]
-			: source;
-	}
+			return source.StartsWith(substring, stringComparison)
+				? source[substring.Length..]
+				: source;
+		}
 
-	/// <summary>
-	/// Remove a string from the end of a string
-	/// </summary>
-	/// <param name="source">The string to search</param>
-	/// <param name="substring">The substring to remove</param>
-	/// <param name="stringComparison"></param>
-	/// <returns>Trimmed source</returns>
-	public static string? TrimEnd(this string? source, string? substring = " ",
-		StringComparison stringComparison = StringComparison.Ordinal)
-	{
-		if (source == null || source.IsEmpty() || substring is null or "")
-			return null;
+		/// <summary>
+		/// Remove a string from the end of a string
+		/// </summary>
+		/// <param name="substring">The substring to remove</param>
+		/// <param name="stringComparison"></param>
+		/// <returns>Trimmed source</returns>
+		public string? TrimEnd(string? substring = " ",
+			StringComparison stringComparison = StringComparison.Ordinal)
+		{
+			if (source == null || source.IsEmpty() || substring is null or "")
+				return null;
 
-		return source.EndsWith(substring, stringComparison)
-			? source[..^substring.Length]
-			: source;
+			return source.EndsWith(substring, stringComparison)
+				? source[..^substring.Length]
+				: source;
+		}
 	}
 
 	#endregion
@@ -423,109 +424,112 @@ public static partial class Strings
 	    return c is '\"' or '\'' or '`';
 	}
 
-	/// <summary>
-	/// Fast check for Tailwind-style “utility” class names.
-	/// Runs in a single pass over the string and does
-	/// no heap allocations.
-	/// </summary>
-	public static bool IsLikelyUtilityClass(this string source, PrefixTrie<object?> scannerClassNamePrefixes, out string? prefix)
+	extension(string source)
 	{
-		prefix = null;
-		
-		if (source.Length < 3)
-			return false;
-
-		if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
-			return false;
-
-		var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
-
-		if (lastSegment[0] == '[')
-			return true;
-		
-		var slashIndex = lastSegment.IndexOf('/');
-
-		if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex > -1 ? lastSegment[..slashIndex] : lastSegment, out prefix, out _) == false)
-			return false;
-
-		if (source[^1] == ':')
-			return false;
-
-		if (lastSegment[^1] is >= 'a' and <= 'z' || lastSegment[^1] is >= '0' and <= '9' || lastSegment[^1] == ']' || lastSegment[^1] == ')' || lastSegment[^1] == '%')
-			return true;
-
-		return false;
-	}
-
-	/// <summary>
-	/// Enumerates all substrings of <paramref name="input"/> that consist of one or more non-whitespace characters.
-	/// Equivalent to Regex.Matches(input, @"\S+").
-	/// </summary>
-	public static IEnumerable<string> SplitByNonWhitespace(this string input)
-	{
-		if (string.IsNullOrEmpty(input))
-			yield break;
-
-		var length = input.Length;
-		var pos = 0;
-
-		while (pos < length)
+		/// <summary>
+		/// Fast check for Tailwind-style “utility” class names.
+		/// Runs in a single pass over the string and does
+		/// no heap allocations.
+		/// </summary>
+		public bool IsLikelyUtilityClass(PrefixTrie<object?> scannerClassNamePrefixes, out string? prefix)
 		{
-			// Skip any leading whitespace
-			while (pos < length && char.IsWhiteSpace(input[pos]))
-				pos++;
+			prefix = null;
+		
+			if (source.Length < 3)
+				return false;
 
-			if (pos >= length)
+			if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
+				return false;
+
+			var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
+
+			if (lastSegment[0] == '[')
+				return true;
+		
+			var slashIndex = lastSegment.IndexOf('/');
+
+			if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex > -1 ? lastSegment[..slashIndex] : lastSegment, out prefix, out _) == false)
+				return false;
+
+			if (source[^1] == ':')
+				return false;
+
+			if (lastSegment[^1] is >= 'a' and <= 'z' || lastSegment[^1] is >= '0' and <= '9' || lastSegment[^1] == ']' || lastSegment[^1] == ')' || lastSegment[^1] == '%')
+				return true;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Enumerates all substrings of <paramref name="source"/> that consist of one or more non-whitespace characters.
+		/// Equivalent to Regex.Matches(input, @"\S+").
+		/// </summary>
+		public IEnumerable<string> SplitByNonWhitespace()
+		{
+			if (string.IsNullOrEmpty(source))
 				yield break;
 
-			// Mark the start of the non-whitespace run
-			var start = pos;
+			var length = source.Length;
+			var pos = 0;
 
-			// Advance until the next whitespace (or end of string)
-			while (pos < length && char.IsWhiteSpace(input[pos]) == false)
-				pos++;
-
-			// Return the chunk
-			yield return input.Substring(start, pos - start);
-		}
-	}
-
-	public static string ConsolidateAtSymbols(this string segment)
-	{
-		// count how many pairs we’ll collapse so we know the final length
-		var collapseCount = 0;
-        
-		for (var i = 0; i < segment.Length - 1; i++)
-		{
-			if (segment[i] != '@' || segment[i + 1] != '@')
-				continue;
-            
-			collapseCount++;
-			i++; // skip the second '@'
-		}
-
-		var newLength = segment.Length - collapseCount;
-        
-		// allocate exactly once and fill in the collapsed data
-		return string.Create(newLength, segment, (dest, src) =>
-		{
-			var di = 0;
-            
-			for (var si = 0; si < src.Length; si++)
+			while (pos < length)
 			{
-				if (src[si] == '@' && si + 1 < src.Length && src[si + 1] == '@')
-				{
-					dest[di++] = '@';
-					si++; // skip the second '@'
-				}
-				else
-				{
-					dest[di++] = src[si];
-				}
+				// Skip any leading whitespace
+				while (pos < length && char.IsWhiteSpace(source[pos]))
+					pos++;
+
+				if (pos >= length)
+					yield break;
+
+				// Mark the start of the non-whitespace run
+				var start = pos;
+
+				// Advance until the next whitespace (or end of string)
+				while (pos < length && char.IsWhiteSpace(source[pos]) == false)
+					pos++;
+
+				// Return the chunk
+				yield return source.Substring(start, pos - start);
 			}
-		});
+		}
+
+		public string ConsolidateAtSymbols()
+		{
+			// count how many pairs we’ll collapse so we know the final length
+			var collapseCount = 0;
+        
+			for (var i = 0; i < source.Length - 1; i++)
+			{
+				if (source[i] != '@' || source[i + 1] != '@')
+					continue;
+            
+				collapseCount++;
+				i++; // skip the second '@'
+			}
+
+			var newLength = source.Length - collapseCount;
+        
+			// allocate exactly once and fill in the collapsed data
+			return string.Create(newLength, source, (dest, src) =>
+			{
+				var di = 0;
+            
+				for (var si = 0; si < src.Length; si++)
+				{
+					if (src[si] == '@' && si + 1 < src.Length && src[si + 1] == '@')
+					{
+						dest[di++] = '@';
+						si++; // skip the second '@'
+					}
+					else
+					{
+						dest[di++] = src[si];
+					}
+				}
+			});
+		}
 	}
-	
+
 	#endregion
 	
 	#region Transformations
@@ -540,557 +544,561 @@ public static partial class Strings
 	{
 		return PascalCaseToSpacedRegex().Replace(input, " $1");
 	}
-	
-    /// <summary>
-    /// Removes SPACE and TAB characters that appear <em>immediately</em> before
-    /// an LF (<c>"\n"</c>) or CRLF (<c>"\r\n"</c>) sequence.
-    /// </summary>
-    /// <param name="text">Input string (it may be <c>null</c> or empty).</param>
-    /// <param name="scratch">
-    /// Optional <see cref="StringBuilder"/> taken from an <em>ObjectPool</em>.  
-    /// If supplied, it is cleared up-front and used only when a rewrite
-    /// becomes necessary.</param>
-    public static string TrimWhitespaceBeforeLineBreaks(this string? text, StringBuilder? scratch = null)
-    {
-        if (string.IsNullOrEmpty(text))
-            return text ?? string.Empty;
 
-        var src = text.AsSpan();
-        var len = src.Length;
+	/// <param name="text">Input string (it may be <c>null</c> or empty).</param>
+	extension(string? text)
+	{
+		/// <summary>
+		/// Removes SPACE and TAB characters that appear <em>immediately</em> before
+		/// an LF (<c>"\n"</c>) or CRLF (<c>"\r\n"</c>) sequence.
+		/// </summary>
+		/// <param name="scratch">
+		/// Optional <see cref="StringBuilder"/> taken from an <em>ObjectPool</em>.  
+		/// If supplied, it is cleared up-front and used only when a rewrite
+		/// becomes necessary.</param>
+		public string TrimWhitespaceBeforeLineBreaks(StringBuilder? scratch = null)
+		{
+			if (string.IsNullOrEmpty(text))
+				return text ?? string.Empty;
 
-        scratch?.Clear();
-        StringBuilder? sb  = null;
+			var src = text.AsSpan();
+			var len = src.Length;
+
+			scratch?.Clear();
+			StringBuilder? sb  = null;
         
-        var tail = 0; // start of segment not yet copied
-        var i    = 0;
+			var tail = 0; // start of segment not yet copied
+			var i    = 0;
 
-        while (i < len)
-        {
-            var rel = NextNl(src[i..]);
+			while (i < len)
+			{
+				var rel = NextNl(src[i..]);
             
-            if (rel < 0)
-                break; // no more newlines
+				if (rel < 0)
+					break; // no more newlines
 
-            var nlPos = i + rel; // absolute index of first NL char
+				var nlPos = i + rel; // absolute index of first NL char
 
-            // Identify kind of line-break token
-            int tokenLen;
+				// Identify kind of line-break token
+				int tokenLen;
 
-            if (src[nlPos] == '\n')
-            {
-                tokenLen = 1; // LF
-            }
-            else if (nlPos + 1 < len && src[nlPos + 1] == '\n')
-            {
-                tokenLen = 2; // CRLF
-            }
-            else
-            {
-                // Lone CR – not part of CRLF; leave unchanged
-                i = nlPos + 1;
-                continue;
-            }
-
-            // Walk backwards over spaces / tabs
-            var wsStart = nlPos;
-
-            while (wsStart > tail)
-            {
-                var ch = src[wsStart - 1];
-                
-                if (ch != ' ' && ch != '\t')
-	                break;
-                
-                wsStart--;
-            }
-
-            if (wsStart == nlPos)
-            {
-                // No trailing WS on this line
-                i = nlPos + tokenLen;
-                continue;
-            }
-
-            sb ??= (scratch ?? new StringBuilder(text.Length));
-            sb.Append(src.Slice(tail, wsStart - tail)); // Copy up to WS
-            sb.Append(src.Slice(nlPos, tokenLen)); // The newline
-
-            tail = nlPos + tokenLen; // Skip WS + NL
-            i = tail; // Continue scan
-        }
-
-        if (sb is null)
-            return text; // Nothing trimmed, return original string
-
-        sb.Append(src[tail..]); // Copy remainder
-
-        return sb.ToString();
-
-        // SIMD-accelerated search for '\n' or '\r'
-        static int NextNl(ReadOnlySpan<char> span) => span.IndexOfAny('\n', '\r');
-    }	
-	
-	/// <summary>
-	/// Removes all C-style block comments ( /* … */ ) from <paramref name="source"/>.
-	/// If a closing <c>*/</c> is missing the rest of the text is treated as a comment.
-	/// Nested block comments are NOT supported; the first closing token ends the comment.
-	/// </summary>
-	public static string RemoveBlockComments(this string? source, StringBuilder? workingSb = null)
-	{
-		if (string.IsNullOrEmpty(source))
-			return source ?? string.Empty;
-
-		workingSb ??= new StringBuilder(source.Length);
-		workingSb.Clear();
-		
-		var span = source.AsSpan();
-		var i = 0;
-		var n = span.Length;
-
-		while (i < n)
-		{
-			if (span[i] == '/' && i + 1 < n && span[i + 1] == '*')
-			{
-				var depth = 1; // we just saw the outermost "/*"
-				i += 2;
-
-				// consume until depth returns to 0 or input ends
-				while (i < n && depth > 0)
+				if (src[nlPos] == '\n')
 				{
-					switch (span[i])
+					tokenLen = 1; // LF
+				}
+				else if (nlPos + 1 < len && src[nlPos + 1] == '\n')
+				{
+					tokenLen = 2; // CRLF
+				}
+				else
+				{
+					// Lone CR – not part of CRLF; leave unchanged
+					i = nlPos + 1;
+					continue;
+				}
+
+				// Walk backwards over spaces / tabs
+				var wsStart = nlPos;
+
+				while (wsStart > tail)
+				{
+					var ch = src[wsStart - 1];
+                
+					if (ch != ' ' && ch != '\t')
+						break;
+                
+					wsStart--;
+				}
+
+				if (wsStart == nlPos)
+				{
+					// No trailing WS on this line
+					i = nlPos + tokenLen;
+					continue;
+				}
+
+				sb ??= (scratch ?? new StringBuilder(text.Length));
+				sb.Append(src.Slice(tail, wsStart - tail)); // Copy up to WS
+				sb.Append(src.Slice(nlPos, tokenLen)); // The newline
+
+				tail = nlPos + tokenLen; // Skip WS + NL
+				i = tail; // Continue scan
+			}
+
+			if (sb is null)
+				return text; // Nothing trimmed, return original string
+
+			sb.Append(src[tail..]); // Copy remainder
+
+			return sb.ToString();
+
+			// SIMD-accelerated search for '\n' or '\r'
+			static int NextNl(ReadOnlySpan<char> span) => span.IndexOfAny('\n', '\r');
+		}
+
+		/// <summary>
+		/// Removes all C-style block comments ( /* … */ ) from <paramref name="text"/>.
+		/// If a closing <c>*/</c> is missing the rest of the text is treated as a comment.
+		/// Nested block comments are NOT supported; the first closing token ends the comment.
+		/// </summary>
+		public string RemoveBlockComments(StringBuilder? workingSb = null)
+		{
+			if (string.IsNullOrEmpty(text))
+				return text ?? string.Empty;
+
+			workingSb ??= new StringBuilder(text.Length);
+			workingSb.Clear();
+		
+			var span = text.AsSpan();
+			var i = 0;
+			var n = span.Length;
+
+			while (i < n)
+			{
+				if (span[i] == '/' && i + 1 < n && span[i + 1] == '*')
+				{
+					var depth = 1; // we just saw the outermost "/*"
+					i += 2;
+
+					// consume until depth returns to 0 or input ends
+					while (i < n && depth > 0)
 					{
-						case '/' when i + 1 < n && span[i + 1] == '*':
-							depth++; // nested opener
-							i += 2;
-							break;
-						case '*' when i + 1 < n && span[i + 1] == '/':
-							depth--; // closer
-							i += 2;
-							break;
-						default:
-							i++; // ordinary char inside comment
-							break;
+						switch (span[i])
+						{
+							case '/' when i + 1 < n && span[i + 1] == '*':
+								depth++; // nested opener
+								i += 2;
+								break;
+							case '*' when i + 1 < n && span[i + 1] == '/':
+								depth--; // closer
+								i += 2;
+								break;
+							default:
+								i++; // ordinary char inside comment
+								break;
+						}
 					}
+
+					// if EOF hit with depth > 0 the whole tail was a comment → done
+					continue;
 				}
 
-				// if EOF hit with depth > 0 the whole tail was a comment → done
-				continue;
+				workingSb.Append(span[i]);
+				i++;
 			}
 
-			workingSb.Append(span[i]);
-			i++;
+			return workingSb.ToString();
 		}
-
-		return workingSb.ToString();
 	}
 
-	/// <summary>
-	/// Escape a string for use in a CSS selector.
-	/// </summary>
 	/// <param name="value"></param>
-	/// <returns></returns>
-	public static string CssSelectorEscape(this string value)
+	extension(string value)
 	{
-		if (string.IsNullOrEmpty(value))
-			return value;
-
-		var maxLength = value.Length * 2;
-		var buffer = maxLength <= 1024 ? stackalloc char[maxLength] : new char[maxLength];
-		var position = 0;
-
-		buffer[position++] = '.';
-
-		for (var i = 0; i < value.Length; i++)
+		/// <summary>
+		/// Escape a string for use in a CSS selector.
+		/// </summary>
+		/// <returns></returns>
+		public string CssSelectorEscape()
 		{
-			var c = value[i];
+			if (string.IsNullOrEmpty(value))
+				return value;
 
-			if (i == 0 && char.IsDigit(c))
+			var maxLength = value.Length * 2;
+			var buffer = maxLength <= 1024 ? stackalloc char[maxLength] : new char[maxLength];
+			var position = 0;
+
+			buffer[position++] = '.';
+
+			for (var i = 0; i < value.Length; i++)
 			{
-				buffer[position++] = '\\';
-				buffer[position++] = '3';
-				buffer[position++] = c;
-				buffer[position++] = ' ';
+				var c = value[i];
 
-				continue;
-			}
-			
-			if ((i == 0 && char.IsDigit(c)) || (!char.IsLetterOrDigit(c) && c != '-' && c != '_'))
-				buffer[position++] = '\\';
-
-			buffer[position++] = c;
-		}
-
-		return value.Length == position ? value : new string(buffer[..position]);
-	}
-    
-	/// <summary>
-	/// Removes spaces and newlines from a string.
-	/// </summary>
-	/// <param name="css"></param>
-	/// <param name="workingSb"></param>
-	/// <returns></returns>
-	public static string CompactCss(this string css, StringBuilder? workingSb = null)
-	{
-		workingSb ??= new StringBuilder();
-		workingSb.Clear();
-		
-	    // Remove line breaks, block comments
-	    var result = css
-		    .RemoveBlockComments(workingSb)
-			.RemoveCssRemovals(workingSb);
-
-	    // Consolidate spaces
-	    result = result.ConsolidateSpaces(workingSb).Trim();
-
-	    // Spaces before delimiters are not needed 
-	    result = result.RemoveDelimiterSpaces(workingSb);
-
-	    // Last property value does not need a semicolon
-	    result = result.Replace(";}", "}");
-
-	    // 0 values do not need a unit
-	    result = result.RemoveZeroUnits(workingSb);
-
-        return result;
-    }
-
-	private static string RemoveCssRemovals(this string css, StringBuilder? workingSb = null)
-	{
-		workingSb ??= new StringBuilder(css.Length);
-		workingSb.Clear();
-		
-		var i = 0;
-		var n = css.Length;
-
-		while (i < n)
-		{
-			var c = css[i];
-
-			if (c is '\r' or '\n')
-			{
-				// skip all CR/LF
-				while (i < n && (css[i] == '\r' || css[i] == '\n'))
-					i++;
-
-				// skip any following whitespace (but not newlines)
-				while (i < n && char.IsWhiteSpace(css[i]) && css[i] != '\r' && css[i] != '\n')
-					i++;
-
-				// collapse into single space (unless we're at start or already have one)
-				if (workingSb.Length > 0 && workingSb[^1] != ' ')
-					workingSb.Append(' ');
-			}
-			else
-			{
-				workingSb.Append(c);
-				i++;
-			}
-		}
-
-		return workingSb.ToString();
-	}	
-	
-	public static string ConsolidateSpaces(this string css, StringBuilder? workingSb = null)
-	{
-		workingSb ??= new StringBuilder(css.Length);
-		workingSb.Clear();
-
-		var i = 0;
-		var n = css.Length;
-		var lastWasSpace = false;
-
-		while (i < n)
-		{
-			var c = css[i];
-			
-			if (char.IsWhiteSpace(c))
-			{
-				// append one space if previous char wasn't a space
-				if (lastWasSpace == false)
+				if (i == 0 && char.IsDigit(c))
 				{
-					workingSb.Append(' ');
-					lastWasSpace = true;
+					buffer[position++] = '\\';
+					buffer[position++] = '3';
+					buffer[position++] = c;
+					buffer[position++] = ' ';
+
+					continue;
 				}
+			
+				if ((i == 0 && char.IsDigit(c)) || (!char.IsLetterOrDigit(c) && c != '-' && c != '_'))
+					buffer[position++] = '\\';
 
-				// skip all following whitespace
-				while (i < n && char.IsWhiteSpace(css[i]))
-					i++;
+				buffer[position++] = c;
 			}
-			else
-			{
-				workingSb.Append(c);
-				lastWasSpace = false;
-				i++;
-			}
+
+			return value.Length == position ? value : new string(buffer[..position]);
 		}
 
-		return workingSb.ToString();
-	}	
-	
-	private static string RemoveDelimiterSpaces(this string css, StringBuilder? workingSb = null)
-	{
-		workingSb ??= new StringBuilder(css.Length);
-		workingSb.Clear();
-		
-		if (string.IsNullOrEmpty(css))
-			return css;
-
-		// delimiters we want to “hug”
-		var delimiters = new HashSet<char> { ':', ',', ';', '{', '}' };
-
-		var i = 0;
-		var n = css.Length;
-
-		while (i < n)
+		/// <summary>
+		/// Removes spaces and newlines from a string.
+		/// </summary>
+		/// <param name="workingSb"></param>
+		/// <returns></returns>
+		public string CompactCss(StringBuilder? workingSb = null)
 		{
-			var c = css[i];
+			workingSb ??= new StringBuilder();
+			workingSb.Clear();
+		
+			// Remove line breaks, block comments
+			var result = value
+				.RemoveBlockComments(workingSb)
+				.RemoveCssRemovals(workingSb);
 
-			// If we see any whitespace, peek to see if it's around a delimiter
-			if (char.IsWhiteSpace(c))
+			// Consolidate spaces
+			result = result.ConsolidateSpaces(workingSb).Trim();
+
+			// Spaces before delimiters are not needed 
+			result = result.RemoveDelimiterSpaces(workingSb);
+
+			// Last property value does not need a semicolon
+			result = result.Replace(";}", "}");
+
+			// 0 values do not need a unit
+			result = result.RemoveZeroUnits(workingSb);
+
+			return result;
+		}
+
+		private string RemoveCssRemovals(StringBuilder? workingSb = null)
+		{
+			workingSb ??= new StringBuilder(value.Length);
+			workingSb.Clear();
+		
+			var i = 0;
+			var n = value.Length;
+
+			while (i < n)
 			{
-				var j = i;
-				
-				// skip all whitespace
-				while (j < n && char.IsWhiteSpace(css[j]))
-					j++;
+				var c = value[i];
 
-				// if next real char is a delimiter, emit that and skip trailing whitespace
-				if (j < n && delimiters.Contains(css[j]))
+				if (c is '\r' or '\n')
 				{
-					workingSb.Append(css[j]);
-					j++;
-					
-					while (j < n && char.IsWhiteSpace(css[j]))
+					// skip all CR/LF
+					while (i < n && (value[i] == '\r' || value[i] == '\n'))
+						i++;
+
+					// skip any following whitespace (but not newlines)
+					while (i < n && char.IsWhiteSpace(value[i]) && value[i] != '\r' && value[i] != '\n')
+						i++;
+
+					// collapse into single space (unless we're at start or already have one)
+					if (workingSb.Length > 0 && workingSb[^1] != ' ')
+						workingSb.Append(' ');
+				}
+				else
+				{
+					workingSb.Append(c);
+					i++;
+				}
+			}
+
+			return workingSb.ToString();
+		}
+
+		public string ConsolidateSpaces(StringBuilder? workingSb = null)
+		{
+			workingSb ??= new StringBuilder(value.Length);
+			workingSb.Clear();
+
+			var i = 0;
+			var n = value.Length;
+			var lastWasSpace = false;
+
+			while (i < n)
+			{
+				var c = value[i];
+			
+				if (char.IsWhiteSpace(c))
+				{
+					// append one space if previous char wasn't a space
+					if (lastWasSpace == false)
+					{
+						workingSb.Append(' ');
+						lastWasSpace = true;
+					}
+
+					// skip all following whitespace
+					while (i < n && char.IsWhiteSpace(value[i]))
+						i++;
+				}
+				else
+				{
+					workingSb.Append(c);
+					lastWasSpace = false;
+					i++;
+				}
+			}
+
+			return workingSb.ToString();
+		}
+
+		private string RemoveDelimiterSpaces(StringBuilder? workingSb = null)
+		{
+			workingSb ??= new StringBuilder(value.Length);
+			workingSb.Clear();
+		
+			if (string.IsNullOrEmpty(value))
+				return value;
+
+			// delimiters we want to “hug”
+			var delimiters = new HashSet<char> { ':', ',', ';', '{', '}' };
+
+			var i = 0;
+			var n = value.Length;
+
+			while (i < n)
+			{
+				var c = value[i];
+
+				// If we see any whitespace, peek to see if it's around a delimiter
+				if (char.IsWhiteSpace(c))
+				{
+					var j = i;
+				
+					// skip all whitespace
+					while (j < n && char.IsWhiteSpace(value[j]))
+						j++;
+
+					// if next real char is a delimiter, emit that and skip trailing whitespace
+					if (j < n && delimiters.Contains(value[j]))
+					{
+						workingSb.Append(value[j]);
 						j++;
 					
-					i = j;
+						while (j < n && char.IsWhiteSpace(value[j]))
+							j++;
 					
-					continue;
+						i = j;
+					
+						continue;
+					}
+
+					// otherwise, preserve a single space (optional—remove this if you never want any whitespace here)
+					workingSb.Append(' ');
+
+					i = j;
+				}
+				else if (delimiters.Contains(c))
+				{
+					// emit the delimiter, then skip any whitespace that follows
+					workingSb.Append(c);
+
+					var j = i + 1;
+				
+					while (j < n && char.IsWhiteSpace(value[j]))
+						j++;
+				
+					i = j;
+				}
+				else
+				{
+					workingSb.Append(c);
+
+					i++;
+				}
+			}
+
+			return workingSb.ToString();
+		}
+
+		private string RemoveZeroUnits(StringBuilder? workingSb = null)
+		{
+			workingSb ??= new StringBuilder(value.Length);
+			workingSb.Clear();
+
+			if (string.IsNullOrEmpty(value)) return value;
+
+			// Units sorted by descending length so we match "cqmax" before "cq" etc.
+			string[] units =
+			[
+				"cqmin","cqmax","vmax","vmin","cqw","cqh","cqi","cqb","rem","cm","in","mm","pc","pt","px","ch","em","ex","vw","vh","Q","%"
+			];
+
+			var i = 0;
+			var n = value.Length;
+
+			while (i < n)
+			{
+				var c = value[i];
+
+				// if whitespace or colon, and next char is '0', maybe strip a unit
+				if ((char.IsWhiteSpace(c) || c == ':') && i + 1 < n && value[i + 1] == '0')
+				{
+					var stripped = false;
+
+					// try each unit
+					foreach (var u in units)
+					{
+						var len = u.Length;
+					
+						if (i + 2 + len <= n && string.Compare(value, i + 2, u, 0, len, StringComparison.Ordinal) == 0)
+						{
+							// emit the whitespace/colon + '0', skip over the unit
+							workingSb.Append(c).Append('0');
+							i += 2 + len;
+							stripped = true;
+					
+							break;
+						}
+					}
+
+					if (stripped)
+						continue;
 				}
 
-				// otherwise, preserve a single space (optional—remove this if you never want any whitespace here)
-				workingSb.Append(' ');
-
-				i = j;
-			}
-			else if (delimiters.Contains(c))
-			{
-				// emit the delimiter, then skip any whitespace that follows
+				// default: copy one char
 				workingSb.Append(c);
-
-				var j = i + 1;
-				
-				while (j < n && char.IsWhiteSpace(css[j]))
-					j++;
-				
-				i = j;
-			}
-			else
-			{
-				workingSb.Append(c);
-
 				i++;
 			}
+
+			return workingSb.ToString();
 		}
 
-		return workingSb.ToString();
-	}
-	
-	private static string RemoveZeroUnits(this string css, StringBuilder? workingSb = null)
-	{
-		workingSb ??= new StringBuilder(css.Length);
-		workingSb.Clear();
-
-		if (string.IsNullOrEmpty(css)) return css;
-
-		// Units sorted by descending length so we match "cqmax" before "cq" etc.
-		string[] units =
-		[
-			"cqmin","cqmax","vmax","vmin","cqw","cqh","cqi","cqb","rem","cm","in","mm","pc","pt","px","ch","em","ex","vw","vh","Q","%"
-		];
-
-		var i = 0;
-		var n = css.Length;
-
-		while (i < n)
+		/// <summary>
+		/// Repeat a string a specified number of times.
+		/// </summary>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public string Repeat(int n)
 		{
-			var c = css[i];
-
-			// if whitespace or colon, and next char is '0', maybe strip a unit
-			if ((char.IsWhiteSpace(c) || c == ':') && i + 1 < n && css[i + 1] == '0')
+			if (string.IsNullOrEmpty(value) || n < 1)
+				return string.Empty;
+		
+			var textAsSpan = value.AsSpan();
+			var span = new Span<char>(new char[textAsSpan.Length * n]);
+	
+			for (var i = 0; i < n; i++)
 			{
-				var stripped = false;
+				textAsSpan.CopyTo(span.Slice(i * textAsSpan.Length, textAsSpan.Length));
+			}
 
-				// try each unit
-				foreach (var u in units)
+			return span.ToString();
+		}
+
+		/// <summary>
+		/// Normalize all “\r\n”, “\r”, and “\n” sequences into the specified linebreak,
+		/// doing at most one allocation and two scans.
+		/// </summary>
+		public string NormalizeLinebreaks(string linebreak = "\n")
+		{
+			if (string.IsNullOrEmpty(value))
+				return string.Empty;
+
+			var len = value.Length;
+			var countCrlf = 0;
+			var countSingle = 0;
+
+			// First pass: count how many CRLF vs. lone CR or LF we have
+			for (var i = 0; i < len; i++)
+			{
+				var c = value[i];
+	        
+				if (c == '\r')
 				{
-					var len = u.Length;
-					
-					if (i + 2 + len <= n && string.Compare(css, i + 2, u, 0, len, StringComparison.Ordinal) == 0)
+					if (i + 1 < len && value[i + 1] == '\n')
 					{
-						// emit the whitespace/colon + '0', skip over the unit
-						workingSb.Append(c).Append('0');
-						i += 2 + len;
-						stripped = true;
-					
-						break;
+						countCrlf++;
+						i++;
+					}
+					else
+					{
+						countSingle++;
 					}
 				}
-
-				if (stripped)
-					continue;
+				else if (c == '\n')
+				{
+					countSingle++;
+				}
 			}
 
-			// default: copy one char
-			workingSb.Append(c);
-			i++;
-		}
+			// Nothing to normalize?
+			if (countCrlf == 0 && countSingle == 0)
+				return value;
 
-		return workingSb.ToString();
-	}
-	
-	/// <summary>
-	/// Repeat a string a specified number of times.
-	/// </summary>
-	/// <param name="text"></param>
-	/// <param name="n"></param>
-	/// <returns></returns>
-	public static string Repeat(this string text, int n)
-	{
-		if (string.IsNullOrEmpty(text) || n < 1)
-			return string.Empty;
-		
-		var textAsSpan = text.AsSpan();
-		var span = new Span<char>(new char[textAsSpan.Length * n]);
-	
-		for (var i = 0; i < n; i++)
-		{
-			textAsSpan.CopyTo(span.Slice(i * textAsSpan.Length, textAsSpan.Length));
-		}
-
-		return span.ToString();
-	}
-	
-	/// <summary>
-	/// Normalize all “\r\n”, “\r”, and “\n” sequences into the specified linebreak,
-	/// doing at most one allocation and two scans.
-	/// </summary>
-	public static string NormalizeLinebreaks(this string value, string linebreak = "\n")
-	{
-	    if (string.IsNullOrEmpty(value))
-	        return string.Empty;
-
-	    var len = value.Length;
-	    var countCrlf = 0;
-		var countSingle = 0;
-
-	    // First pass: count how many CRLF vs. lone CR or LF we have
-	    for (var i = 0; i < len; i++)
-	    {
-	        var c = value[i];
-	        
-	        if (c == '\r')
-	        {
-	            if (i + 1 < len && value[i + 1] == '\n')
-	            {
-	                countCrlf++;
-	                i++;
-	            }
-	            else
-	            {
-	                countSingle++;
-	            }
-	        }
-	        else if (c == '\n')
-	        {
-	            countSingle++;
-	        }
-	    }
-
-	    // Nothing to normalize?
-	    if (countCrlf == 0 && countSingle == 0)
-	        return value;
-
-	    var breakLen = linebreak.Length;
+			var breakLen = linebreak.Length;
 	    
-	    // Compute new length:
-	    //   remove 2 chars per CRLF, 1 per lone CR or LF
-	    //   then add back breakLen chars per token
-	    var newLen = len
-	                 - (countCrlf * 2 + countSingle * 1)
-	                 + (countCrlf + countSingle) * breakLen;
+			// Compute new length:
+			//   remove 2 chars per CRLF, 1 per lone CR or LF
+			//   then add back breakLen chars per token
+			var newLen = len
+			             - (countCrlf * 2 + countSingle * 1)
+			             + (countCrlf + countSingle) * breakLen;
 
-	    // Second pass: fill directly into the new string’s buffer
-	    return string.Create(newLen, (value, linebreak), (span, state) =>
-	    {
-	        var (src, br) = state;
-	        var dst = 0;
-
-	        for (var i = 0; i < src.Length; i++)
-	        {
-	            var c = src[i];
-	            
-	            if (c == '\r')
-	            {
-	                if (i + 1 < src.Length && src[i + 1] == '\n')
-	                {
-	                    // CRLF
-	                    for (var j = 0; j < br.Length; j++)
-	                        span[dst + j] = br[j];
-	                    dst += br.Length;
-	                    i++;
-	                }
-	                else
-	                {
-	                    // lone CR
-	                    for (var j = 0; j < br.Length; j++)
-	                        span[dst + j] = br[j];
-	                    dst += br.Length;
-	                }
-	            }
-	            else if (c == '\n')
-	            {
-	                // lone LF
-	                for (var j = 0; j < br.Length; j++)
-	                    span[dst + j] = br[j];
-	                dst += br.Length;
-	            }
-	            else
-	            {
-	                span[dst++] = c;
-	            }
-	        }
-	    });
-	}
-
-	/// <summary>
-	/// Normalize both ‘/’ and ‘\’ to the native directory separator in one pass.
-	/// </summary>
-	public static string SetNativePathSeparators(this string path)
-	{
-		if (string.IsNullOrEmpty(path))
-			return string.Empty;
-
-		// If there are no separators, return the original string
-		if (path.IndexOfAny(['/', '\\']) < 0)
-			return path;
-
-		var sep = Path.DirectorySeparatorChar;
-
-		// Allocate exactly one new string of the right length and fill it:
-		return string.Create(path.Length, (path, sep), (span, state) =>
-		{
-			var (src, separator) = state;
-			
-			for (var i = 0; i < src.Length; i++)
+			// Second pass: fill directly into the new string’s buffer
+			return string.Create(newLen, (value, linebreak), (span, state) =>
 			{
-				var c = src[i];
+				var (src, br) = state;
+				var dst = 0;
+
+				for (var i = 0; i < src.Length; i++)
+				{
+					var c = src[i];
+	            
+					if (c == '\r')
+					{
+						if (i + 1 < src.Length && src[i + 1] == '\n')
+						{
+							// CRLF
+							for (var j = 0; j < br.Length; j++)
+								span[dst + j] = br[j];
+							dst += br.Length;
+							i++;
+						}
+						else
+						{
+							// lone CR
+							for (var j = 0; j < br.Length; j++)
+								span[dst + j] = br[j];
+							dst += br.Length;
+						}
+					}
+					else if (c == '\n')
+					{
+						// lone LF
+						for (var j = 0; j < br.Length; j++)
+							span[dst + j] = br[j];
+						dst += br.Length;
+					}
+					else
+					{
+						span[dst++] = c;
+					}
+				}
+			});
+		}
+
+		/// <summary>
+		/// Normalize both ‘/’ and ‘\’ to the native directory separator in one pass.
+		/// </summary>
+		public string SetNativePathSeparators()
+		{
+			if (string.IsNullOrEmpty(value))
+				return string.Empty;
+
+			// If there are no separators, return the original string
+			if (value.IndexOfAny(['/', '\\']) < 0)
+				return value;
+
+			var sep = Path.DirectorySeparatorChar;
+
+			// Allocate exactly one new string of the right length and fill it:
+			return string.Create(value.Length, (value, sep), (span, state) =>
+			{
+				var (src, separator) = state;
+			
+				for (var i = 0; i < src.Length; i++)
+				{
+					var c = src[i];
 				
-				span[i] = c is '/' or '\\' ? separator : c;
-			}
-		});
+					span[i] = c is '/' or '\\' ? separator : c;
+				}
+			});
+		}
 	}
-	
+
 	/// <summary>
 	/// Convert bytes into a user-friendly size (e.g. 1024 becomes 1kb).
 	/// </summary>
@@ -1159,30 +1167,32 @@ public static partial class Strings
 		return result;
 	}
 
-	/// <summary>
-	/// Convert a web color to a rgba() value.
-	/// Handles rgb() and hex colors.
-	/// Optionally set a new opacity value (0-100).
-	/// </summary>
 	/// <param name="color"></param>
-	/// <param name="opacityPct"></param>
-	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
-	public static string SetWebColorAlpha(this string color, int opacityPct)
+	extension(string color)
 	{
-		return color.SetWebColorAlpha(opacityPct / 100d);
-	}
+		/// <summary>
+		/// Convert a web color to a rgba() value.
+		/// Handles rgb() and hex colors.
+		/// Optionally set a new opacity value (0-100).
+		/// </summary>
+		/// <param name="opacityPct"></param>
+		/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
+		public string SetWebColorAlpha(int opacityPct)
+		{
+			return color.SetWebColorAlpha(opacityPct / 100d);
+		}
 
-	/// <summary>
-	/// Convert a web color to a rgba() value.
-	/// Handles rgb() and hex colors.
-	/// Optionally set a new opacity value (0-100).
-	/// </summary>
-	/// <param name="color"></param>
-	/// <param name="opacityPct"></param>
-	/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
-	public static string SetWebColorAlphaByPercentage(this string color, double opacityPct)
-	{
-		return color.SetWebColorAlpha(opacityPct / 100);
+		/// <summary>
+		/// Convert a web color to a rgba() value.
+		/// Handles rgb() and hex colors.
+		/// Optionally set a new opacity value (0-100).
+		/// </summary>
+		/// <param name="opacityPct"></param>
+		/// <returns>rgba() value, or rgba(0,0,0,-0) on error</returns>
+		public string SetWebColorAlphaByPercentage(double opacityPct)
+		{
+			return color.SetWebColorAlpha(opacityPct / 100);
+		}
 	}
 
 	/// <summary>
@@ -1304,148 +1314,151 @@ public static partial class Strings
 		return color;
 	}
 	
-    /// <summary>
-    /// Scans the input once and returns every percentage literal it finds
-    /// that is immediately preceded by whitespace or '/':
-    /// e.g. " 12.5%", "/.75%", " 8%", " /12.%" etc.
-    /// </summary>
-    public static IEnumerable<string> ExtractPercentages(this string s)
+    extension(string s)
     {
-        if (string.IsNullOrEmpty(s))
-            yield break;
+	    /// <summary>
+	    /// Scans the input once and returns every percentage literal it finds
+	    /// that is immediately preceded by whitespace or '/':
+	    /// e.g. " 12.5%", "/.75%", " 8%", " /12.%" etc.
+	    /// </summary>
+	    public IEnumerable<string> ExtractPercentages()
+	    {
+		    if (string.IsNullOrEmpty(s))
+			    yield break;
 
-        var len = s.Length;
+		    var len = s.Length;
 
-        for (var i = 0; i < len; i++)
-        {
-            var c = s[i];
+		    for (var i = 0; i < len; i++)
+		    {
+			    var c = s[i];
 
-            // possible start of a percentage: digit or '.' with digit after
-            var looksLikeNumberStart =
-                c is >= '0' and <= '9' || (c == '.' && i + 1 < len && s[i + 1] >= '0' && s[i + 1] <= '9');
+			    // possible start of a percentage: digit or '.' with digit after
+			    var looksLikeNumberStart =
+				    c is >= '0' and <= '9' || (c == '.' && i + 1 < len && s[i + 1] >= '0' && s[i + 1] <= '9');
 
-            if (looksLikeNumberStart == false)
-                continue;
+			    if (looksLikeNumberStart == false)
+				    continue;
 
-            // enforce preceding char is whitespace or '/'
-            if (i > 0 && !(char.IsWhiteSpace(s[i - 1]) || s[i - 1] == '/'))
-                continue;
+			    // enforce preceding char is whitespace or '/'
+			    if (i > 0 && !(char.IsWhiteSpace(s[i - 1]) || s[i - 1] == '/'))
+				    continue;
 
-            var start = i;
-            var hasDigits = false;
-            var seenDecimal = false;
-            var j = i;
+			    var start = i;
+			    var hasDigits = false;
+			    var seenDecimal = false;
+			    var j = i;
 
-            // if we start on '.', consume it as decimal point
-            if (s[j] == '.')
-            {
-                seenDecimal = true;
-                j++;
-            }
+			    // if we start on '.', consume it as decimal point
+			    if (s[j] == '.')
+			    {
+				    seenDecimal = true;
+				    j++;
+			    }
 
-            // consume integer digits
-            while (j < len && s[j] >= '0' && s[j] <= '9')
-            {
-                hasDigits = true;
-                j++;
-            }
+			    // consume integer digits
+			    while (j < len && s[j] >= '0' && s[j] <= '9')
+			    {
+				    hasDigits = true;
+				    j++;
+			    }
 
-            // optional fractional part if we haven't yet seen a decimal
-            if (seenDecimal == false && j < len && s[j] == '.')
-            {
-	            // ReSharper disable once RedundantAssignment
-	            seenDecimal = true;
-                j++;
+			    // optional fractional part if we haven't yet seen a decimal
+			    if (seenDecimal == false && j < len && s[j] == '.')
+			    {
+				    // ReSharper disable once RedundantAssignment
+				    seenDecimal = true;
+				    j++;
 
-                while (j < len && s[j] >= '0' && s[j] <= '9')
-                {
-                    hasDigits = true;
-                    j++;
-                }
-            }
+				    while (j < len && s[j] >= '0' && s[j] <= '9')
+				    {
+					    hasDigits = true;
+					    j++;
+				    }
+			    }
 
-            // final check for '%' suffix
-            if (hasDigits && j < len && s[j] == '%')
-            {
-                yield return s.Substring(start, j - start + 1);
-                i = j;  // skip past it
-            }
+			    // final check for '%' suffix
+			    if (hasDigits && j < len && s[j] == '%')
+			    {
+				    yield return s.Substring(start, j - start + 1);
+				    i = j;  // skip past it
+			    }
 
-            // else fall through and continue scanning
-        }
-    }	
-	
-    /// <summary>
-    /// Scans the input once and returns every CSS web‑color literal it finds:
-    /// #RGB, #RGBA, #RRGGBB, #RRGGBBAA, rgb(...), rgba(...), oklch(...).
-    /// </summary>
-    public static IEnumerable<string> ExtractWebColors(this string s)
-    {
-        if (string.IsNullOrEmpty(s))
-            yield break;
+			    // else fall through and continue scanning
+		    }
+	    }
 
-        var len = s.Length;
+	    /// <summary>
+	    /// Scans the input once and returns every CSS web‑color literal it finds:
+	    /// #RGB, #RGBA, #RRGGBB, #RRGGBBAA, rgb(...), rgba(...), oklch(...).
+	    /// </summary>
+	    public IEnumerable<string> ExtractWebColors()
+	    {
+		    if (string.IsNullOrEmpty(s))
+			    yield break;
 
-        for (var i = 0; i < len; i++)
-        {
-            var c = s[i];
+		    var len = s.Length;
 
-            // ---- 1) Hex codes: # then 3–8 hex digits ----
-            if (c == '#')
-            {
-                var start = i;
-                var j = i + 1;
+		    for (var i = 0; i < len; i++)
+		    {
+			    var c = s[i];
+
+			    // ---- 1) Hex codes: # then 3–8 hex digits ----
+			    if (c == '#')
+			    {
+				    var start = i;
+				    var j = i + 1;
                 
-                // scan up to 8 hex digits
-                while (j < len && j - start - 1 < 8 && IsHexDigit(s[j]))
-                    j++;
+				    // scan up to 8 hex digits
+				    while (j < len && j - start - 1 < 8 && IsHexDigit(s[j]))
+					    j++;
 
-                var count = j - start - 1;
+				    var count = j - start - 1;
                 
-                if (count is 3 or 4 or 6 or 8)
-                    yield return s.Substring(start, 1 + count);
+				    if (count is 3 or 4 or 6 or 8)
+					    yield return s.Substring(start, 1 + count);
 
-                // skip whatever we consumed (valid or not), move i to last checked
-                i = j - 1;
+				    // skip whatever we consumed (valid or not), move i to last checked
+				    i = j - 1;
 
-                continue;
-            }
+				    continue;
+			    }
 
-            // ---- 2) rgba(...) first (so we don't mistake it for rgb(...)) ----
-            if (i + 4 < len
-                && (s[i] == 'r' || s[i] == 'R')
-                && (s[i+1] == 'g' || s[i+1] == 'G')
-                && (s[i+2] == 'b' || s[i+2] == 'B')
-                && (s[i+3] == 'a' || s[i+3] == 'A')
-                && s[i+4] == '(')
-            {
-                yield return ExtractFunction(s, ref i, 5);
-                continue;
-            }
+			    // ---- 2) rgba(...) first (so we don't mistake it for rgb(...)) ----
+			    if (i + 4 < len
+			        && (s[i] == 'r' || s[i] == 'R')
+			        && (s[i+1] == 'g' || s[i+1] == 'G')
+			        && (s[i+2] == 'b' || s[i+2] == 'B')
+			        && (s[i+3] == 'a' || s[i+3] == 'A')
+			        && s[i+4] == '(')
+			    {
+				    yield return ExtractFunction(s, ref i, 5);
+				    continue;
+			    }
 
-            // ---- 3) rgb(...) ----
-            if (i + 3 < len
-                && (s[i] == 'r' || s[i] == 'R')
-                && (s[i+1] == 'g' || s[i+1] == 'G')
-                && (s[i+2] == 'b' || s[i+2] == 'B')
-                && s[i+3] == '(')
-            {
-                yield return ExtractFunction(s, ref i, 4);
-                continue;
-            }
+			    // ---- 3) rgb(...) ----
+			    if (i + 3 < len
+			        && (s[i] == 'r' || s[i] == 'R')
+			        && (s[i+1] == 'g' || s[i+1] == 'G')
+			        && (s[i+2] == 'b' || s[i+2] == 'B')
+			        && s[i+3] == '(')
+			    {
+				    yield return ExtractFunction(s, ref i, 4);
+				    continue;
+			    }
 
-            // ---- 4) oklch(...) ----
-            if (i + 5 < len
-                && (s[i] == 'o' || s[i] == 'O')
-                && (s[i+1] == 'k' || s[i+1] == 'K')
-                && (s[i+2] == 'l' || s[i+2] == 'L')
-                && (s[i+3] == 'c' || s[i+3] == 'C')
-                && (s[i+4] == 'h' || s[i+4] == 'H')
-                && s[i+5] == '(')
-            {
-                yield return ExtractFunction(s, ref i, 6);
-            }
-        }
+			    // ---- 4) oklch(...) ----
+			    if (i + 5 < len
+			        && (s[i] == 'o' || s[i] == 'O')
+			        && (s[i+1] == 'k' || s[i+1] == 'K')
+			        && (s[i+2] == 'l' || s[i+2] == 'L')
+			        && (s[i+3] == 'c' || s[i+3] == 'C')
+			        && (s[i+4] == 'h' || s[i+4] == 'H')
+			        && s[i+5] == '(')
+			    {
+				    yield return ExtractFunction(s, ref i, 6);
+			    }
+		    }
+	    }
     }
 
     // Helper: pull out a "(...)" block starting at 's[i]', where 'offset' is the length of 'name('.
@@ -1469,7 +1482,7 @@ public static partial class Strings
             i++;
         }
 
-        // substring from start to current i (i is one past the ')')
+        // substring from start to current `i`, where `i` is one past the closing ')'
         return s.Substring(start, i - start);
     }
 
@@ -1556,20 +1569,37 @@ public static partial class Strings
         return result;
     }
 	
-    public static void WriteToConsole(this string text, int maxCharacters)
+    public static void WriteToOutput(this string text)
     {
         if (string.IsNullOrEmpty(text))
             return;
 
+        if (string.IsNullOrWhiteSpace(text))
+        {
+	        if (SfumatoService.Configuration?.Logger is not null)
+#pragma warning disable CA1873
+		        SfumatoService.Configuration.Logger.LogInformation("");
+#pragma warning restore CA1873
+	        else
+		        Console.WriteLine(string.Empty);
+
+	        return;
+        }
+        
         var result = new List<string>();
         var lines = text.Trim().NormalizeLinebreaks().Replace("_\n", " ").Split('\n');
 
         foreach (var line in lines)
-            result.AddRange(WrapTextAtMaxWidth(line, maxCharacters));
+            result.AddRange(WrapTextAtMaxWidth(line, Library.MaxConsoleWidth));
 
         foreach (var line in result)
         {
-            Console.WriteLine(line.NormalizeLinebreaks(Environment.NewLine));
+	        if (SfumatoService.Configuration?.Logger is not null)
+#pragma warning disable CA1873
+		        SfumatoService.Configuration.Logger.LogInformation("{line}", line.NormalizeLinebreaks(Environment.NewLine));
+#pragma warning restore CA1873
+	        else
+		        Console.WriteLine(line.NormalizeLinebreaks(Environment.NewLine));
         }
     }
 

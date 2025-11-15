@@ -2,14 +2,16 @@
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ClassNeverInstantiated.Global
 
+using Sfumato.Entities.Runners;
+
 namespace Sfumato.Cli;
 
 internal class Program
 {
 	private static async Task Main(string[] args)
 	{
-		var sfumato = new SfumatoService();
-		
-		await sfumato.InitializeAsync(args);
+		SfumatoService.Configuration?.Arguments = args;
+
+		await SfumatoService.InitializeAsync();
 	}
 }
