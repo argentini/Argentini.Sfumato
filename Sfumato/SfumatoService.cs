@@ -30,47 +30,6 @@ public sealed class SfumatoService
 			return;
 		}
 		
-		#region Launch SCSS (prior) version when args indicate
-
-		// args = ["watch", "--path", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/"];
-
-		if (Configuration.Arguments.Length > 1 && Configuration.Arguments.Any(a => a.EndsWith(".css")) == false)
-		{
-			try
-			{
-				var psi = new ProcessStartInfo("sfumato-scss", string.Join(' ', Configuration.Arguments))
-				{
-					RedirectStandardInput  = false, // inherit console → interactive
-					RedirectStandardOutput = false, // inherit console → live output
-					RedirectStandardError  = false,
-					UseShellExecute        = false
-				};
-
-				using var proc = Process.Start(psi);
-
-				if (proc is null)
-				{
-					throw new Exception();
-				}
-
-				await proc.WaitForExitAsync();
-
-				Environment.ExitCode = proc.ExitCode;
-				return;
-			}
-			catch
-			{
-				"CLI arguments used are for legacy sfumato-scss; failed to start.".WriteToOutput();
-				"Install the compatibility tool using:".WriteToOutput();
-				"dotnet tool install --global argentini.sfumato-scss".WriteToOutput();
-				
-				Environment.Exit(1);
-				return;
-			}
-		}
-
-		#endregion
-
 		Console.OutputEncoding = Encoding.UTF8;
 		
 		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
@@ -191,13 +150,11 @@ public sealed class SfumatoService
 			Strings.ThinLine.Repeat("COMPATIBILITY:".Length).WriteToOutput();
 			
 			"""
-			If you need to continue to use the prior version of Sfumato, install the sfumato-scss compatibility tool._
-			This allows the `sfumato` command to launch the older version when it sees CLI arguments for that version._
+			If you need to continue to use the prior version of Sfumato, install sfumato-scss tool. This should be used for older projects relying on that version._
+
 			Install the compatibility tool with the command below: 
 			
 			dotnet tool install --global argentini.sfumato-scss
-			
-			This older version can also be run by itself with the command `sfumato-scss`.
 			""".WriteToOutput();
 			
             "".WriteToOutput();

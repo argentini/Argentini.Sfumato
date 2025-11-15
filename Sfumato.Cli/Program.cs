@@ -2,8 +2,6 @@
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ClassNeverInstantiated.Global
 
-using Sfumato.Entities.Runners;
-
 namespace Sfumato.Cli;
 
 internal class Program
