@@ -1,0 +1,66 @@
+// ReSharper disable RawStringCanBeSimplified
+
+using Sfumato.Helpers;
+using Sfumato.Entities.Runners;
+
+namespace Sfumato.Entities.UtilityClasses.Layout;
+
+public sealed class Float : ClassDictionaryBase
+{
+    public Float()
+    {
+        Group = "float";
+        Description = "Utilities for floating elements to the left or right.";
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
+        {
+            {
+                "float-right", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               float: right;
+                               """
+                }
+            },
+            {
+                "float-left", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               float: left;
+                               """
+                }
+            },
+            {
+                "float-start", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               float: inline-start;
+                               """
+                }
+            },
+            {
+                "float-end", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               float: inline-end;
+                               """
+                }
+            },
+            {
+                "float-none", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               float: none;
+                               """
+                }
+            },
+        });
+    }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
+}

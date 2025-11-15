@@ -1,7 +1,0 @@
-﻿<Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-  </Configurations>
-  <Project Path="Argentini.Sfumato\Argentini.Sfumato.csproj" Type="Classic C#" />
-  <Project Path="Argentini.Sfumato.Tests\Argentini.Sfumato.Tests.csproj" Type="Classic C#" />
-</Solution>

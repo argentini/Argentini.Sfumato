@@ -1,0 +1,39 @@
+// ReSharper disable RawStringCanBeSimplified
+
+using Sfumato.Helpers;
+using Sfumato.Entities.Runners;
+
+namespace Sfumato.Entities.UtilityClasses.Typography;
+
+public sealed class ListStyleImage : ClassDictionaryBase
+{
+    public ListStyleImage()
+    {
+        Group = "list-style-image";
+        Description = "Utilities for specifying list marker images.";
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
+        {
+            {
+                "list-image-", new ClassDefinition
+                {
+                    InUrlCollection = true,
+                    Template = """
+                               list-style-image: {0};
+                               """
+                }
+            },
+            {
+                "list-image-none", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               list-style-image: none;
+                               """
+                }
+            },
+        });
+    }
+
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
+}

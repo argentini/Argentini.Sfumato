@@ -1,0 +1,12 @@
+global using System;
+global using System.Text;
+global using System.Collections;
+global using Xunit;
+global using Xunit.Abstractions;
+global using Sfumato;
+global using Sfumato.Entities;
+global using Sfumato.Entities.CssClassProcessing;
+global using Sfumato.Entities.Runners;
+global using Sfumato.Entities.Scanning;
+global using Sfumato.Helpers;
+global using Microsoft.Extensions.ObjectPool;

@@ -6,7 +6,7 @@ The resulting HTML markup is clean, readable, and consistent. And the generated 
 
 Some of the benefits of using Sfumato over Tailwind include:
 
-- Single, easy installation; Install once and use Sfumato on any projects now and in the future.
+- Single, easy installation; Install the CLI tool once and use Sfumato on any projects now and in the future, or use Sfumato Core to embed it in your application
 - Fastest way to build; Sfumato is a multi-threaded, 64-bit native, super fast cross-platform app. It's up to 2-3x faster than Tailwind CSS 4.1!
 - No dependencies; When using Sfumato your project remains clean. Tailwind uses Node.js with a bunch of third party dependencies and adds a node-modules folder to your project containing a ton of extra files.
 - Multi-project builds; Sfumato can build and watch multiple project configurations at once. It's so fast you may not even notice a difference.
@@ -25,7 +25,7 @@ Some of the benefits of using Sfumato over Tailwind include:
 
 Sfumato requires that you already have the .NET 10 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
 
-### 2. Install Sfumato
+### 2. Install the Sfumato CLI tool
 
 Run the following command in your command line interface (e.g. cmd, PowerShell, Terminal, bash, etc.):
 
@@ -35,13 +35,13 @@ Later you can update Sfumato with the following command:
 
 ```dotnet tool update --global argentini.sfumato```
 
-## How To Use
+## How to use the CLI tool
 
 Use the following command for more information on editing your CSS file and using Sfumato commands and options:
 
 ```sfumato help```
 
-## Uninstall
+## Uninstall the CLI tool
 
 If you need to completely uninstall Sfumato, use the command below:
 

@@ -1,0 +1,32 @@
+// ReSharper disable RawStringCanBeSimplified
+
+using Sfumato.Helpers;
+using Sfumato.Entities.Runners;
+
+namespace Sfumato.Entities.UtilityClasses.Backgrounds;
+
+public sealed class ToPercentage : ClassDictionaryBase
+{
+    public ToPercentage()
+    {
+        Group = "background-image";
+        Description = "Utilities for configuring background gradient to percentage.";
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
+        {
+            {
+                "to-", new ClassDefinition
+                {
+                    InPercentageCollection = true,
+                    SelectorSort = 3,
+                    Template =
+                        """
+                        --sf-gradient-to-position: {0};
+                        """,
+                }
+            },
+        });
+    }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
+}

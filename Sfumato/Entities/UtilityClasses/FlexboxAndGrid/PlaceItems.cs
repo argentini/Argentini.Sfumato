@@ -1,0 +1,91 @@
+// ReSharper disable RawStringCanBeSimplified
+
+using Sfumato.Helpers;
+using Sfumato.Entities.Runners;
+
+namespace Sfumato.Entities.UtilityClasses.FlexboxAndGrid;
+
+public sealed class PlaceItems : ClassDictionaryBase
+{
+    public PlaceItems()
+    {
+        Group = "place-items";
+        Description = "Utilities for aligning items within grid or flex containers.";
+        Data.AddRange(new Dictionary<string, ClassDefinition>(StringComparer.Ordinal)
+        {
+            {
+                "place-items-start", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        place-items: start;
+                        """,
+                }
+            },
+            {
+                "place-items-end", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        place-items: end;
+                        """,
+                }
+            },
+            {
+                "place-items-end-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        place-items: safe end;
+                        """,
+                }
+            },
+            {
+                "place-items-center", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        place-items: center;
+                        """,
+                }
+            },
+            {
+                "place-items-center-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        place-items: safe center;
+                        """,
+                }
+            },
+            {
+                "place-items-baseline", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        place-items: baseline;
+                        """,
+                }
+            },
+            {
+                "place-items-stretch", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template =
+                        """
+                        place-items: stretch;
+                        """,
+                }
+            },
+        });
+    }
+    
+    public override void ProcessThemeSettings(AppRunner appRunner)
+    {}
+}
