@@ -6,8 +6,6 @@ using System.Reflection;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Scanning;
 using Sfumato.Entities.UtilityClasses;
-using Sfumato.Helpers;
-using Strings = Sfumato.Helpers.Strings;
 
 // ReSharper disable RedundantBoolCompare
 // ReSharper disable ConvertIfStatementToSwitchStatement
@@ -28,7 +26,7 @@ public static class AppRunnerExtensions
 	    
 	    foreach (var match in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--color-")))
 	    {
-		    var key = Strings.TrimStart(match.Key, "--color-") ?? string.Empty;
+		    var key = match.Key.TrimStart("--color-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
 			    continue;
@@ -50,7 +48,7 @@ public static class AppRunnerExtensions
 		    if (match.Key.StartsWith("--breakpoint-") == false)
 			    continue;
 		    
-		    var key = Strings.TrimStart(match.Key, "--breakpoint-") ?? string.Empty;
+		    var key = match.Key.TrimStart("--breakpoint-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
 			    continue;
@@ -94,7 +92,7 @@ public static class AppRunnerExtensions
 		    foreach (var unit in appRunner.Library.CssLengthUnits.OrderByDescending(u => u.Length))
 			    if (match.Value.EndsWith(unit))
 			    {
-				    if (double.TryParse(Strings.TrimEnd(match.Value, unit), out var value))
+				    if (double.TryParse(match.Value.TrimEnd(unit), out var value))
 					    appRunner.AppRunnerSettings.BreakpointSizes.TryAdd(key, value);
 
 				    break;
@@ -106,7 +104,7 @@ public static class AppRunnerExtensions
 		    if (breakpoint.Key.StartsWith("--adaptive-breakpoint-") == false)
 			    continue;
 
-		    var key = Strings.TrimStart(breakpoint.Key, "--adaptive-breakpoint-") ?? string.Empty;
+		    var key = breakpoint.Key.TrimStart("--adaptive-breakpoint-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
 			    continue;
@@ -153,7 +151,7 @@ public static class AppRunnerExtensions
 
 	    foreach (var breakpoint in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(i => i.Key.StartsWith("--container-")))
 	    {
-		    var key = Strings.TrimStart(breakpoint.Key, "--container-") ?? string.Empty;
+		    var key = breakpoint.Key.TrimStart("--container-") ?? string.Empty;
 
 		    if (string.IsNullOrEmpty(key))
 			    continue;
@@ -284,7 +282,7 @@ public static class AppRunnerExtensions
 			    if (string.IsNullOrEmpty(prefixType))
 				    continue;
 
-			    var statement = $"{Strings.TrimStart(match.Value, $"@{prefixType}")?.Trim()}";
+			    var statement = $"{match.Value.TrimStart($"@{prefixType}")?.Trim()}";
 			    
 			    if (prefixType.Equals("media", StringComparison.OrdinalIgnoreCase))
 			    {
@@ -962,7 +960,7 @@ public static class AppRunnerExtensions
 	    {
 		    sbOut.EnsureCapacity(css.Length + (css.Length >> 3)); // small headroom
 
-		    // Enumerate spans on the ORIGINAL css string (single pass only)
+		    // Enumerate spans on the original CSS string (single pass only)
 		    foreach (var span in css.EnumerateAtApplyStatements())
 		    {
 			    var spanStart = span.Index;
@@ -978,7 +976,7 @@ public static class AppRunnerExtensions
 			    // 3) Append transformed span
 			    sbOut.Append(transformed);
 
-			    // 4) Advance prev to end of this span in the ORIGINAL css
+			    // 4) Advance prev to end of this span in the original CSS
 			    prev = spanEnd;
 		    }
 
@@ -2255,149 +2253,152 @@ public static class AppRunnerExtensions
 		return appRunner.GenerateFinalCss();
 	}
 	
-	public static void FinalCssAssembly(this AppRunner appRunner)
+	extension(AppRunner appRunner)
 	{
-		appRunner.CombinedSegmentCss.Clear();
-			
-		var useLayers = appRunner.AppRunnerSettings.UseCompatibilityMode == false;
-
-		if (useLayers)
+		public void FinalCssAssembly()
 		{
-			appRunner.CombinedSegmentCss.Append("@layer properties, theme, base, forms, components, utilities;");
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			appRunner.CombinedSegmentCss.Clear();
 			
-			appRunner.CombinedSegmentCss.Append("@layer theme {");
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			var useLayers = appRunner.AppRunnerSettings.UseCompatibilityMode == false;
 
-			appRunner.CombinedSegmentCss.Append(appRunner.ThemeCssSegment.Content);
-			
-			appRunner.CombinedSegmentCss.Append('}');
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-		else
-		{
-			appRunner.CombinedSegmentCss.Append(appRunner.ThemeCssSegment.Content);
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-
-		if (appRunner.AppRunnerSettings.UseReset)
-		{
 			if (useLayers)
 			{
-				appRunner.CombinedSegmentCss.Append("@layer base {");
+				appRunner.CombinedSegmentCss.Append("@layer properties, theme, base, forms, components, utilities;");
 				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
 			
-				appRunner.CombinedSegmentCss.Append(appRunner.BrowserResetCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append("@layer theme {");
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+
+				appRunner.CombinedSegmentCss.Append(appRunner.ThemeCssSegment.Content);
+			
+				appRunner.CombinedSegmentCss.Append('}');
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			}
+			else
+			{
+				appRunner.CombinedSegmentCss.Append(appRunner.ThemeCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			}
+
+			if (appRunner.AppRunnerSettings.UseReset)
+			{
+				if (useLayers)
+				{
+					appRunner.CombinedSegmentCss.Append("@layer base {");
+					appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			
+					appRunner.CombinedSegmentCss.Append(appRunner.BrowserResetCssSegment.Content);
+				
+					appRunner.CombinedSegmentCss.Append('}');
+					appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+				}
+				else
+				{
+					appRunner.CombinedSegmentCss.Append(appRunner.BrowserResetCssSegment.Content);
+					appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+				}
+			}
+
+			if (appRunner.AppRunnerSettings.UseForms)
+			{
+				if (useLayers)
+				{
+					appRunner.CombinedSegmentCss.Append("@layer forms {");
+					appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			
+					appRunner.CombinedSegmentCss.Append(appRunner.FormsCssSegment.Content);
+				
+					appRunner.CombinedSegmentCss.Append('}');
+					appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+				}
+				else
+				{
+					appRunner.CombinedSegmentCss.Append(appRunner.FormsCssSegment.Content);
+					appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+				}
+			}
+
+			if (useLayers && appRunner.ComponentsCssSegment.Content.Length > 0)
+			{
+				appRunner.CombinedSegmentCss.Append("@layer components {");
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			
+				appRunner.CombinedSegmentCss.Append(appRunner.ComponentsCssSegment.Content);
 				
 				appRunner.CombinedSegmentCss.Append('}');
 				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 			else
 			{
-				appRunner.CombinedSegmentCss.Append(appRunner.BrowserResetCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.ComponentsCssSegment.Content);
 				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
-		}
 
-		if (appRunner.AppRunnerSettings.UseForms)
-		{
 			if (useLayers)
 			{
-				appRunner.CombinedSegmentCss.Append("@layer forms {");
+				appRunner.CombinedSegmentCss.Append("@layer utilities {");
 				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
 			
-				appRunner.CombinedSegmentCss.Append(appRunner.FormsCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.UtilitiesCssSegment.Content);
 				
 				appRunner.CombinedSegmentCss.Append('}');
 				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 			else
 			{
-				appRunner.CombinedSegmentCss.Append(appRunner.FormsCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.UtilitiesCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			}
+
+			if (appRunner.ImportsCssSegment.Content.Length > 0)
+			{
+				appRunner.CombinedSegmentCss.Append(appRunner.ImportsCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			}
+
+			if (appRunner.CustomCssSegment.Content.Length > 0)
+			{
+				appRunner.CombinedSegmentCss.Append(appRunner.CustomCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			}
+
+			if (appRunner.PropertyListCssSegment.Content.Length > 0)
+			{
+				appRunner.CombinedSegmentCss.Append(appRunner.PropertyListCssSegment.Content);
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			}
+
+			if (useLayers)
+			{
+				appRunner.CombinedSegmentCss.Append("@layer properties {");
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			
+				appRunner.CombinedSegmentCss.Append(appRunner.PropertiesCssSegment.Content);
+				
+				appRunner.CombinedSegmentCss.Append('}');
+				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			}
+			else
+			{
+				appRunner.CombinedSegmentCss.Append(appRunner.PropertiesCssSegment.Content);
 				appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
 			}
 		}
 
-		if (useLayers && appRunner.ComponentsCssSegment.Content.Length > 0)
+		public string GenerateFinalCss()
 		{
-			appRunner.CombinedSegmentCss.Append("@layer components {");
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-			
-			appRunner.CombinedSegmentCss.Append(appRunner.ComponentsCssSegment.Content);
-				
-			appRunner.CombinedSegmentCss.Append('}');
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-		else
-		{
-			appRunner.CombinedSegmentCss.Append(appRunner.ComponentsCssSegment.Content);
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
+			var workingSb = appRunner.StringBuilderPool.Get();
 
-		if (useLayers)
-		{
-			appRunner.CombinedSegmentCss.Append("@layer utilities {");
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-			
-			appRunner.CombinedSegmentCss.Append(appRunner.UtilitiesCssSegment.Content);
-				
-			appRunner.CombinedSegmentCss.Append('}');
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-		else
-		{
-			appRunner.CombinedSegmentCss.Append(appRunner.UtilitiesCssSegment.Content);
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-
-		if (appRunner.ImportsCssSegment.Content.Length > 0)
-		{
-			appRunner.CombinedSegmentCss.Append(appRunner.ImportsCssSegment.Content);
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-
-		if (appRunner.CustomCssSegment.Content.Length > 0)
-		{
-			appRunner.CombinedSegmentCss.Append(appRunner.CustomCssSegment.Content);
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-
-		if (appRunner.PropertyListCssSegment.Content.Length > 0)
-		{
-			appRunner.CombinedSegmentCss.Append(appRunner.PropertyListCssSegment.Content);
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-
-		if (useLayers)
-		{
-			appRunner.CombinedSegmentCss.Append("@layer properties {");
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-			
-			appRunner.CombinedSegmentCss.Append(appRunner.PropertiesCssSegment.Content);
-				
-			appRunner.CombinedSegmentCss.Append('}');
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
-		}
-		else
-		{
-			appRunner.CombinedSegmentCss.Append(appRunner.PropertiesCssSegment.Content);
-			appRunner.CombinedSegmentCss.Append(appRunner.AppRunnerSettings.LineBreak);
+			try
+			{
+				return appRunner.AppRunnerSettings.UseMinify ? appRunner.CombinedSegmentCss.ToString().CompactCss(workingSb) : appRunner.CombinedSegmentCss.ReformatCss().ToString().NormalizeLinebreaks(appRunner.AppRunnerSettings.LineBreak);
+			}
+			finally
+			{
+				appRunner.StringBuilderPool.Return(workingSb);
+			}
 		}
 	}
 
-	public static string GenerateFinalCss(this AppRunner appRunner)
-	{
-		var workingSb = appRunner.StringBuilderPool.Get();
-
-		try
-		{
-			return appRunner.AppRunnerSettings.UseMinify ? appRunner.CombinedSegmentCss.ToString().CompactCss(workingSb) : appRunner.CombinedSegmentCss.ReformatCss().ToString().NormalizeLinebreaks(appRunner.AppRunnerSettings.LineBreak);
-		}
-		finally
-		{
-			appRunner.StringBuilderPool.Return(workingSb);
-		}
-	}
-	
 	#endregion 
 }

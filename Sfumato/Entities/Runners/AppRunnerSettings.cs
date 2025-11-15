@@ -1,10 +1,8 @@
+using Sfumato.Entities.Scanning;
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
-using Sfumato.Helpers;
-using Sfumato.Entities.Scanning;
 
 namespace Sfumato.Entities.Runners;
 

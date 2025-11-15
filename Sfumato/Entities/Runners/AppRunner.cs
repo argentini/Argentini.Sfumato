@@ -368,7 +368,7 @@ public sealed class AppRunner
 		watcher.IncludeSubdirectories = recurse;
 		watcher.EnableRaisingEvents = true;
 
-		return watcher;
+		return await Task.FromResult(watcher);
 	}
 
 	/// <summary>

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Sfumato.Entities.Runners;
 
