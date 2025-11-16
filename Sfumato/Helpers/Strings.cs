@@ -1571,9 +1571,6 @@ public static partial class Strings
 	
     public static void WriteToOutput(this string text)
     {
-        if (string.IsNullOrEmpty(text))
-            return;
-
         if (string.IsNullOrWhiteSpace(text))
         {
 	        if (SfumatoService.Configuration?.Logger is not null)

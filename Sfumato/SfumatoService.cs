@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Threading.Tasks.Dataflow;
 using Sfumato.Entities.Library;
 using Sfumato.Entities.Messenger;
@@ -7,6 +8,7 @@ using Sfumato.Entities.Runners;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable RedundantBoolCompare
 // ReSharper disable ConvertIfStatementToSwitchStatement
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Sfumato;
 
@@ -20,19 +22,19 @@ public sealed class SfumatoService
 
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
-	public static async Task InitializeAsync()
+	public static async Task<bool> InitializeAsync(CancellationTokenSource cancellationTokenSource)
 	{
 		if (Configuration?.Arguments?.Length is null)
 		{
 			"SfumatoService.Arguments is null or empty.".WriteToOutput();
 
-			Environment.Exit(1);
-			return;
+			return false;
 		}
 		
 		Console.OutputEncoding = Encoding.UTF8;
 		
-		var version = await Identify.VersionAsync(System.Reflection.Assembly.GetExecutingAssembly());
+		var assembly = Assembly.Load("Sfumato");
+		var version = await Identify.VersionAsync(assembly);
 
 		Messenger.Register<AppRunner>(void (appRunner) =>
 		{
@@ -50,25 +52,12 @@ public sealed class SfumatoService
 		});
 
 		// ReSharper disable once RedundantAssignment
-		var argumentErrorMessage = string.Empty;
-
-#if DEBUG
-		//argumentErrorMessage = await AppState.InitializeAsync(args);
-		//argumentErrorMessage = await AppState.InitializeAsync(["watch", @"c:\code\Fynydd-Website-2024\UmbracoCms\wwwroot\stylesheets\source.css"]);
-		argumentErrorMessage = await AppState.InitializeAsync(["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"]);
-		//argumentErrorMessage = await AppState.InitializeAsync(["watch", "/Users/magic/Developer/Sfumato-Web/UmbracoCms/wwwroot/stylesheets/source.css"]);
-		//argumentErrorMessage = await AppState.InitializeAsync(["watch", "/Users/magic/Developer/Tolnedra2/UmbracoCms/wwwroot/stylesheets/source.css"]);
-		//argumentErrorMessage = await AppState.InitializeAsync(["watch", "/Users/magic/Developer/Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"]);
-		//argumentErrorMessage = await AppState.InitializeAsync(["watch", "/Users/magic/Developer/Woordle/Woordle.Shared/wwwroot/css/source.css"]);
-#else		
-        argumentErrorMessage = await AppState.InitializeAsync(args);
-#endif
+		var argumentErrorMessage = await AppState.InitializeAsync(Configuration.Arguments ?? []);
 
 		if (AppState.VersionMode)
 		{
 			$"Sfumato Version {version}".WriteToOutput();
-			Environment.Exit(0);
-			return;
+			return true;
 		}
 		
 		Strings.ThickLine.Repeat(Library.MaxConsoleWidth).WriteToOutput();
@@ -80,8 +69,7 @@ public sealed class SfumatoService
 		if (string.IsNullOrEmpty(argumentErrorMessage) == false)
 		{
 			argumentErrorMessage.WriteToOutput();
-			Environment.Exit(0);
-			return;
+			return true;
 		}
 
 		if (AppState.InitMode)
@@ -94,8 +82,7 @@ public sealed class SfumatoService
 			$"Created sfumato-example.css file at {Constants.WorkingPath}".WriteToOutput();
 			"".WriteToOutput();
 			
-			Environment.Exit(0);
-			return;
+			return true;
 		}
 		
 		if (AppState.HelpMode)
@@ -159,9 +146,7 @@ public sealed class SfumatoService
 			
             "".WriteToOutput();
 
-			Environment.Exit(0);
-
-			return;
+			return true;
 		}
 
 		if (AppState.BuildMode || AppState.WatchMode)
@@ -227,46 +212,10 @@ public sealed class SfumatoService
 
 				"Watching; press ESC to exit".WriteToOutput();
 
-				var cancellationTokenSource = new CancellationTokenSource();
-
-				// Support async stdin read
-				if (Console.IsInputRedirected)
-				{
-					// Read the stream without blocking the main thread.
-					// Check if the escape key is sent to the stdin stream.
-					// If it is, cancel the token source and exit the loop.
-					// This will allow interactive quit when input is redirected.
-					_ = Task.Run(async () =>
-					{
-						while (cancellationTokenSource.IsCancellationRequested == false)
-						{
-							try
-							{
-								await Task.Delay(25, cancellationTokenSource.Token);
-							}
-							catch (TaskCanceledException)
-							{
-								break;
-							}
-
-							if (Console.In.Peek() == -1)
-								continue;
-
-							if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
-								continue;
-
-							await cancellationTokenSource.CancelAsync();
-
-							break;
-						}
-					}, cancellationTokenSource.Token);
-				}
-
 				foreach (var appRunner in AppState.AppRunners)
 					await appRunner.StartWatchingAsync();
 
-				while ((Console.IsInputRedirected || Console.KeyAvailable == false) &&
-				       cancellationTokenSource.IsCancellationRequested == false)
+				while (cancellationTokenSource.IsCancellationRequested == false)
 				{
 					try
 					{
@@ -290,31 +239,16 @@ public sealed class SfumatoService
 							performedWork = true;
 					}
 
-					if (performedWork)
-					{
-						do
-						{
-							await Task.Delay(25, cancellationTokenSource.Token);
-
-						} while (AppState.AppRunners.Any(r => r.Messages.Count != 0));
-
-						"Watching; press ESC to exit".WriteToOutput();
-					}
-
-					if (Console.IsInputRedirected)
+					if (performedWork == false)
 						continue;
 					
-					if (Console.KeyAvailable == false)
-						continue;
+					do
+					{
+						await Task.Delay(25, cancellationTokenSource.Token);
 
-					var keyPress = Console.ReadKey(intercept: true);
+					} while (AppState.AppRunners.Any(r => r.Messages.Count != 0));
 
-					if (keyPress.Key != ConsoleKey.Escape)
-						continue;
-
-					await cancellationTokenSource.CancelAsync();
-
-					break;
+					"Watching; press ESC to exit".WriteToOutput();
 				}
 			}
 
@@ -331,7 +265,71 @@ public sealed class SfumatoService
 
 		$"Sfumato stopped at {DateTime.Now:HH:mm:ss.fff}".WriteToOutput();
 		"".WriteToOutput();
+
+		return true;
+	}
+	
+	public static async Task InitializeCliAsync()
+	{
+		var cts = new CancellationTokenSource();
+
+		if (Configuration?.Arguments?.Length > 0 && Configuration.Arguments[0] == "watch")
+		{
+			if (Console.IsInputRedirected)
+			{
+				// Read the stream without blocking the main thread.
+				// Check if the escape key is sent to the stdin stream.
+				// If it is, cancel the token source and exit the loop.
+				// This will allow interactive quit when input is redirected.
+				_ = Task.Run(async () =>
+				{
+					while (cts.IsCancellationRequested == false)
+					{
+						try
+						{
+							await Task.Delay(25, cts.Token);
+						}
+						catch (TaskCanceledException)
+						{
+							break;
+						}
+
+						if (Console.In.Peek() == -1)
+							continue;
+
+						if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
+							continue;
+
+						await cts.CancelAsync();
+
+						break;
+					}
+				}, cts.Token);
+			}
+			else
+			{
+				_ = Task.Run(async () =>
+				{
+					while (cts.IsCancellationRequested == false)
+					{
+						if (Console.KeyAvailable == false)
+							continue;
+
+						var keyPress = Console.ReadKey(intercept: true);
+
+						if (keyPress.Key != ConsoleKey.Escape)
+							continue;
+
+						await cts.CancelAsync();
+
+						break;
+					}
+				}, cts.Token);
+			}
+		}
 		
-		Environment.Exit(0);
+		var result = await InitializeAsync(cts);
+
+		Environment.Exit(result ? 0 : 1);
 	}
 }
