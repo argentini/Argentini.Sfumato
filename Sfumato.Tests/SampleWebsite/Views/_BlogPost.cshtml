@@ -21,9 +21,9 @@
     <div class="grid @(string.IsNullOrEmpty(userPhotoUrl) ? string.Empty : "grid-cols-[auto_1fr] gap-x-2.5 md:gap-x-3") items-center text-xs md:text-sm">
         @if (string.IsNullOrEmpty(userPhotoUrl) == false)
         {
-            <img src="@(userPhotoUrl)" class="overflow-hidden rounded-full aspect-square w-8 md:w-6" alt="@(Model.CreatorId == -1 ? "Michael Argentini" : Model.CreatorName()) Avatar" />
+            <img src="@(userPhotoUrl)" class="overflow-hidden rounded-full aspect-square w-8 md:w-6" alt="@(Model.CreatorId == -1 ? "John Doe" : Model.CreatorName()) Avatar" />
         }
-        <div><span class="font-semibold text-black dark:text-white">@Html.Raw(Model.CreatorId == -1 ? "Michael Argentini" : Model.CreatorName())</span><span class="hidden md:inline-block mx-2 opacity-50 text-lg leading-none font-thin">/</span><span class="block mt-0.25 md:mt-0 md:inline-block">@Html.Raw($"{Model.SafeValue("publicationDate", Model.CreateDate):dddd, MMMM d, yyyy}")</span></div>
+        <div><span class="font-semibold text-black dark:text-white">@Html.Raw(Model.CreatorId == -1 ? "John Doe" : Model.CreatorName())</span><span class="hidden md:inline-block mx-2 opacity-50 text-lg leading-none font-thin">/</span><span class="block mt-0.25 md:mt-0 md:inline-block">@Html.Raw($"{Model.SafeValue("publicationDate", Model.CreateDate):dddd, MMMM d, yyyy}")</span></div>
     </div>
     <div class="mt-10 space-y-6">
         @(await Html.CachedBlockListAsync(Model.Parent, Model.SafeBlocklistValue("blockContent"), UmbracoContext, GlobalStateService, ViewData))
