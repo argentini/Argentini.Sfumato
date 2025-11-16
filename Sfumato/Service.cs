@@ -42,7 +42,10 @@ public sealed class Service
 		if (minify is not null && minify == true)
 			Configuration.Arguments = ["watch", relativeCssFilePath, "--minify"];
 
-		_ = RunAsync(cancellationTokenSource ?? new CancellationTokenSource());
+		_ = Task.Run(async () =>
+		{
+			_ = await RunAsync(cancellationTokenSource ?? new CancellationTokenSource());
+		});
 	}
 
 	/// <summary>
@@ -65,7 +68,10 @@ public sealed class Service
 		if (minify is not null && minify == true)
 			Configuration.Arguments = ["build", relativeCssFilePath, "--minify"];
 
-		_ = RunAsync(new CancellationTokenSource());
+		_ = Task.Run(async () =>
+		{
+			_ = await RunAsync(new CancellationTokenSource());
+		});
 	}
 
 	/// <summary>
