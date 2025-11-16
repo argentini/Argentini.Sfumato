@@ -21,16 +21,22 @@ public sealed class Service
 	public static SfumatoConfiguration Configuration { get; } = new();
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
-	public static void StartWatcher(string relativeCssFilePath, CancellationTokenSource? cancellationTokenSource = null)
+	public static void StartWatcher(string relativeCssFilePath, bool? minify = false, CancellationTokenSource? cancellationTokenSource = null)
 	{
 		Configuration.Arguments = ["watch", relativeCssFilePath];
+		
+		if (minify is not null && minify == true)
+			Configuration.Arguments = ["watch", relativeCssFilePath, "--minify"];
 
 		_ = RunAsync(cancellationTokenSource ?? new CancellationTokenSource());
 	}
 
-	public static void PerformBuild(string relativeCssFilePath)
+	public static void PerformBuild(string relativeCssFilePath, bool? minify = false)
 	{
 		Configuration.Arguments = ["build", relativeCssFilePath];
+
+		if (minify is not null && minify == true)
+			Configuration.Arguments = ["build", relativeCssFilePath, "--minify"];
 
 		_ = RunAsync(new CancellationTokenSource());
 	}
