@@ -12,7 +12,7 @@ using Sfumato.Entities.Runners;
 
 namespace Sfumato;
 
-public sealed class SfumatoService
+public sealed class Service
 {
 	private static readonly WeakMessenger Messenger = new ();
 	private static ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
@@ -21,25 +21,25 @@ public sealed class SfumatoService
 	public static SfumatoConfiguration Configuration { get; } = new();
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
-	public static void StartSfumatoWatcher(string relativeCssFilePath)
+	public static void StartWatcher(string relativeCssFilePath, CancellationTokenSource? cancellationTokenSource = null)
 	{
 		Configuration.Arguments = ["watch", relativeCssFilePath];
 
-		_ = InitializeAsync(new CancellationTokenSource());
+		_ = RunAsync(cancellationTokenSource ?? new CancellationTokenSource());
 	}
 
-	public static void RunSfumatoBuilder(string relativeCssFilePath)
+	public static void PerformBuild(string relativeCssFilePath)
 	{
 		Configuration.Arguments = ["build", relativeCssFilePath];
 
-		_ = InitializeAsync(new CancellationTokenSource());
+		_ = RunAsync(new CancellationTokenSource());
 	}
 
-	public static async Task<bool> InitializeAsync(CancellationTokenSource cancellationTokenSource)
+	public static async Task<bool> RunAsync(CancellationTokenSource cancellationTokenSource)
 	{
 		if (Configuration.Arguments?.Length is null)
 		{
-			"SfumatoService.Arguments is null or empty.".WriteToOutput();
+			"Service.Arguments is null or empty.".WriteToOutput();
 
 			return false;
 		}
@@ -223,7 +223,10 @@ public sealed class SfumatoService
 
 				} while (AppState.AppRunners.Any(r => r.Messages.Count != 0));
 
-				"Watching; press ESC to exit".WriteToOutput();
+				if (Configuration.UsingCli)
+					"Watching; press ESC to exit".WriteToOutput();
+				else
+					"Watching for changes".WriteToOutput();
 
 				foreach (var appRunner in AppState.AppRunners)
 					await appRunner.StartWatchingAsync();
@@ -261,7 +264,10 @@ public sealed class SfumatoService
 
 					} while (AppState.AppRunners.Any(r => r.Messages.Count != 0));
 
-					"Watching; press ESC to exit".WriteToOutput();
+					if (Configuration.UsingCli)
+						"Watching; press ESC to exit".WriteToOutput();
+					else
+						"Watching for changes".WriteToOutput();
 				}
 			}
 

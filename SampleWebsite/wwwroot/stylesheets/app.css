@@ -463,6 +463,27 @@
             line-height: var(--sf-leading, var(--text-lg--line-height));
         }
     }
+    .container {
+        max-width: 84rem;
+        margin-inline: auto;
+    }
+    .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    }
+    html {
+        position: relative;
+        min-height: 100%;
+    }
+    body {
+        margin-bottom: 60px;
+    }
+    .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+        color: var(--bs-secondary-color);
+        text-align: end;
+    }
+    .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+        text-align: start;
+    }
 }
 @layer utilities {
     .bg-white {
@@ -498,26 +519,17 @@
     .text-center {
         text-align: center;
     }
-    .font-bold {
-        --sf-font-weight: var(--font-weight-bold);
-        font-weight: var(--font-weight-bold);
-    }
 }
 :root {
     color-scheme: light;
 }
 html {
-    font-size: 18px;
-    @media (width >= 64rem) {
+    font-size: 14px;
+}
+@media (min-width: 768px) {
+    html {
         font-size: 16px;
     }
-}
-html, body {
-    max-width: 100vw;
-}
-.container {
-    max-width: 84rem;
-    margin-inline: auto;
 }
 @property --sf-border-style {
     syntax: "*";

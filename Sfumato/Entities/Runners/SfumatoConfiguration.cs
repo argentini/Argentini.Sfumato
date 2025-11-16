@@ -8,4 +8,9 @@ public class SfumatoConfiguration
     /// You must set the command line arguments.
     /// </summary>
     public string[]? Arguments { get; set; }
+
+    /// <summary>
+    /// When true will show CLI-specific output.
+    /// </summary>
+    public bool UsingCli { get; set; }
 }

@@ -12,21 +12,22 @@ internal class Program
 {
 	private static async Task Main(string[] args)
 	{
-		SfumatoService.Configuration?.Arguments = args;
+		Service.Configuration.Arguments = args;
+		Service.Configuration.UsingCli = true;
 
 #if DEBUG
-		//SfumatoService.Configuration?.Arguments = args;
-		//SfumatoService.Configuration?.Arguments = ["watch", @"c:\code\Fynydd-Website-2024\UmbracoCms\wwwroot\stylesheets\source.css"];
-		//SfumatoService.Configuration?.Arguments = ["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"];
-		//SfumatoService.Configuration?.Arguments = ["watch", "/Users/magic/Developer/Sfumato-Web/UmbracoCms/wwwroot/stylesheets/source.css"];
-		//SfumatoService.Configuration?.Arguments = ["watch", "/Users/magic/Developer/Tolnedra2/UmbracoCms/wwwroot/stylesheets/source.css"];
-		//SfumatoService.Configuration?.Arguments = ["watch", "/Users/magic/Developer/Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"];
-		//SfumatoService.Configuration?.Arguments = ["watch", "/Users/magic/Developer/Woordle/Woordle.Shared/wwwroot/css/source.css"];
+		//Service.Configuration.Arguments = args;
+		//Service.Configuration.Arguments = ["watch", @"c:\code\Fynydd-Website-2024\UmbracoCms\wwwroot\stylesheets\source.css"];
+		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"];
+		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Sfumato-Web/UmbracoCms/wwwroot/stylesheets/source.css"];
+		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Tolnedra2/UmbracoCms/wwwroot/stylesheets/source.css"];
+		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"];
+		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Woordle/Woordle.Shared/wwwroot/css/source.css"];
 #endif
 
 		var cts = new CancellationTokenSource();
 
-		if (SfumatoService.Configuration?.Arguments?.Length > 0 && SfumatoService.Configuration.Arguments[0] == "watch")
+		if (Service.Configuration.Arguments?.Length > 0 && Service.Configuration.Arguments[0] == "watch")
 		{
 			if (Console.IsInputRedirected)
 			{
@@ -80,7 +81,7 @@ internal class Program
 			}
 		}
 		
-		var result = await SfumatoService.InitializeAsync(cts);
+		var result = await Service.RunAsync(cts);
 
 		Environment.Exit(result ? 0 : 1);
 	}

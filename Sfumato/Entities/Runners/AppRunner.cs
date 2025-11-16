@@ -145,7 +145,7 @@ public sealed class AppRunner
 		if (IsFirstRun == false)
 			Messages.Insert(0, Strings.DotLine.Repeat(Entities.Library.Library.MaxConsoleWidth));
 
-		SfumatoService.Dispatcher.Post(this);
+		Service.Dispatcher.Post(this);
 
 		while (Messages.Count != 0)
 			await Task.Delay(25);

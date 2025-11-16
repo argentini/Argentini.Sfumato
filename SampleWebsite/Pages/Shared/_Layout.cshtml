@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - SampleWebsite</title>
     <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/stylesheets/app.css" asp-append-version="true"/>
-    <script src="/IEPrWwHVASsM2GRWoYvPiJ.js"></script>
 
     @* ReSharper disable once Html.PathError *@
     <link rel="stylesheet" href="~/SampleWebsite.styles.css" asp-append-version="true"/>
@@ -16,12 +16,12 @@
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container text-center">
-            <a class="navbar-brand font-bold" asp-area="" asp-page="/Index">SampleWebsite</a>
+            <a class="navbar-brand" asp-area="" asp-page="/Index">SampleWebsite</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <div class="navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>

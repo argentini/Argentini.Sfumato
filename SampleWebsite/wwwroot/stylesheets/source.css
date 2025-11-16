@@ -24,16 +24,13 @@
 }
 
 html {
-
-    font-size: 18px;
-
-    @variant lg {
-        font-size: 16px;
-    }
+    font-size: 14px;
 }
 
-html, body {
-    max-width: 100vw;
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
 }
 
 @layer components {
@@ -108,8 +105,30 @@ html, body {
             @apply text-lg;
         }
     }
-}
 
-.container  {
-    @apply max-w-[84rem] mx-auto;
+    .container  {
+        @apply max-w-[84rem] mx-auto;
+    }
+
+    .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    }
+
+    html {
+        position: relative;
+        min-height: 100%;
+    }
+
+    body {
+        margin-bottom: 60px;
+    }
+
+    .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+        color: var(--bs-secondary-color);
+        text-align: end;
+    }
+
+    .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+        text-align: start;
+    }
 }

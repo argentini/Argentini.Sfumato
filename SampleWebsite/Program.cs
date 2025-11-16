@@ -1,7 +1,3 @@
-using Sfumato;
-
-// using Datoids.Common.Entities.Tracking;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,6 +23,6 @@ app.MapStaticAssets();
 app.MapRazorPages()
     .WithStaticAssets();
 
-SfumatoService.StartSfumatoWatcher("wwwroot/stylesheets/source.css");
+Sfumato.Service.StartWatcher("wwwroot/stylesheets/source.css");
 
 app.Run();
