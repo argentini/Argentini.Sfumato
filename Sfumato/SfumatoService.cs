@@ -19,7 +19,6 @@ public sealed class SfumatoService
 	private static AppState AppState { get; } = new (StringBuilderPool);
 
 	public static SfumatoConfiguration? Configuration { get; } = new();
-
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
 	public static async Task<bool> InitializeAsync(CancellationTokenSource cancellationTokenSource)
@@ -137,7 +136,7 @@ public sealed class SfumatoService
 			Strings.ThinLine.Repeat("COMPATIBILITY:".Length).WriteToOutput();
 			
 			"""
-			If you need to continue to use the prior version of Sfumato, install sfumato-scss tool. This should be used for older projects relying on that version._
+			If you need to continue to use the prior version of Sfumato, install sfumato-scss tool. This should be used for older projects relying on that version.
 
 			Install the compatibility tool with the command below: 
 			
@@ -267,69 +266,5 @@ public sealed class SfumatoService
 		"".WriteToOutput();
 
 		return true;
-	}
-	
-	public static async Task InitializeCliAsync()
-	{
-		var cts = new CancellationTokenSource();
-
-		if (Configuration?.Arguments?.Length > 0 && Configuration.Arguments[0] == "watch")
-		{
-			if (Console.IsInputRedirected)
-			{
-				// Read the stream without blocking the main thread.
-				// Check if the escape key is sent to the stdin stream.
-				// If it is, cancel the token source and exit the loop.
-				// This will allow interactive quit when input is redirected.
-				_ = Task.Run(async () =>
-				{
-					while (cts.IsCancellationRequested == false)
-					{
-						try
-						{
-							await Task.Delay(25, cts.Token);
-						}
-						catch (TaskCanceledException)
-						{
-							break;
-						}
-
-						if (Console.In.Peek() == -1)
-							continue;
-
-						if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
-							continue;
-
-						await cts.CancelAsync();
-
-						break;
-					}
-				}, cts.Token);
-			}
-			else
-			{
-				_ = Task.Run(async () =>
-				{
-					while (cts.IsCancellationRequested == false)
-					{
-						if (Console.KeyAvailable == false)
-							continue;
-
-						var keyPress = Console.ReadKey(intercept: true);
-
-						if (keyPress.Key != ConsoleKey.Escape)
-							continue;
-
-						await cts.CancelAsync();
-
-						break;
-					}
-				}, cts.Token);
-			}
-		}
-		
-		var result = await InitializeAsync(cts);
-
-		Environment.Exit(result ? 0 : 1);
 	}
 }

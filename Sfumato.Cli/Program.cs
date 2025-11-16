@@ -2,6 +2,10 @@
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ClassNeverInstantiated.Global
 
+using System;
+using System.Threading;
+// ReSharper disable RedundantBoolCompare
+
 namespace Sfumato.Cli;
 
 internal class Program
@@ -19,7 +23,65 @@ internal class Program
 		//SfumatoService.Configuration?.Arguments = ["watch", "/Users/magic/Developer/Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"];
 		//SfumatoService.Configuration?.Arguments = ["watch", "/Users/magic/Developer/Woordle/Woordle.Shared/wwwroot/css/source.css"];
 #endif
+
+		var cts = new CancellationTokenSource();
+
+		if (SfumatoService.Configuration?.Arguments?.Length > 0 && SfumatoService.Configuration.Arguments[0] == "watch")
+		{
+			if (Console.IsInputRedirected)
+			{
+				// Check if the escape key is sent to the stdin stream.
+				// If it is, cancel the token source and exit the loop.
+				// This will allow interactive quit when input is redirected.
+				_ = Task.Run(async () =>
+				{
+					while (cts.IsCancellationRequested == false)
+					{
+						try
+						{
+							await Task.Delay(25, cts.Token);
+						}
+						catch (TaskCanceledException)
+						{
+							break;
+						}
+
+						if (Console.In.Peek() == -1)
+							continue;
+
+						if ((char)Console.In.Read() != Convert.ToChar(ConsoleKey.Escape))
+							continue;
+
+						await cts.CancelAsync();
+
+						break;
+					}
+				}, cts.Token);
+			}
+			else
+			{
+				_ = Task.Run(async () =>
+				{
+					while (cts.IsCancellationRequested == false)
+					{
+						if (Console.KeyAvailable == false)
+							continue;
+
+						var keyPress = Console.ReadKey(intercept: true);
+
+						if (keyPress.Key != ConsoleKey.Escape)
+							continue;
+
+						await cts.CancelAsync();
+
+						break;
+					}
+				}, cts.Token);
+			}
+		}
 		
-		await SfumatoService.InitializeCliAsync();
+		var result = await SfumatoService.InitializeAsync(cts);
+
+		Environment.Exit(result ? 0 : 1);
 	}
 }
