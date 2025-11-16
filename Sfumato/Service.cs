@@ -21,6 +21,20 @@ public sealed class Service
 	public static SfumatoConfiguration Configuration { get; } = new();
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
+	/// <summary>
+	/// Start the Sfumato watcher for the specified relative CSS file path.
+	/// </summary>
+	/// <example>
+	/// Example for watching a CSS file only when running locally during development:
+	/// <code>
+	/// #if DEBUG
+	/// Sfumato.Service.StartWatcher("wwwroot/stylesheets/source.css", minify: false);
+	/// #endif
+	/// </code>
+	/// </example>
+	/// <param name="relativeCssFilePath">Relative path to the source CSS file</param>
+	/// <param name="minify">Force minification</param>
+	/// <param name="cancellationTokenSource">Optional cancellation token source, which allows you to stop the watcher at any time. Otherwise, it will stop when your app is stopped.</param>
 	public static void StartWatcher(string relativeCssFilePath, bool? minify = false, CancellationTokenSource? cancellationTokenSource = null)
 	{
 		Configuration.Arguments = ["watch", relativeCssFilePath];
@@ -31,6 +45,19 @@ public sealed class Service
 		_ = RunAsync(cancellationTokenSource ?? new CancellationTokenSource());
 	}
 
+	/// <summary>
+	/// Perform a single build for the specified relative CSS file path.
+	/// </summary>
+	/// <example>
+	/// Example for doing a single build at startup when running in release mode:
+	/// <code>
+	/// #if !DEBUG
+	/// Sfumato.Service.PerformBuild("wwwroot/stylesheets/source.css", minify: true);
+	/// #endif
+	/// </code>
+	/// </example>
+	/// <param name="relativeCssFilePath">Relative path to the source CSS file</param>
+	/// <param name="minify">Force minification</param>
 	public static void PerformBuild(string relativeCssFilePath, bool? minify = false)
 	{
 		Configuration.Arguments = ["build", relativeCssFilePath];
@@ -41,6 +68,14 @@ public sealed class Service
 		_ = RunAsync(new CancellationTokenSource());
 	}
 
+	/// <summary>
+	/// Run Sfumato with the specified configuration.
+	/// Must add arguments to Configuration before calling.
+	/// This entry point is used when running Sfumato as a CLI tool.
+	/// Package use should call StartWatcher() or PerformBuild() instead.
+	/// </summary>
+	/// <param name="cancellationTokenSource"></param>
+	/// <returns></returns>
 	public static async Task<bool> RunAsync(CancellationTokenSource cancellationTokenSource)
 	{
 		if (Configuration.Arguments?.Length is null)
