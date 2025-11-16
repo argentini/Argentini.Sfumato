@@ -224,9 +224,14 @@ public sealed class Service
 				} while (AppState.AppRunners.Any(r => r.Messages.Count != 0));
 
 				if (Configuration.UsingCli)
+				{
 					"Watching; press ESC to exit".WriteToOutput();
+				}
 				else
+				{
 					"Watching for changes".WriteToOutput();
+					"".WriteToOutput();
+				}
 
 				foreach (var appRunner in AppState.AppRunners)
 					await appRunner.StartWatchingAsync();
