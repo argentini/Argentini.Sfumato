@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Library;
 using Sfumato.Entities.Trie;
@@ -1573,13 +1572,7 @@ public static partial class Strings
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-	        if (SfumatoService.Configuration?.Logger is not null)
-#pragma warning disable CA1873
-		        SfumatoService.Configuration.Logger.LogInformation("");
-#pragma warning restore CA1873
-	        else
-		        Console.WriteLine(string.Empty);
-
+		    Console.WriteLine(string.Empty);
 	        return;
         }
         
@@ -1590,14 +1583,7 @@ public static partial class Strings
             result.AddRange(WrapTextAtMaxWidth(line, Library.MaxConsoleWidth));
 
         foreach (var line in result)
-        {
-	        if (SfumatoService.Configuration?.Logger is not null)
-#pragma warning disable CA1873
-		        SfumatoService.Configuration.Logger.LogInformation("{line}", line.NormalizeLinebreaks(Environment.NewLine));
-#pragma warning restore CA1873
-	        else
-		        Console.WriteLine(line.NormalizeLinebreaks(Environment.NewLine));
-        }
+		    Console.WriteLine(line);
     }
 
     [GeneratedRegex(@"^\s+")]

@@ -1,6 +1,7 @@
 ﻿<Solution>
   <Title>Sfumato</Title>
-  <Project Path="Sfumato.Cli\Sfumato.Cli.csproj" Type="C#" />
-  <Project Path="Sfumato.Tests\Sfumato.Tests.csproj" Type="C#" />
-  <Project Path="Sfumato\Sfumato.csproj" Type="C#" />
+  <Project Path="SampleWebsite/SampleWebsite.csproj" />
+  <Project Path="Sfumato.Cli\Sfumato.Cli.csproj" />
+  <Project Path="Sfumato.Tests\Sfumato.Tests.csproj" />
+  <Project Path="Sfumato\Sfumato.csproj" />
 </Solution>

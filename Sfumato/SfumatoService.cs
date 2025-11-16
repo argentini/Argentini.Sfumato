@@ -18,12 +18,26 @@ public sealed class SfumatoService
 	private static ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
 	private static AppState AppState { get; } = new (StringBuilderPool);
 
-	public static SfumatoConfiguration? Configuration { get; } = new();
+	public static SfumatoConfiguration Configuration { get; } = new();
 	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
+
+	public static void StartSfumatoWatcher(string relativeCssFilePath)
+	{
+		Configuration.Arguments = ["watch", relativeCssFilePath];
+
+		_ = InitializeAsync(new CancellationTokenSource());
+	}
+
+	public static void RunSfumatoBuilder(string relativeCssFilePath)
+	{
+		Configuration.Arguments = ["build", relativeCssFilePath];
+
+		_ = InitializeAsync(new CancellationTokenSource());
+	}
 
 	public static async Task<bool> InitializeAsync(CancellationTokenSource cancellationTokenSource)
 	{
-		if (Configuration?.Arguments?.Length is null)
+		if (Configuration.Arguments?.Length is null)
 		{
 			"SfumatoService.Arguments is null or empty.".WriteToOutput();
 

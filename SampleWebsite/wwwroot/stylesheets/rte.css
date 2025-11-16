@@ -1,0 +1,150 @@
+.rte-content {
+
+    p + *,
+    ul + *,
+    ol + *,
+    blockquote + *,
+    article + *,
+    section + *,
+    figure + *,
+    pre + *,
+    div + *,
+    h1 + *,
+    h2 + *,
+    h3 + *,
+    h4 + *,
+    h5 + *,
+    h6 + *
+    {
+        @apply mt-5;
+    }
+
+    h1, h2, h3, h4 {
+
+        @apply mt-12;
+    }
+
+    h5, h6 {
+
+        @apply mt-8;
+    }
+
+    h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+
+        @apply mt-0;
+    }
+
+    p {
+        code {
+            @apply inline-block px-2 rounded bg-code-panel text-white font-mono;
+            font-size: 70%;
+            line-height: 1.9;
+            margin-left: 0.125rem;
+            margin-right: 0.125rem;
+            vertical-align: text-top;
+        }
+    }
+
+    strong {
+        @apply font-bold text-canvas-bold;
+    }
+
+    a {
+        @apply text-primary;
+
+        &:hover {
+            @apply underline;
+        }
+    }
+
+    figure {
+        @apply my-10;
+        img {
+            @apply overflow-hidden rounded;
+        }
+        figcaption {
+            @apply text-sm mt-2;
+        }
+    }
+
+    hr {
+        @apply mt-4 mb-4 border border-line;
+    }
+
+    ul {
+        @apply list-disc list-outside ml-8;
+
+        li {
+            @apply pl-2
+        }
+
+        li + li {
+            @apply mt-4;
+        }
+    }
+
+    ol {
+
+        @apply list-decimal list-outside ml-8;
+
+        li {
+            @apply pl-2
+        }
+
+        li + li {
+            @apply mt-4;
+        }
+    }
+
+    blockquote {
+        @apply my-8 border-l-8 border-primary pl-5 text-lg font-light text-balance;
+    }
+
+    pre {
+        @apply block text-wrap -mx-5 max-w-screen px-5 py-6 mt-10 mb-10 bg-code-panel/85 overflow-visible;
+    }
+
+    @variant sm {
+
+        blockquote {
+            @apply ml-5 text-lg;
+        }
+
+        pre {
+            @apply mx-0! rounded-xl;
+        }
+    }
+}
+
+@variant dark {
+
+    .rte-content {
+
+        strong {
+            @apply text-dark-canvas-bold;
+        }
+
+        hr {
+            @apply border-dark-line;
+        }
+
+        blockquote {
+            @apply border-secondary;
+        }
+
+        a {
+            @apply text-secondary;
+        }
+
+        p {
+            code {
+                @apply bg-dark-code-panel text-white;
+            }
+        }
+
+        pre {
+
+            @apply bg-dark-code-panel;
+        }
+    }
+}
