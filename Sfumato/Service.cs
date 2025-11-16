@@ -15,7 +15,7 @@ namespace Sfumato;
 public sealed class Service
 {
 	private static readonly WeakMessenger Messenger = new ();
-	private static ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+	private static StringBuilderPool StringBuilderPool { get; } = new ();
 	private static AppState AppState { get; } = new (StringBuilderPool);
 
 	public static SfumatoConfiguration Configuration { get; } = new();

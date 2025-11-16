@@ -6,7 +6,6 @@
 // ReSharper disable ForCanBeConvertedToForeach
 
 using Sfumato.Entities.Scanning;
-using Sfumato.Helpers;
 using Sfumato.Validators;
 using Sfumato.Entities.Runners;
 using Sfumato.Entities.Trie;

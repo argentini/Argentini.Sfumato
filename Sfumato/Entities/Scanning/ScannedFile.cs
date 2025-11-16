@@ -5,7 +5,6 @@
 
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Runners;
-using Sfumato.Helpers;
 
 namespace Sfumato.Entities.Scanning;
 

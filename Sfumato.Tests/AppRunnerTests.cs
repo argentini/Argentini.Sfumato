@@ -81,7 +81,7 @@ public class AppRunnerTests : SharedTestBase
         {
             CssContent = new StringBuilder(),
             FileInfo = new FileInfo("test.css"),
-            Pool = new DefaultObjectPoolProvider().CreateStringBuilderPool(),
+            Pool = new StringBuilderPool(),
             Touched = true
         });
         

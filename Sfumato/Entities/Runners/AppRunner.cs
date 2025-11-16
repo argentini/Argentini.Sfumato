@@ -9,7 +9,7 @@ public sealed class AppRunner
 {
 	#region Properties
 
-	public ObjectPool<StringBuilder> StringBuilderPool { get; }
+	public StringBuilderPool StringBuilderPool { get; }
 
 	public string LastCss { get; set; } = string.Empty;
 	public List<string> Messages { get; } = [];
@@ -55,14 +55,14 @@ public sealed class AppRunner
 
 	#region Construction
 
-	public AppRunner(ObjectPool<StringBuilder> stringBuilderPool)
+	public AppRunner(StringBuilderPool stringBuilderPool)
 	{
 		StringBuilderPool = stringBuilderPool;
 		_cssFilePath = string.Empty;
 		_useMinify = false;
 	}
 
-	public AppRunner(ObjectPool<StringBuilder> stringBuilderPool, string cssFilePath, bool useMinify = false)
+	public AppRunner(StringBuilderPool stringBuilderPool, string cssFilePath, bool useMinify = false)
 	{
 		StringBuilderPool = stringBuilderPool;
 

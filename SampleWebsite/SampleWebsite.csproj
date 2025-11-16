@@ -9,5 +9,5 @@
     <ItemGroup>
       <ProjectReference Include="..\Sfumato\Sfumato.csproj" />
     </ItemGroup>
-
+    
 </Project>

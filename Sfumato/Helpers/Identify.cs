@@ -77,7 +77,7 @@ public static class Identify
             $"AppMajorVersion Exception: {e.Message}".WriteToOutput();
         }
 
-        return result ?? string.Empty;
+        return await Task.FromResult(result ?? string.Empty);
     }
 
     public static async Task<string> AppMinorVersionAsync(Assembly assembly)
@@ -94,7 +94,7 @@ public static class Identify
             $"AppMinorVersion Exception: {e.Message}".WriteToOutput();
         }
 
-        return result ?? string.Empty;
+        return await Task.FromResult(result ?? string.Empty);
     }
 
     public static async Task<string> AppBuildVersionAsync(Assembly assembly)
@@ -111,7 +111,7 @@ public static class Identify
             $"AppBuildVersion Exception: {e.Message}".WriteToOutput();
         }
 
-        return result ?? string.Empty;
+        return await Task.FromResult(result ?? string.Empty);
     }
 
     public static async Task<string> VersionAsync(Assembly assembly)

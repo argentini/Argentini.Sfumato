@@ -15,6 +15,8 @@ if (!app.Environment.IsDevelopment())
 
 #if DEBUG
     Sfumato.Service.StartWatcher("wwwroot/stylesheets/source.css", minify: false);
+#else
+    Sfumato.Service.PerformBuild("wwwroot/stylesheets/source.css", minify: true);
 #endif
 
 app.UseHttpsRedirection();

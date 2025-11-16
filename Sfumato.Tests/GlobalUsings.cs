@@ -9,4 +9,3 @@ global using Sfumato.Entities.CssClassProcessing;
 global using Sfumato.Entities.Runners;
 global using Sfumato.Entities.Scanning;
 global using Sfumato.Helpers;
-global using Microsoft.Extensions.ObjectPool;

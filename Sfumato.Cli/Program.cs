@@ -18,7 +18,7 @@ internal class Program
 #if DEBUG
 		//Service.Configuration.Arguments = args;
 		//Service.Configuration.Arguments = ["watch", @"c:\code\Fynydd-Website-2024\UmbracoCms\wwwroot\stylesheets\source.css"];
-		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"];
+		Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Fynydd-Website-2024/UmbracoCms/wwwroot/stylesheets/source.css"];
 		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Sfumato-Web/UmbracoCms/wwwroot/stylesheets/source.css"];
 		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Tolnedra2/UmbracoCms/wwwroot/stylesheets/source.css"];
 		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"];

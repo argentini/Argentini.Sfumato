@@ -1,6 +1,5 @@
 // ReSharper disable RawStringCanBeSimplified
 
-using Sfumato.Helpers;
 using Sfumato.Entities.Runners;
 
 namespace Sfumato.Entities.UtilityClasses.Backgrounds;

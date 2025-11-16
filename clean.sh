@@ -15,3 +15,9 @@ rm -r bin
 rm -r obj
 dotnet restore
 cd ../
+
+cd SampleWebsite
+rm -r bin
+rm -r obj
+dotnet restore
+cd ../

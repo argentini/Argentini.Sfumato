@@ -3,15 +3,14 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 using Sfumato.Entities.Runners;
-using Sfumato.Helpers;
 
 namespace Sfumato;
 
-public sealed class AppState(ObjectPool<StringBuilder> stringBuilderPool)
+public sealed class AppState(StringBuilderPool stringBuilderPool)
 {
     #region Run Mode Properties
 
-    public ObjectPool<StringBuilder> StringBuilderPool { get; } = stringBuilderPool;
+    public StringBuilderPool StringBuilderPool { get; } = stringBuilderPool;
     public bool BuildMode { get; set; }
     public bool WatchMode { get; set; }
     public bool VersionMode { get; set; }

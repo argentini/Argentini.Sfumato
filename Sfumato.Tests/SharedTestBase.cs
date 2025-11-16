@@ -6,7 +6,7 @@ public class SharedTestBase
 {
     private static string Root => ApplicationEnvironment.ApplicationBasePath[..ApplicationEnvironment.ApplicationBasePath.IndexOf("Sfumato.Tests", StringComparison.Ordinal)];
 
-    protected ObjectPool<StringBuilder> StringBuilderPool { get; } = new DefaultObjectPoolProvider().CreateStringBuilderPool();
+    protected StringBuilderPool StringBuilderPool { get; } = new ();
     protected ITestOutputHelper? TestOutputHelper { get; }
     protected bool IsRelease { get; }
 

@@ -1,4 +1,3 @@
-using Sfumato.Helpers;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Runners;
 
