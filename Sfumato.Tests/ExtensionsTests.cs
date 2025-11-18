@@ -164,4 +164,15 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper) : SharedTestBas
         Assert.Equal("oklch(0.704 0.191 22.216)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha(1.0d));
         Assert.Equal("oklch(0.704 0.191 22.216)", "oklch(0.704 0.191 22.216 / 0.5)".SetWebColorAlpha(100));
     }
+
+    [Fact]
+    public void TryGetAbsolutePath()
+    {
+        const string invalidPath1 = "abcxyz/test/file.css";
+        const string validPath1 = "./SampleCss/sample.css";
+
+        Assert.False(invalidPath1.TryGetAbsolutePath(out _));
+        Assert.True(validPath1.TryGetAbsolutePath(out var absolutePath));
+        Assert.Equal("../../../SampleCss/sample.css", Path.GetRelativePath(Directory.GetCurrentDirectory(), absolutePath));
+    }
 }
