@@ -3,6 +3,7 @@ using Sfumato.Entities.Scanning;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable CollectionNeverQueried.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable RedundantBoolCompare
 
 namespace Sfumato.Entities.Runners;
 
@@ -20,9 +21,19 @@ public sealed class AppRunnerSettings
 
 			if (string.IsNullOrEmpty(_cssFilePath))
 				return;
-			
-			NativeCssFilePathOnly = Path.GetFullPath(Path.GetDirectoryName(CssFilePath.SetNativePathSeparators()) ?? string.Empty);
-			CssFileNameOnly = Path.GetFileName(CssFilePath.SetNativePathSeparators());
+
+			NativeCssFilePathOnly = string.Empty;
+			CssFileNameOnly = string.Empty;
+			NativeCssFilePath = string.Empty;
+			NativeCssOutputFilePath = string.Empty;
+
+			if (_cssFilePath.TryGetAbsolutePath(out var absolutePath) == false)
+				return;
+
+			_cssFilePath = Path.GetRelativePath(Directory.GetCurrentDirectory(), absolutePath);
+
+			NativeCssFilePathOnly = Path.GetDirectoryName(absolutePath) ?? string.Empty;
+			CssFileNameOnly = Path.GetFileName(absolutePath);
 			NativeCssFilePath = Path.Combine(NativeCssFilePathOnly, CssFileNameOnly);
 			NativeCssOutputFilePath = Path.GetFullPath(Path.Combine(NativeCssFilePathOnly, CssOutputFilePath.SetNativePathSeparators()));
 		}
