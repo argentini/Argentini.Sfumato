@@ -1593,4 +1593,69 @@ public static partial class Strings
     private static partial Regex PascalCaseToSpacedRegex();
 
     #endregion
+    
+    #region Files
+    
+    /// <summary>
+    /// Attempts to resolve the given path to an absolute, existing file path.
+    /// Handles absolute or relative paths (including ./ and ../).
+    /// First checks Path.GetFullPath(), then walks upward from the current
+    /// working directory and retries resolving the same input path.
+    /// Returns true when the file exists.
+    /// </summary>
+    /// <param name="path">Absolute or relative path input</param>
+    /// <param name="absolutePath">The resolved existing absolute path, or empty string</param>
+    public static bool TryGetAbsolutePath(this string path, out string absolutePath)
+    {
+        absolutePath = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        path = path.SetNativePathSeparators().Trim();
+
+        try
+        {
+            var full = Path.GetFullPath(path);
+
+            if (File.Exists(full))
+            {
+                absolutePath = full;
+                return true;
+            }
+        }
+        catch
+        {
+	        return false;
+        }
+
+        var current = Directory.GetCurrentDirectory();
+
+        while (string.IsNullOrEmpty(current) == false)
+        {
+            try
+            {
+                // Combine the input path with the ancestor directory
+                var testPath = Path.GetFullPath(Path.Combine(current, path));
+
+                if (File.Exists(testPath))
+                {
+                    absolutePath = testPath;
+                    return true;
+                }
+            }
+            catch
+            {
+                // Path errors – skip this directory and continue upward
+            }
+
+            var parent = Directory.GetParent(current);
+
+            current = parent?.FullName;
+        }
+
+        return false;
+    }
+    
+    #endregion
 }
