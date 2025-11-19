@@ -69,9 +69,9 @@ public sealed class AppRunner
 		_cssFilePath = cssFilePath;
 		_useMinify = useMinify;
 
-		BrowserResetCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(Constants.EmbeddedCssPath, "browser-reset.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
-		FormsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(Constants.EmbeddedCssPath, "forms.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
-		DefaultsCssSegment.Content = new StringBuilder(File.ReadAllText(Path.Combine(Constants.EmbeddedCssPath, "defaults.css")).NormalizeLinebreaks(AppRunnerSettings.LineBreak).Trim());
+		BrowserResetCssSegment.Content = new StringBuilder(Constants.LoadBrowserResetCss().Trim());
+		FormsCssSegment.Content = new StringBuilder(Constants.LoadFormsCss().Trim());
+		DefaultsCssSegment.Content = new StringBuilder(Constants.LoadDefaultsCss().Trim());
 
 		Initialize();
 	}

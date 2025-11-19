@@ -5,9 +5,9 @@
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>14</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.1.2.0</AssemblyVersion>
-        <FileVersion>6.1.2.0</FileVersion>
-        <PackageVersion>6.1.2</PackageVersion>
+        <AssemblyVersion>6.1.3.0</AssemblyVersion>
+        <FileVersion>6.1.3.0</FileVersion>
+        <PackageVersion>6.1.3</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Removed some dependencies</PackageReleaseNotes>
+        <PackageReleaseNotes>Resolved issues with top-level statements and embedded resources</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
@@ -38,11 +38,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="css\**" Exclude="**\.DS_Store">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Pack>true</Pack>
-            <PackagePath>contentFiles\any\any\css\</PackagePath>
-        </None>
         <None Include="README.md" Pack="true" PackagePath="" />
         <None Include="LICENSE.txt" Pack="true" PackagePath="" />
         <None Include="sfumato-icon.png" Pack="true" PackagePath="" />

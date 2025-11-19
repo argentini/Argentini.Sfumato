@@ -5,39 +5,25 @@ namespace Sfumato.Helpers;
 public static class Constants
 {
     public static string CliErrorPrefix => "Sfumato => ";
-    public static string EmbeddedCssPath => GetEmbeddedCssPath();
     public static string WorkingPath => Directory.GetCurrentDirectory();
 
     public static readonly double NsPerTick = 1_000_000_000.0 / Stopwatch.Frequency;
 
-    private static string GetEmbeddedCssPath()
+    public static string LoadBrowserResetCss() => LoadEmbeddedText("Sfumato.css.browser-reset.css");
+
+    public static string LoadDefaultsCss() => LoadEmbeddedText("Sfumato.css.defaults.css");
+
+    public static string LoadFormsCss() => LoadEmbeddedText("Sfumato.css.forms.css");
+
+    public static string LoadSfumatoExampleCss() => LoadEmbeddedText("Sfumato.css.sfumato-example.css");
+
+    private static string LoadEmbeddedText(string resourceName)
     {
-        var workingPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+        var asm = typeof(Constants).Assembly;
 
-        while (workingPath.LastIndexOf(Path.DirectorySeparatorChar) > -1)
-        {
-            workingPath = workingPath[..workingPath.LastIndexOf(Path.DirectorySeparatorChar)];
-
-            if (Directory.Exists(Path.Combine(workingPath, "contentFiles")))
-            {
-                workingPath = Path.Combine(workingPath, "contentFiles", "any", "any", "css");
-                break;
-            }		    
-			
-            if (Directory.Exists(Path.Combine(workingPath, "css")))
-            {
-                workingPath = Path.Combine(workingPath, "css");
-                break;
-            }		    
-        }
-
-        // ReSharper disable once InvertIf
-        if (string.IsNullOrEmpty(workingPath) || Directory.Exists(workingPath) == false)
-        {
-            $"{CliErrorPrefix}Embedded CSS resources cannot be found.".WriteToOutput();
-            Environment.Exit(1);
-        }
+        using var stream = asm.GetManifestResourceStream(resourceName) ?? throw new FileNotFoundException($"Embedded resource not found: {resourceName}");
+        using var reader = new StreamReader(stream);
         
-        return workingPath;
-    }
+        return reader.ReadToEnd();
+    }    
 }

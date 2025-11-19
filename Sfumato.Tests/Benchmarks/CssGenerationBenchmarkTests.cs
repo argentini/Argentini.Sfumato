@@ -256,12 +256,12 @@ public class CssGenerationBenchmarkTests(ITestOutputHelper testOutputHelper) : S
 
     private async ValueTask RunFunctions()
     {
-        await  Shared.AppRunner.ProcessSegmentFunctionsAsync( Shared.AppRunner.BrowserResetCssSegment);
-        await  Shared.AppRunner.ProcessSegmentFunctionsAsync( Shared.AppRunner.FormsCssSegment);
-        await  Shared.AppRunner.ProcessSegmentFunctionsAsync( Shared.AppRunner.UtilitiesCssSegment);
-        await  Shared.AppRunner.ProcessSegmentFunctionsAsync( Shared.AppRunner.ImportsCssSegment);
-        await  Shared.AppRunner.ProcessSegmentFunctionsAsync( Shared.AppRunner.ComponentsCssSegment);
-	    await  Shared.AppRunner.ProcessSegmentFunctionsAsync( Shared.AppRunner.CustomCssSegment);
+        await  Shared.AppRunner.ProcessSegmentFunctionsAsync(Shared.AppRunner.BrowserResetCssSegment);
+        await  Shared.AppRunner.ProcessSegmentFunctionsAsync(Shared.AppRunner.FormsCssSegment);
+        await  Shared.AppRunner.ProcessSegmentFunctionsAsync(Shared.AppRunner.UtilitiesCssSegment);
+        await  Shared.AppRunner.ProcessSegmentFunctionsAsync(Shared.AppRunner.ImportsCssSegment);
+        await  Shared.AppRunner.ProcessSegmentFunctionsAsync(Shared.AppRunner.ComponentsCssSegment);
+	    await  Shared.AppRunner.ProcessSegmentFunctionsAsync(Shared.AppRunner.CustomCssSegment);
     }
 
     private async ValueTask RunAtVariantStatements()

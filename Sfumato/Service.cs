@@ -134,7 +134,7 @@ public sealed class Service
 
 		if (AppState.InitMode)
 		{
-            var cssReferenceFile = await Storage.ReadAllTextWithRetriesAsync(Path.Combine(Constants.EmbeddedCssPath, "sfumato-example.css"), Library.FileAccessRetryMs);
+			var cssReferenceFile =	Constants.LoadSfumatoExampleCss().Trim();
 
 			await File.WriteAllTextAsync(Path.Combine(Constants.WorkingPath, "sfumato-example.css"), cssReferenceFile);
 
