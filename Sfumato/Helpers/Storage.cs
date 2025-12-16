@@ -1,44 +1,40 @@
+// ReSharper disable RedundantBoolCompare
 namespace Sfumato.Helpers;
 
 public static class Storage
 {
     public static async Task<string> ReadAllTextWithRetriesAsync(string filePath, int retryForMs = 3000, CancellationToken cancellationToken = default)
     {
-        var fileContent = string.Empty;
+        using var timeoutCts = new CancellationTokenSource(TimeSpan.FromMilliseconds(retryForMs));
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
-        if (retryForMs < 1)
+        while (linkedCts.IsCancellationRequested == false)
         {
             try
             {
-                return await File.ReadAllTextAsync(filePath, cancellationToken);
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-        
-        var timerCancellationToken = new CancellationTokenSource(TimeSpan.FromMilliseconds(retryForMs));
-
-        do
-        {
-            try
-            {
-                // ReSharper disable once PossiblyMistakenUseOfCancellationToken
-                fileContent = await File.ReadAllTextAsync(filePath, cancellationToken);
-                await timerCancellationToken.CancelAsync();
+                return await File.ReadAllTextAsync(filePath, linkedCts.Token);
             }
             catch (IOException)
             {
-                await Task.Delay(50, timerCancellationToken.Token);
+                try
+                {
+                    await Task.Delay(50, linkedCts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                break;
             }
             catch
             {
-                await timerCancellationToken.CancelAsync();
+                break;
             }
-            
-        } while (timerCancellationToken.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false);
+        }
 
-        return fileContent;
+        return string.Empty;
     }
 }
