@@ -91,6 +91,28 @@ public sealed class Bottom : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "bottom-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               bottom: env(safe-area-inset-bottom);
+                               """
+                }
+            },
+            {
+                "bottom-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               bottom: env(safe-area-inset-bottom, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        bottom: env(safe-area-inset-bottom, {0});
+                        """,
+                }
+            },
 
             #endregion
         });

@@ -91,6 +91,28 @@ public sealed class Top : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "top-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               top: env(safe-area-inset-top);
+                               """
+                }
+            },
+            {
+                "top-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               top: env(safe-area-inset-top, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        top: env(safe-area-inset-top, {0});
+                        """,
+                }
+            },
 
             #endregion
         });

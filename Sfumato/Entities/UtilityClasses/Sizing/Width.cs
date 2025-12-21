@@ -25,6 +25,59 @@ public sealed class Width : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "w-safe-dvw", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               width: calc(100dvw - env(safe-area-inset-left) - env(safe-area-inset-right));
+                               """
+                }
+            },
+            {
+                "w-safe-dvw-l", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               width: calc(100dvw - env(safe-area-inset-left));
+                               """
+                }
+            },
+            {
+                "w-safe-dvw-l-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               width: calc(100dvw - env(safe-area-inset-left, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        width: calc(100dvw - env(safe-area-inset-left, {0}));
+                        """,
+                }
+            },
+            {
+                "w-safe-dvw-r", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               width: calc(100dvw - env(safe-area-inset-right));
+                               """
+                }
+            },
+            {
+                "w-safe-dvw-r-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               width: calc(100dvw - env(safe-area-inset-right, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        width: calc(100dvw - env(safe-area-inset-right, {0}));
+                        """,
+                }
+            },
         });
     }
     

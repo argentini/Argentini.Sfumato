@@ -25,6 +25,59 @@ public sealed class MinHeight : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "min-h-safe-dvh", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+                               """
+                }
+            },
+            {
+                "min-h-safe-dvh-t", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               min-height: calc(100dvh - env(safe-area-inset-top));
+                               """
+                }
+            },
+            {
+                "min-h-safe-dvh-t-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               min-height: calc(100dvh - env(safe-area-inset-top, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        min-height: calc(100dvh - env(safe-area-inset-top, {0}));
+                        """,
+                }
+            },
+            {
+                "min-h-safe-dvh-b", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               min-height: calc(100dvh - env(safe-area-inset-bottom));
+                               """
+                }
+            },
+            {
+                "min-h-safe-dvh-b-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               min-height: calc(100dvh - env(safe-area-inset-bottom, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        min-height: calc(100dvh - env(safe-area-inset-bottom, {0}));
+                        """,
+                }
+            },
         });
     }
     

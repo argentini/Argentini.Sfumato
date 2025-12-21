@@ -333,6 +333,28 @@ public sealed class Margin : ClassDictionaryBase
                 }
             },
             {
+                "mt-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               margin-top: env(safe-area-inset-top);
+                               """
+                }
+            },
+            {
+                "mt-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               margin-top: env(safe-area-inset-top, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-top: env(safe-area-inset-top, {0});
+                        """,
+                }
+            },
+            {
                 "mt-", new ClassDefinition
                 {
                     InLengthCollection = true,
@@ -388,6 +410,28 @@ public sealed class Margin : ClassDictionaryBase
                     Template = """
                                margin-right: auto;
                                """
+                }
+            },
+            {
+                "mr-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               margin-right: env(safe-area-inset-right);
+                               """
+                }
+            },
+            {
+                "mr-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               margin-right: env(safe-area-inset-right, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-right: env(safe-area-inset-right, {0});
+                        """,
                 }
             },
             {
@@ -449,6 +493,28 @@ public sealed class Margin : ClassDictionaryBase
                 }
             },
             {
+                "mb-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               margin-bottom: env(safe-area-inset-bottom);
+                               """
+                }
+            },
+            {
+                "mb-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               margin-bottom: env(safe-area-inset-bottom, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-bottom: env(safe-area-inset-bottom, {0});
+                        """,
+                }
+            },
+            {
                 "mb-", new ClassDefinition
                 {
                     InLengthCollection = true,
@@ -504,6 +570,28 @@ public sealed class Margin : ClassDictionaryBase
                     Template = """
                                margin-left: auto;
                                """
+                }
+            },
+            {
+                "ml-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               margin-left: env(safe-area-inset-left);
+                               """
+                }
+            },
+            {
+                "ml-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               margin-left: env(safe-area-inset-left, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        margin-left: env(safe-area-inset-left, {0});
+                        """,
                 }
             },
             {

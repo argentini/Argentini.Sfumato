@@ -97,6 +97,28 @@ public sealed class ScrollPadding : ClassDictionaryBase
                 }
             },
             {
+                "scroll-pt-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               scroll-padding-top: env(safe-area-inset-top);
+                               """
+                }
+            },
+            {
+                "scroll-pt-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               scroll-padding-top: env(safe-area-inset-top, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        scroll-padding-top: env(safe-area-inset-top, {0});
+                        """,
+                }
+            },
+            {
                 "scroll-pr-", new ClassDefinition
                 {
                     InLengthCollection = true,
@@ -107,6 +129,28 @@ public sealed class ScrollPadding : ClassDictionaryBase
                     ArbitraryCssValueTemplate =
                         """
                         scroll-padding-right: {0};
+                        """,
+                }
+            },
+            {
+                "scroll-pr-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               scroll-padding-right: env(safe-area-inset-right);
+                               """
+                }
+            },
+            {
+                "scroll-pr-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               scroll-padding-right: env(safe-area-inset-right, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        scroll-padding-right: env(safe-area-inset-right, {0});
                         """,
                 }
             },
@@ -125,6 +169,28 @@ public sealed class ScrollPadding : ClassDictionaryBase
                 }
             },
             {
+                "scroll-pb-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               scroll-padding-bottom: env(safe-area-inset-bottom);
+                               """
+                }
+            },
+            {
+                "scroll-pb-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               scroll-padding-bottom: env(safe-area-inset-bottom, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        scroll-padding-bottom: env(safe-area-inset-bottom, {0});
+                        """,
+                }
+            },
+            {
                 "scroll-pl-", new ClassDefinition
                 {
                     InLengthCollection = true,
@@ -135,6 +201,28 @@ public sealed class ScrollPadding : ClassDictionaryBase
                     ArbitraryCssValueTemplate =
                         """
                         scroll-padding-left: {0};
+                        """,
+                }
+            },
+            {
+                "scroll-pl-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               scroll-padding-left: env(safe-area-inset-left);
+                               """
+                }
+            },
+            {
+                "scroll-pl-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               scroll-padding-left: env(safe-area-inset-left, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        scroll-padding-left: env(safe-area-inset-left, {0});
                         """,
                 }
             },

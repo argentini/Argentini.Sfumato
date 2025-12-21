@@ -278,6 +278,28 @@ public sealed class Padding : ClassDictionaryBase
                 }
             },
             {
+                "pt-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               padding-top: env(safe-area-inset-top);
+                               """
+                }
+            },
+            {
+                "pt-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               padding-top: env(safe-area-inset-top, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        padding-top: env(safe-area-inset-top, {0});
+                        """,
+                }
+            },
+            {
                 "pt-", new ClassDefinition
                 {
                     InLengthCollection = true,
@@ -324,6 +346,28 @@ public sealed class Padding : ClassDictionaryBase
                     Template = """
                                padding-right: -1px;
                                """
+                }
+            },
+            {
+                "pr-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               padding-right: env(safe-area-inset-right);
+                               """
+                }
+            },
+            {
+                "pr-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               padding-right: env(safe-area-inset-right, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        padding-right: env(safe-area-inset-right, {0});
+                        """,
                 }
             },
             {
@@ -376,6 +420,28 @@ public sealed class Padding : ClassDictionaryBase
                 }
             },
             {
+                "pb-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               padding-bottom: env(safe-area-inset-bottom);
+                               """
+                }
+            },
+            {
+                "pb-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               padding-bottom: env(safe-area-inset-bottom, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        padding-bottom: env(safe-area-inset-bottom, {0});
+                        """,
+                }
+            },
+            {
                 "pb-", new ClassDefinition
                 {
                     InLengthCollection = true,
@@ -422,6 +488,28 @@ public sealed class Padding : ClassDictionaryBase
                     Template = """
                                padding-left: -1px;
                                """
+                }
+            },
+            {
+                "pl-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               padding-left: env(safe-area-inset-left);
+                               """
+                }
+            },
+            {
+                "pl-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               padding-left: env(safe-area-inset-left, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        padding-left: env(safe-area-inset-left, {0});
+                        """,
                 }
             },
             {

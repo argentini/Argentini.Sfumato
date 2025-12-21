@@ -91,6 +91,28 @@ public sealed class Left : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "left-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               left: env(safe-area-inset-left);
+                               """
+                }
+            },
+            {
+                "left-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               left: env(safe-area-inset-left, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        left: env(safe-area-inset-left, {0});
+                        """,
+                }
+            },
 
             #endregion
         });

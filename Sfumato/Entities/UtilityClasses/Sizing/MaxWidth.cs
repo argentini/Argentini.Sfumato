@@ -26,6 +26,59 @@ public sealed class MaxWidth : ClassDictionaryBase
                 }
             },
             {
+                "max-w-safe-dvw", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               max-width: calc(100dvw - env(safe-area-inset-left) - env(safe-area-inset-right));
+                               """
+                }
+            },
+            {
+                "max-w-safe-dvw-l", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               max-width: calc(100dvw - env(safe-area-inset-left));
+                               """
+                }
+            },
+            {
+                "max-w-safe-dvw-l-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               max-width: calc(100dvw - env(safe-area-inset-left, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        max-width: calc(100dvw - env(safe-area-inset-left, {0}));
+                        """,
+                }
+            },
+            {
+                "max-w-safe-dvw-r", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               max-width: calc(100dvw - env(safe-area-inset-right));
+                               """
+                }
+            },
+            {
+                "max-w-safe-dvw-r-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               max-width: calc(100dvw - env(safe-area-inset-right, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        max-width: calc(100dvw - env(safe-area-inset-right, {0}));
+                        """,
+                }
+            },
+            {
                 "container", new ClassDefinition
                 {
                     InSimpleUtilityCollection = true,

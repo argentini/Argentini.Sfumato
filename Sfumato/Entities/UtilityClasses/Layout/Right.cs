@@ -91,6 +91,28 @@ public sealed class Right : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "right-safe", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               right: env(safe-area-inset-right);
+                               """
+                }
+            },
+            {
+                "right-safe-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               right: env(safe-area-inset-right, calc(var(--spacing) * {0}));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        right: env(safe-area-inset-right, {0});
+                        """,
+                }
+            },
 
             #endregion
         });

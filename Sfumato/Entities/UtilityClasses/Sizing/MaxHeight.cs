@@ -25,6 +25,59 @@ public sealed class MaxHeight : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "max-h-safe-dvh", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+                               """
+                }
+            },
+            {
+                "max-h-safe-dvh-t", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               max-height: calc(100dvh - env(safe-area-inset-top));
+                               """
+                }
+            },
+            {
+                "max-h-safe-dvh-t-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               max-height: calc(100dvh - env(safe-area-inset-top, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        max-height: calc(100dvh - env(safe-area-inset-top, {0}));
+                        """,
+                }
+            },
+            {
+                "max-h-safe-dvh-b", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               max-height: calc(100dvh - env(safe-area-inset-bottom));
+                               """
+                }
+            },
+            {
+                "max-h-safe-dvh-b-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               max-height: calc(100dvh - env(safe-area-inset-bottom, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        max-height: calc(100dvh - env(safe-area-inset-bottom, {0}));
+                        """,
+                }
+            },
         });
     }
     

@@ -25,6 +25,59 @@ public sealed class Height : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "h-safe-dvh", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+                               """
+                }
+            },
+            {
+                "h-safe-dvh-t", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               height: calc(100dvh - env(safe-area-inset-top));
+                               """
+                }
+            },
+            {
+                "h-safe-dvh-t-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               height: calc(100dvh - env(safe-area-inset-top, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        height: calc(100dvh - env(safe-area-inset-top, {0}));
+                        """,
+                }
+            },
+            {
+                "h-safe-dvh-b", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               height: calc(100dvh - env(safe-area-inset-bottom));
+                               """
+                }
+            },
+            {
+                "h-safe-dvh-b-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               height: calc(100dvh - env(safe-area-inset-bottom, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        height: calc(100dvh - env(safe-area-inset-bottom, {0}));
+                        """,
+                }
+            },
         });
     }
     

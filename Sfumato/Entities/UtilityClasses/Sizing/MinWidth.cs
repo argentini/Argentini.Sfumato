@@ -25,6 +25,59 @@ public sealed class MinWidth : ClassDictionaryBase
                         """,
                 }
             },
+            {
+                "min-w-safe-dvw", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               min-width: calc(100dvw - env(safe-area-inset-left) - env(safe-area-inset-right));
+                               """
+                }
+            },
+            {
+                "min-w-safe-dvw-l", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               min-width: calc(100dvw - env(safe-area-inset-left));
+                               """
+                }
+            },
+            {
+                "min-w-safe-dvw-l-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               min-width: calc(100dvw - env(safe-area-inset-left, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        min-width: calc(100dvw - env(safe-area-inset-left, {0}));
+                        """,
+                }
+            },
+            {
+                "min-w-safe-dvw-r", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    Template = """
+                               min-width: calc(100dvw - env(safe-area-inset-right));
+                               """
+                }
+            },
+            {
+                "min-w-safe-dvw-r-", new ClassDefinition
+                {
+                    InLengthCollection = true,
+                    Template = """
+                               min-width: calc(100dvw - env(safe-area-inset-right, calc(var(--spacing) * {0})));
+                               """,
+                    ArbitraryCssValueTemplate =
+                        """
+                        min-width: calc(100dvw - env(safe-area-inset-right, {0}));
+                        """,
+                }
+            },
         });
     }
     
