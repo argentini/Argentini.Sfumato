@@ -5,9 +5,9 @@
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>14</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.1.6.0</AssemblyVersion>
-        <FileVersion>6.1.6.0</FileVersion>
-        <PackageVersion>6.1.6</PackageVersion>
+        <AssemblyVersion>6.1.7.0</AssemblyVersion>
+        <FileVersion>6.1.7.0</FileVersion>
+        <PackageVersion>6.1.7</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added safe area utilities</PackageReleaseNotes>
+        <PackageReleaseNotes>Can now escape underscores</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
