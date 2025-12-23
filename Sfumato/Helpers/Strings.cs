@@ -533,15 +533,55 @@ public static partial class Strings
 	
 	#region Transformations
 
-	/// <summary>
-	/// Convert Pascal casing to spaced string.
-	/// (e.g. "MyXMLParser" => "My XML Parser")
-	/// </summary>
-	/// <param name="input"></param>
-	/// <returns></returns>
-	public static string PascalCaseToSpaced(this string input)
+	/// <param name="s"></param>
+	extension(string s)
 	{
-		return PascalCaseToSpacedRegex().Replace(input, " $1");
+		public string ProcessUnderscores()
+		{
+			// Pass 1: compute output length (each "\_" shrinks by 1)
+			var escapes = 0;
+
+			for (var i = 0; i < s.Length - 1; i++)
+				if (s[i] == '\\' && s[i + 1] == '_')
+					escapes++;
+
+			var outLen = s.Length - escapes;
+
+			// Pass 2: fill output in one allocation
+			return string.Create(outLen, s, static (dst, src) =>
+			{
+				var j = 0;
+			
+				for (var i = 0; i < src.Length; i++)
+				{
+					var c = src[i];
+
+					if (c == '\\' && i + 1 < src.Length && src[i + 1] == '_')
+					{
+						dst[j++] = '_'; // keep underscore
+						i++;            // skip the underscore we just consumed
+					}
+					else if (c == '_')
+					{
+						dst[j++] = ' '; // normal underscore -> space
+					}
+					else
+					{
+						dst[j++] = c;
+					}
+				}
+			});
+		}
+
+		/// <summary>
+		/// Convert Pascal casing to spaced string.
+		/// (e.g. "MyXMLParser" => "My XML Parser")
+		/// </summary>
+		/// <returns></returns>
+		public string PascalCaseToSpaced()
+		{
+			return PascalCaseToSpacedRegex().Replace(s, " $1");
+		}
 	}
 
 	/// <param name="text">Input string (it may be <c>null</c> or empty).</param>

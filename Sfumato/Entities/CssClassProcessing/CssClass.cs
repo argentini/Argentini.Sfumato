@@ -223,7 +223,7 @@ public sealed class CssClass : IDisposable
             if (AllSegments.Last().StartsWith('[') == false || AllSegments.Last().EndsWith(']') == false)
                 return;
             
-            var trimmedValue = AllSegments.Last().TrimStart('[').TrimEnd(']').Trim('_');
+            var trimmedValue = AllSegments.Last().TrimStart('[').TrimEnd(']');
             var colonIndex = trimmedValue.IndexOf(':');
 
             if (colonIndex < 1 || colonIndex > trimmedValue.Length - 2)
@@ -236,7 +236,7 @@ public sealed class CssClass : IDisposable
                 // [--my-text-size:1rem]
                 IsCssCustomPropertyAssignment = true;
                 IsValid = true;
-                Styles += $"{span.Property}: {span.Value};".Replace('_', ' ');
+                Styles += $"{span.Property}: {span.Value};".ProcessUnderscores();
             }
             
             if (IsValid == false && AppRunner.Library.CssPropertyNamesWithColons.HasPrefixIn(trimmedValue))
@@ -244,7 +244,7 @@ public sealed class CssClass : IDisposable
                 // [font-size:1rem]
                 IsArbitraryCss = true;
                 IsValid = true;
-                Styles = $"{trimmedValue.Replace('_', ' ').TrimEnd(';')};";
+                Styles = $"{trimmedValue.ProcessUnderscores().TrimEnd(';')};";
             }
 
             if (IsValid && IsImportant)
@@ -365,7 +365,7 @@ public sealed class CssClass : IDisposable
 
             if (HasArbitraryValueWithCssCustomProperty && ClassDefinition is null)
             {
-                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').Replace('_', ' ');
+                var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').ProcessUnderscores();
 
                 if (valueNoBrackets.StartsWith("dimension:", StringComparison.Ordinal) || valueNoBrackets.StartsWith("length:", StringComparison.Ordinal))
                 {
@@ -476,7 +476,7 @@ public sealed class CssClass : IDisposable
 
                 if (ClassDefinition is not null)
                 {
-                    var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').Replace('_', ' ');
+                    var valueNoBrackets = value.TrimStart('[').TrimStart('(').TrimEnd(')').TrimEnd(']').ProcessUnderscores();
 
                     Value = valueNoBrackets.StartsWith("--", StringComparison.Ordinal) ? $"var({valueNoBrackets})" : valueNoBrackets;
                     IsValid = true;
@@ -494,7 +494,7 @@ public sealed class CssClass : IDisposable
             
             if (HasArbitraryValue && HasArbitraryValueWithCssCustomProperty == false && ClassDefinition is null)
             {
-                var valueNoBrackets = value.TrimStart('[').TrimEnd(']').Replace('_', ' ');
+                var valueNoBrackets = value.TrimStart('[').TrimEnd(']').ProcessUnderscores();
 
                 if (valueNoBrackets.ValueIsPercentage())
                 {

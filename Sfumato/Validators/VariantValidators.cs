@@ -9,7 +9,7 @@ public static class VariantValidators
     {
         var bracketIndex = variant.IndexOf('[');
 
-        return bracketIndex > -1 ? variant[(bracketIndex + 1)..^1].Replace('_', ' ') : null;
+        return bracketIndex > -1 ? variant[(bracketIndex + 1)..^1].ProcessUnderscores() : null;
     }
 
     private static string? GetCustomValue(string variant)
@@ -24,7 +24,7 @@ public static class VariantValidators
             bracketIndex = -1;
         
         if (bracketIndex > -1)
-            return variant[(bracketIndex + 1)..^1].Replace('_', ' ');
+            return variant[(bracketIndex + 1)..^1].ProcessUnderscores();
 
         if (parenIndex > -1)
             return $"var{variant[parenIndex..]}";
@@ -84,9 +84,9 @@ public static class VariantValidators
                     return false;
                 
                 if (variantMetadata.SelectorSuffix.Length > 0)
-                    metadata!.SelectorSuffix = variantMetadata.SelectorSuffix.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' '));
+                    metadata!.SelectorSuffix = variantMetadata.SelectorSuffix.Replace("{0}", variant[(lastHyphenIndex + 1)..].ProcessUnderscores());
                 else
-                    metadata!.SelectorSuffix = variantMetadata.Statement.Replace("{0}", variant[(lastHyphenIndex + 1)..].Replace('_', ' '));
+                    metadata!.SelectorSuffix = variantMetadata.Statement.Replace("{0}", variant[(lastHyphenIndex + 1)..].ProcessUnderscores());
 
                 return true;
             }
@@ -155,7 +155,7 @@ public static class VariantValidators
                 {
                     // not-data-[size=large]:
 
-                    metadata!.SelectorSuffix = $":not({customValue.Replace('_', ' ')})";
+                    metadata!.SelectorSuffix = $":not({customValue.ProcessUnderscores()})";
                 }
                 else
                 {
@@ -175,7 +175,7 @@ public static class VariantValidators
             {
                 // group-has-[a]: or group-has-[p.my-class]: etc.
 
-                metadata!.SelectorSuffix = $":is(:where(.group):has(:is({variant[11..^1].Replace('_', ' ')})) *)";
+                metadata!.SelectorSuffix = $":is(:where(.group):has(:is({variant[11..^1].ProcessUnderscores()})) *)";
                 metadata.PrioritySort = 99;
 
                 return true;
@@ -213,7 +213,7 @@ public static class VariantValidators
                         return false;
 
                     metadata!.PrefixType = "prefix";
-                    metadata.SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{variantValue.Replace('_', ' ')} ";
+                    metadata.SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{variantValue.ProcessUnderscores()} ";
 
                     return true;
                 }
@@ -239,7 +239,7 @@ public static class VariantValidators
             {
                 // peer-has-[a]: or peer-has-[p.my-class]: etc.
 
-                metadata!.SelectorSuffix = $":is(:where(.peer):has(:is({variant[10..^1].Replace('_', ' ')})) ~ *)";
+                metadata!.SelectorSuffix = $":is(:where(.peer):has(:is({variant[10..^1].ProcessUnderscores()})) ~ *)";
                 metadata.PrioritySort = 99;
 
                 return true;
@@ -272,7 +272,7 @@ public static class VariantValidators
                     // peer-[.is-published]:
 
                     metadata!.PrefixType = "prefix";
-                    metadata.SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{variantValue[1..^1].Replace('_', ' ')} ~ ";
+                    metadata.SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{variantValue[1..^1].ProcessUnderscores()} ~ ";
 
                     return true;
                 }
@@ -298,7 +298,7 @@ public static class VariantValidators
             {
                 // has-[a]: or has-[a.link]: etc.
 
-                metadata!.SelectorSuffix = $":has({variant[5..^1].Replace('_', ' ')})";
+                metadata!.SelectorSuffix = $":has({variant[5..^1].ProcessUnderscores()})";
 
                 return true;
             }
@@ -329,7 +329,7 @@ public static class VariantValidators
                 if (indexOfBracket > 0)
                 {
                     metadata!.PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1;
-                    metadata.Statement = $"({variantValue.Replace('_', ' ')})";                    
+                    metadata.Statement = $"({variantValue.ProcessUnderscores()})";                    
 
                     return true;
                 }
@@ -355,7 +355,7 @@ public static class VariantValidators
                 if (indexOfBracket > 0)
                 {
                     metadata!.PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1;
-                    metadata.Statement = $"not ({variantValue.Replace('_', ' ')})";                    
+                    metadata.Statement = $"not ({variantValue.ProcessUnderscores()})";                    
 
                     return true;
                 }

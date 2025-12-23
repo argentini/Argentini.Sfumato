@@ -646,6 +646,12 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
         Assert.NotNull(cssClass);
         Assert.True(cssClass.IsValid);
         Assert.Equal("--my-value: 1rem;", cssClass.Styles);
+        
+        cssClass = new CssClass(AppRunner, selector: "bg-[url(/\\_content/images/bg.png)]");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal("background-image: url(/_content/images/bg.png);", cssClass.Styles);
     }
 
     [Fact]
