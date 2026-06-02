@@ -247,8 +247,29 @@ public sealed class CssClass : IDisposable
                 Styles = $"{trimmedValue.ProcessUnderscores().TrimEnd(';')};";
             }
 
-            if (IsValid && IsImportant)
+            if (IsValid == false || IsImportant == false)
+                return;
+            
+            if (Styles.Contains("--") == false)
+            {
                 Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+            }
+            else
+            {
+                var splits = Styles.Split(';', StringSplitOptions.RemoveEmptyEntries);
+
+                Styles = string.Empty;
+                    
+                foreach (var split in splits)
+                {
+                    if (split.Trim().StartsWith("--"))
+                        Styles += split.Trim() + ';' + AppRunner.AppRunnerSettings.LineBreak;
+                    else
+                        Styles += split.Trim() + " !important;" + AppRunner.AppRunnerSettings.LineBreak;
+                }
+                    
+                Styles = Styles.Trim();
+            }
         }
         catch
         {
@@ -1039,7 +1060,28 @@ public sealed class CssClass : IDisposable
             Styles = Styles.Replace("{1}", ModifierValue, StringComparison.Ordinal);
 
         if (IsImportant)
-            Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+        {
+            if (Styles.Contains("--") == false)
+            {
+                Styles = Styles.Replace(";", " !important;", StringComparison.Ordinal);
+            }
+            else
+            {
+                var splits = Styles.Split(';', StringSplitOptions.RemoveEmptyEntries);
+
+                Styles = string.Empty;
+                    
+                foreach (var split in splits)
+                {
+                    if (split.Trim().StartsWith("--"))
+                        Styles += split.Trim() + ';' + AppRunner.AppRunnerSettings.LineBreak;
+                    else
+                        Styles += split.Trim() + " !important;" + AppRunner.AppRunnerSettings.LineBreak;
+                }
+                    
+                Styles = Styles.Trim();
+            }
+        }
 
         Styles = Styles.Replace("calc(var(--spacing) * 0)", "0", StringComparison.Ordinal);
     }

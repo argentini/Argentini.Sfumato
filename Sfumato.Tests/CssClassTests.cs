@@ -485,6 +485,18 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
                     $"@container primary {AppRunner.Library.ContainerQueryPrefixes["@sm"].Statement} and {AppRunner.Library.ContainerQueryPrefixes["@max-lg"].Statement} {{"
                 ]
             },
+            new ()
+            {
+                ClassName = "leading-none!",
+                EscapedClassName = @".leading-none\!",
+                Styles =
+                    """
+                    --sf-leading: 1;
+                    line-height: var(--sf-leading) !important;
+                    """,
+                IsValid = true,
+                IsImportant = true
+            },
         };
 
         foreach (var test in testClasses)

@@ -37,7 +37,7 @@ public class FontWeightTests(ITestOutputHelper testOutputHelper) : SharedTestBas
                 EscapedClassName = @".font-light\!",
                 Styles =
                     """
-                    --sf-font-weight: var(--font-weight-light) !important;
+                    --sf-font-weight: var(--font-weight-light);
                     font-weight: var(--font-weight-light) !important;
                     """,
                 IsValid = true,
