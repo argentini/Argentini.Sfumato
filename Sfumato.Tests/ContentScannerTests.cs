@@ -245,6 +245,18 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper) : SharedTes
             if (quotedSubstrings.ContainsKey(substring) == false)
                 Assert.Fail("Did not find one or more matches");
     }
+
+    [Theory]
+    [InlineData("hover:")]
+    [InlineData("hover:!")]
+    public void StringScanningSkipsEmptyTrailingVariant(string markup)
+    {
+        var quotedSubstrings = new Dictionary<string,string?>(StringComparer.Ordinal);
+
+        markup.ScanForUtilities(quotedSubstrings, AppRunner.Library.ScannerClassNamePrefixes);
+
+        Assert.Empty(quotedSubstrings);
+    }
     
     [Fact]
     public void FileContentParsing()

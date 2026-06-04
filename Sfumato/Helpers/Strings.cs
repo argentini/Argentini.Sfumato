@@ -440,7 +440,13 @@ public static partial class Strings
 			if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
 				return false;
 
-			var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source; 
+			if (source[^1] == ':')
+				return false;
+
+			var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source;
+
+			if (lastSegment.Length == 0)
+				return false;
 
 			if (lastSegment[0] == '[')
 				return true;
@@ -450,13 +456,7 @@ public static partial class Strings
 			if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex > -1 ? lastSegment[..slashIndex] : lastSegment, out prefix, out _) == false)
 				return false;
 
-			if (source[^1] == ':')
-				return false;
-
-			if (lastSegment[^1] is >= 'a' and <= 'z' || lastSegment[^1] is >= '0' and <= '9' || lastSegment[^1] == ']' || lastSegment[^1] == ')' || lastSegment[^1] == '%')
-				return true;
-
-			return false;
+			return lastSegment[^1] is >= 'a' and <= 'z' || lastSegment[^1] is >= '0' and <= '9' || lastSegment[^1] == ']' || lastSegment[^1] == ')' || lastSegment[^1] == '%';
 		}
 
 		/// <summary>

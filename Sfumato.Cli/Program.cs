@@ -23,6 +23,7 @@ internal class Program
 		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Tolnedra2/UmbracoCms/wwwroot/stylesheets/source.css"];
 		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Coursabi/Coursabi.Apps/Coursabi.Apps.Client/Coursabi.Apps.Client/wwwroot/css/source.css"];
 		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/Woordle/Woordle.Shared/wwwroot/css/source.css"];
+		//Service.Configuration.Arguments = ["watch", "/Users/magic/Developer/KraftworxWebsite/UmbracoCms/wwwroot/stylesheets/source.css"];
 #endif
 
 		var cts = new CancellationTokenSource();
