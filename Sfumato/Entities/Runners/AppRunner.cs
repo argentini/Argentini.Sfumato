@@ -201,7 +201,9 @@ public sealed class AppRunner
 
 	private bool PassesPathFilters(string fullName)
 	{
-		// drop blacklisted extensions
+		if (fullName.Equals(AppRunnerSettings.NativeCssOutputFilePath, StringComparison.OrdinalIgnoreCase))
+			return false;
+
 		var ext = Path.GetExtension(fullName);
 
 		if (Library.InvalidFileExtensions.Contains(ext))
@@ -530,6 +532,9 @@ public sealed class AppRunner
 					continue;
 
 				if (Library.ValidFileExtensions.Any(e => e == extension) == false)
+					continue;
+
+				if (fcr.FullPath.Equals(AppRunnerSettings.NativeCssOutputFilePath, StringComparison.OrdinalIgnoreCase))
 					continue;
 
 				var pathOnly = string.IsNullOrEmpty(extension) ? fcr.FullPath : MemoryExtensions.TrimEnd(fcr.FullPath, Path.GetFileName(fcr.FullPath)).ToString();
