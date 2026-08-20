@@ -118,6 +118,54 @@ public class ExtensionsTests(ITestOutputHelper testOutputHelper) : SharedTestBas
         Assert.Equal(14858257461132010124, new StringBuilder("@media screen (min-width: 40rem) and (max-width: 81rem) {").Fnv1AHash64());
         Assert.Equal(11325783342227245128, new StringBuilder("@media screen (min-width: 40rem) {").Fnv1AHash64());
     }
+
+    [Fact]
+    public void StringBuilderSubstringReturnsRequestedSlice()
+    {
+        Assert.Equal("builder", new StringBuilder("string-builder-helper").Substring(7, 7));
+    }
+
+    [Theory]
+    [InlineData(-1, 1)]
+    [InlineData(0, 0)]
+    [InlineData(4, 3)]
+    public void StringBuilderSubstringReturnsEmptyForInvalidBounds(int startIndex, int length)
+    {
+        Assert.Empty(new StringBuilder("value").Substring(startIndex, length));
+    }
+
+    [Fact]
+    public void StringBuilderIndexOfFindsOrdinalMatch()
+    {
+        Assert.Equal(4, new StringBuilder("testneedle").IndexOf("needle"));
+    }
+
+    [Theory]
+    [InlineData(StringComparison.OrdinalIgnoreCase)]
+    [InlineData(StringComparison.InvariantCultureIgnoreCase)]
+    public void StringBuilderIndexOfPreservesComparisonMode(StringComparison comparisonType)
+    {
+        Assert.Equal(4, new StringBuilder("testCAFÉ").IndexOf("café", comparisonType: comparisonType));
+    }
+
+    [Fact]
+    public void StringBuilderIndexOfReturnsMissingForInvalidInput()
+    {
+        var source = new StringBuilder("value");
+
+        Assert.Equal(-1, source.IndexOf("value", -1));
+        Assert.Equal(-1, source.IndexOf(string.Empty));
+        Assert.Equal(-1, source.IndexOf("value", source.Length));
+    }
+
+    [Fact]
+    public void StringBuilderContainsUsesRequestedComparisonMode()
+    {
+        var source = new StringBuilder("prefix-NEEDLE-suffix");
+
+        Assert.False(source.Contains("needle"));
+        Assert.True(source.Contains("needle", StringComparison.OrdinalIgnoreCase));
+    }
     
     [Fact]
     public void CompactCss()
