@@ -6,6 +6,21 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
 {
     private TrieNode _root = new();
     private int _count;
+    private bool _ownsRoot = true;
+
+    public PrefixTrie()
+    {
+    }
+
+    public PrefixTrie(PrefixTrie<TValue> source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        _root = source._root;
+        _count = source._count;
+        _ownsRoot = false;
+        source._ownsRoot = false;
+    }
 
     /// <summary>
     /// Number of key→value pairs currently in the trie.
@@ -37,6 +52,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     {
         _root = new TrieNode();
         _count = 0;
+        _ownsRoot = true;
     }
 
     /// <summary>
@@ -45,6 +61,8 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     /// </summary>
     public void Insert(string key, TValue value)
     {
+        EnsureWritable();
+
         var node = _root;
         
         foreach (var ch in key)
@@ -148,6 +166,8 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     {
         if (string.IsNullOrEmpty(key))
             return false;
+
+        EnsureWritable();
 
         // 1) Walk down, recording each node along the path
         var node = _root;
@@ -292,6 +312,29 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
             foreach (var pair in Traverse(child, prefix + nextChar))
                 yield return pair;
         }
+    }
+
+    private void EnsureWritable()
+    {
+        if (_ownsRoot)
+            return;
+
+        _root = CloneNode(_root);
+        _ownsRoot = true;
+    }
+
+    private static TrieNode CloneNode(TrieNode source)
+    {
+        var clone = new TrieNode
+        {
+            IsWordEnd = source.IsWordEnd,
+            Value = source.Value
+        };
+
+        foreach (var (key, child) in source.Children)
+            clone.Children.Add(key, CloneNode(child));
+
+        return clone;
     }
     
     private sealed class TrieNode

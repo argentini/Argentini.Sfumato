@@ -9,94 +9,94 @@ public sealed class ClassDefinition
     /// Is a simple utility with static properties (e.g. "antialiased");
     /// is used as-is and doesn't have any custom properties.
     /// </summary>
-    public bool InSimpleUtilityCollection { get; set; }
+    public bool InSimpleUtilityCollection { get; init; }
 
     /// <summary>
     /// Class uses an integer (e.g. "3%")
     /// </summary>
-    public bool InPercentageCollection { get; set; }
+    public bool InPercentageCollection { get; init; }
 
     /// <summary>
     /// Class uses float (e.g. "leading-[1.3]")
     /// </summary>
-    public bool InFloatNumberCollection { get; set; }
+    public bool InFloatNumberCollection { get; init; }
 
     /// <summary>
     /// Class uses angles (e.g. "90deg")
     /// </summary>
-    public bool InAngleHueCollection { get; set; }
+    public bool InAngleHueCollection { get; init; }
 
     /// <summary>
     /// Class uses color (e.g. "#aabbcc")
     /// </summary>
-    public bool InColorCollection { get; set; }
+    public bool InColorCollection { get; init; }
 
     /// <summary>
     /// Class uses length (e.g. "1rem")
     /// </summary>
-    public bool InLengthCollection { get; set; }
+    public bool InLengthCollection { get; init; }
 
     /// <summary>
     /// Class uses duration (e.g. "10s")
     /// </summary>
-    public bool InDurationCollection { get; set; }
+    public bool InDurationCollection { get; init; }
 
     /// <summary>
     /// Class uses flex (e.g. "1fr")
     /// </summary>
-    public bool InFlexCollection { get; set; }
+    public bool InFlexCollection { get; init; }
 
     /// <summary>
     /// Class uses frequency (e.g. "10Hz")
     /// </summary>
-    public bool InFrequencyCollection { get; set; }
+    public bool InFrequencyCollection { get; init; }
 
     /// <summary>
     /// Class uses a URL (e.g. "url('/images/bg.jpg')")
     /// </summary>
-    public bool InUrlCollection { get; set; }
+    public bool InUrlCollection { get; init; }
 
     /// <summary>
     /// Class uses an integer (e.g. "3")
     /// </summary>
-    public bool InIntegerCollection { get; set; }
+    public bool InIntegerCollection { get; init; }
 
     /// <summary>
     /// Class uses a ratio (e.g. "1 / 2")
     /// </summary>
-    public bool InRatioCollection { get; set; }
+    public bool InRatioCollection { get; init; }
 
     /// <summary>
     /// Class uses abstract value (e.g. "ui-sans-serif, system-ui")
     /// </summary>
-    public bool InAbstractValueCollection { get; set; }
+    public bool InAbstractValueCollection { get; init; }
 
     /// <summary>
     /// Class uses resolution (e.g. "10dpi")
     /// </summary>
-    public bool InResolutionCollection { get; set; }
+    public bool InResolutionCollection { get; init; }
 
     /// <summary>
     /// Class uses a string (e.g. "'hello world'")
     /// </summary>
-    public bool InStringCollection { get; set; }
+    public bool InStringCollection { get; init; }
 
     /// <summary>
     /// Class uses slash modifiers (e.g. "text-base/2")
     /// </summary>
-    public bool UsesSlashModifier { get; set; }
+    public bool UsesSlashModifier { get; init; }
 
     /// <summary>
     /// Used for items beginning with "@@" that need to be converted to "@" 
     /// </summary>
-    public bool IsRazorSyntax { get; set; }
+    public bool IsRazorSyntax { get; init; }
 
     /// <summary>
     /// CSS class property template (e.g. "top-0" => "top: {0};").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for a custom value.
     /// </summary>
-    public string Template { get; set; } = string.Empty;
+    public string Template { get; init; } = string.Empty;
 
     /// <summary>
     /// CSS class property template using a modifier (e.g. "text-base/5" => "font-size: {0}; line-height: calc(var(--spacing) * {1})").
@@ -104,7 +104,7 @@ public sealed class ClassDefinition
     /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
-    public string ModifierTemplate { get; set; } = string.Empty;
+    public string ModifierTemplate { get; init; } = string.Empty;
 
     /// <summary>
     /// CSS class property template using an arbitrary modifier (e.g. "text-base/[1]" => "font-size: {0}; line-height: {1};").
@@ -112,14 +112,14 @@ public sealed class ClassDefinition
     /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
-    public string ArbitraryModifierTemplate { get; set; } = string.Empty;
+    public string ArbitraryModifierTemplate { get; init; } = string.Empty;
 
     /// <summary>
     /// CSS class property template for arbitrary CSS values (e.g. "text-[1rem]" => "font-size: {0};").
     /// Can contain more than one property assignment.
     /// Use placeholder {0} for custom value.
     /// </summary>
-    public string ArbitraryCssValueTemplate { get; set; } = string.Empty;
+    public string ArbitraryCssValueTemplate { get; init; } = string.Empty;
 
     /// <summary>
     /// CSS class property template for arbitrary CSS values using a modifier (e.g. "text-[1rem]/5" => "font-size: {0}; line-height: calc(var(--spacing) * {1});").
@@ -127,7 +127,7 @@ public sealed class ClassDefinition
     /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
-    public string ArbitraryCssValueWithModifierTemplate { get; set; } = string.Empty;
+    public string ArbitraryCssValueWithModifierTemplate { get; init; } = string.Empty;
 
     /// <summary>
     /// CSS class property template for arbitrary CSS values using an arbitrary modifier (e.g. "text-[1rem]/[1.2]" => "font-size: {0}; line-height: {1};").
@@ -135,20 +135,20 @@ public sealed class ClassDefinition
     /// Use placeholder {0} for a custom value.
     /// Use placeholder {1} for slash modifier value.
     /// </summary>
-    public string ArbitraryCssValueWithArbitraryModifierTemplate { get; set; } = string.Empty;
+    public string ArbitraryCssValueWithArbitraryModifierTemplate { get; init; } = string.Empty;
 
     /// <summary>
     /// Order output class declarations by this integer (default is 0).
     /// </summary>
-    public int SelectorSort { get; set; }
+    public int SelectorSort { get; init; }
 
     /// <summary>
     /// Collection of usage definitions with styles.
     /// </summary>
-    public Dictionary<string, string> DocDefinitions { get; set; } = [];
+    public Dictionary<string, string> DocDefinitions { get; init; } = [];
 
     /// <summary>
     /// Collection of usage examples with styles.
     /// </summary>
-    public Dictionary<string, string> DocExamples { get; set; } = [];
+    public Dictionary<string, string> DocExamples { get; init; } = [];
 }

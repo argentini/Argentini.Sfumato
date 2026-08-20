@@ -1,7 +1,6 @@
 // ReSharper disable RawStringCanBeSimplified
 // ReSharper disable MemberCanBePrivate.Global
 
-using System.Reflection;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Trie;
 using Sfumato.Entities.UtilityClasses;
@@ -10,6 +9,10 @@ namespace Sfumato.Entities.Library;
 
 public sealed class Library
 {
+    private static readonly UtilityClassRegistry BaseRegistry = UtilityClassRegistry.Instance;
+
+    internal static IReadOnlyList<ClassDictionaryBase> ThemeHandlers => BaseRegistry.ThemeHandlers;
+
     #region Theme Properties
 
     public PrefixTrie<string> ColorsByName { get; set; } = new();
@@ -73,23 +76,23 @@ public sealed class Library
     #region Scanner Collections
     
     public PrefixTrie<object?> CssPropertyNamesWithColons { get; set; } = new();
-    public PrefixTrie<object?> ScannerClassNamePrefixes { get; set; } = new();
+    public PrefixTrie<object?> ScannerClassNamePrefixes { get; set; } = new(BaseRegistry.ScannerClassNamePrefixes);
 
-    public PrefixTrie<ClassDefinition> SimpleClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> AbstractClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> AngleHueClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> ColorClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> DurationClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> FlexClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> FloatNumberClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> FrequencyClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> IntegerClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> LengthClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> PercentageClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> RatioClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> ResolutionClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> StringClasses { get; set; } = new();
-    public PrefixTrie<ClassDefinition> UrlClasses { get; set; } = new();
+    public PrefixTrie<ClassDefinition> SimpleClasses { get; set; } = new(BaseRegistry.SimpleClasses);
+    public PrefixTrie<ClassDefinition> AbstractClasses { get; set; } = new(BaseRegistry.AbstractClasses);
+    public PrefixTrie<ClassDefinition> AngleHueClasses { get; set; } = new(BaseRegistry.AngleHueClasses);
+    public PrefixTrie<ClassDefinition> ColorClasses { get; set; } = new(BaseRegistry.ColorClasses);
+    public PrefixTrie<ClassDefinition> DurationClasses { get; set; } = new(BaseRegistry.DurationClasses);
+    public PrefixTrie<ClassDefinition> FlexClasses { get; set; } = new(BaseRegistry.FlexClasses);
+    public PrefixTrie<ClassDefinition> FloatNumberClasses { get; set; } = new(BaseRegistry.FloatNumberClasses);
+    public PrefixTrie<ClassDefinition> FrequencyClasses { get; set; } = new(BaseRegistry.FrequencyClasses);
+    public PrefixTrie<ClassDefinition> IntegerClasses { get; set; } = new(BaseRegistry.IntegerClasses);
+    public PrefixTrie<ClassDefinition> LengthClasses { get; set; } = new(BaseRegistry.LengthClasses);
+    public PrefixTrie<ClassDefinition> PercentageClasses { get; set; } = new(BaseRegistry.PercentageClasses);
+    public PrefixTrie<ClassDefinition> RatioClasses { get; set; } = new(BaseRegistry.RatioClasses);
+    public PrefixTrie<ClassDefinition> ResolutionClasses { get; set; } = new(BaseRegistry.ResolutionClasses);
+    public PrefixTrie<ClassDefinition> StringClasses { get; set; } = new(BaseRegistry.StringClasses);
+    public PrefixTrie<ClassDefinition> UrlClasses { get; set; } = new(BaseRegistry.UrlClasses);
 
     #endregion
     
@@ -124,64 +127,5 @@ public sealed class Library
         foreach (var propertyName in ValidChromeCssPropertyNames)
             CssPropertyNamesWithColons.Insert($"{propertyName}:", null);
 
-        var derivedTypes = Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
-
-        foreach (var type in derivedTypes)
-        {
-            if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-                continue;
-
-            foreach (var item in instance.Data.Where(item => item.Key.EndsWith('(') == false && item.Key.EndsWith('[') == false))
-            {
-                if (item.Value.InAbstractValueCollection)
-                    AbstractClasses.Add(item.Key, item.Value);
-
-                if (item.Value.InSimpleUtilityCollection)
-                    SimpleClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InFloatNumberCollection)
-                    FloatNumberClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InAngleHueCollection)
-                    AngleHueClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InColorCollection)
-                    ColorClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InLengthCollection)
-                    LengthClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InDurationCollection)
-                    DurationClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InFlexCollection)
-                    FlexClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InFrequencyCollection)
-                    FrequencyClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InUrlCollection)
-                    UrlClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InIntegerCollection)
-                    IntegerClasses.Add(item.Key, item.Value);
-
-                if (item.Value.InPercentageCollection)
-                    PercentageClasses.Add(item.Key, item.Value);
-
-                if (item.Value.InRatioCollection)
-                    RatioClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InResolutionCollection)
-                    ResolutionClasses.Add(item.Key, item.Value);
-                
-                if (item.Value.InStringCollection)
-                    StringClasses.Add(item.Key, item.Value);
-
-                ScannerClassNamePrefixes.Insert(item.Key, null);
-            }
-        }        
     }
 }
