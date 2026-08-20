@@ -1,6 +1,7 @@
 // ReSharper disable RedundantAssignment
 // ReSharper disable MemberCanBePrivate.Global
 
+using System.Buffers;
 using System.Globalization;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Scanning;
@@ -859,19 +860,17 @@ public static class AppRunnerExtensions
 	{
 		try
 		{
-			var wrappers = cssClass.Wrappers.ToArray();
-			var index = 0;
+			var wrappers = cssClass.AllocatedWrappers;
 			var depth = 1;
-			
-			while (true)
-			{
-				if (index >= wrappers.Length)
-				{
-					rootBranch.CssClasses.Add(cssClass);
-					return;
-				}
 
-				var (fingerprint, wrapperCss) = wrappers[index];
+			if (wrappers is null)
+			{
+				rootBranch.CssClasses.Add(cssClass);
+				return;
+			}
+
+			foreach (var (fingerprint, wrapperCss) in wrappers)
+			{
 
 				var candidate = new VariantBranch { Fingerprint = fingerprint, WrapperCss = wrapperCss, Depth = depth };
 
@@ -882,9 +881,10 @@ public static class AppRunnerExtensions
 				}
 
 				rootBranch = existing;
-				index += 1;
 				depth += 1;
 			}
+
+			rootBranch.CssClasses.Add(cssClass);
 		}
 		catch (Exception e)
 		{
@@ -1818,46 +1818,62 @@ public static class AppRunnerExtensions
 	/// Scan a CSS string for custom property references (e.g. --sf-color-primary)
 	/// </summary>
 	/// <param name="css"></param>
-	public static HashSet<string> GatherCssCustomProperties(this string css)
+	public static HashSet<string> GatherCssCustomProperties(this string css) => GatherCssCustomProperties(css.AsSpan());
+
+	/// <summary>
+	/// Scan a CSS builder for custom property references without snapshotting its content.
+	/// </summary>
+	/// <param name="css"></param>
+	public static HashSet<string> GatherCssCustomProperties(this StringBuilder css)
 	{
-		// 1) materialize the content
+		if (css.Length == 0)
+			return [];
+
+		var buffer = ArrayPool<char>.Shared.Rent(css.Length);
+
+		try
+		{
+			css.CopyTo(0, buffer, 0, css.Length);
+
+			return GatherCssCustomProperties(buffer.AsSpan(0, css.Length));
+		}
+		finally
+		{
+			ArrayPool<char>.Shared.Return(buffer);
+		}
+	}
+
+	private static HashSet<string> GatherCssCustomProperties(ReadOnlySpan<char> css)
+	{
 		var used = new HashSet<string>(StringComparer.Ordinal);
 		var length = css.Length;
 		var i = 0;
 
-		// 2) scan for “--name” + delimiter
-		while (true)
+		while (i < length)
 		{
-			// find the next “--”
-			var idx = css.IndexOf("--", i, StringComparison.Ordinal);
-			
-			if (idx < 0) 
+			var next = css[i..].IndexOf("--", StringComparison.Ordinal);
+
+			if (next < 0)
 				break;
 
+			var idx = i + next;
 			i = idx + 2;
 
-			// consume [A-Za-z0-9_-]+
 			while (i < length)
 			{
 				var c = css[i];
 
 				if (c is >= '0' and <= '9' or >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '-' or '_')
-				{
 					i++;
-				}
 				else
-				{
 					break;
-				}
 			}
 
-			// must be more than just “--”
 			var nameLen = i - idx;
-			
+
 			if (nameLen <= 2)
 				continue;
 
-			// skip any whitespace
 			while (i < length)
 			{
 				var c = css[i];
@@ -1867,20 +1883,16 @@ public static class AppRunnerExtensions
 				else
 					break;
 			}
-			
-			if (i >= length) 
+
+			if (i >= length)
 				break;
 
-			// only accept var-refs ")" or "," or declarations ":"
 			var delim = css[i];
-			
-			if (delim != ')' && delim != ',' && delim != ':') 
+
+			if (delim != ')' && delim != ',' && delim != ':')
 				continue;
 
-			// Save item
-			used.Add(css.Substring(idx, nameLen));
-
-			// continue scanning after the name
+			used.Add(new string(css.Slice(idx, nameLen)));
 			i = idx + nameLen;
 		}
 
@@ -1898,7 +1910,7 @@ public static class AppRunnerExtensions
 		var settings = appRunner.AppRunnerSettings.SfumatoBlockItems;
 		var used = segment.UsedCssCustomProperties;
 
-		foreach (var item in segment.Content.ToString().GatherCssCustomProperties())
+		foreach (var item in segment.Content.GatherCssCustomProperties())
 		{
 			if (settings.TryGetValue(item, out var val))
 				used.TryAdd(item, val);

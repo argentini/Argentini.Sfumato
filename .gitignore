@@ -50,3 +50,4 @@ msbuild.wrn
 /Sfumato.Tests/variants.json
 /BenchmarkDotNet.Artifacts/
 /benchmark.log
+/.testagent
