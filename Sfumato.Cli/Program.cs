@@ -66,6 +66,15 @@ internal class Program
 				{
 					while (cts.IsCancellationRequested == false)
 					{
+						try
+						{
+							await Task.Delay(25, cts.Token);
+						}
+						catch (TaskCanceledException)
+						{
+							break;
+						}
+
 						if (Console.KeyAvailable == false)
 							continue;
 
