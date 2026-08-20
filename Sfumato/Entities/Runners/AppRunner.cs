@@ -180,12 +180,12 @@ public sealed class AppRunner
 					.Where(PassesPathFilters)
 			);
 
-		// 2. Kick off the scans in parallel—but limit to CPU cores to avoid starvation
-		//    We wrap each scan in Task.Run so we can await the batch as a true async call.
-		var scanTasks = allPaths
-			.Select(path => Task.Run(async () => await ProcessSingleFileAsync(path)));
-
-		await Task.WhenAll(scanTasks);
+		// 2. Scan files concurrently while bounding active work to available CPU cores.
+		await Parallel.ForEachAsync(
+			allPaths,
+			new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+			(path, _) => new ValueTask(ProcessSingleFileAsync(path))
+		);
 
 		// 3. Re-aggregate the utility-class map
 		ProcessScannedFileUtilityClassDependencies(this);
