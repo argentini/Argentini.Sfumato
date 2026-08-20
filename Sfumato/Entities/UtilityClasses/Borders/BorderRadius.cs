@@ -13,7 +13,7 @@ public sealed class BorderRadius : ClassDictionaryBase
         Description = "Utilities for setting border radius for rounded corners.";
     }
 
-    public static readonly Dictionary<string, string> Borders = new ()
+    public static readonly FrozenDictionary<string, string> Borders = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         {
             "rounded",
@@ -111,7 +111,7 @@ public sealed class BorderRadius : ClassDictionaryBase
             border-bottom-left-radius: {0};
             """
         },
-    };
+    }.ToFrozenDictionary(StringComparer.Ordinal);
 
     public override void ProcessThemeSettings(AppRunner appRunner)
     {

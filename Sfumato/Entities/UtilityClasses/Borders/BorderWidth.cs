@@ -14,7 +14,7 @@ public sealed class BorderWidth : ClassDictionaryBase
         Description = "Utilities for setting border width.";
     }
 
-    public static readonly Dictionary<string, string> BorderWidths = new ()
+    public static readonly FrozenDictionary<string, string> BorderWidths = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         {
             "border",
@@ -79,7 +79,7 @@ public sealed class BorderWidth : ClassDictionaryBase
             border-left-width: {0};
             """
         },
-    };
+    }.ToFrozenDictionary(StringComparer.Ordinal);
 
     public override void ProcessThemeSettings(AppRunner appRunner)
     {

@@ -14,7 +14,7 @@ public sealed class BorderColor : ClassDictionaryBase
         Description = "Utilities for setting border color.";
     }
 
-    public static readonly Dictionary<string, string> BorderColors = new ()
+    public static readonly FrozenDictionary<string, string> BorderColors = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         {
             "border",
@@ -70,7 +70,7 @@ public sealed class BorderColor : ClassDictionaryBase
             border-left-color: {0};
             """
         },
-    };
+    }.ToFrozenDictionary(StringComparer.Ordinal);
 
     public override void ProcessThemeSettings(AppRunner appRunner)
     {
