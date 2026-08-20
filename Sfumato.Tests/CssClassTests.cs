@@ -89,6 +89,52 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
     }
 
     [Fact]
+    public void InitializationReturnsOwnedStringBuilders()
+    {
+        var cssClass = new CssClass(AppRunner, selector: "tabp:container");
+
+        Assert.True(cssClass.IsValid);
+        Assert.Null(cssClass.Sb);
+        Assert.Null(cssClass.WorkingSb);
+    }
+
+    [Fact]
+    public void InitializationFailureReturnsOwnedStringBuilders()
+    {
+        var pool = new StringBuilderPool();
+        var ownedBuilder = new StringBuilder();
+        var cssClass = new CssClass(new AppRunner(pool))
+        {
+            Selector = string.Empty,
+            Sb = ownedBuilder
+        };
+
+        Assert.NotNull(Record.Exception(cssClass.Initialize));
+        Assert.Null(cssClass.Sb);
+        Assert.Same(ownedBuilder, pool.Get());
+    }
+
+    [Fact]
+    public void DisposeCanBeCalledMoreThanOnceWithoutDuplicatingBuilder()
+    {
+        var pool = new StringBuilderPool();
+        var ownedBuilder = new StringBuilder();
+        var cssClass = new CssClass(new AppRunner(pool))
+        {
+            Sb = ownedBuilder
+        };
+
+        cssClass.Dispose();
+        cssClass.Dispose();
+
+        var firstBuilder = pool.Get();
+        var secondBuilder = pool.Get();
+
+        Assert.Same(ownedBuilder, firstBuilder);
+        Assert.NotSame(firstBuilder, secondBuilder);
+    }
+
+    [Fact]
     public void UtilityClassProcessing()
     {
         var testClasses = new List<TestClass>()

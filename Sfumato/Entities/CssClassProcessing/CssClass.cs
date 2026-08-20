@@ -90,13 +90,20 @@ public sealed class CssClass : IDisposable
         Initialize();
     }
 
-    public void Dispose()
+    public void Dispose() => ReturnStringBuilders();
+
+    private void ReturnStringBuilders()
     {
-        if (Sb is not null)
-            AppRunner.StringBuilderPool.Return(Sb);
-        
-        if (WorkingSb is not null)
-            AppRunner.StringBuilderPool.Return(WorkingSb);
+        var sb = Sb;
+        var workingSb = WorkingSb;
+
+        Sb = null;
+        WorkingSb = null;
+
+        AppRunner.StringBuilderPool.Return(sb);
+
+        if (ReferenceEquals(sb, workingSb) == false)
+            AppRunner.StringBuilderPool.Return(workingSb);
     }
 
     #endregion
@@ -138,28 +145,35 @@ public sealed class CssClass : IDisposable
     
     public void Initialize()
     {
-        if (ProcessSelectorSegments())
-            return; // Exit early if a simple class with no variants is found
-        
-        ProcessArbitraryCss();
+        try
+        {
+            if (ProcessSelectorSegments())
+                return; // Exit early if a simple class with no variants is found
 
-        if (IsValid == false && AllSegments[^1][0] != '[')
-            ProcessUtilityClasses();
+            ProcessArbitraryCss();
 
-        if (IsValid == false)
-            return;
+            if (IsValid == false && AllSegments[^1][0] != '[')
+                ProcessUtilityClasses();
 
-        if (ClassDefinition?.IsRazorSyntax ?? false)
-            HasRazorSyntax = true;
+            if (IsValid == false)
+                return;
 
-        if (AllSegments.Count > 1)
-            ProcessVariants();
+            if (ClassDefinition?.IsRazorSyntax ?? false)
+                HasRazorSyntax = true;
 
-        if (IsValid)
-            GenerateSelector();
+            if (AllSegments.Count > 1)
+                ProcessVariants();
 
-        if (IsValid)
-            GenerateWrappers();
+            if (IsValid)
+                GenerateSelector();
+
+            if (IsValid)
+                GenerateWrappers();
+        }
+        finally
+        {
+            ReturnStringBuilders();
+        }
     }
     
     #endregion
