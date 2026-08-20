@@ -22,4 +22,14 @@ public class ContentScannerBenchmarks : BenchmarkBase
 
     [Benchmark]
     public Dictionary<string, CssClass> ScanSourceFile() => ContentScanner.ScanFileForUtilityClasses(_content, _appRunner);
+
+    [Benchmark]
+    public async Task<int> LoadAndScanSourceFile()
+    {
+        var scannedFile = new ScannedFile(SampleWebsiteSourceFilePath);
+
+        await scannedFile.LoadAndScanFileAsync(_appRunner);
+
+        return scannedFile.UtilityClasses.Count;
+    }
 }

@@ -23,7 +23,6 @@ public sealed class ScannedFile
         }
     }
     
-    public string FileContent { get; private set; } = string.Empty;
     public string FileName { get; private set; } = string.Empty;
     public string FilePath { get; private set; } = string.Empty;
 
@@ -36,9 +35,10 @@ public sealed class ScannedFile
     
     public async Task LoadAndScanFileAsync(AppRunner appRunner)
     {
-        FileContent = await Storage.ReadAllTextWithRetriesAsync(AbsoluteFilePath, 5000);
+        var fileContent = await Storage.ReadAllTextWithRetriesAsync(AbsoluteFilePath, 5000);
 
-        if (string.IsNullOrEmpty(FileContent) == false)
-            UtilityClasses = ContentScanner.ScanFileForUtilityClasses(FileContent, appRunner);
+        UtilityClasses = string.IsNullOrEmpty(fileContent)
+            ? []
+            : ContentScanner.ScanFileForUtilityClasses(fileContent, appRunner);
     }
 }

@@ -22,6 +22,38 @@ public class AppRunnerTests : SharedTestBase
     }
 
     [Fact]
+    public void ScannedFile_DoesNotRetainSourceContent()
+    {
+        Assert.Null(typeof(ScannedFile).GetProperty("FileContent"));
+    }
+
+    [Fact]
+    public async Task LoadAndScanFileAsync_EmptyRescanClearsUtilityClasses()
+    {
+        var temporaryFilePath = Path.GetTempFileName();
+
+        try
+        {
+            File.Copy(ScanSampleFilePath, temporaryFilePath, true);
+
+            var scannedFile = new ScannedFile(temporaryFilePath);
+
+            await scannedFile.LoadAndScanFileAsync(AppRunner);
+
+            Assert.Equal(248, scannedFile.UtilityClasses.Count);
+
+            await File.WriteAllTextAsync(temporaryFilePath, string.Empty);
+            await scannedFile.LoadAndScanFileAsync(AppRunner);
+
+            Assert.Empty(scannedFile.UtilityClasses);
+        }
+        finally
+        {
+            File.Delete(temporaryFilePath);
+        }
+    }
+
+    [Fact]
     public async Task ProcessAtApplyStatementsAndTrackDependencies()
     {
         Assert.True(File.Exists(SampleCssFilePath));
