@@ -62,6 +62,17 @@ public class ScrollMarginTests(ITestOutputHelper testOutputHelper) : SharedTestB
                 IsValid = true,
                 IsImportant = false,
             },
+            new ()
+            {
+                ClassName = "scroll-mb-safe-[1rem]",
+                EscapedClassName = @".scroll-mb-safe-\[1rem\]",
+                Styles =
+                    """
+                    scroll-margin-bottom: env(safe-area-inset-bottom, 1rem);
+                    """,
+                IsValid = true,
+                IsImportant = false,
+            },
         };
 
         foreach (var test in testClasses)

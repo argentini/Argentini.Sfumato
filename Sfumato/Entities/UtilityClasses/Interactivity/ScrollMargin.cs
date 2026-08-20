@@ -186,7 +186,7 @@ public sealed class ScrollMargin : ClassDictionaryBase
                                """,
                     ArbitraryCssValueTemplate =
                         """
-                        scroll-padding-margin: env(safe-area-inset-bottom, {0});
+                        scroll-margin-bottom: env(safe-area-inset-bottom, {0});
                         """,
                 }
             },
