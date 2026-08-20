@@ -48,3 +48,5 @@ msbuild.wrn
 /Sfumato.Tests/utility-classes.json
 /Sfumato.Tests/css-custom-properties.json
 /Sfumato.Tests/variants.json
+/BenchmarkDotNet.Artifacts/
+/benchmark.log

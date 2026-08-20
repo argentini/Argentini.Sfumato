@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>14</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Sfumato\Sfumato.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\Sfumato.Tests\SampleWebsite\**\*">
+            <Link>Fixtures\SampleWebsite\%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>
