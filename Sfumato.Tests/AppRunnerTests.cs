@@ -54,6 +54,44 @@ public class AppRunnerTests : SharedTestBase
     }
 
     [Fact]
+    public async Task ProcessScannedFileUtilityClassDependencies_MergesConcurrentScans()
+    {
+        var scannedFiles = new ScannedFile[16];
+        var scanTasks = new Task[scannedFiles.Length];
+
+        for (var i = 0; i < scannedFiles.Length; i++)
+        {
+            var scannedFile = new ScannedFile(ScanSampleFilePath);
+
+            scannedFiles[i] = scannedFile;
+            scanTasks[i] = scannedFile.LoadAndScanFileAsync(AppRunner);
+        }
+
+        await Task.WhenAll(scanTasks);
+
+        for (var i = 0; i < scannedFiles.Length; i++)
+            AppRunner.ScannedFiles.TryAdd(i.ToString(), scannedFiles[i]);
+
+        AppRunner.ProcessScannedFileUtilityClassDependencies(AppRunner);
+
+        Assert.Equal(248, AppRunner.UtilityClasses.Count);
+
+        var aggregated = AppRunner.UtilityClasses["text-base/6"];
+        var foundSourceInstance = false;
+
+        for (var i = 0; i < scannedFiles.Length; i++)
+        {
+            if (ReferenceEquals(aggregated, scannedFiles[i].UtilityClasses["text-base/6"]))
+            {
+                foundSourceInstance = true;
+                break;
+            }
+        }
+
+        Assert.True(foundSourceInstance);
+    }
+
+    [Fact]
     public async Task ProcessAtApplyStatementsAndTrackDependencies()
     {
         Assert.True(File.Exists(SampleCssFilePath));

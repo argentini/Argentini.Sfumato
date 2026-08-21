@@ -7,27 +7,27 @@ public static class ContentScanner
 {
     public static Dictionary<string, CssClass> ScanFileForUtilityClasses(string fileContent, AppRunner appRunner)
     {
-        if (string.IsNullOrEmpty(fileContent))
-            return [];
-        
-        var sb = appRunner.StringBuilderPool.Get();
-        var bag = new Dictionary<string,string?>(StringComparer.Ordinal);
+		if (string.IsNullOrEmpty(fileContent))
+			return [];
 
-        try
-        {
-            fileContent.ScanForUtilities(bag, appRunner.Library.ScannerClassNamePrefixes, sb);
-            
-            var results = new Dictionary<string, CssClass>(StringComparer.Ordinal);
+		var sb = appRunner.StringBuilderPool.Get();
+		var candidates = new Dictionary<string, string?>(StringComparer.Ordinal);
 
-            foreach (var kvp in bag)
-                appRunner.ScanStringForClasses(kvp, results);
+		try
+		{
+			fileContent.ScanForUtilities(candidates, appRunner.Library.ScannerClassNamePrefixes, sb);
 
-            return results;
-        }
-        finally
-        {
-            appRunner.StringBuilderPool.Return(sb);
-        }
+			var results = new Dictionary<string, CssClass>(candidates.Count, StringComparer.Ordinal);
+
+			foreach (var candidate in candidates)
+				appRunner.ScanStringForClasses(candidate, results);
+
+			return results;
+		}
+		finally
+		{
+			appRunner.StringBuilderPool.Return(sb);
+		}
     }
 
     private static void ScanStringForClasses(this AppRunner appRunner, KeyValuePair<string,string?> kvp, Dictionary<string, CssClass> results)

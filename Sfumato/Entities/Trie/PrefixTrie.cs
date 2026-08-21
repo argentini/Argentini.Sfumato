@@ -79,6 +79,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
         if (node.IsWordEnd == false)
         {
             node.IsWordEnd = true;
+            node.Word = key;
             _count++;
         }
         
@@ -187,6 +188,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
 
         // 3) Un-mark it and clear its value
         node.IsWordEnd = false;
+        node.Word      = null;
         node.Value     = default!;
         _count--;
 
@@ -232,6 +234,13 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     /// </summary>
     public bool TryGetLongestMatchingPrefix(string input, out string? prefix, out TValue? value)
     {
+        ArgumentNullException.ThrowIfNull(input);
+
+        return TryGetLongestMatchingPrefix(input.AsSpan(), out prefix, out value);
+    }
+
+    public bool TryGetLongestMatchingPrefix(ReadOnlySpan<char> input, out string? prefix, out TValue? value)
+    {
         prefix = null;
         value = default;
         
@@ -260,7 +269,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
 
         if (lastValidIndex >= 0 && lastValidNode is not null)
         {
-            prefix = input[..(lastValidIndex + 1)];
+            prefix = lastValidNode.Word;
             value  = lastValidNode.Value;
             
             return true;
@@ -328,6 +337,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
         var clone = new TrieNode
         {
             IsWordEnd = source.IsWordEnd,
+            Word = source.Word,
             Value = source.Value
         };
 
@@ -341,6 +351,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     {
         public Dictionary<char, TrieNode> Children { get; } = new();
         public bool IsWordEnd { get; set; }
+        public string? Word { get; set; }
         public TValue? Value { get; set; }
     }
 }

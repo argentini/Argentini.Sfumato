@@ -361,12 +361,17 @@ public static partial class Strings
 
 	public static void ProcessSubstrings(this string source, Dictionary<string,string?> bag, PrefixTrie<object?> scannerClassNamePrefixes)
 	{
+	    ProcessSubstrings(source.AsSpan(), bag, scannerClassNamePrefixes);
+	}
+
+	private static void ProcessSubstrings(ReadOnlySpan<char> source, Dictionary<string,string?> bag, PrefixTrie<object?> scannerClassNamePrefixes)
+	{
 	    // Early exit for empty strings
-	    if (string.IsNullOrEmpty(source))
+	    if (source.IsEmpty)
 	        return;
 
 	    // Use Span to avoid allocations during trimming
-	    var span = source.AsSpan();
+	    var span = source;
 	    
 	    // Trim delimiters from both ends
 	    var start = 0;
@@ -383,34 +388,49 @@ public static partial class Strings
 	    if (start > end)
 	        return;
 	    
-	    // Only create substring if we actually trimmed
-	    var trimmedSource = (start == 0 && end == source.Length - 1) 
-	        ? source 
-	        : source.Substring(start, end - start + 1);
+	    var trimmedSource = span[start..(end + 1)];
+	    var delimiterIndex = trimmedSource.IndexOfAny(Delimiters);
+
+	    if (delimiterIndex < 0)
+	    {
+	        if (trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var directPrefix))
+	            bag.GetAlternateLookup<ReadOnlySpan<char>>().TryAdd(trimmedSource, directPrefix);
+
+	        return;
+	    }
 
 	    // Use single IndexOf() call for quote checking
 	    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
 	    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
 
 	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var prefix))
-	        bag.TryAdd(trimmedSource, prefix);
+	        bag.GetAlternateLookup<ReadOnlySpan<char>>().TryAdd(trimmedSource, prefix);
 
 	    // Check each delimiter once
 	    for (var d = 0; d < Delimiters.Length; d++)
 	    {
-	        var index = trimmedSource.IndexOf(Delimiters[d]);
+	        var index = Delimiters[d] == trimmedSource[delimiterIndex]
+	            ? delimiterIndex
+	            : trimmedSource.IndexOf(Delimiters[d]);
 
 	        if (index <= 0 || index >= trimmedSource.Length - 1)
 	            continue;
 
-	        var subsegments = trimmedSource.Split(Delimiters[d], StringSplitOptions.RemoveEmptyEntries);
-	        
-	        // Skip if split didn't split anything
-	        if (subsegments.Length == 1)
-	            continue;
-	            
-	        foreach (var subsegment in subsegments)
-	            ProcessSubstrings(subsegment, bag, scannerClassNamePrefixes);
+	        var remaining = trimmedSource;
+
+	        while (remaining.IsEmpty == false)
+	        {
+	            var splitIndex = remaining.IndexOf(Delimiters[d]);
+	            var subsegment = splitIndex < 0 ? remaining : remaining[..splitIndex];
+
+	            if (subsegment.IsEmpty == false)
+	                ProcessSubstrings(subsegment, bag, scannerClassNamePrefixes);
+
+	            if (splitIndex < 0)
+	                break;
+
+	            remaining = remaining[(splitIndex + 1)..];
+	        }
 	        
 	        // Exit after first delimiter found and processed
 	        break;
@@ -423,6 +443,70 @@ public static partial class Strings
 	    return c is '\"' or '\'' or '`';
 	}
 
+	public static bool IsLikelyUtilityClass(this ReadOnlySpan<char> source, PrefixTrie<object?> scannerClassNamePrefixes, out string? prefix)
+	{
+		prefix = null;
+
+		if (source.Length < 3)
+			return false;
+
+		if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
+			return false;
+
+		if (source[^1] == ':')
+			return false;
+
+		var end = source[^1] == '!' ? source.Length - 1 : source.Length;
+		var segmentStart = 0;
+		var selector = source[..end];
+
+		if (selector.IndexOf(':') >= 0)
+		{
+			var bracket = 0;
+			var paren = 0;
+
+			for (var i = 0; i < selector.Length; i++)
+			{
+				switch (selector[i])
+				{
+					case '[':
+						bracket++;
+						break;
+					case ']':
+						if (bracket > 0)
+							bracket--;
+						break;
+					case '(':
+						paren++;
+						break;
+					case ')':
+						if (paren > 0)
+							paren--;
+						break;
+					case ':' when bracket == 0 && paren == 0:
+						segmentStart = i + 1;
+						break;
+				}
+			}
+		}
+
+		var lastSegment = selector[segmentStart..];
+
+		if (lastSegment.IsEmpty)
+			return false;
+
+		if (lastSegment[0] == '[')
+			return true;
+
+		var slashIndex = lastSegment.IndexOf('/');
+		var className = slashIndex > -1 ? lastSegment[..slashIndex] : lastSegment;
+
+		if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(className, out prefix, out _) == false)
+			return false;
+
+		return lastSegment[^1] is >= 'a' and <= 'z' or >= '0' and <= '9' or ']' or ')' or '%';
+	}
+
 	extension(string source)
 	{
 		/// <summary>
@@ -432,31 +516,7 @@ public static partial class Strings
 		/// </summary>
 		public bool IsLikelyUtilityClass(PrefixTrie<object?> scannerClassNamePrefixes, out string? prefix)
 		{
-			prefix = null;
-		
-			if (source.Length < 3)
-				return false;
-
-			if (source.IndexOf("=\"", StringComparison.Ordinal) > 0)
-				return false;
-
-			if (source[^1] == ':')
-				return false;
-
-			var lastSegment = source.IndexOf(':') > 0 ? source.LastByTopLevel(':') ?? source : source[^1] == '!' ? source[..^1] : source;
-
-			if (lastSegment.Length == 0)
-				return false;
-
-			if (lastSegment[0] == '[')
-				return true;
-		
-			var slashIndex = lastSegment.IndexOf('/');
-
-			if (scannerClassNamePrefixes.TryGetLongestMatchingPrefix(slashIndex > -1 ? lastSegment[..slashIndex] : lastSegment, out prefix, out _) == false)
-				return false;
-
-			return lastSegment[^1] is >= 'a' and <= 'z' || lastSegment[^1] is >= '0' and <= '9' || lastSegment[^1] == ']' || lastSegment[^1] == ')' || lastSegment[^1] == '%';
+			return source.AsSpan().IsLikelyUtilityClass(scannerClassNamePrefixes, out prefix);
 		}
 
 		/// <summary>
