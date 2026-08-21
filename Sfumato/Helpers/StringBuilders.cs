@@ -190,30 +190,21 @@ public static class StringBuilders
 	/// <param name="startIndex"></param>
 	/// <param name="comparisonType"></param>
 	/// <returns></returns>
-    public static int IndexOf(this StringBuilder? sb, string? value, int startIndex = 0, StringComparison comparisonType = StringComparison.Ordinal)
-    {
-        if (sb == null || string.IsNullOrEmpty(value) || startIndex < 0 || sb.Length - startIndex < value.Length)
-            return -1;
+	public static int IndexOf(this StringBuilder? sb, string? value, int startIndex = 0, StringComparison comparisonType = StringComparison.Ordinal)
+	{
+		if (sb == null || string.IsNullOrEmpty(value) || (sb.Length - startIndex) < value.Length)
+			return -1;
 
-        if (comparisonType != StringComparison.Ordinal)
-            return sb.ToString().IndexOf(value, startIndex, comparisonType);
+		for (var i = startIndex; i <= sb.Length - value.Length; i++)
+		{
+			var found = value.Where((t, j) => sb[i + j].ToString().Equals(t.ToString(), comparisonType) == false).Any() == false;
 
-        var lastStartIndex = sb.Length - value.Length;
+			if (found)
+				return i;
+		}
 
-        for (var i = startIndex; i <= lastStartIndex; i++)
-        {
-            var j = 0;
-
-            for (; j < value.Length; j++)
-                if (sb[i + j] != value[j])
-                    break;
-
-            if (j == value.Length)
-                return i;
-        }
-
-        return -1;
-    }
+		return -1;
+	}
 	
 	private const int MaxSpaces = 4096;
 	private static readonly char[] SpacesBuffer = CreateSpaceBuffer();
@@ -453,14 +444,20 @@ public static class StringBuilders
 	/// <param name="startIndex">A zero-based start index</param>
 	/// <param name="length">String length to retrieve</param>
 	/// <returns>Substring or empty string if not found</returns>
-    public static string Substring(this StringBuilder source, int startIndex, int length)
-    {
-        if (source.Length <= 0 || startIndex < 0 || length <= 0 || startIndex > source.Length - length)
-            return string.Empty;
+	public static string Substring(this StringBuilder source, int startIndex, int length)
+	{
+		var result = string.Empty;
 
-        return string.Create(length, (source, startIndex), static (span, state) =>
-            state.source.CopyTo(state.startIndex, span, span.Length));
-    }
+		if (source.Length <= 0) return result;
+		if (startIndex < 0 || length <= 0) return result;
+		if (startIndex + length > source.Length) return result;
+		
+		for (var x = startIndex; x < startIndex + length; x++)
+			result += source[x];
+
+		return result;
+		
+	}
 	
 	/// <summary>
 	/// Remove whitespace from the beginning and end of a StringBuilder
@@ -483,8 +480,19 @@ public static class StringBuilders
 	/// <param name="source">The StringBuilder to trim</param>
 	/// <param name="substring">Substring to find</param>
 	/// <param name="stringComparison">Comparison mode</param>
-    public static bool Contains(this StringBuilder source, string substring, StringComparison stringComparison = StringComparison.Ordinal)
-    {
-        return source.IndexOf(substring, comparisonType: stringComparison) >= 0;
-    }
+	public static bool Contains(this StringBuilder source, string substring, StringComparison stringComparison = StringComparison.Ordinal)
+	{
+		if (source.Length == 0 || string.IsNullOrEmpty(substring)) return false;
+		if (substring.Length > source.Length) return false;
+
+		for (var x = 0; x < source.Length; x++)
+		{
+			if (source.Substring(x, substring.Length).Equals(substring, stringComparison) == false)
+				continue;
+
+			return true;
+		}
+
+		return false;
+	}
 }

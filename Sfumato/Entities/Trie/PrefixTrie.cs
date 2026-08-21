@@ -6,21 +6,6 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
 {
     private TrieNode _root = new();
     private int _count;
-    private bool _ownsRoot = true;
-
-    public PrefixTrie()
-    {
-    }
-
-    public PrefixTrie(PrefixTrie<TValue> source)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-
-        _root = source._root;
-        _count = source._count;
-        _ownsRoot = false;
-        source._ownsRoot = false;
-    }
 
     /// <summary>
     /// Number of key→value pairs currently in the trie.
@@ -52,7 +37,6 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     {
         _root = new TrieNode();
         _count = 0;
-        _ownsRoot = true;
     }
 
     /// <summary>
@@ -61,8 +45,6 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     /// </summary>
     public void Insert(string key, TValue value)
     {
-        EnsureWritable();
-
         var node = _root;
         
         foreach (var ch in key)
@@ -79,7 +61,6 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
         if (node.IsWordEnd == false)
         {
             node.IsWordEnd = true;
-            node.Word = key;
             _count++;
         }
         
@@ -168,8 +149,6 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
         if (string.IsNullOrEmpty(key))
             return false;
 
-        EnsureWritable();
-
         // 1) Walk down, recording each node along the path
         var node = _root;
         var nodes = new List<TrieNode> { _root };
@@ -188,7 +167,6 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
 
         // 3) Un-mark it and clear its value
         node.IsWordEnd = false;
-        node.Word      = null;
         node.Value     = default!;
         _count--;
 
@@ -234,13 +212,6 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
     /// </summary>
     public bool TryGetLongestMatchingPrefix(string input, out string? prefix, out TValue? value)
     {
-        ArgumentNullException.ThrowIfNull(input);
-
-        return TryGetLongestMatchingPrefix(input.AsSpan(), out prefix, out value);
-    }
-
-    public bool TryGetLongestMatchingPrefix(ReadOnlySpan<char> input, out string? prefix, out TValue? value)
-    {
         prefix = null;
         value = default;
         
@@ -269,7 +240,7 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
 
         if (lastValidIndex >= 0 && lastValidNode is not null)
         {
-            prefix = lastValidNode.Word;
+            prefix = input[..(lastValidIndex + 1)];
             value  = lastValidNode.Value;
             
             return true;
@@ -322,36 +293,11 @@ public sealed class PrefixTrie<TValue> : IEnumerable<KeyValuePair<string, TValue
                 yield return pair;
         }
     }
-
-    private void EnsureWritable()
-    {
-        if (_ownsRoot)
-            return;
-
-        _root = CloneNode(_root);
-        _ownsRoot = true;
-    }
-
-    private static TrieNode CloneNode(TrieNode source)
-    {
-        var clone = new TrieNode
-        {
-            IsWordEnd = source.IsWordEnd,
-            Word = source.Word,
-            Value = source.Value
-        };
-
-        foreach (var (key, child) in source.Children)
-            clone.Children.Add(key, CloneNode(child));
-
-        return clone;
-    }
     
     private sealed class TrieNode
     {
         public Dictionary<char, TrieNode> Children { get; } = new();
         public bool IsWordEnd { get; set; }
-        public string? Word { get; set; }
         public TValue? Value { get; set; }
     }
 }

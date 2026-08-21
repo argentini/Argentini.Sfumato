@@ -29,29 +29,13 @@ public sealed class CssClass : IDisposable
     /// Name broken into variant and core segments.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]", "text-base/6"])
     /// </summary>
-    private List<string>? _allSegments;
-    public List<string> AllSegments
-    {
-        get
-        {
-            if (_allSegments is not null)
-                return _allSegments;
-
-            _allSegments = [];
-
-            if (IsValid && Selector.IndexOf(':') < 0)
-                _allSegments.Add(IsImportant ? Selector[..^1] : Selector);
-
-            return _allSegments;
-        }
-    }
+    public List<string> AllSegments { get; } = [];
 
     /// <summary>
     /// Variant segments used in the class name.
     /// (e.g. "dark:tabp:[&.active]:text-base/6" => ["dark", "tabp", "[&.active]"])
     /// </summary>
-    private Dictionary<string, VariantMetadata>? _variantSegments;
-    public Dictionary<string, VariantMetadata> VariantSegments => _variantSegments ??= new(StringComparer.Ordinal);
+    public Dictionary<string, VariantMetadata> VariantSegments { get; } = new (StringComparer.Ordinal);
 
     /// <summary>
     /// Master class definition for this utility class.
@@ -61,9 +45,7 @@ public sealed class CssClass : IDisposable
     /// <summary>
     /// Ordered list of nested wrapper statements (for variants)
     /// </summary>
-    private Dictionary<ulong, string>? _wrappers;
-    public Dictionary<ulong, string> Wrappers => _wrappers ??= [];
-    internal Dictionary<ulong, string>? AllocatedWrappers => _wrappers;
+    public Dictionary<ulong, string> Wrappers { get; } = [];
 
     private string? _prefix;
     public string EscapedSelector { get; set; } = string.Empty;
@@ -108,20 +90,13 @@ public sealed class CssClass : IDisposable
         Initialize();
     }
 
-    public void Dispose() => ReturnStringBuilders();
-
-    private void ReturnStringBuilders()
+    public void Dispose()
     {
-        var sb = Sb;
-        var workingSb = WorkingSb;
-
-        Sb = null;
-        WorkingSb = null;
-
-        AppRunner.StringBuilderPool.Return(sb);
-
-        if (ReferenceEquals(sb, workingSb) == false)
-            AppRunner.StringBuilderPool.Return(workingSb);
+        if (Sb is not null)
+            AppRunner.StringBuilderPool.Return(Sb);
+        
+        if (WorkingSb is not null)
+            AppRunner.StringBuilderPool.Return(WorkingSb);
     }
 
     #endregion
@@ -134,18 +109,17 @@ public sealed class CssClass : IDisposable
 
         if (Selector.IndexOf(':') > 0)
         {
-            var allSegments = AllSegments;
-
             foreach (var segment in Selector.SplitByTopLevel(':'))
-                allSegments.Add(segment.ToString());
+                AllSegments.Add(segment.ToString());
 
             return false;
         }
 
         var hasBrackets = Selector.IndexOfAny(['[', '(']) >= 0;
-        var className = IsImportant ? Selector[..^1] : Selector;
 
-        if (hasBrackets == false && AppRunner.Library.SimpleClasses.TryGetValue(className, out ClassDefinition))
+        AllSegments.Add(IsImportant ? Selector[..^1] : Selector);
+
+        if (hasBrackets == false && AppRunner.Library.SimpleClasses.TryGetValue(AllSegments[0], out ClassDefinition))
         {
             IsValid = true;
             SelectorSort = ClassDefinition.SelectorSort;
@@ -159,42 +133,33 @@ public sealed class CssClass : IDisposable
             return true;
         }
 
-        AllSegments.Add(className);
-
         return false;
     }
     
     public void Initialize()
     {
-        try
-        {
-            if (ProcessSelectorSegments())
-                return; // Exit early if a simple class with no variants is found
+        if (ProcessSelectorSegments())
+            return; // Exit early if a simple class with no variants is found
+        
+        ProcessArbitraryCss();
 
-            ProcessArbitraryCss();
+        if (IsValid == false && AllSegments[^1][0] != '[')
+            ProcessUtilityClasses();
 
-            if (IsValid == false && AllSegments[^1][0] != '[')
-                ProcessUtilityClasses();
+        if (IsValid == false)
+            return;
 
-            if (IsValid == false)
-                return;
+        if (ClassDefinition?.IsRazorSyntax ?? false)
+            HasRazorSyntax = true;
 
-            if (ClassDefinition?.IsRazorSyntax ?? false)
-                HasRazorSyntax = true;
+        if (AllSegments.Count > 1)
+            ProcessVariants();
 
-            if (AllSegments.Count > 1)
-                ProcessVariants();
+        if (IsValid)
+            GenerateSelector();
 
-            if (IsValid)
-                GenerateSelector();
-
-            if (IsValid)
-                GenerateWrappers();
-        }
-        finally
-        {
-            ReturnStringBuilders();
-        }
+        if (IsValid)
+            GenerateWrappers();
     }
     
     #endregion
@@ -205,16 +170,14 @@ public sealed class CssClass : IDisposable
     {
         try
         {
-            var allSegments = _allSegments;
-
-            if (allSegments is null || allSegments.Count <= 1)
+            if (AllSegments.Count <= 1)
                 return;
             
             // One or more invalid variants invalidate the entire utility class
 
-            for (var i = 0; i < allSegments.Count - 1; i++) // skip last item
+            for (var i = 0; i < AllSegments.Count - 1; i++) // skip last item
             {
-                var segment = allSegments[i];
+                var segment = AllSegments[i];
                 
                 if (string.IsNullOrEmpty(segment))
                     return;
@@ -757,7 +720,7 @@ public sealed class CssClass : IDisposable
         try
         {
             // Cache count to avoid repeated property access
-            var variantCount = _variantSegments?.Count ?? 0;
+            var variantCount = VariantSegments.Count;
 
             if (HasRazorSyntax)
             {
@@ -781,7 +744,7 @@ public sealed class CssClass : IDisposable
             var hasDoubleStarPseudoclass = false;
             var hasInheritedPseudoclass = false;
 
-            foreach (var variant in _variantSegments!)
+            foreach (var variant in VariantSegments)
             {
                 var key = variant.Key;
                 var metadata = variant.Value;
@@ -860,7 +823,7 @@ public sealed class CssClass : IDisposable
 
     public void GenerateWrappers()
     {
-        var variantCount = _variantSegments?.Count ?? 0;
+        var variantCount = VariantSegments.Count;
 
         if (variantCount == 0)
             return;
@@ -870,7 +833,7 @@ public sealed class CssClass : IDisposable
         try
         {
             Sb.Clear();
-            _wrappers?.Clear();
+            Wrappers.Clear();
 
             var mediaVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
             var supportsVariants = new KeyValuePair<string, VariantMetadata>[variantCount];
@@ -881,7 +844,7 @@ public sealed class CssClass : IDisposable
             int mediaCount = 0, supportsCount = 0, startingStyleCount = 0, containerCount = 0, wrapperCount = 0;
             VariantMetadata? darkVariant = null;
 
-            foreach (var variant in _variantSegments!)
+            foreach (var variant in VariantSegments)
             {
                 switch (variant.Value.PrefixType)
                 {
@@ -945,7 +908,7 @@ public sealed class CssClass : IDisposable
         catch
         {
             IsValid = false;
-            _wrappers?.Clear();
+            Wrappers.Clear();
         }
     }
 
@@ -1057,37 +1020,32 @@ public sealed class CssClass : IDisposable
 
         #region Handle Container Class Breakpoints
         
-        var isContainer = _allSegments is null
-            ? Selector.AsSpan(0, IsImportant ? Selector.Length - 1 : Selector.Length).SequenceEqual("container")
-            : _allSegments[^1] == "container";
-
-        if (isContainer)
+        if (AllSegments[^1] == "container")
         {
-            var allSegments = AllSegments;
             var hasMinBreakpoint = false;
             var hasMaxBreakpoint = false;
 
             WorkingSb ??= AppRunner.StringBuilderPool.Get();
             WorkingSb.Clear();
 
-            for (var i = 0; i < allSegments.Count; i++)
+            for (var i = 0; i < AllSegments.Count; i++)
             {
-                if (hasMinBreakpoint == false && AppRunner.AppRunnerSettings.BreakpointSizes.ContainsKey(allSegments[i]))
+                if (hasMinBreakpoint == false && AppRunner.AppRunnerSettings.BreakpointSizes.ContainsKey(AllSegments[i]))
                 {
                     hasMinBreakpoint = true;
                     continue;
                 }
 
-                if (hasMaxBreakpoint == false && allSegments[i].StartsWith("max-") && AppRunner.AppRunnerSettings.BreakpointSizes.ContainsKey(allSegments[i].TrimStart("max-") ?? string.Empty))
+                if (hasMaxBreakpoint == false && AllSegments[i].StartsWith("max-") && AppRunner.AppRunnerSettings.BreakpointSizes.ContainsKey(AllSegments[i].TrimStart("max-") ?? string.Empty))
                     hasMaxBreakpoint = true;
             }
             
             foreach (var bp in AppRunner.AppRunnerSettings.BreakpointSizes.OrderBy(b => b.Value))
             {
-                if (hasMaxBreakpoint && allSegments.Contains($"max-{bp.Key}"))
+                if (hasMaxBreakpoint && AllSegments.Contains($"max-{bp.Key}"))
                     break;
                 
-                if (hasMinBreakpoint == false || (hasMinBreakpoint && (WorkingSb.Length > 0 || allSegments.Contains(bp.Key))))
+                if (hasMinBreakpoint == false || (hasMinBreakpoint && (WorkingSb.Length > 0 || AllSegments.Contains(bp.Key))))
                     WorkingSb.Append($"@variant {bp.Key} {{ max-width: var(--breakpoint-{bp.Key}); }}{Environment.NewLine}");
             }
 

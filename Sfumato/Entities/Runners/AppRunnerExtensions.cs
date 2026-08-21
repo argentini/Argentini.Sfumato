@@ -1,12 +1,11 @@
 // ReSharper disable RedundantAssignment
 // ReSharper disable MemberCanBePrivate.Global
 
-using System.Buffers;
 using System.Globalization;
+using System.Reflection;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Scanning;
 using Sfumato.Entities.UtilityClasses;
-using UtilityLibrary = Sfumato.Entities.Library.Library;
 
 // ReSharper disable RedundantBoolCompare
 // ReSharper disable ConvertIfStatementToSwitchStatement
@@ -19,7 +18,7 @@ public static class AppRunnerExtensions
 	#region Process Default Sfumato Settings
 	
     /// <summary>
-    /// Processes CSS settings for colors, breakpoints, and utility-class theme overlays.
+    /// Processes CSS settings for colors, breakpoints, etc., and uses reflection to load all others per utility class file.  
     /// </summary>
     public static bool ProcessSfumatoBlockSettings(AppRunner appRunner, bool usingDefaults = false)
     {
@@ -357,8 +356,17 @@ public static class AppRunnerExtensions
 	    
 		#region Read theme settings from ClassDictionary instances (e.g. --text-xs, etc.)
 	    
-		foreach (var handler in UtilityLibrary.ThemeHandlers)
-			handler.ProcessThemeSettings(appRunner);
+	    var derivedTypes = Assembly.GetExecutingAssembly()
+		    .GetTypes()
+		    .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
+
+		foreach (var type in derivedTypes)
+		{
+			if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
+				continue;
+
+			instance.ProcessThemeSettings(appRunner);
+	    }
 	    
 	    #endregion
 
@@ -860,17 +868,19 @@ public static class AppRunnerExtensions
 	{
 		try
 		{
-			var wrappers = cssClass.AllocatedWrappers;
+			var wrappers = cssClass.Wrappers.ToArray();
+			var index = 0;
 			var depth = 1;
-
-			if (wrappers is null)
+			
+			while (true)
 			{
-				rootBranch.CssClasses.Add(cssClass);
-				return;
-			}
+				if (index >= wrappers.Length)
+				{
+					rootBranch.CssClasses.Add(cssClass);
+					return;
+				}
 
-			foreach (var (fingerprint, wrapperCss) in wrappers)
-			{
+				var (fingerprint, wrapperCss) = wrappers[index];
 
 				var candidate = new VariantBranch { Fingerprint = fingerprint, WrapperCss = wrapperCss, Depth = depth };
 
@@ -881,10 +891,9 @@ public static class AppRunnerExtensions
 				}
 
 				rootBranch = existing;
+				index += 1;
 				depth += 1;
 			}
-
-			rootBranch.CssClasses.Add(cssClass);
 		}
 		catch (Exception e)
 		{
@@ -1818,62 +1827,46 @@ public static class AppRunnerExtensions
 	/// Scan a CSS string for custom property references (e.g. --sf-color-primary)
 	/// </summary>
 	/// <param name="css"></param>
-	public static HashSet<string> GatherCssCustomProperties(this string css) => GatherCssCustomProperties(css.AsSpan());
-
-	/// <summary>
-	/// Scan a CSS builder for custom property references without snapshotting its content.
-	/// </summary>
-	/// <param name="css"></param>
-	public static HashSet<string> GatherCssCustomProperties(this StringBuilder css)
+	public static HashSet<string> GatherCssCustomProperties(this string css)
 	{
-		if (css.Length == 0)
-			return [];
-
-		var buffer = ArrayPool<char>.Shared.Rent(css.Length);
-
-		try
-		{
-			css.CopyTo(0, buffer, 0, css.Length);
-
-			return GatherCssCustomProperties(buffer.AsSpan(0, css.Length));
-		}
-		finally
-		{
-			ArrayPool<char>.Shared.Return(buffer);
-		}
-	}
-
-	private static HashSet<string> GatherCssCustomProperties(ReadOnlySpan<char> css)
-	{
+		// 1) materialize the content
 		var used = new HashSet<string>(StringComparer.Ordinal);
 		var length = css.Length;
 		var i = 0;
 
-		while (i < length)
+		// 2) scan for “--name” + delimiter
+		while (true)
 		{
-			var next = css[i..].IndexOf("--", StringComparison.Ordinal);
-
-			if (next < 0)
+			// find the next “--”
+			var idx = css.IndexOf("--", i, StringComparison.Ordinal);
+			
+			if (idx < 0) 
 				break;
 
-			var idx = i + next;
 			i = idx + 2;
 
+			// consume [A-Za-z0-9_-]+
 			while (i < length)
 			{
 				var c = css[i];
 
 				if (c is >= '0' and <= '9' or >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '-' or '_')
+				{
 					i++;
+				}
 				else
+				{
 					break;
+				}
 			}
 
+			// must be more than just “--”
 			var nameLen = i - idx;
-
+			
 			if (nameLen <= 2)
 				continue;
 
+			// skip any whitespace
 			while (i < length)
 			{
 				var c = css[i];
@@ -1883,16 +1876,20 @@ public static class AppRunnerExtensions
 				else
 					break;
 			}
-
-			if (i >= length)
+			
+			if (i >= length) 
 				break;
 
+			// only accept var-refs ")" or "," or declarations ":"
 			var delim = css[i];
-
-			if (delim != ')' && delim != ',' && delim != ':')
+			
+			if (delim != ')' && delim != ',' && delim != ':') 
 				continue;
 
-			used.Add(new string(css.Slice(idx, nameLen)));
+			// Save item
+			used.Add(css.Substring(idx, nameLen));
+
+			// continue scanning after the name
 			i = idx + nameLen;
 		}
 
@@ -1910,7 +1907,7 @@ public static class AppRunnerExtensions
 		var settings = appRunner.AppRunnerSettings.SfumatoBlockItems;
 		var used = segment.UsedCssCustomProperties;
 
-		foreach (var item in segment.Content.GatherCssCustomProperties())
+		foreach (var item in segment.Content.ToString().GatherCssCustomProperties())
 		{
 			if (settings.TryGetValue(item, out var val))
 				used.TryAdd(item, val);

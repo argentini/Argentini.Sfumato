@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Sfumato.Tests;
 
 public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
@@ -88,87 +86,6 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
             if (nightmareClass.EndsWith('!'))
                 Assert.True(result.IsImportant);
         }
-    }
-
-    [Fact]
-    public void SimpleUtilityClass_DoesNotAllocateCollections()
-    {
-        var cssClass = new CssClass(AppRunner, selector: "block");
-
-        Assert.True(cssClass.IsValid);
-        Assert.Null(GetCollectionField(cssClass, "_allSegments"));
-        Assert.Null(GetCollectionField(cssClass, "_variantSegments"));
-        Assert.Null(GetCollectionField(cssClass, "_wrappers"));
-    }
-
-    [Fact]
-    public void VariantUtilityClass_AllocatesOnlyRequiredCollections()
-    {
-        var pseudoclass = new CssClass(AppRunner, selector: "hover:block");
-        var wrapped = new CssClass(AppRunner, selector: "sm:block");
-
-        Assert.True(pseudoclass.IsValid);
-        Assert.NotNull(GetCollectionField(pseudoclass, "_allSegments"));
-        Assert.NotNull(GetCollectionField(pseudoclass, "_variantSegments"));
-        Assert.Null(GetCollectionField(pseudoclass, "_wrappers"));
-
-        Assert.True(wrapped.IsValid);
-        Assert.NotNull(GetCollectionField(wrapped, "_allSegments"));
-        Assert.NotNull(GetCollectionField(wrapped, "_variantSegments"));
-        Assert.NotNull(GetCollectionField(wrapped, "_wrappers"));
-    }
-
-    private static object? GetCollectionField(CssClass cssClass, string fieldName)
-    {
-        return typeof(CssClass)
-            .GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
-            ?.GetValue(cssClass);
-    }
-
-    [Fact]
-    public void InitializationReturnsOwnedStringBuilders()
-    {
-        var cssClass = new CssClass(AppRunner, selector: "tabp:container");
-
-        Assert.True(cssClass.IsValid);
-        Assert.Null(cssClass.Sb);
-        Assert.Null(cssClass.WorkingSb);
-    }
-
-    [Fact]
-    public void InitializationFailureReturnsOwnedStringBuilders()
-    {
-        var pool = new StringBuilderPool();
-        var ownedBuilder = new StringBuilder();
-        var cssClass = new CssClass(new AppRunner(pool))
-        {
-            Selector = string.Empty,
-            Sb = ownedBuilder
-        };
-
-        Assert.NotNull(Record.Exception(cssClass.Initialize));
-        Assert.Null(cssClass.Sb);
-        Assert.Same(ownedBuilder, pool.Get());
-    }
-
-    [Fact]
-    public void DisposeCanBeCalledMoreThanOnceWithoutDuplicatingBuilder()
-    {
-        var pool = new StringBuilderPool();
-        var ownedBuilder = new StringBuilder();
-        var cssClass = new CssClass(new AppRunner(pool))
-        {
-            Sb = ownedBuilder
-        };
-
-        cssClass.Dispose();
-        cssClass.Dispose();
-
-        var firstBuilder = pool.Get();
-        var secondBuilder = pool.Get();
-
-        Assert.Same(ownedBuilder, firstBuilder);
-        Assert.NotSame(firstBuilder, secondBuilder);
     }
 
     [Fact]

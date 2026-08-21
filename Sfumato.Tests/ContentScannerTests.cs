@@ -315,13 +315,4 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper) : SharedTes
         Assert.True(segment.Content.Contains("oklch(0.768 0.233 130.85 / 0.15)"));
         Assert.True(segment.Content.Contains("calc(var(--spacing) * 4)"));
     }
-
-    [Fact]
-    public void CssCustomPropertyScanner_StringBuilderMatchesStringScanner()
-    {
-        var expected = Css.GatherCssCustomProperties();
-        var actual = new StringBuilder(Css).GatherCssCustomProperties();
-
-        Assert.Equal(expected, actual);
-    }
 }
