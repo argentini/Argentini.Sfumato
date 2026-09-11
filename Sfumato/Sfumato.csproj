@@ -5,9 +5,9 @@
         <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
         <LangVersion>14</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.1.10.0</AssemblyVersion>
-        <FileVersion>6.1.10.0</FileVersion>
-        <PackageVersion>6.1.10</PackageVersion>
+        <AssemblyVersion>6.2.0.0</AssemblyVersion>
+        <FileVersion>6.2.0.0</FileVersion>
+        <PackageVersion>6.2.0</PackageVersion>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>argentini.sfumato.core</PackageId>
         <Authors>Michael Argentini</Authors>
@@ -16,7 +16,7 @@
         <Description>
             Sfumato is a lean, modern, utility-based CSS framework with relative UI scaling and adaptive design built-in. Add few lines to your CSS file and Sfumato will watch your project as you work, keeping track of changes, and generate a custom, tiny CSS file based only on the utility classes you use. And Sfumato uses the same class naming convention as Tailwind CSS v4! Add to your project, configure in your startup, and CSS will be generated when changes are made as you run your project.
         </Description>
-        <Copyright>Copyright (c) Argentini Unlimited, Ltd 2025.</Copyright>
+        <Copyright>Copyright (c) Argentini Unlimited, Ltd 2026.</Copyright>
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>

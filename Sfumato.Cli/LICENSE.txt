@@ -2,7 +2,7 @@ GPLv3 LICENSE
 
 Sfumato is a software tool for generating CSS markup from inferred usage.
 
-Copyright (c) 2025 Argentini Unlimited, Ltd
+Copyright (c) 2026 Argentini Unlimited, Ltd
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
