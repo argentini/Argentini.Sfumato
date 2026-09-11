@@ -227,8 +227,51 @@ public sealed class ScrollMargin : ClassDictionaryBase
                 }
             },
         });
+
+        AddLogicalMargin("scroll-mbs", "scroll-margin-block-start");
+        AddLogicalMargin("scroll-mbe", "scroll-margin-block-end");
     }
     
     public override void ProcessThemeSettings(AppRunner appRunner)
-    {}
+    {
+        foreach (var item in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(item => item.Key.StartsWith("--spacing-", StringComparison.Ordinal)))
+        {
+            var suffix = item.Key[10..];
+
+            AddThemeValue(appRunner, $"scroll-mbs-{suffix}", $"scroll-margin-block-start: var({item.Key});");
+            AddThemeValue(appRunner, $"-scroll-mbs-{suffix}", $"scroll-margin-block-start: calc(var({item.Key}) * -1);");
+            AddThemeValue(appRunner, $"scroll-mbe-{suffix}", $"scroll-margin-block-end: var({item.Key});");
+            AddThemeValue(appRunner, $"-scroll-mbe-{suffix}", $"scroll-margin-block-end: calc(var({item.Key}) * -1);");
+        }
+    }
+
+    private void AddLogicalMargin(string name, string property)
+    {
+        Data.Add($"{name}-", new ClassDefinition
+        {
+            InLengthCollection = true,
+            Template = $"{property}: calc(var(--spacing) * {{0}});",
+            ArbitraryCssValueTemplate = $"{property}: {{0}};",
+        });
+        Data.Add($"-{name}-", new ClassDefinition
+        {
+            InLengthCollection = true,
+            Template = $"{property}: calc(var(--spacing) * -{{0}});",
+            ArbitraryCssValueTemplate = $"{property}: calc({{0}} * -1);",
+        });
+    }
+
+    private static void AddThemeValue(AppRunner appRunner, string name, string template)
+    {
+        var definition = new ClassDefinition
+        {
+            InSimpleUtilityCollection = true,
+            Template = template,
+        };
+
+        if (appRunner.Library.SimpleClasses.TryAdd(name, definition))
+            appRunner.Library.ScannerClassNamePrefixes.Insert(name, null);
+        else
+            appRunner.Library.SimpleClasses[name] = definition;
+    }
 }

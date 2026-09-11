@@ -23,8 +23,7 @@ public sealed class Container : ClassDictionaryBase
                         """,
                     ModifierTemplate = 
                         """
-                        container-type: inline-size;
-                        container-name: {1};
+                        container: {1} / inline-size;
                         """,
                 }
             },
@@ -39,8 +38,69 @@ public sealed class Container : ClassDictionaryBase
                         """,
                     ModifierTemplate = 
                         """
-                        container-type: inline-size;
-                        container-name: {1};
+                        container: {1} / inline-size;
+                        """,
+                    IsRazorSyntax = true,
+                }
+            },
+            {
+                "@container-normal", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    UsesSlashModifier = true,
+                    Template =
+                        """
+                        container-type: normal;
+                        """,
+                    ModifierTemplate =
+                        """
+                        container: {1};
+                        """,
+                }
+            },
+            {
+                "@@container-normal", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    UsesSlashModifier = true,
+                    Template =
+                        """
+                        container-type: normal;
+                        """,
+                    ModifierTemplate =
+                        """
+                        container: {1};
+                        """,
+                    IsRazorSyntax = true,
+                }
+            },
+            {
+                "@container-size", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    UsesSlashModifier = true,
+                    Template =
+                        """
+                        container-type: size;
+                        """,
+                    ModifierTemplate =
+                        """
+                        container: {1} / size;
+                        """,
+                }
+            },
+            {
+                "@@container-size", new ClassDefinition
+                {
+                    InSimpleUtilityCollection = true,
+                    UsesSlashModifier = true,
+                    Template =
+                        """
+                        container-type: size;
+                        """,
+                    ModifierTemplate =
+                        """
+                        container: {1} / size;
                         """,
                     IsRazorSyntax = true,
                 }

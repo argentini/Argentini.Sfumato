@@ -227,8 +227,43 @@ public sealed class ScrollPadding : ClassDictionaryBase
                 }
             },
         });
+
+        AddLogicalPadding("scroll-pbs", "scroll-padding-block-start");
+        AddLogicalPadding("scroll-pbe", "scroll-padding-block-end");
     }
     
     public override void ProcessThemeSettings(AppRunner appRunner)
-    {}
+    {
+        foreach (var item in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(item => item.Key.StartsWith("--spacing-", StringComparison.Ordinal)))
+        {
+            var suffix = item.Key[10..];
+
+            AddThemeValue(appRunner, $"scroll-pbs-{suffix}", $"scroll-padding-block-start: var({item.Key});");
+            AddThemeValue(appRunner, $"scroll-pbe-{suffix}", $"scroll-padding-block-end: var({item.Key});");
+        }
+    }
+
+    private void AddLogicalPadding(string name, string property)
+    {
+        Data.Add($"{name}-", new ClassDefinition
+        {
+            InLengthCollection = true,
+            Template = $"{property}: calc(var(--spacing) * {{0}});",
+            ArbitraryCssValueTemplate = $"{property}: {{0}};",
+        });
+    }
+
+    private static void AddThemeValue(AppRunner appRunner, string name, string template)
+    {
+        var definition = new ClassDefinition
+        {
+            InSimpleUtilityCollection = true,
+            Template = template,
+        };
+
+        if (appRunner.Library.SimpleClasses.TryAdd(name, definition))
+            appRunner.Library.ScannerClassNamePrefixes.Insert(name, null);
+        else
+            appRunner.Library.SimpleClasses[name] = definition;
+    }
 }

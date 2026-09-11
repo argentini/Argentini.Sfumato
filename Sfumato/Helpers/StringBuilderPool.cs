@@ -6,7 +6,8 @@ public sealed class StringBuilderPool : IObjectPool<StringBuilder>
     private readonly StringBuilder?[] _items;
     private readonly int _initialCapacity;
     private readonly int _maxRetainedCapacity;
-    private int _index = -1;
+    private readonly Lock _lock = new();
+    private int _count;
 
     public StringBuilderPool(
         int poolSize = 64,
@@ -22,33 +23,20 @@ public sealed class StringBuilderPool : IObjectPool<StringBuilder>
 
     public StringBuilder Get()
     {
-        while (true)
+        lock (_lock)
         {
-            var current = _index;
-            
-            if (current < 0)
-                break;
-
-            var newIndex = current - 1;
-
-            if (Interlocked.CompareExchange(ref _index, newIndex, current) != current)
-                continue;
-            
-            // Successfully popped
-            var sb = _items[current];
-
-            _items[current] = null;
-            
-            if (sb is not null)
+            if (_count > 0)
             {
+                var index = --_count;
+                var sb = _items[index]!;
+
+                _items[index] = null;
                 sb.Clear();
+
                 return sb;
             }
-            
-            break;
         }
 
-        // Nothing in the pool, allocate new
         return new StringBuilder(_initialCapacity);
     }
 
@@ -57,29 +45,23 @@ public sealed class StringBuilderPool : IObjectPool<StringBuilder>
         if (sb is null)
             return;
 
-        // If it grew too big, just drop it and let GC collect
         if (sb.Capacity > _maxRetainedCapacity)
             return;
 
         sb.Clear();
 
-        while (true)
+        lock (_lock)
         {
-            var current = _index;
-            var newIndex = current + 1;
-
-            if (newIndex >= _items.Length)
-            {
-                // Pool is full, drop it
+            if (_count == _items.Length)
                 return;
+
+            for (var index = 0; index < _count; index++)
+            {
+                if (ReferenceEquals(_items[index], sb))
+                    return;
             }
 
-            if (Interlocked.CompareExchange(ref _index, newIndex, current) != current)
-                continue;
-
-            _items[newIndex] = sb;
-
-            return;
+            _items[_count++] = sb;
         }
     }
 }

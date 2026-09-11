@@ -448,11 +448,7 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
             {
                 ClassName = "@container/primary",
                 EscapedClassName = @".\@container\/primary",
-                Styles =
-                    """
-                    container-type: inline-size;
-                    container-name: primary;
-                    """,
+                Styles = "container: primary / inline-size;",
                 IsValid = true
             },
             new ()

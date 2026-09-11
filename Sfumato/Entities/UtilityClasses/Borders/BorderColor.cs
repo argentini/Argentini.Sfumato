@@ -47,6 +47,18 @@ public sealed class BorderColor : ClassDictionaryBase
             """
         },
         {
+            "border-bs",
+            """
+            border-block-start-color: {0};
+            """
+        },
+        {
+            "border-be",
+            """
+            border-block-end-color: {0};
+            """
+        },
+        {
             "border-t",
             """
             border-top-color: {0};

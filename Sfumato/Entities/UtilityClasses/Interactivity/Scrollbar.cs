@@ -248,8 +248,42 @@ public sealed class Scrollbar : ClassDictionaryBase
                 }
             },
         });
+
+        AddSimple("scrollbar-auto", "scrollbar-width: auto;");
+        AddSimple("scrollbar-thin", "scrollbar-width: thin;");
+        AddSimple("scrollbar-none", "scrollbar-width: none;");
+        AddSimple("scrollbar-gutter-auto", "scrollbar-gutter: auto;");
+        AddSimple("scrollbar-gutter-stable", "scrollbar-gutter: stable;");
+        AddSimple("scrollbar-gutter-both", "scrollbar-gutter: stable both-edges;");
+
+        AddColor("scrollbar-thumb", "--sf-scrollbar-thumb");
+        AddColor("scrollbar-track", "--sf-scrollbar-track");
     }
     
     public override void ProcessThemeSettings(AppRunner appRunner)
     {}
+
+    private void AddSimple(string name, string template)
+    {
+        Data.Add(name, new ClassDefinition
+        {
+            InSimpleUtilityCollection = true,
+            Template = template,
+        });
+    }
+
+    private void AddColor(string name, string customProperty)
+    {
+        var template = $"{customProperty}: {{0}};\nscrollbar-color: var(--sf-scrollbar-thumb) var(--sf-scrollbar-track);";
+
+        Data.Add($"{name}-", new ClassDefinition
+        {
+            InColorCollection = true,
+            Template = template,
+            ArbitraryCssValueTemplate = template,
+        });
+        AddSimple($"{name}-current", template.Replace("{0}", "currentColor", StringComparison.Ordinal));
+        AddSimple($"{name}-inherit", template.Replace("{0}", "inherit", StringComparison.Ordinal));
+        AddSimple($"{name}-transparent", template.Replace("{0}", "transparent", StringComparison.Ordinal));
+    }
 }

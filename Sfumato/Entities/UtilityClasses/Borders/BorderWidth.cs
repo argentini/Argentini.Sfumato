@@ -52,6 +52,20 @@ public sealed class BorderWidth : ClassDictionaryBase
             """
         },
         {
+            "border-bs",
+            """
+            border-block-start-style: var(--sf-border-style);
+            border-block-start-width: {0};
+            """
+        },
+        {
+            "border-be",
+            """
+            border-block-end-style: var(--sf-border-style);
+            border-block-end-width: {0};
+            """
+        },
+        {
             "border-t",
             """
             border-top-style: var(--sf-border-style);

@@ -388,12 +388,23 @@ public static partial class Strings
 	        ? source 
 	        : source.Substring(start, end - start + 1);
 
+	    if (trimmedSource.StartsWith("%]", StringComparison.Ordinal))
+	        trimmedSource = trimmedSource[2..];
+
+	    if (trimmedSource.EndsWith("[%", StringComparison.Ordinal))
+	        trimmedSource = trimmedSource[..^2];
+
+	    if (string.IsNullOrEmpty(trimmedSource))
+	        return;
+
 	    // Use single IndexOf() call for quote checking
 	    var quoteIndex = trimmedSource.IndexOf(DoubleQuote);
 	    var addSource = quoteIndex == -1 || quoteIndex != trimmedSource.LastIndexOf(DoubleQuote);
 
 	    if (addSource && trimmedSource.IsLikelyUtilityClass(scannerClassNamePrefixes, out var prefix))
 	        bag.TryAdd(trimmedSource, prefix);
+
+	    ProcessMaudConditionalClass(trimmedSource, bag, scannerClassNamePrefixes);
 
 	    // Check each delimiter once
 	    for (var d = 0; d < Delimiters.Length; d++)
@@ -415,6 +426,23 @@ public static partial class Strings
 	        // Exit after first delimiter found and processed
 	        break;
 	    }
+	}
+
+	private static void ProcessMaudConditionalClass(string source, Dictionary<string, string?> bag, PrefixTrie<object?> scannerClassNamePrefixes)
+	{
+	    if (source.EndsWith(']') == false)
+	        return;
+
+	    var classStart = source.IndexOf('.');
+	    var conditionStart = source.LastIndexOf('[');
+
+	    if (classStart < 0 || conditionStart <= classStart + 1)
+	        return;
+
+	    var candidate = source[(classStart + 1)..conditionStart];
+
+	    if (candidate.IsLikelyUtilityClass(scannerClassNamePrefixes, out var prefix))
+	        bag.TryAdd(candidate, prefix);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]

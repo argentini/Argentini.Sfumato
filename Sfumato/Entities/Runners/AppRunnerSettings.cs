@@ -86,6 +86,7 @@ public sealed class AppRunnerSettings
 	public HashSet<string> NotFolderNames { get; } = new (StringComparer.Ordinal);
 
     public Dictionary<string, string> SfumatoBlockItems { get; } = new(StringComparer.Ordinal);
+    public List<KeyValuePair<string, string>> UtilityItems { get; } = [];
 
     public Dictionary<string, double> BreakpointSizes { get; } = new(StringComparer.Ordinal);
 

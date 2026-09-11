@@ -623,8 +623,66 @@ public sealed class Margin : ClassDictionaryBase
 
             #endregion
         });
+
+        AddLogicalMargin("mbs", "margin-block-start");
+        AddLogicalMargin("mbe", "margin-block-end");
     }
     
     public override void ProcessThemeSettings(AppRunner appRunner)
-    {}
+    {
+        foreach (var item in appRunner.AppRunnerSettings.SfumatoBlockItems.Where(item => item.Key.StartsWith("--spacing-", StringComparison.Ordinal)))
+        {
+            var suffix = item.Key[10..];
+
+            AddThemeValue(appRunner, $"mbs-{suffix}", $"margin-block-start: var({item.Key});");
+            AddThemeValue(appRunner, $"-mbs-{suffix}", $"margin-block-start: calc(var({item.Key}) * -1);");
+            AddThemeValue(appRunner, $"mbe-{suffix}", $"margin-block-end: var({item.Key});");
+            AddThemeValue(appRunner, $"-mbe-{suffix}", $"margin-block-end: calc(var({item.Key}) * -1);");
+        }
+    }
+
+    private void AddLogicalMargin(string name, string property)
+    {
+        Data.Add($"{name}-px", new ClassDefinition
+        {
+            InSimpleUtilityCollection = true,
+            Template = $"{property}: 1px;",
+        });
+        Data.Add($"-{name}-px", new ClassDefinition
+        {
+            InSimpleUtilityCollection = true,
+            Template = $"{property}: -1px;",
+        });
+        Data.Add($"{name}-auto", new ClassDefinition
+        {
+            InSimpleUtilityCollection = true,
+            Template = $"{property}: auto;",
+        });
+        Data.Add($"{name}-", new ClassDefinition
+        {
+            InLengthCollection = true,
+            Template = $"{property}: calc(var(--spacing) * {{0}});",
+            ArbitraryCssValueTemplate = $"{property}: {{0}};",
+        });
+        Data.Add($"-{name}-", new ClassDefinition
+        {
+            InLengthCollection = true,
+            Template = $"{property}: calc(var(--spacing) * -{{0}});",
+            ArbitraryCssValueTemplate = $"{property}: calc({{0}} * -1);",
+        });
+    }
+
+    private static void AddThemeValue(AppRunner appRunner, string name, string template)
+    {
+        var definition = new ClassDefinition
+        {
+            InSimpleUtilityCollection = true,
+            Template = template,
+        };
+
+        if (appRunner.Library.SimpleClasses.TryAdd(name, definition))
+            appRunner.Library.ScannerClassNamePrefixes.Insert(name, null);
+        else
+            appRunner.Library.SimpleClasses[name] = definition;
+    }
 }

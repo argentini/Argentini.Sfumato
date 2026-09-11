@@ -24,8 +24,7 @@ public class ContainerTests(ITestOutputHelper testOutputHelper) : SharedTestBase
                 EscapedClassName = @".\@container\/george",
                 Styles =
                     """
-                    container-type: inline-size;
-                    container-name: george;
+                    container: george / inline-size;
                     """,
                 IsValid = true,
                 IsImportant = false,

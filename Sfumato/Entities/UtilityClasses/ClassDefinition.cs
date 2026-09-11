@@ -87,6 +87,21 @@ public sealed class ClassDefinition
     public bool UsesSlashModifier { get; set; }
 
     /// <summary>
+    /// Bare numeric values cannot use this length definition.
+    /// </summary>
+    public bool ArbitraryLengthOnly { get; set; }
+
+    /// <summary>
+    /// Slash fractions cannot use this definition.
+    /// </summary>
+    public bool DisallowsFractions { get; set; }
+
+    /// <summary>
+    /// Slash modifiers must use Tailwind opacity syntax.
+    /// </summary>
+    public bool ModifierIsOpacity { get; set; }
+
+    /// <summary>
     /// Used for items beginning with "@@" that need to be converted to "@" 
     /// </summary>
     public bool IsRazorSyntax { get; set; }

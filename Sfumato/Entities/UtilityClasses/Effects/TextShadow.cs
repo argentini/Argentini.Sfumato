@@ -57,6 +57,7 @@ public sealed class TextShadow : ClassDictionaryBase
             {
                 InSimpleUtilityCollection = true,
                 UsesSlashModifier = true,
+                ModifierIsOpacity = true,
                 Template =
                     $$"""
                       --sf-text-shadow-alpha: {{pct}};

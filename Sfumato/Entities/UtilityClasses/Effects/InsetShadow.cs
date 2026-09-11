@@ -56,6 +56,7 @@ public sealed class InsetShadow : ClassDictionaryBase
             {
                 InSimpleUtilityCollection = true,
                 UsesSlashModifier = true,
+                ModifierIsOpacity = true,
                 Template =
                     $$"""
                       --sf-inset-shadow-alpha: {{pct}};

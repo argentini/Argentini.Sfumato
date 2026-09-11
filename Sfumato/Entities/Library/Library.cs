@@ -13,6 +13,7 @@ public sealed class Library
     #region Theme Properties
 
     public PrefixTrie<string> ColorsByName { get; set; } = new();
+    public PrefixTrie<List<FunctionalUtilityDefinition>> FunctionalClasses { get; } = new();
 
     public HashSet<string> CssLengthUnits { get; } = LibraryUnits.CssLengthUnits.ToHashSet(StringComparer.Ordinal);
     

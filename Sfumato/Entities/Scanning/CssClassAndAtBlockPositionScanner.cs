@@ -107,19 +107,14 @@ public readonly struct CssBlockPositionEnumerable
                 if (ch == '@')
                 {
                     var headerStart = i++;
-                    
-                    // scan first ident (e.g. "@media")
-                    while (i < n && IsIdentChar(s[i]))
+
+                    while (i < n && s[i] != '{' && s[i] != ';')
                         i++;
-                    
-                    SkipWs(ref i, s);
-                    
-                    // optional second ident (e.g. "screen" in "@media screen")
-                    while (i < n && IsIdentChar(s[i]))
-                        i++;
-                    
+
                     var headerEnd = i;
-                    SkipWs(ref i, s);
+
+                    while (headerEnd > headerStart && char.IsWhiteSpace(s[headerEnd - 1]))
+                        headerEnd--;
 
                     if (i >= n || s[i] != '{')
                     {

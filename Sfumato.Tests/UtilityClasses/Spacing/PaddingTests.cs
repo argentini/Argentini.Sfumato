@@ -21,12 +21,9 @@ public class PaddingTests(ITestOutputHelper testOutputHelper) : SharedTestBase(t
             new ()
             {
                 ClassName = "-p-px",
-                EscapedClassName = ".-p-px",
-                Styles =
-                    """
-                    padding: -1px;
-                    """,
-                IsValid = true,
+                EscapedClassName = string.Empty,
+                Styles = string.Empty,
+                IsValid = false,
                 IsImportant = false,
             },
             new ()
@@ -54,12 +51,9 @@ public class PaddingTests(ITestOutputHelper testOutputHelper) : SharedTestBase(t
             new ()
             {
                 ClassName = "-p-5",
-                EscapedClassName = ".-p-5",
-                Styles =
-                    """
-                    padding: calc(var(--spacing) * -5);
-                    """,
-                IsValid = true,
+                EscapedClassName = string.Empty,
+                Styles = string.Empty,
+                IsValid = false,
                 IsImportant = false,
             },
             new ()
@@ -98,12 +92,9 @@ public class PaddingTests(ITestOutputHelper testOutputHelper) : SharedTestBase(t
             new ()
             {
                 ClassName = "-p-(--my-padding)",
-                EscapedClassName = @".-p-\(--my-padding\)",
-                Styles =
-                    """
-                    padding: calc(var(--my-padding) * -1);
-                    """,
-                IsValid = true,
+                EscapedClassName = string.Empty,
+                Styles = string.Empty,
+                IsValid = false,
                 IsImportant = false,
             },
             new ()

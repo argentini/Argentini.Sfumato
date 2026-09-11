@@ -55,6 +55,7 @@ public sealed class DropShadow : ClassDictionaryBase
             {
                 InSimpleUtilityCollection = true,
                 UsesSlashModifier = true,
+                ModifierIsOpacity = true,
                 Template =
                     $$"""
                       --sf-drop-shadow-alpha: {{pct}};

@@ -61,6 +61,7 @@ public sealed class BoxShadow : ClassDictionaryBase
             {
                 InSimpleUtilityCollection = true,
                 UsesSlashModifier = true,
+                ModifierIsOpacity = true,
                 Template =
                     $$"""
                     --sf-shadow-alpha: {{pct}};

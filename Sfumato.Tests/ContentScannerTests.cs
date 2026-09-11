@@ -257,6 +257,19 @@ public class ContentScannerTests(ITestOutputHelper testOutputHelper) : SharedTes
 
         Assert.Empty(quotedSubstrings);
     }
+
+    [Fact]
+    public void StringScanningSupportsTailwindTemplateSyntaxes()
+    {
+        const string markup = "%]bg-red-500[% p.text-black[condition] attributes.addClass('font-bold')";
+        var utilities = new Dictionary<string, string?>(StringComparer.Ordinal);
+
+        markup.ScanForUtilities(utilities, AppRunner.Library.ScannerClassNamePrefixes);
+
+        Assert.Contains("bg-red-500", utilities.Keys);
+        Assert.Contains("text-black", utilities.Keys);
+        Assert.Contains("font-bold", utilities.Keys);
+    }
     
     [Fact]
     public void FileContentParsing()

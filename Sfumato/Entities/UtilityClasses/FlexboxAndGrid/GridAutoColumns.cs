@@ -15,11 +15,12 @@ public sealed class GridAutoColumns : ClassDictionaryBase
             {
                 "auto-cols-", new ClassDefinition
                 {
+                    InLengthCollection = true,
                     InFlexCollection = true,
                     InAbstractValueCollection = true,
                     Template =
                         """
-                        grid-auto-columns: {0};
+                        grid-auto-columns: calc(var(--spacing) * {0});
                         """,
                     ArbitraryCssValueTemplate =
                         """

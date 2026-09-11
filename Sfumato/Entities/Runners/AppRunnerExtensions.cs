@@ -252,18 +252,26 @@ public static class AppRunnerExtensions
 
 		    if (match.Value.StartsWith("&:"))
 		    {
+			    var selectorSuffix = $"{match.Value.TrimStart('&')}";
+
 			    if (appRunner.Library.PseudoclassPrefixes.TryAdd(key, new VariantMetadata
 			        {
 				        PrefixType = "pseudoclass",
-				        SelectorSuffix = $"{match.Value.TrimStart('&')}"
+				        SelectorSuffix = selectorSuffix
 			        }) == false)
 			    {
 				    appRunner.Library.PseudoclassPrefixes[key] = new VariantMetadata
 				    {
 					    PrefixType = "pseudoclass",
-					    SelectorSuffix = $"{match.Value.TrimStart('&')}"
+					    SelectorSuffix = selectorSuffix
 				    };
 			    }
+
+			    appRunner.Library.PseudoclassPrefixes[$"not-{key}"] = new VariantMetadata
+			    {
+				    PrefixType = "pseudoclass",
+				    SelectorSuffix = $":not({selectorSuffix})"
+			    };
 
 			    appRunner.Library.MediaQueryPrefixes.Remove(key);
 		    }
@@ -303,6 +311,13 @@ public static class AppRunnerExtensions
 
 				    if (prefixOrder < int.MaxValue - 100)
 					    prefixOrder += 100;
+
+				    appRunner.Library.MediaQueryPrefixes[$"not-{key}"] = new VariantMetadata
+				    {
+					    PrefixOrder = prefixOrder,
+					    PrefixType = prefixType,
+					    Statement = NegateConditionalStatement(statement)
+				    };
 				    
 				    appRunner.Library.PseudoclassPrefixes.Remove(key);
 			    }
@@ -322,7 +337,34 @@ public static class AppRunnerExtensions
 						    Statement = statement
 					    };
 				    }
+
+				    appRunner.Library.SupportsQueryPrefixes[$"not-{key}"] = new VariantMetadata
+				    {
+					    PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1,
+					    PrefixType = prefixType,
+					    Statement = NegateConditionalStatement(statement)
+				    };
 				    
+				    appRunner.Library.PseudoclassPrefixes.Remove(key);
+			    }
+			    else if (prefixType.Equals("container", StringComparison.OrdinalIgnoreCase))
+			    {
+				    appRunner.Library.ContainerQueryPrefixes[key] = new VariantMetadata
+				    {
+					    PrefixOrder = prefixOrder,
+					    PrefixType = prefixType,
+					    Statement = statement
+				    };
+				    appRunner.Library.ContainerQueryPrefixes[$"not-{key}"] = new VariantMetadata
+				    {
+					    PrefixOrder = prefixOrder,
+					    PrefixType = prefixType,
+					    Statement = NegateContainerStatement(statement)
+				    };
+
+				    if (prefixOrder < int.MaxValue - 100)
+					    prefixOrder += 100;
+
 				    appRunner.Library.PseudoclassPrefixes.Remove(key);
 			    }
 		    }
@@ -332,7 +374,7 @@ public static class AppRunnerExtensions
 	    
 		#region Read @utility items
 
-		foreach (var match in appRunner.AppRunnerSettings.SfumatoBlockItems)
+		foreach (var match in appRunner.AppRunnerSettings.UtilityItems)
 		{
 			if (match.Key.StartsWith("@utility") == false)
 				continue;
@@ -341,6 +383,28 @@ public static class AppRunnerExtensions
 
 			if (segments.Length != 2)
 				continue;
+
+			if (segments[1].EndsWith("-*", StringComparison.Ordinal))
+			{
+				var name = segments[1][..^2];
+				var definition = new FunctionalUtilityDefinition(name, match.Value.Trim().TrimStart('{').TrimEnd('}').Trim());
+
+				if (definition.IsValid == false)
+					continue;
+
+				if (appRunner.Library.FunctionalClasses.TryGetValue(name, out var definitions) == false)
+				{
+					definitions = [];
+					appRunner.Library.FunctionalClasses.Add(name, definitions);
+					appRunner.Library.FunctionalClasses.Add($"{name}-", definitions);
+				}
+
+				definitions.Add(definition);
+				appRunner.Library.ScannerClassNamePrefixes.Insert(name, null);
+				appRunner.Library.ScannerClassNamePrefixes.Insert($"{name}-", null);
+
+				continue;
+			}
 
 			if (appRunner.Library.SimpleClasses.TryAdd(segments[1], new ClassDefinition
 			{
@@ -479,6 +543,36 @@ public static class AppRunnerExtensions
 
 	    return false;
     }
+
+	private static string NegateConditionalStatement(string statement)
+	{
+		return statement.StartsWith("not ", StringComparison.Ordinal)
+			? statement[4..]
+			: $"not {statement}";
+	}
+
+	private static string NegateContainerStatement(string statement)
+	{
+		var trimmed = statement.Trim();
+
+		if (trimmed.StartsWith("not ", StringComparison.Ordinal))
+			return trimmed[4..];
+
+		if (trimmed.StartsWith('(') || trimmed.StartsWith("style(", StringComparison.Ordinal) || trimmed.StartsWith("scroll-state(", StringComparison.Ordinal))
+			return $"not {trimmed}";
+
+		var firstSpace = trimmed.IndexOf(' ');
+
+		if (firstSpace < 0)
+			return $"not {trimmed}";
+
+		var name = trimmed[..firstSpace];
+		var query = trimmed[(firstSpace + 1)..].TrimStart();
+
+		return query.StartsWith("not ", StringComparison.Ordinal)
+			? $"{name} {query[4..]}"
+			: $"{name} not {query}";
+	}
 	
 	#endregion
 	
@@ -600,16 +694,22 @@ public static class AppRunnerExtensions
 	    try
 	    {
 	        foreach (var pos in appRunner.SfumatoSegment.Content.EnumerateCssCustomPropertyPositions())
-		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Content.Substring(pos.PropertyStart, pos.PropertyLength), appRunner.SfumatoSegment.Content.Substring(pos.ValueStart, pos.ValueLength)) == false)
-		        {
+			        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Content.Substring(pos.PropertyStart, pos.PropertyLength), appRunner.SfumatoSegment.Content.Substring(pos.ValueStart, pos.ValueLength)) == false)
 			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Content.Substring(pos.PropertyStart, pos.PropertyLength)] = appRunner.SfumatoSegment.Content.Substring(pos.ValueStart, pos.ValueLength);
-		        }
 
 	        foreach (var pos in appRunner.SfumatoSegment.Content.EnumerateCssClassAndAtBlockPositions())
-		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Content.Substring(pos.HeaderStart, pos.HeaderLength), appRunner.SfumatoSegment.Content.Substring(pos.BodyStart, pos.BodyLength).TrimEnd(';').Trim()) == false)
+	        {
+		        var header = appRunner.SfumatoSegment.Content.Substring(pos.HeaderStart, pos.HeaderLength);
+		        var body = appRunner.SfumatoSegment.Content.Substring(pos.BodyStart, pos.BodyLength).TrimEnd(';').Trim();
+
+		        if (header.StartsWith("@utility ", StringComparison.Ordinal))
+			        appRunner.AppRunnerSettings.UtilityItems.Add(new KeyValuePair<string, string>(header, body));
+
+		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(header, body) == false)
 		        {
-			        appRunner.AppRunnerSettings.SfumatoBlockItems[appRunner.SfumatoSegment.Content.Substring(pos.HeaderStart, pos.HeaderLength)] = appRunner.SfumatoSegment.Content.Substring(pos.BodyStart, pos.BodyLength).TrimEnd(';').Trim();
+			        appRunner.AppRunnerSettings.SfumatoBlockItems[header] = body;
 		        }
+	        }
 
 	        foreach (var pos in appRunner.SfumatoSegment.Content.EnumerateCustomVariantPositions())
 		        if (appRunner.AppRunnerSettings.SfumatoBlockItems.TryAdd(appRunner.SfumatoSegment.Content.Substring(pos.NameStart, pos.NameLength), appRunner.SfumatoSegment.Content.Substring(pos.ContentStart, pos.ContentLength).TrimEnd(';')) == false)
@@ -1436,13 +1536,27 @@ public static class AppRunnerExtensions
                 {
                     var matchLen = j - start;
                     var numSpan  = data.Slice(start + 10, matchLen - 11).Trim();
-                    
+
+					if (numSpan.SequenceEqual("0px"))
+					{
+						output.Append("0px");
+						used.TryAdd("--spacing", string.Empty);
+						i = start + matchLen;
+
+						continue;
+					}
+
                     if (numSpan.Length > 0 && double.TryParse(numSpan, NumberStyles.Float, CultureInfo.InvariantCulture, out var val))
                     {
-                        output
-                          .Append("calc(var(--spacing) * ")
-                          .Append(val)
-                          .Append(')');
+						if (val == 0)
+							output.Append("0px");
+						else
+						{
+							output
+								.Append("calc(var(--spacing) * ")
+								.Append(val.ToString(CultureInfo.InvariantCulture))
+								.Append(')');
+						}
 
                         used.TryAdd("--spacing", string.Empty);
                         i = start + matchLen;
@@ -1484,17 +1598,7 @@ public static class AppRunnerExtensions
     /// <param name="segment"></param>
     public static async ValueTask ProcessSegmentAtVariantStatementsAsync(this AppRunner appRunner, GenerationSegment segment)
     {
-	    foreach (var span in segment.Content.ToString().EnumerateAtVariantStatements())
-	    {
-		    if (appRunner.Library.MediaQueryPrefixes.TryGetValue(span.Name.ToString(), out var variantMetadata))
-		    {
-			    segment.Content.Replace(span.Full, $"@{variantMetadata.PrefixType} {variantMetadata.Statement} {{");
-		    }
-		    else if (appRunner.Library.SupportsQueryPrefixes.TryGetValue(span.Name.ToString(), out variantMetadata))
-		    {
-			    segment.Content.Replace(span.Full, $"@{variantMetadata.PrefixType} {variantMetadata.Statement} {{");
-		    }
-	    }
+	    segment.Content.ReplaceContent(VariantDirectiveProcessor.Process(segment.Content.ToString(), appRunner));
 		
 	    await Task.CompletedTask;
     }
@@ -1591,7 +1695,7 @@ public static class AppRunnerExtensions
                 
                 outCss.Append(tmp2);
                 outCss.Append(lineBreak).Append(lineBreak);
-                appRunner.StringBuilderPool.Return(tmp);
+                appRunner.StringBuilderPool.Return(tmp2);
             }
 
             pos = bodyEnd + 1;
