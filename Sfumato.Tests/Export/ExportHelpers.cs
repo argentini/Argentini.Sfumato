@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Sfumato.Entities.UtilityClasses;
@@ -12,52 +11,31 @@ public static class ExportHelpers
     public static string ExportUtilityClassDefinitions(this AppRunner appRunner)
     {
         var exportItems = new List<ExportItem>();
-        var derivedTypes = Assembly.GetAssembly(typeof(ClassDictionaryBase))
-            ?.GetTypes()
-            .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false })
-            .OrderBy(t => t.AssemblyQualifiedName)
-            .ToList() ?? [];
+        var utilityDictionaries = BuiltInUtilityRegistry.All
+            .OrderBy(item => item.GetType().AssemblyQualifiedName)
+            .ToList();
         var groups = new Dictionary<string,string>();
-
-        foreach (var type in derivedTypes)
+        var exportRunner = new AppRunner(appRunner.StringBuilderPool, false)
         {
-            if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-                continue;
+            AppRunnerSettings = appRunner.AppRunnerSettings,
+        };
 
+        foreach (var instance in utilityDictionaries)
+        {
             if (string.IsNullOrEmpty(instance.GroupDescription) == false)
                 groups.TryAdd(instance.Group, instance.GroupDescription);
         }
 
-        foreach (var type in derivedTypes)
-        {
-            if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-                continue;
-
+        foreach (var instance in utilityDictionaries)
             groups.TryAdd(instance.Group, instance.Description);
-        }
 
-        foreach (var type in derivedTypes)
+        foreach (var instance in utilityDictionaries)
         {
-            if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-                continue;
-
-            appRunner.Library.SimpleClasses.Clear();
-            appRunner.Library.AbstractClasses.Clear();
-            appRunner.Library.AngleHueClasses.Clear();
-            appRunner.Library.ColorClasses.Clear();
-            appRunner.Library.DurationClasses.Clear();
-            appRunner.Library.FlexClasses.Clear();
-            appRunner.Library.FloatNumberClasses.Clear();
-            appRunner.Library.FrequencyClasses.Clear();
-            appRunner.Library.IntegerClasses.Clear();
-            appRunner.Library.LengthClasses.Clear();
-            appRunner.Library.PercentageClasses.Clear();
-            appRunner.Library.RatioClasses.Clear();
-            appRunner.Library.ResolutionClasses.Clear();
-            appRunner.Library.StringClasses.Clear();
-            appRunner.Library.UrlClasses.Clear();
+            exportRunner.Library.ClearUtilityDefinitions();
             
-            instance.ProcessThemeSettings(appRunner);
+            instance.ProcessThemeSettings(exportRunner);
+
+            var type = instance.GetType();
             
             var segments = type.FullName?.Split('.') ?? [];
 
@@ -73,69 +51,22 @@ public static class ExportHelpers
                 Description = instance.Description ?? string.Empty,
             };
             
-            foreach (var item in instance.Data)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.SimpleClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-            
-            foreach (var item in appRunner.Library.AbstractClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.AngleHueClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.ColorClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.DurationClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.FlexClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.FloatNumberClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.FrequencyClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.IntegerClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.LengthClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.PercentageClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.RatioClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.ResolutionClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.StringClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
-
-            foreach (var item in appRunner.Library.UrlClasses)
-                if (item.Value.IsRazorSyntax == false)
-                    exportItem.Usages.Add(item.Key, item.Value);
+            AddUsages(exportItem, instance.Data);
+            AddUsages(exportItem, exportRunner.Library.SimpleClasses);
+            AddUsages(exportItem, exportRunner.Library.AbstractClasses);
+            AddUsages(exportItem, exportRunner.Library.AngleHueClasses);
+            AddUsages(exportItem, exportRunner.Library.ColorClasses);
+            AddUsages(exportItem, exportRunner.Library.DurationClasses);
+            AddUsages(exportItem, exportRunner.Library.FlexClasses);
+            AddUsages(exportItem, exportRunner.Library.FloatNumberClasses);
+            AddUsages(exportItem, exportRunner.Library.FrequencyClasses);
+            AddUsages(exportItem, exportRunner.Library.IntegerClasses);
+            AddUsages(exportItem, exportRunner.Library.LengthClasses);
+            AddUsages(exportItem, exportRunner.Library.PercentageClasses);
+            AddUsages(exportItem, exportRunner.Library.RatioClasses);
+            AddUsages(exportItem, exportRunner.Library.ResolutionClasses);
+            AddUsages(exportItem, exportRunner.Library.StringClasses);
+            AddUsages(exportItem, exportRunner.Library.UrlClasses);
             
             #region Iterate usages and add doc definitions and examples
 
@@ -489,11 +420,11 @@ public static class ExportHelpers
     {
         var variants = new Dictionary<string, VariantMetadata>();
 
-        variants.AddRange(appRunner.Library.PseudoclassPrefixes);
-        variants.AddRange(appRunner.Library.MediaQueryPrefixes);
-        variants.AddRange(appRunner.Library.SupportsQueryPrefixes);
-        variants.AddRange(appRunner.Library.StartingStyleQueryPrefixes);
-        variants.AddRange(appRunner.Library.ContainerQueryPrefixes);
+        AddVariants(variants, appRunner.Library.PseudoclassPrefixes);
+        AddVariants(variants, appRunner.Library.MediaQueryPrefixes);
+        AddVariants(variants, appRunner.Library.SupportsQueryPrefixes);
+        AddVariants(variants, appRunner.Library.StartingStyleQueryPrefixes);
+        AddVariants(variants, appRunner.Library.ContainerQueryPrefixes);
 
         foreach (var variant in variants)
         {
@@ -522,6 +453,19 @@ public static class ExportHelpers
         var json = JsonSerializer.Serialize(variants, Jso);
 
         return json;
+    }
+
+    private static void AddUsages(ExportItem exportItem, IEnumerable<KeyValuePair<string, ClassDefinition>> definitions)
+    {
+        foreach (var definition in definitions)
+            if (definition.Value.IsRazorSyntax == false)
+                exportItem.Usages.Add(definition.Key, definition.Value.CloneForDocumentation());
+    }
+
+    private static void AddVariants(Dictionary<string, VariantMetadata> output, IEnumerable<KeyValuePair<string, VariantMetadata>> variants)
+    {
+        foreach (var variant in variants)
+            output.Add(variant.Key, variant.Value.CreateNewVariant());
     }
 
     private static string GetArbitraryTemplate(ClassDefinition definition)

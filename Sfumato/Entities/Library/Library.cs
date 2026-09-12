@@ -1,7 +1,6 @@
 // ReSharper disable RawStringCanBeSimplified
 // ReSharper disable MemberCanBePrivate.Global
 
-using System.Reflection;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Trie;
 using Sfumato.Entities.UtilityClasses;
@@ -93,8 +92,52 @@ public sealed class Library
     public PrefixTrie<ClassDefinition> UrlClasses { get; set; } = new();
 
     #endregion
+
+    public bool TryGetClassDefinition(string prefix, UtilityValueKinds valueKind, out ClassDefinition? definition)
+    {
+        definition = null;
+
+        var found = valueKind switch
+        {
+            UtilityValueKinds.Abstract => AbstractClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Angle => AngleHueClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Color => ColorClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Duration => DurationClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Flex => FlexClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Number => FloatNumberClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Frequency => FrequencyClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Integer => IntegerClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Length => LengthClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Percentage => PercentageClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Ratio => RatioClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Resolution => ResolutionClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.String => StringClasses.TryGetValue(prefix, out definition),
+            UtilityValueKinds.Url => UrlClasses.TryGetValue(prefix, out definition),
+            _ => false,
+        };
+
+        return found;
+    }
+
+    public bool TryGetUntypedCustomPropertyDefinition(string prefix, out ClassDefinition? definition)
+    {
+        return LengthClasses.TryGetValue(prefix, out definition)
+            || ColorClasses.TryGetValue(prefix, out definition)
+            || PercentageClasses.TryGetValue(prefix, out definition)
+            || IntegerClasses.TryGetValue(prefix, out definition)
+            || FloatNumberClasses.TryGetValue(prefix, out definition)
+            || AngleHueClasses.TryGetValue(prefix, out definition)
+            || DurationClasses.TryGetValue(prefix, out definition)
+            || FrequencyClasses.TryGetValue(prefix, out definition)
+            || UrlClasses.TryGetValue(prefix, out definition)
+            || FlexClasses.TryGetValue(prefix, out definition)
+            || RatioClasses.TryGetValue(prefix, out definition)
+            || ResolutionClasses.TryGetValue(prefix, out definition)
+            || StringClasses.TryGetValue(prefix, out definition)
+            || AbstractClasses.TryGetValue(prefix, out definition);
+    }
     
-    public Library()
+    public Library(bool includeBuiltInUtilities = true)
     {
         foreach (var kvp in LibraryMediaQueries.MediaQueryPrefixes)
             MediaQueryPrefixes.Add(kvp.Key, kvp.Value.CreateNewVariant());
@@ -125,64 +168,85 @@ public sealed class Library
         foreach (var propertyName in ValidChromeCssPropertyNames)
             CssPropertyNamesWithColons.Insert($"{propertyName}:", null);
 
-        var derivedTypes = Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
+        if (includeBuiltInUtilities == false)
+            return;
 
-        foreach (var type in derivedTypes)
+        foreach (var instance in BuiltInUtilityRegistry.All)
         {
-            if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-                continue;
-
-            foreach (var item in instance.Data.Where(item => item.Key.EndsWith('(') == false && item.Key.EndsWith('[') == false))
+            foreach (var item in instance.Data)
             {
-                if (item.Value.InAbstractValueCollection)
+                if (item.Key.EndsWith('(') || item.Key.EndsWith('['))
+                    continue;
+
+                var valueKinds = item.Value.ValueKinds;
+
+                if ((valueKinds & UtilityValueKinds.Abstract) != 0)
                     AbstractClasses.Add(item.Key, item.Value);
 
-                if (item.Value.InSimpleUtilityCollection)
+                if ((valueKinds & UtilityValueKinds.Simple) != 0)
                     SimpleClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InFloatNumberCollection)
+                if ((valueKinds & UtilityValueKinds.Number) != 0)
                     FloatNumberClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InAngleHueCollection)
+                if ((valueKinds & UtilityValueKinds.Angle) != 0)
                     AngleHueClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InColorCollection)
+                if ((valueKinds & UtilityValueKinds.Color) != 0)
                     ColorClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InLengthCollection)
+                if ((valueKinds & UtilityValueKinds.Length) != 0)
                     LengthClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InDurationCollection)
+                if ((valueKinds & UtilityValueKinds.Duration) != 0)
                     DurationClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InFlexCollection)
+                if ((valueKinds & UtilityValueKinds.Flex) != 0)
                     FlexClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InFrequencyCollection)
+                if ((valueKinds & UtilityValueKinds.Frequency) != 0)
                     FrequencyClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InUrlCollection)
+                if ((valueKinds & UtilityValueKinds.Url) != 0)
                     UrlClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InIntegerCollection)
+                if ((valueKinds & UtilityValueKinds.Integer) != 0)
                     IntegerClasses.Add(item.Key, item.Value);
 
-                if (item.Value.InPercentageCollection)
+                if ((valueKinds & UtilityValueKinds.Percentage) != 0)
                     PercentageClasses.Add(item.Key, item.Value);
 
-                if (item.Value.InRatioCollection)
+                if ((valueKinds & UtilityValueKinds.Ratio) != 0)
                     RatioClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InResolutionCollection)
+                if ((valueKinds & UtilityValueKinds.Resolution) != 0)
                     ResolutionClasses.Add(item.Key, item.Value);
                 
-                if (item.Value.InStringCollection)
+                if ((valueKinds & UtilityValueKinds.String) != 0)
                     StringClasses.Add(item.Key, item.Value);
 
                 ScannerClassNamePrefixes.Insert(item.Key, null);
             }
-        }        
+        }
+    }
+
+    public void ClearUtilityDefinitions()
+    {
+        ScannerClassNamePrefixes.Clear();
+        SimpleClasses.Clear();
+        AbstractClasses.Clear();
+        AngleHueClasses.Clear();
+        ColorClasses.Clear();
+        DurationClasses.Clear();
+        FlexClasses.Clear();
+        FloatNumberClasses.Clear();
+        FrequencyClasses.Clear();
+        IntegerClasses.Clear();
+        LengthClasses.Clear();
+        PercentageClasses.Clear();
+        RatioClasses.Clear();
+        ResolutionClasses.Clear();
+        StringClasses.Clear();
+        UrlClasses.Clear();
     }
 }

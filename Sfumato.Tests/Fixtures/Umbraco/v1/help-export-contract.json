@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "exports": [
+    {
+      "fileName": "utility-classes.json",
+      "rootKind": "array",
+      "minimumItems": 214,
+      "itemSchema": {
+        "category": "string",
+        "description": "string",
+        "group": "string",
+        "groupDescription": "string",
+        "name": "string",
+        "usages": "object"
+      },
+      "nestedDictionaryProperty": "usages",
+      "nestedValueSchema": {
+        "arbitraryCssValueTemplate": "string",
+        "arbitraryCssValueWithArbitraryModifierTemplate": "string",
+        "arbitraryCssValueWithModifierTemplate": "string",
+        "arbitraryLengthOnly": "boolean",
+        "arbitraryModifierTemplate": "string",
+        "disallowsFractions": "boolean",
+        "docDefinitions": "object",
+        "docExamples": "object",
+        "inAbstractValueCollection": "boolean",
+        "inAngleHueCollection": "boolean",
+        "inColorCollection": "boolean",
+        "inDurationCollection": "boolean",
+        "inFlexCollection": "boolean",
+        "inFloatNumberCollection": "boolean",
+        "inFrequencyCollection": "boolean",
+        "inIntegerCollection": "boolean",
+        "inLengthCollection": "boolean",
+        "inPercentageCollection": "boolean",
+        "inRatioCollection": "boolean",
+        "inResolutionCollection": "boolean",
+        "inSimpleUtilityCollection": "boolean",
+        "inStringCollection": "boolean",
+        "inUrlCollection": "boolean",
+        "isRazorSyntax": "boolean",
+        "modifierIsOpacity": "boolean",
+        "modifierTemplate": "string",
+        "selectorSort": "number",
+        "template": "string",
+        "usesSlashModifier": "boolean"
+      },
+      "requiredNames": [
+        "Font Features",
+        "Logical Inset",
+        "Logical Size",
+        "Scrollbar",
+        "Tab Size",
+        "Zoom"
+      ]
+    },
+    {
+      "fileName": "colors.json",
+      "rootKind": "object",
+      "minimumItems": 523,
+      "dictionaryValueKind": "string",
+      "requiredKeys": [
+        "mauve-150",
+        "mist-650",
+        "olive-150",
+        "taupe-950"
+      ]
+    },
+    {
+      "fileName": "css-custom-properties.json",
+      "rootKind": "object",
+      "minimumItems": 917,
+      "dictionaryValueKind": "string",
+      "requiredKeys": [
+        "--breakpoint-md",
+        "--color-mauve-150",
+        "--color-mist-650",
+        "--spacing"
+      ]
+    },
+    {
+      "fileName": "variants.json",
+      "rootKind": "object",
+      "minimumItems": 225,
+      "dictionaryValueSchema": {
+        "canHaveNumericSuffix": "boolean",
+        "inheritable": "boolean",
+        "isRazorSyntax": "boolean",
+        "prefixOrder": "number",
+        "prefixType": "string",
+        "prioritySort": "number",
+        "selectorPrefix": "string",
+        "selectorSuffix": "string",
+        "specialCase": "boolean",
+        "statement": "string"
+      },
+      "requiredKeys": [
+        "@md",
+        "dark",
+        "hover",
+        "not-hover",
+        "supports-"
+      ]
+    }
+  ]
+}

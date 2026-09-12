@@ -63,15 +63,22 @@ public sealed class FunctionalUtilityDefinition(string name, string body)
         value = suffix;
         modifier = string.Empty;
 
-        var segments = new List<string>(2);
+        var segmentCount = 0;
 
         foreach (var segment in suffix.SplitByTopLevel('/'))
-            segments.Add(segment.ToString());
-
-        if (segments.Count == 2)
         {
-            value = segments[0];
-            modifier = segments[1];
+            if (segmentCount == 0)
+                value = segment.ToString();
+            else if (segmentCount == 1)
+                modifier = segment.ToString();
+
+            segmentCount++;
+        }
+
+        if (segmentCount != 2)
+        {
+            value = suffix;
+            modifier = string.Empty;
         }
 
         value = value.TrimStart('-');

@@ -17,7 +17,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(te
         
         Assert.True(json.Length > 10);
 
-        var path = Path.GetFullPath(Path.Combine("../../../utility-classes.json"));
+        var path = Path.GetFullPath(Path.Combine("../../../", UmbracoHelpExportNames.UtilityClasses));
         
         await File.WriteAllTextAsync(path, json);
 
@@ -29,7 +29,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(te
         
         json = AppRunner.ExportColorDefinitions();
         
-        path = Path.GetFullPath(Path.Combine("../../../colors.json"));
+        path = Path.GetFullPath(Path.Combine("../../../", UmbracoHelpExportNames.Colors));
         
         await File.WriteAllTextAsync(path, json);
 
@@ -41,7 +41,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(te
         
         json = AppRunner.ExportCssCustomProperties();
         
-        path = Path.GetFullPath(Path.Combine("../../../css-custom-properties.json"));
+        path = Path.GetFullPath(Path.Combine("../../../", UmbracoHelpExportNames.CssCustomProperties));
         
         await File.WriteAllTextAsync(path, json);
 
@@ -53,7 +53,7 @@ public class ExportTests(ITestOutputHelper testOutputHelper) : SharedTestBase(te
         
         json = AppRunner.ExportVariants();
         
-        path = Path.GetFullPath(Path.Combine("../../../variants.json"));
+        path = Path.GetFullPath(Path.Combine("../../../", UmbracoHelpExportNames.Variants));
         
         await File.WriteAllTextAsync(path, json);
 

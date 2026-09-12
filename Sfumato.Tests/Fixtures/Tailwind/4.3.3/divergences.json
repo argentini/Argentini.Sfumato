@@ -1,0 +1,106 @@
+{
+  "tailwindVersion": "4.3.3",
+  "tailwindCommit": "c2b24dd15fed1c59dd521bd86082f520c9f5ad0d",
+  "normalizations": [
+    {
+      "id": "line-endings",
+      "description": "Normalize CRLF into LF before structural comparisons."
+    },
+    {
+      "id": "custom-property-prefix",
+      "description": "Normalize Sfumato --sf-* internals into Tailwind --tw-* internals."
+    }
+  ],
+  "divergences": [
+    {
+      "id": "custom-property-prefix",
+      "area": "internal custom properties",
+      "scope": "generated internal custom properties",
+      "tailwind": "--tw-*",
+      "sfumato": "--sf-*",
+      "reason": "Separate internal namespaces prevent framework collisions.",
+      "compatibility": "semantic",
+      "normalizations": ["custom-property-prefix"]
+    },
+    {
+      "id": "constant-folded-fractions",
+      "area": "fractional percentages",
+      "scope": "inset and logical size fractions",
+      "tailwind": "calc(numerator / denominator * 100%)",
+      "sfumato": "precomputed percentage",
+      "reason": "Sfumato emits the equivalent smaller declaration.",
+      "compatibility": "semantic",
+      "normalizations": []
+    },
+    {
+      "id": "container-longhand-emission",
+      "area": "container declarations",
+      "scope": "named container-size utilities",
+      "tailwind": "container-type and container-name longhands",
+      "sfumato": "equivalent container shorthand",
+      "reason": "Sfumato preserves compact equivalent output.",
+      "compatibility": "semantic",
+      "normalizations": []
+    },
+    {
+      "id": "ratio-whitespace",
+      "area": "ratio formatting",
+      "scope": "aspect-ratio values",
+      "tailwind": "compact slash",
+      "sfumato": "spaced slash",
+      "reason": "CSS whitespace does not change ratio semantics.",
+      "compatibility": "formatting",
+      "normalizations": []
+    },
+    {
+      "id": "expanded-color-stops",
+      "area": "non-colliding extensions",
+      "scope": "Sfumato color palettes",
+      "tailwind": "standard Tailwind stops",
+      "sfumato": "standard and intermediary stops through 1000",
+      "reason": "Sfumato retains its larger color scale.",
+      "compatibility": "additive",
+      "normalizations": []
+    },
+    {
+      "id": "noncolliding-scrollbar-helpers",
+      "area": "non-colliding extensions",
+      "scope": "scrollbar-h-hover, scrollbar-v-hover, scrollbar-dark",
+      "tailwind": "not defined",
+      "sfumato": "legacy compound scrollbar helpers",
+      "reason": "Unique noncolliding Sfumato utilities remain supported.",
+      "compatibility": "additive",
+      "normalizations": []
+    },
+    {
+      "id": "theme-mode-extensions",
+      "area": "non-colliding extensions",
+      "scope": "light, dark, and system theme selection",
+      "tailwind": "dark variant semantics",
+      "sfumato": "Tailwind dark semantics plus extra theme modes",
+      "reason": "Unique noncolliding Sfumato theme modes remain supported.",
+      "compatibility": "additive",
+      "normalizations": []
+    },
+    {
+      "id": "optional-form-reset",
+      "area": "non-colliding extensions",
+      "scope": "integrated form reset",
+      "tailwind": "separate forms plugin behavior",
+      "sfumato": "optional integrated form styles",
+      "reason": "Existing Sfumato form support remains available.",
+      "compatibility": "additive",
+      "normalizations": []
+    },
+    {
+      "id": "deterministic-utility-order",
+      "area": "utility ordering",
+      "scope": "generated utility rule order",
+      "tailwind": "internal canonical property and variant order",
+      "sfumato": "wrapper priority, explicit conflict priority, then selector order",
+      "reason": "Sfumato preserves established deterministic ordering and explicit conflict policies.",
+      "compatibility": "behavioral",
+      "normalizations": []
+    }
+  ]
+}

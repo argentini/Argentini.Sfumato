@@ -17,7 +17,7 @@ public sealed class AppRunner
 	public bool ProcessingWatchQueue { get; set; }
 	public bool IsFirstRun { get; set; } = true;
 
-	public Library.Library Library { get; set; } = new();
+	public Library.Library Library { get; set; }
 	public AppRunnerSettings AppRunnerSettings { get; set; } = new();
 	public Dictionary<string, string> UsedCssCustomProperties { get; } = new(StringComparer.Ordinal);
 	public Dictionary<string, string> UsedCss { get; } = new(StringComparer.Ordinal);
@@ -55,9 +55,13 @@ public sealed class AppRunner
 
 	#region Construction
 
-	public AppRunner(StringBuilderPool stringBuilderPool)
+	public AppRunner(StringBuilderPool stringBuilderPool) : this(stringBuilderPool, true)
+	{}
+
+	public AppRunner(StringBuilderPool stringBuilderPool, bool includeBuiltInUtilities)
 	{
 		StringBuilderPool = stringBuilderPool;
+		Library = new Library.Library(includeBuiltInUtilities);
 		_cssFilePath = string.Empty;
 		_useMinify = false;
 	}
@@ -65,6 +69,7 @@ public sealed class AppRunner
 	public AppRunner(StringBuilderPool stringBuilderPool, string cssFilePath, bool useMinify = false)
 	{
 		StringBuilderPool = stringBuilderPool;
+		Library = null!;
 
 		_cssFilePath = cssFilePath;
 		_useMinify = useMinify;

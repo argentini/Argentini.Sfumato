@@ -1,0 +1,8 @@
+@theme {
+    --spacing: 0.25rem;
+    --color-red-500: #ef4444;
+}
+
+@source inline('flex pbs-4 -mbe-2.5 inset-bs-3/4 inline-1/2 border-bs zoom-50 tab-2 font-features-["smcp"] @container-size/sidebar scrollbar-gutter-both scrollbar-thumb-red-500 aspect-8.5/11 dark:flex focus:flex -pbs-4 zoom-1.5 aspect-1.23/4.56 font-features-smcp scrollbar-gutter-auto/foo -@container-size');
+
+@tailwind utilities;

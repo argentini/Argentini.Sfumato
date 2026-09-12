@@ -1,0 +1,275 @@
+{
+  "tailwindVersion": "4.3.3",
+  "tailwindCommit": "c2b24dd15fed1c59dd521bd86082f520c9f5ad0d",
+  "inputFile": "input.css",
+  "inputSha256": "30a006e7c1caa3ca321a822bea9bb1098403bcea23e002d8e8c8cdb26ed68cd1",
+  "outputFile": "output.css",
+  "outputSha256": "0ae6259dd3bb2acb1fc1010a4cdcd7973d2c248d2a3d92612ad660ba77fd5d1e",
+  "divergenceFile": "divergences.json",
+  "normalizations": [
+    "line-endings",
+    "custom-property-prefix"
+  ],
+  "divergenceIds": [
+    "deterministic-utility-order"
+  ],
+  "officialOrder": [
+    "@container-size/sidebar",
+    "inset-bs-3/4",
+    "-mbe-2.5",
+    "flex",
+    "aspect-8.5/11",
+    "zoom-50",
+    "scrollbar-thumb-red-500",
+    "scrollbar-gutter-both",
+    "border-bs",
+    "pbs-4",
+    "font-features-[\"smcp\"]",
+    "tab-2",
+    "inline-1/2",
+    "focus:flex",
+    "dark:flex"
+  ],
+  "sfumatoOrder": [
+    "-mbe-2.5",
+    "@container-size/sidebar",
+    "aspect-8.5/11",
+    "border-bs",
+    "flex",
+    "font-features-[\"smcp\"]",
+    "inline-1/2",
+    "inset-bs-3/4",
+    "pbs-4",
+    "scrollbar-gutter-both",
+    "scrollbar-thumb-red-500",
+    "tab-2",
+    "zoom-50",
+    "focus:flex",
+    "dark:flex"
+  ],
+  "cases": [
+    {
+      "candidate": "flex",
+      "accepted": true,
+      "selector": ".flex",
+      "officialDeclarations": ["display: flex;"],
+      "declarations": ["display: flex;"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "display"
+    },
+    {
+      "candidate": "pbs-4",
+      "accepted": true,
+      "selector": ".pbs-4",
+      "officialDeclarations": ["padding-block-start: calc(var(--spacing) * 4);"],
+      "declarations": ["padding-block-start: calc(var(--spacing) * 4);"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "pbs"
+    },
+    {
+      "candidate": "-mbe-2.5",
+      "accepted": true,
+      "selector": ".-mbe-2\\.5",
+      "officialDeclarations": ["margin-block-end: calc(var(--spacing) * -2.5);"],
+      "declarations": ["margin-block-end: calc(var(--spacing) * -2.5);"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "mbe"
+    },
+    {
+      "candidate": "inset-bs-3/4",
+      "accepted": true,
+      "selector": ".inset-bs-3\\/4",
+      "officialDeclarations": ["inset-block-start: calc(3 / 4 * 100%);"],
+      "declarations": ["inset-block-start: 75%;"],
+      "wrappers": [],
+      "divergenceIds": ["constant-folded-fractions"],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "inset-bs"
+    },
+    {
+      "candidate": "inline-1/2",
+      "accepted": true,
+      "selector": ".inline-1\\/2",
+      "officialDeclarations": ["inline-size: calc(1 / 2 * 100%);"],
+      "declarations": ["inline-size: 50%;"],
+      "wrappers": [],
+      "divergenceIds": ["constant-folded-fractions"],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "inline"
+    },
+    {
+      "candidate": "border-bs",
+      "accepted": true,
+      "selector": ".border-bs",
+      "officialDeclarations": [
+        "border-block-start-style: var(--tw-border-style);",
+        "border-block-start-width: 1px;"
+      ],
+      "declarations": [
+        "border-block-start-style: var(--tw-border-style);",
+        "border-block-start-width: 1px;"
+      ],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/__snapshots__/utilities.test.ts.snap",
+      "sourceTest": "border-bs-*"
+    },
+    {
+      "candidate": "zoom-50",
+      "accepted": true,
+      "selector": ".zoom-50",
+      "officialDeclarations": ["zoom: 50%;"],
+      "declarations": ["zoom: 50%;"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "zoom"
+    },
+    {
+      "candidate": "tab-2",
+      "accepted": true,
+      "selector": ".tab-2",
+      "officialDeclarations": ["tab-size: 2;"],
+      "declarations": ["tab-size: 2;"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "tab"
+    },
+    {
+      "candidate": "font-features-[\"smcp\"]",
+      "accepted": true,
+      "selector": ".font-features-\\[\\\"smcp\\\"\\]",
+      "officialDeclarations": ["font-feature-settings: \"smcp\";"],
+      "declarations": ["font-feature-settings: \"smcp\";"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "font-features"
+    },
+    {
+      "candidate": "@container-size/sidebar",
+      "accepted": true,
+      "selector": ".\\@container-size\\/sidebar",
+      "officialDeclarations": [
+        "container-type: size;",
+        "container-name: sidebar;"
+      ],
+      "declarations": ["container: sidebar / size;"],
+      "wrappers": [],
+      "divergenceIds": ["container-longhand-emission"],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "@container"
+    },
+    {
+      "candidate": "scrollbar-gutter-both",
+      "accepted": true,
+      "selector": ".scrollbar-gutter-both",
+      "officialDeclarations": ["scrollbar-gutter: stable both-edges;"],
+      "declarations": ["scrollbar-gutter: stable both-edges;"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "scrollbar-gutter"
+    },
+    {
+      "candidate": "scrollbar-thumb-red-500",
+      "accepted": true,
+      "selector": ".scrollbar-thumb-red-500",
+      "officialDeclarations": [
+        "--tw-scrollbar-thumb: var(--color-red-500);",
+        "scrollbar-color: var(--tw-scrollbar-thumb) var(--tw-scrollbar-track);"
+      ],
+      "declarations": [
+        "--tw-scrollbar-thumb: var(--color-red-500);",
+        "scrollbar-color: var(--tw-scrollbar-thumb) var(--tw-scrollbar-track);"
+      ],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "scrollbar-thumb"
+    },
+    {
+      "candidate": "aspect-8.5/11",
+      "accepted": true,
+      "selector": ".aspect-8\\.5\\/11",
+      "officialDeclarations": ["aspect-ratio: 8.5/11;"],
+      "declarations": ["aspect-ratio: 8.5 / 11;"],
+      "wrappers": [],
+      "divergenceIds": ["ratio-whitespace"],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "aspect-ratio"
+    },
+    {
+      "candidate": "dark:flex",
+      "accepted": true,
+      "selector": ".dark\\:flex",
+      "officialDeclarations": ["display: flex;"],
+      "declarations": ["display: flex;"],
+      "wrappers": ["@media (prefers-color-scheme: dark) {"],
+      "sourceFile": "packages/tailwindcss/src/variants.test.ts",
+      "sourceTest": "dark"
+    },
+    {
+      "candidate": "focus:flex",
+      "accepted": true,
+      "selector": ".focus\\:flex:focus",
+      "officialDeclarations": ["display: flex;"],
+      "declarations": ["display: flex;"],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/variants.test.ts",
+      "sourceTest": "focus"
+    },
+    {
+      "candidate": "-pbs-4",
+      "accepted": false,
+      "selector": "",
+      "declarations": [],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "pbs"
+    },
+    {
+      "candidate": "zoom-1.5",
+      "accepted": false,
+      "selector": "",
+      "declarations": [],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "zoom"
+    },
+    {
+      "candidate": "aspect-1.23/4.56",
+      "accepted": false,
+      "selector": "",
+      "declarations": [],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "aspect-ratio"
+    },
+    {
+      "candidate": "font-features-smcp",
+      "accepted": false,
+      "selector": "",
+      "declarations": [],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "font-features"
+    },
+    {
+      "candidate": "scrollbar-gutter-auto/foo",
+      "accepted": false,
+      "selector": "",
+      "declarations": [],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "scrollbar-gutter"
+    },
+    {
+      "candidate": "-@container-size",
+      "accepted": false,
+      "selector": "",
+      "declarations": [],
+      "wrappers": [],
+      "sourceFile": "packages/tailwindcss/src/utilities.test.ts",
+      "sourceTest": "@container"
+    }
+  ]
+}

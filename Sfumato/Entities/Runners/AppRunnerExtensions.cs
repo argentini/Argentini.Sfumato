@@ -2,7 +2,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System.Globalization;
-using System.Reflection;
 using Sfumato.Entities.CssClassProcessing;
 using Sfumato.Entities.Scanning;
 using Sfumato.Entities.UtilityClasses;
@@ -18,7 +17,7 @@ public static class AppRunnerExtensions
 	#region Process Default Sfumato Settings
 	
     /// <summary>
-    /// Processes CSS settings for colors, breakpoints, etc., and uses reflection to load all others per utility class file.  
+    /// Processes CSS settings for colors, breakpoints, and utility classes.
     /// </summary>
     public static bool ProcessSfumatoBlockSettings(AppRunner appRunner, bool usingDefaults = false)
     {
@@ -420,17 +419,7 @@ public static class AppRunnerExtensions
 	    
 		#region Read theme settings from ClassDictionary instances (e.g. --text-xs, etc.)
 	    
-	    var derivedTypes = Assembly.GetExecutingAssembly()
-		    .GetTypes()
-		    .Where(t => typeof(ClassDictionaryBase).IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false });
-
-		foreach (var type in derivedTypes)
-		{
-			if (Activator.CreateInstance(type) is not ClassDictionaryBase instance)
-				continue;
-
-			instance.ProcessThemeSettings(appRunner);
-	    }
+	    BuiltInUtilityRegistry.ApplyThemeOverlays(appRunner);
 	    
 	    #endregion
 

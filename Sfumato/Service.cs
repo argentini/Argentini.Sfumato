@@ -1,7 +1,5 @@
-using System.Reflection;
 using System.Threading.Tasks.Dataflow;
 using Sfumato.Entities.Library;
-using Sfumato.Entities.Messenger;
 using Sfumato.Entities.Runners;
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
@@ -14,12 +12,12 @@ namespace Sfumato;
 
 public sealed class Service
 {
-	private static readonly WeakMessenger Messenger = new ();
+	private static readonly string Version = GetVersion();
 	private static StringBuilderPool StringBuilderPool { get; } = new ();
 	private static AppState AppState { get; } = new (StringBuilderPool);
 
 	public static SfumatoConfiguration Configuration { get; } = new();
-	public static readonly ActionBlock<AppRunner> Dispatcher = new (appRunner => Messenger.Send(appRunner), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
+	public static readonly ActionBlock<AppRunner> Dispatcher = new (DispatchMessages, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 1 });
 
 	/// <summary>
 	/// Start the Sfumato watcher for the specified relative CSS file path.
@@ -93,36 +91,18 @@ public sealed class Service
 		
 		Console.OutputEncoding = Encoding.UTF8;
 		
-		var assembly = Assembly.Load("Sfumato");
-		var version = await Identify.VersionAsync(assembly);
-
-		Messenger.Register<AppRunner>(void (appRunner) =>
-		{
-			try
-			{
-				foreach (var message in appRunner.Messages)
-					message.WriteToOutput();
-
-				appRunner.Messages.Clear();
-			}
-			catch
-			{
-				// Ignored
-			}
-		});
-
 		// ReSharper disable once RedundantAssignment
 		var argumentErrorMessage = await AppState.InitializeAsync(Configuration.Arguments ?? []);
 
 		if (AppState.VersionMode)
 		{
-			$"Sfumato Version {version}".WriteToOutput();
+			$"Sfumato Version {Version}".WriteToOutput();
 			return true;
 		}
 		
 		Strings.ThickLine.Repeat(Library.MaxConsoleWidth).WriteToOutput();
 		"Sfumato: The Ultra-Fast CSS Generation Tool".WriteToOutput();
-		$"Version {version} for {Identify.GetOsPlatformName()} ({Identify.GetProcessorArchitecture()})".WriteToOutput();
+		$"Version {Version} for {Identify.GetOsPlatformName()} ({Identify.GetProcessorArchitecture()})".WriteToOutput();
 		
 		Strings.ThickLine.Repeat(Library.MaxConsoleWidth).WriteToOutput();
 
@@ -338,5 +318,27 @@ public sealed class Service
 		"".WriteToOutput();
 
 		return true;
+	}
+
+	private static void DispatchMessages(AppRunner appRunner)
+	{
+		try
+		{
+			foreach (var message in appRunner.Messages)
+				message.WriteToOutput();
+
+			appRunner.Messages.Clear();
+		}
+		catch
+		{
+			// Ignored
+		}
+	}
+
+	private static string GetVersion()
+	{
+		var version = typeof(Service).Assembly.GetName().Version;
+
+		return version is null ? string.Empty : $"{version.Major}.{version.Minor}.{version.Build}";
 	}
 }

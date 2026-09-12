@@ -1,0 +1,80 @@
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+@layer properties;
+:root, :host {
+  --spacing: 0.25rem;
+  --color-red-500: oklch(63.7% 0.237 25.331);
+}
+.\@container-size\/sidebar {
+  container-type: size;
+  container-name: sidebar;
+}
+.inset-bs-3\/4 {
+  inset-block-start: calc(3 / 4 * 100%);
+}
+.-mbe-2\.5 {
+  margin-block-end: calc(var(--spacing) * -2.5);
+}
+.flex {
+  display: flex;
+}
+.aspect-8\.5\/11 {
+  aspect-ratio: 8.5/11;
+}
+.zoom-50 {
+  zoom: 50%;
+}
+.scrollbar-thumb-red-500 {
+  --tw-scrollbar-thumb: var(--color-red-500);
+  scrollbar-color: var(--tw-scrollbar-thumb) var(--tw-scrollbar-track);
+}
+.scrollbar-gutter-both {
+  scrollbar-gutter: stable both-edges;
+}
+.border-bs {
+  border-block-start-style: var(--tw-border-style);
+  border-block-start-width: 1px;
+}
+.pbs-4 {
+  padding-block-start: calc(var(--spacing) * 4);
+}
+.font-features-\[\"smcp\"\] {
+  font-feature-settings: "smcp";
+}
+.tab-2 {
+  tab-size: 2;
+}
+.inline-1\/2 {
+  inline-size: calc(1 / 2 * 100%);
+}
+.focus\:flex:focus {
+  display: flex;
+}
+@media (prefers-color-scheme: dark) {
+  .dark\:flex {
+    display: flex;
+  }
+}
+@property --tw-scrollbar-thumb {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-scrollbar-track {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-scrollbar-thumb: #0000;
+      --tw-scrollbar-track: #0000;
+      --tw-border-style: solid;
+    }
+  }
+}
