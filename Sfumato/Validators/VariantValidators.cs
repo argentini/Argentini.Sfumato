@@ -291,6 +291,38 @@ public static class VariantValidators
             }
             
             #endregion
+            
+            #region Implicit group (in-*)
+
+            if (variant.Length > 3 && variant.StartsWith("in-", StringComparison.Ordinal))
+            {
+                // in-hover: in-focus: etc. — implicit group variants (no .group class required)
+
+                var innerVariant = variant[3..];
+
+                // in-not-* is not supported (Tailwind emits nothing for it)
+                if (innerVariant.StartsWith("not-", StringComparison.Ordinal))
+                    return false;
+
+                // Resolve the inner variant to obtain its selector suffix.
+                if (innerVariant.TryGetVariant(appRunner, out var innerMetadata) == false || innerMetadata is null)
+                    return false;
+
+                // Only selector-based (pseudo-class / attribute) variants are compatible with in-*.
+                if (innerMetadata.PrefixType != "pseudoclass" || innerMetadata.SelectorSuffix.Length == 0)
+                    return false;
+
+                // Pseudo-elements (::before, ::after, ...) are not compatible (Tailwind emits nothing for them).
+                if (innerMetadata.SelectorSuffix.StartsWith("::", StringComparison.Ordinal))
+                    return false;
+
+                metadata!.PrefixType = "prefix";
+                metadata.SelectorPrefix = $":where({innerMetadata.SelectorSuffix}) ";
+
+                return true;
+            }
+
+            #endregion
 
             #region Has
             

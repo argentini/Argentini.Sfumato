@@ -550,5 +550,13 @@ public static class LibraryPseudoClasses
 			    SpecialCase = true
 		    }
 	    },
+	    {
+		    "in-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
     };
 }

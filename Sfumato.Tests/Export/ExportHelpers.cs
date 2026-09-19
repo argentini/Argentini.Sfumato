@@ -443,6 +443,8 @@ public static class ExportHelpers
                     variant.Value.SelectorSuffix = $"[{variant.Key}*] /* (e.g. checked) */";
                 else if (variant.Key is "peer-" or "not-peer-" or "group-" or "not-group-")
                     variant.Value.SelectorSuffix = $"[{variant.Key}*] /* (e.g. invalid) */";
+                else if (variant.Key == "in-")
+                    variant.Value.SelectorSuffix = $"[{variant.Key}*] /* implicit group, e.g. in-hover (no .group class required) */";
             }
             else if (variant.Value.PrefixType == "media")
             {
