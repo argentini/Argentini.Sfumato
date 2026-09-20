@@ -32,6 +32,39 @@ public static class VariantValidators
         return null;
     }
 
+    /// <summary>
+    /// Resolves the value portion of an aria variant into its attribute selector suffix.
+    /// Accepts a standard boolean name (e.g. "checked") or an arbitrary value
+    /// (e.g. "[sort=ascending]", "[current]"). Returns null when the value is invalid.
+    /// </summary>
+    private static string? GetAriaSelectorSuffix(AppRunner appRunner, string ariaValue)
+    {
+        if (ariaValue.Length == 0)
+            return null;
+
+        // Arbitrary value: [sort=ascending], [current], etc.
+        if (ariaValue[0] == '[' && ariaValue[^1] == ']')
+        {
+            var inner = ariaValue[1..^1].ProcessUnderscores();
+
+            if (inner.Length == 0)
+                return null;
+
+            var eqIndex = inner.IndexOf('=');
+
+            // [sort=ascending] -> [aria-sort="ascending"] ; [current] -> [aria-current]
+            return eqIndex >= 0
+                ? $"[aria-{inner[..eqIndex]}=\"{inner[(eqIndex + 1)..]}\"]"
+                : $"[aria-{inner}]";
+        }
+
+        // Standard boolean aria variant: look up "aria-{value}" (e.g. aria-checked).
+        if (appRunner.Library.PseudoclassPrefixes.TryGetValue($"aria-{ariaValue}", out var pseudoClass))
+            return pseudoClass.SelectorSuffix;
+
+        return null;
+    }
+
     private static string? NegateArbitraryAtRule(string value)
     {
         // value is a processed at-rule like "@media print", "@supports (display: grid)",
@@ -338,6 +371,38 @@ public static class VariantValidators
             
             #endregion
             
+            #region ARIA attributes
+
+            if (variant.Length > 9 && variant.StartsWith("not-aria-", StringComparison.Ordinal))
+            {
+                // not-aria-[sort=ascending]: (standard not-aria-* are auto-generated in Library)
+
+                var ariaSelector = GetAriaSelectorSuffix(appRunner, variant[9..]);
+
+                if (ariaSelector is null)
+                    return false;
+
+                metadata!.SelectorSuffix = $":not({ariaSelector})";
+
+                return true;
+            }
+
+            if (variant.Length > 5 && variant.StartsWith("aria-", StringComparison.Ordinal))
+            {
+                // aria-[sort=ascending]: or aria-[current]: (standard aria-* are exact trie matches)
+
+                var ariaSelector = GetAriaSelectorSuffix(appRunner, variant[5..]);
+
+                if (ariaSelector is null)
+                    return false;
+
+                metadata!.SelectorSuffix = ariaSelector;
+
+                return true;
+            }
+
+            #endregion
+            
             #region Not arbitrary (not-[...])
 
             if (variant.Length > 6 && variant.StartsWith("not-[", StringComparison.Ordinal))
@@ -416,16 +481,16 @@ public static class VariantValidators
             
             if (variant.Length > 11 && variant.StartsWith("group-aria-", StringComparison.Ordinal))
             {
-                // group-aria-checked:
+                // group-aria-checked: or group-aria-[sort=ascending]: etc.
 
-                var variantValue = variant[11..];
+                var ariaSelector = GetAriaSelectorSuffix(appRunner, variant[11..]);
 
-                if (appRunner.Library.PseudoclassPrefixes.TryGetValue(variantValue, out var pseudoClass) == false)
+                if (ariaSelector is null)
                     return false;
 
-                metadata!.SelectorSuffix = $":is(:where(.group{pseudoClass.SelectorSuffix}) *)";
+                metadata!.SelectorSuffix = $":is(:where(.group){ariaSelector} *)";
                 metadata.PrioritySort = 99;
-                
+
                 return true;
             }
             
@@ -480,14 +545,14 @@ public static class VariantValidators
             
             if (variant.Length > 10 && variant.StartsWith("peer-aria-", StringComparison.Ordinal))
             {
-                // peer-aria-checked:
+                // peer-aria-checked: or peer-aria-[sort=descending]: etc.
 
-                var variantValue = variant[10..];
+                var ariaSelector = GetAriaSelectorSuffix(appRunner, variant[10..]);
 
-                if (appRunner.Library.PseudoclassPrefixes.TryGetValue(variantValue, out var pseudoClass) == false)
+                if (ariaSelector is null)
                     return false;
 
-                metadata!.SelectorSuffix = $":is(:where(.peer{pseudoClass.SelectorSuffix}) ~ *)";
+                metadata!.SelectorSuffix = $":is(:where(.peer){ariaSelector} ~ *)";
                 metadata.PrioritySort = 99;
 
                 return true;

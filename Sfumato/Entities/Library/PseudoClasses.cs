@@ -398,6 +398,17 @@ public static class LibraryPseudoClasses
 		    }
 	    },
 	    {
+		    // Prefix for the arbitrary aria-[...] variant (e.g. aria-[sort=ascending]).
+		    // Standard boolean forms (aria-checked, ...) are exact matches above; this
+		    // prefix routes the bracketed form to the special-case resolver.
+		    "aria-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true
+		    }
+	    },
+	    {
 		    "aria-busy",
 		    new VariantMetadata
 		    {
