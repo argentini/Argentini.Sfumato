@@ -533,14 +533,14 @@ public static class AppRunnerExtensions
 	    return false;
     }
 
-	private static string NegateConditionalStatement(string statement)
+	internal static string NegateConditionalStatement(string statement)
 	{
 		return statement.StartsWith("not ", StringComparison.Ordinal)
 			? statement[4..]
 			: $"not {statement}";
 	}
 
-	private static string NegateContainerStatement(string statement)
+	internal static string NegateContainerStatement(string statement)
 	{
 		var trimmed = statement.Trim();
 

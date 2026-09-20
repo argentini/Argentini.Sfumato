@@ -575,6 +575,439 @@ public class CssClassTests(ITestOutputHelper testOutputHelper) : SharedTestBase(
     }
 
     [Fact]
+    public void ArbitraryNotSelectorVariants()
+    {
+        // Pseudo-class selector
+        var cssClass = new CssClass(AppRunner, selector: "not-[:checked]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\:checked\]\:whitespace-pre:not(:is(:checked))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Class selector
+        cssClass = new CssClass(AppRunner, selector: "not-[.group]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\.group\]\:whitespace-pre:not(:is(.group))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Id selector
+        cssClass = new CssClass(AppRunner, selector: "not-[#my-id]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\#my-id\]\:whitespace-pre:not(:is(#my-id))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Element selector
+        cssClass = new CssClass(AppRunner, selector: "not-[p]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[p\]\:whitespace-pre:not(:is(p))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Universal selector (no &): wrapped in :is()
+        cssClass = new CssClass(AppRunner, selector: "not-[*]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\*\]\:whitespace-pre:not(:is(*))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Attribute selector
+        cssClass = new CssClass(AppRunner, selector: "not-[[data-active]]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\[data-active\]\]\:whitespace-pre:not(:is([data-active]))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Compound class selector
+        cssClass = new CssClass(AppRunner, selector: "not-[.a.b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\.a\.b\]\:whitespace-pre:not(:is(.a.b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Multi pseudo-class (comma list)
+        cssClass = new CssClass(AppRunner, selector: "not-[:hover,:focus]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\:hover\,\:focus\]\:whitespace-pre:not(:is(:hover, :focus))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Descendant selector
+        cssClass = new CssClass(AppRunner, selector: "not-[a:hover]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a\:hover\]\:whitespace-pre:not(:is(a:hover))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Nested :is() is wrapped again (Tailwind behavior)
+        cssClass = new CssClass(AppRunner, selector: "not-[:is(.group)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\:is\(\.group\)\]\:whitespace-pre:not(:is(:is(.group)))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Adjacent sibling combinator (underscore = space)
+        cssClass = new CssClass(AppRunner, selector: "not-[a_+_b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a_\+_b\]\:whitespace-pre:not(:is(a + b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // General sibling combinator (underscore = space)
+        cssClass = new CssClass(AppRunner, selector: "not-[a_~_b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a_\~_b\]\:whitespace-pre:not(:is(a ~ b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Descendant combinator (underscore = space)
+        cssClass = new CssClass(AppRunner, selector: "not-[a_>_b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a_\>_b\]\:whitespace-pre:not(:is(a > b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Combinator without underscores: spacing is normalized
+        cssClass = new CssClass(AppRunner, selector: "not-[a+b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a\+b\]\:whitespace-pre:not(:is(a + b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Sibling combinator without underscores: spacing is normalized
+        cssClass = new CssClass(AppRunner, selector: "not-[a~b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a\~b\]\:whitespace-pre:not(:is(a ~ b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Trailing comma in the list: empty part is kept
+        cssClass = new CssClass(AppRunner, selector: "not-[a,]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a\,\]\:whitespace-pre:not(:is(a, ))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Leading comma in the list: empty part is kept
+        cssClass = new CssClass(AppRunner, selector: "not-[,a]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\,a\]\:whitespace-pre:not(:is(, a))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Double comma in the list: empty part is kept
+        cssClass = new CssClass(AppRunner, selector: "not-[a,,b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a\,\,b\]\:whitespace-pre:not(:is(a, , b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Whitespace runs collapse to a single space (descendant combinator)
+        cssClass = new CssClass(AppRunner, selector: "not-[a__b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a__b\]\:whitespace-pre:not(:is(a b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Leading whitespace is dropped
+        cssClass = new CssClass(AppRunner, selector: "not-[_.group]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[_\.group\]\:whitespace-pre:not(:is(.group))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Trailing whitespace is kept (lightningcss serialization)
+        cssClass = new CssClass(AppRunner, selector: "not-[.group_]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\.group_\]\:whitespace-pre:not(:is(.group ))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Invalid selectors are still emitted by Tailwind: a leading combinator
+        // keeps its space when preceded by whitespace
+        cssClass = new CssClass(AppRunner, selector: "not-[_>img]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[_\>img\]\:whitespace-pre:not(:is( > img))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // A trailing combinator keeps its space (lightningcss serialization)
+        cssClass = new CssClass(AppRunner, selector: "not-[.foo_>]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\.foo_\>\]\:whitespace-pre:not(:is(.foo > ))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // A list part starting with a combinator keeps its leading space
+        cssClass = new CssClass(AppRunner, selector: "not-[a,>b]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[a\,\>b\]\:whitespace-pre:not(:is(a,  > b))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+    }
+
+    [Fact]
+    public void ArbitraryNotRelativeSelectorVariants()
+    {
+        // Bare & refers to the element itself: becomes *
+        var cssClass = new CssClass(AppRunner, selector: "not-[&]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\]\:whitespace-pre:not(*)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // & followed by a pseudo-class: the & is stripped
+        cssClass = new CssClass(AppRunner, selector: "not-[&:hover]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\:hover\]\:whitespace-pre:not(:hover)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // & followed by multiple pseudo-classes
+        cssClass = new CssClass(AppRunner, selector: "not-[&:hover:focus]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\:hover\:focus\]\:whitespace-pre:not(:hover:focus)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // & followed by a class: the & is stripped
+        cssClass = new CssClass(AppRunner, selector: "not-[&.active]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\.active\]\:whitespace-pre:not(.active)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // & followed by an id selector
+        cssClass = new CssClass(AppRunner, selector: "not-[&#id]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\#id\]\:whitespace-pre:not(#id)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // & followed by an attribute selector
+        cssClass = new CssClass(AppRunner, selector: "not-[&[data-x]]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\[data-x\]\]\:whitespace-pre:not([data-x])", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // & with a combinator keeps the universal selector
+        cssClass = new CssClass(AppRunner, selector: "not-[&_>.foo]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&_\>\.foo\]\:whitespace-pre:not(* > .foo)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // & with a combinator and no underscores: spacing is normalized
+        cssClass = new CssClass(AppRunner, selector: "not-[&>.foo]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\>\.foo\]\:whitespace-pre:not(* > .foo)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Comma-separated list with &
+        cssClass = new CssClass(AppRunner, selector: "not-[&:hover,:focus]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\:hover\,\:focus\]\:whitespace-pre:not(:hover, :focus)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Trailing comma in the list with &: empty part is kept
+        cssClass = new CssClass(AppRunner, selector: "not-[&:hover,]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\&\:hover\,\]\:whitespace-pre:not(:hover, )", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Leading comma in the list with &: empty part is kept
+        cssClass = new CssClass(AppRunner, selector: "not-[,&.a]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\,\&\.a\]\:whitespace-pre:not(, .a)", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+    }
+
+    [Fact]
+    public void ArbitraryNotAtRuleVariants()
+    {
+        // @media negation
+        var cssClass = new CssClass(AppRunner, selector: "not-[@media_print]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".not-\[\@media_print\]\:whitespace-pre", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media not print {", cssClass.Wrappers.First().Value);
+
+        // @media with a parenthesized condition (no space after the at-rule name)
+        cssClass = new CssClass(AppRunner, selector: "not-[@media(orientation:portrait)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media not (orientation:portrait) {", cssClass.Wrappers.First().Value);
+
+        // @media with a parenthesized condition (underscore-separated)
+        cssClass = new CssClass(AppRunner, selector: "not-[@media_(orientation:landscape)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media not (orientation:landscape) {", cssClass.Wrappers.First().Value);
+
+        // Double negation cancels out
+        cssClass = new CssClass(AppRunner, selector: "not-[@media_not_(orientation:portrait)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@media (orientation:portrait) {", cssClass.Wrappers.First().Value);
+
+        // @supports negation
+        cssClass = new CssClass(AppRunner, selector: "not-[@supports(display:grid)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@supports not (display:grid) {", cssClass.Wrappers.First().Value);
+
+        // @container negation (unnamed)
+        cssClass = new CssClass(AppRunner, selector: "not-[@container_style(--a)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@container not style(--a) {", cssClass.Wrappers.First().Value);
+
+        // @container negation (named container)
+        cssClass = new CssClass(AppRunner, selector: "not-[@container_card_style(--c)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@container card not style(--c) {", cssClass.Wrappers.First().Value);
+
+        // @container double negation cancels out
+        cssClass = new CssClass(AppRunner, selector: "not-[@container_not_style(--b)]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Equal("@container style(--b) {", cssClass.Wrappers.First().Value);
+    }
+
+    [Fact]
+    public void ArbitraryNotVariantStackingAndImportant()
+    {
+        // Stacked with another pseudo-class variant
+        var cssClass = new CssClass(AppRunner, selector: "hover:not-[.group]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".hover\:not-\[\.group\]\:whitespace-pre:hover:not(:is(.group))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+
+        // Stacked with a media variant (dark)
+        cssClass = new CssClass(AppRunner, selector: "dark:not-[:checked]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.Equal(@".dark\:not-\[\:checked\]\:whitespace-pre:not(:is(:checked))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre;", cssClass.Styles);
+        Assert.Single(cssClass.Wrappers);
+
+        // Important modifier
+        cssClass = new CssClass(AppRunner, selector: "not-[.group]:whitespace-pre!");
+
+        Assert.NotNull(cssClass);
+        Assert.True(cssClass.IsValid);
+        Assert.True(cssClass.IsImportant);
+        Assert.Equal(@".not-\[\.group\]\:whitespace-pre\!:not(:is(.group))", cssClass.EscapedSelector);
+        Assert.Equal("white-space: pre !important;", cssClass.Styles);
+    }
+
+    [Fact]
+    public void ArbitraryNotInvalidVariants()
+    {
+        // Empty value
+        var cssClass = new CssClass(AppRunner, selector: "not-[]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.False(cssClass.IsValid);
+        Assert.Empty(cssClass.EscapedSelector);
+
+        // Pseudo-elements cannot be negated
+        cssClass = new CssClass(AppRunner, selector: "not-[::before]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.False(cssClass.IsValid);
+        Assert.Empty(cssClass.EscapedSelector);
+
+        // Relative combinators cannot be negated
+        cssClass = new CssClass(AppRunner, selector: "not-[>img]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.False(cssClass.IsValid);
+        Assert.Empty(cssClass.EscapedSelector);
+
+        cssClass = new CssClass(AppRunner, selector: "not-[+img]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.False(cssClass.IsValid);
+        Assert.Empty(cssClass.EscapedSelector);
+
+        cssClass = new CssClass(AppRunner, selector: "not-[~img]:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.False(cssClass.IsValid);
+        Assert.Empty(cssClass.EscapedSelector);
+
+        // not-* variants do not accept modifiers
+        cssClass = new CssClass(AppRunner, selector: "not-[:checked]/foo:whitespace-pre");
+
+        Assert.NotNull(cssClass);
+        Assert.False(cssClass.IsValid);
+        Assert.Empty(cssClass.EscapedSelector);
+    }
+
+    [Fact]
     public void Containers()
     {
         var cssClass = new CssClass(AppRunner, selector: "@max-md:whitespace-pre!");

@@ -495,6 +495,15 @@ public static class LibraryPseudoClasses
 		    }
 	    },
 	    {
+		    "not-",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SpecialCase = true,
+			    SelectorSuffix = "{0}",
+		    }
+	    },
+	    {
 		    "group-has-",
 		    new VariantMetadata
 		    {

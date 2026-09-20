@@ -31,7 +31,176 @@ public static class VariantValidators
 
         return null;
     }
-    
+
+    private static string? NegateArbitraryAtRule(string value)
+    {
+        // value is a processed at-rule like "@media print", "@supports (display: grid)",
+        // or "@container card style(--c)". Returns the negated at-rule statement, or
+        // null when the at-rule cannot be negated.
+
+        if (value.StartsWith("@media", StringComparison.Ordinal))
+        {
+            var condition = value[6..].Trim();
+
+            return condition.Length > 0 ? $"@media {AppRunnerExtensions.NegateConditionalStatement(condition)}" : null;
+        }
+
+        if (value.StartsWith("@supports", StringComparison.Ordinal))
+        {
+            var condition = value[9..].Trim();
+
+            return condition.Length > 0 ? $"@supports {AppRunnerExtensions.NegateConditionalStatement(condition)}" : null;
+        }
+
+        if (value.StartsWith("@container", StringComparison.Ordinal))
+        {
+            var condition = value[10..].Trim();
+
+            return condition.Length > 0 ? $"@container {AppRunnerExtensions.NegateContainerStatement(condition)}" : null;
+        }
+
+        return null;
+    }
+
+    private static string NormalizeNotSelectorParts(string selector)
+    {
+        var trailingComma = EndsWithTopLevelComma(selector);
+
+        var parts = 0;
+
+        foreach (var _ in selector.SplitByTopLevel(','))
+            parts++;
+
+        // The splitter drops a trailing empty part (e.g. "a," yields one
+        // part); Tailwind keeps it, so account for a top-level trailing comma.
+
+        if (trailingComma)
+            parts++;
+
+        if (parts == 1)
+            return NormalizeNotSelectorPart(selector);
+
+        var sb = new StringBuilder(selector.Length + parts);
+        var appendedParts = 0;
+
+        foreach (var part in selector.SplitByTopLevel(','))
+        {
+            if (appendedParts++ > 0)
+                sb.Append(", ");
+
+            sb.Append(NormalizeNotSelectorPart(part.ToString()));
+        }
+
+        // Append the trailing empty part dropped by the splitter.
+
+        if (trailingComma)
+            sb.Append(", ");
+
+        return sb.ToString();
+    }
+
+    private static bool EndsWithTopLevelComma(string selector)
+    {
+        if (selector.Length == 0 || selector[^1] != ',')
+            return false;
+
+        var bracketDepth = 0;
+        var parenDepth = 0;
+
+        for (var i = 0; i < selector.Length - 1; i++)
+        {
+            var c = selector[i];
+
+            if (c == '[') bracketDepth++;
+            else if (c == ']') bracketDepth--;
+            else if (c == '(') parenDepth++;
+            else if (c == ')') parenDepth--;
+        }
+
+        return bracketDepth == 0 && parenDepth == 0;
+    }
+
+    private static string NormalizeNotSelectorPart(string part)
+    {
+        var span = part.AsSpan();
+
+        // A universal selector directly followed by a pseudo-class, class, id
+        // or attribute is dropped (lightningcss normalization). Leading
+        // whitespace does not prevent the drop.
+
+        var k = 0;
+
+        while (k < span.Length && char.IsWhiteSpace(span[k]))
+            k++;
+
+        if (span.Length - k > 1 && span[k] == '*' && span[k + 1] is ':' or '.' or '#' or '[')
+            span = span[(k + 1)..];
+
+        // Normalize top-level combinator spacing to a single space on each side
+        // and collapse whitespace runs (lightningcss serialization).
+
+        var sb = new StringBuilder(span.Length + 4);
+        var bracketDepth = 0;
+        var parenDepth = 0;
+
+        for (var i = 0; i < span.Length; i++)
+        {
+            var c = span[i];
+
+            if (c == '[') bracketDepth++;
+            else if (c == ']') bracketDepth--;
+            else if (c == '(') parenDepth++;
+            else if (c == ')') parenDepth--;
+
+            // Combinators and whitespace inside brackets or parentheses are part
+            // of an attribute value or pseudo-class argument and are left
+            // untouched.
+
+            if (bracketDepth > 0 || parenDepth > 0)
+            {
+                sb.Append(c);
+
+                continue;
+            }
+
+            if (c is '>' or '+' or '~')
+            {
+                while (sb.Length > 0 && char.IsWhiteSpace(sb[^1]))
+                    sb.Length--;
+
+                var j = i + 1;
+
+                while (j < span.Length && char.IsWhiteSpace(span[j]))
+                    j++;
+
+                sb.Append(' ').Append(c).Append(' ');
+
+                i = j - 1;
+
+                continue;
+            }
+
+            if (char.IsWhiteSpace(c))
+            {
+                var j = i + 1;
+
+                while (j < span.Length && char.IsWhiteSpace(span[j]))
+                    j++;
+
+                if (sb.Length > 0)
+                    sb.Append(' ');
+
+                i = j - 1;
+
+                continue;
+            }
+
+            sb.Append(c);
+        }
+
+        return sb.ToString();
+    }
+
     public static bool TryGetVariant(this string variant, AppRunner appRunner, out VariantMetadata? metadata)
     {
         metadata = null;
@@ -167,6 +336,70 @@ public static class VariantValidators
                 return true;
             }
             
+            #endregion
+            
+            #region Not arbitrary (not-[...])
+
+            if (variant.Length > 6 && variant.StartsWith("not-[", StringComparison.Ordinal))
+            {
+                // not-* variants do not accept modifiers (Tailwind emits nothing for them).
+
+                if (indexOfSlash > variant.LastIndexOf(']'))
+                    return false;
+
+                var customValue = GetBracketValue(variant);
+
+                if (customValue is null || customValue.Trim().Length < 1)
+                    return false;
+
+                if (customValue[0] == '@')
+                {
+                    // not-[@media_print]:, not-[@supports(display:grid)]:, not-[@container_style(--a)]:
+                    // Negate the at-rule condition and emit it as a wrapper.
+
+                    var negatedStatement = NegateArbitraryAtRule(customValue);
+
+                    if (negatedStatement is null)
+                        return false;
+
+                    metadata!.PrefixType = "wrapper";
+                    metadata.PrefixOrder = appRunner.Library.SupportsQueryPrefixes.Count + 1;
+                    metadata.Statement = negatedStatement;
+
+                    return true;
+                }
+
+                // not-[:checked]:, not-[.group]:, not-[&:hover]: etc.
+                // Negate an arbitrary selector by wrapping it in :not(...).
+
+                var selector = customValue;
+
+                // Pseudo-elements cannot be negated (Tailwind emits nothing for them).
+                if (selector.Contains("::", StringComparison.Ordinal))
+                    return false;
+
+                // Relative combinators cannot be negated (Tailwind emits nothing for them).
+                if (selector[0] is '>' or '+' or '~')
+                    return false;
+
+                var hasAmpersand = selector.Contains('&', StringComparison.Ordinal);
+
+                // Each & refers to the element itself (*).
+                if (hasAmpersand)
+                    selector = selector.Replace("&", "*", StringComparison.Ordinal);
+
+                // Normalize top-level comma-separated parts (Tailwind serializes selector
+                // lists with ", ") and drop a universal selector that is directly followed
+                // by a pseudo-class, class, id or attribute (lightningcss normalization).
+
+                var normalized = NormalizeNotSelectorParts(selector);
+
+                // Values without & are wrapped in :is() (Tailwind behavior).
+                metadata!.SelectorSuffix = hasAmpersand ? $":not({normalized})" : $":not(:is({normalized}))";
+
+                return true;
+            }
+
             #endregion
             
             #region Groups
