@@ -1261,20 +1261,46 @@ public static class AppRunnerExtensions
 					        var args = spanText.Slice(argsStart, Math.Max(0, argsEnd - argsStart));
 					        var utils = ParseUtils(appRunner, args); // Build replacement declarations (keeps existing ordering rules)
 
-					        if (utils.Count > 0)
+					        try
 					        {
-						        foreach (var u in utils)
-							        sb.Append(u.Styles); // declarations only ("prop: value;")
+						        if (utils.Count > 0)
+						        {
+							        foreach (var utility in utils)
+							        {
+								        if (utility.AllSegments.Count == 1)
+								        {
+									        sb.Append(utility.Styles);
+									        continue;
+								        }
 
-						        anyChange = true;
+								        sb.Append("@variant ");
+
+								        for (var segmentIndex = 0; segmentIndex < utility.AllSegments.Count - 1; segmentIndex++)
+								        {
+									        if (segmentIndex > 0)
+										        sb.Append(':');
+
+									        sb.Append(utility.AllSegments[segmentIndex]);
+								        }
+
+								        sb.Append(" {").Append(utility.Styles).Append('}');
+							        }
+
+							        anyChange = true;
+						        }
+						        else
+						        {
+							        // Nothing recognized — keep original token text
+							        var tokenLen = (foundSemicolon ? (argsEnd + 1) : argsEnd) - i;
+
+							        if (tokenLen > 0)
+								        sb.Append(spanText.Slice(i, tokenLen));
+						        }
 					        }
-					        else
+					        finally
 					        {
-						        // Nothing recognized — keep original token text
-						        var tokenLen = (foundSemicolon ? (argsEnd + 1) : argsEnd) - i;
-						        
-						        if (tokenLen > 0) 
-							        sb.Append(spanText.Slice(i, tokenLen));
+						        foreach (var utility in utils)
+							        utility.Dispose();
 					        }
 
 					        // Advance i past the token (consume ';' if present)
@@ -1327,8 +1353,10 @@ public static class AppRunnerExtensions
 	            var name = UnescapeBackslashes(tok);
 	            var cssClass = new CssClass(appRunner, selector: name);
 
-	            if (cssClass.IsValid) 
-		            utils.Add(cssClass);
+	            if (cssClass.IsValid)
+	                utils.Add(cssClass);
+	            else
+	                cssClass.Dispose();
 	        }
 
 	        if (utils.Count > 1)

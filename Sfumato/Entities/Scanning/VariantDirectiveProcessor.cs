@@ -89,79 +89,24 @@ public static class VariantDirectiveProcessor
 
     private static string ExpandAlternative(string expression, string body, AppRunner appRunner)
     {
-        var selector = "&";
-        var wrappers = new List<string>();
+        using var candidate = new CssClass(appRunner, selector: $"{expression}:[display:block]");
 
-        foreach (var segmentSpan in expression.SplitByTopLevel(':'))
-        {
-            var segment = segmentSpan.Trim().ToString();
+        if (candidate.IsValid == false || candidate.AllSegments.Count < 2)
+            throw new InvalidDataException($"Unknown @variant '{expression}'.");
 
-            if (string.IsNullOrEmpty(segment))
-                throw new InvalidDataException("Cannot stack an empty variant.");
-
-            if (segment.StartsWith('[') && segment.EndsWith(']'))
-            {
-                selector = segment[1..^1].Replace("&", selector, StringComparison.Ordinal);
-                continue;
-            }
-
-            if (appRunner.Library.PseudoclassPrefixes.TryGetValue(segment, out var pseudo))
-            {
-                selector = string.IsNullOrEmpty(pseudo.SelectorPrefix)
-                    ? $"{selector}{pseudo.SelectorSuffix}"
-                    : $"{pseudo.SelectorPrefix}{selector}{pseudo.SelectorSuffix}";
-
-                if (segment == "hover")
-                    wrappers.Add("@media (hover: hover)");
-
-                continue;
-            }
-
-            if (TryGetWrapper(segment, appRunner, out var wrapper))
-            {
-                wrappers.Add(wrapper);
-                continue;
-            }
-
-            throw new InvalidDataException($"Unknown @variant '{segment}'.");
-        }
-
+        var targetSelector = candidate.Selector.CssSelectorEscape();
+        var selector = candidate.EscapedSelector.Replace(targetSelector, "&", StringComparison.Ordinal);
         var expanded = selector == "&" ? body : Wrap(selector, body, appRunner.AppRunnerSettings.LineBreak);
+        var wrappers = candidate.Wrappers.Values.ToList();
+
+        foreach (var segment in expression.SplitByTopLevel(':'))
+            if (segment.SequenceEqual("hover"))
+                wrappers.Add("@media (hover: hover) {");
 
         for (var index = wrappers.Count - 1; index >= 0; index--)
-            expanded = Wrap(wrappers[index], expanded, appRunner.AppRunnerSettings.LineBreak);
+            expanded = Wrap(wrappers[index][..^1].TrimEnd(), expanded, appRunner.AppRunnerSettings.LineBreak);
 
         return expanded;
-    }
-
-    private static bool TryGetWrapper(string segment, AppRunner appRunner, out string wrapper)
-    {
-        if (appRunner.Library.MediaQueryPrefixes.TryGetValue(segment, out var metadata))
-        {
-            wrapper = $"@media {metadata.Statement}";
-            return true;
-        }
-
-        if (appRunner.Library.SupportsQueryPrefixes.TryGetValue(segment, out metadata))
-        {
-            wrapper = $"@supports {metadata.Statement}";
-            return true;
-        }
-
-        if (appRunner.Library.ContainerQueryPrefixes.TryGetValue(segment, out metadata))
-        {
-            wrapper = $"@container {metadata.Statement}";
-            return true;
-        }
-
-        if (appRunner.Library.StartingStyleQueryPrefixes.TryGetValue(segment, out metadata))
-        {
-            wrapper = "@starting-style";
-            return true;
-        }
-
-        wrapper = string.Empty;
-        return false;
     }
 
     private static string Wrap(string header, string body, string lineBreak)
