@@ -216,6 +216,14 @@ public static class LibraryPseudoClasses
 		    }
 	    },
 	    {
+		    "optional",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ":optional"
+		    }
+	    },
+	    {
 		    "required",
 		    new VariantMetadata
 		    {
@@ -240,6 +248,22 @@ public static class LibraryPseudoClasses
 		    }
 	    },
 	    {
+		    "user-valid",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ":user-valid"
+		    }
+	    },
+	    {
+		    "user-invalid",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = ":user-invalid"
+		    }
+	    },
+	    {
 		    "in-range",
 		    new VariantMetadata
 		    {
@@ -261,6 +285,14 @@ public static class LibraryPseudoClasses
 		    {
 			    PrefixType = "pseudoclass",
 			    SelectorSuffix = ":placeholder-shown"
+		    }
+	    },
+	    {
+		    "details-content",
+		    new VariantMetadata
+		    {
+			    PrefixType = "pseudoclass",
+			    SelectorSuffix = "::details-content"
 		    }
 	    },
 	    {

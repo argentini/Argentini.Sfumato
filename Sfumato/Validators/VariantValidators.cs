@@ -520,6 +520,9 @@ public static class VariantValidators
                 {
                     // group-hover:
 
+                    if (pseudoClass.SelectorSuffix.StartsWith("::", StringComparison.Ordinal))
+                        return false;
+
                     metadata!.PrefixType = "prefix";
                     metadata.SelectorPrefix = $".group{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ";
                 
@@ -578,6 +581,9 @@ public static class VariantValidators
                 if (appRunner.Library.PseudoclassPrefixes.TryGetValue(variantValue, out var pseudoClass))
                 {
                     // peer-hover:
+
+                    if (pseudoClass.SelectorSuffix.StartsWith("::", StringComparison.Ordinal))
+                        return false;
 
                     metadata!.PrefixType = "prefix";
                     metadata.SelectorPrefix = $".peer{slashValue.Replace("/", "\\/")}{pseudoClass.SelectorSuffix} ~ ";
@@ -640,6 +646,9 @@ public static class VariantValidators
                 var variantValue = variant[4..];
 
                 if (appRunner.Library.PseudoclassPrefixes.TryGetValue(variantValue, out var pseudoClass) == false)
+                    return false;
+
+                if (pseudoClass.SelectorSuffix.StartsWith("::", StringComparison.Ordinal))
                     return false;
 
                 metadata!.SelectorSuffix = $":has({pseudoClass.SelectorSuffix})";

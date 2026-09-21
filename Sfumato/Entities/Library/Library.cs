@@ -156,9 +156,10 @@ public sealed class Library
 
         foreach (var pseudoClass in PseudoclassPrefixes.ToDictionary(StringComparer.Ordinal))
         {
-            // Skip pseudo-elements (*, **) and the arbitrary not- prefix itself so we
-            // don't generate bogus variants like not-not-*.
-            if (pseudoClass.Key.StartsWith('*') || pseudoClass.Key.StartsWith("not-", StringComparison.Ordinal))
+            // Skip child selectors, pseudo-elements, and the arbitrary not- prefix.
+            if (pseudoClass.Key.StartsWith('*')
+                || pseudoClass.Key.StartsWith("not-", StringComparison.Ordinal)
+                || pseudoClass.Value.SelectorSuffix.StartsWith("::", StringComparison.Ordinal))
                 continue;
 
             PseudoclassPrefixes.Add($"not-{pseudoClass.Key}", pseudoClass.Value.CreateNewVariant(pseudoClass.Value.PrefixType, suffix: $":not({pseudoClass.Value.SelectorSuffix})"));
