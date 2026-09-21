@@ -238,7 +238,7 @@ public static class VariantValidators
     {
         metadata = null;
         
-        var indexOfSlash = variant.LastIndexOf('/');
+        var indexOfSlash = variant.LastIndexOfTopLevel('/');
         var isContainerQuery = variant[0] == '@'; // true if a container query
 
         if (appRunner.Library.AllVariants.TryGetLongestMatchingPrefix(indexOfSlash > -1 ? variant[..indexOfSlash] : variant, out var prefix, out var variantMetadata))
@@ -305,6 +305,24 @@ public static class VariantValidators
             if (isContainerQuery)
             {
                 var variantValue = indexOfSlash > 0 ? variant[..indexOfSlash] : variant;
+
+                if (indexOfSlash == variant.Length - 1)
+                    return false;
+
+                if (prefix is not null
+                    && variantValue.Length > prefix.Length + 1
+                    && variantValue[prefix.Length] == '['
+                    && variantValue[^1] == ']'
+                    && variantMetadata.Statement.Contains("{0}", StringComparison.Ordinal))
+                {
+                    var customValue = GetCustomValue(variantValue);
+
+                    if (string.IsNullOrWhiteSpace(customValue))
+                        return false;
+
+                    metadata!.Statement = variantMetadata.Statement.Replace("{0}", customValue, StringComparison.Ordinal);
+                    return true;
+                }
 
                 return appRunner.Library.ContainerQueryPrefixes.TryGetValue(variantValue, out metadata);
             }

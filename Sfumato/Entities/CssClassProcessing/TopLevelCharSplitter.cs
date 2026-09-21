@@ -35,6 +35,40 @@ public static class DelimitedSplitExtensions
         // allocate only one string for the very last segment
         return last.ToString();
     }
+
+    public static int LastIndexOfTopLevel(this string source, char delimiter)
+    {
+        var bracketDepth = 0;
+        var parenDepth = 0;
+        var lastIndex = -1;
+
+        for (var i = 0; i < source.Length; i++)
+        {
+            switch (source[i])
+            {
+                case '[':
+                    bracketDepth++;
+                    break;
+                case ']':
+                    if (bracketDepth > 0)
+                        bracketDepth--;
+                    break;
+                case '(':
+                    parenDepth++;
+                    break;
+                case ')':
+                    if (parenDepth > 0)
+                        parenDepth--;
+                    break;
+                default:
+                    if (source[i] == delimiter && bracketDepth == 0 && parenDepth == 0)
+                        lastIndex = i;
+                    break;
+            }
+        }
+
+        return lastIndex;
+    }
 }
 
 /// <summary>

@@ -829,7 +829,7 @@ public sealed class CssClass : IDisposable
         Sb.Append("@container ");
 
         var firstVariant = containerVariants[0];
-        var indexOfSlash = firstVariant.Key.LastIndexOf('/');
+        var indexOfSlash = firstVariant.Key.LastIndexOfTopLevel('/');
 
         if (indexOfSlash > 0)
         {
