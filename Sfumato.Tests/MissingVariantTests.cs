@@ -13,6 +13,54 @@ public sealed class MissingVariantTests(ITestOutputHelper testOutputHelper) : Sh
         ("user-invalid", ":user-invalid"),
     ];
 
+    private static readonly (string Name, string Statement)[] ContrastVariants =
+    [
+        ("contrast-more", "(prefers-contrast: more)"),
+        ("contrast-less", "(prefers-contrast: less)"),
+    ];
+
+    [Fact]
+    public void ContrastVariantsSupportDirectAndNegatedSyntax()
+    {
+        for (var i = 0; i < ContrastVariants.Length; i++)
+        {
+            var (name, statement) = ContrastVariants[i];
+
+            AssertMediaVariant($"{name}:flex", $".{name}\\:flex", statement);
+            AssertMediaVariant($"not-{name}:flex", $".not-{name}\\:flex", $"not {statement}");
+        }
+    }
+
+    [Fact]
+    public void ContrastVariantsSupportBreakpointPseudoClassAndImportantSyntax()
+    {
+        for (var i = 0; i < ContrastVariants.Length; i++)
+        {
+            var (name, statement) = ContrastVariants[i];
+
+            AssertContrastVariantSyntax(name, statement);
+            AssertContrastVariantSyntax($"not-{name}", $"not {statement}");
+        }
+    }
+
+    [Fact]
+    public void ContrastVariantsRejectUnsupportedModifiersAndCompounds()
+    {
+        for (var i = 0; i < ContrastVariants.Length; i++)
+        {
+            var name = ContrastVariants[i].Name;
+
+            AssertInvalid($"{name}/preference:flex");
+            AssertInvalid($"not-{name}/preference:flex");
+            AssertInvalid($"group-{name}:flex");
+            AssertInvalid($"group-{name}/preference:flex");
+            AssertInvalid($"peer-{name}:flex");
+            AssertInvalid($"peer-{name}/preference:flex");
+            AssertInvalid($"has-{name}:flex");
+            AssertInvalid($"in-{name}:flex");
+        }
+    }
+
     [Fact]
     public void FormStateVariantsSupportEverySyntaxPermutation()
     {
@@ -117,6 +165,36 @@ public sealed class MissingVariantTests(ITestOutputHelper testOutputHelper) : Sh
         Assert.True(cssClass.IsValid, candidate);
         Assert.Equal(expectedSelector, cssClass.EscapedSelector);
         Assert.Equal("display: flex;", cssClass.Styles);
+    }
+
+    private void AssertMediaVariant(string candidate, string expectedSelector, string expectedStatement)
+    {
+        using var cssClass = new CssClass(AppRunner, selector: candidate);
+
+        Assert.True(cssClass.IsValid, candidate);
+        Assert.Equal(expectedSelector, cssClass.EscapedSelector);
+        Assert.Equal("display: flex;", cssClass.Styles);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Contains($"@media {expectedStatement} {{", cssClass.Wrappers.Values);
+    }
+
+    private void AssertContrastVariantSyntax(string name, string statement)
+    {
+        AssertMediaVariant(
+            $"md:{name}:flex",
+            $".md\\:{name}\\:flex",
+            $"{AppRunner.Library.MediaQueryPrefixes["md"].Statement} and {statement}");
+
+        AssertMediaVariant($"{name}:hover:flex", $".{name}\\:hover\\:flex:hover", statement);
+
+        using var important = new CssClass(AppRunner, selector: $"{name}:flex!");
+
+        Assert.True(important.IsValid, name);
+        Assert.True(important.IsImportant, name);
+        Assert.Equal($".{name}\\:flex\\!", important.EscapedSelector);
+        Assert.Equal("display: flex !important;", important.Styles);
+        Assert.Single(important.Wrappers);
+        Assert.Contains($"@media {statement} {{", important.Wrappers.Values);
     }
 
     private void AssertInvalid(string candidate)

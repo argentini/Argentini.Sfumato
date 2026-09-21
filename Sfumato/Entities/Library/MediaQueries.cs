@@ -61,6 +61,42 @@ public static class LibraryMediaQueries
 				Statement = "(prefers-reduced-motion: reduce)"
 			}
 		},
+        {
+            "contrast-more",
+            new VariantMetadata
+            {
+                PrefixOrder = 77500,
+                PrefixType = "media",
+                Statement = "(prefers-contrast: more)"
+            }
+        },
+        {
+            "not-contrast-more",
+            new VariantMetadata
+            {
+                PrefixOrder = 77500,
+                PrefixType = "media",
+                Statement = "not (prefers-contrast: more)"
+            }
+        },
+        {
+            "contrast-less",
+            new VariantMetadata
+            {
+                PrefixOrder = 77500,
+                PrefixType = "media",
+                Statement = "(prefers-contrast: less)"
+            }
+        },
+        {
+            "not-contrast-less",
+            new VariantMetadata
+            {
+                PrefixOrder = 77500,
+                PrefixType = "media",
+                Statement = "not (prefers-contrast: less)"
+            }
+        },
 		{
 			"pointer-fine",
 			new VariantMetadata
