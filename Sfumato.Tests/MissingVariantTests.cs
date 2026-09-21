@@ -1,8 +1,7 @@
 namespace Sfumato.Tests;
 
 /// <summary>
-/// Verifies the Tailwind CSS v4.3.3 syntax supported by the optional,
-/// user-valid, user-invalid, and details-content variants.
+/// Verifies selected Tailwind CSS v4.3.3 variants added for feature parity.
 /// </summary>
 public sealed class MissingVariantTests(ITestOutputHelper testOutputHelper) : SharedTestBase(testOutputHelper)
 {
@@ -18,6 +17,66 @@ public sealed class MissingVariantTests(ITestOutputHelper testOutputHelper) : Sh
         ("contrast-more", "(prefers-contrast: more)"),
         ("contrast-less", "(prefers-contrast: less)"),
     ];
+
+    private static readonly (string Name, string Statement)[] ColorEnvironmentVariants =
+    [
+        ("forced-colors", "(forced-colors: active)"),
+        ("inverted-colors", "(inverted-colors: inverted)"),
+    ];
+
+    [Fact]
+    public void ColorEnvironmentVariantsSupportDirectAndNegatedSyntax()
+    {
+        for (var i = 0; i < ColorEnvironmentVariants.Length; i++)
+        {
+            var (name, statement) = ColorEnvironmentVariants[i];
+
+            AssertMediaVariant($"{name}:flex", $".{name}\\:flex", statement);
+            AssertMediaVariant($"not-{name}:flex", $".not-{name}\\:flex", $"not {statement}");
+        }
+    }
+
+    [Fact]
+    public void ColorEnvironmentVariantsSupportEveryStackingPermutation()
+    {
+        for (var i = 0; i < ColorEnvironmentVariants.Length; i++)
+        {
+            var (name, statement) = ColorEnvironmentVariants[i];
+
+            AssertMediaStackingPermutations(name, statement);
+            AssertMediaStackingPermutations($"not-{name}", $"not {statement}");
+        }
+    }
+
+    [Fact]
+    public void ColorEnvironmentVariantsSupportImportantSyntax()
+    {
+        for (var i = 0; i < ColorEnvironmentVariants.Length; i++)
+        {
+            var (name, statement) = ColorEnvironmentVariants[i];
+
+            AssertImportantMediaVariant(name, statement);
+            AssertImportantMediaVariant($"not-{name}", $"not {statement}");
+        }
+    }
+
+    [Fact]
+    public void ColorEnvironmentVariantsRejectModifiersAndCompounds()
+    {
+        for (var i = 0; i < ColorEnvironmentVariants.Length; i++)
+        {
+            var name = ColorEnvironmentVariants[i].Name;
+
+            AssertInvalid($"{name}/preference:flex");
+            AssertInvalid($"not-{name}/preference:flex");
+            AssertInvalid($"group-{name}:flex");
+            AssertInvalid($"group-{name}/preference:flex");
+            AssertInvalid($"peer-{name}:flex");
+            AssertInvalid($"peer-{name}/preference:flex");
+            AssertInvalid($"has-{name}:flex");
+            AssertInvalid($"in-{name}:flex");
+        }
+    }
 
     [Fact]
     public void ContrastVariantsSupportDirectAndNegatedSyntax()
@@ -176,6 +235,35 @@ public sealed class MissingVariantTests(ITestOutputHelper testOutputHelper) : Sh
         Assert.Equal("display: flex;", cssClass.Styles);
         Assert.Single(cssClass.Wrappers);
         Assert.Contains($"@media {expectedStatement} {{", cssClass.Wrappers.Values);
+    }
+
+    private void AssertMediaStackingPermutations(string name, string statement)
+    {
+        var breakpoint = AppRunner.Library.MediaQueryPrefixes["md"].Statement;
+        string[] candidates =
+        [
+            $"md:{name}:hover:flex",
+            $"md:hover:{name}:flex",
+            $"{name}:md:hover:flex",
+            $"{name}:hover:md:flex",
+            $"hover:md:{name}:flex",
+            $"hover:{name}:md:flex",
+        ];
+
+        for (var i = 0; i < candidates.Length; i++)
+            AssertMediaVariant(candidates[i], $".{candidates[i].Replace(":", "\\:")}:hover", $"{breakpoint} and {statement}");
+    }
+
+    private void AssertImportantMediaVariant(string name, string statement)
+    {
+        using var cssClass = new CssClass(AppRunner, selector: $"{name}:flex!");
+
+        Assert.True(cssClass.IsValid, name);
+        Assert.True(cssClass.IsImportant, name);
+        Assert.Equal($".{name}\\:flex\\!", cssClass.EscapedSelector);
+        Assert.Equal("display: flex !important;", cssClass.Styles);
+        Assert.Single(cssClass.Wrappers);
+        Assert.Contains($"@media {statement} {{", cssClass.Wrappers.Values);
     }
 
     private void AssertContrastVariantSyntax(string name, string statement)

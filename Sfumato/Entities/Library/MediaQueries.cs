@@ -98,6 +98,42 @@ public static class LibraryMediaQueries
             }
         },
 		{
+			"forced-colors",
+			new VariantMetadata
+			{
+				PrefixOrder = 77000,
+				PrefixType = "media",
+				Statement = "(forced-colors: active)"
+			}
+		},
+		{
+			"not-forced-colors",
+			new VariantMetadata
+			{
+				PrefixOrder = 77000,
+				PrefixType = "media",
+				Statement = "not (forced-colors: active)"
+			}
+		},
+		{
+			"inverted-colors",
+			new VariantMetadata
+			{
+				PrefixOrder = 76500,
+				PrefixType = "media",
+				Statement = "(inverted-colors: inverted)"
+			}
+		},
+		{
+			"not-inverted-colors",
+			new VariantMetadata
+			{
+				PrefixOrder = 76500,
+				PrefixType = "media",
+				Statement = "not (inverted-colors: inverted)"
+			}
+		},
+		{
 			"pointer-fine",
 			new VariantMetadata
 			{
