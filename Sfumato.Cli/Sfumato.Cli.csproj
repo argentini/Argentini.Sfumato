@@ -5,9 +5,9 @@
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>14</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.2.0.0</AssemblyVersion>
-        <FileVersion>6.2.0.0</FileVersion>
-        <PackageVersion>6.2.0</PackageVersion>
+        <AssemblyVersion>6.3.0.0</AssemblyVersion>
+        <FileVersion>6.3.0.0</FileVersion>
+        <PackageVersion>6.3.0</PackageVersion>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>sfumato</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
@@ -29,7 +29,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Ignore output CSS file path when scanning for changes.</PackageReleaseNotes>
+        <PackageReleaseNotes>Added remaining Tailwind CSS features.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>
