@@ -23,7 +23,7 @@ Some of the benefits of using Sfumato over Tailwind include:
 
 ### 1. Install Microsoft .NET
 
-Sfumato requires that you already have the .NET 10 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
+The Sfumato CLI requires the .NET 11 runtime, available from [Microsoft .NET downloads](https://dotnet.microsoft.com/en-us/download). Sfumato Core supports .NET 9, 10, and 11.
 
 ### 2. Install the Sfumato CLI tool
 
@@ -46,3 +46,7 @@ Use the following command for more information on editing your CSS file and usin
 If you need to completely uninstall Sfumato, use the command below:
 
 ```dotnet tool uninstall --global argentini.sfumato```
+
+## Building from source
+
+Use the .NET 11 SDK selected by `global.json`. The .NET 11 targets use C# 15 and [runtime async](https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-11/), enabled in `Directory.Build.targets`. Eligible async methods use runtime support instead of compiler-generated state machines. The .NET 9 and 10 library targets retain C# 14 and compiler-generated async state machines.

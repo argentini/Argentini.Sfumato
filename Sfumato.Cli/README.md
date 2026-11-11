@@ -12,7 +12,7 @@ Sfumato is a lean, modern, utility-based CSS framework with relative UI scaling 
 
 ### 1. Install Microsoft .NET
 
-Sfumato requires that you already have the .NET 10 runtime installed, which you can get at [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download).
+The Sfumato CLI requires the .NET 11 runtime, available from [Microsoft .NET downloads](https://dotnet.microsoft.com/en-us/download).
 
 ### 2. Install Sfumato
 

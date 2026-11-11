@@ -2,12 +2,12 @@
 
     <PropertyGroup>
         <Title>Sfumato</Title>
-        <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
-        <LangVersion>14</LangVersion>
+        <TargetFrameworks>net9.0;net10.0;net11.0</TargetFrameworks>
+        <LangVersion>15</LangVersion>
         <Nullable>enable</Nullable>
-        <AssemblyVersion>6.3.0.0</AssemblyVersion>
-        <FileVersion>6.3.0.0</FileVersion>
-        <PackageVersion>6.3.0</PackageVersion>
+        <AssemblyVersion>6.4.0.0</AssemblyVersion>
+        <FileVersion>6.4.0.0</FileVersion>
+        <PackageVersion>6.4.0</PackageVersion>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <PackageId>argentini.sfumato.core</PackageId>
         <Authors>Michael Argentini</Authors>
@@ -20,7 +20,7 @@
         <PackageProjectUrl>https://github.com/argentini/Argentini.Sfumato</PackageProjectUrl>
         <RepositoryUrl>https://github.com/argentini/Argentini.Sfumato</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>Added remaining Tailwind CSS features.</PackageReleaseNotes>
+        <PackageReleaseNotes>Supports .NET 11, speed increases.</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageIcon>sfumato-icon.png</PackageIcon>

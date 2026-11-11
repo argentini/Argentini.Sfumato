@@ -2,6 +2,10 @@
 
 Run benchmarks using Release builds only.
 
+The benchmark project targets .NET 11. Its async benchmarks and the .NET 11 library build use runtime async through `Directory.Build.targets`.
+
+BenchmarkDotNet 0.16.0-preview.2 provides .NET 11 runtime support. The previous stable version, 0.15.8, cannot run its default toolchain on .NET 11.
+
 List available benchmarks:
 
 ```shell
